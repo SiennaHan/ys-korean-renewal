@@ -1,0 +1,337 @@
+<meta charset="utf-8">
+<title>Phase 1 전달 묶음 · 안내</title>
+<style>
+  :root {
+    --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f7;
+    --ink:#181c24; --ink-2:#4e5666; --ink-3:#89909f;
+    --line:#e2e6ed; --accent:#1f5fd6; --accent-soft:#e8f0ff;
+    --bad:#b3261e; --bad-soft:#fdecea; --good:#1c6b42; --good-soft:#e8f5ee;
+    --warn:#8a5a00; --warn-soft:#fdf4e3;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 10px 26px rgba(16,24,40,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+      --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+      --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+      --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+      --warn:#e0ab52; --warn-soft:#2c2417;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+    --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+    --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+    --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+    --warn:#e0ab52; --warn-soft:#2c2417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    font-size:15.5px; line-height:1.74; }
+  main { max-width:860px; margin:0 auto; padding:52px 22px 100px; }
+
+  header.doc { padding-bottom:26px; border-bottom:2px solid var(--ink); margin-bottom:34px; }
+  .eyebrow { font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent); font-weight:800; margin-bottom:10px; }
+  h1 { font-size:30px; line-height:1.28; margin:0 0 12px; font-weight:800;
+    letter-spacing:-.015em; text-wrap:balance; }
+  .lead { color:var(--ink-2); font-size:15.5px; max-width:64ch; margin:0; }
+  .lead b { color:var(--ink); }
+
+  h2 { font-size:20px; font-weight:800; margin:56px 0 4px; letter-spacing:-.01em;
+    display:flex; align-items:baseline; gap:10px; }
+  h2 .n { font-size:13px; font-weight:800; color:var(--accent);
+    font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+  h3 { font-size:15.5px; font-weight:700; margin:26px 0 4px; }
+  p { margin:10px 0; }
+  .qa { color:var(--ink-3); font-size:13.5px; }
+
+  code { font-family:ui-monospace,Menlo,monospace; font-size:.85em;
+    background:var(--surface-2); padding:1.5px 6px; border-radius:5px; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin:14px 0 6px; font-size:13.5px; }
+  th { text-align:left; font-size:11.5px; letter-spacing:.05em; color:var(--ink-3);
+    font-weight:700; padding:8px 10px 6px; border-bottom:2px solid var(--line); white-space:nowrap; }
+  td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td code { white-space:nowrap; }
+
+  .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:12px; padding:16px 20px; margin:18px 0;
+    box-shadow:var(--shadow); }
+  .callout.bad { border-left-color:var(--bad); }
+  .callout.good { border-left-color:var(--good); }
+  .callout.warn { border-left-color:var(--warn); }
+  .callout .t { font-weight:800; font-size:14px; margin-bottom:6px; }
+  .callout.bad .t { color:var(--bad); }
+  .callout.good .t { color:var(--good); }
+  .callout.warn .t { color:var(--warn); }
+  .callout p { font-size:14.5px; margin:7px 0; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px; margin:16px 0 6px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:5px; }
+  .card .k { font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:800; color:var(--ink-3); }
+  .card .nm { font-size:15px; font-weight:700; line-height:1.4; }
+  .card .nm a { text-decoration:none; }
+  .card .nm a:hover { text-decoration:underline; }
+  .card .d { font-size:13px; color:var(--ink-2); line-height:1.6; }
+
+  ol.path { list-style:none; counter-reset:step; padding:0; margin:16px 0 6px;
+    display:flex; flex-direction:column; gap:10px; }
+  ol.path li { counter-increment:step; display:grid; grid-template-columns:30px 1fr;
+    gap:12px; align-items:start; }
+  ol.path li::before { content:counter(step); grid-column:1;
+    width:30px; height:30px; border-radius:50%; background:var(--accent-soft);
+    color:var(--accent); font-size:13px; font-weight:800; display:grid; place-items:center;
+    font-variant-numeric:tabular-nums; }
+  ol.path .h { font-weight:700; }
+  ol.path .d { color:var(--ink-2); font-size:14px; }
+
+  ul { padding-left:22px; margin:10px 0; }
+  li { margin:6px 0; }
+  li::marker { color:var(--ink-3); }
+
+  .pill { display:inline-block; font-size:11px; font-weight:800; border-radius:99px;
+    padding:1.5px 9px; white-space:nowrap; }
+  .pill.done { background:var(--good-soft); color:var(--good); }
+  .pill.open { background:var(--warn-soft); color:var(--warn); }
+  .pill.stop { background:var(--bad-soft); color:var(--bad); }
+  .pill.file { background:var(--accent-soft); color:var(--accent); }
+</style>
+
+<main>
+<header class="doc">
+  <div class="eyebrow">연세 글로벌 한국어 · Phase 1</div>
+  <h1>플레이어 공통 셸 — 전달 묶음 안내</h1>
+  <p class="lead">학습 활동 8종이 공유하는 <b>공통 껍데기</b>를 만드는 작업입니다.
+     새 교재 콘텐츠는 아직 저작 중이라, Phase 1은 <b>구 앱 콘텐츠를 그대로 꽂은 채
+     셸·상태·라우트만 교체해 검증</b>합니다. 콘텐츠 교체는 Phase 2입니다.</p>
+</header>
+
+<h2><span class="n">01</span>먼저 봐 주실 것 — 보안 핫픽스</h2>
+<div class="callout bad">
+  <div class="t">이 묶음과 독립이고, 하나는 Phase 1의 선행조건입니다</div>
+  <p>아래는 리뉴얼과 무관하게 <b>현행 코드에서 확인된 것</b>들입니다. Phase 1을 기다리지 말고
+     먼저 처리해 주시면 좋겠습니다. 특히 마지막 항목은 <b>Phase 1이 그 위에 얹히는 구조</b>입니다.</p>
+</div>
+<div class="tablewrap"><table>
+  <tr><th>항목</th><th>확인된 내용</th></tr>
+  <tr><td><code>/speech/*</code> 무인증</td>
+      <td><code>/evaluate</code> · <code>/generate-line</code> · <code>/generate-scenario</code> · <code>/evaluate-flexible</code>
+          <b>4개 모두 <code>Depends</code> 0개</b>. LLM을 직접 호출하는 경로가 열려 있습니다</td></tr>
+  <tr><td>rate limit 전면 비활성</td>
+      <td><code>server.py</code>의 slowapi 관련 줄이 <b>전부 주석 처리</b>돼 있습니다</td></tr>
+  <tr><td><code>/report</code> 인증 부분 적용</td>
+      <td>엔드포인트 2개 중 <code>Depends</code>가 1개만 걸려 있습니다 — 어느 쪽이 열려 있는지 확인 부탁드립니다</td></tr>
+  <tr><td><code>POST /student/batch</code> 권한 범위</td>
+      <td><code>AdminRequired()</code>는 걸려 있으나, <b>요청 본문의 <code>schoolCode</code>를 그대로 사용</b>합니다.
+          호출자 소속 학교와 대조하지 않아 <b>다른 학교에 학생을 만들 수 있습니다</b></td></tr>
+  <tr><td>프로덕션 CDN 의존</td>
+      <td><code>index.html</code>에 unpkg Tailwind 스크립트가 남아 있습니다</td></tr>
+  <tr><td>토큰 노출</td>
+      <td>AppSync apiKey가 번들에 인라인. JWT는 localStorage에 30일 만료·갱신 없음</td></tr>
+  <tr><td><b><code>fill-blank</code>가 오답을 저장하지 않음</b> <span class="pill stop">Phase 1 선행</span></td>
+      <td><code>saveLearningRecord</code>가 <b>정답 분기 안에서만</b> 호출되고 <code>isCorrect: true</code>가
+          하드코딩돼 있습니다. 오답 분기는 저장 자체가 없습니다.
+          <b>Phase 1의 "다시 풀기" 기능이 첫 시도 오답 기록 위에 서기 때문에</b>,
+          이게 고쳐지지 않으면 그 기능이 동작하지 않습니다</td></tr>
+</table></div>
+<p class="qa">VocaShot 참가 QR이 어드민 도메인을 가리키는 문제도 있으나, 그 게임을 개인 플레이로 바꾸기로 해서 없어집니다.</p>
+
+<h2><span class="n">02</span>Phase 1에서 하는 일</h2>
+<p class="lead" style="margin-bottom:4px">작업은 <b>9개</b>이고, <b>화면과 무관한 5개는 목업을 기다리지 않고</b> 바로 시작할 수 있습니다.
+   상세는 <a href="https://claude.ai/code/artifact/c045e99a-a438-4f3a-8260-2e339f84c515">Phase 1 개발 명세</a> §1~§6에 있습니다.</p>
+
+<h3>화면과 무관 — 지금 바로</h3>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>작업</th><th>내용</th><th>영역</th></tr>
+  <tr><td>1</td><td><b>디자인 토큰 적용</b></td>
+      <td>동봉 <code>tokens.css</code>를 <code>globals.css</code>에 <code>@import</code>. 기존 것은 지우지 않습니다(§06)</td><td>FE</td></tr>
+  <tr><td>2</td><td><b>DB 2종 신설</b></td>
+      <td><code>ko_activity_state</code>(활동 상태·이어하기 위치) · <code>ko_review_queue</code>(다시 풀 문항).
+          DDL 그대로 실행 가능합니다</td><td>API</td></tr>
+  <tr><td>3</td><td><b>API 6종</b></td>
+      <td>활동 진입·진행 저장·완료 3종 신설, 학습기록·대시보드 2종 확장, 다시 풀기 목록 조회 신설</td><td>API</td></tr>
+  <tr><td>4</td><td><b>라우트 통일</b></td>
+      <td>학습 활동 라우트를 <code>/learn/{활동}</code> 하나로. 구 라우트는 리다이렉트로 살려둡니다.
+          <b>URL에서 콘텐츠 ID를 뺍니다</b></td><td>FE</td></tr>
+  <tr><td>5</td><td><b>i18n 등록</b></td>
+      <td>동봉 <code>i18n_player_shell.ts</code> — 5개 언어 × 55키를 기존 언어 파일에 추가</td><td>FE</td></tr>
+</table></div>
+
+<h3>화면 — 목업 보고</h3>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>작업</th><th>내용</th><th>영역</th></tr>
+  <tr><td>6</td><td><b>Storybook 셋업</b></td>
+      <td>셸 컴포넌트만. UI 언어 5종·폭 360/320 토글 포함 <span class="qa">— 아래 "순서" 참조</span></td><td>FE</td></tr>
+  <tr><td>7</td><td><b>셸 컴포넌트 9종</b></td>
+      <td><b>공통 5종</b> — 헤더(앱바+진행바+지시문) · 선택지 · 피드백 · 결과 화면 · 예외 상태(로딩·실패·마이크거부 등)<br>
+          <b>활동별 4종</b> — 마이크 · 대화 스레드 · 플래시카드 · 필기 캔버스<br>
+          <span class="qa">헤더가 먼저 나오면 나머지가 붙기 쉽습니다</span></td><td>FE</td></tr>
+  <tr><td>8</td><td><b>활동 8종 이식</b></td>
+      <td>단어·문법·듣기·읽기·롤플레잉·미션대화·플래시카드·자모를 셸 위로.
+          <b>콘텐츠는 구 앱 것을 그대로</b> 씁니다</td><td>FE</td></tr>
+  <tr><td>9</td><td><b>홈 개편</b></td>
+      <td>"오늘 할 일"(이어하기 또는 다시 풀기)과 "다시 풀 문항 N개" 카드 추가</td><td>양쪽</td></tr>
+</table></div>
+
+<div class="callout good">
+  <div class="t">이번 작업의 핵심은 7·8번입니다</div>
+  <p>지금은 활동 8종이 <b>각자 다른 화면 구조</b>를 갖고 있습니다. 진행 표시가 자모엔 아예 없고
+     플래시카드는 두 방식이 섞여 있으며, 결과 화면도 활동마다 다릅니다.
+     이걸 <b>하나의 셸로 모으는 것</b>이 Phase 1입니다. 셸 하나가 나오면 8종 화면이 함께 정리됩니다.</p>
+</div>
+
+<h3>순서</h3>
+<p><b>1~5는 지금 바로</b> 착수 가능합니다. 화면 작업(6~9)은 그 위에 얹으면 되고,
+   그중에서도 <b>헤더가 먼저</b> 나오면 나머지가 붙기 쉽습니다 —
+   헤더와 밴드 치수가 확정되면 라우팅·상태 저장·이어하기를 병행할 수 있습니다.</p>
+<p class="qa">Storybook(6번)을 얹어 주시면 이후 수정 요청을 <b>"오답 상태에서 여백 40 → 24"</b>처럼
+   상태를 지목해서 드릴 수 있습니다. 실제 앱에서는 마이크 거부나 로드 실패 화면을
+   재현하기가 번거로워서 드리는 제안이고, <b>부담되면 빼셔도 됩니다</b>.</p>
+
+<h3>끝났다고 말할 수 있는 조건</h3>
+<p>Phase 1 개발 명세 <b>§7의 검증 16건</b>입니다. 그중 핵심만 옮기면:</p>
+<ul>
+  <li>활동을 3문항 풀고 나갔다 들어오면 <b>4번째부터 재개</b>된다</li>
+  <li>오답 2개로 끝내면 결과 화면에 <b>"다시 풀 문제 2개"</b>가 뜨고, 다시 풀어 맞히면 사라진다</li>
+  <li>UI 언어 5종을 돌려도 <b>깨지거나 미번역된 곳이 없다</b></li>
+  <li>셸 코드에서 <code>#</code>을 검색하면 <b>0건</b> — 색은 전부 토큰</li>
+</ul>
+
+<h2><span class="n">03</span>묶음에 든 것</h2>
+<div class="cards">
+  <div class="card">
+    <div class="k">구현 정본</div>
+    <div class="nm"><a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a></div>
+    <div class="d"><b>확정값만</b> 담은 14개 절. 검토 이력이 없어서 그대로 구현하시면 됩니다.
+      <b>다른 문서와 숫자가 어긋나면 이 문서가 우선</b>입니다.</div>
+  </div>
+  <div class="card">
+    <div class="k">API 계약</div>
+    <div class="nm"><a href="https://claude.ai/code/artifact/f4a0b018-fc69-47d8-809f-723e317f476a">API 필드 스키마</a></div>
+    <div class="d">7개 엔드포인트의 요청·응답 필드. <b>초안이니 고치실 부분은 고쳐 주세요.</b>
+      §6에 정해 주셔야 할 4가지를 모아 뒀습니다.</div>
+  </div>
+  <div class="card">
+    <div class="k">시각 정본</div>
+    <div class="nm"><a href="https://claude.ai/code/artifact/d2ef8584-d786-49e1-ac74-56f737585b52">셸 목업</a></div>
+    <div class="d">상태별 화면을 버튼으로 오가며 볼 수 있습니다. 폭·UI 언어 전환과 치수 오버레이 포함.
+      <b>구현이 목업과 다르면 목업이 기준</b>입니다.</div>
+  </div>
+  <div class="card">
+    <div class="k">구현 요구</div>
+    <div class="nm"><a href="https://claude.ai/code/artifact/c045e99a-a438-4f3a-8260-2e339f84c515">Phase 1 개발 명세</a></div>
+    <div class="d">DB 2종 DDL · API 6종 · 라우트 매핑 · 검증 시나리오 16건. <b>가장 먼저 읽으실 문서</b>입니다.</div>
+  </div>
+  <div class="card">
+    <div class="k">규격 세부</div>
+    <div class="nm"><a href="https://claude.ai/code/artifact/4cb5004e-91f8-41cb-9d9c-55a2a8c7d59a">셸 컴포넌트 명세</a></div>
+    <div class="d">컴포넌트별 상태 목록, 폭별 실측 치수, 기존 화면에서 가져올 것.
+      목업에서 "왜 이 값인지"가 궁금할 때 찾아보시면 됩니다.</div>
+  </div>
+  <div class="card">
+    <div class="k">제품 규칙</div>
+    <div class="nm"><a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2 상태 모델</a></div>
+    <div class="d">활동 상태 머신, 다시 풀기 규칙, 엣지 케이스 12건.
+      "이 동작이 왜 이런가"의 근거입니다.</div>
+  </div>
+  <div class="card">
+    <div class="k"><span class="pill file">파일</span></div>
+    <div class="nm"><code>tokens.css</code></div>
+    <div class="d">색·타이포 토큰. primitive 51 + semantic 30 + 타이포 23.
+      <code>globals.css</code>에 <code>@import</code> 한 줄이면 적용됩니다.</div>
+  </div>
+  <div class="card">
+    <div class="k"><span class="pill file">파일</span></div>
+    <div class="nm"><code>i18n_player_shell.ts</code></div>
+    <div class="d">셸 UI 문자열 5개 언어 × 55키. 키 일치는 검증했고 <b>번역은 초안</b>입니다.</div>
+  </div>
+</div>
+
+<h2><span class="n">04</span>읽는 순서</h2>
+<ol class="path">
+  <li><div><div class="h">셸 목업을 먼저 열어 보세요</div>
+    <div class="d">버튼을 눌러 상태를 바꿔 보시면 무엇을 만드는지 5분이면 감이 옵니다. 문서보다 이게 빠릅니다.</div></div></li>
+  <li><div><div class="h">구현 사양 + API 필드 스키마</div>
+    <div class="d">이 둘이 <b>구현에 필요한 전부</b>입니다. 화면은 구현 사양, 서버 계약은 API 스키마.</div></div></li>
+  <li><div><div class="h">Phase 1 개발 명세</div>
+    <div class="d">DB DDL과 라우트 매핑. 위 둘과 겹치는 부분은 <b>구현 사양이 우선</b>입니다.</div></div></li>
+  <li><div><div class="h">셸 컴포넌트 명세 · G2 — 근거가 궁금할 때만</div>
+    <div class="d">"왜 이 값인가" "오답이면 왜 정답을 안 알려주나" 같은 판단의 이유가 들어 있습니다.
+      <b>검토 이력이 섞여 있어</b> 구현 기준으로는 쓰지 마시고, 확정값은 구현 사양을 보세요.</div></div></li>
+</ol>
+<div class="callout warn">
+  <div class="t">AI에게 시키실 경우</div>
+  <p><b>구현 사양 · API 스키마 · 목업</b> 셋만 주시는 편이 낫습니다. 셸 컴포넌트 명세와 G2에는
+     <b>"앞서 X라고 쓴 것을 정정한다"</b> 같은 검토 이력이 여러 군데 있어서,
+     AI가 <b>정정당한 쪽을 구현할 수 있습니다.</b></p>
+</div>
+
+<h2><span class="n">05</span>정해진 것 / 아직 아닌 것</h2>
+<h3>정해진 것</h3>
+<div class="tablewrap"><table>
+  <tr><th>항목</th><th>결정</th></tr>
+  <tr><td>오답 처리</td><td><b>재시도형</b> — 정답을 알려주지 않고 맞힐 때까지 다시 고르게 합니다.
+    선택지를 비활성화하지 않고, 틀리면 <b>그 선택지가 진동 + 효과음</b>. 같은 걸 또 눌러도 매번 반복됩니다.
+    <b>기록은 첫 시도 기준</b>입니다</td></tr>
+  <tr><td>화면 언어</td><td><b>학습 대상(문항·선택지·지문)만 한국어 고정</b>, 나머지는 전부 UI 언어.
+    지시문 한/영 병기는 폐지했습니다</td></tr>
+  <tr><td>앱바 제목</td><td><code>{급} {과}</code>만 (예: <code>1급 4과</code>). 과 제목·학습 대상은 넣지 않습니다</td></tr>
+  <tr><td>기준 폭</td><td><b>390</b>. 세로는 고정하지 않고 <b>헤더·푸터 고정 + 가운데 밴드 <code>flex</code></b>.
+    360·320에서도 확인해 주세요</td></tr>
+  <tr><td>테마</td><td><b>라이트 단일</b>. 플래시카드 요약 화면만 다크였는데 라이트로 통일합니다</td></tr>
+</table></div>
+<h3>아직 아닌 것</h3>
+<div class="tablewrap"><table>
+  <tr><th>항목</th><th>상태</th></tr>
+  <tr><td>API 필드 스키마 <span class="pill open">초안 · 확인 필요</span></td>
+      <td><b>초안은 나왔습니다.</b> 다만 §6에 <b>정해 주셔야 할 4가지</b>가 남아 있습니다 —
+          해설 문자열 위치 · <code>DELETE</code> 존치 · 진행 저장 주기 · 게스트 지원 범위</td></tr>
+  <tr><td><b>공수·일정</b> <span class="pill open">회신 필요</span></td>
+      <td>이 문서들은 <b>개발 검토 없이 기획 쪽에서 쓴 것</b>입니다. 실현성과 공수를 봐 주셔야 일정이 나옵니다</td></tr>
+  <tr><td>번역 검수</td><td>55키 5개 언어가 초안 상태입니다. 원어민 검수는 별도로 진행합니다</td></tr>
+  <tr><td>미결 4건</td><td>다시 풀기 목록 상한(60) 적정성 · 3회 이상 틀린 문항 처리 ·
+      미션 대화 부분 재개 여부 — 기획에서 정리 중이며 <b>착수를 막지는 않습니다</b></td></tr>
+</table></div>
+
+<h2><span class="n">06</span>건드리면 깨지는 것</h2>
+<div class="callout warn">
+  <div class="t">토큰을 넣을 때 기존 것을 지우지 말아 주세요</div>
+  <div class="tablewrap"><table>
+    <tr><th>대상</th><th>현황</th><th>이번 처리</th></tr>
+    <tr><td>Tailwind 기본 색 클래스</td><td><b>389회</b> <span class="qa">gray 211 · blue 65 · slate 53 …</span></td>
+        <td><code>--color-*: initial</code>을 <b>켜지 않습니다</b></td></tr>
+    <tr><td>shadcn <code>--primary</code> 등 oklch</td><td><b>14회 / 2개 파일</b>, <code>components/ui</code> 9종이 참조</td>
+        <td>그대로 둡니다</td></tr>
+    <tr><td><code>bg-[#......]</code> 임의값</td><td><b>998회</b></td><td>손대지 않습니다</td></tr>
+  </table></div>
+  <p><code>tokens.css</code>는 <code>primitive-</code> 접두어가 있어 <b>충돌 없이 병존</b>합니다.
+     위 셋의 정리는 Phase 2~3에 나눠서 하려고 합니다.</p>
+</div>
+
+<h2><span class="n">07</span>회신 부탁드릴 것</h2>
+<ul>
+  <li><b>Phase 0 핫픽스</b> — 처리 가능 여부와 시점</li>
+  <li><b>API 필드 스키마</b> — 정해 주시면 명세에 반영하겠습니다</li>
+  <li><b>공수·실현성</b> — 무리한 부분이 있으면 범위를 줄이겠습니다</li>
+  <li><b>Storybook 도입 여부</b> — 부담되면 빼고 다른 방법을 찾겠습니다</li>
+</ul>
+<p class="qa">문서에 틀린 부분이 있으면 알려 주세요. 실제 코드를 재서 쓴 것이지만
+   확인하지 못한 부분이 남아 있을 수 있습니다.</p>
+
+<p class="qa" style="margin-top:48px; padding-top:20px; border-top:1px solid var(--line)">
+  배경 문서: <a href="https://claude.ai/code/artifact/1210a6f9-f264-4da0-82fe-38f12c729af2">리뉴얼 기획서</a> ·
+  <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">활동 라인업</a> ·
+  <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a>
+</p>
+</main>

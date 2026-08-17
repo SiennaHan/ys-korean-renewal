@@ -557,7 +557,7 @@ const S = {
   act: "choice4", idx: 0, done: false,
   picked: null, resolved: false, attempts: 0,
   rec: "idle",                    // idle | on | ok | no | low
-  wr: "select", wrInk: false, wrJudge: null, wrFails: 0,
+  wr: "select", strokes: 0, wrJudge: null, wrFails: 0,   // strokes = 그은 획 수
   log: [],                        // 문항별 { first: 'ok'|'no'|'skip'|'done'|'none', resolved }
   overlay: null,                  // loading | failed | mic | exit
   width: "390", lang: "ko", measure: "off",
@@ -569,7 +569,7 @@ function total() { return A().items.length; }
 
 function resetItem() {
   S.picked = null; S.resolved = false; S.attempts = 0;
-  S.rec = "idle"; S.wr = "select"; S.wrInk = false; S.wrJudge = null; S.wrFails = 0;
+  S.rec = "idle"; S.wr = "select"; S.strokes = 0; S.wrJudge = null; S.wrFails = 0;
 }
 function resetAct(act) {
   S.act = act; S.idx = 0; S.done = false; S.log = []; S.overlay = null;
@@ -676,17 +676,19 @@ const ICON = {
 };
 
 /* 손으로 그은 획 — 918 좌표계. 일부러 안내선을 살짝 벗어나고 굵기가 고르지 않다 */
+/* 획 하나가 배열 한 칸이다 — 되돌리기가 획 단위로 동작해야 하기 때문 */
 const INK = {
-  "가": `<path d="M170 214 C 268 192 392 188 486 206" stroke-width="56"/>
-         <path d="M486 206 C 508 316 438 476 302 596 C 254 638 208 664 162 690" stroke-width="52"/>
-         <path d="M648 104 C 662 300 644 566 658 858" stroke-width="58"/>
-         <path d="M664 438 C 722 430 782 434 830 424" stroke-width="50"/>`,
-  "각": `<path d="M158 168 C 254 148 372 144 462 160" stroke-width="54"/>
-         <path d="M462 160 C 482 258 420 392 296 494 C 252 530 212 552 170 574" stroke-width="50"/>
-         <path d="M640 76 C 654 240 638 452 652 636" stroke-width="58"/>
-         <path d="M658 348 C 714 340 772 344 818 336" stroke-width="50"/>
-         <path d="M258 726 C 400 706 552 704 664 722" stroke-width="54"/>
-         <path d="M664 722 C 680 782 636 842 552 878" stroke-width="50"/>`,
+  "가": [
+    `<path d="M170 214 C 268 192 392 188 486 206 C 508 316 438 476 302 596 C 254 638 208 664 162 690" stroke-width="54"/>`,
+    `<path d="M648 104 C 662 300 644 566 658 858" stroke-width="58"/>`,
+    `<path d="M664 438 C 722 430 782 434 830 424" stroke-width="50"/>`,
+  ],
+  "각": [
+    `<path d="M158 168 C 254 148 372 144 462 160 C 482 258 420 392 296 494 C 252 530 212 552 170 574" stroke-width="52"/>`,
+    `<path d="M640 76 C 654 240 638 452 652 636" stroke-width="58"/>`,
+    `<path d="M658 348 C 714 340 772 344 818 336" stroke-width="50"/>`,
+    `<path d="M258 726 C 400 706 552 704 664 722 C 680 782 636 842 552 878" stroke-width="52"/>`,
+  ],
 };
 
 const CONS = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅎ","ㅋ","ㅌ"];
@@ -777,7 +779,7 @@ function writeBandHTML(t) {
   return `<div class="band" data-m="밴드 ${m.content}" style="gap:12px">
     <div class="canvas ${cls}" data-m="${m.content}×${m.content}" data-tap="canvas">
       <div class="guideimg" style="background-image:url(${GUIDE_SRC})"></div>
-      ${S.wrInk ? `<div class="ink"><svg viewBox="0 0 918 918">${INK[it.q] || ""}</svg></div>` : ""}
+      ${S.strokes ? `<div class="ink"><svg viewBox="0 0 918 918">${(INK[it.q] || []).slice(0, S.strokes).join("")}</svg></div>` : ""}
     </div>
     <div class="tools" data-m="${Math.round((m.content - 12) / 2)}×30">
       <div class="tool" data-tap="clear">${ICON.erase}<span>${t.clearAll}</span></div>
@@ -885,7 +887,7 @@ function render() {
       const footer =
         S.wrJudge === "ok" ? `<div class="btn primary" data-tap="next">${t.next}</div>` :
         S.wrFails >= 3     ? `<div class="btn ghost" data-tap="skip">${t.skipNow}</div><div class="btn primary" data-tap="judge">${t.confirm}</div>` :
-        S.wrInk            ? `<div class="btn primary" data-tap="judge">${t.confirm}</div>`
+        S.strokes > 0      ? `<div class="btn primary" data-tap="judge">${t.confirm}</div>`
                            : `<div class="btn off">${t.confirm}</div>`;
       html = shellChrome(t, writeBandHTML(t), { pill, instr: t.writeInstr, footer });
     }
@@ -923,7 +925,8 @@ function renderDims(m) {
   else if (S.act === "write" && S.wr === "select") rows.push(["조합 카드", `${m.content} × 100`],
     ["자모 칸", `${Math.round((m.content - 25) / 6)} × 같음`], ["칸 간격", `5`]);
   else if (S.act === "write") rows.push(["캔버스", `${m.content} × ${m.content}`],
-    ["도구 버튼", `${Math.round((m.content - 12) / 2)} × 30`], ["획순 안내", `918 PNG`]);
+    ["도구 버튼", `${Math.round((m.content - 12) / 2)} × 30`], ["획순 안내", `918 PNG`],
+    ["그은 획", `${S.strokes} / ${(INK[IT().q] || []).length}`]);
   else if (!S.done) rows.push(["선택지", `${m.n}개`], ["선택지 칸", `${m.cellW} × ${m.cellH}`],
     ["칸 간격", `${m.gap}${m.rows === 2 ? " / 행 16" : ""}`]);
   rows.push(["피드백", `hug × 36`], ["하단 버튼", `${m.content} × 56`], ["하단 영역", `${m.w} × 88`]);
@@ -965,9 +968,15 @@ document.getElementById("screen").addEventListener("click", e => {
     else { S.rec = "on"; }
     render(); return;
   }
-  if (tap === "canvas") { S.wrInk = true; S.wrJudge = null; render(); return; }
-  if (tap === "clear")  { S.wrInk = false; S.wrJudge = null; render(); return; }
-  if (tap === "undo")   { S.wrInk = false; render(); return; }
+  // 캔버스를 누를 때마다 획이 하나씩 쌓인다(실제로는 손가락을 뗄 때 한 획)
+  if (tap === "canvas") {
+    const max = (INK[IT().q] || []).length;
+    if (S.strokes < max) S.strokes++;
+    S.wrJudge = null; render(); return;
+  }
+  if (tap === "clear")  { S.strokes = 0; S.wrJudge = null; render(); return; }
+  // 되돌리기는 획 단위다 — 전체를 지우지 않는다(Ctrl+Z 와 같게)
+  if (tap === "undo")   { if (S.strokes > 0) S.strokes--; S.wrJudge = null; render(); return; }
   if (tap === "toWrite"){ S.wr = "write"; render(); return; }
   if (tap === "judge")  {
     const ok = S.idx === 0 || S.wrFails >= 3;   // 3회 실패하면 안내가 뜨고 그 뒤엔 통과

@@ -1,0 +1,497 @@
+<meta charset="utf-8">
+<title>G2 · 플레이어 공통 셸 · 상태 모델 · 라우트 통일</title>
+<style>
+  :root {
+    --bg: #fafbfd; --surface: #ffffff; --ink: #1a2233; --ink-2: #4a5568; --ink-3: #8b95a8;
+    --line: #e3e8f0; --accent: #0f766e; --accent-soft: #e6f4f2;
+    --warn: #b45309; --warn-soft: #fdf3e3; --bad: #b91c1c; --bad-soft: #fdeaea;
+    --good: #15803d; --good-soft: #e9f6ee; --code-bg: #eef1f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151c; --surface: #1a1f29; --ink: #e7ebf3; --ink-2: #aeb7c6; --ink-3: #6e7889;
+      --line: #2a3141; --accent: #4fd1c5; --accent-soft: #16302d;
+      --warn: #e6a34a; --warn-soft: #2d2618; --bad: #f08a8a; --bad-soft: #331b1b;
+      --good: #5ec98a; --good-soft: #16291e; --code-bg: #232936;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151c; --surface: #1a1f29; --ink: #e7ebf3; --ink-2: #aeb7c6; --ink-3: #6e7889;
+    --line: #2a3141; --accent: #4fd1c5; --accent-soft: #16302d;
+    --warn: #e6a34a; --warn-soft: #2d2618; --bad: #f08a8a; --bad-soft: #331b1b;
+    --good: #5ec98a; --good-soft: #16291e; --code-bg: #232936;
+  }
+  body { background: var(--bg); color: var(--ink); margin: 0;
+    font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+    line-height: 1.72; font-size: 15.5px; }
+  main { max-width: 900px; margin: 0 auto; padding: 48px 24px 96px; }
+  header.doc { border-bottom: 1px solid var(--line); padding-bottom: 26px; margin-bottom: 36px; }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+  h1 { font-size: 28px; line-height: 1.32; margin: 0 0 10px; font-weight: 800; letter-spacing: -.01em; text-wrap: balance; }
+  .meta { color: var(--ink-3); font-size: 13.5px; }
+  h2 { font-size: 21px; font-weight: 800; margin: 54px 0 6px; letter-spacing: -.01em; }
+  h2 .no { color: var(--accent); margin-right: 8px; font-variant-numeric: tabular-nums; }
+  h3 { font-size: 16.5px; font-weight: 700; margin: 30px 0 6px; }
+  h4 { font-size: 14px; font-weight: 700; margin: 20px 0 4px; color: var(--ink-2); }
+  p { margin: 10px 0; }
+  .lead { color: var(--ink-2); }
+  code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: .84em; background: var(--code-bg); padding: 1.5px 6px; border-radius: 5px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0 6px; font-size: 13px; }
+  .tablewrap { overflow-x: auto; }
+  th { text-align: left; font-size: 11.5px; color: var(--ink-3); font-weight: 700; letter-spacing: .03em; padding: 8px 9px 6px; border-bottom: 2px solid var(--line); white-space: nowrap; }
+  td { padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td code { white-space: nowrap; }
+  .callout { border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--surface); border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.good { border-left-color: var(--good); }
+  .callout .t { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .callout.warn .t { color: var(--warn); }
+  .callout.good .t { color: var(--good); }
+  .callout p { margin: 6px 0; font-size: 14.5px; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 99px; padding: 1px 8px; white-space: nowrap; }
+  .pill.keep { background: var(--good-soft); color: var(--good); }
+  .pill.new { background: var(--warn-soft); color: var(--warn); }
+  .pill.confirm { background: var(--accent-soft); color: var(--accent); }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  li::marker { color: var(--ink-3); }
+  figure { margin: 24px 0; }
+  figure svg { width: 100%; max-width: 100%; height: auto; display: block; }
+  figcaption { font-size: 13px; color: var(--ink-3); margin-top: 10px; line-height: 1.6; }
+  .decision { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin: 14px 0; }
+  .decision .dh { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .decision .dt { font-weight: 800; font-size: 14.5px; }
+  a { color: var(--accent); }
+  .qa { color: var(--ink-3); font-size: 13px; }
+</style>
+
+<main>
+<header class="doc">
+  <div class="eyebrow">Gate 2 · 개발 착수 게이트</div>
+  <h1>플레이어 공통 셸 · 상태 모델 · 라우트 통일</h1>
+  <div class="meta">2026-08-14 · <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a> G2 대응 · 근거: <a href="https://claude.ai/code/artifact/1210a6f9-f264-4da0-82fe-38f12c729af2">리뉴얼 기획서 v0.2.1</a>(D2·D4·D5) + <code>core_loop_mockup_v1.html</code></div>
+</header>
+
+<h2 id="s0"><span class="no">0</span>G2 확정표</h2>
+<p class="lead">G1과 달리 G2의 다섯 항목은 이미 근거가 갖춰져 있다 — D2는 사용자가 직접 만든 코어 루프 목업이 답이고, 나머지는 기존 자산(Figma·구 앱 관찰)을 정리하는 일이다. 그래서 새로 묻지 않고 <b>기획서의 권고를 그대로 확정</b>하며, 이 문서 §1~4가 그 확정을 실행 가능한 스펙으로 옮긴 결과물이다. 이견이 있으면 여기서 바로 잡으면 된다.</p>
+<div class="tablewrap"><table>
+  <tr><th>항목</th><th>확정 내용</th><th>이 문서의 위치</th></tr>
+  <tr><td>D2 상태 모델</td><td>4단계(미학습·진행중·완료·복습권장) + 복습 큐</td><td>§1</td></tr>
+  <tr><td>라우트 규칙</td><td><code>/learn/{activity}</code> 단일 체계, 구 4계열 통합</td><td>§2</td></tr>
+  <tr><td>D5 플레이어 공통 셸</td><td>헤더·진행바·피드백·결과화면 규격 + 활동별 적용표</td><td>§3</td></tr>
+  <tr><td>D5 디자인 시스템</td><td>코드의 <code>tokens.css</code>를 SoT로 — primitive 51 + semantic 30 + 타이포 23. 피그마 파일은 실측 참조용 <span class="pill new">v2.4 정정</span></td><td>§3.5</td></tr>
+  <tr><td>D4 다국어 적용 범위</td><td>학습 텍스트만 한국어 고정 · <b>그 외 전부 UI 언어</b> <span class="pill new">병기 폐지</span></td><td>§4</td></tr>
+</table></div>
+
+<h2 id="s1"><span class="no">1</span>활동 상태 머신</h2>
+<p class="lead">모든 학습 활동(게임 제외)이 공유하는 단일 상태 머신. 상태는 <b>활동 단위</b>로 매기고, 그 안의 개별 문항 <b>첫 시도 오답</b>이 <b>복습 큐</b>라는 별도 자료구조에 쌓인다.</p>
+<div class="callout warn">
+  <div class="t">복습 큐 예약 기준 = <b>첫 시도 오답</b> <span class="pill">셸 명세 S1 반영</span></div>
+  <p>선택지 활동은 <b>재시도형</b>으로 확정됐다 — 오답이어도 정답을 공개하지 않고 맞힐 때까지 다시 고르게 한다(<a href="https://claude.ai/code/artifact/4cb5004e-91f8-41cb-9d9c-55a2a8c7d59a">셸 컴포넌트 명세</a> §3.3). 따라서 "오답"이 무엇을 가리키는지 못박아 둔다.</p>
+  <ul>
+    <li>복습 큐 예약·정답률·진행 세그먼트 색 — <b>전부 첫 시도 기준</b></li>
+    <li><b>재시도로 맞혀도 복습 큐에 남는다.</b> 결국 맞혔다는 사실이 첫 시도에 몰랐다는 사실을 지우지 않는다</li>
+    <li>두 번째 이후 시도는 기록하지 않는다 — 세면 정답률이 항상 100%가 되어 무의미해진다</li>
+  </ul>
+</div>
+
+<figure>
+<svg viewBox="0 0 900 340" role="img" aria-label="활동 상태 머신: 미학습에서 시작해 진행중을 거쳐 완료로 가고, 진행중 도중 오답이 나오면 완료 시점에 복습권장 상태가 되며, 복습 세션에서 오답을 전부 소화하면 완료로 돌아온다. 진행중 상태에서 종료하면 위치가 저장된 채 같은 상태로 돌아온다.">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- 상태 박스 4개 -->
+  <rect x="30"  y="130" width="140" height="56" rx="10" fill="none" stroke="currentColor" stroke-opacity=".5"/>
+  <text x="100" y="163" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">미학습</text>
+
+  <rect x="290" y="130" width="150" height="56" rx="10" fill="var(--accent)" fill-opacity=".13" stroke="var(--accent)" stroke-width="2"/>
+  <text x="365" y="158" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">진행 중</text>
+  <text x="365" y="176" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".65">문항 위치 저장</text>
+
+  <rect x="580" y="130" width="140" height="56" rx="10" fill="none" stroke="currentColor" stroke-opacity=".5"/>
+  <text x="650" y="163" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">완료</text>
+
+  <rect x="580" y="30" width="150" height="56" rx="10" fill="var(--warn)" fill-opacity=".14" stroke="var(--warn)" stroke-width="2"/>
+  <text x="655" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">복습 권장</text>
+  <text x="655" y="76" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".65">완료 + 미해소 오답</text>
+
+  <!-- 전이 화살표 -->
+  <line x1="170" y1="158" x2="284" y2="158" stroke="currentColor" marker-end="url(#ar2)"/>
+  <text x="227" y="148" text-anchor="middle" font-size="11" fill="currentColor">시작</text>
+
+  <line x1="440" y1="158" x2="574" y2="158" stroke="currentColor" marker-end="url(#ar2)"/>
+  <text x="507" y="148" text-anchor="middle" font-size="11" fill="currentColor">마지막 문항 · 오답 없음</text>
+
+  <path d="M 415 130 L 550 60 L 574 58" fill="none" stroke="var(--warn)" stroke-width="1.6" marker-end="url(#ar2)"/>
+  <text x="500" y="95" text-anchor="middle" font-size="11" fill="var(--warn)">마지막 문항 · 오답 있음</text>
+
+  <path d="M 655 86 L 655 124" fill="none" stroke="currentColor" marker-end="url(#ar2)"/>
+  <text x="770" y="108" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".7">복습 세션에서</text>
+  <text x="770" y="122" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".7">오답 전부 소화</text>
+
+  <!-- 자기 루프: 진행중 종료 -->
+  <path d="M 340 130 C 320 95, 380 95, 400 130" fill="none" stroke="currentColor" stroke-opacity=".55" marker-end="url(#ar2)"/>
+  <text x="365" y="92" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".65">✕ 종료 — 위치 저장</text>
+
+  <!-- 복습 큐 예약 (부수 효과) -->
+  <rect x="290" y="230" width="150" height="50" rx="8" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".35" stroke-dasharray="3 3"/>
+  <text x="365" y="252" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">복습 큐</text>
+  <text x="365" y="267" text-anchor="middle" font-size="10" fill="currentColor" opacity=".65">문항 단위 · 활동 안 섞임</text>
+  <path d="M 365 186 L 365 224" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-dasharray="3 3" marker-end="url(#ar2)"/>
+  <text x="440" y="210" font-size="10.5" fill="currentColor" opacity=".65">첫 시도 오답·몰라요 시 예약</text>
+</svg>
+<figcaption>활동 상태는 4가지뿐이다. <b>첫 시도</b> 오답은 활동의 상태를 직접 바꾸지 않고 <b>복습 큐에 문항 단위로 쌓이며</b>, 그 존재 여부가 완료 시점에 "복습 권장" 뱃지를 붙일지 결정한다. 진행 중에 ✕로 나가면 상태 전이 없이 위치만 저장된다(자기 루프).</figcaption>
+</figure>
+
+<h3>전이 규칙 표</h3>
+<div class="tablewrap"><table>
+  <tr><th>전이</th><th>트리거</th><th>저장되는 값</th></tr>
+  <tr><td>미학습 → 진행 중</td><td>활동 진입, 첫 문항 노출</td><td><code>activity_state=in_progress</code>, <code>current_item_index=0</code></td></tr>
+  <tr><td>진행 중 → 진행 중 (자기 루프)</td><td>✕ 종료(언제든), 또는 앱 이탈</td><td><code>current_item_index</code> 그대로 유지 — <b>저장 없이 나가는 경로를 없앤다</b>(D2 원칙)</td></tr>
+  <tr><td>진행 중 → 완료</td><td>마지막 문항 응답 + 미해소 오답 없음</td><td><code>activity_state=completed</code>, <code>completed_at</code></td></tr>
+  <tr><td>진행 중 → 복습 권장</td><td>마지막 문항 응답 + 복습 큐에 이 활동 소속 문항 존재</td><td><code>activity_state=completed</code> + <code>has_pending_review=true</code> (완료의 하위 표시, 별도 상태 아님)</td></tr>
+  <tr><td>(문항 단위) 오답·몰라요</td><td>매 문항 채점 시점</td><td><code>review_queue</code>에 <code>{item_id, wrong_at, attempts}</code> upsert</td></tr>
+  <tr><td>복습 권장 → 완료</td><td>복습 세션에서 해당 문항 전부 정답</td><td><code>review_queue</code>에서 제거, 활동에 남은 큐 항목 0개면 <code>has_pending_review=false</code></td></tr>
+</table></div>
+
+<div class="callout good">
+  <div class="t">오늘 할 일</div>
+  <p><b>이어하기(진행 중인 활동의 다음 문항) 또는 다시 풀기 최상단 문항.</b> 홈의 "다시 풀 문항" 카드는
+     보관 중인 전체 개수를 노출한다(활동을 가리지 않는 전역 카운트).</p>
+</div>
+<div class="callout warn">
+  <div class="t">스트릭 기준 — <b>활동 1개 완료</b> <span class="pill new">확정 · 기존 동작 변경</span></div>
+  <p>초안은 "완결한 날에 +1"이라고만 적어 <b>완결이 무엇인지 정하지 않았다</b>. <b>활동 1개 완료</b>로 확정한다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>인정</th><th>불인정</th></tr>
+    <tr><td>활동 1개 <b>완료</b>(마지막 문항 응답)<br><b>다시 풀기 세션 완주</b>(그날 내보낸 분량 소화)</td>
+        <td>문항 몇 개만 풀고 이탈<br><b>연습 세션</b>(완료한 활동 재진입)<br>게임</td></tr>
+  </table></div>
+  <p><b>다시 풀기를 인정해야 하는 이유</b>: "오늘 할 일"에 복습을 제시해 놓고 그걸 해도 스트릭이 안 오르면 앞뒤가 맞지 않는다.</p>
+  <p><b>연습 세션이 빠지는 것은 자동</b>이다 — <code>POST /activity/complete</code>를 호출하지 않으므로(§5-1).</p>
+</div>
+<div class="callout warn">
+  <div class="t">이건 <b>기존 동작을 바꾸는</b> 결정이다</div>
+  <p>현행 스트릭은 이미 구현돼 있고(<code>business/dashboard.py</code>), 기준은
+     <b><code>ko_daily_activity</code>에 그날 행이 있느냐</b>다. 그 행은
+     <code>saveLearningRecord</code>가 부를 때마다 생기므로 — <b>지금은 문항 하나만 풀어도 스트릭이 오른다.</b></p>
+  <p>활동 1개 완료 기준으로 바꾸면 <b>스트릭이 지금보다 오르기 어려워진다.</b>
+     G1에서 구 학습 기록을 폐기하기로 했으므로 <b>기존 사용자의 스트릭이 줄어드는 문제는 발생하지 않는다.</b></p>
+  <p class="qa">활동 하나가 평균 5문항(과당 26.7 ÷ 5종)이라 <b>5분 남짓</b>이다. 문항 1개는 너무 헐겁고 과 1개는 너무 무겁다.</p>
+</div>
+
+<h3>활동별 예외</h3>
+<div class="tablewrap"><table>
+  <tr><th>활동</th><th>이 상태 머신을 그대로 쓰는가</th></tr>
+  <tr><td>단어 학습·문법 연습·듣기·읽기</td><td>그대로 적용. 문항 = 시트의 각 행</td></tr>
+  <tr><td>플래시카드</td><td>그대로 적용. "몰라요" = 오답과 동일하게 복습 큐 예약(구 앱의 repeat 패턴을 이 머신의 정식 사례로 승격)</td></tr>
+  <tr><td>AI 롤플레잉</td><td>그대로 적용. 문항 = 대화 턴. STT 실패·재시도는 오답이 아니라 미응답으로 취급(복습 큐 미예약)</td></tr>
+  <tr><td>AI 미션 대화</td><td><b>부분 적용</b> — 진행바는 "미션 키워드" 단위이지만
+    <b>진행률은 대화 1개 단위</b>다(끝냈으면 1/1). <b>미달성 미션은 정답률</b>로 센다 —
+    <code>gradedCount</code>=미션 수 · <code>correctCount</code>=달성 수.
+    <b><code>unresolvedCount</code>=미달성 미션 수</b>라 [다시 풀기]가 뜨고,
+    누르면 <b>대화 스레드를 지우고 처음부터</b> 다시 한다.
+    <b><code>firstTryWrongCount</code>만 0</b>으로 둔다 — 문항 단위 복습 큐에 안 맞아
+    내일 홈에서 만날 방법이 없기 때문. 결과는 <b>기존 리포트 화면</b> 유지</td></tr>
+  <tr><td>자모 6종</td><td>그대로 적용 — <b>현재 진도 저장이 아예 없는 활동이라, 이 머신 도입 자체가 개선</b></td></tr>
+  <tr><td>게임 5종</td><td>미적용 — 게임은 완료/미완료 없이 반복 플레이가 기본. <code>game_progress</code>(점수 최고값)는 유지, 상태 머신과 별도</td></tr>
+</table></div>
+
+<h2 id="s2"><span class="no">2</span>라우트 통일</h2>
+<p class="lead">구 앱은 라우트가 3계열이었다(§역기획서 §3). 신규는 학습 활동 전체를 <code>/learn/{activity}</code> 하나로 모으고, 콘텐츠 ID는 URL에 노출하지 않는다(쿼리는 급·과만).</p>
+<div class="tablewrap"><table>
+  <tr><th>활동</th><th>구 라우트</th><th>신 라우트</th></tr>
+  <tr><td>단어 학습하기</td><td><code>/learn/word?book=&amp;chapter=</code></td><td><code>/learn/word?level=&amp;lesson=</code> <span class="pill keep">유지(쿼리 키만 급/과로 개칭)</span></td></tr>
+  <tr><td>문법 연습</td><td><code>/learn/fill-blank?...</code></td><td><code>/learn/grammar?level=&amp;lesson=</code> <span class="pill new">개칭</span></td></tr>
+  <tr><td>듣고 질문에 답하기</td><td><code>/learn/listen-answer?...</code></td><td><code>/learn/listen?level=&amp;lesson=</code></td></tr>
+  <tr><td>읽고 질문에 답하기</td><td><code>/learn/read-answer?...</code></td><td><code>/learn/read?level=&amp;lesson=</code></td></tr>
+  <tr><td>AI 롤플레잉</td><td><code>/learn/roleplay?...</code></td><td><code>/learn/roleplay?level=&amp;lesson=</code></td></tr>
+  <tr><td>플래시카드</td><td><code>/book/chapter/unit/flashcard/$id</code> + <code>.../flashcard/result/$id</code></td><td><code>/learn/flashcard?level=&amp;lesson=</code> — 결과는 셸 공통(§3), 별도 라우트 불필요</td></tr>
+  <tr><td>AI 미션 대화</td><td><code>.../mission_chat/$code</code> + <code>.../dialog/$id</code> + <code>.../dialog/report/$id</code></td><td><code>/learn/mission-chat?level=&amp;lesson=</code> (내부 단계는 쿼리 아닌 컴포넌트 상태로 전환 — 새로고침 시 인트로부터 재개는 허용 가능한 손실)</td></tr>
+  <tr><td>자모 6종</td><td><code>.../{listen-repeat,write,listen-repeat2,read-write,listen,write3}/$code</code></td><td><code>/learn/jamo?level=1&amp;lesson=&amp;sub={1~6}</code> — 6개 하위 유형을 1개 라우트로 통합</td></tr>
+  <tr><td>게임 5종</td><td><code>/main/game/{name}</code></td><td><span class="pill keep">유지</span> — 학습 활동이 아니라 그대로. VocaShot만 <code>/main/game/vocashot/$pin</code>(호스트/참가) 라우트 제거(§활동 라인업 v2 §4-b)</td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">콘텐츠 ID는 라우트에서 사라진다</div>
+  <p>구 라우트의 <code>$code</code>(<code>YK0041</code>), <code>$id</code>(<code>C4</code>)처럼 콘텐츠 식별자가 URL에 노출되던 방식은 폐기한다. 신규는 <b>급(level)·과(lesson)만 쿼리로 받고, 실제 문항 목록은 서버가 결정</b>한다 — G1에서 확정한 <code>item_id</code> 체계(<code>{'{'}코드{'}'}-{'{'}급{'}'}-{'{'}과{'}'}-{'{'}순번{'}'}</code>)는 API 응답 내부 값일 뿐 라우트 파라미터가 아니다.</p>
+</div>
+
+<h2 id="s3"><span class="no">3</span>플레이어 공통 셸</h2>
+<p class="lead">모든 학습 활동이 공유하는 화면 골격. 콘텐츠 영역만 활동마다 바뀐다.</p>
+<div class="callout warn">
+  <div class="t">시각 기준이 바뀌었다 <span class="pill new">v2.4</span></div>
+  <p>초안은 <b>Figma 스타일 가이드</b>를 시각 기준(SoT)으로 삼았다(§3.5). <b>피그마에 새로 그리지 않기로 하면서</b> 기준이 다음 둘로 옮겨갔다.</p>
+  <ul>
+    <li><b><a href="https://claude.ai/code/artifact/d2ef8584-d786-49e1-ac74-56f737585b52">셸 목업</a></b> — 상태별 화면의 정본. 구현이 다르면 목업이 기준</li>
+    <li><b><code>tokens.css</code></b> — 색·타이포의 유일한 기준. primitive 51 + semantic 30 + 타이포 23</li>
+  </ul>
+  <p>기준 폭도 <b>360 → 390</b>으로 올렸고, 세로는 <b>고정 픽셀 대신 고정 블록 + 가변 밴드</b>로 바꿨다 — 모바일 웹은 주소창 때문에 실제 높이가 기기 스펙보다 작다. 상세는 <a href="https://claude.ai/code/artifact/4cb5004e-91f8-41cb-9d9c-55a2a8c7d59a">셸 컴포넌트 명세</a> §5.1.</p>
+</div>
+
+<h3>3.1 헤더</h3>
+<div class="tablewrap"><table>
+  <tr><th>요소</th><th>규격</th></tr>
+  <tr><td>✕ 버튼</td><td>탭하면 항상 <code>current_item_index</code> 저장 후 이전 화면으로. 확인 다이얼로그 없음(저장되니 안전) — 구 앱의 "저장 없이 나가기"를 완전히 제거</td></tr>
+  <tr><td>앱바 제목</td><td>중앙, <b><code>{급} {과}</code></b>만 (예: <code>1급 4과</code> / <code>Level 1 Lesson 4</code>) <span class="pill new">v2.4 개정</span><br><span class="qa">초안은 <code>{과} · {활동명}</code>이었다. 활동명은 <b>지시문(Title)이 이미 말하고 있어</b> 중복이고, 실제 화면에서 <code>[모음 1] ㅏ,ㅓ,ㅗ,ㅜ…</code>처럼 <b>말줄임으로 잘리고 있었다</b>(자모·플래시카드·미션대화 3곳). 과 제목·학습 대상은 넣지 않는다.</span></td></tr>
+  <tr><td>진행 세그먼트바</td><td>문항 수만큼 분할된 바. 각 세그먼트 상태 4종: <b>회색 <code>Gray/300</code></b>(미응답) · <b>초록 <code>Positive</code></b>(첫 시도 정답) · <b>빨강 <code>Destructive</code></b>(첫 시도 오답 → 복습큐 예약) · <b><code>Blue/500</code>이고 조금 긴 칸</b>(현재 위치). <b>높이 6의 얇은 선</b>이라 <b>칸 안에 아이콘이 들어가지 않는다</b> — 정오답 구분은 피드백 pill 문구와 결과 화면이 담당한다(§7 정정). <b>결과가 지나온 자리에 남는다</b> — 구 앱의 점(dot) 진행 표시를 대체. <b>문항 수에 따라 표시 방식이 바뀐다</b> — 아래 참조</td></tr>
+</table></div>
+<h4>긴 활동의 진행 표시 <span class="pill new">플래시카드 확인 반영</span></h4>
+<p>세그먼트바는 문항이 많아지면 각 칸이 손톱만 해져 상태를 읽을 수 없다. 실제로 <b>플래시카드는 세트당 10~45장</b>(<code>flashcard_word.ts</code> 실측 — 5번 세트가 45장, 8번이 10장)이라 45칸짜리 바가 나온다.</p>
+<div class="tablewrap"><table>
+  <tr><th>문항 수</th><th>표시 방식</th></tr>
+  <tr><td>1~15개</td><td><b>분절바</b> — 문항 수만큼 칸 분할, <b>칸 높이 6 · 색만</b>(기본형)</td></tr>
+  <tr><td>16개 이상</td><td><b>연속 진행바 + <code>n/N</code></b> — 개별 칸을 포기하고 채워지는 바 하나로.
+      <code>n/N</code>은 <b>바 오른쪽에</b> 붙인다(얇은 바 위에는 얹을 자리가 없다)</td></tr>
+</table></div>
+<p class="qa">이 규칙 덕분에 <b>콘텐츠를 세트로 쪼갤 필요가 없다.</b> 45장을 한 세션에 다 못 끝내는 문제는 §1의 이어하기(문항 단위 위치 저장)가 이미 해결하므로, 분량 때문에 세트를 분할하는 설계는 채택하지 않는다.</p>
+
+<h3>3.2 피드백 (문항 응답 직후) <span class="pill new">S1 확정 반영</span></h3>
+<p><b>즉시 채점</b>이다 — 선택지를 누르는 순간 판정한다. 별도 [정답 확인] 동작은 없다.</p>
+<ul>
+  <li><b>정답</b>: 세그먼트에 <b>✓ + <code>Positive</code></b> · pill "아주 잘 했어요!" · 효과음(축하 연출 없이 소리만) · 하단 <b>[다음] 활성화</b>. <b>자동 진행하지 않는다</b> — 기존 디자인이 버튼 활성화 방식이고, 자동으로 넘기면 맞혔다는 확인을 할 틈이 없다.</li>
+  <li><b>오답</b>: 세그먼트에 <b>✕ + <code>Destructive</code></b> · pill "다시 해보세요" · <b>선택지가 좌우로 진동</b>(±6px · 300ms) · 효과음. <b>정답을 공개하지 않고</b> 그 선택지를 비활성으로도 만들지 않는다 — 맞힐 때까지 다시 고른다. <b>같은 오답을 또 눌러도 진동과 소리가 매번 다시 난다.</b></li>
+  <li><b>skip</b>: 헤더 우측, 전 활동 동일 위치. 세그먼트는 회색 유지(오답 처리 안 함) + 해당 문항은 다시 풀기 목록에 <code>skipped</code> 사유로 예약</li>
+</ul>
+<p class="qa">색만으로 구분하지 않는 이유는 §7(접근성) — 초록–빨강은 적록색각이상에서 구별되지 않으므로 <b>아이콘이 주 신호</b>다. 문구는 §8 대조표를 따른다. 진동 규격과 <code>prefers-reduced-motion</code> 대체안은 <a href="https://claude.ai/code/artifact/4cb5004e-91f8-41cb-9d9c-55a2a8c7d59a">셸 컴포넌트 명세</a> §3.3.</p>
+<div class="callout warn">
+  <div class="t">재시도형이 바꾸는 것 — 기록 기준</div>
+  <p>맞힐 때까지 다시 고르게 하면 <b>정답률이 항상 100%</b>가 될 수 있다. 그래서 <b>첫 시도만 기록</b>한다 — 세그먼트 색·정답률·복습 큐 예약이 모두 첫 시도 기준이며, <b>재시도로 맞혀도 세그먼트는 빨강으로 남고 복습 큐에서 빠지지 않는다.</b></p>
+</div>
+
+<h3>3.3 결과 화면 (전 활동 공통 규격)</h3>
+<div class="tablewrap"><table>
+  <tr><th>구성</th><th>내용</th></tr>
+  <tr><td><b>통계 카드 2개</b></td>
+      <td><b>주 — "푼 문항 16/18"</b>(<code>answeredCount/totalItems</code>) ·
+          부 — "정답률 75%"(<code>correctCount/gradedCount</code>).<br>
+          <b><code>gradedCount == 0</code>이면 정답률은 "—"</b> — 발음(자모 <code>sub=1</code>·<code>3</code>)과 플래시카드.<br>
+          <span class="qa">지표의 <b>주가 정답률이 아니라 "풀었나"</b>인 이유는
+          <a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a> §8 참조 —
+          재시도형이라 정답률이 변별력을 잃고, 정답률이 아예 없는 활동도 있다</span></td></tr>
+  <tr><td>오답 목록</td><td>탭하면 해당 문항 펼쳐 정답·해설 표시. 구 앱의 "정답→고른답" 표기 유지</td></tr>
+  <tr><td>[다시 풀기]</td><td><b>미해결 항목이 남는 활동에만</b> 노출 — 플래시카드 "몰라요" · 롤플레잉 재시도 초과 ·
+    <b>건너뛴 문항이 있는 모든 활동</b> · <b>미션 미달성</b>. 탭하면 그 활동의 미해결 항목만, 발생 순으로.<br>
+    <b>미션 대화만 동작이 다르다</b> — 문항 단위 재개가 없어(§5-12)
+    <b>이전 대화 스레드를 삭제하고 처음부터</b> 다시 대화한다. 지우지 않으면 이전 대화가 남아 새로 말할 수 없다</td></tr>
+  <tr><td>[다음 활동]</td><td>같은 과의 다음 활동으로. 전부 맞혔으면 축하 메시지 + 이 버튼만</td></tr>
+</table></div>
+
+<h3>3.4 활동별 셸 적용 매트릭스</h3>
+<div class="tablewrap"><table>
+  <tr><th>활동</th><th>문항 단위</th><th>입력 방식</th><th>셸 커스터마이징</th></tr>
+  <tr><td>단어 학습·문법 연습·듣기·읽기</td><td>행 1개</td><td>탭 선택</td><td>없음 — 셸 그대로</td></tr>
+  <tr><td>플래시카드</td><td>카드 1장</td><td>스와이프(아는/모르는)</td><td>진행바는 유지하되 정오답 대신 <span style="color:var(--accent)">파랑=알아요</span>/<span style="color:var(--warn)">노랑=몰라요</span>로 색 의미만 교체. <b>자기 평가라 의미색(<code>Positive</code>/<code>Destructive</code>)을 쓰지 않는다</b> — 기존 플래시카드 디자인 그대로</td></tr>
+  <tr><td>AI 롤플레잉</td><td>대화 턴 1개</td><td>음성(마이크)</td><td>헤더 아래 마이크 존 추가. 피드백은 pass/재시도(오답 개념 없음, 재시도 2회 초과 시에만 복습 큐)</td></tr>
+  <tr><td>AI 미션 대화</td><td>미션 키워드 1개</td><td>음성+키보드</td><td>진행 세그먼트가 문항이 아니라 미션 키워드 개수만큼(보통 3개). 결과 화면은 <b>기존 리포트 화면 유지</b>(§1 예외)</td></tr>
+  <tr><td>자모 6종</td><td>글자/단어 1개</td><td>탭·필기(OCR)</td><td>필기 유형(쓰기)은 캔버스가 콘텐츠 영역을 차지, 피드백은 OCR 결과 Correct/Incorrect. <b>선택지 수가 문항마다 다르다</b> — 아래 참조</td></tr>
+</table></div>
+
+<h4>선택지 수는 고정하지 않는다 <span class="pill new">교재 확인 반영</span></h4>
+<p>새 교재 1급 자모 과를 확인한 결과 <b>1과는 2지선다, 3과는 3지선다</b>였다(듣고 맞는 것 고르기). 구 앱은 2지선다 고정이라 이 차이를 담지 못한다. 따라서 <b>선택지 수를 콘텐츠 데이터에서 받아 렌더링</b>한다 — 셸은 2~4개를 모두 처리하며, 개수에 따라 배치만 바뀐다(2개=가로 2열, 3~4개=2×2 그리드). O/X 문항도 이 규칙의 특수형(2개)으로 다룬다.</p>
+
+<h3 id="s35">3.5 디자인 시스템 — SoT 승격</h3>
+<div class="callout warn">
+  <div class="t">"Figma 스타일 가이드를 SoT로"를 정정한다 <span class="pill new">v2.4</span></div>
+  <p>초안의 방향은 맞았으나 <b>수단이 틀렸다</b>. 실제로 재보니 가이드는 멀쩡했고 <b>코드가 참조하지 않은 것</b>이 문제였다 — 하드코딩 hex 93개 파일, 임의값 <code>bg-[#......]</code> 998회. 피그마에 변수를 등록하는 것은 <b>간접 처방</b>이다.</p>
+  <p><b>확정: 코드의 <code>tokens.css</code>가 SoT다.</b> 가이드의 51색·23타이포 실측값을 <b>primitive / semantic 2단</b>으로 옮겼고, 화면 코드는 semantic만 쓴다(<code>bg-fill-primary</code> · <code>text-text-sub</code>). 피그마 파일은 <b>실측 참조용</b>으로만 남기고 새로 그리지 않는다.</p>
+  <p class="qa">게임의 다크 룩은 별도 시스템이 아니라 같은 토큰의 다크 변형으로 흡수한다 — 다만 <b>학습 화면은 라이트 단일</b>로 확정했다(셸 명세 §6.7).</p>
+</div>
+
+<h2 id="s4"><span class="no">4</span>다국어 적용 재확인</h2>
+<div class="callout warn">
+  <div class="t">지시문 병기를 폐지한다 <span class="pill new">v2.4 개정</span></div>
+  <p>초안은 지시문을 <b>한국어 + UI 언어 2줄</b>로 병기했다. 구 앱 화면이 그렇게 돼 있어 따랐던 것인데, <b>UI 언어를 5종 지원하는 이상 한 줄이면 충분하다</b>.</p>
+  <p>결정적으로 <b>지시문은 조작 안내이지 학습 대상이 아니다.</b> 학습 대상 한국어는 <b>문항·선택지·지문·대화문에 그대로 남아 있고</b>, 거기가 한국어가 있어야 할 자리다. "듣고 맞는 것을 고르세요"는 무엇을 하라는 껍데기 문장이라 <b>학습자가 읽는 언어로만</b> 있으면 된다.</p>
+  <p class="qa">부수 효과로 <b>UI 언어가 <code>ko</code>일 때 같은 문장이 두 번 나오던 문제</b>가 원천적으로 사라진다 — 셸 목업을 만들다 발견한 구멍이었다.</p>
+</div>
+<div class="tablewrap"><table>
+  <tr><th>갈래</th><th>언어</th><th>해당 요소</th><th>셸 반영</th></tr>
+  <tr><td><b>학습 대상</b></td><td>한국어 <b>고정</b></td><td>문항 본문 · 선택지 · 지문 · 대화문 · 자모</td><td>콘텐츠 영역 — 셸이 관여하지 않는다</td></tr>
+  <tr><td><b>그 외 전부</b></td><td><b>UI 언어만</b></td><td><b>활동 지시문</b> · 앱바 제목 · 버튼 · 피드백 pill · 결과 화면 · skip · 도구 버튼</td><td>셸 컴포넌트의 문자열. i18n 리소스로 등록</td></tr>
+</table></div>
+<div class="tablewrap"><table>
+  <tr><th>영향</th><th>내용</th></tr>
+  <tr><td>Title 높이</td><td><b>68 → 48</b>. 2줄(26+20)이 1줄(26)로 — 전 활동 화면 공통</td></tr>
+  <tr><td>콘텐츠 밴드</td><td><b>+20</b>. §3.1의 세로 배분에 여유가 생긴다</td></tr>
+  <tr><td>콘텐츠 데이터</td><td><b>변경 없음</b>. G1의 <code>instruction_*</code> 5개 언어 컬럼을 그대로 쓰고 <b>렌더링만 1개</b>로 줄인다</td></tr>
+  <tr><td>i18n 리소스</td><td>셸 문자열 <b>5개 언어 × 55키</b>(<code>i18n_player_shell.ts</code>). 지시문은 콘텐츠 쪽 컬럼에서 온다</td></tr>
+</table></div>
+<p class="qa">앱바 제목도 같은 규칙을 받는다 — <code>{급} {과}</code>를 UI 언어로 쓴다(예: <code>1급 4과</code> / <code>Level 1 Lesson 4</code>). 과 제목과 학습 대상은 앱바에 넣지 않는다.</p>
+
+<h2 id="s5"><span class="no">5</span>상태 머신 스트레스 테스트</h2>
+<p class="lead">§1의 상태 머신이 실제 상황을 견디는지 시나리오로 두들겨본 결과다. <b>12개 중 6개는 v1 스펙에 답이 없었다</b> — 아래는 그 구멍을 메운 것이며, 표의 "v1 상태" 열이 무엇이 비어 있었는지 보여준다.</p>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>시나리오</th><th>v1 상태</th><th>확정 규칙</th></tr>
+  <tr><td>1</td><td><b>완료한 활동을 다시 풀고 싶다</b>(재학습)</td><td><span class="pill new">누락</span></td><td>완료 상태는 <b>되돌리지 않는다</b>. 재진입은 <b>"연습 세션"</b>으로 취급 — 진도·스트릭 지표에 영향 없고, 새로 틀린 문항만 다시 풀기 목록에 추가. <b>완료를 한 번 얻으면 잃지 않는</b> 것이 원칙(진도 지표 안정성).<br><span class="qa">구현 규칙 4건은 <a href="https://claude.ai/code/artifact/f4a0b018-fc69-47d8-809f-723e317f476a">API 스키마</a> <code>/activity/enter</code> 참조 — 특히 <b>재진입 시 문항 위치를 0으로 되돌려야</b> 한다</span></td></tr>
+  <tr><td>2</td><td>같은 문항을 다시 풀기에서 또 틀렸다</td><td><span class="pill new">누락</span></td><td>목록에 남기고 <code>attempts</code> +1. 제거 조건은 정답 1회.<br>
+    <b>3회 이상 틀린 문항</b>은 <b>세 가지</b>를 받는다 — ⓐ 결과 화면에서 <code>fill-caution</code> 강조
+    ⓑ <b>세션에서 먼저 나온다</b>(<code>attempts</code> 내림차순 정렬)
+    ⓒ <b>상한 밀어내기에서 보호</b>한다(오래됐다고 지우지 않는다).<br>
+    <span class="qa">별도 학습 경로를 새로 만들지는 않는다 — 화면과 로직이 추가되는 데 비해,
+    위 셋은 <b>이미 있는 <code>attempts</code> 컬럼의 정렬·보호 규칙</b>만으로 된다.
+    강조만 하고 끝내면 학습자가 <b>할 수 있는 일이 없다</b>는 게 문제였다</span></td></tr>
+  <tr><td>3</td><td>오답 직후 같은 세션에서 바로 다시 풀면 의미가 있나</td><td><span class="pill new">누락</span></td><td><b>S1 확정으로 답이 갈렸다.</b> 선택지형은 <b>맞힐 때까지 진행되지 않으므로</b> 활동이 끝난 시점에 다시 풀 것이 없다 — 결과 화면에 [다시 풀기]를 띄우면 방금 맞힌 걸 또 풀라는 셈이다. 따라서 <b>버튼은 "미해결 항목"이 남는 활동에만</b> 뜬다(플래시카드 "몰라요" · 롤플레잉 재시도 초과 · <b>건너뛴 문항</b> · 미션 미달성). <b>첫 시도 오답</b>은 복습 큐로 가서 <b>다음 날</b> 홈에서 만난다 — 같은 날 반복은 단기기억이라 효과가 얕다</td></tr>
+  <tr><td>4</td><td>다시 풀 문항이 계속 쌓여 100개가 넘었다</td><td><span class="pill new">누락</span></td><td><b>보관 상한 60 · 한 세션 10문항</b>으로 나눈다.<br>
+    <span class="qa">구 앱 실측으로 <b>과당 26.7문항</b>(<code>content_counts</code> 1급 12과 평균, 최소 25 · 최대 30)이다.
+    첫 시도 오답률을 30%로 보면 <b>과당 약 8개</b>가 쌓이고, 60은 <b>7~8과 분량</b> — 한 급의 절반이다.
+    상한 자체는 적정하나 <b>60개를 한 번에 보여주면 압도</b>한다.</span><br>
+    <b>보관</b> 60(오래된 순 밀어내기, 단 아래 attempts 보호) · <b>세션</b> 한 번에 10문항 ·
+    <b>홈 카드</b>는 총계 표기(상한 도달 시 "60+"). 세션을 끊으면 <b>"끝냈다"는 감각</b>이 생긴다</td></tr>
+  <tr><td>5</td><td>다시 풀 목록에 든 문항이 콘텐츠 개정으로 삭제됐다</td><td><span class="pill new">누락</span></td><td><code>item_id</code> 기준으로 조회 실패 시 <b>조용히 목록에서 제거</b>. 같은 <code>item_id</code>가 수정만 된 경우는 유지(같은 문항으로 간주) — G1의 <code>change_note</code>로 중대 수정은 추적 가능</td></tr>
+  <tr><td>6</td><td>B2C 구독이 만료됐는데 잠긴 급의 오답이 목록에 있다</td><td><span class="pill new">누락</span></td><td>목록에서 <b>지우지 않고 숨긴다</b>. 재구독 시 그대로 복원 — 결제 이력이 학습 이력을 파괴하지 않게</td></tr>
+  <tr><td>7</td><td>게임만 한 날도 스트릭이 유지되나</td><td><span class="pill new">누락</span></td><td><b>유지되지 않는다.</b> 스트릭은 학습 활동(§1 대상 8종) 기준. 게임으로 스트릭을 채우면 학습 회피 경로가 생긴다</td></tr>
+  <tr><td>8</td><td>네트워크가 끊긴 채로 활동을 진행했다</td><td><span class="pill new">누락</span></td><td>진도·응답을 <b>로컬에 먼저 저장</b>하고 복구 시 서버 동기화. 충돌하면 <b>더 진행된 쪽</b>을 채택(학습자가 푼 것을 잃지 않는 방향)</td></tr>
+  <tr><td>9</td><td>진행 중에 앱을 껐다가 다음 날 다시 들어왔다</td><td><span class="pill keep">답 있음</span></td><td>§1 자기 루프 — <code>current_item_index</code>부터 재개. 만료 기한 없음</td></tr>
+  <tr><td>10</td><td>마지막 문항을 오답으로 끝냈다</td><td><span class="pill keep">답 있음</span></td><td>§1 — 완료 + 다시 풀 문항 보유 상태로 전이</td></tr>
+  <tr><td>11</td><td>한 과의 활동을 순서대로 안 하고 건너뛴다</td><td><span class="pill keep">답 있음</span></td><td>활동 간 선후 제약 없음. 각 활동이 독립 상태를 가진다(과 완료 = 소속 활동 전부 완료)</td></tr>
+  <tr><td>12</td><td>AI 미션 대화를 중간에 끊었다</td><td><span class="pill keep">부분</span></td><td>§1 예외 — 자유 대화라 "3번째 문항"에 해당하는 재개 지점이 없다.
+    <b>부분 재개를 만들지 않는다</b> — 대화 요약을 저장해 LLM 컨텍스트를 복원하는 방식은 비용·복잡도가 크고
+    복원 정확도를 보장할 수 없다. 미션이 3개뿐이라 처음부터 해도 길지 않다.<br>
+    <b>저장은 하되 용도를 나눈다</b> — 달성한 미션은 <b>기록용</b>(리포트·복습 큐)으로 저장하고,
+    <b>재진입 시 진행은 리셋</b>한다. 달성 체크를 남겨 두면 "이미 한 미션을 또 말해야 하나"라는 혼란이 생긴다.
+    종료 확인 다이얼로그로 사전 안내한다(§6)</td></tr>
+</table></div>
+<div class="callout warn">
+  <div class="t">연습 세션은 어떻게 들어가고, 뭐라고 부르나</div>
+  <p>완료한 활동을 다시 풀 수 있게 하려면 <b>진입 경로</b>와 <b>이름</b>이 필요하다. 시나리오 1은 "되돌리지 않는다"만 정했고 이 둘은 비어 있었다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>확정</th></tr>
+    <tr><td>진입</td><td><b>활동 목록에서 완료된 활동을 그대로 탭</b>한다. 별도 화면을 만들지 않는다 —
+        서버가 <code>isPractice: true</code>로 응답하고 셸이 처음부터 시작한다</td></tr>
+    <tr><td>이름</td><td>활동 목록에서는 <b>"한 번 더"</b>. 결과 화면의 <b>"다시 풀기"</b>와 구분한다</td></tr>
+  </table></div>
+  <p><b>이름을 나눠야 하는 이유:</b> "다시 풀기"는 §8 용어표에서 <b>복습 큐(틀린 문항만)</b>에 이미 배정돼 있다.
+     완료 활동 <b>전체</b>를 다시 푸는 것과 <b>틀린 것만</b> 다시 푸는 것은 다른 행동이라, 같은 말을 쓰면 학습자가 무엇이 나올지 예상할 수 없다.</p>
+  <p class="qa">두 문구는 <b>서로 다른 화면</b>에 나오므로(활동 목록 / 결과 화면) 충돌이 크지는 않다.
+     다만 "한 번 더"는 <b>활동 목록에 있어 셸 밖</b>이라, 이번 <code>i18n_player_shell.ts</code>(55키) 범위에는 들어 있지 않다 — 목록 화면 작업 때 함께 등록한다.</p>
+</div>
+
+<div class="callout warn">
+  <div class="t">12번만 예외 처리가 다르다 — 이유</div>
+  <p>AI 미션 대화는 LLM과의 자유 대화라 "3번째 문항"에 해당하는 재개 지점이 없다. 그래서 이 활동만 <b>✕ 종료 시 확인 다이얼로그를 띄운다</b>("대화가 처음부터 시작돼요"). §3.1에서 "확인 다이얼로그 없음"을 원칙으로 세웠지만, <b>저장할 수 없는 것을 저장한 척하지 않기 위한 의도적 예외</b>다.</p>
+</div>
+
+<h2 id="s6"><span class="no">6</span>화면 상태 — 정상 흐름 밖</h2>
+<p class="lead">v1은 "잘 풀리는 경우"만 규격화했다. 실제 앱 화면의 절반은 아래다.</p>
+<div class="tablewrap"><table>
+  <tr><th>상태</th><th>발생 조건</th><th>셸 동작</th></tr>
+  <tr><td>로딩</td><td>문항 목록 API 응답 대기</td><td>세그먼트바 자리에 스켈레톤. 구 앱의 긴 페이드 전환은 제거 — <b>전환 300ms 이내</b></td></tr>
+  <tr><td>불러오기 실패</td><td>API 오류·타임아웃</td><td>전체 화면 오류 + [다시 시도]. <b>진도는 건드리지 않는다</b>(진입 실패는 시작으로 치지 않음)</td></tr>
+  <tr><td>빈 콘텐츠</td><td>해당 급·과에 문항 0개(저작 미완 구간)</td><td>활동 목록에서 <b>애초에 비활성</b> 처리 — 진입 자체를 막는다. G1의 <code>review_status</code>가 <code>reviewed</code>인 문항만 집계</td></tr>
+  <tr><td>음성 없음</td><td>듣기·단어의 TTS 미생성(구 앱 <code>/tts/word</code>는 조회 전용이라 null 반환 가능)</td><td>재생 버튼 비활성 + "소리를 준비 중이에요". <b>문항 자체는 풀 수 있게</b> 둔다(듣기 문항은 예외 — 음성이 없으면 그 문항을 건너뜀)</td></tr>
+  <tr><td>마이크 권한 거부</td><td>롤플레잉·미션 대화 진입 시</td><td>미션 대화는 <b>키보드 입력으로 계속</b>(기존 토글 활용). 롤플레잉은 음성 전용이라 안내 후 <b>활동 건너뛰기 허용</b> — 권한 때문에 과가 막히지 않게</td></tr>
+  <tr><td><b>판정이 계속 실패</b></td><td>자모 쓰기(OCR)·말하기(STT)에서 반복 실패</td>
+      <td><b>3회 실패 시 건너뛰기를 명시적으로 안내</b>한다(<code>state.canSkip</code>). 맞힐 때까지 진행되지 않는 규칙은
+      <b>선택지가 유한할 때만 안전</b>하고, 후보가 무한한 활동은 판정 오류로 갇힐 수 있다.
+      새 탈출구가 아니라 <b>이미 있는 헤더 →를 알려 주는</b> 것이다</td></tr>
+  <tr><td>녹음 실패·무음</td><td>STT 결과 없음</td><td>오답 아님. "다시 말해 주세요"로 재시도. §3.4대로 <b>2회 초과부터</b> 다시 풀기 목록 예약</td></tr>
+  <tr><td>브라우저 뒤로가기</td><td>학습자가 시스템 뒤로가기</td><td>✕와 동일 동작(위치 저장 후 이탈). 12번 활동만 확인 다이얼로그</td></tr>
+</table></div>
+
+<h2 id="s7"><span class="no">7</span>접근성 — v1의 실제 결함</h2>
+<div class="callout warn">
+  <div class="t">색만으로 정보를 전달하고 있었다</div>
+  <p>v1 §3.1의 진행 세그먼트바는 정답과 오답을 <b>색으로만</b> 구분했다. <b>색각 이상 학습자는 자신이 무엇을 틀렸는지 알 수 없다.</b> 게다가 플래시카드에서는 같은 색이 다른 뜻(알아요/몰라요)이라 색의 의미가 활동마다 달라지는 문제도 있었다.</p>
+  <p><b>수정 v3.5 — 아이콘을 진행바에 넣지 않는다.</b> 진행바를 <b>높이 24 → 6</b>으로 줄였다(사각형 줄이 화면 위쪽을 무겁게 만든다).
+     <b>6px에는 아이콘이 들어가지 않는다.</b> 초록–빨강은 적록색각이상(남성 약 8%)에게 구별되지 않으므로,
+     <b>정오답의 권위 있는 표시를 다른 곳으로 옮긴다</b>:</p>
+  <ul>
+    <li><b>문항 화면</b> — 피드백 pill의 <b>문구</b>("아주 잘 했어요!" / "다시 해보세요"). 색이 아니라 글자다.</li>
+    <li><b>결과 화면</b> — 오답 목록의 <code>[오답 N]</code> 칩 + 고른 답 + 해설. 전부 글자다.</li>
+  </ul>
+  <p><b>진행바는 "어디까지 왔나"가 주된 일</b>이고 정오답은 보조 신호로 남긴다 —
+     <b>진행률을 주 지표로 올린 결정</b>(구현 사양 §8)과도 맞는다.
+     현재 위치는 색이 아니라 <b>칸 길이 10</b>으로 구분한다.</p>
+</div>
+<ul>
+  <li>진행 세그먼트에 <code>aria-label</code>: "3번 문항, 정답" / "4번 문항, 오답" — 스크린리더로 진행 상황 파악 가능</li>
+  <li>스크린리더는 진동·효과음을 받지 못한다. 오답 pill을 <code>aria-live</code>로 두되, <b>같은 문구를 반복 고지</b>하려면 영역을 비웠다 다시 채운다(동일 텍스트는 재고지하지 않는 리더가 있다).</li>
+  <li><code>prefers-reduced-motion: reduce</code>일 때 진동 대신 테두리 200ms 1회 깜빡으로 대체 — <b>현재 코드에 이 분기가 하나도 없다</b>.</li>
+  <li>피드백은 색 변화만이 아니라 텍스트로도 명시("정답이에요" / "정답은 ○○예요")</li>
+  <li>탭 대상 최소 44×44pt (구 앱 O/X 버튼은 충분, 세그먼트바는 탭 대상 아님)</li>
+</ul>
+
+<h2 id="s8"><span class="no">8</span>용어와 문구 — 내부 언어를 화면에 내보내지 않기</h2>
+<div class="callout warn">
+  <div class="t">v1의 문제</div>
+  <p>"복습 큐에 담겼어요"를 화면 문구로 썼다. <b>큐(queue)는 개발 용어</b>이고, 한국어를 배우는 초급 학습자에게 "복습 큐"는 이해 불가에 가깝다. 이 문서 전반의 <code>복습 큐</code>·<code>복습 권장</code>·<code>미학습</code>은 <b>전부 내부 용어</b>이며, 화면에는 아래 대조표의 오른쪽만 나간다.</p>
+</div>
+<h4>9-a. 대조표</h4>
+<div class="tablewrap"><table>
+  <tr><th>내부 용어</th><th>화면 노출 (ko)</th><th>en</th><th>ja</th><th>zh</th><th>vi</th></tr>
+  <tr><td><code>review_queue</code></td><td>다시 풀기</td><td>Practice again</td><td>もう一度</td><td>再练习</td><td>Luyện lại</td></tr>
+  <tr><td>복습 권장 (상태)</td><td>다시 풀 문제 N개</td><td>N to practice</td><td>もう一度 N問</td><td>N题待练习</td><td>N câu cần luyện</td></tr>
+  <tr><td>진행 중</td><td>이어서 하기</td><td>Continue</td><td>続きから</td><td>继续</td><td>Tiếp tục</td></tr>
+  <tr><td>완료</td><td>완료</td><td>Done</td><td>完了</td><td>完成</td><td>Hoàn thành</td></tr>
+  <tr><td>미학습</td><td colspan="5"><b>화면에 표기하지 않는다</b> — 아무 표시가 없는 것이 곧 미학습</td></tr>
+  <tr><td>오답</td><td>정답은 ○○예요</td><td>The answer is ○○</td><td>正解は○○です</td><td>正确答案是○○</td><td>Đáp án là ○○</td></tr>
+</table></div>
+<h4>8-b. 번역 검수 — 55키 전부가 아니라 11키만</h4>
+<p>셸 UI 문자열은 <b>55키 × 5언어 = 220개</b>다. 전부 보라고 하면 <b>아무도 안 본다</b>.
+   기계적으로 옮겨도 되는 것과 <b>뉘앙스가 실제로 갈리는 것</b>을 나눈다.</p>
+<div class="tablewrap"><table>
+  <tr><th>키</th><th>왜 위험한가</th></tr>
+  <tr><td><code>toPractice</code> · <code>practiceAgain</code> · <code>homeCardTitle</code> · <code>sessionTitle</code></td>
+      <td><b>practice / review 뉘앙스</b>가 언어마다 다르다. 한국어 "다시 풀기"가 en <code>Practice again</code>인데,
+          일본어·중국어에서 "복습"과 "연습" 중 무엇이 자연스러운지 갈린다</td></tr>
+  <tr><td><code>tryAgain</code> · <code>wellDone</code> · <code>perfect</code></td>
+      <td><b>격려 문구</b>다. 직역하면 어색하거나 과한 언어가 있다.
+          en <code>Nice!</code>과 ko <code>아주 잘 했어요!</code>는 길이·톤이 이미 상당히 다르다</td></tr>
+  <tr><td><code>hardItem</code></td><td><b>"자주 틀려요"</b> — 학습자를 탓하는 어감이 되기 쉽다</td></tr>
+  <tr><td><code>micDenied</code> · <code>exitConfirmChat</code></td>
+      <td><b>가장 긴 문장 둘</b>이다. 자연스러움도 문제지만 <b>레이아웃이 깨지는지</b>도 여기서 판가름난다</td></tr>
+  <tr><td><code>lessonTitle</code></td>
+      <td>급·과 표현이 언어권마다 다르다 — <code>Level 1 Lesson 4</code> / <code>1級 4課</code> / <code>1级 第4课</code> / <code>Cấp 1 Bài 4</code></td></tr>
+</table></div>
+<p><b>11키 × 5언어 = 55문자열</b>이면 앉은자리에서 볼 수 있는 분량이다.
+   나머지 33키(<code>next</code> · <code>exit</code> · <code>loading</code> 등)는 기계적 대응이라 <b>후순위</b>로 둔다.</p>
+<p class="qa">검수는 <b>개발과 병행</b>해도 된다 — 릴리스 전까지만 반영되면 되고, 키 이름은 바뀌지 않는다.</p>
+<h4>9-a-2. "다시 푼다"는 행동이 셋이다</h4>
+<div class="tablewrap"><table>
+  <tr><th>행동</th><th>어디서</th><th>화면 이름</th></tr>
+  <tr><td>틀린 문항을 <b>그 자리에서</b> 다시 고름</td><td>문항 안</td>
+      <td><b>이름 없음</b> — 버튼이 아니라 인터랙션. pill "다시 해보세요"만</td></tr>
+  <tr><td><b>미해결 항목</b>을 모아 다시</td><td>결과 화면 · 홈</td><td><b>다시 풀기</b> <span class="qa">= <code>review_queue</code></span></td></tr>
+  <tr><td>완료한 활동 <b>전체</b>를 처음부터</td><td>활동 목록</td><td><b>한 번 더</b> <span class="qa">= 연습 세션(§5-1)</span></td></tr>
+</table></div>
+<p class="qa">첫 번째에 이름을 붙이지 않는 것이 핵심이다 — 버튼으로 만들면 두 번째와 헷갈리는데,
+   실제 동작은 선택지를 다시 누르는 것이라 라벨이 붙을 자리가 없다.</p>
+<h4>9-b. 문구 원칙</h4>
+<ol>
+  <li><b>시스템 구조를 설명하지 않는다.</b> 학습자는 큐·상태·세션을 알 필요가 없다. 무엇이 일어났고 다음에 뭘 하면 되는지만 말한다.</li>
+  <li><b>문항마다 토스트를 띄우지 않는다.</b> v1은 오답마다 토스트를 띄우게 돼 있었는데, 10문항 중 6개를 틀리면 토스트가 6번 뜬다. <b>"다시 풀 문제 3개"는 결과 화면에서 한 번</b> 말하는 것으로 충분하다.</li>
+  <li><b>숫자로 말한다.</b> "복습이 필요해요"(모호) 대신 "다시 풀 문제 3개"(행동 가능).</li>
+  <li><b>UI 언어가 곧 학습자의 모국어다.</b> 학습 대상 한국어(§4)를 빼면 모든 문구는 학습자 언어로 나간다 — 한국어 문구는 <b>5개 중 하나일 뿐</b>이며, 기본 언어는 영어다.</li>
+</ol>
+
+<h2 id="s9"><span class="no">9</span>이 문서의 범위</h2>
+<p class="lead">"다 담았는가"에 정직하게 답하기 위해, 다루는 것과 <b>일부러 다루지 않은 것</b>을 구분해 적는다.</p>
+<div class="tablewrap"><table>
+  <tr><th>구분</th><th>내용</th></tr>
+  <tr><td><b>이 문서가 확정한 것</b></td><td>활동 상태 머신과 전이 규칙(§1) · 엣지 케이스 12건(§5) · 라우트 매핑(§2) · 셸 구성요소와 활동별 적용(§3) · 화면 상태 7종(§6) · 접근성 기준(§7) · 용어 대조표(§8)</td></tr>
+  <tr><td><b>의도적으로 제외</b></td><td>시각 디자인(색·간격·타이포 실값 — Figma 소관, §3.5) · 게임 5종 내부 규칙(상태 머신 밖) · 홈/교재학습 화면 상세(코어 루프 목업이 담당) · API 스키마와 DB DDL(개발 설계 단계)</td></tr>
+  <tr><td><b>미결이었다가 확정된 것</b></td><td>
+    <b>① 다시 풀기 분량</b> — 보관 60 유지 + <b>한 세션 10문항</b>으로 분리(§5-4). 과당 26.7문항 실측 근거.<br>
+    <b>② 3회 이상 오답</b> — 별도 경로를 만들지 않고 <b>정렬 우선 + 밀어내기 보호</b>를 더한다(§5-2).<br>
+    <b>③ 번역 검수</b> — 55키 전체가 아니라 <b>뉘앙스가 갈리는 11키만</b> 우선 검수(§8-b).<br>
+    <b>④ 미션 대화</b> — 부분 재개를 <b>만들지 않는다</b>. 달성 미션은 기록용으로만 저장하고 진행은 리셋(§5-12).<br>
+    <b>⑤ 스트릭 기준</b> — <b>활동 1개 완료</b> 또는 다시 풀기 세션 완주(§1). 기존 "문항 1개"에서 바뀐다.</td></tr>
+  <tr><td><b>아직 미결</b></td><td>없음 — 운영 데이터가 쌓이면 ①의 60과 10을 재검토한다</td></tr>
+</table></div>
+
+<h2 id="s10"><span class="no">10</span>G2 종료 · 다음</h2>
+<p>이 문서로 D2·D4·D5·라우트 규칙이 실행 가능한 스펙이 됐다. G2가 닫히면 <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a>의 <b>Phase 1(공통 셸 구현)</b> 착수 조건이 갖춰진다. Phase 1은 콘텐츠 저작(G1 결과물)과 무관하게 구 앱 콘텐츠를 임시로 꽂아 검증 가능 — 두 트랙이 이 시점부터 완전히 병렬로 간다.</p>
+<div class="callout warn">
+  <div class="t">Phase 1 착수 전 남는 것</div>
+  <ul style="margin:6px 0 0">
+    <li>디자인: 이 스펙을 Figma 컴포넌트로 실제 제작(§3.5) — 셸 하나만 만들면 8개 활동 화면이 동시에 나온다</li>
+    <li>개발: <code>review_queue</code> 테이블 신설(§1), <code>activity_state</code> 컬럼 확장, i18n 리소스 등록(§4)</li>
+    <li>AI 미션 대화·자모의 예외 처리(§1·§3.4)를 셸 컴포넌트 설계 시 분기로 반영</li>
+  </ul>
+</div>
+
+<p class="qa" style="margin-top:44px">관련: <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a> · <a href="https://claude.ai/code/artifact/1210a6f9-f264-4da0-82fe-38f12c729af2">리뉴얼 기획서 v0.2.1</a> · <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">활동 라인업 v2</a> · <code>core_loop_mockup_v1.html</code></p>
+</main>

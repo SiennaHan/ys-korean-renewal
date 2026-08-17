@@ -1,0 +1,240 @@
+{
+  "$description": "연세 글로벌 한국어 · 색 팔레트 51개 — Figma 스타일 가이드([디자인] 스타일 가이드/컴포넌트, node 2023:13837) 실측값. 키 경로가 곧 Figma 변수 이름이다 (Blue/500, Blue Gray/900, Positive).",
+  "Blue": {
+    "50": {
+      "$type": "color",
+      "$value": "#DBEDFF",
+      "$description": "선택지 기본 배경"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#A2D1FF"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#7FBFFF"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#59ACFF"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#359AFF",
+      "$description": "Hover 단계"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#0180FF",
+      "$description": "주요 버튼 · 현재 위치"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#0073E6",
+      "$description": "Pressed 단계"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#0A6ACB"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "#22588F"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#24425F",
+      "$description": "활동 지시문 제목"
+    }
+  },
+  "Blue Gray": {
+    "50": {
+      "$type": "color",
+      "$value": "#F6F7F8",
+      "$description": "화면 배경"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#E5E8EC",
+      "$description": "구분선"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#D7DBE3"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#C8CCD3"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#ADB3BE"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#979DA8"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#7F848D",
+      "$description": "보조 문구 · UI 언어 병기"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#666B73"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "#4B505A"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#383A3F",
+      "$description": "본문 글자"
+    }
+  },
+  "Gray": {
+    "50": {
+      "$type": "color",
+      "$value": "#FAFAFA"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#F5F5F5"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#EEEEEE",
+      "$description": "비활성 배경"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#E0E0E0",
+      "$description": "진행바 미응답 칸"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#BDBDBD",
+      "$description": "비활성 글자·테두리"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#9E9E9E"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#757575"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#616161"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "#424242"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#212121"
+    }
+  },
+  "White": {
+    "50": {
+      "$type": "color",
+      "$value": "#F9FAFC"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#FFFFFF",
+      "$description": "카드 표면"
+    }
+  },
+  "Yellow": {
+    "50": {
+      "$type": "color",
+      "$value": "#FFF8E1",
+      "$description": "다시 풀기 배지 배경"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#FFF2C1"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#FFE790"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#FFDB5C"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#FFD230"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#FFCB13"
+    }
+  },
+  "Red": {
+    "50": {
+      "$type": "color",
+      "$value": "#FFE8E8",
+      "$description": "오답 피드백 배경"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#FFC6BC"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#FF9B8C"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#FE7B67"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#F76853"
+    }
+  },
+  "Green": {
+    "50": {
+      "$type": "color",
+      "$value": "#E7FBCE",
+      "$description": "정답 피드백 배경"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#AFEF98"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#85E075"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#4BC96D"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#19BB62"
+    }
+  },
+  "Positive": {
+    "$type": "color",
+    "$value": "#11C378",
+    "$description": "정답 · 완료"
+  },
+  "Cautionary": {
+    "$type": "color",
+    "$value": "#F98900",
+    "$description": "주의 · 다시 풀기 대상"
+  },
+  "Destructive": {
+    "$type": "color",
+    "$value": "#F15F49",
+    "$description": "오답 · 파괴적 동작"
+  }
+}

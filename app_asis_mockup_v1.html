@@ -1,0 +1,532 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연세 글로벌 한국어 · 현행(as-is) 인터랙티브 목업</title>
+<style>
+  :root{
+    --pg-bg:#dde2ec; --pg-ink:#17233d; --pg-sub:#4a5670; --pg-card:#ffffff; --pg-line:#e5eaf3; --pg-accent:#2f5ce6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --pg-bg:#171b24; --pg-ink:#e7ebf3; --pg-sub:#aab3c2; --pg-card:#1f2430; --pg-line:#2c3344; --pg-accent:#7b9bff; }
+  }
+  :root[data-theme="dark"]{ --pg-bg:#171b24; --pg-ink:#e7ebf3; --pg-sub:#aab3c2; --pg-card:#1f2430; --pg-line:#2c3344; --pg-accent:#7b9bff; }
+  *{box-sizing:border-box}
+  body{background:var(--pg-bg);color:var(--pg-ink);margin:0;
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    display:flex;justify-content:center;align-items:flex-start;gap:30px;padding:30px 18px 70px;flex-wrap:wrap}
+  .side{width:380px;flex:none}
+  h1{font-size:19px;font-weight:800;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{font-size:12.5px;color:var(--pg-sub);line-height:1.6;margin-bottom:14px}
+  .gname{font-size:11px;font-weight:800;color:var(--pg-sub);letter-spacing:.06em;margin:12px 0 6px}
+  .jump{display:flex;gap:6px;flex-wrap:wrap}
+  .jump button{border:1px solid var(--pg-line);background:var(--pg-card);color:var(--pg-sub);font-family:inherit;
+    font-size:11.5px;font-weight:700;border-radius:999px;padding:6px 12px;cursor:pointer}
+  .jump button.on{background:var(--pg-accent);border-color:var(--pg-accent);color:#fff}
+  .jump button:focus-visible{outline:2px solid var(--pg-accent);outline-offset:2px}
+  .cap{margin-top:16px;background:var(--pg-card);border:1px solid var(--pg-line);border-radius:12px;padding:13px 16px;font-size:12.5px;line-height:1.65;color:var(--pg-sub)}
+  .cap b{color:var(--pg-ink);font-size:13.5px;display:block;margin-bottom:2px}
+  .cap code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11px;background:var(--pg-bg);padding:1px 6px;border-radius:5px}
+  .tokrow{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+  .tokrow span{display:inline-flex;align-items:center;gap:6px;background:var(--pg-card);border:1px solid var(--pg-line);border-radius:8px;padding:4px 9px;font-size:10.5px;color:var(--pg-sub)}
+  .tokrow i{width:14px;height:14px;border-radius:4px;display:inline-block;border:1px solid rgba(0,0,0,.08)}
+  .links{margin-top:12px;font-size:12px;color:var(--pg-sub)} .links a{color:var(--pg-accent)}
+
+  /* ---------- phone ---------- */
+  .phone{width:375px;height:800px;flex:none;background:#fff;border-radius:36px;overflow:hidden;position:relative;color:#383a3f;
+    font-size:14px;line-height:1.55;box-shadow:0 24px 70px rgba(17,27,52,.22), inset 0 1px 0 rgba(255,255,255,.9)}
+  .scr{position:absolute;inset:0 0 64px 0;overflow-y:auto;display:none;padding:18px 18px 24px;background:#fff}
+  .scr.full{inset:0}
+  .scr.on{display:block}
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes up{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .scr.on{animation:up .18s ease-out}
+  }
+  .navbar{position:absolute;left:0;right:0;bottom:0;height:64px;border-top:1px solid #edf0f5;background:#fff;display:none;padding:8px 6px 10px}
+  .navbar.on{display:flex}
+  .navbar>div{flex:1;text-align:center;font-size:10.5px;color:#aeb6c4;cursor:pointer}
+  .navbar>div.act{color:#0180ff;font-weight:700}
+  .navbar .ic{font-size:17px;display:block;margin-bottom:2px}
+
+  /* app primitives — 실측: primary #0180FF · bg #F6F7F8 · text #383A3F · yellow #FFDB5C · lightblue #DBEDFF · Pretendard */
+  .p-topbar{display:flex;align-items:center;justify-content:space-between;padding:0 0 12px;min-height:26px}
+  .p-topbar .mid{font-size:13px;color:#6a7386;flex:1;text-align:center}
+  .x{font-size:16px;color:#383a3f;width:26px;cursor:pointer}
+  .skip{font-size:12.5px;color:#98a1b3;width:40px;text-align:right;cursor:pointer}
+  .p-title{font-size:18px;font-weight:800;margin:4px 0 2px;color:#24425f}
+  .p-title-en{font-size:12.5px;color:#8b93a5;margin-bottom:12px}
+  .chip{display:inline-block;border:1px solid #e2e7ef;border-radius:10px;padding:5px 12px;font-size:12.5px;color:#6a7386;background:#fff;margin:0 6px 6px 0;cursor:pointer}
+  .chip.on{border-color:#0180ff;color:#0180ff;background:#dbedff;font-weight:700}
+  .badge{font-size:11px;border-radius:6px;padding:2px 8px;background:#f0f2f7;color:#a0a8b8;flex:none}
+  .badge.done{background:#e4f6e9;color:#2f9e57}
+  .row{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:12px 13px;margin-bottom:8px;font-weight:600;font-size:13.5px;cursor:pointer}
+  .grp{font-size:11.5px;color:#98a1b3;margin:10px 2px 6px}
+  .btn{border-radius:26px;text-align:center;padding:14px;font-weight:700;font-size:15px;cursor:pointer}
+  .btn.pri{background:#0180ff;color:#fff}
+  .btn.dis{background:#99ccff;color:#fff}
+  .btn.soft{background:#dbedff;color:#0180ff}
+  .qcard{background:#f6f7f8;border-radius:14px;text-align:center;padding:44px 14px;font-size:17px;color:#444d5e;margin:10px 0 18px}
+  .opt2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opt{background:#dbedff;border-radius:12px;text-align:center;padding:18px 8px;font-size:15px;cursor:pointer}
+  .opt.sel{background:#0180ff;color:#fff}
+  .opt.ox{background:#f6f7f8;padding:30px 8px;font-size:28px;font-weight:800}
+  .pgr{position:absolute;bottom:16px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:5px}
+  .pgr .arr{position:absolute;color:#5aa9ff;font-size:20px;cursor:pointer}
+  .pgr .arr.l{left:28px}.pgr .arr.r{right:28px}
+  .dot{width:5px;height:5px;border-radius:3px;background:#dfe4ee}
+  .dot.on{width:18px;background:#0180ff}
+  .bub{border-radius:12px;padding:9px 13px;margin-bottom:8px;max-width:85%;font-size:13px}
+  .bub.ai{background:#f2f4f8;align-self:flex-start}
+  .bub.me{background:#dbedff;align-self:flex-end}
+  .mic{width:56px;height:56px;border-radius:30px;background:#0180ff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto;cursor:pointer}
+  .stat-num{display:inline-block;min-width:28px;text-align:center;background:#dbedff;color:#0180ff;font-weight:800;border-radius:9px;padding:8px 7px;margin-right:9px;font-size:16px}
+  .donut{width:96px;height:96px;border-radius:50%;background:conic-gradient(#0180ff 0 25deg,#e8ecf4 25deg 360deg);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+  .donut i{width:72px;height:72px;border-radius:50%;background:#fff;font-style:normal;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
+  .donut i small{font-weight:600;color:#a0a8b8;font-size:11px}
+  .wk{display:flex;justify-content:space-between;margin:14px 2px 4px}
+  .wk>div{text-align:center;font-size:10px;color:#a8b0bf}
+  .wk .c{width:34px;height:34px;border-radius:18px;background:#eceff5;margin:0 auto 3px}
+  .wk .today .c{background:#fff;border:2px solid #0180ff}
+  .wk .today{color:#0180ff;font-weight:700}
+  .bars{display:flex;justify-content:space-between;align-items:flex-end;height:60px;margin:14px 2px 2px}
+  .bars>div{width:30px;text-align:center;font-size:10px;color:#a8b0bf}
+  .bars .b{height:5px;border-radius:3px;background:#bcd9f9;margin-bottom:4px}
+  .bars .b.t{background:#0180ff}
+  .bars .b.dash{background:transparent;border:1.5px dashed #d4dae6;height:3px}
+  .card{background:#fff;border:1px solid #eef0f5;border-radius:14px;padding:13px}
+  .searchbar{display:flex;align-items:center;gap:8px;background:#f3f5f9;border-radius:12px;padding:10px 13px;font-size:13.5px;color:#444}
+  .searchbar .go{margin-left:auto;width:26px;height:26px;border-radius:14px;background:#0180ff;color:#fff;text-align:center;line-height:26px;font-size:12px}
+  .thumb{border-radius:12px;height:150px;background:linear-gradient(120deg,#f6d9c0,#e8b7d0 55%,#b7c8ec);position:relative;margin-bottom:6px}
+  .thumb .dur{position:absolute;top:8px;left:8px;background:rgba(10,14,22,.75);color:#fff;font-size:10.5px;padding:2px 6px;border-radius:6px}
+  .thumb .hrt{position:absolute;top:8px;right:8px;color:#fff;font-size:14px}
+  .thumb .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10.5px}
+  .jamo{display:inline-block;width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #e6eaf1;text-align:center;line-height:30px;font-size:14px;font-weight:700;margin:0 4px 4px 0;cursor:pointer}
+  .steplab{font-size:12.5px;color:#0180ff;font-weight:700;margin:14px 0 7px}
+  .steplab small{color:#a0a8b8;font-weight:500}
+  .jgrid .jamo{width:44px;height:44px;line-height:44px;border-radius:11px;font-size:18px;box-shadow:0 1px 3px rgba(20,30,60,.08);border:0}
+  .glist{display:flex;align-items:center;gap:11px;padding:13px 2px;border-bottom:1px solid #f0f2f6;cursor:pointer}
+  .glist .gic{width:38px;height:38px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;font-size:17px}
+  .glist b{font-size:13.5px;display:block}
+  .glist span{font-size:11.5px;color:#98a1b3}
+  .mission-chip{font-size:11px;color:#3a4354;background:#dbedff;border-radius:6px;padding:2px 9px;font-weight:700;flex:none}
+  .fb{border:1px solid #cfdcf9;background:#f4f8ff;border-radius:10px;padding:9px 11px;font-size:11px;color:#4a6dbd;line-height:1.55;margin-top:6px}
+  .snip{border-radius:12px;border:1px solid;padding:12px 13px;cursor:pointer}
+  .snip b{font-size:16px;display:block;margin-bottom:3px}
+  .snip span{font-size:10px;opacity:.75}
+  .cnt{background:#fff;color:#17223b;border-radius:10px;font-size:11.5px;padding:1px 9px;font-weight:800}
+  .dark-scr{background:#0a0c12;color:#f0f2f8}
+  .navy-scr{background:#17223b;color:#f0f2f8}
+</style>
+
+<div class="side">
+  <h1>연세 글로벌 한국어 · 현행(as-is) 목업</h1>
+  <div class="sub">korean.pulleyai.co.kr 실서비스(2026-08-13) 재현. 폰 안의 탭·버튼·행이 실제로 눌립니다. 색·폰트는 앱 DOM 실측, 컴포넌트 규격과 미출시 화면은 Figma 「MVP」 시안 기준.</div>
+
+  <div class="gname">계정 · 홈</div>
+  <div class="jump" data-g><button data-s="login">로그인</button><button data-s="home">홈</button></div>
+  <div class="gname">교재학습</div>
+  <div class="jump" data-g><button data-s="textbook">과 목록</button><button data-s="jamo">한글 자모</button><button data-s="write">자모 조합·쓰기</button></div>
+  <div class="gname">기초학습 활동</div>
+  <div class="jump" data-g><button data-s="word">단어 학습</button><button data-s="roleplay">AI 롤플레잉</button><button data-s="listen">듣고 답하기</button><button data-s="fillblank">빈칸 채우기</button><button data-s="read">읽고 답하기</button></div>
+  <div class="gname">심화학습</div>
+  <div class="jump" data-g><button data-s="mintro">미션대화 인트로</button><button data-s="mchat">미션대화 채팅</button><button data-s="flash">플래시카드</button><button data-s="fresult">플래시카드 결과</button></div>
+  <div class="gname">게임 · 클립 · MY</div>
+  <div class="jump" data-g><button data-s="games">게임 목록</button><button data-s="vocashot">VocaShot</button><button data-s="sniper">조사 스나이퍼</button><button data-s="clip">표현클립</button><button data-s="my">MY</button></div>
+
+  <div class="cap" id="cap"></div>
+
+  <div class="tokrow">
+    <span><i style="background:#0180FF"></i>#0180FF</span>
+    <span><i style="background:#DBEDFF"></i>#DBEDFF</span>
+    <span><i style="background:#FFDB5C"></i>#FFDB5C</span>
+    <span><i style="background:#F6F7F8"></i>#F6F7F8</span>
+    <span><i style="background:#383A3F"></i>#383A3F</span>
+    <span>Pretendard</span>
+  </div>
+  <div class="links">함께 보기: <a href="https://claude.ai/code/artifact/1cc49b1d-4fb3-4640-a400-ac4e3ddd3c37">역기획서 v1 (코드 확인판)</a> — 화면·라우트·캡션은 소스 3종(korean/korean-admin/koreanapi) 조사로 검증됨</div>
+</div>
+
+<div class="phone">
+
+  <!-- 로그인 -->
+  <div class="scr full" id="s-login">
+    <div style="text-align:right;font-size:12px">🇺🇸 English ▾</div>
+    <div style="margin-top:170px">
+      <div style="font-size:24px;font-weight:800;margin-bottom:22px">Login</div>
+      <div style="font-size:12px;color:#6a7386;margin-bottom:4px">Email</div>
+      <div style="border:1px solid #e2e7ef;border-radius:10px;padding:12px 13px;color:#b3bac8;margin-bottom:14px">test@gmail.com</div>
+      <div style="font-size:12px;color:#6a7386;margin-bottom:4px">Password</div>
+      <div style="border:1px solid #e2e7ef;border-radius:10px;padding:12px 13px;color:#b3bac8;display:flex;justify-content:space-between">Enter your password <span>👁</span></div>
+      <div style="text-align:right;font-size:12px;color:#0180ff;margin:12px 0 16px">Reset Password</div>
+      <div class="btn pri" onclick="go('home')">Login</div>
+    </div>
+  </div>
+
+  <!-- 홈 -->
+  <div class="scr" id="s-home">
+    <div style="font-size:13px;color:#6a7386">안녕하세요,</div>
+    <div style="font-size:20px;font-weight:800">김풀리 님</div>
+    <div class="wk">
+      <div><div class="c"></div>월</div><div><div class="c"></div>화</div><div><div class="c"></div>수</div>
+      <div class="today"><div class="c"></div>오늘</div>
+      <div><div class="c"></div>금</div><div><div class="c"></div>토</div><div><div class="c"></div>일</div>
+    </div>
+    <div style="text-align:center;font-size:12.5px;margin:6px 0 12px"><b>0일 연속 학습 중</b> <span style="color:#98a1b3">오늘도 해볼까요?</span></div>
+    <div style="background:#dbedff;border-radius:14px;display:flex;align-items:center;gap:11px;padding:14px 15px;margin-bottom:16px;cursor:pointer" onclick="go('listen')">
+      <div style="width:38px;height:38px;border-radius:11px;background:#0180ff;color:#fff;display:flex;align-items:center;justify-content:center">▶</div>
+      <div style="flex:1"><b style="font-size:14px">이어서 학습하기</b><div style="font-size:12px;color:#4a7ab5">1권 10과 - 듣고 질문에 답하기</div></div>
+      <div style="color:#4a7ab5">›</div>
+    </div>
+    <div style="font-weight:800;font-size:14.5px;margin-bottom:9px">나의 학습 현황</div>
+    <div style="display:flex;gap:10px;background:#f6f7f8;border-radius:14px;padding:12px">
+      <div style="flex:1;background:#fff;border-radius:12px;padding:12px 6px;text-align:center">
+        <div class="donut"><i>3<small>/43</small></i></div>
+        <div style="font-size:12px;font-weight:700">현재 과 진행</div>
+        <div style="font-size:11px;color:#a0a8b8">10과 학습 중</div>
+      </div>
+      <div style="flex:1.15;display:flex;flex-direction:column;gap:9px;justify-content:center">
+        <div style="background:#fff;border-radius:12px;padding:11px;font-size:12px"><span class="stat-num">0</span>오늘 활동 수</div>
+        <div style="background:#fff;border-radius:12px;padding:11px;font-size:12px"><span class="stat-num">0</span>주간 활동 수</div>
+      </div>
+    </div>
+    <div style="font-weight:800;font-size:14.5px;margin:16px 0 0">이번 주 학습량</div>
+    <div class="bars">
+      <div><div class="b" style="height:5px"></div>월</div><div><div class="b" style="height:5px"></div>화</div>
+      <div><div class="b" style="height:5px"></div>수</div><div><div class="b t" style="height:5px"></div><span style="color:#0180ff;font-weight:700">오늘</span></div>
+      <div><div class="b dash"></div>금</div><div><div class="b dash"></div>토</div><div><div class="b dash"></div>일</div>
+    </div>
+  </div>
+
+  <!-- 교재학습 -->
+  <div class="scr" id="s-textbook">
+    <div style="text-align:center;font-size:14px;font-weight:700;margin-bottom:12px">3주 완성 연세 한국어 1권</div>
+    <div style="white-space:nowrap;overflow-x:auto">
+      <span class="chip" onclick="go('jamo')">한글</span><span class="chip on">1권</span><span class="chip">2권</span><span class="chip">3권</span><span class="chip">4권</span><span class="chip">5권</span><span class="chip">6권</span>
+    </div>
+    <div style="font-size:12px;color:#0180ff;font-weight:700;margin:9px 0 7px">3주 완성 연세 한국어 1권</div>
+    <div style="white-space:nowrap;overflow-x:auto">
+      <span class="chip on">4과</span><span class="chip">5과</span><span class="chip">6과</span><span class="chip">7과</span><span class="chip">8과</span><span class="chip">9과</span><span class="chip">10과</span>
+    </div>
+    <div style="background:#f6f7f8;border-radius:14px;padding:13px;margin-top:9px">
+      <div style="font-size:14px;font-weight:800;color:#0180ff;margin-bottom:9px">4과. 제 이름은 유리예요</div>
+      <div class="grp">기초학습</div>
+      <div class="row" onclick="go('word')">단어 학습하기 <span class="badge">미완료</span></div>
+      <div class="row" onclick="go('roleplay')">AI 롤플레잉 <span class="badge">미완료</span></div>
+      <div class="row" onclick="go('listen')">듣고 질문에 답하기 <span class="badge">미완료</span></div>
+      <div class="row" onclick="go('fillblank')">빈칸 채워 말하기 <span class="badge">미완료</span></div>
+      <div class="row" onclick="go('read')">읽고 질문에 답하기 <span class="badge">미완료</span></div>
+      <div class="grp">심화학습</div>
+      <div class="row" onclick="go('mintro')">AI 미션 대화 <span class="badge done">완료</span></div>
+      <div class="row" onclick="go('flash')">단어 플래시카드 <span class="badge done">완료</span></div>
+    </div>
+  </div>
+
+  <!-- 한글 자모 -->
+  <div class="scr" id="s-jamo">
+    <div style="text-align:center;font-size:14px;font-weight:700;margin-bottom:12px">한글 자모 익히기</div>
+    <div style="white-space:nowrap;overflow-x:auto">
+      <span class="chip on">한글</span><span class="chip" onclick="go('textbook')">1권</span><span class="chip">2권</span><span class="chip">3권</span><span class="chip">4권</span><span class="chip">5권</span><span class="chip">6권</span>
+    </div>
+    <div style="white-space:nowrap;margin-top:7px">
+      <span class="chip on">1과</span><span class="chip">2과</span><span class="chip">3과</span>
+    </div>
+    <div style="font-size:12.5px;color:#98a1b3;margin:9px 0 5px">제1과 한글(1)</div>
+    <div style="background:#f6f7f8;border-radius:14px;padding:13px">
+      <div style="font-size:13.5px;font-weight:800;color:#0180ff;margin-bottom:7px">모음1</div>
+      <div><span class="jamo">ㅏ</span><span class="jamo">ㅓ</span><span class="jamo">ㅗ</span><span class="jamo">ㅜ</span><span class="jamo">ㅡ</span><span class="jamo">ㅣ</span><span class="jamo">ㅐ</span><span class="jamo">ㅔ</span></div>
+      <div class="row" style="margin-top:9px">발음 듣고 따라하기 <span class="badge">미완료</span></div>
+      <div class="row" onclick="go('write')">자음-모음 조합하고 쓰기 <span class="badge">미완료</span></div>
+      <div class="row">단어 듣고 따라하기 <span class="badge">미완료</span></div>
+      <div class="row">단어 쓰기 <span class="badge">미완료</span></div>
+      <div class="row">듣고 맞는 것 고르기 <span class="badge">미완료</span></div>
+      <div style="font-size:13.5px;font-weight:800;color:#0180ff;margin:11px 0 7px">자음1</div>
+      <div><span class="jamo">ㄱ</span><span class="jamo">ㄴ</span><span class="jamo">ㄷ</span><span class="jamo">ㄹ</span></div>
+    </div>
+  </div>
+
+  <!-- 자모 조합/쓰기 -->
+  <div class="scr full" id="s-write">
+    <div class="p-topbar"><span class="x" onclick="go('jamo')">✕</span><span class="mid">1과 - 모음1: ㅏ,ㅓ,ㅗ,ㅜ,ㅡ,ㅣ,ㅚ,ㅟ</span><span class="skip"></span></div>
+    <div class="p-title">자음-모음 조합하고 쓰기</div>
+    <div class="p-title-en">Consonant-Vowel writing</div>
+    <div style="background:#f6f7f8;border-radius:14px;padding:13px;position:relative;height:86px">
+      <span class="chip" style="background:#fff">🔊 어</span>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:#24425f">?</div>
+    </div>
+    <div class="steplab">① 맨 앞에 오는 소리 <small>initial consonant</small></div>
+    <div class="jgrid"><span class="jamo">ㅇ</span></div>
+    <div class="steplab">② 가운데 오는 소리 <small>medial vowel</small></div>
+    <div class="jgrid">
+      <span class="jamo">ㅏ</span><span class="jamo">ㅓ</span><span class="jamo">ㅗ</span><span class="jamo">ㅜ</span><span class="jamo">ㅡ</span><span class="jamo">ㅣ</span><br>
+      <span class="jamo">ㅐ</span><span class="jamo">ㅔ</span><span class="jamo">ㅚ</span><span class="jamo">ㅟ</span>
+    </div>
+    <div style="position:absolute;bottom:20px;left:18px;right:18px"><div class="btn" style="background:#eceff5;color:#a8b0bf">확인 check</div></div>
+  </div>
+
+  <!-- 단어 학습 -->
+  <div class="scr full" id="s-word">
+    <div class="p-topbar"><span class="x" onclick="go('textbook')">✕</span><span class="mid">4과 단어 학습하기</span><span class="skip">skip ›</span></div>
+    <div class="p-title">다음 뜻을 가진 단어를 고르세요.</div>
+    <div class="qcard">college / university</div>
+    <div class="opt2">
+      <div class="opt">친구</div><div class="opt sel">대학교</div>
+      <div class="opt">학생</div><div class="opt">성</div>
+    </div>
+    <div class="pgr"><span class="arr l">‹</span><span class="dot"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="arr r">›</span></div>
+  </div>
+
+  <!-- AI 롤플레잉 -->
+  <div class="scr full" id="s-roleplay">
+    <div class="p-topbar"><span class="x" onclick="go('textbook')">✕</span><span class="mid">4과 AI 롤플레잉</span><span class="skip">skip ›</span></div>
+    <div class="p-title">AI와 함께 대화를 연습해 보세요.</div>
+    <div class="p-title-en">Practice having conversations with AI.</div>
+    <div style="margin-bottom:14px">
+      <span class="chip" style="background:#2b3240;color:#fff;border-color:#2b3240;font-weight:700">AI &gt; 나</span>
+      <span class="chip">나 &gt; AI</span>
+    </div>
+    <div style="display:flex;gap:9px;margin-bottom:9px"><b style="font-size:12px;width:20px">AI</b><div style="flex:1;font-size:13.5px">안녕하세요? <span style="color:#8b93a5">🔊</span></div></div>
+    <div style="display:flex;gap:9px;margin-bottom:9px"><b style="font-size:12px;width:20px">나</b><div class="bub me" style="margin:0">네, 안녕하세요?</div></div>
+    <div style="display:flex;gap:9px;margin-bottom:9px;color:#b8bfcc"><b style="font-size:12px;width:20px">AI</b><div style="font-size:13.5px">제 이름은 유리예요.</div></div>
+    <div style="display:flex;gap:9px;margin-bottom:16px;color:#b8bfcc"><b style="font-size:12px;width:20px">나</b><div style="font-size:13.5px">저는 슈테판이에요. 반가워요.</div></div>
+    <div style="text-align:center"><span class="chip" style="background:#f3f5f9;border:0;color:#98a1b3">지금 말하세요.</span></div>
+    <div style="position:absolute;bottom:44px;left:0;right:0"><div class="mic">🎙</div></div>
+    <div class="pgr"><span class="arr l" style="color:#d4dae6">‹</span><span class="dot on"></span><span class="dot"></span><span class="arr r">›</span></div>
+  </div>
+
+  <!-- 듣고 답하기 -->
+  <div class="scr full" id="s-listen">
+    <div class="p-topbar"><span class="x" onclick="go('textbook')">✕</span><span class="mid">4과 듣고 질문에 답하기</span><span class="skip"></span></div>
+    <div class="p-title">남자 이름은 샤오밍이에요.</div>
+    <div style="margin:8px 0 16px"><span class="chip" style="background:#dbedff;border:0;color:#0180ff">◌ 듣기</span></div>
+    <div class="opt2">
+      <div class="opt ox" style="color:#e0605c">X</div>
+      <div class="opt ox" style="color:#0180ff">O</div>
+    </div>
+    <div class="pgr"><span class="arr l">‹</span><span class="dot"></span><span class="dot on"></span><span class="dot"></span><span class="arr r">›</span></div>
+  </div>
+
+  <!-- 빈칸 채우기 -->
+  <div class="scr full" id="s-fillblank">
+    <div class="p-topbar"><span class="x" onclick="go('textbook')">✕</span><span class="mid">4과 빈칸 채워 말하기</span><span class="skip"></span></div>
+    <div class="p-title">빈칸에 알맞은 것을 고르세요.</div>
+    <div class="p-title-en">Choose the correct word.</div>
+    <div style="background:#eef6ff;border-radius:12px;padding:18px 15px;font-size:16px;margin-bottom:16px">제 이름은 유리<span style="color:#aab4c8">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span>.</div>
+    <div><span class="chip" style="padding:10px 16px;font-size:14px">이에요</span><span class="chip" style="padding:10px 16px;font-size:14px">예요</span></div>
+    <div class="pgr"><span class="arr l">‹</span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="arr r">›</span></div>
+  </div>
+
+  <!-- 읽고 답하기 -->
+  <div class="scr full" id="s-read">
+    <div class="p-topbar"><span class="x" onclick="go('textbook')">✕</span><span class="mid">4과 읽고 질문에 답하기</span><span class="skip"></span></div>
+    <div class="p-title">다음을 읽고 맞는 답을 고르세요.</div>
+    <div class="p-title-en">Read and choose the correct answer.</div>
+    <div style="background:#f6f7f8;border-radius:12px;padding:13px 15px;font-size:13px;line-height:1.75;margin-bottom:14px">
+      안녕하세요. 저는 유리예요.<br>저는 대학교 학생이에요. 제 친구는 슈테판이에요.<br>슈테판은 회사원이 아니에요. 슈테판도 학생이에요.<br>우리 선생님은 박 선생님이에요. 만나서 반가워요.
+    </div>
+    <div style="font-weight:800;font-size:15px;margin-bottom:11px">슈테판은 회사원이에요.</div>
+    <div class="opt2">
+      <div class="opt ox" style="color:#6a7386">X</div>
+      <div class="opt ox" style="color:#6a7386">O</div>
+    </div>
+    <div class="pgr"><span class="arr l">‹</span><span class="dot"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="arr r">›</span></div>
+  </div>
+
+  <!-- 미션대화 인트로 -->
+  <div class="scr full" id="s-mintro" style="padding:0">
+    <div style="padding:16px 18px 10px;border-bottom:1px solid #f0f2f6">
+      <div class="p-topbar" style="padding-bottom:2px"><span class="x" onclick="go('textbook')">✕</span><span class="mid" style="font-weight:700;color:#383a3f">4과</span><span class="skip"></span></div>
+      <div style="font-size:16.5px;font-weight:800;color:#24425f">상황에 맞는 대화를 연습하세요.</div>
+      <div style="font-size:12px;color:#8b93a5">Practice with AI using the scenario.</div>
+    </div>
+    <div style="background:#f6f7f8;padding:13px 18px 90px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:7px">Conversation Scenario</div>
+      <div class="card" style="text-align:center;padding:15px">
+        <div style="width:96px;height:114px;margin:0 auto 9px;border-radius:10px;background:linear-gradient(180deg,#f4e3d3,#dcd3ee);display:flex;align-items:flex-end;justify-content:center;font-size:10px;color:#7a6a8a;padding-bottom:7px">일러스트<br>(김영주)</div>
+        <div style="background:#f6f7f8;border-radius:10px;padding:9px;font-size:13px"><b>영주 씨를 처음 만났어요.</b><div style="font-size:11px;color:#98a1b3">You're meeting 영주 for the first time.</div></div>
+      </div>
+      <div style="font-size:13px;font-weight:700;margin:13px 0 7px">Mission Keyword</div>
+      <div class="card" style="font-size:12.5px">
+        <div style="display:flex;gap:9px;margin-bottom:7px"><span class="mission-chip">이름</span> Say hello.</div>
+        <div style="display:flex;gap:9px;margin-bottom:7px"><span class="mission-chip">인사</span> Say what your name is.</div>
+        <div style="display:flex;gap:9px;margin-bottom:11px"><span class="mission-chip">직업</span> Say what your job is.</div>
+        <div style="display:flex;gap:9px;border-top:1px solid #f0f2f6;padding-top:11px">
+          <span class="chip" style="margin:0;text-align:center;flex:1;cursor:default"><b>인사</b><br><small style="color:#98a1b3">greeting</small></span>
+          <span class="chip" style="margin:0;text-align:center;flex:1;cursor:default"><b>직업</b><br><small style="color:#98a1b3">job</small></span>
+          <span class="chip" style="margin:0;text-align:center;flex:1;cursor:default"><b>이름</b><br><small style="color:#98a1b3">name</small></span>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;padding:12px 18px 18px;background:#f6f7f8"><div class="btn dis" onclick="go('mchat')">시작하기</div></div>
+  </div>
+
+  <!-- 미션대화 채팅 -->
+  <div class="scr full" id="s-mchat" style="padding:0">
+    <div class="p-topbar" style="padding:14px 18px 8px"><span class="x" onclick="go('textbook')">✕</span><span class="mid" style="font-weight:700;color:#383a3f">4과</span><span class="skip" style="color:#0180ff;font-weight:700" onclick="go('textbook')">finish</span></div>
+    <div style="background:#0180ff;color:#fff;padding:9px 16px;font-size:13px"><b>영주 씨를 처음 만났어요.</b> ›<div style="font-size:11px;opacity:.85">You're meeting 영주 for the first time.</div></div>
+    <div style="display:flex;align-items:center;gap:9px;padding:8px 16px;border-bottom:1px solid #f0f2f6;font-size:12px;color:#5b8a5e">
+      ✓ 이름 &nbsp;✓ 인사 &nbsp;✓ 직업 <span class="chip on" style="margin:0 0 0 auto;font-size:11px;padding:2px 9px;cursor:default">미션 보기</span>
+    </div>
+    <div style="display:flex;flex-direction:column;padding:12px 16px 120px">
+      <div class="bub ai">안녕하세요. 저는 김영주예요. 이름이 뭐예요?<div style="font-size:10.5px;color:#8b93a5">🔊 Aa</div></div>
+      <div class="bub me">안녕하세요. 제 이름은 김풀리예요.</div>
+      <div class="bub ai">안녕하세요, 김풀리예요. 직업이 뭐예요?<div style="font-size:10.5px;color:#8b93a5">🔊 Aa</div></div>
+      <div class="bub me" style="max-width:90%">직업은 몰라요.
+        <div class="fb">💡 Your sentence is correct, but it sounds a bit unnatural in this context. Since the question is about your job, it's more natural to say you don't have one or you're not sure yet, rather than "I don't know."</div>
+      </div>
+      <div class="bub ai">괜찮아요. 학생이에요? 아니면 회사원이에요?<div style="font-size:10.5px;color:#8b93a5">🔊 Aa</div></div>
+      <div style="text-align:center;font-size:13.5px;font-weight:800;margin:8px 0 2px">축하해요! 모든 미션을 완료했어요<br>계속 대화하거나, 여기서 마칠 수 있어요!</div>
+      <div style="text-align:center;font-size:10.5px;color:#98a1b3">Congrats! You finished all the missions! 🎉<br>You can keep talking if you want, or end the chat here.</div>
+      <div class="btn soft" style="margin-top:10px;font-size:13.5px;padding:10px" onclick="go('textbook')">대화 끝내기</div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 0 20px;background:#fff">
+      <span class="chip" style="margin:0;border-radius:16px;font-size:15px;cursor:default">⌨</span><div class="mic" style="margin:0">🎙</div>
+    </div>
+  </div>
+
+  <!-- 플래시카드 -->
+  <div class="scr full" id="s-flash" style="background:#f0f1f4">
+    <div class="p-topbar"><span class="x" onclick="go('textbook')">✕</span><span class="mid">4과 - 제 이름은 유리예요</span><span class="skip"></span></div>
+    <div style="background:#fff;border-radius:18px;height:400px;box-shadow:0 8px 20px rgba(20,30,60,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer" onclick="var w=document.getElementById('fmean');w.style.visibility=(w.style.visibility==='hidden'?'visible':'hidden')">
+      <div style="font-size:28px;font-weight:800">변호사</div>
+      <div id="fmean" style="font-size:15px;color:#8b93a5">Lawyer</div>
+      <span class="chip" style="background:#f3f5f9;border:0;margin:0">🔊 발음듣기</span>
+    </div>
+    <div style="text-align:right;font-size:12px;color:#98a1b3;margin-top:9px">2/6</div>
+    <div style="text-align:center;font-size:11px;color:#b3bac8;margin-top:5px">카드를 탭하면 앞면(단어) ↔ 뒷면(단어+영어 뜻) 플립</div>
+    <div style="position:absolute;bottom:20px;left:18px;right:18px;display:flex;gap:11px">
+      <div class="btn" style="flex:1;background:#ffdb5c;color:#5c4a12;display:flex;align-items:center;gap:9px;justify-content:center" onclick="go('fresult')"><span style="background:#fff;border-radius:11px;font-size:12px;padding:1px 9px">0</span>몰라요</div>
+      <div class="btn pri" style="flex:1;display:flex;align-items:center;gap:9px;justify-content:center" onclick="go('fresult')"><span style="background:#fff;color:#0180ff;border-radius:11px;font-size:12px;padding:1px 9px">1</span>알아요</div>
+    </div>
+  </div>
+
+  <!-- 플래시카드 결과 (코드 확인: /book/chapter/unit/flashcard/result/$id) -->
+  <div class="scr full" id="s-fresult" style="background:#0180ff;color:#fff">
+    <div class="p-topbar"><span class="x" style="color:#fff" onclick="go('textbook')">✕</span><span class="mid" style="color:#cfe6ff">[1권 4과] 제 이름은 유리예요</span><span class="skip"></span></div>
+    <div style="font-size:17px;font-weight:800;margin-top:14px">잘했어요! 거의 다 왔어요:)</div>
+    <div style="font-size:11.5px;color:#cfe6ff;margin-bottom:30px">아직 모르는 단어가 있어요. 한 번 더 학습해 볼까요?</div>
+    <div style="width:112px;height:112px;border-radius:50%;background:conic-gradient(#ffdb5c 0 180deg,rgba(255,255,255,.25) 180deg 360deg);margin:0 auto;display:flex;align-items:center;justify-content:center"><div style="width:84px;height:84px;border-radius:50%;background:#0180ff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px">50%</div></div>
+    <div style="height:7px;border-radius:4px;background:rgba(255,255,255,.25);margin:26px 6px 5px;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:50%;border-radius:4px;background:#ffdb5c"></div></div>
+    <div style="text-align:right;font-size:10.5px;color:#cfe6ff;margin-bottom:20px">3/6</div>
+    <div style="display:flex;gap:11px">
+      <div style="flex:1;background:#ffdb5c;color:#5c4a12;border-radius:12px;padding:13px;text-align:center;font-size:12.5px;font-weight:700">모르는 단어<div style="margin-top:7px"><span class="cnt">3</span></div></div>
+      <div style="flex:1;background:#fff;color:#0180ff;border-radius:12px;padding:13px;text-align:center;font-size:12.5px;font-weight:700">아는 단어<div style="margin-top:7px"><span class="cnt" style="background:#dbedff;color:#0180ff">3</span></div></div>
+    </div>
+    <div style="position:absolute;bottom:20px;left:18px;right:18px"><div class="btn" style="background:#fff;color:#0180ff;font-size:14px" onclick="go('flash')">모르는 단어 한번 더 학습하기</div></div>
+  </div>
+
+  <!-- 게임 목록 -->
+  <div class="scr" id="s-games">
+    <div style="text-align:center;font-size:15px;font-weight:800;margin-bottom:11px">Games</div>
+    <div class="glist" onclick="go('vocashot')"><div class="gic" style="background:#fdeee0">🎮</div><div><b>VocaShot</b><span>Join a game your teacher created</span></div><div style="margin-left:auto;color:#c3cad6">›</div></div>
+    <div class="glist"><div class="gic" style="background:#fde8ec">🍒</div><div><b>Spring Picnic Number Mission</b><span>Practice Korean numbers with friends</span></div><div style="margin-left:auto;color:#c3cad6">›</div></div>
+    <div class="glist"><div class="gic" style="background:#fdf3dd">🗺</div><div><b>Seoul Travel Puzzle</b><span>Complete sentences while traveling through Seoul</span></div><div style="margin-left:auto;color:#c3cad6">›</div></div>
+    <div class="glist"><div class="gic" style="background:#e7f4e9">🃏</div><div><b>Vocabulary Card Master</b><span>Learn vocabulary by sorting cards</span></div><div style="margin-left:auto;color:#c3cad6">›</div></div>
+    <div class="glist" style="border:0" onclick="go('sniper')"><div class="gic" style="background:#e9edfb">🎯</div><div><b>Particle Sniper</b><span>Quickly guess the correct particle</span></div><div style="margin-left:auto;color:#c3cad6">›</div></div>
+  </div>
+
+  <!-- VocaShot -->
+  <div class="scr full" id="s-vocashot" style="background:#f6f7f8">
+    <div class="p-topbar"><span class="x" onclick="go('games')">←</span><span class="mid" style="font-weight:800;color:#383a3f">VocaShot Game</span><span class="skip"></span></div>
+    <div class="card" style="margin-top:190px;padding:20px">
+      <div style="width:50px;height:50px;border-radius:13px;background:#fdeee0;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:22px">🎮</div>
+      <div style="font-size:12px;color:#6a7386;margin-bottom:4px">Room PIN</div>
+      <div style="background:#f3f5f9;border-radius:10px;padding:12px 13px;color:#b3bac8;letter-spacing:4px;margin-bottom:12px">1 2 3 4 5 6</div>
+      <div style="font-size:12px;color:#6a7386;margin-bottom:4px">Nickname</div>
+      <div style="background:#f3f5f9;border-radius:10px;padding:12px 13px;color:#b3bac8;margin-bottom:16px">Name or nickname</div>
+      <div class="btn dis" style="border-radius:12px">Join</div>
+    </div>
+  </div>
+
+  <!-- 조사 스나이퍼 -->
+  <div class="scr full dark-scr" id="s-sniper">
+    <div class="p-topbar"><span class="x" style="color:#e7ebf3" onclick="go('games')">←</span><span class="mid" style="color:#fff;font-weight:800;font-size:18px">조사 스나이퍼</span><span class="skip"></span></div>
+    <div style="font-size:12px;color:#8b93a5;margin:-4px 0 14px">급수를 선택하세요</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+      <div class="snip" style="border-color:#2e5c3a;background:#101d15"><b style="color:#6fe08a">1급</b><span style="color:#9fb3a6">은/는 · 이/가 · 을/를 · 에 · 에서 · 하고 · 과/와 · 에게…</span></div>
+      <div class="snip" style="border-color:#28406e;background:#0e1626"><b style="color:#6ea3ff">2급</b><span style="color:#9fadc6">(으)로 · 의 · 보다 · 만</span></div>
+      <div class="snip" style="border-color:#4a3070;background:#170f26"><b style="color:#b98aff">3급</b><span style="color:#b3a6c9">한테서 · 밖에 · 이나/나 · 처럼</span></div>
+      <div class="snip" style="border-color:#6e4426;background:#241408"><b style="color:#ffab61">4급</b><span style="color:#c9b3a0">에다가 · 이든지/든지 · 만큼</span></div>
+      <div class="snip" style="border-color:#6e2c4e;background:#230d19"><b style="color:#ff7fb2">5급</b><span style="color:#c9a6b8">에 비해서 · 께 · 을 위해서/를 위해서</span></div>
+      <div class="snip" style="border-color:#33346e;background:#0f1026"><b style="color:#9a9bff">6급</b><span style="color:#adaec9">랑/이랑 · 이라든가/라든가 · 대신에</span></div>
+      <div class="snip" style="border-color:#1f5c66;background:#0a1d21"><b style="color:#5fd9ef">7급</b><span style="color:#9fc2c9">마다 · 대로 · 에 따라</span></div>
+      <div class="snip" style="border-color:#6e5c1f;background:#211c08"><b style="color:#f0d05f">8급</b><span style="color:#c9c2a0">조차 · 로서 · 으로서 · 에 의하면</span></div>
+    </div>
+  </div>
+
+  <!-- 표현클립 -->
+  <div class="scr" id="s-clip">
+    <div style="font-size:16px;font-weight:800;margin-bottom:11px">표현 클립</div>
+    <div class="searchbar">감사합니다 <span style="color:#b3bac8">✕</span><span class="go">🔍</span></div>
+    <div style="margin:11px 0 5px">
+      <span class="chip on">All</span><span class="chip">Entertainment</span><span class="chip">Film/Drama</span><span class="chip">News</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin:5px 0 9px">
+      <span style="color:#0180ff;font-weight:800;font-size:14px">'감사합니다'</span>
+      <span style="font-size:12px;color:#98a1b3">검색 결과 610개</span>
+    </div>
+    <div class="thumb"><span class="dur">23:33</span><span class="hrt">♡</span><div class="ph" style="color:#845e3f">예능 썸네일 · 탭하면 인라인 재생</div></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px"><div><b>감사합니다</b><div style="color:#98a1b3;font-size:11px">[ENG/JP] 아이돌 Lv.999! 엑소 SBN들이 전수해 …</div></div><span style="color:#c3cad6">⋮</span></div>
+    <div class="thumb" style="margin-top:11px;background:linear-gradient(120deg,#bcd8f0,#d9e8c8)"><span class="dur">6:33</span><span class="hrt">♡</span><div class="ph" style="color:#4f6a83">런닝맨 썸네일</div></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px"><div><b>감사합니다</b><div style="color:#98a1b3;font-size:11px">유장꾸돌소민</div></div><span style="color:#c3cad6">⋮</span></div>
+  </div>
+
+  <!-- MY -->
+  <div class="scr" id="s-my">
+    <div style="font-size:16px;font-weight:800;margin-bottom:13px">My Page</div>
+    <div style="display:flex;align-items:center;gap:11px;background:#f6f7f8;border-radius:14px;padding:13px;margin-bottom:13px">
+      <div style="width:44px;height:44px;border-radius:24px;background:#e2e7ef;display:flex;align-items:center;justify-content:center">👤</div>
+      <b style="font-size:15px">김풀리</b><span style="color:#98a1b3;font-size:12px">✎</span>
+    </div>
+    <div class="row">Edit Profile <span style="color:#c3cad6">›</span></div>
+    <div class="row">Change Password <span style="color:#c3cad6">›</span></div>
+    <div class="row"><span style="color:#6a7386;font-weight:600">Email</span> <span style="color:#98a1b3;font-weight:500">sample@pulley.com</span></div>
+    <div class="row"><span style="color:#6a7386;font-weight:600">Language Settings</span> <span style="font-weight:600">🇺🇸 English ▾</span></div>
+    <div class="row" style="justify-content:center;color:#6a7386">⎋&nbsp; Sign Out</div>
+  </div>
+
+  <!-- 하단 탭바 -->
+  <div class="navbar" id="nav">
+    <div data-t="home" onclick="go('home')"><span class="ic">⌂</span>홈</div>
+    <div data-t="textbook" onclick="go('textbook')"><span class="ic">▦</span>교재학습</div>
+    <div data-t="games" onclick="go('games')"><span class="ic">🎮</span>게임</div>
+    <div data-t="clip" onclick="go('clip')"><span class="ic">▶</span>표현클립</div>
+    <div data-t="my" onclick="go('my')"><span class="ic">👤</span>MY</div>
+  </div>
+</div>
+
+<script>
+const CAPS = {
+  login:    ["로그인", "/login", "회원가입 진입점 없음(계정은 어드민 발급) · UI 언어 5종(한/영/일/중/베) · Figma엔 언어별 비밀번호 재설정 플로우까지 디자인 완료. Login을 누르면 홈으로."],
+  home:     ["홈", "/main", "주간 스트릭 + 이어서 학습하기 딥링크 + 현재 과 진행 도넛(3/43 — 분모 정의 불명확) + 오늘·주간 활동 수 + 주간 학습량 차트. 이어하기 카드를 눌러보세요."],
+  textbook: ["교재학습 · 과 목록", "/main/textbook", "권 캐러셀(한글+1~8권) → 과 칩(1권은 4~15과, 1~3과는 한글 과정으로 분리) → 기초 5종 + 심화 2종. 상태는 완료/미완료 이진뿐. 각 활동 행을 눌러보세요."],
+  jamo:     ["한글 자모 익히기", "/main/textbook/jamo", "1~3과 · 자모 그룹(모음1/자음1…)별 활동 5종 반복(발음 따라하기·조합 쓰기·단어 따라하기·단어 쓰기·듣고 고르기)."],
+  write:    ["자음-모음 조합하고 쓰기", "/book/chapter/unit/write/YK0002", "음성(어)을 듣고 초성+중성 조합 → 확인. 단계 라벨 한/영 병기. 라우트에 콘텐츠 ID(YK0002) 노출."],
+  word:     ["단어 학습하기", "/learn/word?book=1&chapter=4", "영어 뜻 → 4지선다, 약 10문항. skip · 이전/다음 화살표 + 점 진행. 기초학습은 /learn/* 라우트 계열."],
+  roleplay: ["AI 롤플레잉", "/learn/roleplay", "교재 대화문 재현 말하기. 역할 토글(AI>나/나>AI), AI 대사 TTS, 내 차례에 마이크 녹음."],
+  listen:   ["듣고 질문에 답하기", "/learn/listen-answer", "음성 재생 + 진술문 O/X, 약 3문항. 이 플레이어만 skip이 없음 — 플레이어 간 헤더 불일치 사례."],
+  fillblank:["빈칸 채워 말하기", "/learn/fill-blank", "문장 빈칸 + 2지선다(이에요/예요), 약 6문항. 이름과 달리 말하기 단계는 관찰되지 않음."],
+  read:     ["읽고 질문에 답하기", "/learn/read-answer", "지문 + 진술문 O/X, 약 5문항."],
+  mintro:   ["AI 미션 대화 — 인트로", "/book/chapter/unit/mission_chat/YK0041", "시나리오 카드 + 미션 키워드 3개 → 시작하기. 키워드 칩과 영문 설명의 짝이 어긋남(이름↔Say hello) — 검수 포인트. 심화학습은 /book/chapter/unit/* 라우트 계열."],
+  mchat:    ["AI 미션 대화 — 채팅", "/book/chapter/unit/dialog/C4", "미션 체크리스트 · AI 말풍선 TTS/번역(Aa) · 코칭 피드백(gpt-5.2, 4항목 판정) · 음성+키보드. 종료 후 리포트 화면 실존(✓코드 확인: dialog/report/$id — 발음/문법/내용/어휘 4축 차트 + 다시하기). 프롬프트는 DB(ko_chat_dialog)."],
+  flash:    ["단어 플래시카드", "/book/chapter/unit/flashcard/1", "카드 탭 = 앞/뒷면 플립(단어 ↔ +영어 뜻), 발음듣기 TTS, 몰라요(#FFDB5C)/알아요(#0180FF) 자기평가. Figma엔 이미지 카드와 역방향(뜻→단어) 모드도 존재. 버튼을 누르면 결과 화면으로."],
+  fresult:  ["플래시카드 결과 ✓코드 확인", "/book/chapter/unit/flashcard/result/$id", "브랜드 블루 배경(Figma 네이비 시안과 다름). 진행률 원형 + '모르는 단어/아는 단어' 집계(탭하면 단어 목록 바텀시트) + 미만이면 repeat 재학습, 100%면 끝내기. 앱 유일의 오답 재학습 루프. 학습 화면(몰라요/알아요)과 라벨 불일치."],
+  games:    ["게임 목록", "/main/game", "5종, 제목·설명 영어 고정. VocaShot만 멀티플레이(교사 개설). VocaShot·Particle Sniper를 눌러보세요."],
+  vocashot: ["VocaShot 입장", "/main/game/vocashot", "Kahoot형: Room PIN + 닉네임 입장. 방 개설·콘텐츠 편집은 관리자 콘솔(admin.korean.pulleyai.co.kr) 게임관리 메뉴."],
+  sniper:   ["조사 스나이퍼", "/main/game/particle-sniper", "급수(1~8급) 선택, 급별 조사 목록은 연세 8권 체계와 일치. 본체 디자인 시스템(Pretendard/#0180FF) 밖의 다크 게임 룩 — 시스템 이탈 사례."],
+  clip:     ["표현클립", "/main/clip", "표현 검색('감사합니다' → 610건) → YouTube 클립을 해당 표현 타임스탬프부터 인라인 재생. 카테고리 필터 + 하트 저장. 교재 진도와 미연동."],
+  my:       ["MY", "/main/my", "프로필·비밀번호·언어 설정만 존재. Figma 마이페이지엔 급/반·국적 변경, 연속 학습일·포인트 요소까지 디자인 — 실앱은 축소판. 학습 기록 없음."]
+};
+const TABS = { home:"home", textbook:"textbook", jamo:"textbook", games:"games", clip:"clip", my:"my" };
+function go(id){
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  const scr = document.getElementById('s-'+id);
+  if (scr) { scr.classList.add('on'); scr.scrollTop = 0; }
+  const nav = document.getElementById('nav');
+  const tab = TABS[id];
+  nav.classList.toggle('on', !!tab);
+  nav.querySelectorAll('[data-t]').forEach(d => d.classList.toggle('act', d.dataset.t === tab));
+  document.querySelectorAll('.jump button').forEach(b => b.classList.toggle('on', b.dataset.s === id));
+  const c = CAPS[id] || ["",""," "];
+  document.getElementById('cap').innerHTML = '<b>' + c[0] + '</b><code>' + c[1] + '</code><div style="margin-top:6px">' + c[2] + '</div>';
+}
+document.querySelectorAll('.jump button').forEach(b => b.addEventListener('click', () => go(b.dataset.s)));
+go('home');
+</script>

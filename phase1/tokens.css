@@ -1,0 +1,219 @@
+/**
+ * 디자인 토큰 — 2단 구조 (primitive → semantic)
+ *
+ * 값 출처: Figma [디자인] 스타일 가이드/컴포넌트 (node 2023:13837) 실측 51색 · 23타이포
+ * 구조 출처: 참고 디자인 시스템의 primitive/semantic 2단 분리 방식
+ *
+ * 적용: src/styles/globals.css 의 @import "tailwindcss"; 아래에 @import 한다.
+ *
+ * ── 두 층을 나누는 이유 ──────────────────────────────────
+ *   primitive = 무슨 색인가   --color-primitive-blue-500
+ *   semantic  = 어디에 쓰나   --color-fill-primary  →  primitive-blue-500 참조
+ *
+ *   화면 코드는 semantic 만 쓴다. bg-fill-primary / text-text-sub / border-line-normal
+ *   브랜드 파랑이 바뀌면 primitive 한 줄만 고치면 전부 따라온다.
+ *   primitive 를 화면에서 직접 쓰는 것은 예외 취급한다.
+ *
+ * ── Tailwind 기본 팔레트는 건드리지 않는다 ────────────────
+ *   --color-*: initial 로 기본 팔레트를 지우면 팔레트 밖 색이 컴파일 단계에서
+ *   걸리므로 최종 목표로는 맞다. 그러나 지금 코드가 Tailwind 기본 색 클래스를
+ *   389회 쓰고 있어(gray 211 · blue 65 · slate 53 · green 18 · emerald 13 · red 8 …)
+ *   지금 켜면 화면이 깨진다.  →  Phase 3, 아래 두 조건을 만족한 뒤 켠다:
+ *     ① Tailwind 기본 색 클래스 389회 이관 완료
+ *     ② bg-[#......] 형태의 임의값 998회 이관 완료
+ *   prefix 를 붙였으므로 지금은 충돌 없이 병존한다.
+ *
+ * ── shadcn oklch 변수는 지우지 않는다 ────────────────────
+ *   --primary 등이 src/components/ui 의 9개 컴포넌트에서 14회 쓰인다.
+ *   팔레트로의 이관은 Phase 2에서 그 컴포넌트들과 함께.
+ */
+
+@theme {
+  /* ══════════ primitive — 무슨 색인가 ══════════ */
+
+  /* blue */
+  --color-primitive-blue-50: #DBEDFF;
+  --color-primitive-blue-100: #A2D1FF;
+  --color-primitive-blue-200: #7FBFFF;
+  --color-primitive-blue-300: #59ACFF;
+  --color-primitive-blue-400: #359AFF;
+  --color-primitive-blue-500: #0180FF;
+  --color-primitive-blue-600: #0073E6;
+  --color-primitive-blue-700: #0A6ACB;
+  --color-primitive-blue-800: #22588F;
+  --color-primitive-blue-900: #24425F;
+
+  /* blue-gray */
+  --color-primitive-blue-gray-50: #F6F7F8;
+  --color-primitive-blue-gray-100: #E5E8EC;
+  --color-primitive-blue-gray-200: #D7DBE3;
+  --color-primitive-blue-gray-300: #C8CCD3;
+  --color-primitive-blue-gray-400: #ADB3BE;
+  --color-primitive-blue-gray-500: #979DA8;
+  --color-primitive-blue-gray-600: #7F848D;
+  --color-primitive-blue-gray-700: #666B73;
+  --color-primitive-blue-gray-800: #4B505A;
+  --color-primitive-blue-gray-900: #383A3F;
+
+  /* gray */
+  --color-primitive-gray-50: #FAFAFA;
+  --color-primitive-gray-100: #F5F5F5;
+  --color-primitive-gray-200: #EEEEEE;
+  --color-primitive-gray-300: #E0E0E0;
+  --color-primitive-gray-400: #BDBDBD;
+  --color-primitive-gray-500: #9E9E9E;
+  --color-primitive-gray-600: #757575;
+  --color-primitive-gray-700: #616161;
+  --color-primitive-gray-800: #424242;
+  --color-primitive-gray-900: #212121;
+
+  /* white */
+  --color-primitive-white-50: #F9FAFC;
+  --color-primitive-white-100: #FFFFFF;
+
+  /* yellow */
+  --color-primitive-yellow-50: #FFF8E1;
+  --color-primitive-yellow-100: #FFF2C1;
+  --color-primitive-yellow-200: #FFE790;
+  --color-primitive-yellow-300: #FFDB5C;
+  --color-primitive-yellow-400: #FFD230;
+  --color-primitive-yellow-500: #FFCB13;
+
+  /* red */
+  --color-primitive-red-50: #FFE8E8;
+  --color-primitive-red-100: #FFC6BC;
+  --color-primitive-red-200: #FF9B8C;
+  --color-primitive-red-300: #FE7B67;
+  --color-primitive-red-400: #F76853;
+
+  /* green */
+  --color-primitive-green-50: #E7FBCE;
+  --color-primitive-green-100: #AFEF98;
+  --color-primitive-green-200: #85E075;
+  --color-primitive-green-300: #4BC96D;
+  --color-primitive-green-400: #19BB62;
+
+  /* positive */
+  --color-primitive-positive: #11C378;
+
+  /* cautionary */
+  --color-primitive-cautionary: #F98900;
+
+  /* destructive */
+  --color-primitive-destructive: #F15F49;
+
+  /* ══════════ semantic — 어디에 쓰나 ══════════ */
+
+  /* text */
+  --color-text-strong: var(--color-primitive-blue-gray-900);            /* 본문 글자 */
+  --color-text-sub: var(--color-primitive-blue-gray-600);               /* 보조 문구 · UI 언어 병기 */
+  --color-text-heading: var(--color-primitive-blue-900);           /* 활동 지시문 제목 */
+  --color-text-primary: var(--color-primitive-blue-500);           /* 강조 · 링크 */
+  --color-text-disable: var(--color-primitive-gray-400);           /* 비활성 글자 */
+  --color-text-inverse: var(--color-primitive-white-100);           /* 채운 배경 위 글자 */
+
+  /* background */
+  --color-background-base: var(--color-primitive-blue-gray-50);        /* 화면 배경 */
+  --color-background-surface: var(--color-primitive-white-100);     /* 카드 표면 */
+  --color-background-choice: var(--color-primitive-blue-50);      /* 선택지 기본 배경 */
+  --color-background-correct: var(--color-primitive-green-50);     /* 정답 피드백 배경 */
+  --color-background-wrong: var(--color-primitive-red-50);       /* 오답 피드백 배경 */
+  --color-background-caution: var(--color-primitive-yellow-50);     /* 다시 풀기 배지 배경 */
+  --color-background-disable: var(--color-primitive-gray-200);     /* 비활성 배경 */
+
+  /* fill */
+  --color-fill-primary: var(--color-primitive-blue-500);           /* 주요 버튼 · 현재 위치 */
+  --color-fill-primary-hover: var(--color-primitive-blue-400);     /* Hover */
+  --color-fill-primary-pressed: var(--color-primitive-blue-600);   /* Pressed */
+  --color-fill-correct: var(--color-primitive-positive);           /* 진행바 정답 칸 · 정답 아이콘 */
+  --color-fill-wrong: var(--color-primitive-destructive);             /* 진행바 오답 칸 · 오답 아이콘 */
+  --color-fill-caution: var(--color-primitive-cautionary);           /* 3회 이상 틀린 문항 */
+  --color-fill-track: var(--color-primitive-gray-300);             /* 진행바 미응답 칸 */
+  --color-fill-known: var(--color-primitive-blue-500);             /* 플래시카드 알아요 */
+  --color-fill-unknown: var(--color-primitive-yellow-300);           /* 플래시카드 몰라요 */
+
+  /* line */
+  --color-line-normal: var(--color-primitive-blue-gray-100);            /* 구분선 */
+  --color-line-disable: var(--color-primitive-gray-400);           /* 비활성 테두리 */
+  --color-line-focus: var(--color-primitive-blue-500);             /* 키보드 포커스 링 */
+
+  /* icon */
+  --color-icon-strong: var(--color-primitive-blue-gray-900);            /* 본문 아이콘 */
+  --color-icon-normal: var(--color-primitive-blue-gray-600);            /* 보조 아이콘 */
+  --color-icon-correct: var(--color-primitive-positive);           /* ✓ */
+  --color-icon-wrong: var(--color-primitive-destructive);             /* ✕ */
+  --color-icon-inverse: var(--color-primitive-white-100);           /* 채운 배경 위 */
+
+  /* ══════════ typography ══════════ */
+  --font-sans: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --text-h2: 32px;
+  --text-h2--line-height: 48px;
+  --text-h2--font-weight: 700;
+  --text-h2-sb: 32px;                     /* 결과 화면 정답률 숫자 */
+  --text-h2-sb--line-height: 48px;
+  --text-h2-sb--font-weight: 600;
+  --text-h3: 24px;
+  --text-h3--line-height: 36px;
+  --text-h3--font-weight: 700;
+  --text-h3-sb: 24px;
+  --text-h3-sb--line-height: 36px;
+  --text-h3-sb--font-weight: 600;
+  --text-h4: 20px;
+  --text-h4--line-height: 32px;
+  --text-h4--font-weight: 700;
+  --text-h4-sb: 20px;
+  --text-h4-sb--line-height: 32px;
+  --text-h4-sb--font-weight: 600;
+  --text-subtitle1: 18px;
+  --text-subtitle1--line-height: 26px;
+  --text-subtitle1--font-weight: 700;
+  --text-subtitle1-sb: 18px;              /* 활동 지시문(한국어) */
+  --text-subtitle1-sb--line-height: 26px;
+  --text-subtitle1-sb--font-weight: 600;
+  --text-subtitle2: 17px;
+  --text-subtitle2--line-height: 26px;
+  --text-subtitle2--font-weight: 700;
+  --text-subtitle2-sb: 17px;
+  --text-subtitle2-sb--line-height: 26px;
+  --text-subtitle2-sb--font-weight: 600;
+  --text-subtitle3: 16px;
+  --text-subtitle3--line-height: 24px;
+  --text-subtitle3--font-weight: 700;
+  --text-subtitle3-sb: 16px;              /* 헤더 활동명 */
+  --text-subtitle3-sb--line-height: 24px;
+  --text-subtitle3-sb--font-weight: 600;
+  --text-subtitle4: 14px;
+  --text-subtitle4--line-height: 20px;
+  --text-subtitle4--font-weight: 700;
+  --text-b1-sb: 16px;                     /* 버튼 라벨 */
+  --text-b1-sb--line-height: 24px;
+  --text-b1-sb--font-weight: 600;
+  --text-b1-m: 16px;                      /* 선택지 */
+  --text-b1-m--line-height: 24px;
+  --text-b1-m--font-weight: 500;
+  --text-b1-r: 16px;                      /* 문항 본문 · 읽기 지문 */
+  --text-b1-r--line-height: 24px;
+  --text-b1-r--font-weight: 400;
+  --text-b2-sb: 14px;
+  --text-b2-sb--line-height: 20px;
+  --text-b2-sb--font-weight: 600;
+  --text-b2-m: 14px;
+  --text-b2-m--line-height: 20px;
+  --text-b2-m--font-weight: 500;
+  --text-b2-r: 14px;                      /* 지시문 UI 언어 병기 · 오답 해설 */
+  --text-b2-r--line-height: 20px;
+  --text-b2-r--font-weight: 400;
+  --text-b3-sb: 12px;
+  --text-b3-sb--line-height: 18px;
+  --text-b3-sb--font-weight: 600;
+  --text-c1-sb: 14px;
+  --text-c1-sb--line-height: 20px;
+  --text-c1-sb--font-weight: 600;
+  --text-c2-m: 12px;                      /* 진행 카운트 n/N */
+  --text-c2-m--line-height: 16px;
+  --text-c2-m--font-weight: 500;
+  --text-c3-sb: 10px;
+  --text-c3-sb--line-height: 14px;
+  --text-c3-sb--font-weight: 600;
+}

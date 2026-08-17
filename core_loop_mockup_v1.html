@@ -1,0 +1,568 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연세 글로벌 한국어 리뉴얼 · 코어 루프 목업 v1</title>
+<style>
+  :root{
+    --bg:#f5f7fb;--card:#fff;--ink:#17233d;--sub:#6b7691;--muted:#a4aec5;
+    --line:#e5eaf3;--dim:#eff2f8;--panel:#f7f9fc;
+    --brand:#2f5ce6;--brand-deep:#1e3fae;--brand-soft:#e9efff;--brand-ink:#2549c0;
+    --good:#18a05e;--good-soft:#e5f6ec;
+    --warn:#d98324;--warn-soft:#fdf1df;
+    --bad:#d64545;--bad-soft:#fdeaea;
+    --sh:0 1px 2px rgba(23,35,61,.03),0 7px 22px rgba(23,35,61,.06);
+    --sh-h:0 2px 4px rgba(23,35,61,.05),0 12px 28px rgba(23,35,61,.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#dde2ec;color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+    -webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+    display:flex;justify-content:center;gap:26px;padding:26px 18px 70px;flex-wrap:wrap}
+  .wrap{width:100%;max-width:400px;flex:none}
+
+  .hint{font-size:11.5px;color:#4a5670;margin-bottom:12px;background:rgba(255,255,255,.7);
+    border:1px solid rgba(255,255,255,.8);border-radius:10px;padding:8px 12px;line-height:1.6}
+  .jump{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .jump button{border:1px solid var(--line);background:#fff;color:var(--sub);font-family:inherit;
+    font-size:11.5px;font-weight:700;border-radius:999px;padding:6px 12px;cursor:pointer}
+  .jump button.on{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff}
+
+  .phone{background:var(--bg);border-radius:36px;overflow:hidden;position:relative;height:800px;
+    box-shadow:0 24px 70px rgba(17,27,52,.2),inset 0 1px 0 rgba(255,255,255,.9)}
+  .scr{position:absolute;inset:0 0 62px 0;overflow-y:auto;display:none;scroll-behavior:smooth}
+  .scr.on{display:block}
+  .scr.full{inset:0}
+  @keyframes up{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  .scr.on>*{animation:up .22s ease both}
+
+  /* ───────── bottom nav */
+  .bnav{position:absolute;bottom:0;left:0;right:0;height:62px;background:#fff;
+    border-top:1px solid var(--line);display:flex;z-index:16;box-shadow:0 -5px 18px rgba(23,35,61,.03)}
+  .bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    cursor:pointer;border:none;background:none;font-family:inherit}
+  .bni svg{width:21px;height:21px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .bni span{font-size:10px;font-weight:700;color:var(--muted)}
+  .bni.on svg{stroke:var(--brand-deep)}.bni.on span{color:var(--brand-deep)}
+  .bnav.hide{display:none}
+
+  /* ───────── HOME */
+  .h-head{padding:26px 20px 0}
+  .h-hello{font-size:13px;color:var(--sub)}
+  .h-name{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+  .h-streak{margin:16px 20px 0;background:#fff;border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--sh);padding:15px 16px}
+  .wk{display:flex;justify-content:space-between;margin-bottom:10px}
+  .wk .d{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .wk .dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;background:var(--panel);color:var(--muted)}
+  .wk .dot.done{background:var(--brand-deep);color:#fff}
+  .wk .dot.today{background:var(--brand-soft);color:var(--brand-deep);border:1.5px solid var(--brand-deep)}
+  .wk .lb{font-size:10px;color:var(--muted);font-weight:700}
+  .h-streakmsg{font-size:12.5px;color:var(--sub);text-align:center}
+  .h-streakmsg b{color:var(--brand-ink)}
+
+  .resume{margin:12px 20px 0;background:linear-gradient(135deg,#1e3fae,#2f5ce6);border-radius:18px;
+    padding:16px;display:flex;align-items:center;gap:13px;cursor:pointer;box-shadow:0 10px 26px rgba(30,63,174,.24)}
+  .resume .play{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.16);flex:none;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
+  .resume .k{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:.04em;margin-bottom:3px}
+  .resume .t{font-size:15px;font-weight:800;color:#fff}
+  .resume .p{font-size:11px;color:rgba(255,255,255,.75);margin-top:3px}
+  .resume .info{flex:1;min-width:0}
+  .resume .chev{color:rgba(255,255,255,.7);font-size:16px}
+
+  .h-sec{font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--sub);margin:22px 22px 9px;text-transform:uppercase}
+  .stats{margin:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 14px;box-shadow:var(--sh)}
+  .stat .n{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .stat .n small{font-size:12px;font-weight:700;color:var(--muted)}
+  .stat .l{font-size:11px;color:var(--sub);font-weight:700;margin-top:2px}
+  .stat.review{grid-column:1/-1;display:flex;align-items:center;gap:12px;cursor:pointer}
+  .stat.review .badge{width:38px;height:38px;border-radius:12px;background:var(--warn-soft);color:var(--warn);
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex:none}
+  .stat.review .cta{margin-left:auto;font-size:12px;font-weight:700;color:var(--brand-ink);flex:none}
+
+  /* ───────── TEXTBOOK */
+  .tb-head{padding:22px 20px 0}
+  .tb-title{font-size:19px;font-weight:800;letter-spacing:-.02em}
+  .books{display:flex;gap:9px;overflow-x:auto;padding:16px 20px 4px;scrollbar-width:none}
+  .books::-webkit-scrollbar{display:none}
+  .book{flex:none;width:56px;cursor:pointer;text-align:center}
+  .book .cover{width:56px;height:68px;border-radius:10px;background:#fff;border:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.15s;position:relative;overflow:hidden}
+  .book .cover:after{content:"";position:absolute;left:8px;right:8px;bottom:8px;height:1px;background:#dfe6f2}
+  .book .cover .n{font-size:17px;font-weight:800;color:#5b6a8c}
+  .book .cover .u{font-size:8px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin-top:2px}
+  .book.on .cover{background:var(--brand-deep);border-color:var(--brand-deep);box-shadow:0 6px 16px rgba(30,63,174,.28)}
+  .book.on .cover .n,.book.on .cover .u{color:#fff}
+  .book.on .cover:after{background:rgba(255,255,255,.3)}
+  .book .pr{font-size:9.5px;font-weight:700;color:var(--muted);margin-top:5px}
+  .book.on .pr{color:var(--brand-ink)}
+
+  .gwas{display:flex;gap:6px;overflow-x:auto;padding:10px 20px 2px;scrollbar-width:none}
+  .gwas::-webkit-scrollbar{display:none}
+  .gwa{flex:none;border:1px solid var(--line);background:#fff;color:var(--sub);font-family:inherit;
+    font-size:12.5px;font-weight:700;border-radius:999px;padding:8px 14px;cursor:pointer;display:flex;align-items:center;gap:5px}
+  .gwa .st{width:6px;height:6px;border-radius:50%;background:#d3dae8}
+  .gwa .st.done{background:var(--good)}
+  .gwa .st.part{background:var(--brand)}
+  .gwa.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand-deep)}
+
+  .lesson{margin:16px 18px 0;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh);padding:17px 16px 8px}
+  .ls-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:4px}
+  .ls-no{font-size:10px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--brand-deep);border-radius:7px;padding:5px 8px;margin-top:2px;flex:none}
+  .ls-title{font-size:18px;font-weight:800;letter-spacing:-.03em;line-height:1.35}
+  .ls-meta{font-size:11px;color:var(--sub);margin-top:3px}
+  .ls-prog{display:flex;align-items:center;gap:9px;margin:10px 0 4px}
+  .ls-bar{flex:1;height:6px;border-radius:6px;background:var(--dim);overflow:hidden}
+  .ls-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#2f5ce6,#1e3fae);width:43%}
+  .ls-pct{font-size:11px;font-weight:800;color:var(--brand-ink);font-variant-numeric:tabular-nums}
+  .grp{font-size:10.5px;font-weight:800;letter-spacing:.03em;color:var(--brand-ink);padding:13px 2px 4px}
+  .act{display:flex;align-items:center;gap:11px;padding:12px 2px;border-top:1px solid #eef1f7;cursor:pointer;min-height:56px}
+  .act .ic{width:36px;height:36px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--panel);color:var(--brand-ink)}
+  .act .body{flex:1;min-width:0}
+  .act .t{font-size:14px;font-weight:700;color:#22304e}
+  .act .d{font-size:11px;color:var(--muted);margin-top:1px}
+  .pill{font-size:10.5px;font-weight:800;border-radius:999px;padding:4px 10px;flex:none}
+  .pill.todo{background:var(--dim);color:var(--muted)}
+  .pill.doing{background:var(--brand-soft);color:var(--brand-ink)}
+  .pill.done{background:var(--good-soft);color:var(--good)}
+  .pill.review{background:var(--warn-soft);color:var(--warn)}
+
+  /* ───────── PLAYER (공통 셸) */
+  .pl-top{padding:16px 16px 0}
+  .pl-bar{display:flex;align-items:center;gap:8px;height:40px}
+  .pl-x{width:36px;height:36px;border-radius:50%;background:var(--dim);border:none;cursor:pointer;
+    font-size:15px;color:var(--sub);flex:none;font-family:inherit}
+  .pl-info{flex:1;text-align:center;min-width:0}
+  .pl-name{font-size:13.5px;font-weight:800}
+  .pl-src{font-size:10px;color:var(--muted);font-weight:700;margin-top:1px}
+  .pl-cnt{font-size:12px;font-weight:800;color:var(--brand-ink);width:36px;text-align:right;flex:none;font-variant-numeric:tabular-nums}
+  .segs{display:flex;gap:3px;margin-top:12px}
+  .seg{flex:1;height:4px;border-radius:4px;background:var(--dim)}
+  .seg.did{background:var(--brand)}
+  .seg.wrong{background:var(--bad)}
+  .pl-body{padding:22px 20px 0}
+  .q-inst{font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.4}
+  .q-inst-en{font-size:12px;color:var(--muted);margin-top:4px}
+  .q-card{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);
+    min-height:120px;display:flex;align-items:center;justify-content:center;padding:22px;text-align:center}
+  .q-card .mean{font-size:19px;font-weight:700;color:#33405e}
+  .choices{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .choice{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:16px 8px;font-size:15.5px;
+    font-weight:700;color:#2a3752;cursor:pointer;font-family:inherit;transition:.13s;text-align:center}
+  .choice:hover{border-color:#c4d0e8}
+  .choice.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+  .choice.no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+  .choice.reveal{border-color:var(--good);box-shadow:0 0 0 2px var(--good-soft)}
+  .fb{margin:14px 0 0;border-radius:14px;padding:12px 14px;font-size:12.5px;font-weight:700;display:none;align-items:center;gap:8px}
+  .fb.show{display:flex}
+  .fb.good{background:var(--good-soft);color:var(--good)}
+  .fb.bad{background:var(--warn-soft);color:var(--warn)}
+  .pl-foot{position:absolute;left:0;right:0;bottom:0;padding:14px 20px 22px;background:linear-gradient(transparent,var(--bg) 38%)}
+  .nextbtn{width:100%;height:52px;border-radius:14px;border:none;background:var(--brand-deep);color:#fff;
+    font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;opacity:0;pointer-events:none;transition:.18s}
+  .nextbtn.show{opacity:1;pointer-events:auto}
+
+  /* ───────── RESULT */
+  .rs-body{padding:34px 22px 0;text-align:center}
+  .rs-ring{width:112px;height:112px;border-radius:50%;margin:0 auto 6px;
+    background:conic-gradient(var(--brand) calc(var(--pct)*1%),#e6ebf5 0);display:flex;align-items:center;justify-content:center}
+  .rs-ring .in{width:88px;height:88px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .rs-ring .a{font-size:24px;font-weight:800;color:var(--brand-deep);font-variant-numeric:tabular-nums}
+  .rs-ring .b{font-size:10.5px;font-weight:700;color:var(--muted)}
+  .rs-t{font-size:19px;font-weight:800;margin-top:10px}
+  .rs-s{font-size:12.5px;color:var(--sub);margin-top:4px;line-height:1.6}
+  .rs-s b{color:var(--warn)}
+  .wrongbox{margin:20px 0 0;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);text-align:left;padding:4px 15px}
+  .wrongbox .h{font-size:11px;font-weight:800;color:var(--sub);padding:12px 1px 4px;letter-spacing:.03em}
+  .witem{display:flex;align-items:center;gap:10px;padding:11px 1px;border-top:1px solid #eef1f7}
+  .witem .w{font-size:14.5px;font-weight:800}
+  .witem .m{font-size:11.5px;color:var(--sub);flex:1}
+  .witem .tag{font-size:10px;font-weight:800;color:var(--warn);background:var(--warn-soft);border-radius:6px;padding:3px 8px}
+  .rs-acts{margin:18px 0 0;display:flex;flex-direction:column;gap:8px}
+  .rs-acts .pri{height:52px;border-radius:14px;border:none;background:var(--brand-deep);color:#fff;font-size:14.5px;font-weight:800;font-family:inherit;cursor:pointer}
+  .rs-acts .sec2{height:48px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--sub);font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer}
+
+  /* ───────── stub screens */
+  .stub{padding:120px 30px 0;text-align:center}
+  .stub .e{font-size:34px;margin-bottom:12px}
+  .stub .t{font-size:16px;font-weight:800;margin-bottom:6px}
+  .stub .d{font-size:12.5px;color:var(--sub);line-height:1.7}
+
+  /* ───────── SPEC NOTES panel */
+  .notes{width:100%;max-width:430px;flex:none}
+  .notes .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:20px 22px;position:sticky;top:26px}
+  .notes .kick{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--brand);text-transform:uppercase;margin-bottom:6px}
+  .notes h2{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+  .notes .sec{display:none}
+  .notes .sec.on{display:block}
+  .notes ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .notes li{display:flex;gap:9px;font-size:13px;line-height:1.65;color:#33405e}
+  .notes li .no{flex:none;width:19px;height:19px;border-radius:50%;background:var(--brand-soft);color:var(--brand-deep);
+    font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:3px}
+  .notes li b{color:var(--ink)}
+  .notes .foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.6}
+  @media (max-width:900px){.notes .card{position:static}}
+</style>
+
+<div class="wrap">
+  <div class="hint"><b>연세 글로벌 한국어 리뉴얼 · 코어 루프 v1</b> — 홈→교재학습→과→활동→결과가 실제로 이어집니다. 오답을 내보면 복습 흐름까지 볼 수 있어요. 오른쪽(모바일은 아래) 기획 노트가 화면 따라 바뀝니다.</div>
+  <div class="jump" id="jump"></div>
+
+  <div class="phone">
+
+    <!-- HOME -->
+    <div class="scr on" data-scr="home">
+      <div class="h-head">
+        <div class="h-hello">안녕하세요,</div>
+        <div class="h-name">김풀리 님 👋</div>
+      </div>
+      <div class="h-streak">
+        <div class="wk">
+          <div class="d"><div class="dot done">✓</div><div class="lb">월</div></div>
+          <div class="d"><div class="dot done">✓</div><div class="lb">화</div></div>
+          <div class="d"><div class="dot done">✓</div><div class="lb">수</div></div>
+          <div class="d"><div class="dot today">4</div><div class="lb">오늘</div></div>
+          <div class="d"><div class="dot">금</div><div class="lb">금</div></div>
+          <div class="d"><div class="dot">토</div><div class="lb">토</div></div>
+          <div class="d"><div class="dot">일</div><div class="lb">일</div></div>
+        </div>
+        <div class="h-streakmsg"><b>3일 연속 학습 중</b> · 오늘 활동 1개면 4일째가 돼요</div>
+      </div>
+      <div class="resume" onclick="go('player')">
+        <div class="play">▶</div>
+        <div class="info">
+          <div class="k">이어서 학습하기</div>
+          <div class="t">단어 학습하기</div>
+          <div class="p">1권 4과 · 제 이름은 유리예요 · 4/10 문항</div>
+        </div>
+        <div class="chev">›</div>
+      </div>
+      <div class="h-sec">나의 학습</div>
+      <div class="stats">
+        <div class="stat"><div class="n">3<small>/7</small></div><div class="l">이번 과 활동 완료</div></div>
+        <div class="stat"><div class="n">2</div><div class="l">오늘 완료한 활동</div></div>
+        <div class="stat review" onclick="go('gwa')">
+          <div class="badge">6</div>
+          <div>
+            <div class="n" style="font-size:14px">복습 대기 단어 6개</div>
+            <div class="l">틀렸거나 "몰라요"한 단어 · 내일이면 8개</div>
+          </div>
+          <div class="cta">복습하기 ›</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEXTBOOK list -->
+    <div class="scr" data-scr="tb">
+      <div class="tb-head"><div class="tb-title">교재학습</div></div>
+      <div class="books">
+        <div class="book"><div class="cover"><div class="n">한글</div><div class="u">HANGEUL</div></div><div class="pr">완료</div></div>
+        <div class="book on"><div class="cover"><div class="n">1권</div><div class="u">BOOK 1</div></div><div class="pr">43%</div></div>
+        <div class="book"><div class="cover"><div class="n">2권</div><div class="u">BOOK 2</div></div><div class="pr">–</div></div>
+        <div class="book"><div class="cover"><div class="n">3권</div><div class="u">BOOK 3</div></div><div class="pr">–</div></div>
+        <div class="book"><div class="cover"><div class="n">4권</div><div class="u">BOOK 4</div></div><div class="pr">–</div></div>
+        <div class="book"><div class="cover"><div class="n">5권</div><div class="u">BOOK 5</div></div><div class="pr">–</div></div>
+      </div>
+      <div class="gwas">
+        <button class="gwa"><span class="st done"></span>4과</button>
+        <button class="gwa on" onclick="go('gwa')"><span class="st part"></span>5과</button>
+        <button class="gwa"><span class="st"></span>6과</button>
+        <button class="gwa"><span class="st"></span>7과</button>
+        <button class="gwa"><span class="st"></span>8과</button>
+        <button class="gwa"><span class="st"></span>9과</button>
+      </div>
+      <div class="lesson" onclick="go('gwa')" style="cursor:pointer">
+        <div class="ls-head">
+          <div class="ls-no">5과</div>
+          <div>
+            <div class="ls-title">한국 음식을 좋아해요?</div>
+            <div class="ls-meta">활동 7개 · 3개 완료 · 예상 15분 남음</div>
+          </div>
+        </div>
+        <div class="ls-prog"><div class="ls-bar"><div class="ls-fill"></div></div><div class="ls-pct">43%</div></div>
+        <div style="text-align:center;font-size:12px;font-weight:700;color:var(--brand-ink);padding:10px 0 12px">과 열기 ›</div>
+      </div>
+    </div>
+
+    <!-- GWA detail -->
+    <div class="scr" data-scr="gwa">
+      <div class="tb-head" style="display:flex;align-items:center;gap:8px">
+        <button class="pl-x" onclick="go('tb')">‹</button>
+        <div>
+          <div class="tb-title" style="font-size:17px">5과 · 한국 음식을 좋아해요?</div>
+          <div style="font-size:11px;color:var(--sub);margin-top:2px">1권 · 활동 3/7 완료 · 복습 대기 6단어</div>
+        </div>
+      </div>
+      <div class="lesson" style="margin-top:14px">
+        <div class="grp">기초학습</div>
+        <div class="act" style="border-top:none" onclick="go('player')">
+          <div class="ic">🃏</div>
+          <div class="body"><div class="t">단어 학습하기</div><div class="d">10문항 · 4번에서 멈춤</div></div>
+          <div class="pill doing">이어하기</div>
+        </div>
+        <div class="act">
+          <div class="ic">🗣</div>
+          <div class="body"><div class="t">AI 롤플레잉</div><div class="d">교재 대화 2개 · 역할 선택</div></div>
+          <div class="pill done">완료</div>
+        </div>
+        <div class="act">
+          <div class="ic">🎧</div>
+          <div class="body"><div class="t">듣고 질문에 답하기</div><div class="d">3문항</div></div>
+          <div class="pill done">완료</div>
+        </div>
+        <div class="act">
+          <div class="ic">✏️</div>
+          <div class="body"><div class="t">빈칸 채워 말하기</div><div class="d">6문항</div></div>
+          <div class="pill todo">미학습</div>
+        </div>
+        <div class="act">
+          <div class="ic">📖</div>
+          <div class="body"><div class="t">읽고 질문에 답하기</div><div class="d">5문항</div></div>
+          <div class="pill todo">미학습</div>
+        </div>
+        <div class="grp">심화학습</div>
+        <div class="act" style="border-top:none">
+          <div class="ic">💬</div>
+          <div class="body"><div class="t">AI 미션 대화</div><div class="d">미션 3개 · 음식 주문하기</div></div>
+          <div class="pill todo">미학습</div>
+        </div>
+        <div class="act">
+          <div class="ic">🔁</div>
+          <div class="body"><div class="t">단어 플래시카드</div><div class="d">복습 대기 6단어 포함 12장</div></div>
+          <div class="pill review">복습 권장</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAYER (공통 셸 + 단어 학습하기 데모) -->
+    <div class="scr full" data-scr="player">
+      <div class="pl-top">
+        <div class="pl-bar">
+          <button class="pl-x" onclick="go('gwa')">✕</button>
+          <div class="pl-info">
+            <div class="pl-name">단어 학습하기</div>
+            <div class="pl-src">1권 5과 · 한국 음식을 좋아해요?</div>
+          </div>
+          <div class="pl-cnt"><span id="qNow">1</span>/3</div>
+        </div>
+        <div class="segs" id="segs"><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
+      </div>
+      <div class="pl-body">
+        <div class="q-inst">다음 뜻을 가진 단어를 고르세요.</div>
+        <div class="q-inst-en" id="instEn">Choose the word that matches the meaning.</div>
+        <div class="q-card"><div class="mean" id="qMean">Korean food</div></div>
+        <div class="choices" id="choices"></div>
+        <div class="fb" id="fb"></div>
+      </div>
+      <div class="pl-foot"><button class="nextbtn" id="nextBtn" onclick="nextQ()">다음</button></div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="scr full" data-scr="result">
+      <div class="pl-top">
+        <div class="pl-bar">
+          <button class="pl-x" onclick="go('gwa')">✕</button>
+          <div class="pl-info"><div class="pl-name">단어 학습하기 · 결과</div><div class="pl-src">1권 5과</div></div>
+          <div style="width:36px"></div>
+        </div>
+      </div>
+      <div class="rs-body">
+        <div class="rs-ring" id="ring" style="--pct:67"><div class="in"><div class="a" id="ringA">2/3</div><div class="b">정답</div></div></div>
+        <div class="rs-t" id="rsTitle">거의 다 왔어요!</div>
+        <div class="rs-s" id="rsSub">틀린 단어 <b>1개</b>는 복습 큐에 들어갔어요.<br>플래시카드와 다음 활동에 다시 나와요.</div>
+        <div class="wrongbox" id="wrongbox">
+          <div class="h">복습 큐에 추가된 단어</div>
+          <div id="wrongList"></div>
+        </div>
+        <div class="rs-acts">
+          <button class="pri" id="retryWrong" onclick="startQuiz(true)">틀린 것만 다시 풀기</button>
+          <button class="sec2" onclick="go('gwa')">과로 돌아가기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- stubs -->
+    <div class="scr" data-scr="game"><div class="stub"><div class="e">🎮</div><div class="t">게임</div><div class="d">v1 범위 밖 — 리뉴얼 2단계에서<br>플레이어 셸과 같은 디자인 토큰으로 재작업</div></div></div>
+    <div class="scr" data-scr="clip"><div class="stub"><div class="e">🎬</div><div class="t">표현클립</div><div class="d">v1 범위 밖 — 과 진도 연동(과별 핵심 표현 큐레이션)이<br>선행 결정 사항</div></div></div>
+    <div class="scr" data-scr="my"><div class="stub"><div class="e">👤</div><div class="t">MY</div><div class="d">v1 범위 밖 — 학습 기록·주간 리포트·저장한 클립이<br>이 탭으로 들어올 예정</div></div></div>
+
+    <!-- bottom nav -->
+    <div class="bnav" id="bnav">
+      <button class="bni on" data-nav="home" onclick="go('home')">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a2 2 0 01-2 2h-4v-7h-6v7H5a2 2 0 01-2-2z"/></svg><span>홈</span></button>
+      <button class="bni" data-nav="tb" onclick="go('tb')">
+        <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 012-2h13v18H6a2 2 0 01-2-2zm0 0a2 2 0 012-2h13"/></svg><span>교재학습</span></button>
+      <button class="bni" data-nav="game" onclick="go('game')">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="12" rx="4"/><path d="M7 11v4M5 13h4M15 12h.01M18 14h.01"/></svg><span>게임</span></button>
+      <button class="bni" data-nav="clip" onclick="go('clip')">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3z"/></svg><span>표현클립</span></button>
+      <button class="bni" data-nav="my" onclick="go('my')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg><span>MY</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ───────── 기획 노트 -->
+<div class="notes">
+  <div class="card">
+    <div class="kick">Spec Notes · 화면 따라 바뀜</div>
+    <h2 id="noteTitle">홈</h2>
+
+    <div class="sec on" data-note="home">
+      <ul>
+        <li><span class="no">1</span><div><b>스트릭은 "오늘 할 일 1개"와 연결.</b> 현행은 숫자만 보여줌 → "오늘 활동 1개면 N일째" 문구로 다음 행동을 지정한다.</div></li>
+        <li><span class="no">2</span><div><b>이어서 학습하기에 문항 단위 위치</b>(4/10)까지 표기. 현행은 활동 이름까지만 — 재진입 시 처음부터인지 이어서인지 불명확했다.</div></li>
+        <li><span class="no">3</span><div><b>지표 재정의.</b> 현행 "현재 과 진행 3/43"은 분모 해석 불가 → "이번 과 활동 3/7", "오늘 완료 활동"으로 단위를 화면에 명시.</div></li>
+        <li><span class="no">4</span><div><b>복습 대기 카드(신규).</b> 오답·"몰라요" 단어가 쌓이는 복습 큐를 홈에 노출 — 이진(완료/미완료) 상태 모델을 대체하는 핵심 장치. "내일이면 8개"로 방치 비용을 보여준다.</div></li>
+      </ul>
+      <div class="foot">역기획서 §8-② (학습 상태 모델), §3.2 (홈 지표 불명확) 대응</div>
+    </div>
+
+    <div class="sec" data-note="tb">
+      <ul>
+        <li><span class="no">1</span><div><b>권 커버에 진행률</b>을 붙여 "내 위치"가 탭 진입 즉시 보이게. 한글 과정도 같은 선반의 책 하나로 통합(현행은 별도 화면 체계).</div></li>
+        <li><span class="no">2</span><div><b>과 칩에 상태 점</b>(완료=초록/진행=파랑/미학습=회색). 현행은 선택 상태만 있고 진도가 안 보였다.</div></li>
+        <li><span class="no">3</span><div><b>과 카드에 완료 수·예상 남은 시간.</b> "활동 7개 · 3개 완료 · 15분 남음" — 학습 부담을 예측 가능하게.</div></li>
+      </ul>
+      <div class="foot">역기획서 §3.3 대응 · 권 선택→과 선택→과 카드 구조 자체는 유지 (검증된 IA)</div>
+    </div>
+
+    <div class="sec" data-note="gwa">
+      <ul>
+        <li><span class="no">1</span><div><b>상태 4단계</b>: 미학습 / 이어하기(진행 중) / 완료 / <b>복습 권장</b>. 현행 이진 모델에 "진행 중"과 "복습"을 추가 — 복습 권장은 복습 큐에 단어가 쌓이면 플래시카드에 자동 부여.</div></li>
+        <li><span class="no">2</span><div><b>활동 행에 분량·정지 지점</b>("10문항 · 4번에서 멈춤") 표기. 아이콘은 활동 유형별 고정 매핑.</div></li>
+        <li><span class="no">3</span><div><b>라우트 통일(개발 요구사항)</b>: 모든 활동은 <code style="font-size:11px;background:var(--dim);border-radius:4px;padding:1px 5px">/learn/{activity}?book&amp;gwa</code> 한 체계로. 현행 /learn/*·/book/chapter/unit/* 이원 체계 폐기, 콘텐츠 ID는 URL에서 숨김.</div></li>
+      </ul>
+      <div class="foot">역기획서 §8-①(라우트), §8-②(상태 모델) 대응</div>
+    </div>
+
+    <div class="sec" data-note="player">
+      <ul>
+        <li><span class="no">1</span><div><b>플레이어 공통 셸(리뉴얼의 핵심).</b> 모든 활동이 같은 프레임 사용: 좌상단 ✕(저장 후 종료) · 중앙 활동명+출처 · 우측 n/N · 세그먼트 진행바. 활동별로 갈아끼우는 건 본문 영역만.</div></li>
+        <li><span class="no">2</span><div><b>진행바 세그먼트에 결과가 남는다</b> — 파랑=정답, 빨강=오답. 진행 표시가 점·카운터·없음으로 제각각이던 현행을 대체.</div></li>
+        <li><span class="no">3</span><div><b>오답 시 즉시 피드백 + 복습 큐 안내.</b> 정답을 하이라이트하고 "복습 큐에 추가됨"을 알린 뒤 [다음] 버튼으로 진행(자동 넘김 없음 — 오답은 볼 시간이 필요).</div></li>
+        <li><span class="no">4</span><div><b>✕는 항상 이어하기 저장.</b> "저장 안 하고 나가기" 같은 분기 없음. 문항 단위로 세션 저장.</div></li>
+        <li><span class="no">5</span><div><b>지시문 한/영 병기 규칙</b>: 지시문은 UI 언어로 번역, 학습 텍스트(단어·문장)는 한국어 불변. 병기 여부는 UI 언어 설정을 따른다(전 활동 공통).</div></li>
+      </ul>
+      <div class="foot">역기획서 §8-③(공통 셸), §8-④(다국어) 대응 · 직접 틀려보세요 — 결과 화면이 달라집니다</div>
+    </div>
+
+    <div class="sec" data-note="result">
+      <ul>
+        <li><span class="no">1</span><div><b>결과 화면 규격(전 활동 공통)</b>: 점수 링 + 한 줄 평가 + 오답 목록 + [틀린 것만 다시] / [과로 돌아가기]. 현행은 결과 화면 유무조차 활동마다 달랐다.</div></li>
+        <li><span class="no">2</span><div><b>오답은 "기록"이 아니라 "예약".</b> 복습 큐에 들어가 플래시카드·다음 활동에 재출현 — 오답 태그(예: "뜻 혼동")까지 저장해 리포트 축 확보.</div></li>
+        <li><span class="no">3</span><div><b>전부 맞히면</b> 오답 박스·다시 풀기 버튼이 사라지고 다음 활동 추천으로 대체(직접 확인 가능).</div></li>
+      </ul>
+      <div class="foot">역기획서 §8-②·⑧(기록/리포트) 대응 · attempts 데이터 설계의 화면 근거</div>
+    </div>
+
+    <div class="sec" data-note="game"><ul><li><span class="no">–</span><div>v1 범위 밖. 2단계에서 같은 디자인 토큰으로 재작업하되, "게임은 별도 월드 허용 여부"를 선결 결정(역기획서 §9-④)으로.</div></li></ul></div>
+    <div class="sec" data-note="clip"><ul><li><span class="no">–</span><div>v1 범위 밖. 검색 전용 → 과 진도 연동 큐레이션이 방향(역기획서 §8-⑦).</div></li></ul></div>
+    <div class="sec" data-note="my"><ul><li><span class="no">–</span><div>v1 범위 밖. 학습 기록·주간 리포트·저장 클립의 수납처(역기획서 §8-⑧).</div></li></ul></div>
+  </div>
+</div>
+
+<script>
+  // ── screen router
+  const SCREENS = [
+    ['home','홈'],['tb','교재학습'],['gwa','과 페이지'],['player','활동 플레이어'],['result','결과'],
+  ];
+  const NAV_OF = {home:'home',tb:'tb',gwa:'tb',player:null,result:null,game:'game',clip:'clip',my:'my'};
+  const NOTE_TITLE = {home:'홈',tb:'교재학습',gwa:'과 페이지',player:'활동 플레이어 — 공통 셸',result:'결과 화면',game:'게임',clip:'표현클립',my:'MY'};
+
+  const jump = document.getElementById('jump');
+  SCREENS.forEach(([id,label])=>{
+    const b=document.createElement('button');b.textContent=label;b.dataset.jump=id;
+    b.onclick=()=>go(id);jump.appendChild(b);
+  });
+
+  function go(id, opts={}){
+    document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.dataset.scr===id));
+    document.querySelectorAll('.bni').forEach(b=>b.classList.toggle('on',b.dataset.nav===NAV_OF[id]));
+    document.getElementById('bnav').classList.toggle('hide', NAV_OF[id]==null);
+    document.querySelectorAll('#jump button').forEach(b=>b.classList.toggle('on',b.dataset.jump===id));
+    document.querySelectorAll('.notes .sec').forEach(s=>s.classList.toggle('on',s.dataset.note===id));
+    document.getElementById('noteTitle').textContent = NOTE_TITLE[id]||'';
+    if(id==='player' && opts.autostart!==false) startQuiz(false);
+  }
+
+  // ── quiz demo (단어 학습하기, 1권 5과 가상 문항 3개)
+  const BANK = [
+    {mean:'Korean food', answer:'한국 음식', choices:['한국 음식','불고기','식당','메뉴'], tag:'뜻 혼동'},
+    {mean:'to like', answer:'좋아하다', choices:['싫어하다','좋아하다','먹다','마시다'], tag:'반의어 혼동'},
+    {mean:'delicious', answer:'맛있어요', choices:['맛없어요','매워요','맛있어요','짜요'], tag:'반의어 혼동'},
+  ];
+  let qi=0, wrongs=[], retryMode=false, pool=[];
+
+  function startQuiz(onlyWrong){
+    retryMode = onlyWrong;
+    pool = onlyWrong && wrongs.length ? BANK.filter(q=>wrongs.some(w=>w.answer===q.answer)) : BANK.slice();
+    wrongs=[]; qi=0;
+    if(onlyWrong) go('player',{autostart:false}); // ensure screen without restarting
+    buildSegs(); renderQ();
+  }
+  function buildSegs(){
+    const segs=document.getElementById('segs');segs.innerHTML='';
+    pool.forEach(()=>{const d=document.createElement('div');d.className='seg';segs.appendChild(d);});
+  }
+  function renderQ(){
+    const q=pool[qi];
+    document.getElementById('qNow').textContent=qi+1;
+    document.querySelector('.pl-cnt').innerHTML=`<span id="qNow">${qi+1}</span>/${pool.length}`;
+    document.getElementById('qMean').textContent=q.mean;
+    const box=document.getElementById('choices');box.innerHTML='';
+    q.choices.forEach(c=>{
+      const b=document.createElement('button');b.className='choice';b.textContent=c;
+      b.onclick=()=>pick(b,c);box.appendChild(b);
+    });
+    const fb=document.getElementById('fb');fb.className='fb';fb.textContent='';
+    document.getElementById('nextBtn').classList.remove('show');
+  }
+  function pick(btn,c){
+    const q=pool[qi];
+    if(document.getElementById('nextBtn').classList.contains('show'))return;
+    const ok = c===q.answer;
+    const seg=document.querySelectorAll('#segs .seg')[qi];
+    const fb=document.getElementById('fb');
+    if(ok){
+      btn.classList.add('ok');seg.classList.add('did');
+      fb.className='fb show good';fb.textContent='✓ 정답이에요';
+    }else{
+      btn.classList.add('no');seg.classList.add('wrong');
+      document.querySelectorAll('#choices .choice').forEach(b=>{if(b.textContent===q.answer)b.classList.add('reveal');});
+      fb.className='fb show bad';fb.textContent=`정답은 "${q.answer}" · 복습 큐에 추가됐어요`;
+      wrongs.push(q);
+    }
+    document.querySelectorAll('#choices .choice').forEach(b=>b.style.pointerEvents='none');
+    document.getElementById('nextBtn').classList.add('show');
+    document.getElementById('nextBtn').textContent = qi===pool.length-1?'결과 보기':'다음';
+  }
+  function nextQ(){
+    if(qi<pool.length-1){qi++;renderQ();}
+    else showResult();
+  }
+  function showResult(){
+    const total=pool.length, wrong=wrongs.length, right=total-wrong;
+    const pct=Math.round(right/total*100);
+    document.getElementById('ring').style.setProperty('--pct',pct);
+    document.getElementById('ringA').textContent=`${right}/${total}`;
+    document.getElementById('rsTitle').textContent= wrong===0?'완벽해요! 🎉':(right>=wrong?'거의 다 왔어요!':'다시 한번 볼까요?');
+    const sub=document.getElementById('rsSub');
+    const wb=document.getElementById('wrongbox'), retry=document.getElementById('retryWrong');
+    if(wrong===0){
+      sub.innerHTML='틀린 단어가 없어요.<br>다음 활동으로 이어가 볼까요?';
+      wb.style.display='none';retry.style.display='none';
+    }else{
+      sub.innerHTML=`틀린 단어 <b>${wrong}개</b>는 복습 큐에 들어갔어요.<br>플래시카드와 다음 활동에 다시 나와요.`;
+      wb.style.display='block';retry.style.display='block';
+      const list=document.getElementById('wrongList');list.innerHTML='';
+      wrongs.forEach(w=>{
+        const d=document.createElement('div');d.className='witem';
+        d.innerHTML=`<div class="w">${w.answer}</div><div class="m">${w.mean}</div><div class="tag">${w.tag}</div>`;
+        list.appendChild(d);
+      });
+    }
+    go('result');
+  }
+</script>
