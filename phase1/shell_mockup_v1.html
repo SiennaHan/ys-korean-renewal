@@ -285,6 +285,44 @@
     font-size: 13px; line-height: 18px; color: var(--text-strong); }
   .skiprow svg { width: 20px; height: 20px; flex: none; color: var(--fill-caution); }
 
+  /* ── 플래시카드 ────────────────────────────── */
+  .cardwrap { width: 100%; height: 360px; perspective: 1000px; flex: none; }
+  .card3d { position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d; transition: transform .3s; }
+  .card3d.flip { transform: rotateY(180deg); }
+  .cardface { position: absolute; inset: 0; border-radius: 16px;
+    background: var(--background-surface); border: 2px solid var(--primitive-blue-gray-100);
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 28px; gap: 6px; }
+  .cardface.back { transform: rotateY(180deg); justify-content: flex-start; padding-top: 40px; }
+  .cardface .w { font-size: 36px; line-height: 1.25; font-weight: 700; color: var(--text-strong); text-align: center; }
+  .cardface .m { font-size: 20px; font-weight: 600; color: var(--primitive-blue-gray-600); text-align: center; }
+  .cardface .pic { margin-top: 35px; height: 160px; width: 100%; border-radius: 12px;
+    background: var(--background-base); display: grid; place-items: center;
+    color: var(--text-disable); font-size: 13px; }
+  .cardface .spk { position: absolute; right: 16px; bottom: 16px; width: 40px; height: 40px;
+    border-radius: 50%; background: var(--background-base); display: grid; place-items: center;
+    color: var(--text-heading); }
+  .cardface .spk svg { width: 20px; height: 20px; }
+  .fliphint { font-size: 13px; color: var(--text-sub); text-align: center; }
+  /* 하단 판정 버튼 — 알약형에 카운터가 붙는다. 셸 하단 88 안에서 높이 56 */
+  .judge2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+  .jbtn { height: 56px; border-radius: 28px; display: flex; align-items: center; gap: 8px;
+    padding: 8px; font-size: 16px; font-weight: 700; color: var(--text-strong); }
+  .jbtn .cnt { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 14px; font-weight: 600; flex: none; }
+  .jbtn .lb { flex: 1; text-align: center; }
+  .jbtn.unknown { background: var(--primitive-yellow-300); }
+  .jbtn.unknown .cnt { background: var(--background-caution); }
+  .jbtn.known { background: var(--fill-primary); color: var(--text-inverse); }
+  .jbtn.known .cnt { background: var(--primitive-blue-50); color: var(--text-strong); }
+  .jbtn.off { background: var(--background-disable); color: var(--text-disable); }
+  .jbtn.off .cnt { background: var(--background-surface); color: var(--text-disable); }
+  /* 진행바 — 자기 평가라 정오답 의미색을 쓰지 않는다 */
+  .seg i.kn { background: var(--fill-primary); }
+  .seg i.un { background: var(--primitive-yellow-300); }
+
   /* ── 피드백 pill ───────────────────────────── */
   .pillbar { flex: none; height: 44px; display: grid; place-items: center; }
   .pill { height: 36px; display: inline-flex; align-items: center; gap: 8px;
@@ -401,6 +439,7 @@
           <button class="opt" data-v="choice24" aria-pressed="false">듣기 · 2↔4</button>
           <button class="opt" data-v="rec" aria-pressed="false">발음</button>
           <button class="opt" data-v="write" aria-pressed="false">자모 쓰기</button>
+          <button class="opt" data-v="flash" aria-pressed="false">플래시카드</button>
         </div>
       </div>
       <p class="note" style="margin-top:14px"><b>화면 안을 눌러서 진행한다.</b>
@@ -547,6 +586,14 @@ const ACTS = {
     label: "발음", instrKey: "recInstr", graded: false,
     items: [ { q: "어", heard: "어" }, { q: "이", heard: "기" }, { q: "오", heard: "오" } ],
   },
+  flash: {
+    label: "플래시카드", instrKey: "flashInstr", graded: false, selfRate: true,
+    items: [
+      { q: "사과", m: "apple", sub: "명사" },
+      { q: "학교", m: "school", sub: "명사" },
+      { q: "친구", m: "friend", sub: "명사" },
+    ],
+  },
   write: {
     label: "자모 쓰기", instrKey: "comboInstr", graded: true,
     items: [ { q: "가", parts: "ㄱ + ㅏ", fin: false }, { q: "각", parts: "ㄱ + ㅏ + ㄱ", fin: true } ],
@@ -558,6 +605,7 @@ const S = {
   picked: null, resolved: false, attempts: 0,
   rec: "idle",                    // idle | on | ok | no | low
   wr: "select", strokes: 0, wrJudge: null, wrFails: 0,   // strokes = 그은 획 수
+  flip: false,                    // 플래시카드 뒤집힘
   log: [],                        // 문항별 { first: 'ok'|'no'|'skip'|'done'|'none', resolved }
   overlay: null,                  // loading | failed | mic | exit
   width: "390", lang: "ko", measure: "off",
@@ -569,7 +617,7 @@ function total() { return A().items.length; }
 
 function resetItem() {
   S.picked = null; S.resolved = false; S.attempts = 0;
-  S.rec = "idle"; S.wr = "select"; S.strokes = 0; S.wrJudge = null; S.wrFails = 0;
+  S.rec = "idle"; S.wr = "select"; S.strokes = 0; S.wrJudge = null; S.wrFails = 0; S.flip = false;
 }
 function resetAct(act) {
   S.act = act; S.idx = 0; S.done = false; S.log = []; S.overlay = null;
@@ -580,7 +628,7 @@ const T = {
   en:{ lesson:"Level 1 Lesson 4", instr:"Listen and choose the word you hear.",
        instrWord:"Choose the meaning.", recInstr:"Listen, then say it yourself.",
        comboInstr:"Build the letter, then write it.", writeInstr:"Write the letter in stroke order.",
-       audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
+       flashInstr:"Do you know this word?", flipHint:"Tap the card to see the meaning", flipBack:"Tap to flip back", know:"I know it", dontKnow:"Not yet", reviewUnknown:"{n} to practice again", audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
        ok:"Nice!", retry:"Try again", skip:"Skip", exit:"Exit",
        rTitle:"Done!", rSub:"All {n} answered", rSubPartial:"{a} of {n} answered",
        kDone:"Answered", kAccuracy:"Accuracy",
@@ -597,7 +645,7 @@ const T = {
   ko:{ lesson:"1급 4과", instr:"듣고 맞는 것을 고르세요.",
        instrWord:"뜻을 고르세요.", recInstr:"듣고 따라 말해 보세요.",
        comboInstr:"글자를 만들고 써 보세요.", writeInstr:"글자를 순서에 맞게 써 보세요.",
-       audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
+       flashInstr:"이 단어를 아나요?", flipHint:"카드를 눌러 뜻을 보세요", flipBack:"다시 뒤집으려면 누르세요", know:"알아요", dontKnow:"몰라요", reviewUnknown:"{n}개는 다시 만나요", audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
        ok:"아주 잘 했어요!", retry:"다시 해보세요", skip:"건너뛰기", exit:"나가기",
        rTitle:"다 했어요!", rSub:"{n}개 다 풀었어요", rSubPartial:"{n}개 중 {a}개 풀었어요",
        kDone:"푼 문항", kAccuracy:"정답률",
@@ -614,7 +662,7 @@ const T = {
   ja:{ lesson:"1級 4課", instr:"聞いて正しいものを選んでください。",
        instrWord:"意味を選んでください。", recInstr:"聞いて、まねして言ってみましょう。",
        comboInstr:"文字を組み立てて書きましょう。", writeInstr:"書き順に沿って書いてみましょう。",
-       audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
+       flashInstr:"この単語を知っていますか？", flipHint:"カードをタップして意味を見る", flipBack:"タップで裏返す", know:"わかる", dontKnow:"まだ", reviewUnknown:"{n}語はもう一度", audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
        ok:"よくできました！", retry:"もう一度", skip:"スキップ", exit:"終了",
        rTitle:"終わりました！", rSub:"{n}問すべて解きました", rSubPartial:"{n}問中 {a}問 解きました",
        kDone:"解いた問題", kAccuracy:"正答率",
@@ -631,7 +679,7 @@ const T = {
   zh:{ lesson:"1级 第4课", instr:"请听并选择正确的选项。",
        instrWord:"请选择意思。", recInstr:"听一听，然后跟着说。",
        comboInstr:"组成字后写一写。", writeInstr:"请按笔顺写一写。",
-       audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
+       flashInstr:"认识这个词吗？", flipHint:"点击卡片查看意思", flipBack:"点击翻回", know:"认识", dontKnow:"还不会", reviewUnknown:"{n}个还要再练", audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
        ok:"很棒！", retry:"再试一次", skip:"跳过", exit:"退出",
        rTitle:"完成了！", rSub:"{n}题全部完成", rSubPartial:"{n}题中完成了{a}题",
        kDone:"已完成", kAccuracy:"正确率",
@@ -648,7 +696,7 @@ const T = {
   vi:{ lesson:"Cấp 1 Bài 4", instr:"Nghe và chọn từ bạn nghe được.",
        instrWord:"Chọn nghĩa của từ.", recInstr:"Nghe rồi nói lại.",
        comboInstr:"Ghép chữ rồi viết.", writeInstr:"Hãy viết theo thứ tự nét.",
-       audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
+       flashInstr:"Bạn biết từ này chứ?", flipHint:"Nhấn vào thẻ để xem nghĩa", flipBack:"Nhấn để lật lại", know:"Đã biết", dontKnow:"Chưa biết", reviewUnknown:"{n} từ sẽ luyện lại", audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
        ok:"Rất tốt!", retry:"Thử lại", skip:"Bỏ qua", exit:"Thoát",
        rTitle:"Hoàn thành!", rSub:"Đã làm cả {n} câu", rSubPartial:"Đã làm {a} trong {n} câu",
        kDone:"Đã làm", kAccuracy:"Tỉ lệ đúng",
@@ -711,8 +759,9 @@ function progressHTML() {
   for (let i = 0; i < total(); i++) {
     const e = S.log[i];
     let c = "";
-    if (e) c = !graded ? (e.first === "skip" ? "" : "dn")
-                       : e.first === "ok" ? "ok" : e.first === "skip" ? "" : "no";
+    if (e) c = A().selfRate ? (e.first === "known" ? "kn" : e.first === "unknown" ? "un" : "")
+            : !graded       ? (e.first === "skip" ? "" : "dn")
+                            : e.first === "ok" ? "ok" : e.first === "skip" ? "" : "no";
     if (i === S.idx && !S.done) c = (c + " cur").trim();
     cells.push(c);
   }
@@ -789,6 +838,28 @@ function writeBandHTML(t) {
   </div>`;
 }
 
+/* ── 플래시카드 ───────────────────────────────── */
+function flashBandHTML(t) {
+  const m = metrics(), it = IT();
+  return `<div class="band" data-m="밴드 ${m.content}" style="gap:16px">
+    <div class="cardwrap" data-m="${m.content}×360" data-tap="flip">
+      <div class="card3d ${S.flip ? "flip" : ""}">
+        <div class="cardface">
+          <div class="w">${it.q}</div>
+          <div class="spk" data-tap="audio">${ICON.vol}</div>
+        </div>
+        <div class="cardface back">
+          <div class="w">${it.m}</div>
+          <div class="m">${it.sub}</div>
+          <div class="pic">그림</div>
+          <div class="spk" data-tap="audio">${ICON.vol}</div>
+        </div>
+      </div>
+    </div>
+    <div class="fliphint">${S.flip ? t.flipBack : t.flipHint}</div>
+  </div>`;
+}
+
 /* ── 셸 ───────────────────────────────────────── */
 function shellChrome(t, inner, opts = {}) {
   const m = metrics();
@@ -809,6 +880,7 @@ function shellChrome(t, inner, opts = {}) {
 function resultHTML(t) {
   const m = metrics(), graded = A().graded;
   const answered = S.log.filter(e => e && e.first !== "skip").length;
+  const selfRate = A().selfRate;
   const correct = S.log.filter(e => e && e.first === "ok").length;
   const gradedN = graded ? S.log.filter(e => e && e.first !== "skip").length : 0;
   const acc = gradedN ? Math.round((correct / gradedN) * 100) + "%" : "—";
@@ -832,7 +904,11 @@ function resultHTML(t) {
         </div>
       </div>
       <div class="rbody">
-        ${wrongs.length ? wrongs.map(x => `
+        ${selfRate ? `<div class="wrongcard"><p class="exp" style="margin:0">${
+            S.log.filter(e => e && e.first === "unknown").length
+              ? t.reviewUnknown.replace("{n}", S.log.filter(e => e && e.first === "unknown").length)
+              : t.noWrong}</p></div>`
+        : wrongs.length ? wrongs.map(x => `
           <div class="wrongcard">
             <span class="chip wrong">${t.wrong} ${x.i + 1}</span>
             <p>${A().items[x.i].ch ? A().items[x.i].ch[x.e.picked] : A().items[x.i].q}</p>
@@ -876,6 +952,19 @@ function render() {
       S.rec === "low" ? `<div class="pill tipm"><span class="dot">♪</span>${t.tipLouder}</div>` : "";
     html = shellChrome(t, micBandHTML(t),
       { pill, instr: t.recInstr, footer: `<div class="btn primary" data-tap="next">${t.next}</div>` });
+  } else if (S.act === "flash") {
+    // 뒤집기 전에는 판정할 수 없다 — 뜻을 보지 않고 "알아요"를 누르면 자기 평가가 아니다
+    const kn = S.log.filter(e => e && e.first === "known").length;
+    const un = S.log.filter(e => e && e.first === "unknown").length;
+    const off = S.flip ? "" : " off";
+    html = shellChrome(t, flashBandHTML(t), {
+      instr: t.flashInstr,
+      footer: `<div class="judge2">
+        <div class="jbtn unknown${off}" ${S.flip ? 'data-tap="unknown"' : ""}>
+          <div class="cnt">${un}</div><div class="lb">${t.dontKnow}</div></div>
+        <div class="jbtn known${off}" ${S.flip ? 'data-tap="known"' : ""}>
+          <div class="cnt">${kn}</div><div class="lb">${t.know}</div></div>
+      </div>` });
   } else if (S.act === "write") {
     if (S.wr === "select") {
       html = shellChrome(t, selectBandHTML(t),
@@ -920,7 +1009,10 @@ function renderDims(m) {
   const rows = [["기준 폭", `${m.w}`], ["좌우 여백", `${m.gutter}`], ["콘텐츠 폭", `${m.content}`],
     ["앱바", `${m.w} × 58`], ["진행바 블록", `${m.w} × 20`], ["진행바", `${m.content} × 6`],
     ["지시문", `${m.w} × 48`]];
-  if (S.act === "rec") rows.push(["대상 글자", `56 / 62`], ["듣기 버튼", `${m.content} × 40`],
+  if (S.act === "flash") rows.push(["카드", `${m.content} × 360`], ["카드 radius", `16`],
+    ["앞면 단어", `36`], ["뒷면 뜻", `36 / 20`], ["그림", `${m.content - 56} × 160`],
+    ["판정 버튼", `${Math.round((m.content - 16) / 2)} × 56`], ["카운터 원", `40 × 40`]);
+  else if (S.act === "rec") rows.push(["대상 글자", `56 / 62`], ["듣기 버튼", `${m.content} × 40`],
     ["마이크 영역", `${m.content} × 92`], ["마이크 버튼", `60 × 60`]);
   else if (S.act === "write" && S.wr === "select") rows.push(["조합 카드", `${m.content} × 100`],
     ["자모 칸", `${Math.round((m.content - 25) / 6)} × 같음`], ["칸 간격", `5`]);
@@ -986,6 +1078,10 @@ document.getElementById("screen").addEventListener("click", e => {
     if (ok) markResolved();
     render(); return;
   }
+  if (tap === "flip")   { S.flip = !S.flip; render(); return; }
+  if (tap === "known")  { logFirst("known"); markResolved(); advance(); return; }
+  // "몰라요"는 응답이지만 해소는 아니다 — 결과 화면에 [다시 풀기]가 뜬다
+  if (tap === "unknown"){ logFirst("unknown"); advance(); return; }
   if (tap === "next")   { advance(); return; }
   if (tap === "skip")   { logFirst("skip"); advance(); return; }
   if (tap === "audio")  { el.animate([{opacity:1},{opacity:.5},{opacity:1}], 240); return; }
