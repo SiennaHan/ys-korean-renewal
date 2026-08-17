@@ -383,7 +383,8 @@
     color: #fff; display: grid; place-items: center; flex: none; }
   .kbrow .send svg { width: 20px; height: 20px; }
 
-  /* ── AI 대화 리포트 ────────────────────────── */
+
+/* ── AI 대화 리포트 ────────────────────────── */
   .rhead2 { flex: none; background: var(--fill-primary); color: var(--text-inverse);
     padding: 12px 16px; }
   .rhead2 .t { font-size: 20px; line-height: 28px; font-weight: 700; }
@@ -404,6 +405,55 @@
   .aschip { display: inline-block; border-radius: 5px; background: var(--primitive-blue-50);
     color: var(--primitive-blue-600); padding: 2px 8px; font-weight: 600; font-size: 13px; }
   .asv { margin-top: 8px; color: var(--text-strong); line-height: 20px; }
+
+  /* ── AI 롤플레잉 ───────────────────────────── */
+  /* 자유 대화가 아니라 대본 연습이다. 대화 전체가 보이고 내 차례만 녹음한다 */
+  .rptabs { flex: none; display: flex; align-items: center; gap: 8px;
+    padding: 0 16px 16px; }
+  .rptab { border-radius: 8px; padding: 8px 16px; font-size: 14px; font-weight: 600;
+    background: var(--background-base); color: var(--text-sub); }
+  .rptab.on { background: var(--primitive-blue-gray-900); color: #fff; }
+  .rptabs .sp { flex: 1; }
+  .rptabs .done { width: 28px; height: 28px; border-radius: 50%; display: grid;
+    place-items: center; background: var(--fill-correct); color: #fff; font-size: 15px; }
+
+  .turns { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 0 16px 8px;
+    display: flex; flex-direction: column; gap: 8px; }
+  .turn { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; }
+  .turn .who { width: 24px; flex: none; padding-top: 8px; font-size: 14px; font-weight: 700;
+    color: var(--text-strong); }
+  .turn.future .who { color: var(--primitive-gray-400); }
+  .turn .line { flex: 1; border-radius: 8px; padding: 6px 10px; font-size: 16px; line-height: 1.6; }
+  .turn.future .line { color: var(--primitive-gray-400); }
+  /* 현재 턴만 배경이 켜진다 — AI 차례는 옅은 노랑, 내 차례는 옅은 파랑 */
+  .turn.cur.ai .line { background: #FFF9E0; }
+  .turn.cur.me .line { background: #E9F2FC; }
+  .turn .rp { width: 24px; flex: none; padding-top: 6px; color: var(--icon-normal); }
+  .turn .rp svg { width: 18px; height: 18px; }
+
+  .reccard { margin: 0 0 4px 36px; border-radius: 8px; border: 1px solid var(--line-normal);
+    background: var(--background-surface); padding: 10px 12px; }
+  .reccard .top { display: flex; justify-content: space-between; font-size: 13px;
+    color: var(--text-sub); }
+  .reccard .top .ipa { color: var(--primitive-gray-400); }
+  .reccard .lb { margin-top: 8px; font-size: 12px; color: var(--text-sub); }
+  .reccard .stt { margin-top: 4px; display: flex; align-items: center;
+    justify-content: space-between; font-size: 16px; }
+  .reccard .stt .x { color: var(--fill-wrong); }
+  .reccard .clr { width: 24px; height: 24px; border-radius: 50%; background: var(--line-normal);
+    display: grid; place-items: center; color: var(--text-sub); font-size: 12px; flex: none; }
+
+  .statusmsg { display: flex; justify-content: center; padding: 16px 0 4px; }
+  .statusmsg span { border-radius: 20px; background: var(--background-base);
+    padding: 8px 16px; font-size: 13px; color: var(--text-sub); }
+  /* 하단 — 좌우 이동 화살표 사이에 녹음 버튼 */
+  .rpbottom { width: 100%; height: 92px; position: relative;
+    display: flex; align-items: center; justify-content: center; }
+  .rpbottom .arw { position: absolute; width: 36px; height: 36px; display: grid;
+    place-items: center; color: var(--fill-primary); }
+  .rpbottom .arw.off { color: var(--line-normal); }
+  .rpbottom .arw.l { left: 16px; } .rpbottom .arw.r { right: 16px; }
+  .rpbottom .arw svg { width: 24px; height: 24px; }
 
   /* ── 피드백 pill ───────────────────────────── */
   .pillbar { flex: none; height: 44px; display: grid; place-items: center; }
@@ -523,6 +573,7 @@
           <button class="opt" data-v="write" aria-pressed="false">자모 쓰기</button>
           <button class="opt" data-v="flash" aria-pressed="false">플래시카드</button>
           <button class="opt" data-v="chat" aria-pressed="false">미션 대화</button>
+          <button class="opt" data-v="roleplay" aria-pressed="false">롤플레잉</button>
         </div>
       </div>
       <p class="note" style="margin-top:14px"><b>화면 안을 눌러서 진행한다.</b>
@@ -669,6 +720,18 @@ const ACTS = {
     label: "발음", instrKey: "recInstr", graded: false,
     items: [ { q: "어", heard: "어" }, { q: "이", heard: "기" }, { q: "오", heard: "오" } ],
   },
+  roleplay: {
+    label: "롤플레잉", instrKey: null, graded: false, noTitle: true, rp: true,
+    // 대본이 통째로 보이고 "나" 차례만 녹음한다
+    turns: [
+      { who: "AI", ko: "어서 오세요. 뭘 도와드릴까요?", en: "Welcome. How can I help you?" },
+      { who: "나", ko: "커피 한 잔 주세요.", en: "One coffee, please." },
+      { who: "AI", ko: "따뜻한 걸로 드릴까요?", en: "Would you like it hot?" },
+      { who: "나", ko: "네, 따뜻한 걸로 주세요.", en: "Yes, hot please." },
+      { who: "AI", ko: "삼천 원입니다.", en: "That will be 3,000 won." },
+    ],
+    items: [{ q: "카페에서 주문하기" }],
+  },
   chat: {
     label: "미션 대화", instrKey: null, graded: true, noTitle: true, chat: true,
     // 진행 단위가 문항이 아니라 미션 키워드 3개다
@@ -706,7 +769,8 @@ const S = {
   rec: "idle",                    // idle | on | ok | no | low
   wr: "select", strokes: 0, wrJudge: null, wrFails: 0,   // strokes = 그은 획 수
   flip: false,                    // 플래시카드 뒤집힘
-  turn: 1, fold: false, kb: false,   // 미션 대화: 보여준 턴 수 · 시나리오 접기 · 키보드 모드
+  turn: 1, fold: false, kb: false,
+  rpIdx: 0, rpDir: "ai", rpRec: null,   // 롤플레잉: 현재 턴 · 방향 탭 · 녹음 결과   // 미션 대화: 보여준 턴 수 · 시나리오 접기 · 키보드 모드
   log: [],                        // 문항별 { first: 'ok'|'no'|'skip'|'done'|'none', resolved }
   overlay: null,                  // loading | failed | mic | exit
   width: "390", lang: "ko", measure: "off",
@@ -718,7 +782,7 @@ function total() { return A().items.length; }
 
 function resetItem() {
   S.picked = null; S.resolved = false; S.attempts = 0;
-  S.rec = "idle"; S.wr = "select"; S.strokes = 0; S.wrJudge = null; S.wrFails = 0; S.flip = false; S.turn = 1; S.fold = false; S.kb = false;
+  S.rec = "idle"; S.wr = "select"; S.strokes = 0; S.wrJudge = null; S.wrFails = 0; S.flip = false; S.turn = 1; S.fold = false; S.kb = false; S.rpIdx = 0; S.rpDir = "ai"; S.rpRec = null;
 }
 function resetAct(act) {
   S.act = act; S.idx = 0; S.done = false; S.log = []; S.overlay = null;
@@ -728,7 +792,7 @@ function resetAct(act) {
 const T = {
   en:{ lesson:"Level 1 Lesson 4", instr:"Listen and choose the word you hear.",
        instrWord:"Choose the meaning.", recInstr:"Listen, then say it yourself.",
-       comboInstr:"Build the letter, then write it.", writeInstr:"Write the letter in stroke order.", flipHint:"Tap the card to see the meaning", flipBack:"Tap to flip back", know:"I know it", dontKnow:"Not yet", reviewUnknown:"{n} to practice again", chatScene:"Order a drink at the cafe", missionsLabel:"Missions", typeHere:"Type your reply", kMission:"Missions", chatDoneSub:"{a} of {n} missions done", chatRetryHint:"Practice again clears the conversation and starts over.", reportTitle:"AI Chat Report", doneKeywords:"Keywords done", score:"Score", tabAssess:"Assessment", tabFeedback:"My sentences", asPron:"Clear overall. Give the final consonant in 커피 a bit more weight.", asGram:"Endings were mostly right. 고맙습니다 안녕 mixes two politeness levels.", asVocab:"Good range for ordering. Try 따뜻한 / 차가운 next time.", asCtx:"You covered ordering, price and farewell naturally.", audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
+       comboInstr:"Build the letter, then write it.", writeInstr:"Write the letter in stroke order.", flipHint:"Tap the card to see the meaning", flipBack:"Tap to flip back", know:"I know it", dontKnow:"Not yet", reviewUnknown:"{n} to practice again", chatScene:"Order a drink at the cafe", missionsLabel:"Missions", typeHere:"Type your reply", kMission:"Missions", chatDoneSub:"{a} of {n} missions done", chatRetryHint:"Practice again clears the conversation and starts over.", reportTitle:"AI Chat Report", doneKeywords:"Keywords done", score:"Score", tabAssess:"Assessment", tabFeedback:"My sentences", asPron:"Clear overall. Give the final consonant in 커피 a bit more weight.", asGram:"Endings were mostly right. 고맙습니다 안녕 mixes two politeness levels.", asVocab:"Good range for ordering. Try 따뜻한 / 차가운 next time.", asCtx:"You covered ordering, price and farewell naturally.", rpTitle:"Practice the conversation with AI.", rpMe:"Me", rpYourTurn:"Your turn — tap to record", rpListen:"Listen to AI", rpSayAgain:"Try saying it again", rpNice:"Nice! Move to the next line", myPron:"What we heard", audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
        ok:"Nice!", retry:"Try again", skip:"Skip", exit:"Exit",
        rTitle:"Done!", rSub:"All {n} answered", rSubPartial:"{a} of {n} answered",
        kDone:"Answered", kAccuracy:"Accuracy",
@@ -744,7 +808,7 @@ const T = {
        stay:"Stay", leave:"Leave", nextAct:"Next activity" },
   ko:{ lesson:"1급 4과", instr:"듣고 맞는 것을 고르세요.",
        instrWord:"뜻을 고르세요.", recInstr:"듣고 따라 말해 보세요.",
-       comboInstr:"글자를 만들고 써 보세요.", writeInstr:"글자를 순서에 맞게 써 보세요.", flipHint:"카드를 눌러 뜻을 보세요", flipBack:"다시 뒤집으려면 누르세요", know:"알아요", dontKnow:"몰라요", reviewUnknown:"{n}개는 다시 만나요", chatScene:"카페에서 음료를 주문해 보세요", missionsLabel:"미션 보기", typeHere:"답을 입력하세요", kMission:"미션", chatDoneSub:"미션 {n}개 중 {a}개 달성", chatRetryHint:"다시 풀기를 누르면 대화를 지우고 처음부터 시작해요.", reportTitle:"AI 대화 리포트", doneKeywords:"완료한 키워드", score:"점수", tabAssess:"평가", tabFeedback:"나의 문장 피드백", asPron:"전반적으로 또렷해요. 커피의 받침을 조금 더 살려 보세요.", asGram:"어미가 대체로 정확해요. 고맙습니다 안녕은 높임이 섞였어요.", asVocab:"주문에 필요한 말을 잘 썼어요. 따뜻한 / 차가운도 써 보세요.", asCtx:"주문·가격·인사를 자연스럽게 다 다뤘어요.", audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
+       comboInstr:"글자를 만들고 써 보세요.", writeInstr:"글자를 순서에 맞게 써 보세요.", flipHint:"카드를 눌러 뜻을 보세요", flipBack:"다시 뒤집으려면 누르세요", know:"알아요", dontKnow:"몰라요", reviewUnknown:"{n}개는 다시 만나요", chatScene:"카페에서 음료를 주문해 보세요", missionsLabel:"미션 보기", typeHere:"답을 입력하세요", kMission:"미션", chatDoneSub:"미션 {n}개 중 {a}개 달성", chatRetryHint:"다시 풀기를 누르면 대화를 지우고 처음부터 시작해요.", reportTitle:"AI 대화 리포트", doneKeywords:"완료한 키워드", score:"점수", tabAssess:"평가", tabFeedback:"나의 문장 피드백", asPron:"전반적으로 또렷해요. 커피의 받침을 조금 더 살려 보세요.", asGram:"어미가 대체로 정확해요. 고맙습니다 안녕은 높임이 섞였어요.", asVocab:"주문에 필요한 말을 잘 썼어요. 따뜻한 / 차가운도 써 보세요.", asCtx:"주문·가격·인사를 자연스럽게 다 다뤘어요.", rpTitle:"AI와 함께 대화를 연습해 보세요.", rpMe:"나", rpYourTurn:"내 차례예요 — 눌러서 녹음", rpListen:"AI 말을 들어 보세요", rpSayAgain:"다시 말해 보세요", rpNice:"좋아요! 다음 줄로 넘어가세요", myPron:"나의 발음", audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
        ok:"아주 잘 했어요!", retry:"다시 해보세요", skip:"건너뛰기", exit:"나가기",
        rTitle:"다 했어요!", rSub:"{n}개 다 풀었어요", rSubPartial:"{n}개 중 {a}개 풀었어요",
        kDone:"푼 문항", kAccuracy:"정답률",
@@ -760,7 +824,7 @@ const T = {
        stay:"계속하기", leave:"나가기", nextAct:"다음 활동" },
   ja:{ lesson:"1級 4課", instr:"聞いて正しいものを選んでください。",
        instrWord:"意味を選んでください。", recInstr:"聞いて、まねして言ってみましょう。",
-       comboInstr:"文字を組み立てて書きましょう。", writeInstr:"書き順に沿って書いてみましょう。", flipHint:"カードをタップして意味を見る", flipBack:"タップで裏返す", know:"わかる", dontKnow:"まだ", reviewUnknown:"{n}語はもう一度", chatScene:"カフェで飲み物を注文しましょう", missionsLabel:"ミッション", typeHere:"返事を入力", kMission:"ミッション", chatDoneSub:"ミッション{n}個中{a}個達成", chatRetryHint:"もう一度を押すと会話を消して最初から始めます。", reportTitle:"AI会話レポート", doneKeywords:"達成キーワード", score:"スコア", tabAssess:"評価", tabFeedback:"私の文へのフィードバック", asPron:"全体にはっきりしています。커피のパッチムを意識しましょう。", asGram:"語尾はおおむね正確です。고맙습니다 안녕は敬体が混ざっています。", asVocab:"注文に必要な語をよく使えました。따뜻한 / 차가운も使ってみましょう。", asCtx:"注文・値段・あいさつを自然に扱えました。", audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
+       comboInstr:"文字を組み立てて書きましょう。", writeInstr:"書き順に沿って書いてみましょう。", flipHint:"カードをタップして意味を見る", flipBack:"タップで裏返す", know:"わかる", dontKnow:"まだ", reviewUnknown:"{n}語はもう一度", chatScene:"カフェで飲み物を注文しましょう", missionsLabel:"ミッション", typeHere:"返事を入力", kMission:"ミッション", chatDoneSub:"ミッション{n}個中{a}個達成", chatRetryHint:"もう一度を押すと会話を消して最初から始めます。", reportTitle:"AI会話レポート", doneKeywords:"達成キーワード", score:"スコア", tabAssess:"評価", tabFeedback:"私の文へのフィードバック", asPron:"全体にはっきりしています。커피のパッチムを意識しましょう。", asGram:"語尾はおおむね正確です。고맙습니다 안녕は敬体が混ざっています。", asVocab:"注文に必要な語をよく使えました。따뜻한 / 차가운も使ってみましょう。", asCtx:"注文・値段・あいさつを自然に扱えました。", rpTitle:"AIと会話を練習しましょう。", rpMe:"私", rpYourTurn:"あなたの番です — タップして録音", rpListen:"AIの発話を聞きましょう", rpSayAgain:"もう一度言ってみましょう", rpNice:"いいですね！次の行へ", myPron:"私の発音", audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
        ok:"よくできました！", retry:"もう一度", skip:"スキップ", exit:"終了",
        rTitle:"終わりました！", rSub:"{n}問すべて解きました", rSubPartial:"{n}問中 {a}問 解きました",
        kDone:"解いた問題", kAccuracy:"正答率",
@@ -776,7 +840,7 @@ const T = {
        stay:"続ける", leave:"終了", nextAct:"次のアクティビティ" },
   zh:{ lesson:"1级 第4课", instr:"请听并选择正确的选项。",
        instrWord:"请选择意思。", recInstr:"听一听，然后跟着说。",
-       comboInstr:"组成字后写一写。", writeInstr:"请按笔顺写一写。", flipHint:"点击卡片查看意思", flipBack:"点击翻回", know:"认识", dontKnow:"还不会", reviewUnknown:"{n}个还要再练", chatScene:"在咖啡店点一杯饮料", missionsLabel:"查看任务", typeHere:"输入你的回答", kMission:"任务", chatDoneSub:"{n}个任务中完成{a}个", chatRetryHint:"点击再练习会清除对话并重新开始。", reportTitle:"AI对话报告", doneKeywords:"完成的关键词", score:"得分", tabAssess:"评价", tabFeedback:"我的句子反馈", asPron:"整体清晰。커피的收音可以再明显一点。", asGram:"词尾基本准确。고맙습니다 안녕混用了两种敬语。", asVocab:"点单用词很好。下次试试 따뜻한 / 차가운。", asCtx:"自然地完成了点单、问价和道别。", audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
+       comboInstr:"组成字后写一写。", writeInstr:"请按笔顺写一写。", flipHint:"点击卡片查看意思", flipBack:"点击翻回", know:"认识", dontKnow:"还不会", reviewUnknown:"{n}个还要再练", chatScene:"在咖啡店点一杯饮料", missionsLabel:"查看任务", typeHere:"输入你的回答", kMission:"任务", chatDoneSub:"{n}个任务中完成{a}个", chatRetryHint:"点击再练习会清除对话并重新开始。", reportTitle:"AI对话报告", doneKeywords:"完成的关键词", score:"得分", tabAssess:"评价", tabFeedback:"我的句子反馈", asPron:"整体清晰。커피的收音可以再明显一点。", asGram:"词尾基本准确。고맙습니다 안녕混用了两种敬语。", asVocab:"点单用词很好。下次试试 따뜻한 / 차가운。", asCtx:"自然地完成了点单、问价和道别。", rpTitle:"和AI一起练习对话。", rpMe:"我", rpYourTurn:"轮到你了 — 点击录音", rpListen:"先听AI说", rpSayAgain:"请再说一次", rpNice:"很好！进入下一句", myPron:"我的发音", audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
        ok:"很棒！", retry:"再试一次", skip:"跳过", exit:"退出",
        rTitle:"完成了！", rSub:"{n}题全部完成", rSubPartial:"{n}题中完成了{a}题",
        kDone:"已完成", kAccuracy:"正确率",
@@ -792,7 +856,7 @@ const T = {
        stay:"继续", leave:"离开", nextAct:"下一个活动" },
   vi:{ lesson:"Cấp 1 Bài 4", instr:"Nghe và chọn từ bạn nghe được.",
        instrWord:"Chọn nghĩa của từ.", recInstr:"Nghe rồi nói lại.",
-       comboInstr:"Ghép chữ rồi viết.", writeInstr:"Hãy viết theo thứ tự nét.", flipHint:"Nhấn vào thẻ để xem nghĩa", flipBack:"Nhấn để lật lại", know:"Đã biết", dontKnow:"Chưa biết", reviewUnknown:"{n} từ sẽ luyện lại", chatScene:"Gọi đồ uống ở quán cà phê", missionsLabel:"Nhiệm vụ", typeHere:"Nhập câu trả lời", kMission:"Nhiệm vụ", chatDoneSub:"Hoàn thành {a}/{n} nhiệm vụ", chatRetryHint:"Luyện lại sẽ xóa cuộc hội thoại và bắt đầu lại.", reportTitle:"Báo cáo hội thoại AI", doneKeywords:"Từ khóa đã đạt", score:"Điểm", tabAssess:"Đánh giá", tabFeedback:"Phản hồi câu của tôi", asPron:"Nhìn chung rõ ràng. Chú ý phụ âm cuối trong 커피.", asGram:"Đuôi câu khá chính xác. 고맙습니다 안녕 lẫn hai mức lịch sự.", asVocab:"Dùng tốt từ để gọi món. Thử thêm 따뜻한 / 차가운.", asCtx:"Bạn đã xử lý gọi món, hỏi giá và chào tạm biệt tự nhiên.", audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
+       comboInstr:"Ghép chữ rồi viết.", writeInstr:"Hãy viết theo thứ tự nét.", flipHint:"Nhấn vào thẻ để xem nghĩa", flipBack:"Nhấn để lật lại", know:"Đã biết", dontKnow:"Chưa biết", reviewUnknown:"{n} từ sẽ luyện lại", chatScene:"Gọi đồ uống ở quán cà phê", missionsLabel:"Nhiệm vụ", typeHere:"Nhập câu trả lời", kMission:"Nhiệm vụ", chatDoneSub:"Hoàn thành {a}/{n} nhiệm vụ", chatRetryHint:"Luyện lại sẽ xóa cuộc hội thoại và bắt đầu lại.", reportTitle:"Báo cáo hội thoại AI", doneKeywords:"Từ khóa đã đạt", score:"Điểm", tabAssess:"Đánh giá", tabFeedback:"Phản hồi câu của tôi", asPron:"Nhìn chung rõ ràng. Chú ý phụ âm cuối trong 커피.", asGram:"Đuôi câu khá chính xác. 고맙습니다 안녕 lẫn hai mức lịch sự.", asVocab:"Dùng tốt từ để gọi món. Thử thêm 따뜻한 / 차가운.", asCtx:"Bạn đã xử lý gọi món, hỏi giá và chào tạm biệt tự nhiên.", rpTitle:"Luyện hội thoại cùng AI.", rpMe:"Tôi", rpYourTurn:"Đến lượt bạn — nhấn để ghi âm", rpListen:"Nghe AI nói", rpSayAgain:"Hãy nói lại", rpNice:"Tốt! Sang câu tiếp theo", myPron:"Phát âm của tôi", audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
        ok:"Rất tốt!", retry:"Thử lại", skip:"Bỏ qua", exit:"Thoát",
        rTitle:"Hoàn thành!", rSub:"Đã làm cả {n} câu", rSubPartial:"Đã làm {a} trong {n} câu",
        kDone:"Đã làm", kAccuracy:"Tỉ lệ đúng",
@@ -816,6 +880,8 @@ const ICON = {
   redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.6M20 4v4h-4"/></svg>',
   undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 102.3-5.6M4 4v4h4"/></svg>',
   erase:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M6 16l8-8 5 5-4 4H8z"/></svg>',
+  chevL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  chevR:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
   chevU:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>',
   chevD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
   trans:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M9 4v2c0 4-2 7-5 9M7 12c2 3 4 4 7 5M14 20l4-9 4 9M15.5 17h5"/></svg>',
@@ -1016,6 +1082,60 @@ function chatFooterHTML(t) {
   </div>`;
 }
 
+  /* ── AI 롤플레잉 ─────────────────────────────── */
+function roleplayHTML(t) {
+  const m = metrics(), a = A();
+  const cur = S.rpIdx, curTurn = a.turns[cur];
+  const isMine = curTurn && curTurn.who === "나";
+  const allDone = cur >= a.turns.length - 1 && S.rpRec === "ok";
+
+  const tabs = `<div class="rptabs" data-m="${m.w}×52">
+    <div class="rptab ${S.rpDir === "ai" ? "on" : ""}" data-tap="rpAi">AI &gt; ${t.rpMe}</div>
+    <div class="rptab ${S.rpDir === "me" ? "on" : ""}" data-tap="rpMe">${t.rpMe} &gt; AI</div>
+    <div class="sp"></div>
+    ${allDone ? `<div class="done">✓</div>` : ""}
+  </div>`;
+
+  const rows = a.turns.map((x, i) => {
+    const mine = x.who === "나";
+    const cls = [i === cur ? "cur" : "", i > cur ? "future" : "", mine ? "me" : "ai"].filter(Boolean).join(" ");
+    const showRp = i <= cur && !(mine && S.rpRec !== "ok");
+    const card = (mine && i === cur && S.rpRec)
+      ? `<div class="reccard">
+           <div class="top"><span>${x.en}</span><span class="ipa">[${x.ko}]</span></div>
+           <div class="lb">${t.myPron}</div>
+           <div class="stt">
+             <p>${S.rpRec === "ok" ? x.ko : `커피 한 <span class="x">장</span> 주세요.`}</p>
+             ${S.rpRec === "no" ? `<div class="clr" data-tap="rpClear">✕</div>` : ""}
+           </div>
+         </div>` : "";
+    return `<div class="turn ${cls}">
+        <div class="who">${mine ? t.rpMe : "AI"}</div>
+        <div class="line">${x.ko}</div>
+        <div class="rp">${showRp ? ICON.vol : ""}</div>
+      </div>${card}`;
+  }).join("");
+
+  const status = isMine
+    ? (S.rpRec === "no" ? t.rpSayAgain : S.rpRec === "ok" ? t.rpNice : t.rpYourTurn)
+    : t.rpListen;
+
+  return tabs + `<div class="turns" data-m="가변 · 스크롤">${rows}
+    <div class="statusmsg"><span>${status}</span></div></div>`;
+}
+
+function roleplayFooterHTML(t) {
+  const a = A(), isMine = a.turns[S.rpIdx] && a.turns[S.rpIdx].who === "나";
+  const hasPrev = S.rpIdx > 0, hasNext = S.rpIdx < a.turns.length - 1;
+  return `<div class="rpbottom" data-m="${metrics().w}×92">
+    <div class="arw l ${hasPrev ? "" : "off"}" ${hasPrev ? 'data-tap="rpPrev"' : ""}>${ICON.chevL}</div>
+    ${isMine
+      ? `<div class="micbtn ${S.rpRec ? "done" : ""}" data-tap="rpSay">${S.rpRec ? ICON.redo : ICON.mic}</div>`
+      : `<div class="micbtn" data-tap="rpNext" style="background:var(--background-surface);color:var(--text-primary);border:1px solid var(--line-normal)">${ICON.vol}</div>`}
+    <div class="arw r ${hasNext ? "" : "off"}" ${hasNext ? 'data-tap="rpNext"' : ""}>${ICON.chevR}</div>
+  </div>`;
+}
+
 /* ── AI 대화 리포트 — 셸 공통 결과 화면을 쓰지 않는다 ─────
    미션 대화는 "문항"이 아니라 대화다. 맞은 개수·정답률이라는 말이 성립하지 않아
    구 앱도 별도 리포트를 쓴다. 그것을 그대로 가져온다. */
@@ -1180,6 +1300,19 @@ function render() {
       S.rec === "low" ? `<div class="pill tipm"><span class="dot">♪</span>${t.tipLouder}</div>` : "";
     html = shellChrome(t, micBandHTML(t),
       { pill, instr: t.recInstr, footer: `<div class="btn primary" data-tap="next">${t.next}</div>` });
+  } else if (S.act === "roleplay") {
+    // 진행바를 쓰지 않는다 — 대본 전체가 보이고 현재 턴이 배경으로 표시된다
+    html = `
+      <div class="appbar" data-m="${m.w}×58">
+        <div class="iconbtn" data-tap="exit">${ICON.close}</div>
+        <div class="title">${t.lesson}</div>
+        <div class="iconbtn" data-tap="skip">${ICON.next}</div>
+      </div>
+      <div class="titleblk" data-m="${m.w}×48" style="padding:0 16px 12px;height:auto">
+        <div class="ko" style="font-size:22px;line-height:30px">${t.rpTitle}</div>
+      </div>
+      ${roleplayHTML(t)}
+      <div class="footer" data-m="${m.w}×92" style="height:92px;padding:0">${roleplayFooterHTML(t)}</div>`;
   } else if (S.act === "chat") {
     // 미션 대화만 셸 골격이 다르다 — 지시문 대신 시나리오 바 + 미션 바가 들어간다
     // 진행바를 쓰지 않는다 — 미션 바의 체크가 곧 진행 표시다
@@ -1254,7 +1387,10 @@ function renderDims(m) {
   const rows = [["기준 폭", `${m.w}`], ["좌우 여백", `${m.gutter}`], ["콘텐츠 폭", `${m.content}`],
     ["앱바", `${m.w} × 58`], ["진행바 블록", `${m.w} × 20`], ["진행바", `${m.content} × 6`],
     ["지시문", `${m.w} × 48`]];
-  if (S.act === "chat") rows.push(["시나리오 바", `${m.w} × ${S.fold ? 44 : 76}`],
+  if (S.act === "roleplay") rows.push(["방향 탭", `hug × 36`], ["턴 줄", `가변 · 스크롤`],
+    ["화자 칸", `24`], ["교정 카드", `${m.content - 36} × hug`], ["하단", `${m.w} × 92`],
+    ["이동 화살표", `36 × 36`], ["녹음 버튼", `60 × 60`]);
+  else if (S.act === "chat") rows.push(["시나리오 바", `${m.w} × ${S.fold ? 44 : 76}`],
     ["미션 바", `${m.w} × 50`], ["스레드", `가변 · 스크롤`], ["아바타", `40 × 40`],
     ["말풍선 최대", `248`], ["마이크 영역", `${m.w} × 92`], ["마이크 버튼", `60 × 60`],
     ["키보드 전환", `44 × 44`]);
@@ -1327,6 +1463,12 @@ document.getElementById("screen").addEventListener("click", e => {
     if (ok) markResolved();
     render(); return;
   }
+  if (tap === "rpAi")   { S.rpDir = "ai"; render(); return; }
+  if (tap === "rpMe")   { S.rpDir = "me"; render(); return; }
+  if (tap === "rpSay")  { S.rpRec = S.rpRec === null ? "no" : S.rpRec === "no" ? "ok" : "no"; render(); return; }
+  if (tap === "rpClear"){ S.rpRec = null; render(); return; }
+  if (tap === "rpPrev") { if (S.rpIdx > 0) S.rpIdx--; S.rpRec = null; render(); return; }
+  if (tap === "rpNext") { if (S.rpIdx < A().turns.length - 1) S.rpIdx++; S.rpRec = null; render(); return; }
   if (tap === "fold")   { S.fold = !S.fold; render(); return; }
   if (tap === "kbOn")   { S.kb = true; render(); return; }
   if (tap === "kbOff")  { S.kb = false; render(); return; }
