@@ -112,10 +112,23 @@
   .b .typing { border-radius:12px; background:var(--white); }
   .typing i { width:5px; height:5px; border-radius:50%; background:var(--blue-gray-400); }
   .chat-footer { flex:0 0 92px; display:flex; align-items:center; justify-content:center; position:relative; background:var(--white); border-top:1px solid var(--blue-gray-100); }
-  .keyboard { position:absolute; left:62px; width:44px; height:44px; border:0; background:transparent; color:var(--blue-gray-600); display:grid; place-items:center; cursor:pointer; }
+  .keyboard { position:absolute; left:20px; width:44px; height:44px; border:0; background:transparent; color:var(--blue-gray-600); display:grid; place-items:center; cursor:pointer; }
   .keyboard svg { width:22px; height:22px; }
-  .mic { width:60px; height:60px; border:0; border-radius:50%; background:var(--blue-500); color:var(--white); display:grid; place-items:center; cursor:pointer; }
-  .mic svg { width:25px; height:25px; }
+  .record-core { width:210px; display:grid; grid-template-columns:56px 1fr; align-items:center; gap:11px; }
+  .record-button { position:relative; width:56px; height:56px; border:0; border-radius:50%; background:var(--blue-500); color:var(--white); display:grid; place-items:center; cursor:pointer; }
+  .record-button::after { content:""; position:absolute; inset:-5px; border:1px solid transparent; border-radius:50%; }
+  .record-button.recording::after { border-color:var(--blue-300); animation:record-pulse 1.2s ease-out infinite; }
+  .record-button.done { border:1px solid var(--blue-100); background:var(--blue-50); color:var(--blue-600); }
+  .record-button.listen { border:1px solid var(--blue-gray-100); background:var(--white); color:var(--blue-500); }
+  .record-button svg { width:24px; height:24px; }
+  .record-copy { min-width:0; display:flex; flex-direction:column; align-items:flex-start; text-align:left; }
+  .record-copy b { color:var(--blue-gray-900); font-size:14px; line-height:20px; font-weight:600; }
+  .record-copy span { color:var(--blue-gray-600); font-size:12px; line-height:16px; font-weight:400; }
+  .record-wave { height:12px; display:flex; align-items:center; gap:2px; margin-top:3px; }
+  .record-wave i { width:2px; border-radius:2px; background:var(--blue-300); }
+  .record-wave i:nth-child(3n+1) { height:5px; } .record-wave i:nth-child(3n+2) { height:11px; } .record-wave i:nth-child(3n) { height:8px; }
+  @keyframes record-pulse { 0% { transform:scale(.92); opacity:.8; } 100% { transform:scale(1.16); opacity:0; } }
+  @media (prefers-reduced-motion:reduce) { .record-button.recording::after { animation:none; } }
 
   /* 롤플레잉 */
   .role-title { flex:0 0 auto; padding:8px 16px 14px; background:var(--white); color:var(--blue-900); font-size:20px; line-height:32px; font-weight:600; }
@@ -123,9 +136,17 @@
   .role-tabs button { min-height:36px; padding:7px 13px; border:0; border-radius:8px; background:var(--blue-gray-50); color:var(--blue-gray-600); font-size:13px; line-height:20px; font-weight:600; cursor:pointer; }
   .role-tabs button.on { background:var(--blue-gray-900); color:var(--white); }
   .turns { flex:1 1 auto; min-height:0; overflow-y:auto; padding:2px 16px 8px; }
+  .script-meta { display:none; }
   .turn { display:grid; grid-template-columns:26px 1fr 22px; gap:8px; align-items:start; padding:9px 0; }
   .a .turn { border-bottom:1px solid var(--blue-gray-100); }
-  .b .turn { margin-bottom:5px; padding:9px; border-radius:10px; background:var(--white); }
+  .b .role-title { padding:12px 16px 10px; font-size:18px; line-height:26px; }
+  .b .role-tabs { flex:0 0 auto; display:grid; grid-template-columns:1fr 1fr; gap:2px; margin:0 16px 12px; padding:3px; border-radius:10px; background:var(--blue-gray-100); }
+  .b .role-tabs button { width:100%; min-height:34px; padding:6px 8px; background:transparent; }
+  .b .role-tabs button.on { background:var(--white); color:var(--blue-gray-900); box-shadow:0 1px 3px rgba(36,52,76,.10); }
+  .b .turns { margin:0 16px; padding:0; border:1px solid var(--blue-gray-100); border-radius:14px; background:var(--white); }
+  .b .script-meta { display:flex; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--blue-gray-100); color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:500; }
+  .b .turn { margin:0; padding:11px 12px; border-bottom:1px solid var(--blue-gray-100); border-radius:0; background:var(--white); }
+  .b .turn.current { background:var(--blue-50); }
   .turn .who { padding-top:3px; color:var(--blue-gray-900); font-size:13px; line-height:20px; font-weight:600; }
   .turn .line { color:var(--blue-gray-900); font-size:15px; line-height:24px; }
   .turn .listen { padding-top:2px; color:var(--blue-gray-600); }
@@ -134,17 +155,14 @@
   .turn.current.ai { background:var(--yellow-50); }
   .turn.current.me { background:var(--blue-50); }
   .record-card { margin:2px 0 7px 34px; padding:9px 11px; border:1px solid var(--blue-gray-100); border-radius:8px; background:var(--white); }
+  .b .record-card { margin:0; padding:10px 12px 11px 46px; border:0; border-bottom:1px solid var(--blue-gray-100); border-radius:0; background:#fafdff; }
   .record-card .meta { color:var(--blue-gray-600); font-size:12px; line-height:18px; }
   .record-card .heard { margin-top:5px; color:var(--blue-gray-900); font-size:14px; line-height:20px; }
-  .role-status { display:flex; justify-content:center; padding:9px 0 4px; }
-  .role-status span { padding:7px 12px; border-radius:18px; background:var(--blue-gray-50); color:var(--blue-gray-600); font-size:12px; line-height:18px; }
   .role-footer { flex:0 0 92px; display:flex; align-items:center; justify-content:center; position:relative; background:var(--white); border-top:1px solid var(--blue-gray-100); }
   .arrow { position:absolute; width:40px; height:40px; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
   .arrow:disabled { color:var(--blue-gray-200); cursor:default; }
   .arrow.left { left:16px; } .arrow.right { right:16px; }
   .arrow svg { width:24px; height:24px; }
-  .play-turn { width:60px; height:60px; border:1px solid var(--blue-gray-100); border-radius:50%; background:var(--white); color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
-  .play-turn svg { width:25px; height:25px; }
   .source-note { margin:20px 0 0; padding-top:16px; border-top:1px solid var(--bench-line); color:var(--bench-sub); font-size:12px; line-height:19px; }
 
   @media (max-width:820px) { .doc { grid-template-columns:1fr; gap:10px; } .compare { grid-template-columns:1fr; gap:36px; } }
@@ -173,10 +191,10 @@
       <div class="device"><div class="screen b" id="screenB"></div></div>
     </article>
   </section>
-  <p class="source-note">플래시카드는 지시문 없이 뒤집은 뒤 자기 평가, 미션 대화는 미션 체크가 진행 표시, 롤플레잉은 자유 대화가 아닌 전체 대본 연습이라는 v1 규칙을 그대로 적용했습니다.</p>
+  <p class="source-note">플래시카드는 지시문 없이 뒤집은 뒤 자기 평가, 미션 대화는 미션 체크가 진행 표시, 롤플레잉은 자유 대화가 아닌 전체 대본 연습이라는 v1 규칙을 그대로 적용했습니다. 녹음이 필요한 활동은 대기·녹음 중·완료의 같은 컨트롤을 사용합니다.</p>
 </main>
 <script>
-const state={activity:"flash",flashIndex:0,flipped:false,known:0,unknown:0,chatTurn:4,chatFold:false,roleIndex:1,roleDir:"ai",roleRecorded:false};
+const state={activity:"flash",flashIndex:0,flipped:false,known:0,unknown:0,chatTurn:4,chatFold:false,chatRecord:"idle",roleIndex:1,roleDir:"ai",roleRecord:"idle"};
 const flashcards=[{word:"사과",meaning:"apple",kind:"명사"},{word:"학교",meaning:"school",kind:"명사"},{word:"친구",meaning:"friend",kind:"명사"}];
 const missions=["주문하기","가격 묻기","인사하기"];
 const chatTurns=[
@@ -205,16 +223,21 @@ const icon={
   down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>',
   volume:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 010 6"/></svg>',
   mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>',
+  stop:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>',
   keyboard:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>'
 };
 function appbar(){return `<div class="appbar"><button class="icon" aria-label="닫기">${icon.close}</button><div class="lesson">1급 4과</div><button class="icon" aria-label="건너뛰기">${icon.next}</button></div>`}
+function recordWave(){return `<span class="record-wave" aria-hidden="true">${Array.from({length:12},()=>'<i></i>').join('')}</span>`}
+function recordControl(mode,action){const recording=mode==="recording",done=mode==="done";const title=recording?"녹음 중":done?"녹음 완료":"눌러서 녹음";const sub=recording?"한 번 더 누르면 완료":done?"누르면 다시 녹음":"문장을 말해 보세요";const symbol=recording?icon.stop:done?icon.check:icon.mic;return `<div class="record-core"><button class="record-button ${mode}" data-action="${action}" aria-label="${title}">${symbol}</button><span class="record-copy"><b>${title}</b><span>${sub}</span>${recording?recordWave():''}</span></div>`}
+function listenControl(){return `<div class="record-core"><button class="record-button listen" data-action="roleNext" aria-label="AI 말 듣기">${icon.volume}</button><span class="record-copy"><b>AI 말 듣기</b><span>듣고 다음 대사로 이동</span></span></div>`}
 function flash(){const card=flashcards[state.flashIndex],pct=((state.flashIndex+1)/flashcards.length)*100;return `${appbar()}<div class="continuous"><div class="track"><i style="width:${pct}%"></i></div><span class="count">${state.flashIndex+1}/${flashcards.length}</span></div><div class="flash-body"><div class="flash-stage" data-action="flip"><div class="flash-next"></div><div class="flash-card ${state.flipped?'flipped':''}"><div class="face"><strong>${card.word}</strong><button class="card-audio" data-action="audio" aria-label="${card.word} 발음 듣기">${icon.volume}</button></div><div class="face back"><strong>${card.meaning}</strong><span class="kind">${card.kind}</span><div class="picture">그림</div><button class="card-audio" data-action="audio" aria-label="${card.word} 발음 듣기">${icon.volume}</button></div></div></div><div class="flash-meta"><span>${state.flipped?'다시 뒤집으려면 누르세요':'카드를 눌러 뜻을 보세요'}</span></div></div><div class="footer"><div class="judge"><button class="unknown" data-action="unknown" ${state.flipped?'':'disabled'}><span class="badge">${state.unknown}</span><span class="label">몰라요</span></button><button class="known" data-action="known" ${state.flipped?'':'disabled'}><span class="badge">${state.known}</span><span class="label">알아요</span></button></div></div>`}
-function missionChat(){const shown=chatTurns.slice(0,state.chatTurn),hits=new Set(shown.filter(x=>x.hit!==undefined).map(x=>x.hit)),waiting=state.chatTurn<chatTurns.length&&chatTurns[state.chatTurn].who==="bot";return `${appbar()}<section class="scenario ${state.chatFold?'folded':''}"><div class="scenario-copy"><div class="ko">카페에서 음료를 주문해 보세요</div>${state.chatFold?'':'<div class="en">Order a drink at the cafe</div>'}</div><button class="fold" data-action="chatFold" aria-label="시나리오 접기">${state.chatFold?icon.down:icon.up}</button></section><div class="missions"><span class="mission-title">미션 보기</span>${missions.map((m,i)=>`<span class="mission ${hits.has(i)?'done':''}">${hits.has(i)?'✓':'○'} ${m}</span>`).join('')}</div><div class="thread">${shown.map(x=>x.who==="bot"?`<div class="msg"><span class="avatar">🧑‍🍳</span><div class="bubble-wrap"><div class="bubble">${x.text}</div></div></div>`:`<div class="msg me ${x.bad?'bad':''}"><div class="bubble-wrap"><div class="bubble">${x.text}</div>${x.tip?`<div class="tip">! ${x.tip}</div>`:''}</div></div>`).join('')}${waiting?'<div class="msg"><span class="avatar">🧑‍🍳</span><span class="typing"><i></i><i></i><i></i></span></div>':''}</div><div class="chat-footer"><button class="keyboard" aria-label="키보드 입력">${icon.keyboard}</button><button class="mic" data-action="chatSay" aria-label="말하기">${state.chatTurn>=chatTurns.length?icon.next:icon.mic}</button></div>`}
-function roleplay(){const current=roleTurns[state.roleIndex],mine=current.who==="나";const rows=roleTurns.map((t,i)=>{const cls=i===state.roleIndex?'current':i>state.roleIndex?'future':'';const record=mine&&i===state.roleIndex&&state.roleRecorded?`<div class="record-card"><div class="meta">${t.en} · [${t.ko}]</div><div class="heard">나의 발음 · ${t.ko}</div></div>`:'';return `<div class="turn ${cls} ${t.who==='나'?'me':'ai'}"><span class="who">${t.who}</span><span class="line">${t.ko}</span><span class="listen">${i<=state.roleIndex?icon.volume:''}</span></div>${record}`}).join('');const status=mine?(state.roleRecorded?'좋아요! 다음 줄로 넘어가세요':'내 차례예요 — 눌러서 녹음'):'AI 말을 들어 보세요';return `${appbar()}<div class="role-title">AI와 함께 대화를 연습해 보세요.</div><div class="role-tabs"><button class="${state.roleDir==='ai'?'on':''}" data-action="roleAi">AI &gt; 나</button><button class="${state.roleDir==='me'?'on':''}" data-action="roleMe">나 &gt; AI</button></div><div class="turns">${rows}<div class="role-status"><span>${status}</span></div></div><div class="role-footer"><button class="arrow left" data-action="rolePrev" ${state.roleIndex===0?'disabled':''}>${icon.left}</button>${mine?`<button class="mic" data-action="roleRecord" aria-label="녹음">${icon.mic}</button>`:`<button class="play-turn" data-action="roleNext" aria-label="AI 말 듣기">${icon.volume}</button>`}<button class="arrow right" data-action="roleNext" ${state.roleIndex===roleTurns.length-1?'disabled':''}>${icon.right}</button></div>`}
+function missionChat(){const shown=chatTurns.slice(0,state.chatTurn),hits=new Set(shown.filter(x=>x.hit!==undefined).map(x=>x.hit)),waiting=state.chatTurn<chatTurns.length&&chatTurns[state.chatTurn].who==="bot";return `${appbar()}<section class="scenario ${state.chatFold?'folded':''}"><div class="scenario-copy"><div class="ko">카페에서 음료를 주문해 보세요</div>${state.chatFold?'':'<div class="en">Order a drink at the cafe</div>'}</div><button class="fold" data-action="chatFold" aria-label="시나리오 접기">${state.chatFold?icon.down:icon.up}</button></section><div class="missions"><span class="mission-title">미션 보기</span>${missions.map((m,i)=>`<span class="mission ${hits.has(i)?'done':''}">${hits.has(i)?'✓':'○'} ${m}</span>`).join('')}</div><div class="thread">${shown.map(x=>x.who==="bot"?`<div class="msg"><span class="avatar">🧑‍🍳</span><div class="bubble-wrap"><div class="bubble">${x.text}</div></div></div>`:`<div class="msg me ${x.bad?'bad':''}"><div class="bubble-wrap"><div class="bubble">${x.text}</div>${x.tip?`<div class="tip">! ${x.tip}</div>`:''}</div></div>`).join('')}${waiting?'<div class="msg"><span class="avatar">🧑‍🍳</span><span class="typing"><i></i><i></i><i></i></span></div>':''}</div><div class="chat-footer"><button class="keyboard" aria-label="키보드 입력">${icon.keyboard}</button>${recordControl(state.chatRecord,"chatRecord")}</div>`}
+function roleplay(){const current=roleTurns[state.roleIndex],mine=current.who==="나";const rows=roleTurns.map((t,i)=>{const cls=i===state.roleIndex?'current':i>state.roleIndex?'future':'';const record=mine&&i===state.roleIndex&&state.roleRecord==="done"?`<div class="record-card"><div class="meta">${t.en} · [${t.ko}]</div><div class="heard">나의 발음 · ${t.ko}</div></div>`:'';return `<div class="turn ${cls} ${t.who==='나'?'me':'ai'}"><span class="who">${t.who}</span><span class="line">${t.ko}</span><span class="listen">${i<=state.roleIndex?icon.volume:''}</span></div>${record}`}).join('');return `${appbar()}<div class="role-title">AI와 함께 대화를 연습해 보세요.</div><div class="role-tabs"><button class="${state.roleDir==='ai'?'on':''}" data-action="roleAi">AI &gt; 나</button><button class="${state.roleDir==='me'?'on':''}" data-action="roleMe">나 &gt; AI</button></div><div class="turns"><div class="script-meta"><span>전체 대본</span><span>${state.roleIndex+1} / ${roleTurns.length}</span></div>${rows}</div><div class="role-footer"><button class="arrow left" data-action="rolePrev" ${state.roleIndex===0?'disabled':''}>${icon.left}</button>${mine?recordControl(state.roleRecord,"roleRecord"):listenControl()}<button class="arrow right" data-action="roleNext" ${state.roleIndex===roleTurns.length-1?'disabled':''}>${icon.right}</button></div>`}
 function render(){const html=state.activity==="flash"?flash():state.activity==="chat"?missionChat():roleplay();document.getElementById('screenA').innerHTML=html;document.getElementById('screenB').innerHTML=html;document.querySelectorAll('[data-activity]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.activity===state.activity)))}
-function resetActivity(activity){state.activity=activity;state.flashIndex=0;state.flipped=false;state.known=0;state.unknown=0;state.chatTurn=4;state.chatFold=false;state.roleIndex=1;state.roleDir="ai";state.roleRecorded=false;render()}
+function resetActivity(activity){state.activity=activity;state.flashIndex=0;state.flipped=false;state.known=0;state.unknown=0;state.chatTurn=4;state.chatFold=false;state.chatRecord="idle";state.roleIndex=1;state.roleDir="ai";state.roleRecord="idle";render()}
 document.querySelector('.controls').addEventListener('click',e=>{const b=e.target.closest('[data-activity]');if(b)resetActivity(b.dataset.activity)});
-document.getElementById('compare').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b||b.disabled)return;const a=b.dataset.action;if(a==="flip")state.flipped=!state.flipped;else if(a==="known"&&state.flipped){state.known++;state.flashIndex=(state.flashIndex+1)%flashcards.length;state.flipped=false}else if(a==="unknown"&&state.flipped){state.unknown++;state.flashIndex=(state.flashIndex+1)%flashcards.length;state.flipped=false}else if(a==="chatFold")state.chatFold=!state.chatFold;else if(a==="chatSay")state.chatTurn=state.chatTurn>=chatTurns.length?1:Math.min(chatTurns.length,state.chatTurn+1);else if(a==="roleAi")state.roleDir="ai";else if(a==="roleMe")state.roleDir="me";else if(a==="rolePrev"){state.roleIndex=Math.max(0,state.roleIndex-1);state.roleRecorded=false}else if(a==="roleNext"){state.roleIndex=Math.min(roleTurns.length-1,state.roleIndex+1);state.roleRecorded=false}else if(a==="roleRecord")state.roleRecorded=!state.roleRecorded;else if(a==="audio")b.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],180);render()});
+document.getElementById('compare').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b||b.disabled)return;const a=b.dataset.action;if(a==="flip")state.flipped=!state.flipped;else if(a==="known"&&state.flipped){state.known++;state.flashIndex=(state.flashIndex+1)%flashcards.length;state.flipped=false}else if(a==="unknown"&&state.flipped){state.unknown++;state.flashIndex=(state.flashIndex+1)%flashcards.length;state.flipped=false}else if(a==="chatFold")state.chatFold=!state.chatFold;else if(a==="chatRecord"){if(state.chatRecord==="idle")state.chatRecord="recording";else if(state.chatRecord==="recording"){state.chatRecord="done";state.chatTurn=state.chatTurn>=chatTurns.length?1:Math.min(chatTurns.length,state.chatTurn+1)}else state.chatRecord="recording"}else if(a==="roleAi")state.roleDir="ai";else if(a==="roleMe")state.roleDir="me";else if(a==="rolePrev"){state.roleIndex=Math.max(0,state.roleIndex-1);state.roleRecord="idle"}else if(a==="roleNext"){state.roleIndex=Math.min(roleTurns.length-1,state.roleIndex+1);state.roleRecord="idle"}else if(a==="roleRecord"){state.roleRecord=state.roleRecord==="idle"?"recording":state.roleRecord==="recording"?"done":"recording"}else if(a==="audio")b.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],180);render()});
 render();
 </script>
 </body>
