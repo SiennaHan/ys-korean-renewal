@@ -659,6 +659,16 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
         <code>write</code>에는 받침 개념이 <b>0건</b>이다. 선택 열이 <b>2개 vs 3개</b>로 화면이 다르다.<br>
         <b>따라서 나누는 것이 맞다</b> — 교재도 받침이 <b>3과</b>에서 나오므로
         <code>sub=6</code>은 사실상 3과 전용이다.</li>
+    <li><b>자모 발음에는 입모양 영상이 있다</b> <span class="qa">구 앱 실측</span> —
+        <code>listen-repeat</code> 화면 위쪽에 <b>16:9 영상</b>(radius 10, <code>#F8FAFF</code> 배경)이 있고
+        <code>problem.ts</code>의 <code>content_vid</code>에 <b>529건</b>이 들어 있다
+        (<code>yonsei_3week/jamo_letters/video/*.mp4</code>).<br>
+        그 아래 <b>음성 / 내 녹음 2열</b>(각 높이 40, radius 8) — 왼쪽은 <code>fill-primary</code> 계열로
+        원본 음성, 오른쪽은 <b>판정 색을 따라간다</b>(맞으면 <code>fill-correct</code>, 틀리면 <code>fill-wrong</code>).<br>
+        그 아래 <b>자모 카드 격자</b>(56 정사각)에서 낱자를 골라 옮겨 다니고,
+        묶음이 많으면 위에 <b>탭 32</b>가 붙는다. 학습을 마친 카드는 우상단에 <b>초록 점</b>이 찍힌다.<br>
+        <b>하단은 녹음 컨트롤</b>이다 — 다른 활동의 [다음] 버튼 자리를 <code>AudioRecorder</code>가 쓴다.
+        즉 <b>문항을 카드로 오가는 구조</b>라 [다음]으로 한 방향 진행하지 않는다.</li>
     <li><b>자모 낱자 쓰기 활동은 없다</b> <span class="qa">실측</span> —
         캔버스 <code>HangulTracingCanvas</code>가 <code>charCode &lt; 0xAC00 || &gt; 0xD7A3</code>이면
         <b>"한글 음절만 지원됩니다"</b>로 빠진다. ㄱ(U+3131)·ㅏ(U+314F)는 그 범위 밖이다.

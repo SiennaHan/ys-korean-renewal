@@ -253,7 +253,37 @@
   .ox-row button.ok { border-color:var(--positive); background:var(--positive-bg); color:var(--blue-gray-900); }
   .ox-row button.no { border-color:var(--destructive); background:var(--destructive-bg); color:var(--blue-gray-900); }
 
-  /* 자모 발음 — 인식 결과는 머무는 정보라 도크 아래 별도 줄 */
+  /* 자모 발음 — 입모양 영상 + 음성/내녹음 2열 + 자모 격자 + 하단 녹음 */
+  .mouth-video { aspect-ratio:16/9; width:100%; border-radius:10px; background:#f8faff;
+    display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px;
+    position:relative; overflow:hidden; }
+  .mouth-video::after { content:"▶"; position:absolute; width:48px; height:48px;
+    border-radius:50%; background:rgba(1,128,255,.9); color:#fff;
+    display:grid; place-items:center; font-size:16px; }
+  .audio-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .audio-pair > div { height:40px; border-radius:8px; display:flex; align-items:center;
+    justify-content:space-between; padding:0 2px; font-size:16px; font-weight:600; }
+  .audio-pair .src { background:var(--blue-50); color:var(--blue-500); }
+  .audio-pair .mine { background:var(--blue-gray-50); color:var(--blue-gray-400); }
+  .audio-pair .mine.ok { color:var(--positive); }
+  .audio-pair .mine.no { color:var(--destructive); }
+  .audio-pair i { width:36px; display:grid; place-items:center; }
+  .audio-pair i svg { width:22px; height:22px; }
+  .jamo-tabs { display:flex; gap:6px; background:var(--blue-gray-100);
+    border-radius:12px 12px 0 0; padding:16px; }
+  .jamo-tabs div { width:32px; height:32px; border-radius:8px; display:grid; place-items:center;
+    font-size:13px; font-weight:500; border:1px solid var(--blue-gray-50);
+    background:var(--blue-gray-50); color:#c8ccd3; }
+  .jamo-tabs div.on { background:var(--blue-50); border-color:var(--blue-300); color:var(--blue-500); }
+  .word-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; padding:18px 16px 0; }
+  .word-cards button { height:56px; border-radius:10px; background:#fff; position:relative;
+    font-size:20px; font-weight:600; color:var(--blue-900); border:0; }
+  .word-cards button.on { background:var(--blue-300); color:#fff; }
+  .word-cards b { position:absolute; top:3px; right:3px; width:14px; height:14px;
+    border-radius:50%; background:var(--blue-gray-100); }
+  .word-cards button.done b { background:var(--positive); }
+
+  /* 인식 결과는 머무는 정보라 도크 아래 별도 줄 */
   .speak-target { font-size:56px; line-height:1.1; font-weight:700; text-align:center;
     color:var(--blue-gray-900); letter-spacing:.04em; }
   .heard-row { border-radius:12px; border:1px solid var(--blue-gray-100); background:var(--white);
@@ -481,13 +511,25 @@ function readingView(){
    인식 결과는 머무는 정보라 pill 이 아니라 도크 아래 별도 줄. */
 function speakView(){
   const s=D.speak, done=state.sMode==="done";
-  const body = problemCard("듣고 따라 말해 보세요.",
-      `<div class="speak-target">${s.target}</div>${audioRow("발음 듣기","자모 음성")}`)
-    + `<div class="response-area">${recordControl(state.sMode,"srec")}
-       ${done?`<div class="heard-row"><span>이렇게 들렸어요</span><b>${s.heard}</b></div>`:''}</div>`;
-  return frame(appbar("1급 1과"), progressBar(2,6), body,
-    feedbackSlot(state.sMode==="recording"?null:null),
-    primary("다음", true, "noop"));
+  const words=["아","어","오","우","으","이","애","에","외","위"];
+  const body = `<section class="problem-card">
+      <header class="instruction"><h2>듣고 따라 말해 보세요.</h2></header>
+      <div class="stimulus" style="gap:16px">
+        <div class="mouth-video">입모양 영상</div>
+        <div class="audio-pair">
+          <div class="src" data-action="audio"><i>${icons.volume}</i><span>${s.target}</span><i></i></div>
+          <div class="mine ${done?(s.heard===s.target?'ok':'no'):''}" data-action="mine">
+            <i>${icons.volume}</i><span>내 녹음</span><i></i></div>
+        </div>
+      </div>
+    </section>
+    <div class="jamo-tabs">${["1","2","3"].map((x,i)=>`<div class="${i===0?'on':''}">${x}</div>`).join("")}</div>
+    <div class="word-cards">${words.map((w,i)=>
+      `<button class="${w===s.target?'on':''} ${i<3?'done':''}">${w}<b></b></button>`).join("")}</div>
+    ${done?`<div class="response-area"><div class="heard-row ${s.heard===s.target?'ok':''}">
+       <span>이렇게 들렸어요</span><b>${s.heard}</b></div></div>`:''}`;
+  return frame(appbar("1급 1과"), progressBar(2,6), body, null,
+    recordControl(state.sMode,"srec"));
 }
 
 /* ── ④ 결과 화면 ─────────────────────────────────── */
@@ -610,8 +652,9 @@ const SPEC = {
     ["오답","고른 것만 표시 · 비활성 없음"],["문법 설명","답 고른 뒤 노출"]],
   reading:[["지문","radius 12 · #F9FAFC · 스크롤"],["질문","16 semibold"],
     ["선택지","세로 리스트 또는 O/X 80"],["오답","고른 것만 표시 · 다시 고를 수 있음"]],
-  speak:[["대상 글자","56 / 62"],["녹음 도크","콘텐츠 영역"],
-    ["인식 결과","별도 줄 · 머문다"],["[다음]","처음부터 켜짐"]],
+  speak:[["입모양 영상","16:9 · radius 10 · #F8FAFF"],["음성 / 내 녹음","2열 · 각 40"],
+    ["자모 격자","5열 · 56 정사각"],["탭","32 · 묶음 전환"],
+    ["인식 결과","별도 줄 · 머문다"],["하단","녹음 컨트롤"]],
   result:[["헤더","파랑 채움"],["통계 카드","2개 · 푼 문항 / 정답률"],
     ["오답 목록","첫 시도 기준"],["하단","다시 풀기 + 다음 활동"]],
   report:[["헤더","파랑 · 20 + 14"],["카드","완료 키워드 / 점수"],
@@ -627,7 +670,8 @@ const ORIGIN = {
     "단 <b>오답을 흐리게 하지 않는다</b> — 구 앱은 opacity .7 로 죽이지만 셸 §5 는 비활성 상태를 만들지 않는다",
   reading:"components/learn/read-answer.tsx — 지문 스크롤, type 이 ox 면 80 높이 두 칸. "+
     "단 <b>오답을 잠그지 않는다</b> — 구 앱은 disabled 로 막지만 셸은 맞힐 때까지 다시 고르게 한다",
-  speak:"listen-repeat + AudioRecorder → POST /stt/convert",
+  speak:"routes/.../listen-repeat/$code.tsx — <b>입모양 영상</b>(problem.ts 의 content_vid 529건) · "+
+    "음성/내 녹음 2열 · 자모 카드 격자(학습한 것은 초록 점) · 하단 AudioRecorder → POST /stt/convert",
   result:"셸 공통 결과 화면(구현 사양 §8)",
   report:"routes/.../dialog/report/$id.tsx + components/ui/assess-chart.tsx",
   briefing:"routes/.../mission_chat/$code.tsx — 시나리오 · 미션 키워드 · 단어",
