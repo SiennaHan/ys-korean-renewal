@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>플레이어 공통 셸 · 통합 활동 카드 UI/UX</title>
+<style>
+  :root {
+    --workbench-bg:#eceff4; --workbench-panel:#fff; --workbench-soft:#f6f8fb; --workbench-ink:#1b1f27;
+    --workbench-sub:#667085; --workbench-line:#dde2ea; --workbench-accent:#0180ff;
+    --yonsei-blue-50:#edf6ff; --yonsei-blue-100:#dbedff; --yonsei-blue-400:#359aff; --yonsei-blue-500:#0180ff; --yonsei-navy:#24425f;
+    --activity-bg:#f3f6f9; --activity-line:#e4e8ed; --activity-ink:#383a3f; --activity-sub:#7f848d;
+    --surface:#fff; --surface-soft:#f8fafc; --positive:#11a96a; --positive-soft:#eaf9f1; --destructive:#e55343; --destructive-soft:#fff0ee;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; min-width:320px; background:var(--workbench-bg); color:var(--workbench-ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif; }
+  button { font:inherit; }
+  .workbench { max-width:1120px; margin:0 auto; padding:30px 20px 72px; }
+  .doc { margin-bottom:22px; }
+  .eyebrow { color:var(--workbench-accent); font-size:11px; line-height:18px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+  .doc h1 { margin:4px 0 7px; font-size:27px; line-height:36px; letter-spacing:-.025em; }
+  .doc p { margin:0; max-width:770px; color:var(--workbench-sub); font-size:14px; line-height:22px; }
+  .stage { display:grid; grid-template-columns:230px auto 260px; gap:24px; align-items:start; }
+  .panel { padding:16px; border:1px solid var(--workbench-line); border-radius:14px; background:var(--workbench-panel); }
+  .panel + .panel { margin-top:14px; }
+  .panel h2 { margin:0 0 12px; font-size:13px; line-height:20px; }
+  .group + .group { margin-top:16px; }
+  .label { margin-bottom:7px; color:#8b94a3; font-size:11px; line-height:16px; font-weight:800; }
+  .options { display:flex; flex-wrap:wrap; gap:6px; }
+  .option { min-height:34px; padding:7px 10px; border:1px solid var(--workbench-line); border-radius:9px;
+    background:var(--workbench-soft); color:#59616f; font-size:12px; line-height:18px; font-weight:750; cursor:pointer; }
+  .option[aria-pressed="true"] { border-color:#b9d7fb; background:#e3f0ff; color:#0069d5; }
+  .note { margin:0; color:var(--workbench-sub); font-size:12px; line-height:19px; }
+  .note + .note { margin-top:9px; }
+  .note b { color:var(--workbench-ink); }
+  .spec { display:grid; grid-template-columns:auto 1fr; gap:7px 12px; margin:0; font-size:12px; line-height:18px; }
+  .spec dt { color:#8b94a3; }
+  .spec dd { margin:0; text-align:right; color:#3d4654; font-family:ui-monospace,Menlo,monospace; font-weight:700; }
+
+  .device-wrap { display:flex; flex-direction:column; align-items:center; }
+  .device { width:406px; padding:8px; border-radius:32px; background:#202833; box-shadow:0 18px 48px rgba(30,42,62,.17); transition:width .18s ease; }
+  .screen { width:100%; height:720px; overflow:hidden; border-radius:25px; background:var(--activity-bg); display:flex; flex-direction:column; }
+  .caption { margin-top:10px; color:#697386; font-size:12px; font-weight:750; }
+
+  .appbar { flex:0 0 58px; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:0 10px; background:var(--surface); }
+  .iconbtn { width:44px; height:44px; border:0; background:transparent; color:#59616f; display:grid; place-items:center; cursor:pointer; }
+  .iconbtn svg { width:24px; height:24px; }
+  .lesson { text-align:center; color:var(--activity-ink); font-size:15px; line-height:22px; font-weight:700; }
+  .progress { flex:0 0 20px; display:flex; align-items:center; gap:3px; padding:5px 16px; background:var(--surface); }
+  .progress i { flex:1; height:6px; border-radius:99px; background:#e0e0e0; }
+  .progress i.done { background:var(--yonsei-blue-400); }
+  .progress i.now { height:10px; background:var(--yonsei-blue-500); }
+
+  .activity-area { flex:1 1 auto; min-height:0; display:flex; padding:12px 14px; background:var(--activity-bg); }
+  .activity-sheet { position:relative; flex:1; min-width:0; min-height:0; overflow:hidden; display:flex; flex-direction:column;
+    border:1px solid var(--activity-line); border-radius:20px; background:var(--surface); box-shadow:0 6px 18px rgba(37,54,72,.055); }
+  .activity-heading { flex:0 0 auto; padding:16px 16px 13px; }
+  .activity-kind { display:flex; align-items:center; gap:7px; margin-bottom:5px; color:var(--yonsei-blue-500); font-size:11px; line-height:17px; font-weight:800; letter-spacing:.02em; }
+  .activity-kind::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--yonsei-blue-500); }
+  .activity-heading h2 { margin:0; color:var(--yonsei-navy); font-size:19px; line-height:27px; letter-spacing:-.018em; }
+  .write-phases { display:flex; align-items:center; gap:6px; margin-top:10px; }
+  .write-phase { display:flex; align-items:center; gap:5px; color:#9aa1aa; font-size:10px; line-height:16px; font-weight:700; }
+  .write-phase i { width:17px; height:17px; border-radius:50%; background:#edf0f3; color:#8a919b; display:grid; place-items:center; font-style:normal; }
+  .write-phase.on { color:var(--yonsei-blue-500); }
+  .write-phase.on i { background:var(--yonsei-blue-500); color:#fff; }
+  .phase-line { width:18px; height:1px; background:#dfe3e8; }
+
+  .activity-body { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:12px; overflow-y:auto; padding:0 16px 12px; }
+  .focus-block { flex:0 0 auto; min-height:82px; border-radius:14px; background:var(--yonsei-blue-50); color:var(--activity-ink);
+    display:flex; align-items:center; justify-content:center; padding:14px; }
+  .target { font-size:38px; line-height:48px; font-weight:750; letter-spacing:-.03em; }
+  .audio { width:100%; min-height:52px; border:0; border-radius:11px; background:var(--yonsei-blue-100); color:var(--yonsei-blue-500);
+    display:flex; align-items:center; justify-content:center; gap:7px; font-size:16px; line-height:24px; font-weight:750; cursor:pointer; }
+  .audio svg { width:23px; height:23px; }
+
+  .choices { width:100%; min-height:0; display:flex; flex-direction:column; gap:8px; }
+  .choice { position:relative; flex:0 0 auto; width:100%; min-height:60px; padding:13px 16px; border:1px solid var(--activity-line);
+    border-radius:13px; background:var(--surface); color:var(--activity-ink); display:flex; align-items:center; justify-content:center;
+    text-align:center; font-size:18px; line-height:26px; font-weight:650; cursor:pointer; }
+  .choice:hover { border-color:#bedbfa; background:#fbfdff; }
+  .choice.wrong { padding-right:48px; border-color:var(--destructive); background:var(--destructive-soft); }
+  .choice.correct { padding-right:48px; border-color:var(--positive); background:var(--positive-soft); }
+  .choice.short.wrong,.choice.short.correct { padding-left:48px; }
+  .mark { position:absolute; right:15px; top:50%; transform:translateY(-50%); width:21px; height:21px; border-radius:50%; color:#fff;
+    display:grid; place-items:center; font-size:12px; font-weight:900; }
+  .wrong .mark { background:var(--destructive); }
+  .correct .mark { background:var(--positive); }
+
+  .combo-focus { justify-content:space-between; }
+  .combo-target { display:flex; align-items:baseline; gap:10px; }
+  .combo-target strong { color:var(--activity-ink); font-size:34px; line-height:42px; letter-spacing:-.02em; }
+  .combo-target span { color:var(--activity-sub); font-size:12px; line-height:18px; }
+  .say { min-height:42px; padding:0 12px; border:0; border-radius:10px; background:var(--yonsei-blue-100); color:var(--yonsei-blue-500);
+    display:flex; align-items:center; gap:5px; font-size:13px; line-height:20px; font-weight:750; cursor:pointer; }
+  .say svg { width:20px; height:20px; }
+  .jamo-section { flex:0 0 auto; }
+  .jamo-title { display:flex; align-items:center; gap:7px; margin-bottom:8px; }
+  .jamo-title i { width:18px; height:18px; border-radius:5px; background:var(--yonsei-blue-500); color:#fff; display:grid; place-items:center;
+    font-style:normal; font-size:10px; font-weight:800; }
+  .jamo-title b { color:var(--activity-ink); font-size:12px; line-height:18px; }
+  .jamo-title span { margin-left:auto; color:var(--activity-sub); font-size:10px; line-height:16px; }
+  .jamo-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; }
+  .jamo-grid button { aspect-ratio:1; min-width:0; border:1px solid var(--activity-line); border-radius:9px; background:var(--surface);
+    color:var(--activity-ink); font-size:15px; font-weight:650; cursor:pointer; }
+  .jamo-grid button.on { border-color:var(--yonsei-blue-500); background:var(--yonsei-blue-500); color:#fff; }
+
+  .writing-body { justify-content:flex-start; gap:10px; }
+  .canvas { position:relative; width:min(100%,320px); aspect-ratio:1; flex:0 0 auto; align-self:center; overflow:hidden;
+    border:1px solid var(--activity-line); border-radius:14px; background:var(--surface-soft); cursor:crosshair; }
+  .canvas::before,.canvas::after { content:""; position:absolute; z-index:1; background:#e7ebef; }
+  .canvas::before { left:0; right:0; top:50%; height:1px; }
+  .canvas::after { top:0; bottom:0; left:50%; width:1px; }
+  .canvas.wrong { border-color:var(--destructive); }
+  .canvas.correct { border-color:var(--positive); background:#fbfffd; }
+  .guide { position:absolute; inset:14px; z-index:2; background:center/contain no-repeat; }
+  .ink { position:absolute; inset:14px; z-index:3; width:calc(100% - 28px); height:calc(100% - 28px); }
+  .ink path { fill:none; stroke:var(--yonsei-blue-500); stroke-width:34; stroke-linecap:round; stroke-linejoin:round; }
+  .canvas.wrong .ink path { stroke:var(--destructive); }
+  .canvas.correct .ink path { stroke:var(--positive); }
+  .tools { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .tool { height:34px; border:1px solid var(--activity-line); border-radius:9px; background:var(--surface); color:var(--activity-sub); font-size:11px; font-weight:700; cursor:pointer; }
+
+  .activity-feedback { flex:0 0 36px; display:flex; align-items:center; justify-content:center; padding:0 16px 10px; }
+  .feedback-message { min-height:30px; padding:5px 11px; border-radius:99px; background:#343a43; color:#fff; display:flex; align-items:center; gap:6px;
+    font-size:12px; line-height:18px; font-weight:700; }
+  .feedback-message i { width:18px; height:18px; border-radius:50%; color:#fff; display:grid; place-items:center; font-style:normal; font-size:11px; }
+  .feedback-message.wrong i { background:var(--destructive); }
+  .feedback-message.correct i { background:var(--positive); }
+  .footer { flex:0 0 80px; display:flex; gap:10px; align-items:center; padding:12px 14px 14px; background:var(--surface); border-top:1px solid #f0f1f3; }
+  .primary { flex:1; height:54px; border:0; border-radius:12px; background:#dfe3e8; color:#9ba3ae; font-size:16px; line-height:24px; font-weight:800; }
+  .primary.on { background:var(--yonsei-blue-500); color:#fff; cursor:pointer; }
+
+  @media (max-width:940px) { .stage { grid-template-columns:1fr; } .side { display:none; } }
+  @media (max-width:520px) { .workbench { padding:18px 8px 40px; } .device { width:min(406px,calc(100vw - 16px)); } }
+</style>
+</head>
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div class="eyebrow">Phase 1 · unified activity sheet</div>
+    <h1>어휘 · 듣기 · 자모 쓰기 — 통합 활동 카드</h1>
+    <p>앱바와 진행 상태는 그대로 두고, 각 활동의 지시문·문제 자극·응답 영역을 하나의 흰색 활동 카드 안에 묶었습니다.</p>
+  </header>
+  <section class="stage">
+    <aside class="side">
+      <div class="panel">
+        <h2>활동</h2>
+        <div class="group"><div class="label">기존 목업의 세 활동</div><div class="options" data-set="activity">
+          <button class="option" data-value="vocab" aria-pressed="true">어휘 · 4지</button>
+          <button class="option" data-value="listen" aria-pressed="false">듣기 · 2↔4</button>
+          <button class="option" data-value="write" aria-pressed="false">자모 쓰기</button>
+        </div></div>
+        <p class="note" style="margin-top:14px"><b>화면 안을 직접 누릅니다.</b> 세 활동 모두 기존 문항과 기능으로 작동합니다.</p>
+      </div>
+      <div class="panel">
+        <h2>검사</h2>
+        <div class="group"><div class="label">폭</div><div class="options" data-set="width">
+          <button class="option" data-value="390" aria-pressed="true">390</button>
+          <button class="option" data-value="360" aria-pressed="false">360</button>
+          <button class="option" data-value="320" aria-pressed="false">320</button>
+        </div></div>
+      </div>
+    </aside>
+
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720 · 어휘</div>
+    </div>
+
+    <aside class="side">
+      <div class="panel"><h2>현재 치수</h2><dl class="spec" id="spec"></dl></div>
+      <div class="panel">
+        <h2>이번 안의 기준</h2>
+        <p class="note"><b>한 활동 = 한 카드:</b> 유형·지시문·문제·응답·채점 피드백이 같은 경계 안에 있습니다.</p>
+        <p class="note"><b>문제 자극 우선:</b> 단어·음성·조합 글자는 같은 위치의 옅은 파란 영역에 표시합니다.</p>
+        <p class="note"><b>기능 보존:</b> 4지선다, 2↔4 선택, 조합 선택과 쓰기 캔버스를 그대로 유지합니다.</p>
+      </div>
+      <div class="panel">
+        <h2>B형과 달라진 점</h2>
+        <p class="note">지시문 전용 상단 띠를 없애고, 문제와 선택지가 흩어져 보이지 않도록 활동 카드 안에서 한 흐름으로 연결했습니다.</p>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<script>
+const state={activity:"vocab",width:"390",index:0,picked:null,resolved:false,feedback:null,writeStage:"select",strokes:0,judge:null,writeFails:0,wrongTimer:null};
+const data={
+  vocab:[
+    {q:"사과",ch:["apple","grape","peach","pear"],a:0},
+    {q:"학교",ch:["home","school","park","store"],a:1},
+    {q:"친구",ch:["teacher","sister","friend","doctor"],a:2},
+    {q:"물",ch:["milk","juice","tea","water"],a:3}
+  ],
+  listen:[
+    {q:"어",ch:["어","오"],a:0},
+    {q:"외",ch:["어","오","외","아"],a:2},
+    {q:"아",ch:["아","야"],a:0},
+    {q:"오",ch:["어","오","외","아"],a:1}
+  ],
+  write:[
+    {q:"가",parts:"ㄱ + ㅏ",guide:"../handwriting/가.png",paths:["M170 190 H650 Q670 410 420 680","M690 140 V720","M690 430 H835"]},
+    {q:"어",parts:"ㅇ + ㅓ",guide:"../handwriting/어.png",paths:["M220 440 A180 180 0 1 0 580 440 A180 180 0 1 0 220 440","M590 440 H760","M760 150 V730"]},
+    {q:"오",parts:"ㅇ + ㅗ",guide:"../handwriting/오.png",paths:["M250 330 A170 170 0 1 0 590 330 A170 170 0 1 0 250 330","M420 520 V650","M170 650 H670"]}
+  ]
+};
+const icons={
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+  volume:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 010 6"/></svg>'
+};
+const consonants=["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅎ","ㅋ","ㅌ"];
+const vowels=["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ","ㅑ","ㅕ"];
+function items(){return data[state.activity]}
+function item(){return items()[state.index]}
+function instruction(){return state.activity==="vocab"?"단어에 맞는 뜻을 고르세요.":state.activity==="listen"?"듣고 맞는 것을 고르세요.":state.writeStage==="select"?"글자를 만들고 써 보세요.":"글자를 순서에 맞게 써 보세요."}
+function activityKind(){return state.activity==="vocab"?"어휘 · 뜻 고르기":state.activity==="listen"?"듣기 · 소리 구별":state.writeStage==="select"?"자모 쓰기 · 글자 만들기":"자모 쓰기 · 따라 쓰기"}
+function progress(){return `<div class="progress">${items().map((_,i)=>`<i class="${i<state.index?'done':i===state.index?'now':''}"></i>`).join("")}</div>`}
+function phases(){if(state.activity!=="write")return "";return `<div class="write-phases"><span class="write-phase ${state.writeStage==='select'?'on':''}"><i>1</i>글자 만들기</span><span class="phase-line"></span><span class="write-phase ${state.writeStage==='write'?'on':''}"><i>2</i>따라 쓰기</span></div>`}
+function heading(){return `<header class="activity-heading"><div class="activity-kind">${activityKind()}</div><h2>${instruction()}</h2>${phases()}</header>`}
+function feedback(){return state.feedback==="wrong"?'<div class="feedback-message wrong"><i>✕</i>다시 해보세요</div>':state.feedback==="correct"?'<div class="feedback-message correct"><i>✓</i>아주 잘 했어요!</div>':''}
+function chrome(body,footer){return `<div class="appbar"><button class="iconbtn" aria-label="닫기">${icons.close}</button><div class="lesson">1급 4과</div><button class="iconbtn" data-action="skip" aria-label="다음 문제">${icons.next}</button></div>${progress()}<main class="activity-area"><article class="activity-sheet">${heading()}${body}<div class="activity-feedback">${feedback()}</div></article></main><div class="footer">${footer}</div>`}
+function choices(){return `<div class="choices">${item().ch.map((text,i)=>{const active=state.picked===i;const cls=active?(state.resolved?'correct':'wrong'):'';const mark=active?`<span class="mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice short ${cls}" data-action="choice" data-index="${i}"><span>${text}</span>${mark}</button>`}).join("")}</div>`}
+function choiceScreen(){const prompt=state.activity==="vocab"?`<section class="focus-block" aria-label="문제 단어"><div class="target">${item().q}</div></section>`:`<section class="focus-block" aria-label="문제 음성"><button class="audio" data-action="audio">${icons.volume}<span>발음 듣기</span></button></section>`;const body=`<div class="activity-body">${prompt}${choices()}</div>`;const footer=`<button class="primary ${state.resolved?'on':''}" ${state.resolved?'data-action="next"':''}>${state.index===items().length-1?'결과 보기':'다음'}</button>`;return chrome(body,footer)}
+function grid(list,on){return `<div class="jamo-grid">${list.map(x=>`<button class="${x===on?'on':''}">${x}</button>`).join("")}</div>`}
+function selectScreen(){const q=item();const body=`<div class="activity-body"><section class="focus-block combo-focus"><div class="combo-target"><strong>${q.q}</strong><span>${q.parts}</span></div><button class="say" data-action="audio">${icons.volume}<span>${q.q}</span></button></section><section class="jamo-section"><div class="jamo-title"><i>1</i><b>맨 앞에 오는 소리</b><span>initial consonant</span></div>${grid(consonants,q.parts[0])}</section><section class="jamo-section"><div class="jamo-title"><i>2</i><b>가운데 오는 소리</b><span>vowel</span></div>${grid(vowels,q.parts[4])}</section></div>`;return chrome(body,'<button class="primary on" data-action="toWrite">확인</button>')}
+function writeScreen(){const q=item();const status=state.judge||'';const paths=state.strokes?`<svg class="ink" viewBox="0 0 918 918">${q.paths.slice(0,state.strokes).map(path=>`<path d="${path}"/>`).join('')}</svg>`:'';const body=`<div class="activity-body writing-body"><div class="canvas ${status}" data-action="draw" aria-label="글자 쓰기 영역"><div class="guide" style="background-image:url('${q.guide}')"></div>${paths}</div><div class="tools"><button class="tool" data-action="clear">전체 지우기</button><button class="tool" data-action="undo">되돌리기</button></div></div>`;const enabled=state.strokes>0;const label=state.judge==="correct"?'다음':'확인';const action=state.judge==="correct"?'next':'judge';return chrome(body,`<button class="primary ${enabled?'on':''}" ${enabled?`data-action="${action}"`:''}>${label}</button>`)}
+function render(){const screen=document.getElementById('screen');const device=document.getElementById('device');device.style.width=(+state.width+16)+'px';screen.innerHTML=state.activity==='write'?(state.writeStage==='select'?selectScreen():writeScreen()):choiceScreen();document.getElementById('caption').textContent=`${state.width} × 720 · ${state.activity==='vocab'?'어휘':state.activity==='listen'?'듣기':state.writeStage==='select'?'자모 만들기':'자모 쓰기'}`;document.getElementById('spec').innerHTML=[["활동 카드 폭",+state.width-28],["카드 바깥 여백","14"],["카드 안 여백","16"],["선택지","min 60 · gap 8"],["앱바+진행","78"],["하단","80"]].map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('')}
+function reset(){if(state.wrongTimer)clearTimeout(state.wrongTimer);state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;render()}
+function advance(){if(state.index<items().length-1)state.index++;else state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;render()}
+document.getElementById('screen').addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;if(a==='choice'){if(state.resolved)return;if(state.wrongTimer){clearTimeout(state.wrongTimer);state.wrongTimer=null}const i=+el.dataset.index;state.picked=i;if(i===item().a){state.resolved=true;state.feedback='correct'}else{state.feedback='wrong';render();state.wrongTimer=setTimeout(()=>{state.picked=null;state.wrongTimer=null;render()},650);return}}else if(a==='next'||a==='skip'){advance();return}else if(a==='toWrite'){state.writeStage='write'}else if(a==='draw'){state.strokes=Math.min(state.strokes+1,item().paths.length);state.judge=null;state.feedback=null}else if(a==='clear'){state.strokes=0;state.judge=null;state.feedback=null}else if(a==='undo'){state.strokes=Math.max(0,state.strokes-1);state.judge=null;state.feedback=null}else if(a==='judge'){const ok=state.index===0||state.writeFails>=2;state.judge=ok?'correct':'wrong';state.feedback=state.judge;if(!ok)state.writeFails++}else if(a==='audio'){el.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],220)}render()});
+document.querySelectorAll('[data-set]').forEach(group=>group.querySelectorAll('.option').forEach(button=>button.addEventListener('click',()=>{const key=group.dataset.set;state[key]=button.dataset.value;group.querySelectorAll('.option').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));if(key==='activity')reset();else render()})));
+render();
+</script>
+</body>
+</html>
