@@ -237,8 +237,9 @@
   .chip-opt { border-radius:8px; border:1px solid var(--blue-gray-100); background:var(--white);
     padding:10px 16px; font-size:15px; font-weight:500; color:var(--blue-gray-900); }
   .chip-opt.on { border-color:var(--blue-500); background:#e9f2fc; color:var(--blue-500); }
-  .chip-opt.ok { border:2px solid var(--blue-300); background:var(--blue-300); color:#fff; }
-  .chip-opt.no { border-color:var(--blue-gray-100); background:#f2f3f5; color:var(--gray-400); opacity:.7; }
+  .chip-opt.ok { border-color:var(--positive); background:var(--positive-bg); color:var(--blue-gray-900); }
+  /* 오답은 흐리게 하지 않는다 — 고른 것만 표시하고 다시 고를 수 있다(셸 §5·§6) */
+  .chip-opt.no { border-color:var(--destructive); background:var(--destructive-bg); color:var(--blue-gray-900); }
   .focus-note { border-radius:10px; background:#f9fafc; padding:10px 14px;
     font-size:13px; line-height:1.6; color:var(--blue-gray-600); }
 
@@ -249,8 +250,8 @@
   .ox-row { display:flex; gap:12px; }
   .ox-row button { flex:1; height:80px; border-radius:16px; border:2px solid var(--blue-gray-100);
     background:#f9fafc; color:var(--blue-gray-600); font-size:32px; font-weight:700; }
-  .ox-row button.ok { border:3px solid var(--blue-300); background:var(--blue-300); color:#fff; }
-  .ox-row button.no { background:#f2f3f5; color:var(--gray-400); opacity:.7; }
+  .ox-row button.ok { border-color:var(--positive); background:var(--positive-bg); color:var(--blue-gray-900); }
+  .ox-row button.no { border-color:var(--destructive); background:var(--destructive-bg); color:var(--blue-gray-900); }
 
   /* 자모 발음 — 인식 결과는 머무는 정보라 도크 아래 별도 줄 */
   .speak-target { font-size:56px; line-height:1.1; font-weight:700; text-align:center;
@@ -606,9 +607,9 @@ const VIEWS = { grammar:grammarView, reading:readingView, speak:speakView,
   loading:loadingView, failed:failedView, micdenied:micDeniedView };
 const SPEC = {
   grammar:[["문제 카드","radius 12 · #F0F7FF"],["선택지","칩 · 줄바꿈 · radius 8"],
-    ["오답","흐려짐 opacity .7"],["문법 설명","답 고른 뒤 노출"]],
+    ["오답","고른 것만 표시 · 비활성 없음"],["문법 설명","답 고른 뒤 노출"]],
   reading:[["지문","radius 12 · #F9FAFC · 스크롤"],["질문","16 semibold"],
-    ["선택지","세로 리스트 또는 O/X 80"],["오답","잠김(disabled)"]],
+    ["선택지","세로 리스트 또는 O/X 80"],["오답","고른 것만 표시 · 다시 고를 수 있음"]],
   speak:[["대상 글자","56 / 62"],["녹음 도크","콘텐츠 영역"],
     ["인식 결과","별도 줄 · 머문다"],["[다음]","처음부터 켜짐"]],
   result:[["헤더","파랑 채움"],["통계 카드","2개 · 푼 문항 / 정답률"],
@@ -622,8 +623,10 @@ const SPEC = {
   micdenied:[["안내","가운데"],["하단","이 활동 건너뛰기"]],
 };
 const ORIGIN = {
-  grammar:"components/learn/fill-blank.tsx — 칩 선택지, 빈칸에 답이 들어가는 표시, grammar_focus",
-  reading:"components/learn/read-answer.tsx — 지문 스크롤, type 이 ox 면 80 높이 두 칸",
+  grammar:"components/learn/fill-blank.tsx — 칩 선택지, 빈칸에 답이 들어가는 표시, grammar_focus. "+
+    "단 <b>오답을 흐리게 하지 않는다</b> — 구 앱은 opacity .7 로 죽이지만 셸 §5 는 비활성 상태를 만들지 않는다",
+  reading:"components/learn/read-answer.tsx — 지문 스크롤, type 이 ox 면 80 높이 두 칸. "+
+    "단 <b>오답을 잠그지 않는다</b> — 구 앱은 disabled 로 막지만 셸은 맞힐 때까지 다시 고르게 한다",
   speak:"listen-repeat + AudioRecorder → POST /stt/convert",
   result:"셸 공통 결과 화면(구현 사양 §8)",
   report:"routes/.../dialog/report/$id.tsx + components/ui/assess-chart.tsx",

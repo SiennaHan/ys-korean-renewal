@@ -234,9 +234,19 @@
   <tr><td>포커스</td><td><code>line-focus</code> 테두리 강조</td><td>키보드·스위치 조작</td></tr>
 </table></div>
 <div class="rule stop">
-  <div class="t">만들지 않는 상태</div>
-  <p><b>정답 표시 · 오답 표시 · 비활성</b> — 셋 다 만들지 않는다. 정답을 공개하지 않고,
-     틀린 선택지를 비활성으로도 만들지 않기 때문이다(§6).</p>
+  <div class="t">만들지 않는 상태 — <b>구 앱과 의도적으로 다르다</b></div>
+  <p><b>정답 표시 · 오답 소거 · 비활성</b> — 셋 다 만들지 않는다.
+     <b>고른 것에만</b> 표시가 붙고(맞으면 <code>fill-correct</code>, 틀리면 <code>fill-wrong</code> 테두리·배경 + ✓/✕),
+     <b>안 고른 선택지는 손대지 않는다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>활동</th><th>구 앱</th><th>새 셸</th></tr>
+    <tr><td>문법</td><td>오답을 <code>opacity .7</code>로 흐리게</td><td rowspan="2"><b>그대로 둔다</b></td></tr>
+    <tr><td>읽기</td><td>오답을 <code>disabled</code>로 잠금</td></tr>
+  </table></div>
+  <p><b>오답을 하나씩 지우면 4지선다가 답을 알려주는 셈</b>이 된다 — 세 번 틀리면 남은 하나가 정답이다.
+     재시도형은 <b>정답을 공개하지 않는다</b>는 전제 위에 서 있으므로(§6), 소거법을 열어 두면 그 전제가 무너진다.</p>
+  <p class="qa">대신 <b>같은 오답을 또 눌러도 매번 반응</b>한다 — 진동·효과음·pill. 갇히지 않게 하는 것은
+     헤더의 → 건너뛰기가 맡는다.</p>
 </div>
 
 <h2 id="s6"><span class="n">6</span>채점</h2>
