@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연세 글로벌 한국어 · 에디토리얼 활동 UI/UX</title>
+<style>
+  :root {
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-400:#359aff; --blue-500:#0180ff; --blue-600:#0073e6;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-600:#7f848d;
+    --blue-gray-800:#4b505a; --blue-gray-900:#383a3f; --blue-900:#24425f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+  button { font:inherit; }
+  .workbench { max-width:1180px; margin:0 auto; padding:36px 24px 72px; }
+  .doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,420px); gap:40px; align-items:end; margin-bottom:28px; }
+  .kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+  .doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+  .doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; font-weight:400; }
+  .stage { display:grid; grid-template-columns:210px minmax(320px,auto) 220px; gap:28px; align-items:start; }
+  .rail { padding-top:8px; }
+  .rail-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+  .rail-section + .rail-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+  .rail h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; letter-spacing:.02em; }
+  .rail-label { margin:0 0 8px; color:#87909d; font-size:11px; line-height:16px; font-weight:500; }
+  .option-list { display:flex; flex-direction:column; align-items:flex-start; gap:2px; }
+  .option { min-height:32px; padding:5px 0; border:0; background:transparent; color:#687180; font-size:13px; line-height:20px; font-weight:500; cursor:pointer; }
+  .option[aria-pressed="true"] { color:var(--blue-600); font-weight:600; }
+  .option[aria-pressed="true"]::before { content:"— "; }
+  .width-options { display:flex; gap:14px; }
+  .width-options .option { font-variant-numeric:tabular-nums; }
+  .note { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+  .note + .note { margin-top:9px; }
+  .note b { color:var(--bench-ink); font-weight:600; }
+  .spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+  .spec dt { color:#87909d; }
+  .spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
+
+  .device-wrap { display:flex; flex-direction:column; align-items:center; }
+  .device { width:392px; padding:1px; border:1px solid #cfd5dd; border-radius:24px; background:#dfe3e9; box-shadow:0 18px 45px rgba(36,52,76,.10); transition:width .18s ease; }
+  .screen { width:100%; height:720px; overflow:hidden; border-radius:22px; background:var(--white); display:flex; flex-direction:column; }
+  .caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+
+  .appbar { flex:0 0 58px; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:0 9px; background:var(--white); }
+  .icon-control { width:44px; height:44px; border:0; background:transparent; color:var(--blue-gray-800); display:grid; place-items:center; cursor:pointer; }
+  .icon-control svg { width:24px; height:24px; }
+  .lesson { text-align:center; color:var(--blue-gray-900); font-size:16px; line-height:24px; font-weight:600; }
+  .progress { flex:0 0 20px; display:flex; align-items:center; gap:4px; padding:5px 16px 9px; background:var(--white); }
+  .progress i { flex:1; height:4px; background:var(--gray-300); }
+  .progress i.done { background:var(--blue-400); }
+  .progress i.now { background:var(--blue-500); }
+
+  .activity-content { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; background:var(--white); }
+  .instruction { flex:0 0 48px; display:flex; align-items:center; padding:8px 20px 14px; border-bottom:1px solid var(--blue-gray-100); }
+  .instruction h2 { margin:0; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:600; letter-spacing:-.01em; }
+  .module-flow { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column; padding:20px 20px 14px; }
+
+  .word-focus { min-height:74px; display:flex; align-items:center; gap:8px; padding-bottom:18px; border-bottom:1px solid var(--blue-gray-100); }
+  .word-focus strong { color:var(--blue-gray-900); font-size:32px; line-height:48px; font-weight:600; letter-spacing:-.02em; }
+  .sound-icon { width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+  .sound-icon:hover { background:var(--blue-gray-50); }
+  .sound-icon svg { width:20px; height:20px; }
+  .meaning-focus { min-height:74px; display:flex; align-items:center; padding-bottom:18px; border-bottom:1px solid var(--blue-gray-100); color:var(--blue-gray-900); font-size:24px; line-height:36px; font-weight:600; }
+
+  .choice-list { margin-top:18px; border:1px solid var(--blue-gray-100); border-radius:12px; overflow:hidden; }
+  .choice { position:relative; width:100%; min-height:64px; padding:16px 48px 16px 18px; border:0; border-bottom:1px solid var(--blue-gray-100); background:var(--white); color:var(--blue-gray-900); display:flex; align-items:center; justify-content:flex-start; text-align:left; font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+  .choice:last-child { border-bottom:0; }
+  .choice:hover { background:var(--blue-gray-50); }
+  .choice.wrong { background:var(--destructive-bg); color:var(--blue-gray-900); }
+  .choice.correct { background:var(--positive-bg); color:var(--blue-gray-900); }
+  .choice-mark { position:absolute; right:17px; top:50%; transform:translateY(-50%); width:20px; height:20px; border-radius:50%; color:var(--white); display:grid; place-items:center; font-size:11px; line-height:1; font-weight:600; }
+  .wrong .choice-mark { background:var(--destructive); }
+  .correct .choice-mark { background:var(--positive); }
+
+  .statement-group { padding:2px 0 20px; border-bottom:1px solid var(--blue-gray-100); }
+  .statement { margin:0 0 12px; color:var(--blue-gray-900); font-size:24px; line-height:36px; font-weight:600; letter-spacing:-.015em; }
+  .audio-compact { min-height:32px; padding:4px 0; border:0; background:transparent; color:var(--blue-500); display:inline-flex; align-items:center; gap:7px; font-size:14px; line-height:20px; font-weight:600; cursor:pointer; }
+  .audio-compact svg { width:18px; height:18px; }
+  .binary-list { display:grid; grid-template-columns:1fr 1fr; margin-top:18px; border:1px solid var(--blue-gray-100); border-radius:12px; overflow:hidden; }
+  .binary-list .choice { min-height:108px; justify-content:center; padding:18px 44px; border-bottom:0; font-size:32px; line-height:48px; font-weight:600; }
+  .binary-list .choice + .choice { border-left:1px solid var(--blue-gray-100); }
+
+  .audio-stimulus { min-height:58px; display:grid; grid-template-columns:40px 1fr auto; align-items:center; gap:12px; padding:0 2px 16px; border-bottom:1px solid var(--blue-gray-100); }
+  .play-disc { width:40px; height:40px; border:0; border-radius:50%; background:var(--blue-500); color:var(--white); display:grid; place-items:center; cursor:pointer; }
+  .play-disc svg { width:20px; height:20px; }
+  .wave { height:18px; display:flex; align-items:center; gap:3px; }
+  .wave i { width:2px; border-radius:2px; background:var(--blue-100); }
+  .wave i:nth-child(3n+1) { height:8px; } .wave i:nth-child(3n+2) { height:16px; } .wave i:nth-child(3n) { height:11px; }
+  .audio-label { color:var(--blue-gray-600); font-size:12px; line-height:16px; font-weight:500; }
+  .jamo-choices { display:grid; grid-template-columns:1fr 1fr; margin-top:18px; border:1px solid var(--blue-gray-100); border-radius:12px; overflow:hidden; }
+  .jamo-choices .choice { min-height:84px; justify-content:center; padding:18px 44px; border-bottom:1px solid var(--blue-gray-100); font-size:24px; line-height:36px; font-weight:600; }
+  .jamo-choices .choice:nth-child(odd) { border-right:1px solid var(--blue-gray-100); }
+  .jamo-choices .choice:nth-last-child(-n+2) { border-bottom:0; }
+  .jamo-choices.two .choice { border-bottom:0; }
+
+  .word-preview-list { border-top:1px solid var(--blue-gray-100); }
+  .preview-row { min-height:62px; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; align-items:center; padding:9px 0; border-bottom:1px solid var(--blue-gray-100); }
+  .preview-word { color:var(--blue-gray-900); font-size:17px; line-height:26px; font-weight:600; }
+  .preview-meaning { color:var(--blue-gray-600); font-size:14px; line-height:20px; font-weight:400; }
+  .preview-audio { grid-column:2; grid-row:1 / 3; width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+  .preview-audio svg { width:18px; height:18px; }
+
+  .combo-result { min-height:76px; display:flex; align-items:center; justify-content:space-between; padding-bottom:16px; border-bottom:1px solid var(--blue-gray-100); }
+  .combo-left { display:flex; align-items:baseline; gap:12px; }
+  .combo-left strong { color:var(--blue-gray-900); font-size:32px; line-height:48px; font-weight:600; }
+  .combo-left span { color:var(--blue-gray-600); font-size:14px; line-height:20px; font-weight:500; }
+  .combo-audio { width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+  .combo-audio svg { width:20px; height:20px; }
+  .jamo-section { margin-top:18px; }
+  .jamo-label { display:flex; align-items:baseline; gap:8px; margin-bottom:8px; }
+  .jamo-label i { color:var(--blue-500); font-style:normal; font-size:12px; line-height:16px; font-weight:600; }
+  .jamo-label b { color:var(--blue-gray-900); font-size:14px; line-height:20px; font-weight:600; }
+  .jamo-grid { display:grid; grid-template-columns:repeat(6,1fr); border-top:1px solid var(--blue-gray-100); border-left:1px solid var(--blue-gray-100); }
+  .jamo-grid button { aspect-ratio:1; min-width:0; border:0; border-right:1px solid var(--blue-gray-100); border-bottom:1px solid var(--blue-gray-100); background:var(--white); color:var(--blue-gray-900); font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+  .jamo-grid button.on { background:var(--blue-500); color:var(--white); }
+
+  .writing-flow { padding-top:14px; }
+  .canvas { position:relative; width:min(100%,290px); aspect-ratio:1; flex:0 0 auto; align-self:center; overflow:hidden; border:1px solid var(--blue-gray-200); border-radius:4px; background:var(--blue-gray-50); cursor:crosshair; }
+  .canvas::before,.canvas::after { content:""; position:absolute; z-index:1; background:var(--blue-gray-200); }
+  .canvas::before { left:0; right:0; top:50%; height:1px; }
+  .canvas::after { top:0; bottom:0; left:50%; width:1px; }
+  .canvas.wrong { border-color:var(--destructive); }
+  .canvas.correct { border-color:var(--positive); }
+  .guide { position:absolute; inset:12px; z-index:2; background:center/contain no-repeat; opacity:.48; }
+  .ink { position:absolute; inset:12px; z-index:3; width:calc(100% - 24px); height:calc(100% - 24px); }
+  .ink path { fill:none; stroke:var(--blue-500); stroke-width:34; stroke-linecap:round; stroke-linejoin:round; }
+  .canvas.wrong .ink path { stroke:var(--destructive); }
+  .canvas.correct .ink path { stroke:var(--positive); }
+  .tools { width:min(100%,290px); align-self:center; display:flex; justify-content:flex-end; gap:16px; margin-top:10px; }
+  .tool { min-height:30px; padding:4px 0; border:0; background:transparent; color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+
+  .feedback-slot { flex:0 0 44px; display:flex; align-items:center; justify-content:center; padding:4px 16px; background:var(--white); }
+  .feedback-message { min-height:34px; padding:7px 13px; border-radius:99px; background:var(--blue-gray-900); color:var(--white); display:flex; align-items:center; gap:7px; font-size:12px; line-height:18px; font-weight:600; }
+  .feedback-message i { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; color:var(--white); font-style:normal; font-size:10px; }
+  .feedback-message.wrong i { background:var(--destructive); }
+  .feedback-message.correct i { background:var(--positive); }
+  .footer { flex:0 0 88px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--blue-gray-100); }
+  .primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+  .primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
+
+  @media (max-width:980px) { .doc { grid-template-columns:1fr; gap:10px; } .stage { grid-template-columns:1fr; } .rail { display:none; } }
+  @media (max-width:520px) { .workbench { padding:18px 8px 40px; } .doc { padding:0 8px; } .doc h1 { font-size:25px; line-height:34px; } .device { width:min(392px,calc(100vw - 16px)); } }
+</style>
+</head>
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div><div class="kicker">PHASE 1 · UI/UX EDITORIAL</div><h1>타이포그래피로 묶는 활동 화면</h1></div>
+    <p>스타일 가이드의 Pretendard 23종과 의미 색상 토큰을 기준으로, 카드 수를 줄이고 지시문·문제·응답의 관계를 글자 크기와 여백으로 정리했습니다.</p>
+  </header>
+  <section class="stage">
+    <aside class="rail">
+      <div class="rail-section">
+        <h2>화면</h2>
+        <div class="option-list" data-set="activity">
+          <button class="option" data-value="wordQuiz" aria-pressed="true">어휘 · 문제</button>
+          <button class="option" data-value="wordPreview" aria-pressed="false">어휘 · 미리보기</button>
+          <button class="option" data-value="listen" aria-pressed="false">일반 듣기</button>
+          <button class="option" data-value="jamoListen" aria-pressed="false">자모 듣기</button>
+          <button class="option" data-value="write" aria-pressed="false">자모 조합·쓰기</button>
+        </div>
+      </div>
+      <div class="rail-section">
+        <p class="rail-label">화면 폭</p>
+        <div class="width-options" data-set="width">
+          <button class="option" data-value="390" aria-pressed="true">390</button>
+          <button class="option" data-value="360" aria-pressed="false">360</button>
+          <button class="option" data-value="320" aria-pressed="false">320</button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720 · 어휘 문제</div>
+    </div>
+
+    <aside class="rail">
+      <div class="rail-section"><h2>현재 화면</h2><dl class="spec" id="spec"></dl></div>
+      <div class="rail-section">
+        <h2>적용한 기준</h2>
+        <p class="note"><b>타이포:</b> H2~C3의 기존 23종 스케일만 사용.</p>
+        <p class="note"><b>색상:</b> Blue·Blue Gray의 semantic 역할 유지.</p>
+        <p class="note"><b>구성:</b> 선택지를 하나의 목록으로 묶고 정보 덩어리는 선과 여백으로 분리.</p>
+      </div>
+      <div class="rail-section">
+        <h2>음성의 위계</h2>
+        <p class="note"><b>보조:</b> 단어 옆 아이콘 또는 텍스트 링크.</p>
+        <p class="note"><b>주 자극:</b> 재생 원형 버튼과 파형 한 줄.</p>
+        <p class="note"><b>쓰기 참고:</b> 조합 결과 옆 아이콘.</p>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<script>
+const state={activity:"wordQuiz",width:"390",index:0,picked:null,resolved:false,feedback:null,writeStage:"select",strokes:0,judge:null,writeFails:0,wrongTimer:null,chosenConsonant:null,chosenVowel:null};
+const data={
+  wordQuiz:[
+    {prompt:"사과",promptType:"word",ch:["apple","grape","peach","pear"],a:0},
+    {prompt:"college / university",promptType:"meaning",ch:["친구","대학교","학생","성"],a:1},
+    {prompt:"친구",promptType:"word",ch:["teacher","sister","friend","doctor"],a:2},
+    {prompt:"water",promptType:"meaning",ch:["우유","물","차","주스"],a:1}
+  ],
+  listen:[
+    {q:"여자 이름은 영주예요.",ch:["X","O"],a:1},
+    {q:"남자 이름은 샤오밍이에요.",ch:["X","O"],a:1},
+    {q:"슈테판은 회사원이에요.",ch:["X","O"],a:0}
+  ],
+  jamoListen:[
+    {q:"어",ch:["어","오"],a:0},
+    {q:"외",ch:["어","오","외","아"],a:2},
+    {q:"아",ch:["아","야"],a:0},
+    {q:"오",ch:["어","오","외","아"],a:1}
+  ],
+  write:[
+    {q:"가",parts:"ㄱ + ㅏ",guide:"../handwriting/가.png",paths:["M170 190 H650 Q670 410 420 680","M690 140 V720","M690 430 H835"]},
+    {q:"어",parts:"ㅇ + ㅓ",guide:"../handwriting/어.png",paths:["M220 440 A180 180 0 1 0 580 440 A180 180 0 1 0 220 440","M590 440 H760","M760 150 V730"]},
+    {q:"오",parts:"ㅇ + ㅗ",guide:"../handwriting/오.png",paths:["M250 330 A170 170 0 1 0 590 330 A170 170 0 1 0 250 330","M420 520 V650","M170 650 H670"]}
+  ],
+  wordPreview:[
+    {q:"안녕하다",m:"to be well / hello"},{q:"네",m:"yes"},{q:"제",m:"my"},{q:"이름",m:"name"},{q:"저",m:"I (formal)"},{q:"반갑다",m:"to be glad to meet"}
+  ]
+};
+const icons={
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+  volume:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 010 6"/></svg>'
+};
+const consonants=["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅎ","ㅋ","ㅌ"];
+const vowels=["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ","ㅑ","ㅕ"];
+function items(){return data[state.activity]||[]}
+function item(){return items()[state.index]}
+function lesson(){return state.activity==="write"||state.activity==="jamoListen"?"1급 1과":"1급 4과"}
+function instruction(){if(state.activity==="wordQuiz")return "단어에 맞는 뜻을 고르세요.";if(state.activity==="wordPreview")return "이번 과의 단어를 먼저 살펴보세요.";if(state.activity==="listen")return "들은 내용과 같으면 O, 다르면 X를 고르세요.";if(state.activity==="jamoListen")return "듣고 맞는 것을 고르세요.";return state.writeStage==="select"?"글자를 만들고 써 보세요.":"글자를 순서에 맞게 써 보세요."}
+function progress(){const count=state.activity==="wordPreview"?4:items().length;const current=state.activity==="wordPreview"?0:state.index;return `<div class="progress">${Array.from({length:count},(_,i)=>`<i class="${i<current?'done':i===current?'now':''}"></i>`).join("")}</div>`}
+function feedback(){return state.feedback==="wrong"?'<div class="feedback-message wrong"><i>✕</i>다시 해보세요</div>':state.feedback==="correct"?'<div class="feedback-message correct"><i>✓</i>아주 잘 했어요!</div>':''}
+function shell(module,footer){return `<div class="appbar"><button class="icon-control" aria-label="닫기">${icons.close}</button><div class="lesson">${lesson()}</div><button class="icon-control" data-action="skip" aria-label="건너뛰기">${icons.next}</button></div>${progress()}<main class="activity-content"><header class="instruction"><h2>${instruction()}</h2></header>${module}<div class="feedback-slot" aria-live="polite">${feedback()}</div></main><div class="footer">${footer}</div>`}
+function choiceMarkup(text,i,extra=""){const active=state.picked===i;const cls=active?(state.resolved?'correct':'wrong'):'';const mark=active?`<span class="choice-mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice ${extra} ${cls}" data-action="choice" data-index="${i}"><span>${text}</span>${mark}</button>`}
+function wordQuiz(){const q=item();const stimulus=q.promptType==="word"?`<section class="word-focus"><strong>${q.prompt}</strong><button class="sound-icon" data-action="audio" aria-label="발음 듣기">${icons.volume}</button></section>`:`<section class="meaning-focus">${q.prompt}</section>`;return shell(`<div class="module-flow">${stimulus}<div class="choice-list">${q.ch.map((x,i)=>choiceMarkup(x,i)).join("")}</div></div>`,nextFooter())}
+function wordPreview(){const rows=data.wordPreview.map(x=>`<div class="preview-row"><div class="preview-word">${x.q}</div><div class="preview-meaning">${x.m}</div><button class="preview-audio" data-action="audio" aria-label="${x.q} 발음 듣기">${icons.volume}</button></div>`).join("");return shell(`<div class="module-flow"><div class="word-preview-list">${rows}</div></div>`,'<button class="primary on" data-action="toQuiz">문제 풀기</button>')}
+function generalListen(){const q=item();const stimulus=`<section class="statement-group"><p class="statement">${q.q}</p><button class="audio-compact" data-action="audio">${icons.volume}<span>다시 듣기</span></button></section>`;return shell(`<div class="module-flow">${stimulus}<div class="binary-list">${q.ch.map((x,i)=>choiceMarkup(x,i)).join("")}</div></div>`,nextFooter())}
+function wave(){return `<span class="wave" aria-hidden="true">${Array.from({length:26},()=>'<i></i>').join('')}</span>`}
+function jamoListen(){const q=item();const cls=q.ch.length===2?'jamo-choices two':'jamo-choices';const stimulus=`<div class="audio-stimulus"><button class="play-disc" data-action="audio" aria-label="발음 재생">${icons.volume}</button>${wave()}<span class="audio-label">발음 듣기</span></div>`;return shell(`<div class="module-flow">${stimulus}<div class="${cls}">${q.ch.map((x,i)=>choiceMarkup(x,i)).join("")}</div></div>`,nextFooter())}
+function jamoGrid(list,on,type){return `<div class="jamo-grid">${list.map(x=>`<button class="${x===on?'on':''}" data-action="jamo" data-type="${type}" data-value="${x}">${x}</button>`).join("")}</div>`}
+function selectedConsonant(){return state.chosenConsonant||item().parts[0]}
+function selectedVowel(){return state.chosenVowel||item().parts[4]}
+function combinedSyllable(){const initial=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];const medial=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];const ci=initial.indexOf(selectedConsonant()),vi=medial.indexOf(selectedVowel());return ci<0||vi<0?"?":String.fromCharCode(0xac00+(ci*21+vi)*28)}
+function writeSelect(){const q=item(),consonant=selectedConsonant(),vowel=selectedVowel(),made=combinedSyllable();const module=`<div class="module-flow"><section class="combo-result"><div class="combo-left"><strong>${made}</strong><span>${consonant} + ${vowel}</span></div><button class="combo-audio" data-action="audio" aria-label="${q.q} 발음 듣기">${icons.volume}</button></section><section class="jamo-section"><div class="jamo-label"><i>01</i><b>맨 앞에 오는 소리</b></div>${jamoGrid(consonants,consonant,"consonant")}</section><section class="jamo-section"><div class="jamo-label"><i>02</i><b>가운데 오는 소리</b></div>${jamoGrid(vowels,vowel,"vowel")}</section></div>`;return shell(module,'<button class="primary on" data-action="toWrite">확인</button>')}
+function writeCanvas(){const q=item(),status=state.judge||'';const paths=state.strokes?`<svg class="ink" viewBox="0 0 918 918">${q.paths.slice(0,state.strokes).map(path=>`<path d="${path}"/>`).join('')}</svg>`:'';const module=`<div class="module-flow writing-flow"><div class="canvas ${status}" data-action="draw" aria-label="글자 쓰기 영역"><div class="guide" style="background-image:url('${q.guide}')"></div>${paths}</div><div class="tools"><button class="tool" data-action="undo">되돌리기</button><button class="tool" data-action="clear">전체 지우기</button></div></div>`;const enabled=state.strokes>0,label=state.judge==="correct"?'다음':'확인',action=state.judge==="correct"?'next':'judge';return shell(module,`<button class="primary ${enabled?'on':''}" ${enabled?`data-action="${action}"`:''}>${label}</button>`)}
+function nextFooter(){const label=state.index===items().length-1?'결과 보기':'다음';return `<button class="primary ${state.resolved?'on':''}" ${state.resolved?'data-action="next"':''}>${label}</button>`}
+function render(){const device=document.getElementById('device'),screen=document.getElementById('screen');device.style.width=(+state.width+2)+'px';if(state.activity==="wordQuiz")screen.innerHTML=wordQuiz();else if(state.activity==="wordPreview")screen.innerHTML=wordPreview();else if(state.activity==="listen")screen.innerHTML=generalListen();else if(state.activity==="jamoListen")screen.innerHTML=jamoListen();else screen.innerHTML=state.writeStage==="select"?writeSelect():writeCanvas();const names={wordQuiz:"어휘 문제",wordPreview:"어휘 미리보기",listen:"일반 듣기",jamoListen:"자모 듣기",write:state.writeStage==="select"?"자모 조합":"자모 쓰기"};document.getElementById('caption').textContent=`${state.width} × 720 · ${names[state.activity]}`;const role=state.activity==="listen"?"보조 링크":state.activity==="jamoListen"?"주 자극 40":state.activity==="write"?"참고 아이콘":"단어 옆 아이콘";document.getElementById('spec').innerHTML=[["지시문","18 / 26 · 600"],["문제","24~32 · 600"],["선택지","16 / 24 · 500"],["음성",role],["하단","88"]].map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('')}
+function reset(){if(state.wrongTimer)clearTimeout(state.wrongTimer);state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;state.chosenConsonant=null;state.chosenVowel=null;render()}
+function advance(){if(state.index<items().length-1)state.index++;else state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;state.chosenConsonant=null;state.chosenVowel=null;render()}
+document.getElementById('screen').addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;if(a==='choice'){if(state.resolved)return;if(state.wrongTimer){clearTimeout(state.wrongTimer);state.wrongTimer=null}const i=+el.dataset.index;state.picked=i;if(i===item().a){state.resolved=true;state.feedback='correct'}else{state.feedback='wrong';render();state.wrongTimer=setTimeout(()=>{state.picked=null;state.wrongTimer=null;render()},650);return}}else if(a==='next'||a==='skip'){if(state.activity==='wordPreview'){state.activity='wordQuiz';document.querySelectorAll('[data-set="activity"] .option').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.value==='wordQuiz')));reset();return}advance();return}else if(a==='toQuiz'){state.activity='wordQuiz';document.querySelectorAll('[data-set="activity"] .option').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.value==='wordQuiz')));reset();return}else if(a==='jamo'){if(el.dataset.type==='consonant')state.chosenConsonant=el.dataset.value;else state.chosenVowel=el.dataset.value}else if(a==='toWrite'){state.writeStage='write'}else if(a==='draw'){state.strokes=Math.min(state.strokes+1,item().paths.length);state.judge=null;state.feedback=null}else if(a==='clear'){state.strokes=0;state.judge=null;state.feedback=null}else if(a==='undo'){state.strokes=Math.max(0,state.strokes-1);state.judge=null;state.feedback=null}else if(a==='judge'){const ok=state.index===0||state.writeFails>=2;state.judge=ok?'correct':'wrong';state.feedback=state.judge;if(!ok)state.writeFails++}else if(a==='audio'){el.animate([{transform:'scale(1)'},{transform:'scale(.96)'},{transform:'scale(1)'}],200)}render()});
+document.querySelectorAll('[data-set]').forEach(group=>group.querySelectorAll('.option').forEach(button=>button.addEventListener('click',()=>{const key=group.dataset.set;state[key]=button.dataset.value;group.querySelectorAll('.option').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));if(key==='activity')reset();else render()})));
+render();
+</script>
+</body>
+</html>
