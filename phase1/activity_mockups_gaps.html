@@ -283,6 +283,49 @@
     border-radius:50%; background:var(--blue-gray-100); }
   .word-cards button.done b { background:var(--positive); }
 
+  /* 단어 듣고 따라하기(sub=3) · 단어 읽고 쓰기(sub=4) */
+  .word-pic { display:grid; place-items:center; background:#fff; border-radius:5px; }
+  .word-pic div { width:100%; max-height:150px; height:150px; border-radius:8px;
+    background:var(--blue-gray-50); display:grid; place-items:center;
+    color:var(--blue-gray-400); font-size:13px; }
+  .word-pic.sm div { height:130px; }
+  /* 음성 바 — sub=3 은 내 녹음과 2열, sub=4 는 전폭 1열 */
+  .audio-bar { height:40px; border-radius:5px; background:var(--blue-50);
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:16px; font-weight:600; color:var(--blue-500); }
+  .audio-bar i { width:38px; display:grid; place-items:center; }
+  .audio-bar i svg { width:20px; height:20px; }
+  /* 글자 칸 — 단어를 글자 단위로 쪼갠다. 누르면 캔버스가 모달로 열린다 */
+  .syl-row { display:flex; gap:10px; }
+  .syl { position:relative; flex:1; height:96px; border-radius:8px;
+    background:#f9fafc; display:grid; place-items:center; }
+  .syl span { font-size:60px; font-weight:700; color:#ddd; line-height:1; }
+  .syl svg { position:absolute; inset:0; width:100%; height:100%; }
+  .syl path { fill:none; stroke:var(--blue-gray-900); stroke-linecap:round;
+    stroke-linejoin:round; opacity:.85; }
+  /* 캔버스 모달 */
+  .modal { position:absolute; inset:0; background:rgba(24,26,32,.5);
+    display:flex; align-items:center; justify-content:center; padding:16px; }
+  .modal-box { width:100%; background:#fff; border-radius:16px; padding:16px;
+    display:flex; flex-direction:column; gap:12px; }
+  .modal-canvas { aspect-ratio:1; border-radius:12px; background:#fff;
+    border:1px solid var(--blue-gray-100); position:relative; display:grid; place-items:center; }
+  .modal-canvas span { font-size:150px; font-weight:400; color:var(--gray-200); line-height:1; }
+  .modal-tools { display:flex; gap:12px; }
+  .modal-tools button { flex:1; height:36px; border-radius:8px; background:#fff;
+    border:1px solid var(--blue-gray-100); color:var(--blue-gray-600); font-size:13px; }
+  /* 워드 카드 격자 — 3열, 그림 50 + 글자 50 */
+  .wcards { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 8px; padding:16px; }
+  .wcards button { display:flex; align-items:center; justify-content:center; gap:4px;
+    background:transparent; border:0; padding:0; min-width:0; }
+  .wcards .thumb { width:50px; height:50px; border-radius:5px; background:#fff;
+    display:grid; place-items:center; font-size:11px; color:var(--blue-gray-400); }
+  .wcards .lab { position:relative; width:50px; height:50px; display:grid; place-items:center;
+    font-size:12px; color:var(--blue-gray-900); }
+  .wcards .lab b { position:absolute; top:0; right:0; width:14px; height:14px;
+    border-radius:50%; background:var(--blue-gray-100); }
+  .wcards button.done .lab b { background:var(--positive); }
+
   /* 인식 결과는 머무는 정보라 도크 아래 별도 줄 */
   .speak-target { font-size:56px; line-height:1.1; font-weight:700; text-align:center;
     color:var(--blue-gray-900); letter-spacing:.04em; }
@@ -361,6 +404,8 @@
       <button class="option" data-value="grammar" aria-pressed="true">문법 · 빈칸</button>
       <button class="option" data-value="reading" aria-pressed="false">읽기 · 지문</button>
       <button class="option" data-value="speak" aria-pressed="false">자모 발음</button>
+      <button class="option" data-value="wordrep" aria-pressed="false">단어 듣고 따라</button>
+      <button class="option" data-value="readwrite" aria-pressed="false">단어 읽고 쓰기</button>
     </div>
     <div class="control-group" data-set="activity2">
       <span class="control-label">문항 밖</span>
@@ -416,6 +461,7 @@ const state = { view:"grammar", width:"390",
   gPicked:null, gOk:false,           // 문법
   rPicked:null, rOk:false,           // 읽기
   sMode:"idle",                      // 자모 발음 idle|recording|done
+  rwOpen:null, rwInk:[0,0,0],        // 단어 읽고 쓰기: 열린 글자 칸 · 칸별 획 수
 };
 
 const D = {
@@ -427,6 +473,14 @@ const D = {
     q:"마이클은 어디에서 한국어를 배웁니까?", type:"choice",
     ch:["미국","신촌","도쿄","부산"], a:1 },
   speak: { target:"어", heard:"오" },
+  wordrep: { word:"어머니", tabs:["1","2","3"],
+    cards:[["어머니",1],["바지",1],["모자",1],["새우",0],["지도",0],["쇠고기",0]] },
+  readwrite: { word:"바지", tabs:["1","2","3"],
+    cards:[["바지",1],["모자",1],["어머니",0],["새우",0],["지도",0],["쇠고기",0]],
+    ink:{ "바":['<path d="M120 150 C 134 340 118 560 132 760" stroke-width="48"/>',
+                '<path d="M138 400 C 210 392 280 396 336 386" stroke-width="44"/>',
+                '<path d="M420 140 C 434 330 418 540 432 742" stroke-width="48"/>'],
+          "지":[] } },
   result: { answered:3, total:4, correct:2, graded:3,
     wrongs:[{ n:1, picked:"grape", answer:"apple", exp:"사과는 apple 이에요." }] },
   report: { hits:2, missions:3, vals:[78,62,85,70],
@@ -530,6 +584,66 @@ function speakView(){
        <span>이렇게 들렸어요</span><b>${s.heard}</b></div></div>`:''}`;
   return frame(appbar("1급 1과"), progressBar(2,6), body, null,
     recordControl(state.sMode,"srec"));
+}
+
+/* ── ③-b 단어 듣고 따라하기 (sub=3) ─────────────────
+   그림 150 + 음성/내녹음 2열 + 워드카드 3열 + 하단 녹음.
+   자모 발음과 같은 골격인데 위쪽이 영상이 아니라 그림이다. */
+function wordRepView(){
+  const d=D.wordrep, done=state.sMode==="done";
+  const body = `<section class="problem-card">
+      <header class="instruction"><h2>단어를 듣고 따라 말해 보세요.</h2></header>
+      <div class="stimulus" style="gap:20px">
+        <div class="word-pic"><div>단어 그림</div></div>
+        <div class="audio-pair">
+          <div class="src" data-action="audio"><i>${icons.volume}</i><span>${d.word}</span><i></i></div>
+          <div class="mine ${done?'ok':''}" data-action="mine"><i>${icons.volume}</i><span>내 녹음</span><i></i></div>
+        </div>
+      </div>
+    </section>
+    <div class="jamo-tabs">${d.tabs.map((x,i)=>`<div class="${i===0?'on':''}">${x}</div>`).join("")}</div>
+    ${wcards(d.cards, d.word)}`;
+  return frame(appbar("1급 1과"), progressBar(0,6), body, null,
+    recordControl(state.sMode,"srec"));
+}
+
+/* ── ③-c 단어 읽고 쓰기 (sub=4) ─────────────────────
+   그림 130 + 음성 바 전폭 + 글자 칸. 칸을 누르면 캔버스가 모달로 열린다. */
+function readWriteView(){
+  const d=D.readwrite, sy=d.word.split("");
+  const body = `<section class="problem-card">
+      <header class="instruction"><h2>단어를 읽고 쓰세요.</h2></header>
+      <div class="stimulus" style="gap:20px">
+        <div class="word-pic sm"><div>단어 그림</div></div>
+        <div class="audio-bar" data-action="audio"><i>${icons.volume}</i><span>${d.word}</span><i></i></div>
+        <div class="syl-row">${sy.map((c,i)=>{
+          const ink=(d.ink[c]||[]).slice(0, state.rwInk[i]||0);
+          return `<div class="syl" data-action="openc" data-i="${i}"><span>${c}</span>
+            ${ink.length?`<svg viewBox="0 0 918 918">${ink.join("")}</svg>`:""}</div>`;
+        }).join("")}</div>
+      </div>
+    </section>
+    <div class="jamo-tabs">${d.tabs.map((x,i)=>`<div class="${i===0?'on':''}">${x}</div>`).join("")}</div>
+    ${wcards(d.cards, d.word)}`;
+  const modal = state.rwOpen===null ? "" : `<div class="modal" data-action="closec">
+      <div class="modal-box" data-stop="1">
+        <div class="modal-canvas" data-action="stroke"><span>${sy[state.rwOpen]}</span>
+          ${(()=>{const ink=(d.ink[sy[state.rwOpen]]||[]).slice(0,state.rwInk[state.rwOpen]||0);
+            return ink.length?`<svg viewBox="0 0 918 918" style="position:absolute;inset:0;width:100%;height:100%">${ink.join("")}</svg>`:"";})()}
+        </div>
+        <div class="modal-tools">
+          <button data-action="rwclear">전체 지우기</button>
+          <button data-action="rwundo">되돌리기</button>
+        </div>
+        <button class="primary on" data-action="closec">확인</button>
+      </div></div>`;
+  return frame(appbar("1급 1과"), progressBar(1,6), body, null, null) + modal;
+}
+
+function wcards(list, cur){
+  return `<div class="wcards">${list.map(([w,done])=>
+    `<button class="${done?'done':''}"><span class="thumb">그림</span>
+      <span class="lab" style="${w===cur?'color:var(--blue-500);font-weight:700':''}">${w}<b></b></span></button>`).join("")}</div>`;
 }
 
 /* ── ④ 결과 화면 ─────────────────────────────────── */
@@ -645,6 +759,7 @@ function micDeniedView(){
 
 /* ── 렌더 · 클릭 ─────────────────────────────────── */
 const VIEWS = { grammar:grammarView, reading:readingView, speak:speakView,
+  wordrep:wordRepView, readwrite:readWriteView,
   result:resultView, report:reportView, briefing:briefingView,
   loading:loadingView, failed:failedView, micdenied:micDeniedView };
 const SPEC = {
@@ -655,6 +770,10 @@ const SPEC = {
   speak:[["입모양 영상","16:9 · radius 10 · #F8FAFF"],["음성 / 내 녹음","2열 · 각 40"],
     ["자모 격자","5열 · 56 정사각"],["탭","32 · 묶음 전환"],
     ["인식 결과","별도 줄 · 머문다"],["하단","녹음 컨트롤"]],
+  wordrep:[["그림","최대 150"],["음성 / 내 녹음","2열 · 각 40"],
+    ["워드 카드","3열 · 그림 50 + 글자 50"],["탭","32"],["하단","녹음 컨트롤"]],
+  readwrite:[["그림","130"],["음성 바","전폭 1열 · 40 · radius 5"],
+    ["글자 칸","96 · 글자마다 하나"],["캔버스","모달로 열림"],["도구","전체 지우기 · 되돌리기"]],
   result:[["헤더","파랑 채움"],["통계 카드","2개 · 푼 문항 / 정답률"],
     ["오답 목록","첫 시도 기준"],["하단","다시 풀기 + 다음 활동"]],
   report:[["헤더","파랑 · 20 + 14"],["카드","완료 키워드 / 점수"],
@@ -674,6 +793,8 @@ const ORIGIN = {
     "음성/내 녹음 2열 · 자모 카드 격자(학습한 것은 초록 점) · 하단 AudioRecorder → POST /stt/convert",
   result:"셸 공통 결과 화면(구현 사양 §8)",
   report:"routes/.../dialog/report/$id.tsx + components/ui/assess-chart.tsx",
+  wordrep:"routes/.../listen-repeat2/$code.tsx — 그림 150 + 음성/내 녹음 2열 + 워드카드 3열",
+  readwrite:"routes/.../read-write/$code.tsx — <b>캔버스가 모달</b>이다. 글자 칸을 누르면 HangulCanvas 가 Dialog 로 열린다",
   briefing:"routes/.../mission_chat/$code.tsx — 시나리오 · 미션 키워드 · 단어",
   loading:"셸 예외 상태(구현 사양 §9)", failed:"동상", micdenied:"동상",
 };
@@ -696,7 +817,8 @@ document.addEventListener('click', e=>{
       document.querySelectorAll('[data-set="width"] .option').forEach(b=>
         b.setAttribute('aria-pressed', String(b.dataset.value===state.width))); }
     else { state.view=opt.dataset.value;
-      state.gPicked=null; state.gOk=false; state.rPicked=null; state.rOk=false; state.sMode="idle"; }
+      state.gPicked=null; state.gOk=false; state.rPicked=null; state.rOk=false; state.sMode="idle";
+      state.rwOpen=null; state.rwInk=[0,0,0]; }
     render(); return;
   }
   const a=e.target.closest('[data-action]'); if(!a) return;
@@ -706,6 +828,13 @@ document.addEventListener('click', e=>{
   if(act==='rpick'){ if(state.rOk) return; state.rPicked=+a.dataset.i;
     state.rOk = +a.dataset.i===D.reading.a; render(); }
   if(act==='srec'){ state.sMode = state.sMode==="idle"?"recording":state.sMode==="recording"?"done":"recording"; render(); }
+  if(act==='openc'){ state.rwOpen=+a.dataset.i; render(); }
+  if(act==='closec'){ if(e.target.closest('[data-stop]') && act!=='closec') return; state.rwOpen=null; render(); }
+  if(act==='stroke'){ const w=D.readwrite.word.split("")[state.rwOpen];
+    const max=(D.readwrite.ink[w]||[]).length;
+    if((state.rwInk[state.rwOpen]||0)<max) state.rwInk[state.rwOpen]++; render(); }
+  if(act==='rwundo'){ if(state.rwInk[state.rwOpen]>0) state.rwInk[state.rwOpen]--; render(); }
+  if(act==='rwclear'){ state.rwInk[state.rwOpen]=0; render(); }
 });
 render();
 </script>
