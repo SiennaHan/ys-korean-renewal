@@ -3,213 +3,347 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>플레이어 공통 셸 · 기존 목업 기반 활동 UI/UX</title>
+<title>연세 글로벌 한국어 · 확정 활동 UI/UX 목업</title>
 <style>
   :root {
-    --page-bg:#eceff4; --page-panel:#fff; --page-panel-2:#f6f8fb; --page-ink:#1b1f27;
-    --page-sub:#667085; --page-line:#dde2ea; --page-accent:#0180ff;
-    --blue-50:#dbedff; --blue-400:#359aff; --blue-500:#0180ff; --blue-900:#24425f;
-    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-600:#7f848d; --blue-gray-900:#383a3f;
-    --white-50:#f9fafc; --white-100:#fff; --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd;
-    --positive:#11c378; --positive-soft:#e7fbce; --destructive:#f15f49; --destructive-soft:#ffe8e8;
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
   }
   * { box-sizing:border-box; }
-  body { margin:0; min-width:320px; background:var(--page-bg); color:var(--page-ink);
-    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif; }
+  body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
   button { font:inherit; }
-  .workbench { max-width:1120px; margin:0 auto; padding:30px 20px 72px; }
-  .doc { margin-bottom:22px; }
-  .eyebrow { color:var(--page-accent); font-size:11px; line-height:18px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
-  .doc h1 { margin:4px 0 7px; font-size:27px; line-height:36px; letter-spacing:-.025em; }
-  .doc p { margin:0; max-width:760px; color:var(--page-sub); font-size:14px; line-height:22px; }
-  .stage { display:grid; grid-template-columns:230px auto 260px; gap:24px; align-items:start; }
-  .panel { padding:16px; border:1px solid var(--page-line); border-radius:14px; background:var(--page-panel); }
-  .panel + .panel { margin-top:14px; }
-  .panel h2 { margin:0 0 12px; font-size:13px; line-height:20px; }
-  .group + .group { margin-top:16px; }
-  .label { margin-bottom:7px; color:#8b94a3; font-size:11px; line-height:16px; font-weight:800; }
-  .options { display:flex; flex-wrap:wrap; gap:6px; }
-  .option { min-height:34px; padding:7px 10px; border:1px solid var(--page-line); border-radius:9px;
-    background:var(--page-panel-2); color:#59616f; font-size:12px; line-height:18px; font-weight:750; cursor:pointer; }
-  .option[aria-pressed="true"] { border-color:#b9d7fb; background:#e3f0ff; color:#0069d5; }
-  .note { margin:0; color:var(--page-sub); font-size:12px; line-height:19px; }
-  .note + .note { margin-top:9px; }
-  .note b { color:var(--page-ink); }
-  .spec { display:grid; grid-template-columns:auto 1fr; gap:7px 12px; margin:0; font-size:12px; line-height:18px; }
-  .spec dt { color:#8b94a3; }
-  .spec dd { margin:0; text-align:right; color:#3d4654; font-family:ui-monospace,Menlo,monospace; font-weight:700; }
-
+  .workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
+  .doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
+  .kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+  .doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+  .doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
+  .controls { display:flex; justify-content:space-between; gap:18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+  .control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+  .control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
+  .option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+  .option:hover { background:rgba(255,255,255,.55); }
+  .option[aria-pressed="true"] { border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }
+  .stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
   .device-wrap { display:flex; flex-direction:column; align-items:center; }
-  .device { width:390px; padding:8px; border-radius:32px; background:#202833; box-shadow:0 18px 48px rgba(30,42,62,.17); transition:width .18s ease; }
-  .screen { width:100%; height:720px; overflow:hidden; border-radius:25px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
-  .caption { margin-top:10px; color:#697386; font-size:12px; font-weight:750; }
+  .device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
+  .screen { width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+  .caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .notes { padding-top:8px; }
+  .note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+  .note-section + .note-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+  .notes h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }
+  .notes p { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+  .notes p + p { margin-top:9px; }
+  .notes b { color:var(--bench-ink); font-weight:600; }
+  .spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+  .spec dt { color:#87909d; }
+  .spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
 
-  .appbar { flex:0 0 58px; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:0 10px; background:var(--white-100); }
-  .iconbtn { width:44px; height:44px; border:0; background:transparent; color:#59616f; display:grid; place-items:center; cursor:pointer; }
-  .iconbtn svg { width:24px; height:24px; }
-  .lesson { text-align:center; color:var(--blue-gray-900); font-size:15px; line-height:22px; font-weight:700; }
-  .progress { flex:0 0 20px; display:flex; align-items:center; gap:3px; padding:5px 16px; background:var(--white-100); }
-  .progress i { flex:1; height:6px; border-radius:99px; background:var(--gray-300); }
-  .progress i.done { background:var(--blue-400); }
-  .progress i.now { height:10px; background:var(--blue-500); }
-  .title { flex:0 0 48px; padding:11px 16px; background:var(--white-100); color:var(--blue-900); font-size:16px; line-height:24px; font-weight:700; }
-  .band { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:0 16px; }
-  .band.top { justify-content:flex-start; align-items:stretch; overflow-y:auto; padding-top:16px; }
-  .target { color:var(--blue-gray-900); font-size:40px; line-height:52px; font-weight:700; }
-  .audio { width:100%; min-height:44px; border:0; border-radius:10px; background:var(--blue-50); color:var(--blue-500);
-    display:flex; align-items:center; justify-content:center; gap:5px; font-size:16px; line-height:24px; font-weight:700; cursor:pointer; }
-  .audio svg { width:24px; height:24px; }
+  .appbar { flex:0 0 58px; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:0 9px; background:var(--white); }
+  .icon-control { width:44px; height:44px; border:0; background:transparent; color:var(--blue-gray-800); display:grid; place-items:center; cursor:pointer; }
+  .icon-control svg { width:24px; height:24px; }
+  .lesson { text-align:center; color:var(--blue-gray-900); font-size:16px; line-height:24px; font-weight:600; }
+  .progress-wrap { flex:0 0 38px; padding:0 18px 10px; background:var(--white); }
+  .progress-meta { display:flex; justify-content:flex-end; margin-bottom:5px; color:var(--blue-gray-600); font-size:12px; line-height:16px; font-weight:500; }
+  .progress { display:flex; gap:4px; }
+  .progress i { flex:1; height:5px; border-radius:3px; background:var(--gray-300); }
+  .progress i.done { background:var(--blue-300); }
+  .progress i.now { background:var(--blue-500); }
 
-  .choices { width:100%; min-height:0; display:flex; flex-direction:column; gap:10px; overflow-y:auto; padding:1px 0 8px; }
-  .choice { position:relative; flex:0 0 auto; width:100%; min-height:68px; padding:16px; border:1px solid var(--blue-gray-100);
-    border-radius:14px; background:var(--white-100); color:var(--blue-gray-900); display:flex; align-items:center; justify-content:center;
-    text-align:center; font-size:20px; line-height:28px; font-weight:650; cursor:pointer; }
-  .choice.sentence { justify-content:flex-start; text-align:left; font-size:17px; line-height:26px; font-weight:550; }
-  .choice.wrong { padding-right:48px; border-color:var(--destructive); background:var(--destructive-soft); }
-  .choice.correct { padding-right:48px; border-color:var(--positive); background:var(--positive-soft); }
-  .choice.short.wrong,.choice.short.correct { padding-left:48px; }
-  .mark { position:absolute; right:16px; top:50%; transform:translateY(-50%); width:22px; height:22px; border-radius:50%; color:#fff;
-    display:grid; place-items:center; font-size:13px; font-weight:900; }
-  .wrong .mark { background:var(--destructive); }
-  .correct .mark { background:var(--positive); }
+  .activity-content { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; background:var(--blue-gray-50); }
+  .scroll-area { flex:1 1 auto; min-height:0; overflow-y:auto; padding:16px; }
+  .problem-card { padding:18px; border:1px solid var(--blue-gray-100); border-radius:16px; background:var(--white); }
+  .instruction { display:block; }
+  .instruction h2 { margin:0; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:600; letter-spacing:-.01em; }
+  .stimulus { margin-top:16px; padding-top:16px; border-top:1px solid var(--blue-gray-100); }
+  .word-focus { display:flex; align-items:center; gap:8px; min-height:50px; }
+  .word-focus strong { color:var(--blue-gray-900); font-size:32px; line-height:48px; font-weight:600; letter-spacing:-.02em; }
+  .sound-icon { width:38px; height:38px; border:1px solid var(--blue-100); border-radius:50%; background:var(--blue-50); color:var(--blue-600); display:grid; place-items:center; cursor:pointer; }
+  .sound-icon svg { width:19px; height:19px; }
+  .meaning-focus { min-height:50px; display:flex; align-items:center; color:var(--blue-gray-900); font-size:24px; line-height:36px; font-weight:600; }
 
-  .combo { flex:0 0 100px; display:flex; align-items:center; justify-content:space-between; padding:15px 17px;
-    border:1px solid var(--blue-gray-100); border-radius:12px; background:var(--white-100); }
-  .combo .big { color:var(--blue-gray-900); font-size:34px; line-height:42px; font-weight:700; }
-  .combo .parts { color:var(--blue-gray-600); font-size:12px; line-height:18px; }
-  .say { min-height:40px; padding:0 12px; border-radius:10px; background:var(--blue-50); color:var(--blue-500);
-    display:flex; align-items:center; gap:5px; font-size:13px; font-weight:750; cursor:pointer; }
-  .say svg { width:20px; height:20px; }
-  .step { display:flex; align-items:center; gap:7px; margin-top:22px; }
-  .step i { width:16px; height:16px; border-radius:5px; background:var(--blue-500); color:#fff; display:grid; place-items:center; font-style:normal; font-size:10px; font-weight:800; }
-  .step b { color:var(--blue-500); font-size:13px; line-height:20px; }
-  .step span { color:var(--blue-gray-600); font-size:11px; }
-  .jamo-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; margin-top:10px; }
-  .jamo-grid button { aspect-ratio:1; border:1px solid var(--blue-gray-100); border-radius:10px; background:var(--white-100);
-    color:var(--blue-gray-900); font-size:16px; font-weight:650; cursor:pointer; }
-  .jamo-grid button.on { border-color:var(--blue-400); background:var(--blue-400); color:#fff; }
+  .response-area { margin-top:12px; }
+  .choice-list { display:flex; flex-direction:column; gap:8px; }
+  .choice { position:relative; width:100%; min-height:64px; padding:16px 48px 16px 18px; border:1px solid var(--blue-gray-100); border-radius:12px; background:var(--white); color:var(--blue-gray-900); display:flex; align-items:center; justify-content:flex-start; text-align:left; font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+  .choice:hover { border-color:var(--blue-100); background:#fbfdff; }
+  .choice.wrong { border-color:var(--destructive); background:var(--destructive-bg); }
+  .choice.correct { border-color:var(--positive); background:var(--positive-bg); }
+  .choice-mark { position:absolute; right:17px; top:50%; transform:translateY(-50%); width:21px; height:21px; border-radius:50%; color:var(--white); display:grid; place-items:center; font-size:11px; line-height:1; font-weight:600; }
+  .wrong .choice-mark { background:var(--destructive); }
+  .correct .choice-mark { background:var(--positive); }
 
-  .canvas { position:relative; width:100%; aspect-ratio:1; flex:0 0 auto; overflow:hidden; border:1px solid var(--blue-gray-100); border-radius:12px; background:var(--white-100); cursor:crosshair; }
-  .canvas::before,.canvas::after { content:""; position:absolute; z-index:1; background:#e8ebef; }
+  .statement { margin:0 0 14px; color:var(--blue-gray-900); font-size:24px; line-height:36px; font-weight:600; letter-spacing:-.015em; }
+  .audio-row { min-height:48px; display:flex; align-items:center; gap:11px; padding:8px 11px; border-radius:10px; background:var(--blue-50); color:var(--blue-600); }
+  .audio-play { width:34px; height:34px; border:0; border-radius:50%; background:var(--blue-500); color:var(--white); display:grid; place-items:center; cursor:pointer; }
+  .audio-play svg { width:18px; height:18px; }
+  .audio-copy { display:flex; flex-direction:column; }
+  .audio-copy b { font-size:14px; line-height:20px; font-weight:600; }
+  .audio-copy span { color:var(--blue-gray-600); font-size:12px; line-height:16px; font-weight:500; }
+  .wave { display:flex; align-items:center; gap:3px; margin-left:auto; }
+  .wave i { width:2px; border-radius:2px; background:var(--blue-300); }
+  .wave i:nth-child(3n+1) { height:8px; } .wave i:nth-child(3n+2) { height:16px; } .wave i:nth-child(3n) { height:11px; }
+  .binary-grid,.jamo-choices { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .binary-grid .choice { min-height:96px; justify-content:center; padding:16px 44px; font-size:32px; line-height:48px; font-weight:600; }
+  .jamo-choices .choice { min-height:76px; justify-content:center; padding:16px 44px; font-size:24px; line-height:36px; font-weight:600; }
+
+  .word-preview-list { border:1px solid var(--blue-gray-100); border-radius:14px; overflow:hidden; background:var(--white); }
+  .preview-row { min-height:61px; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; align-items:center; padding:9px 12px 9px 16px; border-bottom:1px solid var(--blue-gray-100); }
+  .preview-row:last-child { border-bottom:0; }
+  .preview-word { color:var(--blue-gray-900); font-size:17px; line-height:26px; font-weight:600; }
+  .preview-meaning { color:var(--blue-gray-600); font-size:14px; line-height:20px; }
+  .preview-audio { grid-column:2; grid-row:1 / 3; width:36px; height:36px; border:1px solid var(--blue-gray-100); border-radius:50%; background:var(--white); color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+  .preview-audio svg { width:18px; height:18px; }
+
+  .combo-result { min-height:54px; display:flex; align-items:center; justify-content:space-between; }
+  .combo-left { display:flex; align-items:baseline; gap:12px; }
+  .combo-left strong { color:var(--blue-gray-900); font-size:32px; line-height:48px; font-weight:600; }
+  .combo-left span { color:var(--blue-gray-600); font-size:14px; line-height:20px; font-weight:500; }
+  .jamo-section { margin-top:14px; padding:14px; border:1px solid var(--blue-gray-100); border-radius:12px; background:var(--white); }
+  .jamo-label { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+  .jamo-label i { color:var(--blue-500); font-style:normal; font-size:12px; line-height:16px; font-weight:600; }
+  .jamo-label b { color:var(--blue-gray-900); font-size:14px; line-height:20px; font-weight:600; }
+  .jamo-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; }
+  .jamo-grid button { aspect-ratio:1; min-width:0; border:1px solid var(--blue-gray-100); border-radius:7px; background:var(--blue-gray-50); color:var(--blue-gray-900); font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+  .jamo-grid button.on { border-color:var(--blue-500); background:var(--blue-500); color:var(--white); }
+
+  .canvas { position:relative; width:min(100%,286px); aspect-ratio:1; margin:0 auto; overflow:hidden; border:1px solid var(--blue-gray-200); border-radius:10px; background:var(--white); cursor:crosshair; }
+  .canvas::before,.canvas::after { content:""; position:absolute; z-index:1; background:var(--blue-gray-200); }
   .canvas::before { left:0; right:0; top:50%; height:1px; }
   .canvas::after { top:0; bottom:0; left:50%; width:1px; }
   .canvas.wrong { border-color:var(--destructive); }
-  .canvas.correct { border-color:var(--positive); background:#fbfffd; }
-  .guide { position:absolute; inset:16px; z-index:2; background:center/contain no-repeat; }
-  .ink { position:absolute; inset:16px; z-index:3; width:calc(100% - 32px); height:calc(100% - 32px); }
+  .canvas.correct { border-color:var(--positive); }
+  .guide { position:absolute; inset:12px; z-index:2; background:center/contain no-repeat; opacity:.48; }
+  .ink { position:absolute; inset:12px; z-index:3; width:calc(100% - 24px); height:calc(100% - 24px); }
   .ink path { fill:none; stroke:var(--blue-500); stroke-width:34; stroke-linecap:round; stroke-linejoin:round; }
   .canvas.wrong .ink path { stroke:var(--destructive); }
   .canvas.correct .ink path { stroke:var(--positive); }
-  .tools { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .tool { height:30px; border:1px solid var(--blue-gray-100); border-radius:8px; background:var(--white-100); color:var(--blue-gray-600); font-size:11px; font-weight:700; cursor:pointer; }
+  .tools { width:min(100%,286px); margin:9px auto 0; display:flex; justify-content:flex-end; gap:16px; }
+  .tool { min-height:30px; padding:4px 0; border:0; background:transparent; color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
 
-  .pillbar { flex:0 0 44px; display:flex; align-items:center; justify-content:center; padding:4px 16px; }
-  .pill { min-height:36px; padding:7px 12px; border-radius:99px; background:#353a42; color:#fff; display:flex; align-items:center; gap:7px; font-size:13px; line-height:20px; font-weight:700; }
-  .pill i { width:20px; height:20px; border-radius:50%; display:grid; place-items:center; color:#fff; font-style:normal; font-size:12px; }
-  .pill.wrong i { background:var(--destructive); }
-  .pill.correct i { background:var(--positive); }
-  .footer { flex:0 0 88px; display:flex; gap:10px; align-items:center; padding:16px; background:var(--white-100); }
-  .primary { flex:1; height:56px; border:0; border-radius:12px; background:#dfe3e8; color:#9ba3ae; font-size:16px; line-height:24px; font-weight:800; }
-  .primary.on { background:var(--blue-500); color:#fff; cursor:pointer; }
+  .feedback-slot { flex:0 0 44px; display:flex; align-items:center; justify-content:center; padding:4px 16px; background:var(--blue-gray-50); }
+  .feedback-message { min-height:34px; padding:7px 13px; border-radius:99px; background:var(--blue-gray-900); color:var(--white); display:flex; align-items:center; gap:7px; font-size:12px; line-height:18px; font-weight:600; }
+  .feedback-message i { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; color:var(--white); font-style:normal; font-size:10px; }
+  .feedback-message.wrong i { background:var(--destructive); }
+  .feedback-message.correct i { background:var(--positive); }
+  .footer { flex:0 0 88px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--blue-gray-100); }
+  .primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+  .primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
 
-  @media (max-width:940px) { .stage { grid-template-columns:1fr; } .side { display:none; } }
-  @media (max-width:520px) { .workbench { padding:18px 8px 40px; } .device { width:min(390px,calc(100vw - 16px)); } }
+  /* 플래시카드 */
+  .flash-body { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; padding:18px 16px 12px; }
+  .flash-stage { position:relative; flex:1 1 auto; min-height:0; perspective:1000px; cursor:pointer; }
+  .flash-next { position:absolute; inset:12px 11px -10px; border:1px solid var(--blue-gray-100); border-radius:16px; background:var(--white); opacity:.55; }
+  .flash-card { position:absolute; inset:0; transform-style:preserve-3d; transition:transform .3s ease; }
+  .flash-card.flipped { transform:rotateY(180deg); }
+  .flash-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; border:2px solid var(--blue-gray-100); border-radius:16px; background:var(--white); box-shadow:0 8px 24px rgba(36,52,76,.06); }
+  .flash-face.back { transform:rotateY(180deg); justify-content:flex-start; padding-top:42px; }
+  .flash-face strong { color:var(--blue-gray-900); font-size:32px; line-height:48px; font-weight:600; text-align:center; }
+  .flash-face .kind { color:var(--blue-gray-600); font-size:14px; line-height:20px; font-weight:500; }
+  .flash-picture { width:100%; height:155px; margin-top:34px; display:grid; place-items:center; border-radius:12px; background:var(--blue-gray-50); color:var(--blue-gray-400); font-size:12px; line-height:18px; }
+  .card-audio { position:absolute; right:15px; bottom:15px; width:40px; height:40px; border:0; border-radius:50%; background:var(--blue-50); color:var(--blue-600); display:grid; place-items:center; cursor:pointer; }
+  .card-audio svg { width:20px; height:20px; }
+  .flash-meta { flex:0 0 40px; display:flex; align-items:flex-end; color:var(--blue-gray-600); font-size:12px; line-height:18px; }
+  .judge { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .judge button { height:56px; border:0; border-radius:28px; display:grid; grid-template-columns:40px 1fr; align-items:center; padding:8px; font-size:16px; line-height:24px; font-weight:600; cursor:pointer; }
+  .judge button:disabled { background:var(--gray-200); color:var(--gray-400); cursor:default; }
+  .judge .unknown { background:var(--yellow-300); color:var(--blue-gray-900); }
+  .judge .known { background:var(--blue-500); color:var(--white); }
+  .judge .badge { display:grid; width:40px; height:40px; border-radius:50%; place-items:center; background:rgba(255,255,255,.55); font-size:14px; }
+  .judge .label { text-align:center; }
+
+  /* 미션 대화 */
+  .scenario { flex:0 0 auto; min-height:76px; padding:13px 16px; display:flex; align-items:flex-start; gap:10px; background:var(--blue-500); color:var(--white); }
+  .scenario.folded { min-height:44px; padding-top:10px; padding-bottom:10px; }
+  .scenario-copy { flex:1; }
+  .scenario .ko { font-size:16px; line-height:24px; font-weight:600; }
+  .scenario .en { margin-top:2px; color:var(--blue-50); font-size:13px; line-height:18px; }
+  .scenario .fold { width:28px; height:28px; border:0; background:transparent; color:var(--white); display:grid; place-items:center; cursor:pointer; }
+  .scenario .fold svg { width:20px; height:20px; }
+  .missions { flex:0 0 50px; display:flex; align-items:center; gap:9px; overflow-x:auto; padding:0 14px; background:var(--white); border-bottom:1px solid var(--blue-gray-100); }
+  .mission-title { flex:0 0 auto; padding:4px 9px; border-radius:12px; background:var(--blue-gray-50); color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:600; }
+  .mission { flex:0 0 auto; display:flex; gap:4px; align-items:center; color:var(--blue-gray-400); font-size:12px; line-height:18px; font-weight:600; white-space:nowrap; }
+  .mission.done { color:var(--positive); }
+  .thread { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding:14px; }
+  .msg { display:flex; gap:8px; align-items:flex-start; }
+  .avatar { width:34px; height:34px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; background:var(--blue-50); font-size:16px; }
+  .bubble-wrap { max-width:248px; }
+  .bubble { padding:9px 11px; border-radius:12px; background:var(--white); color:var(--blue-gray-900); font-size:14px; line-height:20px; }
+  .msg.me { justify-content:flex-end; }
+  .msg.me .bubble { color:var(--white); background:var(--blue-500); }
+  .msg.me.bad .bubble { color:var(--blue-gray-900); background:var(--destructive-bg); }
+  .tip { margin-top:6px; padding:7px 9px; border-radius:8px; background:var(--white); color:var(--blue-gray-600); font-size:12px; line-height:18px; }
+  .typing { width:54px; height:36px; display:flex; align-items:center; justify-content:center; gap:5px; border-radius:12px; background:var(--white); }
+  .typing i { width:5px; height:5px; border-radius:50%; background:var(--blue-gray-400); }
+  .chat-footer,.role-footer { flex:0 0 92px; display:flex; align-items:center; justify-content:center; position:relative; background:var(--white); border-top:1px solid var(--blue-gray-100); }
+  .keyboard { position:absolute; left:20px; width:44px; height:44px; border:0; background:transparent; color:var(--blue-gray-600); display:grid; place-items:center; cursor:pointer; }
+  .keyboard svg { width:22px; height:22px; }
+  .record-core { width:210px; display:grid; grid-template-columns:56px 1fr; align-items:center; gap:11px; }
+  .record-button { position:relative; width:56px; height:56px; border:0; border-radius:50%; background:var(--blue-500); color:var(--white); display:grid; place-items:center; cursor:pointer; }
+  .record-button::after { content:""; position:absolute; inset:-5px; border:1px solid transparent; border-radius:50%; }
+  .record-button.recording::after { border-color:var(--blue-300); animation:record-pulse 1.2s ease-out infinite; }
+  .record-button.done { border:1px solid var(--blue-100); background:var(--blue-50); color:var(--blue-600); }
+  .record-button.listen { border:1px solid var(--blue-gray-100); background:var(--white); color:var(--blue-500); }
+  .record-button svg { width:24px; height:24px; }
+  .record-copy { min-width:0; display:flex; flex-direction:column; align-items:flex-start; text-align:left; }
+  .record-copy b { color:var(--blue-gray-900); font-size:14px; line-height:20px; font-weight:600; }
+  .record-copy span { color:var(--blue-gray-600); font-size:12px; line-height:16px; }
+  .record-wave { height:12px; display:flex; align-items:center; gap:2px; margin-top:3px; }
+  .record-wave i { width:2px; border-radius:2px; background:var(--blue-300); }
+  .record-wave i:nth-child(3n+1) { height:5px; } .record-wave i:nth-child(3n+2) { height:11px; } .record-wave i:nth-child(3n) { height:8px; }
+  @keyframes record-pulse { 0% { transform:scale(.92); opacity:.8; } 100% { transform:scale(1.16); opacity:0; } }
+  @media (prefers-reduced-motion:reduce) { .record-button.recording::after { animation:none; } }
+
+  /* 롤플레잉 */
+  .role-intro { flex:0 0 auto; padding-top:16px; background:transparent; }
+  .role-title { padding:0 16px 10px; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:600; }
+  .role-tabs { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin:0 16px 12px; padding:3px; border-radius:10px; background:var(--blue-gray-100); }
+  .role-tabs button { width:100%; min-height:34px; padding:6px 8px; border:0; border-radius:8px; background:transparent; color:var(--blue-gray-600); font-size:13px; line-height:20px; font-weight:600; cursor:pointer; }
+  .role-tabs button.on { background:var(--white); color:var(--blue-gray-900); box-shadow:0 1px 3px rgba(36,52,76,.10); }
+  .turns { flex:1 1 auto; min-height:0; overflow-y:auto; margin:0 16px; padding:0; border:1px solid var(--blue-gray-100); border-radius:14px; background:var(--white); }
+  .script-meta { display:flex; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--blue-gray-100); color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:500; }
+  .turn { display:grid; grid-template-columns:26px 1fr 22px; gap:8px; align-items:start; padding:11px 12px; border-bottom:1px solid var(--blue-gray-100); background:var(--white); }
+  .turn.current.ai { background:var(--yellow-50); }
+  .turn.current.me { background:var(--blue-50); }
+  .turn .who { padding-top:3px; color:var(--blue-gray-900); font-size:13px; line-height:20px; font-weight:600; }
+  .turn .line { color:var(--blue-gray-900); font-size:15px; line-height:24px; }
+  .turn .listen { padding-top:2px; color:var(--blue-gray-600); }
+  .turn .listen svg { width:17px; height:17px; }
+  .turn.future .who,.turn.future .line { color:var(--gray-400); }
+  .record-card { padding:10px 12px 11px 46px; border-bottom:1px solid var(--blue-gray-100); background:#fafdff; }
+  .record-card .meta { color:var(--blue-gray-600); font-size:12px; line-height:18px; }
+  .record-card .heard { margin-top:5px; color:var(--blue-gray-900); font-size:14px; line-height:20px; }
+  .arrow { position:absolute; width:40px; height:40px; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+  .arrow:disabled { color:var(--blue-gray-200); cursor:default; }
+  .arrow.left { left:16px; } .arrow.right { right:16px; }
+  .arrow svg { width:24px; height:24px; }
+
+  @media (max-width:800px) { .doc { grid-template-columns:1fr; gap:10px; } .stage { grid-template-columns:1fr; } .notes { display:none; } .controls { flex-direction:column; } }
+  @media (max-width:520px) { .workbench { padding:18px 8px 40px; } .doc { padding:0 8px; } .doc h1 { font-size:25px; line-height:34px; } .controls { padding:10px 8px; } .device { width:min(392px,calc(100vw - 16px)); } }
 </style>
 </head>
 <body>
 <main class="workbench">
   <header class="doc">
-    <div class="eyebrow">Phase 1 · existing mockup based</div>
-    <h1>어휘 · 듣기 · 자모 쓰기 — 기존 목업 기반 UI/UX</h1>
-    <p>기존 공통 셸과 문항 구조는 그대로 유지했습니다. 새로 바꾼 것은 선택지를 세로형으로 통일하고, 정렬·간격·채점 상태를 정돈한 부분뿐입니다.</p>
+    <div><div class="kicker">FINAL · FUNCTIONAL CLARITY</div><h1>확정 활동 UI/UX 목업</h1></div>
+    <p>시안 2를 최종 방향으로 확정했습니다. 지시문과 문제 자극을 하나의 문제 영역으로 묶고, 음성·응답·녹음 영역은 기능에 따라 분리합니다.</p>
   </header>
+  <nav class="controls" aria-label="목업 화면 제어">
+    <div class="control-group" data-set="activity">
+      <span class="control-label">화면</span>
+      <button class="option" data-value="wordQuiz" aria-pressed="true">어휘 문제</button>
+      <button class="option" data-value="wordPreview" aria-pressed="false">어휘 미리보기</button>
+      <button class="option" data-value="listen" aria-pressed="false">일반 듣기</button>
+      <button class="option" data-value="jamoListen" aria-pressed="false">자모 듣기</button>
+      <button class="option" data-value="write" aria-pressed="false">자모 조합·쓰기</button>
+      <button class="option" data-value="flash" aria-pressed="false">플래시카드</button>
+      <button class="option" data-value="chat" aria-pressed="false">미션 대화</button>
+      <button class="option" data-value="role" aria-pressed="false">롤플레잉</button>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
   <section class="stage">
-    <aside class="side">
-      <div class="panel">
-        <h2>활동</h2>
-        <div class="group"><div class="label">기존 목업의 세 활동</div><div class="options" data-set="activity">
-          <button class="option" data-value="vocab" aria-pressed="true">어휘 · 4지</button>
-          <button class="option" data-value="listen" aria-pressed="false">듣기 · 2↔4</button>
-          <button class="option" data-value="write" aria-pressed="false">자모 쓰기</button>
-        </div></div>
-        <p class="note" style="margin-top:14px"><b>화면 안을 직접 누릅니다.</b> 선택지는 즉시 채점되고, 자모는 조합 선택 후 캔버스로 넘어갑니다.</p>
-      </div>
-      <div class="panel">
-        <h2>검사</h2>
-        <div class="group"><div class="label">폭</div><div class="options" data-set="width">
-          <button class="option" data-value="390" aria-pressed="true">390</button>
-          <button class="option" data-value="360" aria-pressed="false">360</button>
-          <button class="option" data-value="320" aria-pressed="false">320</button>
-        </div></div>
-      </div>
-    </aside>
-
     <div class="device-wrap">
       <div class="device" id="device"><div class="screen" id="screen"></div></div>
-      <div class="caption" id="caption">390 × 720 · 어휘</div>
+      <div class="caption" id="caption">390 × 720 · 어휘 문제</div>
     </div>
-
-    <aside class="side">
-      <div class="panel"><h2>현재 치수</h2><dl class="spec" id="spec"></dl></div>
-      <div class="panel">
-        <h2>기존 목업에서 유지</h2>
-        <p class="note"><b>셸:</b> 앱바 58 · 진행바 20 · 지시문 48 · 가변 밴드 · 피드백 44 · 하단 88.</p>
-        <p class="note"><b>어휘:</b> 한국어 단어 + 영문 4지선다.</p>
-        <p class="note"><b>듣기:</b> 전폭 음성 버튼 + 2개와 4개 선택지 혼재.</p>
-        <p class="note"><b>자모:</b> 조합 선택 → 획순 캔버스 → 지우기·되돌리기.</p>
+    <aside class="notes">
+      <div class="note-section"><h2>현재 화면</h2><dl class="spec" id="spec"></dl></div>
+      <div class="note-section">
+        <h2>확정 원칙</h2>
+        <p><b>문제 단위:</b> 지시문과 자극을 하나의 흰 영역으로 묶음.</p>
+        <p><b>조작 단위:</b> 선택지와 음성을 표면·테두리로 명확히 구분.</p>
+        <p><b>진행 상태:</b> 분절 바와 현재 문항 수를 함께 표시.</p>
+        <p><b>녹음:</b> 콘텐츠 도크로 두고 다음·확인 푸터와 겹치지 않음.</p>
       </div>
-      <div class="panel">
-        <h2>UI/UX에서만 변경</h2>
-        <p class="note">2×2 타일을 <b>세로 1열</b>로 바꾸고, 첫 선택지 y를 고정했습니다.</p>
-        <p class="note">기본 화면은 중립색, 오답·정답 순간에만 의미색을 씁니다.</p>
+      <div class="note-section">
+        <h2>절제한 요소</h2>
+        <p>그림자와 장식 아이콘은 추가하지 않고, 파랑은 현재 상태와 실행 가능한 조작에만 사용했습니다.</p>
       </div>
     </aside>
   </section>
 </main>
 
 <script>
-const state={activity:"vocab",width:"390",index:0,picked:null,resolved:false,feedback:null,writeStage:"select",strokes:0,judge:null,writeFails:0,wrongTimer:null};
+const state={activity:"wordQuiz",width:"390",index:0,picked:null,resolved:false,feedback:null,writeStage:"select",strokes:0,judge:null,writeFails:0,wrongTimer:null,chosenConsonant:null,chosenVowel:null,flipped:false,known:0,unknown:0,chatTurn:4,chatFold:false,chatRecord:"idle",roleIndex:1,roleDir:"ai",roleRecord:"idle"};
 const data={
-  vocab:[
-    {q:"사과",ch:["apple","grape","peach","pear"],a:0},
-    {q:"학교",ch:["home","school","park","store"],a:1},
-    {q:"친구",ch:["teacher","sister","friend","doctor"],a:2},
-    {q:"물",ch:["milk","juice","tea","water"],a:3}
-  ],
-  listen:[
-    {q:"어",ch:["어","오"],a:0},
-    {q:"외",ch:["어","오","외","아"],a:2},
-    {q:"아",ch:["아","야"],a:0},
-    {q:"오",ch:["어","오","외","아"],a:1}
-  ],
-  write:[
-    {q:"가",parts:"ㄱ + ㅏ",guide:"../handwriting/가.png",paths:["M170 190 H650 Q670 410 420 680","M690 140 V720","M690 430 H835"]},
-    {q:"어",parts:"ㅇ + ㅓ",guide:"../handwriting/어.png",paths:["M220 440 A180 180 0 1 0 580 440 A180 180 0 1 0 220 440","M590 440 H760","M760 150 V730"]},
-    {q:"오",parts:"ㅇ + ㅗ",guide:"../handwriting/오.png",paths:["M250 330 A170 170 0 1 0 590 330 A170 170 0 1 0 250 330","M420 520 V650","M170 650 H670"]}
-  ]
+  wordQuiz:[{prompt:"사과",promptType:"word",ch:["apple","grape","peach","pear"],a:0},{prompt:"college / university",promptType:"meaning",ch:["친구","대학교","학생","성"],a:1},{prompt:"친구",promptType:"word",ch:["teacher","sister","friend","doctor"],a:2},{prompt:"water",promptType:"meaning",ch:["우유","물","차","주스"],a:1}],
+  listen:[{q:"여자 이름은 영주예요.",ch:["X","O"],a:1},{q:"남자 이름은 샤오밍이에요.",ch:["X","O"],a:1},{q:"슈테판은 회사원이에요.",ch:["X","O"],a:0}],
+  jamoListen:[{q:"어",ch:["어","오"],a:0},{q:"외",ch:["어","오","외","아"],a:2},{q:"아",ch:["아","야"],a:0},{q:"오",ch:["어","오","외","아"],a:1}],
+  write:[{q:"가",parts:"ㄱ + ㅏ",guide:"../handwriting/가.png",paths:["M170 190 H650 Q670 410 420 680","M690 140 V720","M690 430 H835"]},{q:"어",parts:"ㅇ + ㅓ",guide:"../handwriting/어.png",paths:["M220 440 A180 180 0 1 0 580 440 A180 180 0 1 0 220 440","M590 440 H760","M760 150 V730"]},{q:"오",parts:"ㅇ + ㅗ",guide:"../handwriting/오.png",paths:["M250 330 A170 170 0 1 0 590 330 A170 170 0 1 0 250 330","M420 520 V650","M170 650 H670"]}],
+  wordPreview:[{q:"안녕하다",m:"to be well / hello"},{q:"네",m:"yes"},{q:"제",m:"my"},{q:"이름",m:"name"},{q:"저",m:"I (formal)"},{q:"반갑다",m:"to be glad to meet"}]
 };
+const flashcards=[{word:"사과",meaning:"apple",kind:"명사"},{word:"학교",meaning:"school",kind:"명사"},{word:"친구",meaning:"friend",kind:"명사"}];
+const missions=["주문하기","가격 묻기","인사하기"];
+const chatTurns=[
+  {who:"bot",text:"어서 오세요. 무엇을 드릴까요?"},{who:"me",text:"커피 주세요.",hit:0},
+  {who:"bot",text:"네, 아메리카노요? 따뜻한 걸로 드릴까요?"},{who:"me",text:"얼마예요?",hit:1},
+  {who:"bot",text:"삼천 원이에요."},{who:"me",text:"고맙습니다 안녕",bad:true,tip:"헤어질 때는 ‘안녕히 계세요’라고 해요."},
+  {who:"me",text:"안녕히 계세요.",hit:2},{who:"bot",text:"네, 또 오세요!"}
+];
+const roleTurns=[
+  {who:"AI",ko:"어서 오세요. 뭘 도와드릴까요?",en:"Welcome. How can I help you?"},
+  {who:"나",ko:"커피 한 잔 주세요.",en:"One coffee, please."},
+  {who:"AI",ko:"따뜻한 걸로 드릴까요?",en:"Would you like it hot?"},
+  {who:"나",ko:"네, 따뜻한 걸로 주세요.",en:"Yes, hot please."},
+  {who:"AI",ko:"삼천 원입니다.",en:"That will be 3,000 won."}
+];
 const icons={
   close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
-  volume:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 010 6"/></svg>'
+  volume:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 010 6"/></svg>',
+  mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>',
+  stop:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>',
+  keyboard:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>',
+  left:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  right:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+  up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 15l6-6 6 6"/></svg>',
+  down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
 };
-const consonants=["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅎ","ㅋ","ㅌ"];
-const vowels=["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ","ㅑ","ㅕ"];
-function items(){return data[state.activity]}
+const consonants=["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅎ","ㅋ","ㅌ"],vowels=["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ","ㅑ","ㅕ"];
+function items(){return data[state.activity]||[]}
 function item(){return items()[state.index]}
-function instruction(){return state.activity==="vocab"?"단어에 맞는 뜻을 고르세요.":state.activity==="listen"?"듣고 맞는 것을 고르세요.":state.writeStage==="select"?"글자를 만들고 써 보세요.":"글자를 순서에 맞게 써 보세요."}
-function progress(){return `<div class="progress">${items().map((_,i)=>`<i class="${i<state.index?'done':i===state.index?'now':''}"></i>`).join("")}</div>`}
-function chrome(inner,footer){return `<div class="appbar"><button class="iconbtn">${icons.close}</button><div class="lesson">1급 4과</div><button class="iconbtn" data-action="skip">${icons.next}</button></div>${progress()}<div class="title">${instruction()}</div>${inner}<div class="pillbar">${feedback()}</div><div class="footer">${footer}</div>`}
-function feedback(){return state.feedback==="wrong"?'<div class="pill wrong"><i>✕</i>다시 해보세요</div>':state.feedback==="correct"?'<div class="pill correct"><i>✓</i>아주 잘 했어요!</div>':''}
-function choices(){return `<div class="choices">${item().ch.map((text,i)=>{const active=state.picked===i;const cls=active?(state.resolved?'correct':'wrong'):'';const mark=active?`<span class="mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice short ${cls}" data-action="choice" data-index="${i}"><span>${text}</span>${mark}</button>`}).join("")}</div>`}
-function choiceScreen(){const prompt=state.activity==="vocab"?`<div class="target">${item().q}</div>`:`<button class="audio" data-action="audio">${icons.volume}<span>발음 듣기</span></button>`;const inner=`<div class="band top" style="gap:24px">${prompt}${choices()}</div>`;const footer=`<button class="primary ${state.resolved?'on':''}" ${state.resolved?'data-action="next"':''}>${state.index===items().length-1?'결과 보기':'다음'}</button>`;return chrome(inner,footer)}
-function grid(list,on){return `<div class="jamo-grid">${list.map(x=>`<button class="${x===on?'on':''}">${x}</button>`).join("")}</div>`}
-function selectScreen(){const q=item();const inner=`<div class="band top"><div class="combo"><div><div class="big">${q.q}</div><div class="parts">${q.parts}</div></div><div class="say" data-action="audio">${icons.volume}<span>${q.q}</span></div></div><div class="step"><i>1</i><b>맨 앞에 오는 소리</b><span>initial consonant</span></div>${grid(consonants,q.parts[0])}<div class="step"><i>2</i><b>가운데 오는 소리</b><span>vowel</span></div>${grid(vowels,q.parts[4])}<div style="height:16px"></div></div>`;return chrome(inner,'<button class="primary on" data-action="toWrite">확인</button>')}
-function writeScreen(){const q=item();const status=state.judge||'';const paths=state.strokes?`<svg class="ink" viewBox="0 0 918 918">${q.paths.slice(0,state.strokes).map(path=>`<path d="${path}"/>`).join('')}</svg>`:'';const inner=`<div class="band" style="gap:12px"><div class="canvas ${status}" data-action="draw"><div class="guide" style="background-image:url('${q.guide}')"></div>${paths}</div><div class="tools"><button class="tool" data-action="clear">전체 지우기</button><button class="tool" data-action="undo">되돌리기</button></div></div>`;const enabled=state.strokes>0;const label=state.judge==="correct"?'다음':'확인';const action=state.judge==="correct"?'next':'judge';return chrome(inner,`<button class="primary ${enabled?'on':''}" ${enabled?`data-action="${action}"`:''}>${label}</button>`)}
-function render(){const screen=document.getElementById('screen');const device=document.getElementById('device');device.style.width=(+state.width+16)+'px';screen.innerHTML=state.activity==='write'?(state.writeStage==='select'?selectScreen():writeScreen()):choiceScreen();document.getElementById('caption').textContent=`${state.width} × 720 · ${state.activity==='vocab'?'어휘':state.activity==='listen'?'듣기':'자모 쓰기'}`;document.getElementById('spec').innerHTML=[["콘텐츠 폭",+state.width-32],["선택지","min 68 · gap 10"],["앱바","58"],["진행바","20"],["지시문","48"],["피드백","44"],["하단","88"]].map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('')}
-function reset(){if(state.wrongTimer)clearTimeout(state.wrongTimer);state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;render()}
-function advance(){if(state.index<items().length-1)state.index++;else state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;render()}
-document.getElementById('screen').addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;if(a==='choice'){if(state.resolved)return;if(state.wrongTimer){clearTimeout(state.wrongTimer);state.wrongTimer=null}const i=+el.dataset.index;state.picked=i;if(i===item().a){state.resolved=true;state.feedback='correct'}else{state.feedback='wrong';render();state.wrongTimer=setTimeout(()=>{state.picked=null;state.wrongTimer=null;render()},650);return}}else if(a==='next'||a==='skip'){advance();return}else if(a==='toWrite'){state.writeStage='write'}else if(a==='draw'){state.strokes=Math.min(state.strokes+1,item().paths.length);state.judge=null;state.feedback=null}else if(a==='clear'){state.strokes=0;state.judge=null;state.feedback=null}else if(a==='undo'){state.strokes=Math.max(0,state.strokes-1);state.judge=null;state.feedback=null}else if(a==='judge'){const ok=state.index===0||state.writeFails>=2;state.judge=ok?'correct':'wrong';state.feedback=state.judge;if(!ok)state.writeFails++}else if(a==='audio'){el.animate([{opacity:1},{opacity:.55},{opacity:1}],240)}render()});
+function lesson(){return state.activity==="write"||state.activity==="jamoListen"?"1급 1과":"1급 4과"}
+function instruction(){if(state.activity==="wordQuiz")return "단어에 맞는 뜻을 고르세요.";if(state.activity==="wordPreview")return "이번 과의 단어를 먼저 살펴보세요.";if(state.activity==="listen")return "들은 내용과 같으면 O, 다르면 X를 고르세요.";if(state.activity==="jamoListen")return "듣고 맞는 것을 고르세요.";return state.writeStage==="select"?"글자를 만들고 써 보세요.":"글자를 순서에 맞게 써 보세요."}
+function progress(){const count=state.activity==="wordPreview"?1:items().length,current=state.activity==="wordPreview"?0:state.index;return `<div class="progress-wrap"><div class="progress-meta">${current+1} / ${count}</div><div class="progress">${Array.from({length:count},(_,i)=>`<i class="${i<current?'done':i===current?'now':''}"></i>`).join("")}</div></div>`}
+function feedback(){return state.feedback==="wrong"?'<div class="feedback-message wrong"><i>✕</i>다시 해보세요</div>':state.feedback==="correct"?'<div class="feedback-message correct"><i>✓</i>아주 잘 했어요!</div>':''}
+function shell(problem,response,footer){return `<div class="appbar"><button class="icon-control" aria-label="닫기">${icons.close}</button><div class="lesson">${lesson()}</div><button class="icon-control" data-action="skip" aria-label="건너뛰기">${icons.next}</button></div>${progress()}<main class="activity-content"><div class="scroll-area">${problem}${response}</div><div class="feedback-slot" aria-live="polite">${feedback()}</div></main><div class="footer">${footer}</div>`}
+function problem(stimulus=""){return `<section class="problem-card"><header class="instruction"><h2>${instruction()}</h2></header>${stimulus?`<div class="stimulus">${stimulus}</div>`:''}</section>`}
+function choiceMarkup(text,i){const active=state.picked===i,cls=active?(state.resolved?'correct':'wrong'):'',mark=active?`<span class="choice-mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice ${cls}" data-action="choice" data-index="${i}"><span>${text}</span>${mark}</button>`}
+function wordQuiz(){const q=item(),stimulus=q.promptType==="word"?`<div class="word-focus"><strong>${q.prompt}</strong><button class="sound-icon" data-action="audio" aria-label="발음 듣기">${icons.volume}</button></div>`:`<div class="meaning-focus">${q.prompt}</div>`,response=`<div class="response-area choice-list">${q.ch.map((x,i)=>choiceMarkup(x,i)).join("")}</div>`;return shell(problem(stimulus),response,nextFooter())}
+function wordPreview(){const rows=data.wordPreview.map(x=>`<div class="preview-row"><div class="preview-word">${x.q}</div><div class="preview-meaning">${x.m}</div><button class="preview-audio" data-action="audio" aria-label="${x.q} 발음 듣기">${icons.volume}</button></div>`).join("");return shell(problem(),`<div class="response-area word-preview-list">${rows}</div>`,'<button class="primary on" data-action="toQuiz">문제 풀기</button>')}
+function wave(){return `<span class="wave" aria-hidden="true">${Array.from({length:12},()=>'<i></i>').join('')}</span>`}
+function audioRow(label,sub){return `<div class="audio-row"><button class="audio-play" data-action="audio" aria-label="${label}">${icons.volume}</button><span class="audio-copy"><b>${label}</b><span>${sub}</span></span>${wave()}</div>`}
+function generalListen(){const q=item(),stimulus=`<p class="statement">${q.q}</p>${audioRow("다시 듣기","문장 음성")}`,response=`<div class="response-area binary-grid">${q.ch.map((x,i)=>choiceMarkup(x,i)).join("")}</div>`;return shell(problem(stimulus),response,nextFooter())}
+function jamoListen(){const q=item(),response=`<div class="response-area jamo-choices">${q.ch.map((x,i)=>choiceMarkup(x,i)).join("")}</div>`;return shell(problem(audioRow("발음 듣기","자모 음성")),response,nextFooter())}
+function jamoGrid(list,on,type){return `<div class="jamo-grid">${list.map(x=>`<button class="${x===on?'on':''}" data-action="jamo" data-type="${type}" data-value="${x}">${x}</button>`).join("")}</div>`}
+function selectedConsonant(){return state.chosenConsonant||item().parts[0]}
+function selectedVowel(){return state.chosenVowel||item().parts[4]}
+function combinedSyllable(){const initial=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"],medial=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"],ci=initial.indexOf(selectedConsonant()),vi=medial.indexOf(selectedVowel());return ci<0||vi<0?"?":String.fromCharCode(0xac00+(ci*21+vi)*28)}
+function writeSelect(){const q=item(),consonant=selectedConsonant(),vowel=selectedVowel(),made=combinedSyllable(),stimulus=`<div class="combo-result"><div class="combo-left"><strong>${made}</strong><span>${consonant} + ${vowel}</span></div><button class="sound-icon" data-action="audio" aria-label="${q.q} 발음 듣기">${icons.volume}</button></div>`,response=`<div class="jamo-section"><div class="jamo-label"><i>01</i><b>맨 앞에 오는 소리</b></div>${jamoGrid(consonants,consonant,"consonant")}</div><div class="jamo-section"><div class="jamo-label"><i>02</i><b>가운데 오는 소리</b></div>${jamoGrid(vowels,vowel,"vowel")}</div>`;return shell(problem(stimulus),response,'<button class="primary on" data-action="toWrite">확인</button>')}
+function writeCanvas(){const q=item(),status=state.judge||'',paths=state.strokes?`<svg class="ink" viewBox="0 0 918 918">${q.paths.slice(0,state.strokes).map(path=>`<path d="${path}"/>`).join('')}</svg>`:'',response=`<div class="response-area"><div class="canvas ${status}" data-action="draw" aria-label="글자 쓰기 영역"><div class="guide" style="background-image:url('${q.guide}')"></div>${paths}</div><div class="tools"><button class="tool" data-action="undo">되돌리기</button><button class="tool" data-action="clear">전체 지우기</button></div></div>`,enabled=state.strokes>0,label=state.judge==="correct"?'다음':'확인',action=state.judge==="correct"?'next':'judge';return shell(problem(),response,`<button class="primary ${enabled?'on':''}" ${enabled?`data-action="${action}"`:''}>${label}</button>`)}
+function nextFooter(){const label=state.index===items().length-1?'결과 보기':'다음';return `<button class="primary ${state.resolved?'on':''}" ${state.resolved?'data-action="next"':''}>${label}</button>`}
+function activityAppbar(){return `<div class="appbar"><button class="icon-control" aria-label="닫기">${icons.close}</button><div class="lesson">1급 4과</div><button class="icon-control" data-action="skip" aria-label="건너뛰기">${icons.next}</button></div>`}
+function flashProgress(){return `<div class="progress-wrap"><div class="progress-meta">${state.index+1} / ${flashcards.length}</div><div class="progress">${flashcards.map((_,i)=>`<i class="${i<state.index?'done':i===state.index?'now':''}"></i>`).join('')}</div></div>`}
+function flash(){const card=flashcards[state.index];return `${activityAppbar()}${flashProgress()}<div class="flash-body"><div class="flash-stage" data-action="flip"><div class="flash-next"></div><div class="flash-card ${state.flipped?'flipped':''}"><div class="flash-face"><strong>${card.word}</strong><button class="card-audio" data-action="audio" aria-label="${card.word} 발음 듣기">${icons.volume}</button></div><div class="flash-face back"><strong>${card.meaning}</strong><span class="kind">${card.kind}</span><div class="flash-picture">그림</div><button class="card-audio" data-action="audio" aria-label="${card.word} 발음 듣기">${icons.volume}</button></div></div></div><div class="flash-meta">${state.flipped?'다시 뒤집으려면 누르세요':'카드를 눌러 뜻을 보세요'}</div></div><div class="footer"><div class="judge"><button class="unknown" data-action="unknown" ${state.flipped?'':'disabled'}><span class="badge">${state.unknown}</span><span class="label">몰라요</span></button><button class="known" data-action="known" ${state.flipped?'':'disabled'}><span class="badge">${state.known}</span><span class="label">알아요</span></button></div></div>`}
+function recordWave(){return `<span class="record-wave" aria-hidden="true">${Array.from({length:12},()=>'<i></i>').join('')}</span>`}
+function recordControl(mode,action){const recording=mode==="recording",done=mode==="done",title=recording?"녹음 중":done?"녹음 완료":"눌러서 녹음",sub=recording?"한 번 더 누르면 완료":done?"누르면 다시 녹음":"문장을 말해 보세요",symbol=recording?icons.stop:done?icons.check:icons.mic;return `<div class="record-core"><button class="record-button ${mode}" data-action="${action}" aria-label="${title}">${symbol}</button><span class="record-copy"><b>${title}</b><span>${sub}</span>${recording?recordWave():''}</span></div>`}
+function listenControl(){return `<div class="record-core"><button class="record-button listen" data-action="roleNext" aria-label="AI 말 듣기">${icons.volume}</button><span class="record-copy"><b>AI 말 듣기</b><span>듣고 다음 대사로 이동</span></span></div>`}
+function missionChat(){const shown=chatTurns.slice(0,state.chatTurn),hits=new Set(shown.filter(x=>x.hit!==undefined).map(x=>x.hit)),waiting=state.chatTurn<chatTurns.length&&chatTurns[state.chatTurn].who==="bot",complete=state.chatTurn>=chatTurns.length;const bottom=complete?'<div class="footer"><button class="primary on">결과 보기</button></div>':`<div class="chat-footer"><button class="keyboard" aria-label="키보드 입력">${icons.keyboard}</button>${recordControl(state.chatRecord,"chatRecord")}</div>`;return `${activityAppbar()}<section class="scenario ${state.chatFold?'folded':''}"><div class="scenario-copy"><div class="ko">카페에서 음료를 주문해 보세요</div>${state.chatFold?'':'<div class="en">Order a drink at the cafe</div>'}</div><button class="fold" data-action="chatFold" aria-label="시나리오 접기">${state.chatFold?icons.down:icons.up}</button></section><div class="missions"><span class="mission-title">미션 보기</span>${missions.map((m,i)=>`<span class="mission ${hits.has(i)?'done':''}">${hits.has(i)?'✓':'○'} ${m}</span>`).join('')}</div><div class="thread">${shown.map(x=>x.who==="bot"?`<div class="msg"><span class="avatar">🧑‍🍳</span><div class="bubble-wrap"><div class="bubble">${x.text}</div></div></div>`:`<div class="msg me ${x.bad?'bad':''}"><div class="bubble-wrap"><div class="bubble">${x.text}</div>${x.tip?`<div class="tip">! ${x.tip}</div>`:''}</div></div>`).join('')}${waiting?'<div class="msg"><span class="avatar">🧑‍🍳</span><span class="typing"><i></i><i></i><i></i></span></div>':''}</div>${bottom}`}
+function roleplay(){const current=roleTurns[state.roleIndex],mine=current.who==="나";const rows=roleTurns.map((t,i)=>{const cls=i===state.roleIndex?'current':i>state.roleIndex?'future':'',record=mine&&i===state.roleIndex&&state.roleRecord==="done"?`<div class="record-card"><div class="meta">${t.en} · [${t.ko}]</div><div class="heard">나의 발음 · ${t.ko}</div></div>`:'';return `<div class="turn ${cls} ${t.who==='나'?'me':'ai'}"><span class="who">${t.who}</span><span class="line">${t.ko}</span><span class="listen">${i<=state.roleIndex?icons.volume:''}</span></div>${record}`}).join('');return `${activityAppbar()}<section class="role-intro"><div class="role-title">AI와 함께 대화를 연습해 보세요.</div><div class="role-tabs"><button class="${state.roleDir==='ai'?'on':''}" data-action="roleAi">AI &gt; 나</button><button class="${state.roleDir==='me'?'on':''}" data-action="roleMe">나 &gt; AI</button></div></section><div class="turns"><div class="script-meta"><span>전체 대본</span><span>${state.roleIndex+1} / ${roleTurns.length}</span></div>${rows}</div><div class="role-footer"><button class="arrow left" data-action="rolePrev" ${state.roleIndex===0?'disabled':''}>${icons.left}</button>${mine?recordControl(state.roleRecord,"roleRecord"):listenControl()}<button class="arrow right" data-action="roleNext" ${state.roleIndex===roleTurns.length-1?'disabled':''}>${icons.right}</button></div>`}
+function render(){const device=document.getElementById('device'),screen=document.getElementById('screen');device.style.width=(+state.width+2)+'px';if(state.activity==="wordQuiz")screen.innerHTML=wordQuiz();else if(state.activity==="wordPreview")screen.innerHTML=wordPreview();else if(state.activity==="listen")screen.innerHTML=generalListen();else if(state.activity==="jamoListen")screen.innerHTML=jamoListen();else if(state.activity==="write")screen.innerHTML=state.writeStage==="select"?writeSelect():writeCanvas();else if(state.activity==="flash")screen.innerHTML=flash();else if(state.activity==="chat")screen.innerHTML=missionChat();else screen.innerHTML=roleplay();const names={wordQuiz:"어휘 문제",wordPreview:"어휘 미리보기",listen:"일반 듣기",jamoListen:"자모 듣기",write:state.writeStage==="select"?"자모 조합":"자모 쓰기",flash:"플래시카드",chat:"미션 대화",role:"롤플레잉"};document.getElementById('caption').textContent=`${state.width} × 720 · ${names[state.activity]}`;let specs;if(state.activity==="flash")specs=[["콘텐츠","뒤집기 카드"],["판정","알아요 · 몰라요"],["진행","수치 + 분절"],["음성","카드 내부"],["하단","자기 평가 88"]];else if(state.activity==="chat")specs=[["콘텐츠","시나리오 + 대화"],["진행","미션 체크"],["입력","음성 · 키보드"],["녹음","공통 3상태"],["하단","녹음 도크 92"]];else if(state.activity==="role")specs=[["콘텐츠","지시문 + 전체 대본"],["진행","대화 턴"],["방향","AI ↔ 나"],["녹음","공통 3상태"],["하단","턴 도크 92"]];else{const audioRole=state.activity==="jamoListen"?"주 자극":state.activity==="listen"?"문장 보조":state.activity==="write"?"쓰기 참고":"단어 보조";specs=[["문제 영역","통합 카드"],["선택지","독립 표면"],["진행","수치 + 분절"],["음성",audioRole],["하단","CTA 88"]]}document.getElementById('spec').innerHTML=specs.map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('')}
+function reset(){if(state.wrongTimer)clearTimeout(state.wrongTimer);state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;state.chosenConsonant=null;state.chosenVowel=null;state.flipped=false;state.known=0;state.unknown=0;state.chatTurn=4;state.chatFold=false;state.chatRecord='idle';state.roleIndex=1;state.roleDir='ai';state.roleRecord='idle';render()}
+function advance(){if(state.index<items().length-1)state.index++;else state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;state.chosenConsonant=null;state.chosenVowel=null;render()}
+document.getElementById('screen').addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;if(a==='choice'){if(state.resolved)return;if(state.wrongTimer){clearTimeout(state.wrongTimer);state.wrongTimer=null}const i=+el.dataset.index;state.picked=i;if(i===item().a){state.resolved=true;state.feedback='correct'}else{state.feedback='wrong';render();state.wrongTimer=setTimeout(()=>{state.picked=null;state.wrongTimer=null;render()},650);return}}else if(a==='next'){advance();return}else if(a==='skip'){if(state.activity==='flash'){state.index=(state.index+1)%flashcards.length;state.flipped=false}else if(state.activity==='chat'||state.activity==='role'){reset();return}else{advance();return}}else if(a==='toQuiz'){state.activity='wordQuiz';document.querySelectorAll('[data-set="activity"] .option').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.value==='wordQuiz')));reset();return}else if(a==='jamo'){if(el.dataset.type==='consonant')state.chosenConsonant=el.dataset.value;else state.chosenVowel=el.dataset.value}else if(a==='toWrite'){state.writeStage='write'}else if(a==='draw'){state.strokes=Math.min(state.strokes+1,item().paths.length);state.judge=null;state.feedback=null}else if(a==='clear'){state.strokes=0;state.judge=null;state.feedback=null}else if(a==='undo'){state.strokes=Math.max(0,state.strokes-1);state.judge=null;state.feedback=null}else if(a==='judge'){const ok=state.index===0||state.writeFails>=2;state.judge=ok?'correct':'wrong';state.feedback=state.judge;if(!ok)state.writeFails++}else if(a==='flip'){state.flipped=!state.flipped}else if((a==='known'||a==='unknown')&&state.flipped){state[a]++;state.index=(state.index+1)%flashcards.length;state.flipped=false}else if(a==='chatFold'){state.chatFold=!state.chatFold}else if(a==='chatRecord'){if(state.chatRecord==='idle')state.chatRecord='recording';else if(state.chatRecord==='recording'){state.chatRecord='done';state.chatTurn=state.chatTurn>=chatTurns.length?1:Math.min(chatTurns.length,state.chatTurn+1)}else state.chatRecord='recording'}else if(a==='roleAi')state.roleDir='ai';else if(a==='roleMe')state.roleDir='me';else if(a==='rolePrev'){state.roleIndex=Math.max(0,state.roleIndex-1);state.roleRecord='idle'}else if(a==='roleNext'){state.roleIndex=Math.min(roleTurns.length-1,state.roleIndex+1);state.roleRecord='idle'}else if(a==='roleRecord'){state.roleRecord=state.roleRecord==='idle'?'recording':state.roleRecord==='recording'?'done':'recording'}else if(a==='audio'){el.animate([{transform:'scale(1)'},{transform:'scale(.96)'},{transform:'scale(1)'}],200)}render()});
 document.querySelectorAll('[data-set]').forEach(group=>group.querySelectorAll('.option').forEach(button=>button.addEventListener('click',()=>{const key=group.dataset.set;state[key]=button.dataset.value;group.querySelectorAll('.option').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));if(key==='activity')reset();else render()})));
 render();
 </script>
