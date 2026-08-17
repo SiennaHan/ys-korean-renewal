@@ -583,8 +583,30 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
         버튼은 드래그의 대체 수단이지 유일한 조작이 아니다.<br>
         <b>카드 아래 줄</b>에 왼쪽 안내 문구, 오른쪽 <code>n/N</code>(14, <code>text-disable</code>).</li>
     <li><b>롤플레잉</b> — 밴드에 마이크 영역. 오답 개념이 없고 <b>재시도 2회를 넘겨야</b> 복습 큐에 들어간다.</li>
-    <li><b>미션 대화</b> — 진행 단위가 문항이 아니라 <b>미션 키워드</b>다. 종료 시 확인 다이얼로그(§9).
-        미션 키워드 목록은 <b>가로로 잘리지 않게</b> 하고, 지시문 전문은 브리핑 화면이 담당한다.</li>
+    <li><b>미션 대화는 "문항"이 아니다</b> <span class="qa">구 앱 실측</span> —
+        대화 하나이고, 맞은 개수·정답률이라는 말이 성립하지 않는다.
+        <b>셸의 공통 결과 화면을 쓰지 않고 별도 리포트</b>로 간다.<br>
+        <b>화면 층</b>(위에서) — 앱바 58 · <b>시나리오 바</b>(<code>fill-primary</code> 채움, 76,
+        접으면 44, 오른쪽 ∨) · <b>미션 바</b> 50("미션 보기" chip + 키워드 체크리스트,
+        완료 <code>fill-correct</code> ✓ / 미완료 <code>text-disable</code>) ·
+        <b>스레드</b> 가변(여기서만 스크롤) · <b>마이크 영역</b> 92.<br>
+        <b>진행바를 쓰지 않는다</b> — 미션 바의 체크가 곧 진행 표시다. 두 개를 겹쳐 두면 같은 말을 두 번 한다.<br>
+        스레드는 AI 아바타 40 + 말풍선 최대 248(아래 음성·번역 아이콘 24 두 개),
+        사용자 말풍선은 우측 정렬. <b>오답이면 <code>background-wrong</code> 배경 + 안쪽 흰 카드에
+        <code>fill-wrong</code> ! + 팁</b>. 타이핑 중은 58×40에 점 6 세 개.<br>
+        마이크 영역은 <b>마이크 60 가운데 + 키보드 전환 44 왼쪽</b>. 키보드 모드로 바꾸면
+        입력창 48 + 전송 48이 그 자리를 쓴다.<br>
+        <b>✕ 에 확인 다이얼로그가 붙는 유일한 활동</b>이다(§9) — 재개 지점이 없기 때문.</li>
+    <li><b>AI 대화 리포트</b> <span class="qa">구 앱 실측</span> —
+        파랑 헤더에 "AI 대화 리포트" 20 + 영문 14(<code>#A2D1FF</code>),
+        그 아래 <b>흰 카드 2개(높이 70, 간격 8)</b>: <b>완료한 키워드 <code>n / N</code></b> ·
+        <b>점수 <code>%</code></b>(둘 다 18 bold <code>primitive-blue-400</code>).<br>
+        <b>탭 2개</b>(높이 46) — <b>평가</b> / <b>나의 문장 피드백</b>.<br>
+        평가 탭에 <b>방사형 그래프</b>가 있다 — 축 4개 <b>발음 · 문법 · 내용 · 어휘</b>
+        (<code>react-chartjs-2</code> Radar). 그 아래 축별 평가문 4개,
+        각각 <code>primitive-blue-50</code> 배경 + <code>primitive-blue-600</code> 글자 chip(radius 5) + 설명.<br>
+        <b>[다시 풀기]는 미달성 미션이 있을 때만</b> 뜨고, 누르면
+        <code>POST /dialog/{dialogId}/reset</code>으로 <b>대화 스레드를 지우고 처음부터</b> 한다.</li>
     <li><b>자모 쓰기는 한 화면이 아니라 2단계다</b> <span class="qa">구 앱 실측</span> —
         <b>① 조합 선택 → ② 캔버스에 쓰기</b>. 구 앱 <code>write/$code.tsx</code>가
         <code>stage: 'select' | 'write'</code>로 갈린다.<br>

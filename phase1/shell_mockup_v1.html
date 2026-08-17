@@ -330,6 +330,81 @@
   .seg i.kn { background: var(--fill-primary); }
   .seg i.un { background: var(--primitive-yellow-300); }
 
+  /* ── 미션 대화 ─────────────────────────────── */
+  /* 세로 층이 가장 많다. 스레드만 가변이고 나머지는 고정 */
+  .scenario { flex: none; min-height: 76px; background: var(--fill-primary);
+    color: var(--text-inverse); padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; }
+  .scenario .txt { flex: 1; }
+  .scenario .ko { font-size: 15px; line-height: 21px; font-weight: 600; }
+  .scenario .en { font-size: 13px; line-height: 18px; color: var(--primitive-blue-50); }
+  .scenario .fold { width: 24px; height: 24px; flex: none; display: grid; place-items: center; }
+  .scenario.folded { min-height: 0; padding: 10px 16px; }
+
+  .missionbar { flex: none; height: 50px; display: flex; align-items: center; gap: 8px;
+    padding: 0 16px; background: var(--background-surface);
+    border-bottom: 1px solid var(--line-normal); overflow-x: auto; }
+  .missionbar .chip2 { flex: none; height: 26px; padding: 0 10px; border-radius: 13px;
+    background: var(--background-base); color: var(--text-sub);
+    font-size: 12px; font-weight: 600; display: grid; place-items: center; }
+  .missionbar .kw { flex: none; display: flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 600; color: var(--text-disable); white-space: nowrap; }
+  .missionbar .kw.done { color: var(--fill-correct); }
+  .missionbar .kw i { font-style: normal; font-size: 13px; }
+
+  .thread { flex: 1 1 auto; min-height: 0; overflow-y: auto;
+    padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .msg { display: flex; gap: 8px; align-items: flex-start; }
+  .msg .av { width: 40px; height: 40px; border-radius: 50%; flex: none;
+    background: var(--primitive-blue-50); display: grid; place-items: center; font-size: 18px; }
+  .bub { max-width: 248px; border-radius: 14px; padding: 10px 12px;
+    font-size: 15px; line-height: 21px; background: var(--background-surface); }
+  .msg.me { justify-content: flex-end; }
+  .msg.me .bub { background: var(--fill-primary); color: var(--text-inverse); }
+  .msg.me.bad .bub { background: var(--background-wrong); color: var(--text-strong); }
+  .tipcard { margin-top: 8px; background: var(--background-surface); border-radius: 10px;
+    padding: 8px 10px; display: flex; gap: 6px; font-size: 13px; line-height: 18px;
+    color: var(--text-sub); }
+  .tipcard b { color: var(--fill-wrong); flex: none; }
+  .acts2 { display: flex; gap: 12px; margin-top: 6px; color: var(--icon-normal); }
+  .acts2 svg { width: 20px; height: 20px; }
+  .typing { width: 58px; height: 40px; border-radius: 14px; background: var(--background-surface);
+    display: flex; align-items: center; justify-content: center; gap: 5px; }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-disable); }
+
+  .miczone.chat { flex-direction: row; justify-content: center; gap: 0; position: relative; }
+  .miczone.chat .kb { position: absolute; left: 74px; width: 44px; height: 44px;
+    display: grid; place-items: center; color: var(--icon-normal); }
+  .miczone.chat .kb svg { width: 24px; height: 24px; }
+  .kbrow { width: 100%; height: 92px; display: flex; align-items: center; gap: 8px; padding: 0 16px; }
+  .kbrow .inp { flex: 1; height: 48px; border-radius: 24px; background: var(--background-surface);
+    border: 1px solid var(--line-normal); display: flex; align-items: center;
+    padding: 0 16px; font-size: 15px; color: var(--text-disable); }
+  .kbrow .send { width: 48px; height: 48px; border-radius: 50%; background: var(--fill-primary);
+    color: #fff; display: grid; place-items: center; flex: none; }
+  .kbrow .send svg { width: 20px; height: 20px; }
+
+  /* ── AI 대화 리포트 ────────────────────────── */
+  .rhead2 { flex: none; background: var(--fill-primary); color: var(--text-inverse);
+    padding: 12px 16px; }
+  .rhead2 .t { font-size: 20px; line-height: 28px; font-weight: 700; }
+  .rhead2 .s { font-size: 14px; color: #A2D1FF; }
+  .scorebox { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 70px; margin-top: 12px; }
+  .scorebox .sb { background: var(--background-surface); border-radius: 10px; padding-top: 12px; }
+  .scorebox .k { font-size: 12px; font-weight: 600; color: var(--text-sub); text-align: center; }
+  .scorebox .v { font-size: 18px; font-weight: 700; color: var(--primitive-blue-400); text-align: center; }
+  .rtabs { flex: none; height: 46px; display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--background-surface); }
+  .rtabs .tab { display: grid; place-items: center; font-size: 14px; font-weight: 600;
+    color: var(--text-sub); border-bottom: 2px solid var(--line-normal); }
+  .rtabs .tab.on { color: var(--text-primary); border-bottom-color: var(--fill-primary); }
+  .rscroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 12px; }
+  .rscroll .card { background: var(--background-surface); border-radius: 10px; padding: 10px; }
+  .aslist { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .asrow { border-radius: 12px; background: var(--background-choice); padding: 12px; font-size: 14px; }
+  .aschip { display: inline-block; border-radius: 5px; background: var(--primitive-blue-50);
+    color: var(--primitive-blue-600); padding: 2px 8px; font-weight: 600; font-size: 13px; }
+  .asv { margin-top: 8px; color: var(--text-strong); line-height: 20px; }
+
   /* ── 피드백 pill ───────────────────────────── */
   .pillbar { flex: none; height: 44px; display: grid; place-items: center; }
   .pill { height: 36px; display: inline-flex; align-items: center; gap: 8px;
@@ -447,6 +522,7 @@
           <button class="opt" data-v="rec" aria-pressed="false">발음</button>
           <button class="opt" data-v="write" aria-pressed="false">자모 쓰기</button>
           <button class="opt" data-v="flash" aria-pressed="false">플래시카드</button>
+          <button class="opt" data-v="chat" aria-pressed="false">미션 대화</button>
         </div>
       </div>
       <p class="note" style="margin-top:14px"><b>화면 안을 눌러서 진행한다.</b>
@@ -593,6 +669,23 @@ const ACTS = {
     label: "발음", instrKey: "recInstr", graded: false,
     items: [ { q: "어", heard: "어" }, { q: "이", heard: "기" }, { q: "오", heard: "오" } ],
   },
+  chat: {
+    label: "미션 대화", instrKey: null, graded: true, noTitle: true, chat: true,
+    // 진행 단위가 문항이 아니라 미션 키워드 3개다
+    missions: ["주문하기", "가격 묻기", "인사하기"],
+    turns: [
+      { who: "bot", text: "어서 오세요. 무엇을 드릴까요?" },
+      { who: "me",  text: "커피 주세요.", hit: 0 },
+      { who: "bot", text: "네, 아메리카노요? 따뜻한 걸로 드릴까요?" },
+      { who: "me",  text: "얼마예요?", hit: 1 },
+      { who: "bot", text: "삼천 원이에요." },
+      { who: "me",  text: "고맙습니다 안녕", bad: true,
+        tip: "헤어질 때는 '안녕히 계세요'라고 해요." },
+      { who: "me",  text: "안녕히 계세요.", hit: 2 },
+      { who: "bot", text: "네, 또 오세요!" },
+    ],
+    items: [{ q: "카페에서 주문하기" }],
+  },
   flash: {
     label: "플래시카드", instrKey: null, graded: false, selfRate: true, noTitle: true,
     items: [
@@ -613,6 +706,7 @@ const S = {
   rec: "idle",                    // idle | on | ok | no | low
   wr: "select", strokes: 0, wrJudge: null, wrFails: 0,   // strokes = 그은 획 수
   flip: false,                    // 플래시카드 뒤집힘
+  turn: 1, fold: false, kb: false,   // 미션 대화: 보여준 턴 수 · 시나리오 접기 · 키보드 모드
   log: [],                        // 문항별 { first: 'ok'|'no'|'skip'|'done'|'none', resolved }
   overlay: null,                  // loading | failed | mic | exit
   width: "390", lang: "ko", measure: "off",
@@ -624,7 +718,7 @@ function total() { return A().items.length; }
 
 function resetItem() {
   S.picked = null; S.resolved = false; S.attempts = 0;
-  S.rec = "idle"; S.wr = "select"; S.strokes = 0; S.wrJudge = null; S.wrFails = 0; S.flip = false;
+  S.rec = "idle"; S.wr = "select"; S.strokes = 0; S.wrJudge = null; S.wrFails = 0; S.flip = false; S.turn = 1; S.fold = false; S.kb = false;
 }
 function resetAct(act) {
   S.act = act; S.idx = 0; S.done = false; S.log = []; S.overlay = null;
@@ -634,7 +728,7 @@ function resetAct(act) {
 const T = {
   en:{ lesson:"Level 1 Lesson 4", instr:"Listen and choose the word you hear.",
        instrWord:"Choose the meaning.", recInstr:"Listen, then say it yourself.",
-       comboInstr:"Build the letter, then write it.", writeInstr:"Write the letter in stroke order.", flipHint:"Tap the card to see the meaning", flipBack:"Tap to flip back", know:"I know it", dontKnow:"Not yet", reviewUnknown:"{n} to practice again", audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
+       comboInstr:"Build the letter, then write it.", writeInstr:"Write the letter in stroke order.", flipHint:"Tap the card to see the meaning", flipBack:"Tap to flip back", know:"I know it", dontKnow:"Not yet", reviewUnknown:"{n} to practice again", chatScene:"Order a drink at the cafe", missionsLabel:"Missions", typeHere:"Type your reply", kMission:"Missions", chatDoneSub:"{a} of {n} missions done", chatRetryHint:"Practice again clears the conversation and starts over.", reportTitle:"AI Chat Report", doneKeywords:"Keywords done", score:"Score", tabAssess:"Assessment", tabFeedback:"My sentences", asPron:"Clear overall. Give the final consonant in 커피 a bit more weight.", asGram:"Endings were mostly right. 고맙습니다 안녕 mixes two politeness levels.", asVocab:"Good range for ordering. Try 따뜻한 / 차가운 next time.", asCtx:"You covered ordering, price and farewell naturally.", audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
        ok:"Nice!", retry:"Try again", skip:"Skip", exit:"Exit",
        rTitle:"Done!", rSub:"All {n} answered", rSubPartial:"{a} of {n} answered",
        kDone:"Answered", kAccuracy:"Accuracy",
@@ -650,7 +744,7 @@ const T = {
        stay:"Stay", leave:"Leave", nextAct:"Next activity" },
   ko:{ lesson:"1급 4과", instr:"듣고 맞는 것을 고르세요.",
        instrWord:"뜻을 고르세요.", recInstr:"듣고 따라 말해 보세요.",
-       comboInstr:"글자를 만들고 써 보세요.", writeInstr:"글자를 순서에 맞게 써 보세요.", flipHint:"카드를 눌러 뜻을 보세요", flipBack:"다시 뒤집으려면 누르세요", know:"알아요", dontKnow:"몰라요", reviewUnknown:"{n}개는 다시 만나요", audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
+       comboInstr:"글자를 만들고 써 보세요.", writeInstr:"글자를 순서에 맞게 써 보세요.", flipHint:"카드를 눌러 뜻을 보세요", flipBack:"다시 뒤집으려면 누르세요", know:"알아요", dontKnow:"몰라요", reviewUnknown:"{n}개는 다시 만나요", chatScene:"카페에서 음료를 주문해 보세요", missionsLabel:"미션 보기", typeHere:"답을 입력하세요", kMission:"미션", chatDoneSub:"미션 {n}개 중 {a}개 달성", chatRetryHint:"다시 풀기를 누르면 대화를 지우고 처음부터 시작해요.", reportTitle:"AI 대화 리포트", doneKeywords:"완료한 키워드", score:"점수", tabAssess:"평가", tabFeedback:"나의 문장 피드백", asPron:"전반적으로 또렷해요. 커피의 받침을 조금 더 살려 보세요.", asGram:"어미가 대체로 정확해요. 고맙습니다 안녕은 높임이 섞였어요.", asVocab:"주문에 필요한 말을 잘 썼어요. 따뜻한 / 차가운도 써 보세요.", asCtx:"주문·가격·인사를 자연스럽게 다 다뤘어요.", audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
        ok:"아주 잘 했어요!", retry:"다시 해보세요", skip:"건너뛰기", exit:"나가기",
        rTitle:"다 했어요!", rSub:"{n}개 다 풀었어요", rSubPartial:"{n}개 중 {a}개 풀었어요",
        kDone:"푼 문항", kAccuracy:"정답률",
@@ -666,7 +760,7 @@ const T = {
        stay:"계속하기", leave:"나가기", nextAct:"다음 활동" },
   ja:{ lesson:"1級 4課", instr:"聞いて正しいものを選んでください。",
        instrWord:"意味を選んでください。", recInstr:"聞いて、まねして言ってみましょう。",
-       comboInstr:"文字を組み立てて書きましょう。", writeInstr:"書き順に沿って書いてみましょう。", flipHint:"カードをタップして意味を見る", flipBack:"タップで裏返す", know:"わかる", dontKnow:"まだ", reviewUnknown:"{n}語はもう一度", audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
+       comboInstr:"文字を組み立てて書きましょう。", writeInstr:"書き順に沿って書いてみましょう。", flipHint:"カードをタップして意味を見る", flipBack:"タップで裏返す", know:"わかる", dontKnow:"まだ", reviewUnknown:"{n}語はもう一度", chatScene:"カフェで飲み物を注文しましょう", missionsLabel:"ミッション", typeHere:"返事を入力", kMission:"ミッション", chatDoneSub:"ミッション{n}個中{a}個達成", chatRetryHint:"もう一度を押すと会話を消して最初から始めます。", reportTitle:"AI会話レポート", doneKeywords:"達成キーワード", score:"スコア", tabAssess:"評価", tabFeedback:"私の文へのフィードバック", asPron:"全体にはっきりしています。커피のパッチムを意識しましょう。", asGram:"語尾はおおむね正確です。고맙습니다 안녕は敬体が混ざっています。", asVocab:"注文に必要な語をよく使えました。따뜻한 / 차가운も使ってみましょう。", asCtx:"注文・値段・あいさつを自然に扱えました。", audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
        ok:"よくできました！", retry:"もう一度", skip:"スキップ", exit:"終了",
        rTitle:"終わりました！", rSub:"{n}問すべて解きました", rSubPartial:"{n}問中 {a}問 解きました",
        kDone:"解いた問題", kAccuracy:"正答率",
@@ -682,7 +776,7 @@ const T = {
        stay:"続ける", leave:"終了", nextAct:"次のアクティビティ" },
   zh:{ lesson:"1级 第4课", instr:"请听并选择正确的选项。",
        instrWord:"请选择意思。", recInstr:"听一听，然后跟着说。",
-       comboInstr:"组成字后写一写。", writeInstr:"请按笔顺写一写。", flipHint:"点击卡片查看意思", flipBack:"点击翻回", know:"认识", dontKnow:"还不会", reviewUnknown:"{n}个还要再练", audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
+       comboInstr:"组成字后写一写。", writeInstr:"请按笔顺写一写。", flipHint:"点击卡片查看意思", flipBack:"点击翻回", know:"认识", dontKnow:"还不会", reviewUnknown:"{n}个还要再练", chatScene:"在咖啡店点一杯饮料", missionsLabel:"查看任务", typeHere:"输入你的回答", kMission:"任务", chatDoneSub:"{n}个任务中完成{a}个", chatRetryHint:"点击再练习会清除对话并重新开始。", reportTitle:"AI对话报告", doneKeywords:"完成的关键词", score:"得分", tabAssess:"评价", tabFeedback:"我的句子反馈", asPron:"整体清晰。커피的收音可以再明显一点。", asGram:"词尾基本准确。고맙습니다 안녕混用了两种敬语。", asVocab:"点单用词很好。下次试试 따뜻한 / 차가운。", asCtx:"自然地完成了点单、问价和道别。", audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
        ok:"很棒！", retry:"再试一次", skip:"跳过", exit:"退出",
        rTitle:"完成了！", rSub:"{n}题全部完成", rSubPartial:"{n}题中完成了{a}题",
        kDone:"已完成", kAccuracy:"正确率",
@@ -698,7 +792,7 @@ const T = {
        stay:"继续", leave:"离开", nextAct:"下一个活动" },
   vi:{ lesson:"Cấp 1 Bài 4", instr:"Nghe và chọn từ bạn nghe được.",
        instrWord:"Chọn nghĩa của từ.", recInstr:"Nghe rồi nói lại.",
-       comboInstr:"Ghép chữ rồi viết.", writeInstr:"Hãy viết theo thứ tự nét.", flipHint:"Nhấn vào thẻ để xem nghĩa", flipBack:"Nhấn để lật lại", know:"Đã biết", dontKnow:"Chưa biết", reviewUnknown:"{n} từ sẽ luyện lại", audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
+       comboInstr:"Ghép chữ rồi viết.", writeInstr:"Hãy viết theo thứ tự nét.", flipHint:"Nhấn vào thẻ để xem nghĩa", flipBack:"Nhấn để lật lại", know:"Đã biết", dontKnow:"Chưa biết", reviewUnknown:"{n} từ sẽ luyện lại", chatScene:"Gọi đồ uống ở quán cà phê", missionsLabel:"Nhiệm vụ", typeHere:"Nhập câu trả lời", kMission:"Nhiệm vụ", chatDoneSub:"Hoàn thành {a}/{n} nhiệm vụ", chatRetryHint:"Luyện lại sẽ xóa cuộc hội thoại và bắt đầu lại.", reportTitle:"Báo cáo hội thoại AI", doneKeywords:"Từ khóa đã đạt", score:"Điểm", tabAssess:"Đánh giá", tabFeedback:"Phản hồi câu của tôi", asPron:"Nhìn chung rõ ràng. Chú ý phụ âm cuối trong 커피.", asGram:"Đuôi câu khá chính xác. 고맙습니다 안녕 lẫn hai mức lịch sự.", asVocab:"Dùng tốt từ để gọi món. Thử thêm 따뜻한 / 차가운.", asCtx:"Bạn đã xử lý gọi món, hỏi giá và chào tạm biệt tự nhiên.", audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
        ok:"Rất tốt!", retry:"Thử lại", skip:"Bỏ qua", exit:"Thoát",
        rTitle:"Hoàn thành!", rSub:"Đã làm cả {n} câu", rSubPartial:"Đã làm {a} trong {n} câu",
        kDone:"Đã làm", kAccuracy:"Tỉ lệ đúng",
@@ -722,6 +816,10 @@ const ICON = {
   redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.6M20 4v4h-4"/></svg>',
   undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 102.3-5.6M4 4v4h4"/></svg>',
   erase:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M6 16l8-8 5 5-4 4H8z"/></svg>',
+  chevU:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>',
+  chevD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+  trans:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M9 4v2c0 4-2 7-5 9M7 12c2 3 4 4 7 5M14 20l4-9 4 9M15.5 17h5"/></svg>',
+  kbd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>',
   warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>',
 };
 
@@ -867,6 +965,118 @@ function flashBandHTML(t) {
   </div>`;
 }
 
+/* ── 미션 대화 ────────────────────────────────── */
+function chatHTML(t) {
+  const m = metrics(), a = A();
+  const shown = a.turns.slice(0, S.turn);
+  const hits = new Set(shown.filter(x => x.hit !== undefined).map(x => x.hit));
+  const waiting = S.turn < a.turns.length && a.turns[S.turn].who === "bot";
+
+  const scenario = `<div class="scenario ${S.fold ? "folded" : ""}" data-m="${m.w}×${S.fold ? 44 : 76}">
+    <div class="txt">
+      <div class="ko">${t.chatScene}</div>
+      ${S.fold ? "" : `<div class="en">Order a drink at the cafe</div>`}
+    </div>
+    <div class="fold" data-tap="fold">${S.fold ? ICON.chevD : ICON.chevU}</div>
+  </div>`;
+
+  const missionbar = `<div class="missionbar" data-m="${m.w}×50">
+    <div class="chip2" data-tap="missions">${t.missionsLabel}</div>
+    ${a.missions.map((k, i) => `<div class="kw ${hits.has(i) ? "done" : ""}">
+      <i>${hits.has(i) ? "✓" : "○"}</i>${k}</div>`).join("")}
+  </div>`;
+
+  const thread = `<div class="thread" data-m="가변 · 여기서만 스크롤">
+    ${shown.map(x => x.who === "bot"
+      ? `<div class="msg"><div class="av">🧑‍🍳</div><div>
+           <div class="bub">${x.text}</div>
+           <div class="acts2">${ICON.vol}${ICON.trans}</div></div></div>`
+      : `<div class="msg me ${x.bad ? "bad" : ""}"><div>
+           <div class="bub">${x.text}</div>
+           ${x.tip ? `<div class="tipcard"><b>!</b><span>${x.tip}</span></div>` : ""}
+         </div></div>`).join("")}
+    ${waiting ? `<div class="msg"><div class="av">🧑‍🍳</div>
+      <div class="typing"><i></i><i></i><i></i></div></div>` : ""}
+  </div>`;
+
+  return scenario + missionbar + thread;
+}
+
+function chatFooterHTML(t) {
+  if (S.kb) {
+    return `<div class="kbrow" data-m="${metrics().w}×92">
+      <div class="kb" data-tap="kbOff" style="width:44px;height:44px;display:grid;place-items:center;color:var(--icon-normal)">${ICON.mic}</div>
+      <div class="inp">${t.typeHere}</div>
+      <div class="send" data-tap="say">${ICON.next}</div>
+    </div>`;
+  }
+  return `<div class="miczone chat" data-m="${metrics().w}×92">
+    <div class="kb" data-tap="kbOn">${ICON.kbd}</div>
+    <div class="micbtn" data-tap="say">${ICON.mic}</div>
+  </div>`;
+}
+
+/* ── AI 대화 리포트 — 셸 공통 결과 화면을 쓰지 않는다 ─────
+   미션 대화는 "문항"이 아니라 대화다. 맞은 개수·정답률이라는 말이 성립하지 않아
+   구 앱도 별도 리포트를 쓴다. 그것을 그대로 가져온다. */
+function radarSVG(vals) {
+  const cx = 110, cy = 104, R = 74;
+  const ang = i => (Math.PI / 2) * i - Math.PI / 2;          // 위 → 오른쪽 → 아래 → 왼쪽
+  const pt = (i, r) => [cx + Math.cos(ang(i)) * R * r, cy + Math.sin(ang(i)) * R * r];
+  const ring = r => [0,1,2,3].map(i => pt(i, r).map(Math.round).join(",")).join(" ");
+  const data = vals.map((v, i) => pt(i, v / 100).map(n => n.toFixed(1)).join(",")).join(" ");
+  const labels = ["발음","문법","내용","어휘"].map((L, i) => {
+    const [x, y] = pt(i, 1.3);
+    return `<text x="${x.toFixed(0)}" y="${(y + 4).toFixed(0)}" text-anchor="middle"
+      font-size="12" font-weight="600" fill="var(--text-sub)">${L}</text>`;
+  }).join("");
+  return `<svg viewBox="0 0 220 208" style="width:100%;max-width:220px;height:auto;display:block;margin:0 auto">
+    ${[.25,.5,.75,1].map(r => `<polygon points="${ring(r)}" fill="none"
+        stroke="var(--line-normal)" stroke-width="1"/>`).join("")}
+    ${[0,1,2,3].map(i => { const [x,y]=pt(i,1);
+      return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(0)}" y2="${y.toFixed(0)}"
+        stroke="var(--line-normal)" stroke-width="1"/>`; }).join("")}
+    <polygon points="${data}" fill="var(--fill-primary)" fill-opacity=".22"
+      stroke="var(--fill-primary)" stroke-width="2" stroke-linejoin="round"/>
+    ${labels}
+  </svg>`;
+}
+
+function chatReportHTML(t) {
+  const m = metrics(), a = A();
+  const hits = S.log[0] ? S.log[0].hits : 0;
+  const n = a.missions.length;
+  const pct = n ? Math.floor((hits / n) * 100) : 0;
+  const vals = [78, 62, 85, 70];
+  const rows = [["발음", t.asPron], ["문법", t.asGram], ["어휘", t.asVocab], ["내용", t.asCtx]];
+  return `
+    <div class="rhead2">
+      <div class="t">${t.reportTitle}</div>
+      <div class="s">AI Chat Report</div>
+      <div class="scorebox">
+        <div class="sb"><div class="k">${t.doneKeywords}</div><div class="v">${hits} / ${n}</div></div>
+        <div class="sb"><div class="k">${t.score}</div><div class="v">${pct}%</div></div>
+      </div>
+    </div>
+    <div class="rtabs">
+      <div class="tab on">${t.tabAssess}</div>
+      <div class="tab">${t.tabFeedback}</div>
+    </div>
+    <div class="rscroll">
+      <div class="card">
+        ${radarSVG(vals)}
+        <div class="aslist">
+          ${rows.map(([L, v]) => `<div class="asrow">
+            <span class="aschip">${L}</span><div class="asv">${v}</div></div>`).join("")}
+        </div>
+      </div>
+    </div>
+    <div class="footer" data-m="${m.w}×88">
+      ${hits < n ? `<div class="btn ghost" data-tap="retry">${t.again}</div>` : ""}
+      <div class="btn primary" data-tap="restart">${t.nextAct}</div>
+    </div>`;
+}
+
 /* ── 셸 ───────────────────────────────────────── */
 function shellChrome(t, inner, opts = {}) {
   const m = metrics();
@@ -889,11 +1099,19 @@ function resultHTML(t) {
   const answered = S.log.filter(e => e && e.first !== "skip").length;
   const selfRate = A().selfRate;
   const correct = S.log.filter(e => e && e.first === "ok").length;
-  const gradedN = graded ? S.log.filter(e => e && e.first !== "skip").length : 0;
-  const acc = gradedN ? Math.round((correct / gradedN) * 100) + "%" : "—";
+  // 미션 대화만 분모가 다르다 — 진행률은 대화 1건, 정답률은 미션 수(구현 사양 §8)
+  const isChat = !!A().chat;
+  const hits = isChat ? (S.log[0] ? S.log[0].hits : 0) : 0;
+  const gradedN = isChat ? A().missions.length
+                : graded ? S.log.filter(e => e && e.first !== "skip").length : 0;
+  const corr = isChat ? hits : correct;
+  const acc = gradedN ? Math.round((corr / gradedN) * 100) + "%" : "—";
   const wrongs = S.log.map((e, i) => ({ e, i })).filter(x => x.e && x.e.first === "no");
-  const unresolved = total() - S.log.filter(e => e && e.res).length;
-  const sub = answered === total()
+  // 미달성 미션도 미해결이다 — [다시 풀기]가 대화 스레드를 지우고 처음부터 시작한다
+  const unresolved = isChat ? A().missions.length - hits
+                            : total() - S.log.filter(e => e && e.res).length;
+  const sub = isChat ? t.chatDoneSub.replace("{a}", hits).replace("{n}", gradedN)
+    : answered === total()
     ? t.rSub.replace("{n}", total())
     : t.rSubPartial.replace("{n}", total()).replace("{a}", answered);
   return `
@@ -907,11 +1125,14 @@ function resultHTML(t) {
         <div class="s">${sub}</div>
         <div class="stats">
           <div class="stat"><div class="k">${t.kDone}</div><div class="v">${answered} / ${total()}</div></div>
-          <div class="stat"><div class="k">${t.kAccuracy}</div><div class="v">${acc}</div></div>
+          <div class="stat"><div class="k">${isChat ? t.kMission : t.kAccuracy}</div>
+            <div class="v">${isChat ? `${hits} / ${gradedN}` : acc}</div></div>
         </div>
       </div>
       <div class="rbody">
-        ${selfRate ? `<div class="wrongcard"><p class="exp" style="margin:0">${
+        ${isChat ? `<div class="wrongcard"><p class="exp" style="margin:0">${
+            unresolved ? t.chatRetryHint : t.noWrong}</p></div>`
+        : selfRate ? `<div class="wrongcard"><p class="exp" style="margin:0">${
             S.log.filter(e => e && e.first === "unknown").length
               ? t.reviewUnknown.replace("{n}", S.log.filter(e => e && e.first === "unknown").length)
               : t.noWrong}</p></div>`
@@ -951,7 +1172,7 @@ function render() {
     html = shellChrome(t, `<div class="stateview"><div class="msg">${t.mic}</div></div>`,
       { instr: t[A().instrKey], footer: `<div class="btn ghost" data-tap="clearOverlay">${t.micSkip}</div>` });
   } else if (S.done) {
-    html = resultHTML(t);
+    html = A().chat ? chatReportHTML(t) : resultHTML(t);
   } else if (S.act === "rec") {
     const pill =
       S.rec === "ok"  ? `<div class="pill ok"><span class="dot">✓</span>${t.ok}</div>` :
@@ -959,6 +1180,23 @@ function render() {
       S.rec === "low" ? `<div class="pill tipm"><span class="dot">♪</span>${t.tipLouder}</div>` : "";
     html = shellChrome(t, micBandHTML(t),
       { pill, instr: t.recInstr, footer: `<div class="btn primary" data-tap="next">${t.next}</div>` });
+  } else if (S.act === "chat") {
+    // 미션 대화만 셸 골격이 다르다 — 지시문 대신 시나리오 바 + 미션 바가 들어간다
+    // 진행바를 쓰지 않는다 — 미션 바의 체크가 곧 진행 표시다
+    const a = A();
+    html = `
+      <div class="appbar" data-m="${m.w}×58">
+        <div class="iconbtn" data-tap="exitChat">${ICON.close}</div>
+        <div class="title">${t.lesson}</div>
+        <div class="iconbtn" data-tap="exitChat">${ICON.next}</div>
+      </div>
+      ${chatHTML(t)}
+      <div class="footer" data-m="${m.w}×92" style="height:92px;padding:0">${chatFooterHTML(t)}</div>`;
+    if (S.turn >= a.turns.length) {
+      html = html.replace('style="height:92px;padding:0"',
+        'style="height:88px;padding:16px"')
+        .replace(chatFooterHTML(t), `<div class="btn primary" data-tap="chatDone">${t.result}</div>`);
+    }
   } else if (S.act === "flash") {
     // 뒤집기 전에는 판정할 수 없다 — 뜻을 보지 않고 "알아요"를 누르면 자기 평가가 아니다
     const kn = S.log.filter(e => e && e.first === "known").length;
@@ -1016,7 +1254,11 @@ function renderDims(m) {
   const rows = [["기준 폭", `${m.w}`], ["좌우 여백", `${m.gutter}`], ["콘텐츠 폭", `${m.content}`],
     ["앱바", `${m.w} × 58`], ["진행바 블록", `${m.w} × 20`], ["진행바", `${m.content} × 6`],
     ["지시문", `${m.w} × 48`]];
-  if (S.act === "flash") rows.push(["카드", `${m.content} × 360`], ["카드 radius", `16`],
+  if (S.act === "chat") rows.push(["시나리오 바", `${m.w} × ${S.fold ? 44 : 76}`],
+    ["미션 바", `${m.w} × 50`], ["스레드", `가변 · 스크롤`], ["아바타", `40 × 40`],
+    ["말풍선 최대", `248`], ["마이크 영역", `${m.w} × 92`], ["마이크 버튼", `60 × 60`],
+    ["키보드 전환", `44 × 44`]);
+  else if (S.act === "flash") rows.push(["카드", `${m.content} × 360`], ["카드 radius", `16`],
     ["앞면 단어", `36`], ["뒷면 뜻", `36 / 20`], ["그림", `${m.content - 56} × 160`],
     ["판정 버튼", `${Math.round((m.content - 16) / 2)} × 56`], ["카운터 원", `40 × 40`]);
   else if (S.act === "rec") rows.push(["대상 글자", `56 / 62`], ["듣기 버튼", `${m.content} × 40`],
@@ -1085,6 +1327,25 @@ document.getElementById("screen").addEventListener("click", e => {
     if (ok) markResolved();
     render(); return;
   }
+  if (tap === "fold")   { S.fold = !S.fold; render(); return; }
+  if (tap === "kbOn")   { S.kb = true; render(); return; }
+  if (tap === "kbOff")  { S.kb = false; render(); return; }
+  if (tap === "missions"){ S.fold = false; render(); return; }
+  // 한 번 누를 때마다 다음 턴이 나온다 — 봇 턴은 이어서 자동으로
+  if (tap === "say") {
+    const a = A();
+    if (S.turn < a.turns.length) S.turn++;
+    while (S.turn < a.turns.length && a.turns[S.turn].who === "bot") S.turn++;
+    render(); return;
+  }
+  if (tap === "chatDone") {
+    const a = A();
+    const hits = new Set(a.turns.filter(x => x.hit !== undefined).map(x => x.hit)).size;
+    S.log = [{ first: hits === a.missions.length ? "ok" : "no", res: true, hits }];
+    S.done = true; render(); return;
+  }
+  // 미션 대화만 ✕ 에 확인 다이얼로그가 붙는다 — 재개 지점이 없기 때문
+  if (tap === "exitChat"){ S.overlay = "exit"; render(); return; }
   if (tap === "flip")   { S.flip = !S.flip; render(); return; }
   if (tap === "known")  { logFirst("known"); markResolved(); advance(); return; }
   // "몰라요"는 응답이지만 해소는 아니다 — 결과 화면에 [다시 풀기]가 뜬다
