@@ -548,16 +548,20 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
 <p class="qa">문항이 0개인 활동은 <b>목록에서 진입을 막는다</b> — 셸의 상태가 아니다.</p>
 
 <h2 id="s10"><span class="n">10</span>활동 8종</h2>
+<div class="rule">
+  <div class="t">어휘·듣기·자모 쓰기 완성 화면</div>
+  <p><a href="activity_mockups_uiux.html">활동 UI/UX 목업</a>을 구현 기준으로 쓴다. 세 화면 모두 <b>현재 위치 → 활동 맥락과 지시문 → 핵심 자극 → 응답 → 피드백과 진행</b> 순서를 유지한다.</p>
+</div>
 <div class="tablewrap"><table>
   <tr><th>활동</th><th><code>menuType</code></th><th>밴드에 들어가는 것</th><th>선택지</th></tr>
-  <tr><td>어휘</td><td><code>word</code></td><td>선택지</td><td class="n">4 고정</td></tr>
+  <tr><td>어휘</td><td><code>word</code></td><td>뜻·예문 StimulusCard + 가운데 정렬 ChoiceList</td><td class="n">4 고정</td></tr>
   <tr><td>문법</td><td><code>fill-blank</code></td><td>선택지</td><td class="n">2~3</td></tr>
-  <tr><td>듣기</td><td><code>listen-answer</code></td><td>음성 버튼 + 선택지</td><td class="n">2 ↔ 4 <b>혼재</b></td></tr>
+  <tr><td>듣기</td><td><code>listen-answer</code></td><td>재생·길이·파형 AudioPanel + 왼쪽 정렬 ChoiceList</td><td class="n">2 ↔ 4 <b>혼재</b></td></tr>
   <tr><td>읽기</td><td><code>read-answer</code></td><td>지문(스크롤) + 선택지</td><td class="n">2 ↔ 4 <b>혼재</b></td></tr>
   <tr><td>롤플레잉</td><td><code>roleplay</code></td><td>마이크 영역</td><td>없음</td></tr>
   <tr><td>플래시카드</td><td><code>flashcard</code></td><td>카드 + 알아요/몰라요</td><td>없음</td></tr>
   <tr><td>미션 대화</td><td><code>mission-chat</code></td><td>시나리오 바 + 미션 바 + 스레드 + 마이크</td><td>없음</td></tr>
-  <tr><td>자모</td><td><code>jamo</code> + <code>sub</code> 1~6</td><td>선택지 또는 캔버스 · <b>6종이 각각 독립 활동</b>. 구 앱 <code>scene_type</code> 기준 <span class="qa">아래 참조</span></td><td class="n">2~4</td></tr>
+  <tr><td>자모</td><td><code>jamo</code> + <code>sub</code> 1~6</td><td>선택지 또는 쓰는 글자 ContextBar + WritingCanvas + 도구 · <b>6종이 각각 독립 활동</b></td><td class="n">2~4</td></tr>
 </table></div>
 <div class="rule">
   <div class="t">활동별로 다른 것</div>
