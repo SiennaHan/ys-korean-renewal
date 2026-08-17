@@ -305,7 +305,14 @@
     border-radius: 50%; background: var(--background-base); display: grid; place-items: center;
     color: var(--text-heading); }
   .cardface .spk svg { width: 20px; height: 20px; }
-  .fliphint { font-size: 13px; color: var(--text-sub); text-align: center; }
+  /* 다음 카드가 뒤에 살짝 깔린다 — 구 앱에서 드래그하면 드러나는 그 카드 */
+  .cardstack { position: absolute; left: 12px; right: 12px; top: 14px; bottom: -14px;
+    opacity: .5; pointer-events: none; }
+  .cardstack .cardface { position: absolute; inset: 0; }
+  .fcfoot { width: 100%; display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; color: var(--text-sub); }
+  .fcfoot .n { font-size: 14px; font-weight: 600; color: var(--text-disable);
+    font-variant-numeric: tabular-nums; }
   /* 하단 판정 버튼 — 알약형에 카운터가 붙는다. 셸 하단 88 안에서 높이 56 */
   .judge2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
   .jbtn { height: 56px; border-radius: 28px; display: flex; align-items: center; gap: 8px;
@@ -587,7 +594,7 @@ const ACTS = {
     items: [ { q: "어", heard: "어" }, { q: "이", heard: "기" }, { q: "오", heard: "오" } ],
   },
   flash: {
-    label: "플래시카드", instrKey: "flashInstr", graded: false, selfRate: true,
+    label: "플래시카드", instrKey: null, graded: false, selfRate: true, noTitle: true,
     items: [
       { q: "사과", m: "apple", sub: "명사" },
       { q: "학교", m: "school", sub: "명사" },
@@ -627,8 +634,7 @@ function resetAct(act) {
 const T = {
   en:{ lesson:"Level 1 Lesson 4", instr:"Listen and choose the word you hear.",
        instrWord:"Choose the meaning.", recInstr:"Listen, then say it yourself.",
-       comboInstr:"Build the letter, then write it.", writeInstr:"Write the letter in stroke order.",
-       flashInstr:"Do you know this word?", flipHint:"Tap the card to see the meaning", flipBack:"Tap to flip back", know:"I know it", dontKnow:"Not yet", reviewUnknown:"{n} to practice again", audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
+       comboInstr:"Build the letter, then write it.", writeInstr:"Write the letter in stroke order.", flipHint:"Tap the card to see the meaning", flipBack:"Tap to flip back", know:"I know it", dontKnow:"Not yet", reviewUnknown:"{n} to practice again", audio:"Listen", next:"Next", confirm:"Check", result:"See results", again:"Practice again",
        ok:"Nice!", retry:"Try again", skip:"Skip", exit:"Exit",
        rTitle:"Done!", rSub:"All {n} answered", rSubPartial:"{a} of {n} answered",
        kDone:"Answered", kAccuracy:"Accuracy",
@@ -644,8 +650,7 @@ const T = {
        stay:"Stay", leave:"Leave", nextAct:"Next activity" },
   ko:{ lesson:"1급 4과", instr:"듣고 맞는 것을 고르세요.",
        instrWord:"뜻을 고르세요.", recInstr:"듣고 따라 말해 보세요.",
-       comboInstr:"글자를 만들고 써 보세요.", writeInstr:"글자를 순서에 맞게 써 보세요.",
-       flashInstr:"이 단어를 아나요?", flipHint:"카드를 눌러 뜻을 보세요", flipBack:"다시 뒤집으려면 누르세요", know:"알아요", dontKnow:"몰라요", reviewUnknown:"{n}개는 다시 만나요", audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
+       comboInstr:"글자를 만들고 써 보세요.", writeInstr:"글자를 순서에 맞게 써 보세요.", flipHint:"카드를 눌러 뜻을 보세요", flipBack:"다시 뒤집으려면 누르세요", know:"알아요", dontKnow:"몰라요", reviewUnknown:"{n}개는 다시 만나요", audio:"발음 듣기", next:"다음", confirm:"확인", result:"결과 보기", again:"다시 풀기",
        ok:"아주 잘 했어요!", retry:"다시 해보세요", skip:"건너뛰기", exit:"나가기",
        rTitle:"다 했어요!", rSub:"{n}개 다 풀었어요", rSubPartial:"{n}개 중 {a}개 풀었어요",
        kDone:"푼 문항", kAccuracy:"정답률",
@@ -661,8 +666,7 @@ const T = {
        stay:"계속하기", leave:"나가기", nextAct:"다음 활동" },
   ja:{ lesson:"1級 4課", instr:"聞いて正しいものを選んでください。",
        instrWord:"意味を選んでください。", recInstr:"聞いて、まねして言ってみましょう。",
-       comboInstr:"文字を組み立てて書きましょう。", writeInstr:"書き順に沿って書いてみましょう。",
-       flashInstr:"この単語を知っていますか？", flipHint:"カードをタップして意味を見る", flipBack:"タップで裏返す", know:"わかる", dontKnow:"まだ", reviewUnknown:"{n}語はもう一度", audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
+       comboInstr:"文字を組み立てて書きましょう。", writeInstr:"書き順に沿って書いてみましょう。", flipHint:"カードをタップして意味を見る", flipBack:"タップで裏返す", know:"わかる", dontKnow:"まだ", reviewUnknown:"{n}語はもう一度", audio:"発音を聞く", next:"次へ", confirm:"確認", result:"結果を見る", again:"もう一度",
        ok:"よくできました！", retry:"もう一度", skip:"スキップ", exit:"終了",
        rTitle:"終わりました！", rSub:"{n}問すべて解きました", rSubPartial:"{n}問中 {a}問 解きました",
        kDone:"解いた問題", kAccuracy:"正答率",
@@ -678,8 +682,7 @@ const T = {
        stay:"続ける", leave:"終了", nextAct:"次のアクティビティ" },
   zh:{ lesson:"1级 第4课", instr:"请听并选择正确的选项。",
        instrWord:"请选择意思。", recInstr:"听一听，然后跟着说。",
-       comboInstr:"组成字后写一写。", writeInstr:"请按笔顺写一写。",
-       flashInstr:"认识这个词吗？", flipHint:"点击卡片查看意思", flipBack:"点击翻回", know:"认识", dontKnow:"还不会", reviewUnknown:"{n}个还要再练", audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
+       comboInstr:"组成字后写一写。", writeInstr:"请按笔顺写一写。", flipHint:"点击卡片查看意思", flipBack:"点击翻回", know:"认识", dontKnow:"还不会", reviewUnknown:"{n}个还要再练", audio:"听发音", next:"下一个", confirm:"确认", result:"查看结果", again:"再练习",
        ok:"很棒！", retry:"再试一次", skip:"跳过", exit:"退出",
        rTitle:"完成了！", rSub:"{n}题全部完成", rSubPartial:"{n}题中完成了{a}题",
        kDone:"已完成", kAccuracy:"正确率",
@@ -695,8 +698,7 @@ const T = {
        stay:"继续", leave:"离开", nextAct:"下一个活动" },
   vi:{ lesson:"Cấp 1 Bài 4", instr:"Nghe và chọn từ bạn nghe được.",
        instrWord:"Chọn nghĩa của từ.", recInstr:"Nghe rồi nói lại.",
-       comboInstr:"Ghép chữ rồi viết.", writeInstr:"Hãy viết theo thứ tự nét.",
-       flashInstr:"Bạn biết từ này chứ?", flipHint:"Nhấn vào thẻ để xem nghĩa", flipBack:"Nhấn để lật lại", know:"Đã biết", dontKnow:"Chưa biết", reviewUnknown:"{n} từ sẽ luyện lại", audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
+       comboInstr:"Ghép chữ rồi viết.", writeInstr:"Hãy viết theo thứ tự nét.", flipHint:"Nhấn vào thẻ để xem nghĩa", flipBack:"Nhấn để lật lại", know:"Đã biết", dontKnow:"Chưa biết", reviewUnknown:"{n} từ sẽ luyện lại", audio:"Nghe phát âm", next:"Tiếp theo", confirm:"Kiểm tra", result:"Xem kết quả", again:"Luyện lại",
        ok:"Rất tốt!", retry:"Thử lại", skip:"Bỏ qua", exit:"Thoát",
        rTitle:"Hoàn thành!", rSub:"Đã làm cả {n} câu", rSubPartial:"Đã làm {a} trong {n} câu",
        kDone:"Đã làm", kAccuracy:"Tỉ lệ đúng",
@@ -841,8 +843,10 @@ function writeBandHTML(t) {
 /* ── 플래시카드 ───────────────────────────────── */
 function flashBandHTML(t) {
   const m = metrics(), it = IT();
-  return `<div class="band" data-m="밴드 ${m.content}" style="gap:16px">
+  const next = A().items[S.idx + 1];
+  return `<div class="band" data-m="밴드 ${m.content}" style="gap:12px">
     <div class="cardwrap" data-m="${m.content}×360" data-tap="flip">
+      ${next ? `<div class="cardstack"><div class="cardface"><div class="w">${next.q}</div></div></div>` : ""}
       <div class="card3d ${S.flip ? "flip" : ""}">
         <div class="cardface">
           <div class="w">${it.q}</div>
@@ -856,7 +860,10 @@ function flashBandHTML(t) {
         </div>
       </div>
     </div>
-    <div class="fliphint">${S.flip ? t.flipBack : t.flipHint}</div>
+    <div class="fcfoot">
+      <span class="hint">${S.flip ? t.flipBack : t.flipHint}</span>
+      <span class="n">${S.idx + 1}/${total()}</span>
+    </div>
   </div>`;
 }
 
@@ -870,7 +877,7 @@ function shellChrome(t, inner, opts = {}) {
       <div class="iconbtn" data-tap="skip">${ICON.next}</div>
     </div>
     <div class="progress" data-m="${m.content}×6">${progressHTML()}</div>
-    <div class="titleblk" data-m="${m.w}×48"><div class="ko">${opts.instr || ""}</div></div>
+    ${opts.instr === null ? "" : `<div class="titleblk" data-m="${m.w}×48"><div class="ko">${opts.instr || ""}</div></div>`}
     ${inner}
     <div class="pillbar" data-m="hug×36">${opts.pill || ""}</div>
     <div class="footer" data-m="${m.w}×88">${opts.footer || ""}</div>`;
@@ -958,7 +965,7 @@ function render() {
     const un = S.log.filter(e => e && e.first === "unknown").length;
     const off = S.flip ? "" : " off";
     html = shellChrome(t, flashBandHTML(t), {
-      instr: t.flashInstr,
+      instr: null,
       footer: `<div class="judge2">
         <div class="jbtn unknown${off}" ${S.flip ? 'data-tap="unknown"' : ""}>
           <div class="cnt">${un}</div><div class="lb">${t.dontKnow}</div></div>
