@@ -3183,8 +3183,11 @@ const UIUX_CSS=`
     font-weight:800; letter-spacing:-.025em; }
   body[data-screen="pc_title"] .spg .t-sub { margin-top:8px; font-size:14px; line-height:21px; }
   body[data-screen="pc_title"] .spg .t-start { width:min(100%,280px); min-height:52px; height:auto;
-    padding:13px 22px; border-radius:15px; background:linear-gradient(135deg,#6c5ce7 0%,#e85d9e 100%);
-    color:#fff; box-shadow:0 4px 0 #4e43a6; white-space:normal; }
+    padding:13px 22px; border-radius:15px; background:linear-gradient(135deg,#ff9b8f 0%,#f487ad 100%);
+    color:#fff; text-shadow:0 1px 0 rgba(139,55,82,.16);
+    box-shadow:0 5px 0 #c95779,inset 0 1px 0 rgba(255,255,255,.48); white-space:normal; }
+  body[data-screen="pc_title"] .spg .t-start:active { transform:translateY(4px) !important;
+    box-shadow:0 1px 0 #c95779,inset 0 1px 0 rgba(255,255,255,.38); }
 
   body[data-screen="pc_select"] .spg .t-illo { border-radius:0 0 24px 24px; }
   body[data-screen="pc_select"] .spg .ux-sun { top:19px; right:60px; width:23px; height:23px;
