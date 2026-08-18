@@ -225,7 +225,7 @@
   <div class="t">시각 기준이 바뀌었다 <span class="pill new">v2.4</span></div>
   <p>초안은 <b>Figma 스타일 가이드</b>를 시각 기준(SoT)으로 삼았다(§3.5). <b>피그마에 새로 그리지 않기로 하면서</b> 기준이 다음 둘로 옮겨갔다.</p>
   <ul>
-    <li><b><a href="https://claude.ai/code/artifact/d2ef8584-d786-49e1-ac74-56f737585b52">셸 목업</a></b> — 상태별 화면의 정본. 구현이 다르면 목업이 기준</li>
+    <li><b><a href="activity_mockups_uiux.html">활동 UI/UX 목업</a></b> — 상태별 화면의 정본. 구현이 다르면 목업이 기준</li>
     <li><b><code>tokens.css</code></b> — 색·타이포의 유일한 기준. primitive 51 + semantic 30 + 타이포 23</li>
   </ul>
   <p>기준 폭도 <b>360 → 390</b>으로 올렸고, 세로는 <b>고정 픽셀 대신 고정 블록 + 가변 밴드</b>로 바꿨다 — 모바일 웹은 주소창 때문에 실제 높이가 기기 스펙보다 작다. 상세는 <a href="https://claude.ai/code/artifact/4cb5004e-91f8-41cb-9d9c-55a2a8c7d59a">셸 컴포넌트 명세</a> §5.1.</p>
@@ -305,7 +305,7 @@
   <div class="t">지시문 병기를 폐지한다 <span class="pill new">v2.4 개정</span></div>
   <p>초안은 지시문을 <b>한국어 + UI 언어 2줄</b>로 병기했다. 구 앱 화면이 그렇게 돼 있어 따랐던 것인데, <b>UI 언어를 5종 지원하는 이상 한 줄이면 충분하다</b>.</p>
   <p>결정적으로 <b>지시문은 조작 안내이지 학습 대상이 아니다.</b> 학습 대상 한국어는 <b>문항·선택지·지문·대화문에 그대로 남아 있고</b>, 거기가 한국어가 있어야 할 자리다. "듣고 맞는 것을 고르세요"는 무엇을 하라는 껍데기 문장이라 <b>학습자가 읽는 언어로만</b> 있으면 된다.</p>
-  <p class="qa">부수 효과로 <b>UI 언어가 <code>ko</code>일 때 같은 문장이 두 번 나오던 문제</b>가 원천적으로 사라진다 — 셸 목업을 만들다 발견한 구멍이었다.</p>
+  <p class="qa">부수 효과로 <b>UI 언어가 <code>ko</code>일 때 같은 문장이 두 번 나오던 문제</b>가 원천적으로 사라진다 — 활동 UI/UX 목업을 만들다 발견한 구멍이었다.</p>
 </div>
 <div class="tablewrap"><table>
   <tr><th>갈래</th><th>언어</th><th>해당 요소</th><th>셸 반영</th></tr>
