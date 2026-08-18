@@ -247,21 +247,25 @@ const IMG_BASE="/korean-master/korean-master/public/textbook/";
 
 /* 난이도의 전부. 여기 여덟 개만 만지면 된다 */
 const TUNING={
-  fallFirstSec:7.0, fallMinSec:3.0, fallStepSec:0.25, hardModeBonusSec:2.0,
-  scoreBase:10, scoreSpeedMax:10, hearts:5, retryAfterN:3,
-  maxQuestions:30,   /* 한 판 문항 상한. 0 이면 무제한(하트 0 까지) */
+  /* 낙하 시간은 앞선 값(7.0/3.0/0.25/2.0)을 0.9배 속도로 = 시간 ÷ 0.9 한 것 */
+  fallFirstSec:7.8, fallMinSec:3.3, fallStepSec:0.28, hardModeBonusSec:2.2,
+  fallStepPoints:10,  /* 몇 점마다 낙하가 fallStepSec 만큼 줄어드나 */
+  scoreBase:10,       /* 정답 하나. 속도 보너스는 없다 */
+  hearts:5, retryAfterN:3,
+  maxQuestions:30,    /* 한 판 문항 상한. 0 이면 무제한(하트 0 까지) */
 };
 const TUNE_META=[
-  ["fallFirstSec","첫 낙하(초)",0.5],["fallMinSec","최소 낙하(초)",0.5],
-  ["fallStepSec","줄어드는 폭(초)",0.05],["hardModeBonusSec","직접 입력 가산(초)",0.5],
-  ["scoreBase","정답 기본",1],["scoreSpeedMax","속도 보너스 상한",1],
+  ["fallFirstSec","첫 낙하(초)",0.2],["fallMinSec","최소 낙하(초)",0.2],
+  ["fallStepSec","줄어드는 폭(초)",0.02],["fallStepPoints","몇 점마다 줄이나",5],
+  ["hardModeBonusSec","직접 입력 가산(초)",0.2],["scoreBase","정답 점수",1],
   ["hearts","하트",1],["retryAfterN","재출제 간격(문항)",1],
   ["maxQuestions","한 판 문항 상한",5],
 ];
+const LANGS=[["en","English"],["ja","日本語"],["zh","中文"],["vi","Tiếng Việt"]];
 
 const LEVELS=[1,2,3,4,5,6,7,8];
 const BEST=JSON.parse(localStorage.getItem("vocashot-best")||"{}");
-let S={ view:"start", level:2, mode:"easy", width:"390" };
+let S={ view:"start", level:2, mode:"easy", width:"390", lang:"en" };
 let G=null, raf=0, timer=0;
 let FEEDBACK_MS=600;   /* 정답/오답을 보여 주는 시간. 자동 검사에서는 0 으로 낮춘다 */
 
@@ -277,9 +281,10 @@ function startRun(){
   S.view="play"; nextMeteor();
 }
 
+/* 낸 문항이 아니라 점수에 맞춰 빨라진다 — 계속 틀리는 사람이 더 몰리지 않는다 */
 function fallSec(){
-  const n=G.served;
-  let s=Math.max(TUNING.fallMinSec, TUNING.fallFirstSec - TUNING.fallStepSec*n);
+  const steps=Math.floor(G.score/TUNING.fallStepPoints);
+  let s=Math.max(TUNING.fallMinSec, TUNING.fallFirstSec - TUNING.fallStepSec*steps);
   if(S.mode==="hard") s+=TUNING.hardModeBonusSec;
   return s;
 }
@@ -314,13 +319,13 @@ function resolve(picked){
   if(right){
     G.correct++;
     /* 재출제로 맞힌 것은 점수를 주지 않는다 — 하트를 이미 잃었다 */
-    if(!c.retry) gained=TUNING.scoreBase+Math.floor(TUNING.scoreSpeedMax*remain/c.dur);
+    if(!c.retry) gained=TUNING.scoreBase;
     G.score+=gained;
     if(c.retry && G.missed.has(c.q.a)) G.missed.get(c.q.a).got=true;
   } else {
     G.hearts--;
     if(!G.missed.has(c.q.a))
-      G.missed.set(c.q.a,{w:c.q.a, m:c.q.m||"(그림)", got:false});
+      G.missed.set(c.q.a,{w:c.q.a, m:c.q.m?(c.q.m[S.lang]||c.q.m.en):"(그림)", got:false});
     /* 틀린 문항은 한 번만 다시 낸다 */
     if(!c.retry) G.queue.splice(G.idx+1+TUNING.retryAfterN, 0, {q:c.q, retry:true});
   }
@@ -357,6 +362,10 @@ function startView(){
       <span class="g-lb">급</span>
       <div class="lv">${LEVELS.map(n=>
         `<button data-lv="${n}" class="${n===S.level?'on':''}">${n}급</button>`).join("")}</div>
+      <span class="g-lb">뜻 언어</span>
+      <div class="lv" style="grid-template-columns:repeat(4,1fr)">${LANGS.map(([k,lb])=>
+        `<button data-lang="${k}" class="${k===S.lang?'on':''}"
+          style="font-size:12px">${lb}</button>`).join("")}</div>
       <span class="g-lb">입력 방식</span>
       <div class="seg">
         <button data-mode="easy" class="${S.mode==='easy'?'on':''}">4개 중 고르기</button>
@@ -376,7 +385,7 @@ function playMarkup(){
   const c=G.cur;
   const body = c.q.i
     ? `<img src="${IMG_BASE}${c.q.l}/${c.q.i}" alt="">`
-    : `<div class="txt">${c.q.m}</div>`;
+    : `<div class="txt">${c.q.m[S.lang] || c.q.m.en}</div>`;
   const dock = S.mode==="easy"
     ? `<div class="choices">${c.choices.map((x,i)=>
         `<button data-pick="${x}">${x}</button>`).join("")}</div>`
@@ -385,7 +394,7 @@ function playMarkup(){
   return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
     <div class="p-head">
       <div><h1>VocaShot</h1><div class="sub">${S.level}급 · ${
-        S.mode==='easy'?'4개 중 고르기':'직접 입력'} · ${c.dur.toFixed(1)}초</div></div>
+        S.mode==='easy'?'4개 중 고르기':'직접 입력'} · ${S.lang} · ${c.dur.toFixed(1)}초</div></div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="hearts">${Array.from({length:TUNING.hearts},(_,i)=>
           `<i class="${i<G.hearts?'':'off'}"></i>`).join("")}</div>
@@ -487,6 +496,8 @@ document.addEventListener('click',e=>{
   if(lv){ S.level=+lv.dataset.lv; render(); return; }
   const md=e.target.closest('[data-mode]');
   if(md){ S.mode=md.dataset.mode; render(); return; }
+  const lg=e.target.closest('[data-lang]');
+  if(lg){ S.lang=lg.dataset.lang; render(); return; }
   if(e.target.closest('#go')||e.target.closest('#again')){ startRun(); return; }
   if(e.target.closest('#exit')||e.target.closest('.back')){ S.view='start'; render(); return; }
   const pick=e.target.closest('[data-pick]');

@@ -107,7 +107,8 @@
   <tr><th><code>VocabQuestion</code></th><th>가져오는 곳</th></tr>
   <tr><td><code>answer</code></td><td><code>selection{answer_index + 1}</code></td></tr>
   <tr><td><code>wrong[]</code></td><td>나머지 <b>selection 3개</b></td></tr>
-  <tr><td><code>english</code></td><td><code>meaning_en</code> <span class="qa">jp · cn · vi 도 있다</span></td></tr>
+  <tr><td>뜻(힌트)</td><td><code>meaning_en</code> · <code>_jp</code> · <code>_cn</code> · <code>_vi</code>
+      <span class="qa">넷 다 쓴다 — 아래 콜아웃</span></td></tr>
   <tr><td><code>image</code></td><td><code>/textbook/{book_id}/{image}</code></td></tr>
   <tr><td><code>id</code></td><td><code>id</code></td></tr>
 </table></div>
@@ -117,8 +118,20 @@
   <tr><td>유형</td><td><code>meaning-to-word</code> <b>950</b> · <code>image-to-word</code> <b>199</b></td></tr>
   <tr><td>급별</td><td class="n">1급 114 · 2급 146 · 3급 148 · 4급 145 · 5급 150 · 6급 149 · 7급 150 · 8급 147</td></tr>
   <tr><td>선택지 4개가 빈 문항</td><td class="n"><b>0</b></td></tr>
-  <tr><td>다국어 뜻</td><td>950 전부 <code>meaning_en</code>. jp · cn · vi 도 채워져 있다</td></tr>
+  <tr><td>다국어 뜻</td><td><b>950 전부 네 언어가 다 있다</b> — 빠진 것 <b>0</b></td></tr>
 </table></div>
+<div class="callout stop">
+  <div class="t">힌트를 <b>영어로만 주면 안 된다</b></div>
+  <p><code>VocabQuestion.english</code>라는 이름 때문에 <b>영어 하나만</b> 쓰게 돼 있었다.
+     그런데 데이터에는 <b>일본어 · 중국어 · 베트남어가 950문항 전부</b> 채워져 있다 —
+     <b>세 언어를 그냥 버리고 있었다</b>.</p>
+  <p>학습자가 영어권이 아니면 <b>힌트가 두 번째 외국어</b>가 된다.
+     한국어 단어를 떠올리기 전에 영어부터 해석해야 하므로 <b>낙하 시간이 더 모자란다</b>.</p>
+  <p><b>앱 언어를 따라간다.</b> 앱이 이미 <code>ko · en · ja · zh · vi</code> 다섯을 지원한다.
+     <code>ko</code>일 때만 <b>영어로 떨어뜨린다</b> — 뜻이 한국어로는 없다
+     (한국어 단어를 묻는 문제이므로 당연하다).</p>
+  <p class="qa">그림 문항 199개는 언어가 필요 없다. 그림이 곧 문제다.</p>
+</div>
 <div class="callout">
   <div class="t">그림 문항이 <b>급마다 골고루 섞여 있다</b> — 섞기 규칙이 따로 필요 없다</div>
   <div class="tablewrap"><table>
@@ -177,24 +190,41 @@
    <b>다음 하나를 띄운다</b>. 겹쳐 떨어지지 않는다.</p>
 <div class="tablewrap"><table>
   <tr><th>값</th><th>제안</th><th>왜</th></tr>
-  <tr><td>첫 낙하 시간</td><td class="n"><b>7.0초</b></td><td>4지선다를 읽고 고르는 데 필요한 시간</td></tr>
-  <tr><td>최소 낙하 시간</td><td class="n"><b>3.0초</b></td><td>이 아래로는 읽기가 불가능해진다</td></tr>
-  <tr><td>줄어드는 폭</td><td class="n">유성마다 <b>-0.25초</b></td><td>16개째에 최소에 닿는다 — 한 판 안에서 체감된다</td></tr>
+  <tr><td>첫 낙하 시간</td><td class="n"><b>7.8초</b></td>
+      <td>외국인 학습자에게 <b>7.0초는 빠듯하다</b>. 속도를 0.9배로 늦춘 값이다</td></tr>
+  <tr><td>최소 낙하 시간</td><td class="n"><b>3.3초</b></td><td>이 아래로는 읽기가 불가능해진다</td></tr>
+  <tr><td>줄어드는 폭</td><td class="n"><b>-0.28초</b> / <b>10점</b>마다</td>
+      <td><b>낸 문항이 아니라 점수에 연동</b>한다 — 아래 콜아웃</td></tr>
   <tr><td>입력 모드</td><td><code>easy</code> 4지선다 · <code>hard</code> 직접 입력</td>
-      <td>둘 다 이미 구현돼 있다. <code>hard</code>는 <b>+2.0초</b>를 준다</td></tr>
+      <td>둘 다 이미 구현돼 있다. <code>hard</code>는 <b>+2.2초</b>를 준다</td></tr>
 </table></div>
+<div class="callout stop">
+  <div class="t">빨라지는 기준은 <b>낸 문항이 아니라 점수</b>다</div>
+  <p>처음에는 <b>유성 개수</b>마다 줄였다. 그러면 <b>계속 틀리는 사람이 더 몰린다</b> —
+     못 맞히는데 속도까지 올라가서 회복할 길이 없어진다.</p>
+  <p><b>점수는 첫 시도로 맞힌 것에만 붙는다.</b> 그래서 점수에 연동하면
+     <b>맞힌 만큼만 빨라진다</b>. 실제로 재 보니 정답률 50%인 사람은
+     <b>끝까지 7.0초를 유지</b>했고, 95%인 사람만 <b>3.3초</b>까지 갔다.</p>
+  <p class="qa">17개를 첫 시도로 맞히면(170점) 최소 낙하에 닿는다.
+     한 판 상한이 30문항이므로 <b>잘하는 사람은 뒤쪽 13문항을 최고 속도로</b> 푼다.</p>
+</div>
+<div class="callout">
+  <div class="t">하트는 <b>늘지 않는다</b></div>
+  <p>골든 유성을 버렸으므로 <b>하트를 채워 주는 것이 하나도 없다</b>.
+     한 판에 주어진 5개가 전부다 — 그래서 하트가 <b>남은 실수 횟수</b>를 정확히 뜻한다.</p>
+</div>
 <div class="callout stop">
   <div class="t">이 숫자들은 <b>출발점이다</b> — 한 곳에 모아 두고 만들어서 고친다</div>
   <p>원래 값이 저장소에 없으므로 <b>기준이 없다</b>. 표에서 오래 다투는 것보다
      <b>돌려 보고 만지는 편</b>이 빠르다. 다만 그러려면
      <b>흩어져 있으면 안 된다</b> — 상수 하나에 모은다.</p>
   <pre>const TUNING = {
-  fallFirstSec:   7.0,   // 첫 낙하 시간
-  fallMinSec:     3.0,   // 하한
-  fallStepSec:    0.25,  // 유성마다 줄어드는 폭
-  hardModeBonusSec: 2.0, // 직접 입력에 더 주는 시간
-  scoreBase:      10,    // 정답 기본 점수
-  scoreSpeedMax:  10,    // 속도 보너스 상한
+  fallFirstSec:   7.8,   // 첫 낙하 시간
+  fallMinSec:     3.3,   // 하한
+  fallStepSec:    0.28,  // 줄어드는 폭
+  fallStepPoints: 10,    // 몇 점마다 줄이나
+  hardModeBonusSec: 2.2, // 직접 입력에 더 주는 시간
+  scoreBase:      10,    // 첫 시도 정답 하나. 속도 보너스는 없다
   hearts:         5,
   retryAfterN:    3,     // 틀린 문항을 몇 문항 뒤에 다시 낼지
   maxQuestions:   30,    // 한 판 문항 상한 — §8c
@@ -267,8 +297,9 @@
       <td><code>wrongPenaltyEnabled</code>를 <b>켠 상태로 고정</b>한다.
           안 켜면 4지선다를 <b>찍고 넘어가는</b> 것이 이득이 된다</td></tr>
   <tr><td><b>점수</b></td>
-      <td><code>10 + 남은 시간 비율 × 10</code> (내림) → 문항당 <b>10~20</b></td>
-      <td>옛 점수를 물려받을 수 없다 — 아래 콜아웃</td></tr>
+      <td>첫 시도 정답 <b>+10</b>. 그것뿐이다</td>
+      <td>속도 보너스는 <b>두지 않는다</b> — 속도는 점수를 매기는 대신
+          <b>난이도를 올리는 데</b> 쓴다. 아래 콜아웃</td></tr>
   <tr><td>골든 유성</td><td><b>버린다</b></td>
       <td>협동판에서는 <b>방 하트를 채워 주는 팀 보상</b>이었다.
           혼자면 <b>공짜 하트</b>일 뿐이고, 하트 5의 의미가 흐려진다</td></tr>
@@ -319,18 +350,17 @@
   <p>혼자 하면 <b>그 축이 아예 없어진다</b>. <code>GRACE</code>가 사라지면서
      <b>5와 1의 구별도 함께 사라진다</b>. 남은 <b>5</b>를 기준 점수로 쓰는 것은
      <b>근거 없이 숫자만 가져오는 것</b>이다.</p>
-  <p><b>점수를 새로 만든다.</b> 혼자 할 때 점수가 뜻할 수 있는 것은
-     <b>몇 개를 맞혔나</b>와 <b>얼마나 빨랐나</b> 둘뿐이고,
-     이 게임은 <b>떨어지는 속도보다 빠르게 입력하는</b> 놀이이므로 <b>속도가 점수여야 한다</b>.</p>
-  <pre>문항 점수 = 10 + floor(남은 시간 / 낙하 시간 × 10)
-
-  7.0초 문항을 1.5초에 맞힘  → 남은 79%  → 10 + 7 = <b>17</b>
-  7.0초 문항을 5.0초에 맞힘  → 남은 29%  → 10 + 2 = <b>12</b>
-  거의 놓칠 뻔하게 맞힘        → 남은  3%  → 10 + 0 = <b>10</b>
-  오답 · 놓침                                       <b>0</b> (하트 -1)</pre>
-  <p class="qa">한 판 30문항이면 <b>300~600점</b>이 된다.
-     맞힌 개수만으로도 점수가 오르고, <b>빠르면 최대 두 배</b>가 된다.
-     계수는 <b>손으로 조정할 전제</b>다.</p>
+  <p><b>점수를 새로 만든다.</b> 그리고 <b>단순하게</b> 둔다.</p>
+  <pre>첫 시도 정답     <b>+10</b>
+재출제 정답      <b>0</b>   (하트를 이미 잃었다)
+오답 · 놓침      <b>0</b>   (하트 -1)</pre>
+  <p><b>속도 보너스는 넣지 않는다.</b> 속도로 점수를 주면 점수가
+     <b>실력과 운을 섞어</b> 재게 된다. 대신 속도는 <b>난이도를 올리는 쪽</b>으로 쓴다 —
+     점수가 오르면 유성이 빨라진다(위 콜아웃).
+     <b>빨리 맞히는 보상은 점수가 아니라 더 어려운 판</b>이다.</p>
+  <p class="qa">그래서 점수는 <b>첫 시도로 맞힌 개수 × 10</b>이다.
+     결과 화면의 <b>"맞힘"은 재출제 정답까지 포함</b>하므로 둘이 다를 수 있다 —
+     맞힘 4 · 점수 30 이면 <b>첫 시도 3개, 다시 맞힌 1개</b>다.</p>
 </div>
 <div class="callout">
   <div class="t">제한 시간(<code>gameDurationSec</code>)은 <b>두지 않는다</b></div>
@@ -508,6 +538,7 @@
     <tr><td><b>95%</b></td><td class="n"><b>121</b></td><td class="n"><b>2139</b></td>
         <td class="n">30</td><td class="n">524</td></tr>
   </table></div>
+  <p class="qa">위는 <b>속도 보너스가 있던 때</b>의 측정이다. 규칙을 고친 뒤 다시 쟀다 — 아래.</p>
   <p>상한이 없으면 <b>잘하는 사람의 판이 7분을 넘고</b>, 점수가 <b>20배</b>까지 벌어진다.
      점수가 실력이 아니라 <b>얼마나 오래 버텼나</b>를 재게 되고,
      그러면 <b>속도 보상이 묻힌다</b> — 속도를 점수로 삼은 이유가 사라진다.</p>
@@ -519,6 +550,27 @@
      시간으로 끊으면 느리게 푸는 사람이 문항을 덜 만난다.</p>
 </div>
 
+<div class="callout stop">
+  <div class="t">규칙을 고치고 <b>다시 쟀다</b> — 점수 격차가 20배에서 <b>9배</b>로 줄었다</div>
+  <p>속도 보너스를 빼고, 빨라지는 기준을 <b>점수</b>로 옮기고,
+     낙하를 <b>0.9배 속도</b>로 늦춘 뒤의 측정이다. 각 4판 평균.</p>
+  <div class="tablewrap"><table>
+    <tr><th>정답률</th><th class="n">문항</th><th class="n">맞힘</th><th class="n">점수</th>
+        <th class="n">남은 하트</th><th class="n">마지막 낙하</th></tr>
+    <tr><td>50%</td><td class="n">9</td><td class="n">4</td><td class="n">30</td>
+        <td class="n">0</td><td class="n"><b>7.0초</b></td></tr>
+    <tr><td>70%</td><td class="n">17</td><td class="n">12</td><td class="n">98</td>
+        <td class="n">0</td><td class="n">5.0초</td></tr>
+    <tr><td>85%</td><td class="n">25</td><td class="n">20</td><td class="n">180</td>
+        <td class="n">0.5</td><td class="n">4.0초</td></tr>
+    <tr><td><b>95%</b></td><td class="n">30</td><td class="n">29</td><td class="n">278</td>
+        <td class="n">3.5</td><td class="n"><b>3.3초</b></td></tr>
+  </table></div>
+  <p><b>못하는 사람은 안 빨라진다.</b> 정답률 50%는 끝까지 <b>7.0초</b>를 유지했고,
+     95%만 <b>3.3초</b>까지 갔다. 속도를 점수에 묶은 효과가 그대로 나온다.</p>
+  <p class="qa"><b>맞힘과 점수가 다르다</b>는 것도 여기서 보인다 —
+     50%에서 맞힘 4 · 점수 30 이면 <b>첫 시도 3개, 다시 맞힌 1개</b>다.</p>
+</div>
 <div class="callout">
   <div class="t">결과 제목이 <b>둘로 갈린다</b></div>
   <p>상한을 두니 <b>하트를 남기고 끝나는 판</b>이 생겼다(95%에서 평균 3.6개 남음).

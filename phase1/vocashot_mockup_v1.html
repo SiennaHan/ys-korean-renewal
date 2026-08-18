@@ -202,11 +202,11 @@ const state={ screen:"start", width:"390", startv:"has", resultv:"best" };
 /* 급 8개 · 문항 수는 n1_word_quiz.json 실측 */
 const LEVELS=[1,2,3,4,5,6,7,8];
 const D={
-  /* 점수 = 문항당 10~20(10 + 남은 시간 비율 × 10). 31 정답이면 310~620 */
-  level:2, mode:"easy", best:402, lastLevel:2, hearts:5,
+  /* 점수 = 첫 시도 정답 × 10. 한 판 상한 30문항이므로 최대 300 */
+  level:2, mode:"easy", best:210, lastLevel:2, hearts:5,
   /* 하트 5 를 다 쓰고 끝난 판 — 그래서 놓친 단어가 정확히 5개다 */
   /* got:true = 3문항 뒤 재출제에서 맞힌 단어. 목록은 하트 수(5)를 넘지 않는다 */
-  run:{ score:468, correct:31, asked:36, wrong:[
+  run:{ score:180, correct:20, asked:25, wrong:[
     { w:"은행원",     m:"bank teller",     got:true  },
     { w:"흐리다",     m:"to be cloudy",    got:false },
     { w:"싱겁다",     m:"to be bland",     got:true  },
@@ -247,11 +247,11 @@ function startView(){
 /* ── 결과 ── */
 function resultView(){
   const v=state.resultv, r=D.run;
-  const score = v==="under" ? 355 : v==="clean" ? 1780 : r.score;
+  const score = v==="under" ? 140 : v==="clean" ? 300 : r.score;
   const isBest = v!=="under";
   const wrong = v==="clean" ? [] : r.wrong;
-  const correct = v==="clean" ? 146 : r.correct;
-  const asked   = v==="clean" ? 146 : r.asked;
+  const correct = v==="clean" ? 30 : r.correct;
+  const asked   = v==="clean" ? 30 : r.asked;
   return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
     <div class="r-head">
       <div class="nm"><span class="av">${I.user}</span>
@@ -260,9 +260,9 @@ function resultView(){
         <div class="r-v" style="color:#fbbf24">${isBest?score:D.best}</div></div>
     </div>
     <div class="r-body">
-      <h2 class="r-ttl ${v==="clean"?'ok':'no'}">${v==="clean"?"전부 맞혔어요":"게임 오버"}</h2>
+      <h2 class="r-ttl ${v==="clean"?'ok':'no'}">${v==="clean"?"완주":"게임 오버"}</h2>
       <p class="r-desc">${v==="clean"
-        ? `${D.level}급 ${asked}문항을 다 풀었습니다.`
+        ? `${asked}문항을 하트 5개 남기고 끝냈습니다.`
         : "하트가 0이 되어 끝났습니다."}</p>
       <div class="r-score">
         <div class="r-k">내 점수</div>
