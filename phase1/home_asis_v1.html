@@ -154,7 +154,92 @@
      활동 목록은 <code>null</code>이 된다 — 자모 6종은 <b>다른 경로</b>로 들어간다.</p>
 </div>
 
-<h2 id="s4"><span class="n">4</span>새 셸과 어긋나는 지점</h2>
+<h2 id="s4"><span class="n">4</span>정한 것</h2>
+<p class="lead">as-is와 새 셸이 어긋나는 여섯 지점 중 셋을 정했다. 나머지 셋은 그 결과로 따라온다.</p>
+
+<h3>결정 1 — 활동 항목에 진행률을 넣는다. <b>높이 46은 유지</b>한다</h3>
+<p>지금 항목은 <code>[제목 ········ 완료 배지]</code>다. 상태가 넷으로 늘고 진행률까지 들어가야 하는데,
+   <b>넷이 동시에 나타나지 않는다</b>. 오른쪽 한 자리를 상태에 따라 바꿔 쓰면 46에 들어간다.</p>
+<div class="tablewrap"><table>
+  <tr><th>상태</th><th>오른쪽 자리</th><th>근거</th></tr>
+  <tr><td><b>미학습</b></td><td><b>비운다</b></td><td>표기하지 않는 것이 곧 미학습이다(G2 §9).
+      <code>0/9</code>는 정보가 아니다</td></tr>
+  <tr><td><b>진행 중</b></td><td><code>3 / 9</code> <span class="qa">파랑</span></td>
+      <td>진행률이 주 지표다. 이어하기가 어디로 데려갈지 미리 보인다</td></tr>
+  <tr><td><b>완료</b></td><td><b>완료</b> 배지 <span class="qa">초록</span></td><td>지금과 같다</td></tr>
+  <tr><td><b>복습 권장</b></td><td><b>완료</b> 배지 + <b>복습 N</b></td>
+      <td>완료의 하위 표시다 — 별도 상태가 아니라 완료에 덧붙는다(G2 §1)</td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">서버가 문항 수를 모르는 문제는 <b>저절로 풀린다</b></div>
+  <p><code>TOTAL_QUESTIONS</code>에는 기초학습 5종만 있고 <b>미션 대화·플래시카드가 없다</b>.
+     그런데 진행률은 <b>진행 중일 때만</b> 보이고, 진행 중이라는 건 <b>이미 한 번 들어갔다</b>는 뜻이다.
+     <code>enter</code>가 <code>totalItems</code>를 넘겨 <code>ko_activity_state</code>에 저장하므로
+     <b>그 시점에 서버가 안다</b>.</p>
+  <p><b><code>content_counts</code>를 고치지 않아도 된다.</b></p>
+</div>
+<div class="callout">
+  <div class="t">미션 대화는 <code>1 / 1</code>이다</div>
+  <p>대화 하나가 곧 문항 하나다 — 진행률 분모를 <b>대화 1개</b>로 이미 정했다(구현 사양 §8).
+     달성 미션 수는 진행률이 아니라 <b>정답률</b> 쪽으로 간다.</p>
+  <p><b>플래시카드는 다르다.</b> 세트당 <b>10~45장</b>이고 한 장씩 넘긴다.
+     45장을 한 번에 끝내지 못하는 것이 이어하기를 붙인 근거였으므로(G2),
+     <code>1/1</code>로 뭉개면 <b>어디까지 봤는지 보여줄 자리가 사라진다</b>. 실제 카드 수를 쓴다.</p>
+</div>
+
+<h3>결정 2 — 자모는 <b>지금처럼 따로 둔다</b></h3>
+<p>"한글" 교재 탭을 고르면 과 목록이 자모 과로 바뀌고 활동 목록은 <code>null</code>이 되는 구조를 유지한다.</p>
+<h4 style="font-size:14px;margin:18px 0 2px;color:var(--ink-2)">자모 목록 화면은 이미 있다</h4>
+<p><code>components/main/course-list/jamo.tsx</code>(217줄)다.
+   <code>routes/jamolist.tsx</code>는 <b>9줄짜리 빈 스텁</b>이라 헷갈리기 쉽다.</p>
+<div class="tablewrap"><table>
+  <tr><th>요소</th><th>규격</th></tr>
+  <tr><td>제목</td><td>가운데 <b>"한글 자모 익히기"</b> 17 semibold · 좌우·위아래 16</td></tr>
+  <tr><td>교재 탭 · 과 칩</td><td>교재학습과 <b>같은 컴포넌트</b>를 쓴다</td></tr>
+  <tr><td>과 헤더</td><td><code>#f7f7f7</code> radius 10 · <b>"제N과 {제목}"</b> 14 <code>#7F848D</code></td></tr>
+  <tr><td><b>unit 카드</b></td><td>흰 배경 radius 10 · 세로 padding 12 · 카드 간 간격 12.<br>
+      제목 14 bold <code>#0180FF</code>, 그 아래 <b>음절 칩 28 정사각</b>(<code>#DBEDFF</code>, 가로 스크롤)</td></tr>
+  <tr><td>활동 항목</td><td>구분선 아래, 간격 10. <code>scene_type</code>으로 라우팅</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">따라오는 것 — 자모에도 <b>진행 표시가 필요하다</b></div>
+  <p>목록을 따로 두더라도 <b>이어하기와 진행률은 자모에도 붙는다</b>.
+     지금 자모 화면에는 진행 표시가 아무것도 없어서(셸 명세 §6.1),
+     학습자가 몇 문항 중 몇 번째인지 알 수 없다.</p>
+  <p>구조가 <b>과 → unit → 활동</b> 3층이라 교재학습(<b>과 → 활동</b> 2층)보다 한 겹 깊다.
+     결정 1의 상태 표기를 <b>활동 항목에</b> 붙이면 되고, unit 카드에는 굳이 넣지 않는다 —
+     unit은 학습 단위가 아니라 묶음이다.</p>
+</div>
+
+<h3>결정 3 — 홈 카드는 <b>한 자리, 내용만 바뀐다</b></h3>
+<p>지금 "이어할 것이 없으면 학습 시작하기로 바뀌는" 방식을 그대로 쓰고, 갈래만 셋으로 늘린다.</p>
+<div class="tablewrap"><table>
+  <tr><th><code>todayTask.type</code></th><th>카드</th><th>아이콘</th></tr>
+  <tr><td><code>resume</code></td><td><b>이어서 학습하기</b> + 진행 위치</td><td>▶</td></tr>
+  <tr><td><code>review</code></td><td><b>다시 풀 문항 N개</b></td><td>↻</td></tr>
+  <tr><td><code>none</code></td><td><b>학습 시작하기</b></td><td>📖</td></tr>
+</table></div>
+<p class="qa">크기·색·자리가 같으므로 <b>카드 하나에 내용만 갈아 끼우면 된다</b>.
+   오늘 할 일이 하나로 보이는 것이 이 카드의 목적이다.</p>
+
+<h2 id="s5"><span class="n">5</span>따라오는 나머지 셋</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>지금</th><th>어떻게 되나</th></tr>
+  <tr><td>4</td><td>홈에 다시 풀기 카드가 없다</td>
+      <td><b>결정 3으로 해소</b> — <code>review</code> 갈래가 그 자리를 쓴다</td></tr>
+  <tr><td>5</td><td>이어하기만 다룬다</td><td><b>결정 3으로 해소</b></td></tr>
+  <tr><td>6</td><td>스트릭이 문항 하나만 풀어도 오른다</td>
+      <td><b>활동 1개 완료</b>로 바뀐다(G2 확정). 주간 출석 원이 채워지는 조건이 <b>엄격해진다</b> —
+          디자인은 그대로고 의미만 바뀐다.<br>
+          <span class="qa">구 학습 기록을 폐기하기로 했으므로(G1) 기존 사용자의 원이 사라지는 문제는 없다</span></td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">자모 목록 화면은 <b>이미 있다</b> — 새로 그릴 필요 없다</div>
+  <p><code>course-list/jamo.tsx</code>가 과 → unit → 활동 3층으로 이미 그려져 있다(§4 결정 2).
+     확정 디자인 언어로 <b>다시 칠하고</b> 상태 표기만 얹으면 된다.</p>
+</div>
+
+<h2 id="s6"><span class="n">6</span>참고 — 원래 어긋났던 여섯 지점</h2>
 <div class="tablewrap"><table>
   <tr><th>#</th><th>지금</th><th>새 셸에서 정한 것</th></tr>
   <tr><td>1</td><td>완료 배지가 <b>완료 / 미완료</b> 둘뿐</td>
