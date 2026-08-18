@@ -1,0 +1,415 @@
+<!-- home_asis_v1.html의 구조와 제약을 유지한 확정 UI/UX 시안. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>홈 · 교재학습 · 자모 목록 — 확정 UI/UX 목업</title>
+<style>
+:root {
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+  }
+body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+.workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
+.doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
+.doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+.doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
+.kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+.controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+.control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
+.option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+.option:hover { background:rgba(255,255,255,.55); }
+.option[aria-pressed="true"] { border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }
+.stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
+.stage.overview-hidden { display:none; }
+.device-wrap { display:flex; flex-direction:column; align-items:center; }
+.device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
+.screen { position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+.caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+.notes { padding-top:8px; }
+.notes h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }
+.notes p { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+.notes p + p { margin-top:9px; }
+.notes b { color:var(--bench-ink); font-weight:600; }
+.note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+.note-section + .note-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+.spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+.spec dt { color:#87909d; }
+.spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
+.appbar { flex:0 0 58px; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:0 9px; background:var(--white); }
+.icon-control { width:44px; height:44px; border:0; background:transparent; color:var(--blue-gray-800); display:grid; place-items:center; cursor:pointer; }
+.icon-control svg { width:24px; height:24px; }
+.lesson { text-align:center; color:var(--blue-gray-900); font-size:16px; line-height:24px; font-weight:600; }
+.footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--control-border); }
+.primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+.primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
+.dock { display:flex; align-items:center; gap:12px; width:100%; }
+.dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+.dock .main .record-core { width:auto; }
+.dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+.dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+.dock .slot svg { width:26px; height:26px; }  /* ── 홈 ─────────────────────────────────────── */
+  .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
+  .scroll::-webkit-scrollbar { display:none; }
+  .pad { padding:0 16px; }
+  .greet { padding:18px 18px 2px; }
+  .greet .hi { font-size:14px; color:#6B7B8D; }
+  .greet .name { margin-top:1px; font-size:24px; line-height:32px; font-weight:700; letter-spacing:-.02em; color:var(--blue-900); }
+
+  .week { display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px 0 8px; }
+  .week .days { display:flex; gap:10px; }
+  .week .d { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .week .c { width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
+    background:var(--blue-gray-100); color:#fff; }
+  .week .c.done { background:var(--blue-500); }
+  .week .c.today { background:#fff; border:2.5px solid var(--blue-500); }
+  .week .c svg { width:20px; height:20px; }
+  .week .lb { font-size:12px; font-weight:500; color:var(--blue-900); }
+  .week .lb.today { color:var(--blue-500); font-weight:700; }
+  .week .lb.future { color:#C8CCD3; }
+  .week .streak { font-size:13px; line-height:20px; color:#6B7B8D; }
+  .week .streak b { color:var(--blue-900); font-weight:700; }
+
+  /* 오늘 할 일 — 한 자리에 세 갈래 */
+  .task { display:flex; align-items:center; gap:13px; width:100%; padding:14px;
+    border:1px solid #e4f1ff; border-radius:14px; background:#eef6ff; text-align:left; cursor:pointer; }
+  .task:hover { background:#e7f3ff; }
+  .task .ic { width:48px; height:48px; border-radius:12px; flex:none; display:grid;
+    place-items:center; background:var(--blue-500); color:#fff; font-size:20px; }
+  .task .ic svg { width:22px; height:22px; }
+  .task .tx { flex:1; min-width:0; }
+  .task .t1 { display:block; font-size:16px; line-height:23px; font-weight:700; letter-spacing:-.01em; color:var(--blue-900); }
+  .task .t2 { display:block; font-size:12px; line-height:18px; font-weight:500; color:var(--blue-600); margin-top:2px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .task .go { width:22px; flex:none; color:var(--blue-500); }
+  .task .go svg { width:22px; height:22px; }
+
+  .sec-title { font-size:16px; line-height:24px; font-weight:700; color:var(--blue-900); margin:20px 0 10px; }
+  .status { border:1px solid var(--control-border); border-radius:14px; background:var(--white); padding:14px;
+    display:flex; gap:10px; align-items:center; }
+  .gauge { width:110px; height:110px; flex:none; position:relative; }
+  .gauge svg { width:100%; height:100%; transform:rotate(-90deg); }
+  .gauge .mid { position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; }
+  .gauge .v { font-size:22px; font-weight:700; color:var(--blue-500); line-height:1.15; }
+  .gauge .v small { font-size:14px; font-weight:400; color:#9BA5B0; }
+  .gauge .lb { font-size:11px; color:#9BA5B0; }
+  .stats { flex:1; display:flex; flex-direction:column; gap:8px; min-width:0; }
+  .stat2 { display:flex; align-items:center; gap:11px; border:1px solid var(--control-border); background:#fafbfd;
+    border-radius:10px; padding:10px; }
+  .stat2 .n { width:42px; height:42px; flex:none; border-radius:9px; background:var(--blue-50);
+    color:var(--blue-600); font-size:19px; font-weight:700; display:grid; place-items:center; }
+  .stat2 .l { font-size:12px; line-height:18px; font-weight:600; color:var(--blue-gray-800); }
+
+  .chart { display:flex; align-items:flex-end; justify-content:space-between;
+    gap:8px; height:120px; padding:12px 10px 10px; border:1px solid var(--control-border); border-radius:14px; background:var(--white); }
+  .chart .col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .chart .bx { width:100%; height:80px; display:flex; align-items:flex-end; justify-content:center; }
+  .chart .bar { width:100%; max-width:28px; border-radius:6px 6px 3px 3px; background:var(--blue-500); }
+  .chart .bar.empty { border:1px dashed #C8CCD3; background:transparent; }
+  .chart .lb { font-size:12px; color:#6B7B8D; }
+  .chart .lb.today { color:var(--blue-500); font-weight:700; }
+  .chart .lb.future { color:#C8CCD3; }
+
+  /* ── 탭 바 ──────────────────────────────────── */
+  .tabbar { flex:none; height:60px; display:flex; background:#fff;
+    border-top:1px solid var(--control-border); }
+  .tabbar a { flex:1; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:2px; color:var(--blue-gray-400); text-decoration:none; }
+  .tabbar a.on { color:var(--blue-600); font-weight:600; }
+  .tabbar svg { width:22px; height:22px; }
+  .tabbar span { font-size:10px; }
+
+  /* ── 교재학습 · 자모 목록 ─────────────────────── */
+  .catalog-nav { flex:none; border-bottom:1px solid var(--control-border); background:var(--white); }
+  .strip { display:flex; gap:11px; padding:11px 16px 7px; overflow-x:auto; }
+  .strip.chips { gap:6px; padding:0 16px 12px; }
+  .strip::-webkit-scrollbar { display:none; }
+  .tab2 { flex:none; padding:5px 2px 7px; font-size:14px; line-height:20px; font-weight:600;
+    color:var(--blue-gray-400); background:none; border:0; border-bottom:2px solid transparent; }
+  .tab2.on { color:var(--blue-600); border-bottom-color:var(--blue-500); }
+  .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--control-border); border-radius:9px; font-size:13px;
+    font-weight:600; background:var(--white); color:var(--blue-gray-600); }
+  .chip3.on { border-color:#dcecff; background:var(--blue-50); color:var(--blue-600); }
+
+  .listcard { overflow:hidden; margin:12px 16px 0; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
+  .listcard .head { padding:13px 14px 12px; border-bottom:1px solid var(--control-border);
+    font-size:15px; line-height:22px; font-weight:700; color:var(--blue-900); }
+  .listcard .body { padding:12px; }
+  .seclabel { margin-bottom:8px; color:var(--blue-gray-600); font-size:11px; line-height:16px; font-weight:600; letter-spacing:.02em; }
+  .acts { display:flex; flex-direction:column; gap:8px; }
+  .act { display:flex; align-items:center; justify-content:space-between; gap:8px;
+    width:100%; height:46px; padding:0 13px; border:1px solid var(--control-border); border-radius:9px; background:var(--white);
+    text-align:left; cursor:pointer; }
+  .act:hover { background:var(--control-hover); }
+  .act .nm { min-width:0; font-size:14px; line-height:20px; font-weight:600; color:var(--blue-900);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .act.off { background:#F7F8FA; opacity:.55; cursor:not-allowed; }
+  .act.off .nm { color:var(--blue-gray-400); }
+  /* 오른쪽 한 자리 — 상태에 따라 갈아 낀다 */
+  .st { flex:none; display:flex; align-items:center; gap:6px; }
+  .st .pr { font-size:12px; line-height:18px; font-weight:700; color:var(--blue-600);
+    font-variant-numeric:tabular-nums; }
+  .st .bdg { height:20px; padding:0 6px; border-radius:5px; font-size:11px; font-weight:600;
+    display:grid; place-items:center; background:var(--positive-bg); color:var(--positive); }
+  .st .rv { height:20px; padding:0 6px; border-radius:5px; font-size:11px; font-weight:600;
+    display:grid; place-items:center; background:#FFF3E0; color:#F98900; }
+
+  /* 자모 — 과 → unit → 활동 3층 */
+  .jhead { display:flex; align-items:center; height:36px; margin:12px 16px 0; padding:0 12px;
+    border:1px solid var(--control-border); border-radius:10px; background:var(--white); color:var(--blue-gray-600); font-size:13px; font-weight:600; }
+  .unit { margin:10px 16px 0; padding:13px 0 12px; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
+  .unit .ti { padding:0 14px; color:var(--blue-900); font-size:14px; line-height:20px; font-weight:700; }
+  .syls { display:flex; gap:6px; margin-top:10px; padding:0 14px; overflow-x:auto; }
+  .syls::-webkit-scrollbar { display:none; }
+  .syls div { width:28px; height:28px; flex:none; display:grid; place-items:center; border:1px solid #e5f2ff; border-radius:7px; background:#eef6ff;
+    color:var(--blue-900); font-size:14px; font-weight:700; }
+  .unit .div { height:12px; margin-bottom:12px; border-bottom:1px solid var(--control-border); }
+  .unit .acts { padding:0 14px; gap:8px; }
+  @media (max-width:350px) {
+    .week .days { gap:6px; }
+    .week .c { width:36px; height:36px; }
+    .pad { padding:0 14px; }
+    .greet { padding-left:16px; padding-right:16px; }
+    .task { gap:10px; padding:12px; }
+    .task .ic { width:44px; height:44px; }
+  }
+</style>
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div><div class="kicker">UIUX · 확정 디자인</div><h1>홈 · 교재학습 · 자모 목록</h1></div>
+    <p><b>as-is 구조와 결정 3건은 유지</b>하고, 활동 화면과 같은 카드·타이포·테두리 언어로 시각 마감을 정리했습니다.</p>
+  </header>
+  <nav class="controls">
+    <div class="control-group" data-set="screen">
+      <span class="control-label">화면</span>
+      <button class="option" data-value="home" aria-pressed="true">홈</button>
+      <button class="option" data-value="book" aria-pressed="false">교재학습</button>
+      <button class="option" data-value="jamo" aria-pressed="false">자모 목록</button>
+    </div>
+    <div class="control-group" data-set="task" id="taskgrp">
+      <span class="control-label">오늘 할 일</span>
+      <button class="option" data-value="resume" aria-pressed="true">이어하기</button>
+      <button class="option" data-value="review" aria-pressed="false">다시 풀기</button>
+      <button class="option" data-value="none" aria-pressed="false">없음</button>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
+  <section class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720</div>
+    </div>
+    <aside class="notes">
+      <div class="note-section"><h2>현재 화면</h2><dl class="spec" id="spec"></dl></div>
+      <div class="note-section">
+        <h2>확인한 것</h2>
+        <p><b>활동 항목 46 유지:</b> 상태 넷이 동시에 안 나타나므로 오른쪽 한 자리를 갈아 낀다.</p>
+        <p><b>미학습은 비운다:</b> 0/9 는 정보가 아니다. 표기 없음이 곧 미학습.</p>
+        <p><b>오늘 할 일 한 자리:</b> 이어하기 · 다시 풀기 · 없음이 같은 카드를 쓴다.</p>
+      </div>
+    </aside>
+  </section>
+</main>
+<script>
+const icons={
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l11 7-11 7z"/></svg>',
+  redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.6M20 4v4h-4"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 3v18"/></svg>',
+  right:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>',
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>',
+  bookT:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>',
+  game:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="4"/></svg>',
+  clip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M4 6l3-4M10 6l3-4M16 6l3-4"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
+};
+
+const state={ screen:"home", width:"390", task:"resume" };
+
+const DAYS=["월","화","수","목","금","토","일"];
+const D={
+  today:3, done:[0,1,2], streak:3,
+  chart:[3,5,2,4,0,0,0],
+  status:{ ch:4, chTotal:12, label:"1급 학습 중", today:4, week:14 },
+  acts:[
+    { s:"기초학습", items:[
+      { n:"단어 학습하기",      st:"done" },
+      { n:"AI 롤플레잉",        st:"review", rv:2 },
+      { n:"듣고 질문에 답하기", st:"doing", a:3, t:5 },
+      { n:"빈칸 채워 말하기",   st:"none" },
+      { n:"읽고 질문에 답하기", st:"none" },
+    ]},
+    { s:"심화학습", items:[
+      { n:"AI 미션 대화",       st:"doing", a:0, t:1 },
+      { n:"단어 플래시카드",    st:"doing", a:12, t:45 },
+    ]},
+  ],
+  jamo:[
+    { t:"모음 1", syl:["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ"], items:[
+      { n:"자모 듣고 따라하기", st:"done" },
+      { n:"자모 쓰기",          st:"doing", a:12, t:19 },
+      { n:"듣고 맞는 것 고르기", st:"none" },
+    ]},
+    { t:"자음 1", syl:["ㄱ","ㄴ","ㄷ","ㄹ"], items:[
+      { n:"자모 듣고 따라하기", st:"none" },
+      { n:"단어 읽고 쓰기",     st:"none" },
+    ]},
+  ],
+};
+
+/* 오른쪽 한 자리 — 상태에 따라 갈아 낀다(§4 결정 1) */
+function stateSlot(x){
+  // 분모가 1이면 숫자가 정보를 못 준다 — 0/1 은 미학습과 구별되지 않는다
+  if(x.st==="doing" && x.t===1) return `<span class="st"><span class="pr">진행 중</span></span>`;
+  if(x.st==="doing")  return `<span class="st"><span class="pr">${x.a} / ${x.t}</span></span>`;
+  if(x.st==="done")   return `<span class="st"><span class="bdg">완료</span></span>`;
+  if(x.st==="review") return `<span class="st"><span class="bdg">완료</span><span class="rv">복습 ${x.rv}</span></span>`;
+  return `<span class="st"></span>`;   // 미학습 — 비운다
+}
+function actRow(x){
+  return `<button class="act ${x.st==="off"?"off":""}">
+    <span class="nm">${x.n}</span>${stateSlot(x)}</button>`;
+}
+function tabbar(on){
+  const T=[["home","홈","home"],["bookT","교재학습","book"],["game","게임","game"],
+           ["clip","표현클립","clip"],["user","MY","my"]];
+  return `<nav class="tabbar">${T.map(([ic,lb,k])=>
+    `<a class="${k===on?'on':''}">${icons[ic]}<span>${lb}</span></a>`).join("")}</nav>`;
+}
+
+/* ── 홈 ── */
+function homeView(){
+  const s=D.status, pct=s.ch/s.chTotal, C=2*Math.PI*40;
+  const task={
+    resume:{ ic:icons.play, t1:"이어서 학습하기", t2:"1급 6과 · 듣고 질문에 답하기 3/5" },
+    review:{ ic:icons.redo, t1:"다시 풀 문항 7개", t2:"어제 틀린 문항부터 만나요" },
+    none:{   ic:icons.book, t1:"학습 시작하기",   t2:"교재학습 메뉴에서 시작해보세요" },
+  }[state.task];
+  const max=Math.max(...D.chart,1);
+  return `<div class="scroll">
+    <div class="greet"><div class="hi">안녕하세요,</div><div class="name">수현 님</div></div>
+    <div class="week">
+      <div class="days">${DAYS.map((d,i)=>{
+        const done=D.done.includes(i), today=i===D.today, future=i>D.today;
+        return `<div class="d">
+          <div class="c ${done?'done':today?'today':''}">${done?icons.check:''}</div>
+          <div class="lb ${today?'today':future?'future':''}">${d}</div></div>`}).join("")}</div>
+      <div class="streak"><b>${D.streak}일</b> 연속 학습 중</div>
+    </div>
+    <div class="pad">
+      <button class="task">
+        <span class="ic">${task.ic}</span>
+        <span class="tx"><span class="t1">${task.t1}</span><span class="t2">${task.t2}</span></span>
+        <span class="go">${icons.right}</span>
+      </button>
+      <div class="sec-title">학습 현황</div>
+      <div class="status">
+        <div class="gauge">
+          <svg viewBox="0 0 90 90">
+            <circle cx="45" cy="45" r="40" fill="none" stroke="#E5E8EC" stroke-width="8"/>
+            <circle cx="45" cy="45" r="40" fill="none" stroke="#0180FF" stroke-width="8"
+              stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/>
+          </svg>
+          <div class="mid"><div class="v">${s.ch}<small>/${s.chTotal}</small></div>
+            <div class="lb">${s.label}</div></div>
+        </div>
+        <div class="stats">
+          <div class="stat2"><span class="n">${s.today}</span><span class="l">오늘 활동 수</span></div>
+          <div class="stat2"><span class="n">${s.week}</span><span class="l">주간 활동 수</span></div>
+        </div>
+      </div>
+      <div class="sec-title">주간 활동</div>
+      <div class="chart">${D.chart.map((v,i)=>{
+        const today=i===D.today, future=i>D.today;
+        return `<div class="col"><div class="bx">
+          <div class="bar ${v?'':'empty'}" style="height:${v?Math.round(v/max*80):24}px"></div></div>
+          <div class="lb ${today?'today':future?'future':''}">${DAYS[i]}</div></div>`}).join("")}</div>
+      <div style="height:20px"></div>
+    </div>
+  </div>${tabbar("home")}`;
+}
+
+/* ── 교재학습 ── */
+function bookView(){
+  return `<div class="catalog-nav"><div class="strip">
+      <button class="tab2">한글</button><button class="tab2 on">1급</button>
+      <button class="tab2">2급</button><button class="tab2">3급</button></div>
+    <div class="strip chips">${[4,5,6,7,8,9].map(n=>
+      `<button class="chip3 ${n===6?'on':''}">${n}과</button>`).join("")}</div></div>
+    <div class="scroll">
+      <div class="listcard">
+        <div class="head">6과 · 가족</div>
+        <div class="body">${D.acts.map((sec,i)=>
+          `${i?'<div style="height:16px"></div>':''}
+           <div class="seclabel">${sec.s}</div>
+           <div class="acts">${sec.items.map(actRow).join("")}</div>`).join("")}</div>
+      </div>
+      <div style="height:20px"></div>
+    </div>${tabbar("book")}`;
+}
+
+/* ── 자모 목록 ── */
+function jamoView(){
+  return `<div class="appbar"><span style="width:44px"></span>
+      <div class="lesson">한글 자모 익히기</div><span style="width:44px"></span></div>
+    <div class="catalog-nav"><div class="strip">
+      <button class="tab2 on">한글</button><button class="tab2">1급</button>
+      <button class="tab2">2급</button></div>
+    <div class="strip chips">${[1,2,3].map(n=>
+      `<button class="chip3 ${n===1?'on':''}">${n}과</button>`).join("")}</div></div>
+    <div class="scroll">
+      <div class="jhead">제1과 한글(1)</div>
+      ${D.jamo.map(u=>`<div class="unit">
+        <div class="ti">${u.t}</div>
+        <div class="syls">${u.syl.map(s=>`<div>${s}</div>`).join("")}</div>
+        <div class="div"></div>
+        <div class="acts">${u.items.map(actRow).join("")}</div>
+      </div>`).join("")}
+      <div style="height:20px"></div>
+    </div>${tabbar("book")}`;
+}
+
+const VIEWS={ home:homeView, book:bookView, jamo:jamoView };
+const SPEC={
+  home:[["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
+    ["게이지","110 · SVG 90"],["통계","44 원 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
+  book:[["교재 탭","가로 스크롤 · 간격 11"],["과 칩","32 · 간격 6"],
+    ["활동 항목","높이 46 · radius 6"],["상태 자리","오른쪽 하나 · 4종"],["탭 바","60"]],
+  jamo:[["제목","17 semibold"],["과 헤더","36 · #f7f7f7"],["unit 카드","radius 10"],
+    ["음절 칩","28 정사각"],["활동 항목","높이 46"],["탭 바","60"]],
+};
+function render(){
+  const dev=document.getElementById('device'), scr=document.getElementById('screen');
+  dev.style.width=(+state.width+2)+'px';
+  scr.innerHTML=VIEWS[state.screen]();
+  document.getElementById('caption').textContent=`${state.width} × 720`;
+  document.getElementById('spec').innerHTML=SPEC[state.screen]
+    .map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  document.querySelectorAll('[data-set="screen"] .option').forEach(b=>
+    b.setAttribute('aria-pressed',String(b.dataset.value===state.screen)));
+  document.querySelectorAll('[data-set="task"] .option').forEach(b=>
+    b.setAttribute('aria-pressed',String(b.dataset.value===state.task)));
+  document.getElementById('taskgrp').style.display = state.screen==='home'?'':'none';
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('.option'); if(!o) return;
+  const set=o.closest('.control-group').dataset.set;
+  if(set==='width'){ state.width=o.dataset.value;
+    document.querySelectorAll('[data-set="width"] .option').forEach(b=>
+      b.setAttribute('aria-pressed',String(b.dataset.value===state.width))); }
+  else state[set]=o.dataset.value;
+  render();
+});
+render();
+</script>
