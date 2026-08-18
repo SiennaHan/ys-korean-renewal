@@ -1,0 +1,353 @@
+<!-- VocaShot 혼자 하기 — 시작·결과 UI/UX 시안.
+     vocashot_mockup_v1.html의 구조와 실제 플레이 화면 언어를 유지하며 시각 위계만 다듬는다. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VocaShot 혼자 하기 — 시작 · 결과 UI/UX</title>
+<style>
+
+:root {
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+    --radius-card:14px; --radius-control:9px;
+  }
+* { box-sizing:border-box; }
+body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+button { font:inherit; }
+.workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
+.doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
+.doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+.doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
+.kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+.controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+.control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
+.option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+.option:hover { background:rgba(255,255,255,.55); }
+.option[aria-pressed="true"] { border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }
+.stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
+.stage.overview-hidden { display:none; }
+.device-wrap { display:flex; flex-direction:column; align-items:center; }
+.device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
+.screen { position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+.caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+.notes { padding-top:8px; }
+.notes h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }
+.notes p { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+.notes p + p { margin-top:9px; }
+.notes b { color:var(--bench-ink); font-weight:600; }
+.note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+.note-section + .note-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+.spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+.spec dt { color:#87909d; }
+.spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
+.footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--control-border); }
+.primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+.primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
+.dock { display:flex; align-items:center; gap:12px; width:100%; }
+.dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+.dock .main .record-core { width:auto; }
+.dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+.dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+.dock .slot svg { width:26px; height:26px; }    .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
+  .scroll::-webkit-scrollbar { display:none; }
+
+  /* ── 시작 화면 — 플레이 화면 언어 그대로(bg-slate-950) ────────
+     선택지 h-14 rounded-2xl border-slate-700 bg-slate-900 · 고른 것은 결과 오버레이의
+     "내 행"(border-emerald-500/50 bg-emerald-500/20) · 주 버튼은 발사 버튼(emerald-500) */
+  .g-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:20px 16px 14px; border-bottom:1px solid #1e293b; }
+  .g-head .nm { display:flex; align-items:center; gap:8px; }
+  .g-head .back { width:44px; height:44px; margin-left:-8px; border:0; background:none;
+    display:grid; place-items:center; cursor:pointer; }
+  .g-head .back i { width:32px; height:32px; border-radius:50%; background:#1e293b;
+    display:grid; place-items:center; color:#e2e8f0; }
+  .g-head .back svg { width:16px; height:16px; }
+  .g-head h1 { margin:0; font-size:18px; line-height:24px; font-weight:700; letter-spacing:-.01em; }
+  .g-head .sub { font-size:12px; line-height:18px; color:#94a3b8; }
+  .g-body { flex:1 1 auto; min-height:0; overflow-y:auto; padding:18px 16px 20px; }
+  .g-body::-webkit-scrollbar { display:none; }
+  .g-intro { position:relative; min-height:112px; margin-bottom:20px; overflow:hidden;
+    padding:17px 18px; border:1px solid rgba(52,211,153,.16); border-radius:18px;
+    background:linear-gradient(135deg,rgba(15,118,110,.24),rgba(15,23,42,.8) 62%); }
+  .g-intro .eyebrow { display:block; margin-bottom:6px; color:#6ee7b7; font-size:10px;
+    line-height:16px; font-weight:700; letter-spacing:.1em; }
+  .g-intro h2 { max-width:180px; margin:0; color:#f8fafc; font-size:20px; line-height:27px;
+    font-weight:700; letter-spacing:-.02em; }
+  .g-intro p { margin:7px 0 0; color:#94a3b8; font-size:12px; line-height:18px; }
+  .meteor-mark { position:absolute; right:18px; top:28px; width:48px; height:48px;
+    border:1px solid rgba(251,146,60,.5); border-radius:18px; transform:rotate(-9deg);
+    background:rgba(124,45,18,.5); box-shadow:0 0 24px rgba(251,146,60,.22); }
+  .meteor-mark::before { content:""; position:absolute; right:37px; top:18px; width:58px; height:10px;
+    border-radius:99px; background:linear-gradient(90deg,transparent,rgba(251,146,60,.35)); }
+  .meteor-mark::after { content:"가을"; position:absolute; inset:0; display:grid; place-items:center;
+    color:#fed7aa; font-size:11px; font-weight:700; }
+  .g-lb { display:block; margin-bottom:8px; font-size:12px; line-height:18px;
+    font-weight:600; color:#94a3b8; }
+  .lv { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:20px; }
+  .seg { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; }
+  .lv button, .seg button { padding:0 8px; border:1px solid #334155;
+    border-radius:12px; background:#0f172a; color:#f8fafc; font-size:14px; font-weight:600;
+    line-height:20px; cursor:pointer; }
+  .lv button { height:44px; }
+  .seg button { height:48px; }
+  .lv button.on, .seg button.on { border-color:rgba(16,185,129,.5);
+    background:rgba(16,185,129,.2); color:#6ee7b7; }
+  .best { display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px; border:1px solid #273548; border-radius:14px; background:rgba(15,23,42,.72); }
+  .best .k { font-size:12px; line-height:18px; font-weight:600; color:#94a3b8; }
+  .best .v { font-family:ui-monospace,Menlo,monospace; font-size:24px; line-height:30px; font-weight:700;
+    color:#34d399; }
+  .best.none .v { font-family:inherit; font-size:14px; font-weight:600; color:#64748b; }
+  .g-dock { flex:none; padding:12px 16px 16px; border-top:1px solid #1e293b; }
+  .g-go { width:100%; height:56px; border:0; border-radius:14px; background:#10b981;
+    color:#020617; font-size:16px; font-weight:600; cursor:pointer; }
+
+  /* ── 결과 화면 — 플레이 화면 안(bg-slate-950) ──────── */
+  .g-dark { background:#020617; color:#f8fafc; }
+  .r-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:24px 16px 16px; border-bottom:1px solid #1e293b; }
+  .r-head .nm { display:flex; align-items:center; gap:8px; }
+  .r-head .av { width:28px; height:28px; border-radius:50%; background:#1e293b;
+    display:grid; place-items:center; color:#94a3b8; }
+  .r-head .av svg { width:16px; height:16px; }
+  .r-head h1 { margin:0; font-size:18px; font-weight:600; letter-spacing:-.01em; }
+  .r-head .sub { font-size:12px; color:#94a3b8; }
+  .r-k { font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#64748b; }
+  .r-v { font-family:ui-monospace,Menlo,monospace; font-size:20px; font-weight:600;
+    color:#34d399; }
+  /* 놓친 단어는 하트 수(5)를 넘을 수 없다 — 목록 최대 5행. 그 상한 위에서 720 에 맞춘다 */
+  .r-body { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column;
+    align-items:center; gap:14px; padding:20px 16px; }
+  .r-body::-webkit-scrollbar { display:none; }
+  .r-ttl { margin:0; font-size:28px; line-height:36px; font-weight:700; letter-spacing:-.02em; }
+  .r-ttl.ok { color:#34d399; } .r-ttl.no { color:#fb7185; }
+  .r-desc { margin:0; text-align:center; font-size:14px; color:#94a3b8; }
+  .r-score { width:100%; max-width:288px; border:1px solid #334155; border-radius:16px;
+    background:rgba(15,23,42,.8); padding:16px 24px; text-align:center; }
+  .r-score .big { margin:2px 0 0; font-family:ui-monospace,Menlo,monospace;
+    font-size:38px; line-height:44px; font-weight:700; color:#34d399; }
+  .r-new { display:inline-block; margin-top:8px; padding:3px 9px; border-radius:999px;
+    background:rgba(52,211,153,.16); color:#34d399; font-size:11px; font-weight:700; }
+  .r-prev { margin:8px 0 0; font-size:13px; color:#94a3b8; font-variant-numeric:tabular-nums; }
+  .r-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    width:100%; max-width:288px; }
+  .r-stat { border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8);
+    padding:10px 12px; text-align:center; }
+  .r-stat .v { font-family:ui-monospace,Menlo,monospace; font-size:18px; font-weight:700; }
+  .r-wrong { width:100%; max-width:288px; }
+  .r-wrong .cap { margin-bottom:8px; text-align:center; }
+  .r-row { display:flex; align-items:center; gap:10px; padding:9px 12px;
+    border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8); }
+  .r-row + .r-row { margin-top:6px; }
+  .r-row .w { flex:none; font-size:14px; font-weight:700; color:#f8fafc; }
+  .r-row .m { flex:1; min-width:0; font-size:12px; color:#94a3b8;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* 재출제에서 맞힌 단어 — 끝내 못 맞힌 것과 갈린다 */
+  .r-row .re { flex:none; padding:2px 7px; border-radius:999px; font-size:10px; font-weight:700;
+    background:rgba(52,211,153,.16); color:#34d399; }
+  .r-row.got { border-color:rgba(52,211,153,.35); }
+  .r-empty { width:100%; max-width:288px; padding:16px; border:1px dashed #334155;
+    border-radius:12px; text-align:center; font-size:13px; color:#94a3b8; }
+  .r-dock { flex:none; display:flex; gap:8px; padding:16px; border-top:1px solid #1e293b; }
+  /* 발사 버튼과 같은 emerald-500, 보조는 나가기 확인 대화상자와 같은 slate-700 */
+  .r-again { flex:1; height:52px; border:0; border-radius:16px; background:#10b981;
+    color:#020617; font-size:16px; font-weight:600; cursor:pointer; }
+  .r-exit { flex:none; padding:0 20px; height:52px; border:0; border-radius:12px;
+    background:#334155; color:#e2e8f0; font-size:15px; font-weight:600; cursor:pointer; }
+</style>
+
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div><div class="kicker">UIUX · 시작 화면 1차</div><h1>VocaShot 혼자 하기 — 시작 · 결과</h1></div>
+    <p><code>vocashot_mockup_v1.html</code>의 구조를 유지하고, 먼저 시작 화면에서
+       <b>게임 소개 · 설정 · 기록</b>의 위계를 나눴습니다. 결과 화면은 다음 단계에서 다듬습니다.</p>
+  </header>
+  <nav class="controls">
+    <div class="control-group" data-set="screen">
+      <span class="control-label">화면</span>
+      <button class="option" data-value="start" aria-pressed="true">시작</button>
+      <button class="option" data-value="result" aria-pressed="false">결과</button>
+    </div>
+    <div class="control-group" data-set="startv" id="sgrp">
+      <span class="control-label">최고 점수</span>
+      <button class="option" data-value="has" aria-pressed="true">있음</button>
+      <button class="option" data-value="none" aria-pressed="false">첫 판</button>
+    </div>
+    <div class="control-group" data-set="resultv" id="rgrp">
+      <span class="control-label">결과</span>
+      <button class="option" data-value="best" aria-pressed="true">신기록</button>
+      <button class="option" data-value="under" aria-pressed="false">기록 미달</button>
+      <button class="option" data-value="clean" aria-pressed="false">전부 정답</button>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
+  <section class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720</div>
+    </div>
+    <aside class="notes">
+      <div class="note-section"><h2>현재 화면</h2><dl class="spec" id="spec"></dl></div>
+      <div class="note-section">
+        <h2>그려 보니</h2>
+        <p id="found"></p>
+      </div>
+    </aside>
+  </section>
+</main>
+<script>
+const I={
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
+  pad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="4"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
+};
+const state={ screen:"start", width:"390", startv:"has", resultv:"best" };
+
+/* 급 8개 · 문항 수는 n1_word_quiz.json 실측 */
+const LEVELS=[1,2,3,4,5,6,7,8];
+const D={
+  /* 점수 = 첫 시도 정답 × 10. 한 판 상한 30문항이므로 최대 300 */
+  level:2, mode:"easy", best:210, lastLevel:2, hearts:5,
+  /* 하트 5 를 다 쓰고 끝난 판 — 그래서 놓친 단어가 정확히 5개다 */
+  /* got:true = 3문항 뒤 재출제에서 맞힌 단어. 목록은 하트 수(5)를 넘지 않는다 */
+  run:{ score:180, correct:20, asked:25, wrong:[
+    { w:"은행원",     m:"bank teller",     got:true  },
+    { w:"흐리다",     m:"to be cloudy",    got:false },
+    { w:"싱겁다",     m:"to be bland",     got:true  },
+    { w:"운동선수",   m:"athlete",         got:false },
+    { w:"바람이 불다", m:"the wind blows",  got:false },
+  ]},
+};
+
+/* ── 시작 ── */
+function startView(){
+  const has = state.startv==="has";
+  return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
+    <div class="g-head">
+      <div class="nm">
+        <button class="back"><i>${I.back}</i></button>
+        <div><h1>VocaShot</h1><div class="sub">혼자 하기</div></div>
+      </div>
+    </div>
+    <div class="g-body">
+      <section class="g-intro">
+        <span class="eyebrow">SOLO DEFENSE</span>
+        <h2>단어가 떨어지기 전에 맞혀보세요.</h2>
+        <p>하트 5개 · 최대 30문항</p>
+        <span class="meteor-mark" aria-hidden="true"></span>
+      </section>
+      <span class="g-lb">급</span>
+      <div class="lv">${LEVELS.map(n=>
+        `<button class="${n===D.level?'on':''}">${n}급</button>`).join("")}</div>
+      <span class="g-lb">입력 방식</span>
+      <div class="seg">
+        <button class="${D.mode==='easy'?'on':''}">4개 중 고르기</button>
+        <button class="${D.mode==='hard'?'on':''}">직접 입력</button>
+      </div>
+      ${has
+        ? `<div class="best"><span class="k">${D.level}급 최고 점수</span>
+             <span class="v">${D.best}</span></div>`
+        : `<div class="best none"><span class="k">${D.level}급 최고 점수</span>
+             <span class="v">아직 없음</span></div>`}
+    </div>
+    <div class="g-dock"><button class="g-go">시작하기</button></div>
+  </div>`;
+}
+
+/* ── 결과 ── */
+function resultView(){
+  const v=state.resultv, r=D.run;
+  const score = v==="under" ? 140 : v==="clean" ? 300 : r.score;
+  const isBest = v!=="under";
+  const wrong = v==="clean" ? [] : r.wrong;
+  const correct = v==="clean" ? 30 : r.correct;
+  const asked   = v==="clean" ? 30 : r.asked;
+  return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
+    <div class="r-head">
+      <div class="nm"><span class="av">${I.user}</span>
+        <div><h1>VocaShot</h1><div class="sub">${D.level}급 · 4개 중 고르기</div></div></div>
+      <div style="text-align:right"><div class="r-k">BEST</div>
+        <div class="r-v" style="color:#fbbf24">${isBest?score:D.best}</div></div>
+    </div>
+    <div class="r-body">
+      <h2 class="r-ttl ${v==="clean"?'ok':'no'}">${v==="clean"?"완주":"게임 오버"}</h2>
+      <p class="r-desc">${v==="clean"
+        ? `${asked}문항을 하트 5개 남기고 끝냈습니다.`
+        : "하트가 0이 되어 끝났습니다."}</p>
+      <div class="r-score">
+        <div class="r-k">내 점수</div>
+        <p class="big">${score}</p>
+        ${isBest
+          ? `<span class="r-new">최고 점수 경신</span>`
+          : `<p class="r-prev">최고 점수 ${D.best}</p>`}
+      </div>
+      <div class="r-stats">
+        <div class="r-stat"><div class="r-k">맞힘</div>
+          <div class="v" style="color:#34d399">${correct}</div></div>
+        <div class="r-stat"><div class="r-k">낸 문항</div>
+          <div class="v" style="color:#e2e8f0">${asked}</div></div>
+      </div>
+      ${wrong.length
+        ? `<div class="r-wrong"><div class="r-k cap">놓친 단어 ${wrong.length}개 ·
+             다시 맞힘 ${wrong.filter(x=>x.got).length}</div>
+             ${wrong.map(x=>`<div class="r-row ${x.got?'got':''}"><span class="w">${x.w}</span>
+               <span class="m">${x.m}</span>
+               ${x.got?'<span class="re">다시 맞힘</span>':''}</div>`).join("")}</div>`
+        : `<div class="r-empty">놓친 단어가 없습니다.</div>`}
+    </div>
+    <div class="r-dock">
+      <button class="r-again">다시 하기</button>
+      <button class="r-exit">나가기</button>
+    </div>
+  </div>`;
+}
+
+const VIEWS={ start:startView, result:resultView };
+const SPEC={
+  start:[["배경","#020617 · 플레이와 같다"],["헤더","VocaShot 18 · 이름만"],
+    ["게임 소개","112 · 실제 유성 모티프"],["뒤로","원 32 · 표적 44"],
+    ["급 선택","44 · radius 12 · 4열 × 2줄"],["입력 방식","48 · radius 12 · 2열"],
+    ["고른 것","emerald 테두리 + 20% 채움"],
+    ["최고 점수","카드 · mono 24"],["시작 버튼","56 · emerald-500 · 하단 고정"]],
+  result:[["배경","#020617 · 어둡게"],["헤더","BEST 오른쪽 한 자리"],
+    ["제목","28 / 36 bold"],["점수 카드","최대 288 · radius 16"],
+    ["점수","mono 38"],["통계","2열 · 맞힘 / 낸 문항"],
+    ["놓친 단어","단어 + 뜻 + 재출제 표시"],["하단","다시 하기 + 나가기 · 52"]],
+};
+const FOUND={
+  start:'<b>설정만 바로 시작하면 어두운 폼처럼 보였다.</b> 플레이의 유성 모티프와 한 줄 규칙을 먼저 보여 주고, 설정 버튼은 실제 플레이 선택지보다 작게 두어 <b>진입과 조작의 위계</b>를 나눴다.',
+  result:'<b>순위표가 빠진 자리에 놓친 단어가 들어간다.</b> 재출제를 넣으면서 그 목록이 <b>다시 맞힘 / 끝내 못 맞힘</b>으로 갈린다 — 결과가 곧 <b>다음에 볼 단어</b>가 된다. 헤더의 RANK 자리는 <b>BEST</b>로.',
+};
+function render(){
+  const dev=document.getElementById('device'), scr=document.getElementById('screen');
+  dev.style.width=(+state.width+4)+'px';
+  scr.innerHTML=VIEWS[state.screen]();
+  document.getElementById('caption').textContent=`${state.width} × 720`;
+  document.getElementById('spec').innerHTML=SPEC[state.screen]
+    .map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  document.getElementById('found').innerHTML=FOUND[state.screen];
+  ['screen','startv','resultv','width'].forEach(set=>
+    document.querySelectorAll(`[data-set="${set}"] .option`).forEach(b=>
+      b.setAttribute('aria-pressed',String(b.dataset.value===state[set]))));
+  document.getElementById('sgrp').style.display = state.screen==='start'?'':'none';
+  document.getElementById('rgrp').style.display = state.screen==='result'?'':'none';
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('.controls .option'); if(!o) return;
+  state[o.closest('.control-group').dataset.set]=o.dataset.value;
+  render();
+});
+render();
+</script>
