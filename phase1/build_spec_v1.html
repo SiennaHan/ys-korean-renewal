@@ -185,8 +185,8 @@
 <div class="tablewrap"><table>
   <tr><th>모드</th><th>조건</th><th>구성</th></tr>
   <tr><td>분절</td><td>문항 ≤ 15</td><td>문항 수만큼 칸 분할 · <b>칸 높이 6</b> · 칸 사이 3 · <b>아이콘 없음</b></td></tr>
-  <tr><td>연속</td><td>문항 ≥ 16</td><td>트랙 <b>높이 6</b> + 채움 + 끝에 원형 knob <b>10</b> ·
-      <b>바 오른쪽에</b> <code>n/N</code></td></tr>
+  <tr><td>연속</td><td>문항 ≥ 16</td><td>칸을 붙여 하나의 선처럼 만들고 <b>바 오른쪽에</b> <code>n/N</code>.
+      <b>16 미만에서는 <code>n/N</code>을 쓰지 않는다</b> — 칸이 곧 카운트다</td></tr>
 </table></div>
 <div class="rule stop">
   <div class="t">얇은 선이다 — 칸 안 아이콘을 버렸다</div>
@@ -211,6 +211,8 @@
       <td>길이로 구분한다 — 얇은 바에서 테두리는 보이지 않는다</td></tr>
 </table></div>
 <p class="qa">카운트 표기는 <b>연속형에서 바 오른쪽 <code>n/N</code></b> 하나로 통일한다. 분절형은 칸이 곧 카운트라 숫자를 넣지 않는다.</p>
+<p class="qa">진행 블록 전체 높이는 <b>28</b>(바 6 + 아래 여백 8 + 위 여백). 목업의
+   <code>progressMarkup()</code>이 <code>count &gt;= 16</code>으로 두 모드를 가른다.</p>
 
 <h2 id="s4"><span class="n">4</span>콘텐츠 밴드</h2>
 <div class="tablewrap"><table>
@@ -404,6 +406,10 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
       <td><b>엄지가 가장 닿기 쉬운 자리</b></td></tr>
 </table></div>
 <h3>하단 도크 — 한 줄 세 칸</h3>
+<p><b>높이 89로 통일</b>한다(버튼 56 + 위아래 여백 16). 마이크가 들어가는 화면도 같다 —
+   초안에서 미션 대화만 92를 썼는데 <b>3px 차이가 화면을 오갈 때 하단이 미세하게 튀는</b> 원인이었다.</p>
+<p>왼쪽·오른쪽 슬롯은 <b>쓰지 않아도 자리를 비워 둔다</b>(<code>aria-hidden</code>).
+   가운데 주 조작이 <b>항상 같은 자리</b>에 있어야 하기 때문이다.</p>
 <pre>[ 44 ]        [  주 조작  ]        [ 44 ]
               전폭 버튼            다음
               또는 녹음 56          (주 조작이 버튼이 아닐 때만)</pre>
