@@ -290,9 +290,7 @@ const D={
 
 /* 오른쪽 한 자리 — 상태에 따라 갈아 낀다(§4 결정 1) */
 function stateSlot(x){
-  // 분모가 1이면 숫자가 정보를 못 준다 — 0/1 은 미학습과 구별되지 않는다
-  if(x.st==="doing" && x.t===1) return `<span class="st"><span class="pr">진행 중</span></span>`;
-  if(x.st==="doing")  return `<span class="st"><span class="pr">${x.a} / ${x.t}</span></span>`;
+  if(x.st==="doing")  return `<span class="st"><span class="pr">진행 중</span></span>`;
   if(x.st==="done")   return `<span class="st"><span class="bdg">완료</span></span>`;
   if(x.st==="review") return `<span class="st"><span class="bdg">완료</span><span class="rv">복습 ${x.rv}</span></span>`;
   return `<span class="st"></span>`;   // 미학습 — 비운다
