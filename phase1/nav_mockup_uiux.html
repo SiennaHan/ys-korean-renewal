@@ -136,9 +136,11 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
     font-weight:600; background:var(--white); color:var(--blue-gray-600); }
   .chip3.on { border-color:#dcecff; background:var(--blue-50); color:var(--blue-600); }
 
-  .listcard { overflow:hidden; margin:12px 16px 0; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
-  .listcard .head { padding:13px 14px 12px; border-bottom:1px solid var(--control-border);
-    font-size:15px; line-height:22px; font-weight:700; color:var(--blue-900); }
+  .chapter-head { min-height:44px; display:flex; align-items:center; gap:8px; margin:12px 16px 0; padding:10px 13px;
+    border:1px solid var(--control-border); border-radius:12px; background:var(--white); }
+  .chapter-head .seq { flex:none; color:var(--blue-600); font-size:12px; line-height:18px; font-weight:700; }
+  .chapter-head strong { min-width:0; color:var(--blue-900); font-size:15px; line-height:22px; font-weight:700; }
+  .listcard { overflow:hidden; margin:8px 16px 0; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
   .listcard .body { padding:12px; }
   .seclabel { margin-bottom:8px; color:var(--blue-gray-600); font-size:11px; line-height:16px; font-weight:600; letter-spacing:.02em; }
   .acts { display:flex; flex-direction:column; gap:8px; }
@@ -160,8 +162,6 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
     display:grid; place-items:center; background:#FFF3E0; color:#F98900; }
 
   /* 자모 — 과 → unit → 활동 3층 */
-  .jhead { display:flex; align-items:center; height:36px; margin:12px 16px 0; padding:0 12px;
-    border:1px solid var(--control-border); border-radius:10px; background:var(--white); color:var(--blue-gray-600); font-size:13px; font-weight:600; }
   .unit { margin:10px 16px 0; padding:13px 0 12px; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
   .unit .ti { padding:0 14px; color:var(--blue-900); font-size:14px; line-height:20px; font-weight:700; }
   .syls { display:flex; gap:6px; margin-top:10px; padding:0 14px; overflow-x:auto; }
@@ -342,14 +342,16 @@ function homeView(){
 
 /* ── 교재학습 ── */
 function bookView(){
-  return `<div class="catalog-nav"><div class="strip">
+  return `<div class="appbar"><span style="width:44px"></span>
+      <div class="lesson">교재학습</div><span style="width:44px"></span></div>
+    <div class="catalog-nav"><div class="strip">
       <button class="tab2">한글</button><button class="tab2 on">1급</button>
       <button class="tab2">2급</button><button class="tab2">3급</button></div>
     <div class="strip chips">${[4,5,6,7,8,9].map(n=>
       `<button class="chip3 ${n===6?'on':''}">${n}과</button>`).join("")}</div></div>
     <div class="scroll">
+      <div class="chapter-head"><span class="seq">제6과</span><strong>가족</strong></div>
       <div class="listcard">
-        <div class="head">6과 · 가족</div>
         <div class="body">${D.acts.map((sec,i)=>
           `${i?'<div style="height:16px"></div>':''}
            <div class="seclabel">${sec.s}</div>
@@ -362,14 +364,14 @@ function bookView(){
 /* ── 자모 목록 ── */
 function jamoView(){
   return `<div class="appbar"><span style="width:44px"></span>
-      <div class="lesson">한글 자모 익히기</div><span style="width:44px"></span></div>
+      <div class="lesson">교재학습</div><span style="width:44px"></span></div>
     <div class="catalog-nav"><div class="strip">
       <button class="tab2 on">한글</button><button class="tab2">1급</button>
       <button class="tab2">2급</button></div>
     <div class="strip chips">${[1,2,3].map(n=>
       `<button class="chip3 ${n===1?'on':''}">${n}과</button>`).join("")}</div></div>
     <div class="scroll">
-      <div class="jhead">제1과 한글(1)</div>
+      <div class="chapter-head"><span class="seq">제1과</span><strong>한글(1)</strong></div>
       ${D.jamo.map(u=>`<div class="unit">
         <div class="ti">${u.t}</div>
         <div class="syls">${u.syl.map(s=>`<div>${s}</div>`).join("")}</div>
