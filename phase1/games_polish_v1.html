@@ -519,6 +519,51 @@ complete 그 장소 완료</pre>
      게임에 손댈 것은 <b><code>야영을 하다</code> 하나</b>다.</p>
 </div>
 
+<h2 id="s8"><span class="n">8</span>앱을 띄워서 본 것 — <b>목업이 놓친 것들</b></h2>
+<p class="lead">로컬에서 앱을 돌려 네 게임을 <b>실제 렌더</b>로 봤다.
+   가짜 API(<code>seed_data</code>)를 물리고 게임 라우트로 바로 들어갔다.
+   <b>코드를 읽어서는 못 봤을 것들</b>이 나왔다.</p>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th>목업이 놓친 것</th></tr>
+  <tr><td><b>봄소풍</b></td>
+      <td><b>CSS 로 그린 소풍 풍경</b>이 화면 위쪽을 차지한다 — 벚나무 · 잔디 · 돗자리 ·
+          친구 이모지가 <b>화면마다 이어진다</b>. 제 목업에는 아예 없었다</td></tr>
+  <tr><td><b>서울 퍼즐</b></td>
+      <td><b>서울 지도를 CSS 로 그렸다</b> — 한강 물결 · 녹지 · 격자 · 지명.
+          장소 카드에 <b>문법 칩이 두 개씩</b> 붙고 <code>연세 1권 4-5과</code> 처럼
+          <b>과 범위</b>가 적힌다(단일 과가 아니다)</td></tr>
+  <tr><td><b>조사 스나이퍼</b></td>
+      <td>급 선택이 <b>2열 카드</b>이고 <b>급마다 테두리·글자 색이 다르다</b>.
+          과 선택에는 <b>그 과의 조사 칩</b>과 <b>문항 수</b>가 붙는다</td></tr>
+  <tr><td><b>카드 마스터</b></td>
+      <td>과 격자에 <b>새 갈래가 있는 과마다 노란 점</b>이 붙는다.
+          결과의 등급이 <b>큰 글자 하나</b>(C)로 뜨고 통계는 <b>세로 목록</b>이다 —
+          제가 2열 격자로 그렸다</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">그리고 <b>진짜 버그를 하나 찾았다</b> — §3 에 적었다</div>
+  <p>어휘 카드 마스터에서 <b>기본값 그대로 START</b> 를 누르면 덱이 비어
+     <b>"모든 카드를 처리했어요!"</b> 가 즉시 뜬다.
+     <code>startGame</code> 의 <code>useCallback</code> 이 <code>vocab</code> 을
+     의존성에 안 넣어서 <b>빈 <code>vocab</code></b> 을 붙잡고 있다.</p>
+  <p class="qa"><b>코드만 읽어서는 못 찾았을 것이다.</b> 급·과를 한 번이라도 바꾸면
+     정상 동작해서, 읽을 때는 자연스러워 보인다.</p>
+</div>
+<div class="callout">
+  <div class="t">띄우는 데 걸린 것 셋 — <b>다음에 또 띄울 때를 위해</b></div>
+  <ol>
+    <li><code>npm install</code> 이 필요하다(<code>node_modules</code> 가 없다). 266개 · 39초.</li>
+    <li><b><code>.env</code> 에 <code>PUBLIC_*</code> 여덟 개를 다 채워야 한다.</b>
+        rsbuild 는 <b>정의된 것만</b> 치환해서, 하나라도 빠지면
+        <code>process is not defined</code> 로 <b>흰 화면</b>이 된다.</li>
+    <li>로그인 게이트는 라우트가 아니라 <code>/main</code> 레이아웃에 있다.
+        <code>isSignedIn = !!getAccessToken()</code> 이라
+        <code>localStorage.koreanAccessToken</code> 에 아무 값이나 넣으면 열린다.</li>
+  </ol>
+  <p class="qa">게임 콘텐츠는 <code>/game-content/*</code> 아홉 개만 흉내내면 된다 —
+     <code>seed_data</code> 를 그대로 내보내면 충분하다.</p>
+</div>
+
 <h2 id="s7"><span class="n">7</span>다국어 — <b>UI 문구가 전부 한국어로 박혀 있다</b></h2>
 <p class="lead">번역해야 하는 것은 <b>콘텐츠가 아니라 화면 문구</b>다 —
    지시문 · 규칙 설명 · 버튼 라벨 · "점수" 같은 용어.
