@@ -273,6 +273,77 @@ complete 그 장소 완료</pre>
    totalPlayed · wrongHistory</code>.</p>
 
 
-<h2 id="s3"><span class="n">3</span>어휘 카드 마스터 <span class="qa">— 아직</span></h2>
+<h2 id="s3"><span class="n">3</span>어휘 카드 마스터 — <b>카드 분류</b></h2>
+<p class="lead"><b>단어 카드 한 장이 뜨면 그 단어가 어느 갈래인지 고른다.</b>
+   급과 <b>"몇 과까지"</b>를 고르면 그때까지 배운 갈래가 <b>누적</b>으로 나온다.
+   <code>components/main/game/card-sort.tsx</code> <b>1136줄</b>.</p>
+
+<div class="callout stop">
+  <div class="t">이 게임은 <b>진도를 직접 묻는다</b> — 화면에 그렇게 쓰여 있다</div>
+  <p>급 선택 아래에 <b>"과 선택 — N과까지 배운 카테고리 누적 출제"</b>가 있고,
+     <code>getCumulativeCategories</code>가 <b>1과부터 고른 과까지</b> 갈래를 모은다.</p>
+  <p><b>게임을 진도와 잇지 않기로 했지만, 이 게임은 이미 이어져 있다.</b>
+     연결하려면 <b>기본값을 학습자의 진도로 두는 것</b>만 하면 된다 —
+     <b>새로 만들 것이 없다</b>. 지금은 <code>2급 · 5과</code>가 고정 기본값이다.</p>
+  <p class="qa">서울 퍼즐(<b>1권 전용</b>)에 이어 <b>두 번째</b>다.
+     "게임 다섯이 교재와 무관하다"는 처음 판단은 <b>둘에게는 맞지 않는다</b>.</p>
+</div>
+
+<h3>한 판</h3>
+<pre>급(2~5급)과 <b>과</b>를 고른다 → 그때까지 갈래가 <b>누적</b>으로 모인다
+        ↓
+카드 한 장(단어)이 뜬다. <b>갈래를 고른다</b>
+  맞히면   (100 + <b>속도 보너스</b>) × <b>콤보 배수</b> × <b>레어 1.5</b>
+  틀리면   <b>0점 · HP −1 · 콤보 리셋</b>. 카드는 <b>넘어간다</b>
+        ↓
+<b>HP 0</b>(시작 5) 또는 덱 소진 → 결과 · 정확도로 <b>등급(S…)</b></pre>
+<div class="tablewrap"><table>
+  <tr><th>보너스</th><th>값</th></tr>
+  <tr><td>속도</td><td><b>2초 이내 +50</b>, 4초부터 0. 그 사이는 선형으로 준다</td></tr>
+  <tr><td>콤보</td><td>3연속 <b>×1.5</b> · 5연속 <b>×2.0</b> · 8연속 <b>×3.0</b></td></tr>
+  <tr><td>레어 단어</td><td><b>×1.5</b></td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">셋 중 <b>유일하게 재시도 문제가 없다</b></div>
+  <p>오답이어도 <b>카드가 넘어간다</b>(<code>setCardIndex(i+1)</code>이 오답 분기에도 있다).
+     그래서 <b>맞을 때까지 찍는 것</b>이 안 된다.
+     오답 비용도 분명하다 — <b>HP 하나와 콤보 전부</b>를 잃는다.</p>
+  <p class="qa">서울 퍼즐·봄소풍이 여기서 배워야 하는 부분이다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">손볼 것 ① — <b>아무것도 저장하지 않는다</b></div>
+  <p><code>game-progress</code>도, <code>localStorage</code>도 <b>쓰지 않는다</b>.
+     점수 · 최고 콤보 · 등급이 <b>판이 끝나면 사라진다</b>.
+     그래서 목록 카드에도 <b>보여 줄 것이 없다</b>(<code>games_asis_v1.html</code> §1d).</p>
+  <p><b>붙이면 된다.</b> 저장 단위는 이미 화면에 있다 —
+     <code>stage_id = "{급}_{과}"</code>, <code>score</code> = 그 판 점수.
+     서버가 <code>max()</code>로 최고 점수를 유지하므로 <b>그냥 보내면 된다</b>.</p>
+  <p class="qa">봄소풍이 <code>"{친구id}_{레벨}"</code>을 쓰는 것과 <b>같은 모양</b>이다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">손볼 것 ② — 급이 <b>2~5급으로 막혀 있다</b></div>
+  <p>클라이언트 타입이 <code>Grade = "2급" | "3급" | "4급" | "5급"</code>로
+     <b>네 개에 고정</b>돼 있다. 서버는 <code>grade</code>를
+     <b>자유 문자열</b>(<code>max_length=20</code>)로 받는데,
+     <b>1급이나 6~8급 어휘를 넣어도 앱에서 고를 수 없다</b>.</p>
+  <p class="qa">VocaShot 이 <b>1~8급</b>을 다 쓰는 것과 어긋난다.
+     타입을 서버 데이터에서 <b>받아 오게</b> 바꾸면 콘텐츠만 넣어도 늘어난다.</p>
+</div>
+
+<h3>콘텐츠 모델</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>필드</th></tr>
+  <tr><td><b>갈래</b></td><td><code>name · color · sort_order</code>
+      <span class="qa">color 는 hex 검증이 있다</span></td></tr>
+  <tr><td><b>어휘</b></td><td><code>grade · lesson · new_categories[] · words{갈래: 단어[]} · sort_order</code><br>
+      <span class="qa">그 과에서 <b>새로 나오는</b> 갈래를 <code>new_categories</code> 로 표시한다</span></td></tr>
+  <tr><td><b>레어</b></td><td>별도 목록. 맞히면 <b>×1.5</b></td></tr>
+</table></div>
+<p class="qa">단어가 <b>4개 미만인 갈래는 버린다</b>(<code>words.length &gt;= 4</code>) —
+   선택지를 못 만들기 때문이다.</p>
+
+
 <h2 id="s4"><span class="n">4</span>조사 스나이퍼 <span class="qa">— 아직</span></h2>
 </main>
