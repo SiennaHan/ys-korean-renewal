@@ -472,6 +472,9 @@ complete 그 장소 완료</pre>
   <p><b>교재 대조로는 판정할 수 없다.</b> 교재 어휘 목록은 <b>낱말 단위</b>여서
      <code>야영을 하다</code>라는 연어는 <b>구판에도 신판에도 없다</b>.
      낱말 <code>야영</code>이 빠졌다는 사실만 있다.</p>
+  <p><b>정한 것 — 그 문항은 아예 뺀다.</b> 낱말이 신판에서 사라졌으므로
+     <code>야영을 하다</code>를 <b>대체하지 않고 제거</b>한다.
+     갈래가 <b>4개 미만이 되면 그 갈래도 함께 빠진다</b>(<code>words.length &gt;= 4</code>).</p>
   <p class="qa"><code>되다</code>·<code>시험</code>은 <b>과이동</b>이라 낱말이 살아 있다 —
      게임이 연어로 쓰므로 <b>그냥 두면 된다</b>.</p>
 </div>
@@ -496,6 +499,47 @@ complete 그 장소 완료</pre>
      자동으로 맞춰 줄 필요가 없다. 기본값만 <b>있는 것 중 가장 낮은 급</b>으로 두면 된다.</p>
   <p><b>콘텐츠도 거의 안 바꾼다.</b> 신구판 변경 533건 중
      게임에 손댈 것은 <b><code>야영을 하다</code> 하나</b>다.</p>
+</div>
+
+<h2 id="s7"><span class="n">7</span>다국어 — <b>둘에 넣는다. 번역이 지금 없다</b></h2>
+<p class="lead">봄소풍만 <code>hint{언어별}</code>을 갖고 있다.
+   <b>카드 마스터와 조사 스나이퍼에는 번역 필드가 아예 없다</b> —
+   그래서 이 둘은 <b>콘텐츠를 새로 만들어야</b> 한다.</p>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th>지금 데이터</th><th>무엇을 번역하나</th><th class="n">분량</th></tr>
+  <tr><td>봄소풍</td><td><code>hint{ko,en,ja,zh,vi}</code></td>
+      <td><b>이미 있다</b></td><td class="n">—</td></tr>
+  <tr><td><b>카드 마스터</b></td><td><code>"직업": "#4A9EFF"</code> — 이름과 색만</td>
+      <td><b>갈래 이름</b></td><td class="n">갈래 <b>57</b> × 4언어</td></tr>
+  <tr><td><b>조사 스나이퍼</b></td>
+      <td><code>{sentence, blank, answer, choices, sourceLesson}</code></td>
+      <td><b>문장 번역</b></td><td class="n">문항 <b>약 160</b> × 4언어</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">카드 마스터는 <b>단어 뜻을 보여 주면 안 된다</b></div>
+  <p>이 게임은 <b>단어가 어느 갈래인지</b> 고르는 것이다.
+     <code>경찰관</code> 옆에 <b>"Police Officer"</b>를 띄우면
+     <b>정답이 그대로 새어 나간다</b> — 직업이라는 답을 알려 주는 셈이다.</p>
+  <p><b>갈래 이름만 번역한다.</b> <code>직업 / Jobs</code> ·
+     <code>교통수단 / Transport</code>. 갈래를 못 읽어서 못 고르는 것을
+     막는 것이 목적이고, 단어는 <b>한국어로 읽어 내야</b> 한다.</p>
+  <p class="qa">VocaShot 은 반대다 — 거기서는 <b>뜻이 곧 문제</b>이므로 번역이 있어야 한다.</p>
+</div>
+<div class="callout">
+  <div class="t">조사 스나이퍼는 <b>문장 번역이 단서가 되지 않는다</b></div>
+  <p>고르는 것이 <b>조사</b>이므로, 문장 뜻을 알아도 <code>을</code>인지 <code>를</code>인지는
+     <b>받침을 봐야</b> 안다. 번역을 보조로 둬도 <b>정답이 새지 않는다</b>.</p>
+  <p class="qa">문항이 <b>떨어지는 중</b>이라 화면에 늘 띄우면 방해가 된다 —
+     <b>탭하면 보이게</b> 두는 편이 낫다. 봄소풍이 힌트를 그렇게 쓴다.</p>
+</div>
+<div class="callout">
+  <div class="t">씨드 파일은 <b>갱신하지 않는다</b></div>
+  <p>어드민이 정본이고 씨드는 초기 상태다. 씨드를 정본으로 만들려는 것은
+     <b>도구를 잘못 고른 것</b>이다 — 사람이 어드민에서 계속 고치므로 <b>또 낡는다</b>.</p>
+  <p><b>대신 위험을 적어 둔다.</b> 새 환경을 세우거나 DB 를 잃으면
+     <b>사람이 채운 것이 사라진 구버전으로 시작</b>한다
+     (조사 스나이퍼: 레슨 <b>32 → 24</b>, 급 <b>8 → 6</b>).
+     이건 <b>DB 백업으로 다룰 문제</b>다.</p>
 </div>
 
 <h2 id="s5"><span class="n">5</span>넷을 나란히 놓으면</h2>

@@ -1,0 +1,298 @@
+<!-- 게임 넷 + 목록 — 구조 목업.
+     팔레트와 화면에 놓이는 것은 실제 컴포넌트 실측. 정확한 간격은 원본을 열어 볼 것.
+     VocaShot 은 vocashot_mockup_v1.html · vocashot_play_uiux.html 에 따로 있다. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>게임 넷 + 목록 — 구조 목업</title>
+<style>
+
+
+:root {
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+    --radius-card:14px; --radius-control:9px;
+  }
+* { box-sizing:border-box; }
+body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+button { font:inherit; }
+.workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
+.doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
+.doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+.doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
+.kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+.controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+.control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
+.option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+.option:hover { background:rgba(255,255,255,.55); }
+.option[aria-pressed="true"] { border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }
+.stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
+.stage.overview-hidden { display:none; }
+.device-wrap { display:flex; flex-direction:column; align-items:center; }
+.device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
+.screen { position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+.caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+.notes { padding-top:8px; }
+.notes h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }
+.notes p { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+.notes p + p { margin-top:9px; }
+.notes b { color:var(--bench-ink); font-weight:600; }
+.note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+.note-section + .note-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+.spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+.spec dt { color:#87909d; }
+.spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
+.footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--control-border); }
+.primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+.primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
+.dock { display:flex; align-items:center; gap:12px; width:100%; }
+.dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+.dock .main .record-core { width:auto; }
+.dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+.dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+.dock .slot svg { width:26px; height:26px; }    .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
+  .scroll::-webkit-scrollbar { display:none; }
+
+  .scr { display:flex; flex-direction:column; height:100%; }
+  .sbody { flex:1 1 auto; min-height:0; overflow-y:auto; }
+  .sbody::-webkit-scrollbar { display:none; }
+
+  /* ── 목록 (bg #F9FAFC) ─────────────────────── */
+  .gl { background:#F9FAFC; }
+  .gl-h { flex:none; display:grid; place-items:center; padding:16px;
+    font-size:17px; font-weight:600; color:#383A3F; }
+  .gl-b { display:flex; flex-direction:column; gap:12px; padding:8px 16px 16px; }
+  .gc { display:flex; align-items:center; gap:14px; padding:16px; border:0;
+    border-radius:16px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.06);
+    text-align:left; cursor:pointer; }
+  .gc .ic { width:48px; height:48px; flex:none; border-radius:12px; display:grid;
+    place-items:center; font-size:22px; }
+  .gc .tx { flex:1; min-width:0; }
+  .gc .nm { display:block; font-size:16px; font-weight:700; color:#24425F;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .gc .sb { display:block; margin-top:2px; font-size:13px; color:#9BA5B0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .gc .sb.on { color:#0073E6; font-weight:600; }
+  .gc .ar { flex:none; color:#C8CCD3; font-size:18px; }
+
+  /* ── 서울 퍼즐 (navy #16213e / bg #f2f4f7) ──── */
+  .sp { background:#f2f4f7; }
+  .sp-h { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:10px 20px 8px; background:#16213e; }
+  .sp-h .xp { color:#f0c060; font-size:11px; font-weight:700; }
+  .sp-h .ti { color:rgba(255,255,255,.55); font-size:11px; letter-spacing:.4px; }
+  .sp-h .bk { width:28px; height:28px; border-radius:50%; border:0;
+    background:rgba(255,255,255,.12); color:rgba(255,255,255,.85); cursor:pointer; }
+  .sp-b { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .bub { max-width:260px; padding:10px 13px; font-size:13px; line-height:1.6;
+    border-radius:14px 14px 14px 4px; background:#fff; border:1px solid #e5e7eb;
+    color:#111827; }
+  .bub.me { align-self:flex-end; border-radius:14px 14px 4px 14px;
+    background:#e2f5f1; border-color:#bfe6dd; }
+  .slot { display:flex; flex-wrap:wrap; gap:6px; align-items:center; min-height:44px;
+    padding:8px; border:1.5px dashed #e5e7eb; border-radius:12px; background:#f2f4f7; }
+  .slot .ph { font-size:12px; color:#adb5c4; }
+  .chip { padding:6px 12px; border:0; border-radius:20px; font-size:13px; font-weight:500;
+    background:#fff; border:1px solid #e5e7eb; color:#111827; cursor:pointer; }
+  .chip.cor { background:#e2f5f1; border-color:#0f9b82; color:#0f9b82; }
+  .tray { display:flex; flex-wrap:wrap; gap:6px; padding:10px; border-radius:12px;
+    background:#fff; border:1px solid #e5e7eb; }
+  .chip.used { opacity:.35; }
+  .sp-dock { flex:none; display:flex; gap:8px; padding:12px 16px;
+    border-top:1px solid #e5e7eb; background:#fff; }
+  .sp-dock button { flex:1; height:48px; border:0; border-radius:12px; font-size:15px;
+    font-weight:700; cursor:pointer; }
+  .sp-dock .hint { flex:0 0 88px; background:#fef3c7; color:#92400e; }
+  .sp-dock .go { background:#0f9b82; color:#fff; }
+
+  /* ── 봄소풍 (bg #F4C0D1 / #AFA9EC) ──────────── */
+  .pc { background:#F4C0D1; }
+  .pc-h { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; }
+  .pc-h .t { font-size:15px; font-weight:800; color:#7a3350; }
+  .pc-h .n { font-size:12px; font-weight:700; color:#7a3350; }
+  .pc-b { padding:8px 16px 16px; display:flex; flex-direction:column; gap:12px; }
+  .il { height:132px; border-radius:16px; background:#AFA9EC; display:grid;
+    place-items:center; color:#fff; font-size:12px; }
+  .qc { border-radius:16px; background:#fff; padding:14px; }
+  .qc .hint { font-size:12px; color:#8b7f96; }
+  .qc .q { margin-top:4px; font-size:17px; font-weight:700; color:#3d2b45; }
+  .pc-opts { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .pc-opts button { min-height:52px; border:0; border-radius:14px; background:#fff;
+    font-size:16px; font-weight:700; color:#3d2b45; cursor:pointer; }
+  .pc-opts button.on { background:#F0997B; color:#fff; }
+  .pc-say { flex:none; display:grid; place-items:center; padding:10px 16px 16px; }
+  .pc-say button { width:100%; height:48px; border:0; border-radius:14px;
+    background:#7a3350; color:#fff; font-size:15px; font-weight:700; cursor:pointer; }
+
+  /* ── 카드 마스터 (bg #060612 / #FFE500) ─────── */
+  .cs { background:#060612; color:#fff; }
+  .cs-h { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; }
+  .cs-h .sc { font-family:ui-monospace,Menlo,monospace; font-size:20px; font-weight:800;
+    color:#FFE500; }
+  .cs-h .hp { display:flex; gap:3px; }
+  .cs-h .hp i { width:12px; height:12px; border-radius:50%; background:#FF4060; }
+  .cs-h .hp i.off { background:#2a2a40; }
+  .cs-b { display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:14px; padding:16px; }
+  .card { width:196px; height:124px; border-radius:16px; display:grid; place-items:center;
+    background:linear-gradient(160deg,#1b1b34,#101024); border:1px solid #2a2a40;
+    font-size:22px; font-weight:800; color:#fff; }
+  .combo { font-size:12px; font-weight:800; color:#FFE500; letter-spacing:.06em; }
+  .cs-slots { flex:none; display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    padding:12px 16px 16px; }
+  .cs-slots button { min-height:56px; border:1px solid #2a2a40; border-radius:12px;
+    background:rgba(255,255,255,.04); color:#fff; font-size:14px; font-weight:700;
+    cursor:pointer; }
+
+  /* ── 조사 스나이퍼 — particle-sniper.tsx renderGameplay 그대로 ──── */
+  .ps { background:#060612; color:#fff; }
+  .ps-hud { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; }
+  .ps-hud .bk { width:28px; height:28px; border-radius:50%; border:0;
+    background:rgba(255,255,255,.08); color:rgba(255,255,255,.7); cursor:pointer; }
+  .ps-hud .hp { display:flex; gap:2px; font-size:14px; }
+  .ps-hud .hp span.off { opacity:.15; }
+  .ps-hud .cb { font-size:14px; font-weight:700; }
+  .ps-hud .sc { font-size:18px; font-weight:700; }
+  .ps-hud .of { font-size:12px; color:#7878A0; }
+  .ps-tm { flex:none; padding:0 16px 8px; }
+  .ps-tm div { height:8px; border-radius:999px; background:#1a1a2e; overflow:hidden; }
+  .ps-tm i { display:block; height:100%; border-radius:999px; }
+  .ps-sky { position:relative; flex:1 1 auto; min-height:0; margin:0 20px 20px;
+    overflow:hidden; }
+  .ps-q { position:absolute; left:50%; transform:translate(-50%,-50%); width:100%;
+    max-width:320px; }
+  .ps-q .lsn { margin:0 auto 8px; width:fit-content; padding:4px 12px; border-radius:999px;
+    font-size:12px; font-weight:700; }
+  .ps-q .box { border-radius:16px; background:#0a0a18; padding:20px; text-align:center; }
+  .ps-q .box p { margin:0; font-size:20px; line-height:1.65; letter-spacing:.02em; }
+  .ps-q .bl { display:inline-block; margin:0 2px; padding:2px 8px; border-radius:4px;
+    font-weight:700; }
+  .ps-gr { position:absolute; left:0; right:0; bottom:8px; height:4px; border-radius:999px; }
+  .ps-gl { position:absolute; right:4px; bottom:16px; font-size:10px;
+    letter-spacing:.2em; color:#7878A0; }
+  .ps-ch { flex:none; display:flex; flex-wrap:wrap; gap:20px; justify-content:center;
+    padding:0 20px 24px; }
+  .ps-ch button { width:80px; height:80px; border-radius:50%; font-size:18px;
+    font-weight:700; cursor:pointer; }
+
+</style>
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div><div class="kicker">STRUCTURE · 디자인 세션 인계용</div><h1>게임 넷 + 목록</h1></div>
+    <p>팔레트와 <b>화면에 놓이는 것</b>은 실제 컴포넌트 실측입니다.
+       <b>정확한 간격은 원본을 열어</b> 확인해 주세요 — 이 목업은 <b>다시 칠할 대상</b>을 모아 둔 것입니다.
+       VocaShot 은 <code>vocashot_play_uiux.html</code> 에 따로 있습니다.<br>
+       <b>서울 퍼즐 · 봄소풍 · 카드 마스터는 아직 안 옮겼습니다</b> — 근사치로 그렸다가 지웠습니다.</p>
+  </header>
+  <nav class="controls">
+    <div class="control-group" data-set="v">
+      <span class="control-label">화면</span>
+      <button class="option" data-value="list" aria-pressed="true">목록</button>
+      <button class="option" data-value="ps" aria-pressed="false">조사 스나이퍼</button>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
+  <section class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720</div>
+    </div>
+    <aside class="notes">
+      <div class="note-section"><h2>현재 화면</h2><dl class="spec" id="spec"></dl></div>
+      <div class="note-section"><h2>이 화면에서 정한 것</h2><p id="note"></p></div>
+    </aside>
+  </section>
+</main>
+<script>
+const state={ v:"list", width:"390" };
+
+const V={};
+
+V.list=()=>`<div class="scr gl">
+  <div class="gl-h">게임</div>
+  <div class="sbody gl-b">
+    ${[["🎮","#FFF3E0","#FF6D00","VocaShot","2급 최고 210점",1],
+       ["🌸","#FFF0F5","#D4537E","봄소풍 숫자미션","민수 · 2단계까지 했어요",1],
+       ["🗺","#E8F5E9","#2E7D32","서울 여행 퍼즐","12곳 중 5곳 다녀왔어요",1],
+       ["🃏","#FFF8E1","#F9A825","어휘 카드 마스터","3급 5과 최고 2,140점",1],
+       ["🎯","#E8EAF6","#5C6BC0","조사 스나이퍼","조사를 빠르게 골라요",0]]
+      .map(([e,bg,fg,nm,sb,on])=>`<button class="gc">
+        <span class="ic" style="background:${bg};color:${fg}">${e}</span>
+        <span class="tx"><span class="nm">${nm}</span>
+          <span class="sb ${on?'on':''}">${sb}</span></span>
+        <span class="ar">›</span></button>`).join("")}
+  </div></div>`;
+
+V.ps=()=>{
+  const A='#4ADE80';                       // 1급 강조색(어드민 실측)
+  const t=62;                              // 남은 시간 %
+  const tc = t<30 ? '#FF4060' : t<60 ? '#FF9500' : '#FFE500';
+  return `<div class="scr ps">
+    <div class="ps-hud">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="bk">←</button>
+        <span class="hp">${[1,1,1,0,0].map(v=>`<span class="${v?'':'off'}">❤️</span>`).join("")}</span>
+        <span class="cb" style="color:${A}">5×</span>
+      </div>
+      <div style="text-align:right">
+        <div class="sc">1180</div><div class="of">4 / 8</div>
+      </div>
+    </div>
+    <div class="ps-tm"><div><i style="width:${t}%;background:${tc}"></i></div></div>
+    <div class="ps-sky">
+      <div class="ps-q" style="top:${18+((100-t)/100)*58}%;filter:drop-shadow(0 0 14px ${A}55)">
+        <div class="lsn" style="background:${A}20;color:${A}">8과</div>
+        <div class="box" style="border:1.5px solid ${A}70">
+          <p>저는 한국어<span class="bl" style="background:${A}30;color:${A};border-bottom:2px solid ${A}">?</span> 공부해요</p>
+        </div>
+      </div>
+      <div class="ps-gr" style="background:linear-gradient(90deg,transparent,${tc},transparent);box-shadow:0 0 12px ${tc}"></div>
+      <div class="ps-gl">GROUND</div>
+    </div>
+    <div class="ps-ch">${['을','를','이','가'].map(c=>
+      `<button style="border:3px solid ${A};color:${A};background:${A}10">${c}</button>`).join("")}</div>
+  </div>`;
+};
+
+const SPEC={
+ list:[["배경","#F9FAFC"],["제목","게임 · 17 semibold"],["카드","radius 16 · padding 16"],
+   ["아이콘","48 · radius 12"],["둘째 줄","한 자리 · 진행/설명"],["카드 높이","80 고정"]],
+ ps:[["배경","#060612"],["HP","❤️ 5개 · 꺼지면 opacity .15"],["타이머","막대 8 · 색 3단"],
+   ["문항","떨어진다 · top 18%→76%"],["과 칩","급별 색 20% 배경"],
+   ["문장","radius 16 · 20 / 1.65"],["선택지","원 80 · 테두리 3"],["바닥","GROUND 라벨 + 발광선"]],
+};
+const NOTE={
+ list:'<b>둘째 줄 한 자리</b>에 진행이 있으면 진행, 없으면 설명. 카드 높이 <b>80</b> 유지. 다섯 게임 다 저장을 붙이기로 했으므로 <b>다섯 다 진행을 쓸 수 있다</b>. — <code>routes/main/game/index.tsx</code> 실측',
+ ps:'<b>지금 배포된 화면 그대로다.</b> 문항이 <b>실제로 떨어진다</b>(타이머에 맞춰 top 18%→76%) — VocaShot 과 같은 낙하형이다. 선택지는 <b>원형 80</b> 네 개. 색은 <b>급별 강조색</b>(1급 #4ADE80)을 전부 따라간다.<br><br>정할 것 — <b>저장과 다국어를 붙인다.</b> 다국어는 <b>문장 번역</b>을 보조로. 번역 필드가 <b>지금 없다</b>.',
+};
+function render(){
+  const dev=document.getElementById('device'), scr=document.getElementById('screen');
+  dev.style.width=(+state.width+4)+'px';
+  scr.innerHTML=V[state.v]();
+  document.getElementById('caption').textContent=`${state.width} × 720`;
+  document.getElementById('spec').innerHTML=SPEC[state.v].map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  document.getElementById('note').innerHTML=NOTE[state.v];
+  ['v','width'].forEach(s=>document.querySelectorAll(`[data-set="${s}"] .option`)
+    .forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.value===state[s]))));
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('.controls .option'); if(!o) return;
+  state[o.closest('.control-group').dataset.set]=o.dataset.value; render();
+});
+render();
+</script>
