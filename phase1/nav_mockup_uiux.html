@@ -11,8 +11,12 @@
     --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
     --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
     --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+    --radius-card:14px; --radius-control:9px;
   }
+* { box-sizing:border-box; }
 body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+button { font:inherit; }
 .workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
 .doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
 .doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
@@ -55,13 +59,13 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
 .dock .slot svg { width:26px; height:26px; }  /* ── 홈 ─────────────────────────────────────── */
   .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
   .scroll::-webkit-scrollbar { display:none; }
-  .pad { padding:0 16px; }
-  .greet { padding:18px 18px 2px; }
+  .pad { padding:0 var(--gutter); }
+  .greet { padding:18px var(--gutter) 2px; }
   .greet .hi { font-size:14px; color:#6B7B8D; }
   .greet .name { margin-top:1px; font-size:24px; line-height:32px; font-weight:700; letter-spacing:-.02em; color:var(--blue-900); }
 
   .week { display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px 0 8px; }
-  .week .days { display:flex; gap:10px; }
+  .week .days { display:flex; gap:12px; }
   .week .d { display:flex; flex-direction:column; align-items:center; gap:4px; }
   .week .c { width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
     background:var(--blue-gray-100); color:#fff; }
@@ -75,21 +79,21 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
   .week .streak b { color:var(--blue-900); font-weight:700; }
 
   /* 오늘 할 일 — 한 자리에 세 갈래 */
-  .task { display:flex; align-items:center; gap:13px; width:100%; padding:14px;
-    border:1px solid #e4f1ff; border-radius:14px; background:#eef6ff; text-align:left; cursor:pointer; }
+  .task { display:flex; align-items:center; gap:var(--space-3); width:100%; padding:14px;
+    border:1px solid #e4f1ff; border-radius:var(--radius-card); background:#eef6ff; text-align:left; cursor:pointer; }
   .task:hover { background:#e7f3ff; }
   .task .ic { width:48px; height:48px; border-radius:12px; flex:none; display:grid;
     place-items:center; background:var(--blue-500); color:#fff; font-size:20px; }
   .task .ic svg { width:22px; height:22px; }
   .task .tx { flex:1; min-width:0; }
-  .task .t1 { display:block; font-size:16px; line-height:23px; font-weight:700; letter-spacing:-.01em; color:var(--blue-900); }
+  .task .t1 { display:block; font-size:16px; line-height:24px; font-weight:700; letter-spacing:-.01em; color:var(--blue-900); }
   .task .t2 { display:block; font-size:12px; line-height:18px; font-weight:500; color:var(--blue-600); margin-top:2px;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .task .go { width:22px; flex:none; color:var(--blue-500); }
   .task .go svg { width:22px; height:22px; }
 
-  .sec-title { font-size:16px; line-height:24px; font-weight:700; color:var(--blue-900); margin:20px 0 10px; }
-  .status { border:1px solid var(--control-border); border-radius:14px; background:var(--white); padding:14px;
+  .sec-title { font-size:16px; line-height:24px; font-weight:700; color:var(--blue-900); margin:var(--space-6) 0 var(--space-2); }
+  .status { border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); padding:14px;
     display:flex; gap:10px; align-items:center; }
   .gauge { width:110px; height:110px; flex:none; position:relative; }
   .gauge svg { width:100%; height:100%; transform:rotate(-90deg); }
@@ -101,12 +105,12 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
   .stats { flex:1; display:flex; flex-direction:column; gap:8px; min-width:0; }
   .stat2 { display:flex; align-items:center; gap:11px; border:1px solid var(--control-border); background:#fafbfd;
     border-radius:10px; padding:10px; }
-  .stat2 .n { width:42px; height:42px; flex:none; border-radius:9px; background:var(--blue-50);
+  .stat2 .n { width:44px; height:44px; flex:none; border-radius:var(--radius-control); background:var(--blue-50);
     color:var(--blue-600); font-size:19px; font-weight:700; display:grid; place-items:center; }
   .stat2 .l { font-size:12px; line-height:18px; font-weight:600; color:var(--blue-gray-800); }
 
   .chart { display:flex; align-items:flex-end; justify-content:space-between;
-    gap:8px; height:120px; padding:12px 10px 10px; border:1px solid var(--control-border); border-radius:14px; background:var(--white); }
+    gap:8px; height:120px; padding:12px 10px 10px; border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); }
   .chart .col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
   .chart .bx { width:100%; height:80px; display:flex; align-items:flex-end; justify-content:center; }
   .chart .bar { width:100%; max-width:28px; border-radius:6px 6px 3px 3px; background:var(--blue-500); }
@@ -145,51 +149,50 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
   }
   .tab2 { flex:none; padding:5px 2px 7px; font-size:14px; line-height:20px; font-weight:600;
     color:var(--blue-gray-400); background:none; border:0; border-bottom:2px solid transparent; }
-  .tab2.on { color:var(--blue-600); border-bottom-color:var(--blue-500); }
-  .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--control-border); border-radius:9px; font-size:13px;
+  .tab2.on { color:var(--blue-gray-900); border-bottom-color:var(--blue-500); }
+  .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--control-border); border-radius:var(--radius-control); font-size:13px;
     font-weight:600; background:var(--white); color:var(--blue-gray-600); }
-  .chip3.on { border-color:#dcecff; background:var(--blue-50); color:var(--blue-600); }
+  .chip3.on { border-color:var(--blue-900); background:var(--blue-900); color:var(--white); }
 
-  .chapter-head { min-height:44px; display:flex; align-items:center; gap:8px; margin:12px 16px 0; padding:10px 13px;
-    border:1px solid var(--control-border); border-radius:12px; background:var(--white); }
-  .chapter-head .seq { flex:none; color:var(--blue-600); font-size:12px; line-height:18px; font-weight:700; }
-  .chapter-head strong { min-width:0; color:var(--blue-900); font-size:15px; line-height:22px; font-weight:700; }
-  .listcard { overflow:hidden; margin:8px 16px 0; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
-  .listcard .body { padding:12px; }
-  .seclabel { margin-bottom:8px; color:var(--blue-gray-600); font-size:11px; line-height:16px; font-weight:600; letter-spacing:.02em; }
+  .catalog-scroll { padding-bottom:var(--space-6); scroll-padding-bottom:var(--space-6); }
+  .chapter-head { min-height:56px; display:flex; align-items:center; gap:var(--space-2); margin:var(--space-4) var(--gutter) 0;
+    padding:12px var(--space-4); border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); }
+  .chapter-head .seq { flex:none; color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:700; }
+  .chapter-head strong { min-width:0; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:700; letter-spacing:-.015em; }
+  .learning-sections { margin:var(--space-4) var(--gutter) 0; }
+  .learning-section + .learning-section { margin-top:var(--space-6); }
+  .seclabel { margin-bottom:var(--space-2); color:var(--blue-gray-800); font-size:13px; line-height:20px; font-weight:700; }
   .acts { display:flex; flex-direction:column; gap:8px; }
   .act { display:flex; align-items:center; justify-content:space-between; gap:8px;
-    width:100%; height:46px; padding:0 13px; border:1px solid var(--control-border); border-radius:9px; background:var(--white);
+    width:100%; height:46px; padding:0 13px; border:1px solid var(--control-border); border-radius:var(--radius-control); background:var(--white);
     text-align:left; cursor:pointer; }
   .act:hover { background:var(--control-hover); }
+  .act.doing { border-color:#dcecff; background:#fbfdff; }
   .act .nm { min-width:0; font-size:14px; line-height:20px; font-weight:600; color:var(--blue-900);
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .act.off { background:#F7F8FA; opacity:.55; cursor:not-allowed; }
   .act.off .nm { color:var(--blue-gray-400); }
   /* 오른쪽 한 자리 — 상태에 따라 갈아 낀다 */
-  .st { flex:none; display:flex; align-items:center; gap:6px; }
-  .st .pr { font-size:12px; line-height:18px; font-weight:700; color:var(--blue-600);
-    font-variant-numeric:tabular-nums; }
-  .st .bdg { height:20px; padding:0 6px; border-radius:5px; font-size:11px; font-weight:600;
-    display:grid; place-items:center; background:var(--positive-bg); color:var(--positive); }
-  .st .rv { height:20px; padding:0 6px; border-radius:5px; font-size:11px; font-weight:600;
-    display:grid; place-items:center; background:#FFF3E0; color:#F98900; }
+  .st { flex:0 0 92px; display:flex; align-items:center; justify-content:flex-end; gap:4px; }
+  .st .pr,.st .bdg,.st .rv { height:22px; padding:0 7px; border-radius:6px; font-size:11px; line-height:16px;
+    font-weight:700; display:grid; place-items:center; white-space:nowrap; }
+  .st .pr { background:var(--blue-50); color:var(--blue-600); font-variant-numeric:tabular-nums; }
+  .st .bdg { background:var(--positive-bg); color:var(--positive); }
+  .st .rv { background:#FFF3E0; color:#F98900; }
 
   /* 자모 — 과 → unit → 활동 3층 */
-  .unit { margin:8px 16px 0; padding:13px 0 12px; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
-  .unit .ti { padding:0 14px; color:var(--blue-900); font-size:14px; line-height:20px; font-weight:700; }
-  .syls { display:flex; gap:6px; margin-top:10px; padding:0 14px; overflow-x:auto;
+  .unit { margin:var(--space-4) var(--gutter) 0; }
+  .unit + .unit { margin-top:var(--space-6); padding-top:var(--space-4); border-top:1px solid var(--control-border); }
+  .unit .ti { color:var(--blue-gray-800); font-size:14px; line-height:20px; font-weight:700; }
+  .syls { display:flex; gap:6px; margin-top:var(--space-2); padding:0; overflow-x:auto;
     overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; }
   .syls::-webkit-scrollbar { display:none; }
   .syls div { width:28px; height:28px; flex:none; display:grid; place-items:center; border:1px solid #e5f2ff; border-radius:7px; background:#eef6ff;
     color:var(--blue-900); font-size:14px; font-weight:700; }
-  .unit .div { height:12px; margin-bottom:12px; border-bottom:1px solid var(--control-border); }
-  .unit .acts { padding:0 14px; gap:8px; }
+  .unit .acts { margin-top:var(--space-3); gap:var(--space-2); }
   @media (max-width:350px) {
     .week .days { gap:6px; }
     .week .c { width:36px; height:36px; }
-    .pad { padding:0 14px; }
-    .greet { padding-left:16px; padding-right:16px; }
     .task { gap:10px; padding:12px; }
     .task .ic { width:44px; height:44px; }
   }
@@ -295,7 +298,7 @@ function stateSlot(x){
 }
 function actRow(x){
   const off=x.st==="off";
-  return `<button type="button" class="act ${off?"off":""}" ${off?'disabled aria-disabled="true"':''}>
+  return `<button type="button" class="act ${x.st}" ${off?'disabled aria-disabled="true"':''}>
     <span class="nm">${x.n}</span>${stateSlot(x)}</button>`;
 }
 function appbar(){
@@ -375,43 +378,37 @@ function homeView(){
 /* ── 교재학습 ── */
 function bookView(){
   return `${appbar()}${catalogNav("1급",[4,5,6,7,8,9],6)}
-    <div class="scroll">
+    <div class="scroll catalog-scroll">
       ${chapterHead(6,"가족")}
-      <div class="listcard">
-        <div class="body">${D.acts.map((sec,i)=>
-          `${i?'<div style="height:16px"></div>':''}
-           <div class="seclabel">${sec.s}</div>
-           <div class="acts">${sec.items.map(actRow).join("")}</div>`).join("")}</div>
-      </div>
-      <div style="height:20px"></div>
+      <div class="learning-sections">${D.acts.map(sec=>
+        `<section class="learning-section"><div class="seclabel">${sec.s}</div>
+         <div class="acts">${sec.items.map(actRow).join("")}</div></section>`).join("")}</div>
     </div>${tabbar("book")}`;
 }
 
 /* ── 자모 목록 ── */
 function jamoView(){
   return `${appbar()}${catalogNav("한글",[1,2,3],1)}
-    <div class="scroll">
+    <div class="scroll catalog-scroll">
       ${chapterHead(1,"한글(1)")}
       ${D.jamo.map(u=>`<div class="unit">
         <div class="ti">${u.t}</div>
         <div class="syls">${u.syl.map(s=>`<div>${s}</div>`).join("")}</div>
-        <div class="div"></div>
         <div class="acts">${u.items.map(actRow).join("")}</div>
       </div>`).join("")}
-      <div style="height:20px"></div>
     </div>${tabbar("book")}`;
 }
 
 const VIEWS={ home:homeView, book:bookView, jamo:jamoView };
 const SPEC={
-  home:[["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
-    ["게이지","110 · SVG 90"],["통계","44 원 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
+  home:[["좌우 기준선","16"],["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
+    ["게이지","110 · SVG 90"],["통계","44 정사각 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
   book:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
-    ["과 헤더","44+ · radius 12"],["활동 항목","높이 46 · radius 9"],
-    ["상태 자리","오른쪽 하나 · 4종"],["탭 바","60"]],
+    ["과 헤더","56+ · 제목 18 · radius 14"],["학습 섹션","외곽 카드 없음 · 간격 24"],
+    ["활동 항목","높이 46 · radius 9"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
   jamo:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
-    ["과 헤더","44+ · radius 12"],["unit 카드","radius 14"],
-    ["음절 칩","28 정사각 · 가로 스크롤"],["활동 항목","높이 46"],["탭 바","60"]],
+    ["과 헤더","56+ · 제목 18 · radius 14"],["unit 묶음","외곽 카드 없음 · 구분선"],
+    ["음절 칩","28 정사각 · 가로 스크롤"],["활동 항목","높이 46"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
 };
 function bindScrollCues(root){
   root.querySelectorAll('.strip,.syls').forEach(el=>{
