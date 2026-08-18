@@ -126,9 +126,23 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
 
   /* ── 교재학습 · 자모 목록 ─────────────────────── */
   .catalog-nav { flex:none; border-bottom:1px solid var(--control-border); background:var(--white); }
-  .strip { display:flex; gap:11px; padding:11px 16px 7px; overflow-x:auto; }
+  .strip { display:flex; gap:11px; padding:11px 16px 7px; overflow-x:auto; overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch; }
   .strip.chips { gap:6px; padding:0 16px 12px; }
   .strip::-webkit-scrollbar { display:none; }
+  .strip[data-more-right="true"], .syls[data-more-right="true"] {
+    -webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 18px),transparent 100%);
+    mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 18px),transparent 100%);
+  }
+  .strip[data-more-left="true"], .syls[data-more-left="true"] {
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 100%);
+  }
+  .strip[data-more-left="true"][data-more-right="true"],
+  .syls[data-more-left="true"][data-more-right="true"] {
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);
+  }
   .tab2 { flex:none; padding:5px 2px 7px; font-size:14px; line-height:20px; font-weight:600;
     color:var(--blue-gray-400); background:none; border:0; border-bottom:2px solid transparent; }
   .tab2.on { color:var(--blue-600); border-bottom-color:var(--blue-500); }
@@ -162,9 +176,10 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
     display:grid; place-items:center; background:#FFF3E0; color:#F98900; }
 
   /* 자모 — 과 → unit → 활동 3층 */
-  .unit { margin:10px 16px 0; padding:13px 0 12px; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
+  .unit { margin:8px 16px 0; padding:13px 0 12px; border:1px solid var(--control-border); border-radius:14px; background:#fff; }
   .unit .ti { padding:0 14px; color:var(--blue-900); font-size:14px; line-height:20px; font-weight:700; }
-  .syls { display:flex; gap:6px; margin-top:10px; padding:0 14px; overflow-x:auto; }
+  .syls { display:flex; gap:6px; margin-top:10px; padding:0 14px; overflow-x:auto;
+    overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; }
   .syls::-webkit-scrollbar { display:none; }
   .syls div { width:28px; height:28px; flex:none; display:grid; place-items:center; border:1px solid #e5f2ff; border-radius:7px; background:#eef6ff;
     color:var(--blue-900); font-size:14px; font-weight:700; }
@@ -238,6 +253,7 @@ const icons={
 const state={ screen:"home", width:"390", task:"resume" };
 
 const DAYS=["월","화","수","목","금","토","일"];
+const TEXTBOOK_TABS=["한글","1급","2급","3급"];
 const D={
   today:3, done:[0,1,2], streak:3,
   chart:[3,5,2,4,0,0,0],
@@ -248,7 +264,7 @@ const D={
       { n:"AI 롤플레잉",        st:"review", rv:2 },
       { n:"듣고 질문에 답하기", st:"doing", a:3, t:5 },
       { n:"빈칸 채워 말하기",   st:"none" },
-      { n:"읽고 질문에 답하기", st:"none" },
+      { n:"읽고 질문에 답하기", st:"off" },
     ]},
     { s:"심화학습", items:[
       { n:"AI 미션 대화",       st:"doing", a:0, t:1 },
@@ -278,8 +294,24 @@ function stateSlot(x){
   return `<span class="st"></span>`;   // 미학습 — 비운다
 }
 function actRow(x){
-  return `<button class="act ${x.st==="off"?"off":""}">
+  const off=x.st==="off";
+  return `<button type="button" class="act ${off?"off":""}" ${off?'disabled aria-disabled="true"':''}>
     <span class="nm">${x.n}</span>${stateSlot(x)}</button>`;
+}
+function appbar(){
+  return `<div class="appbar"><span style="width:44px"></span>
+    <div class="lesson">교재학습</div><span style="width:44px"></span></div>`;
+}
+function catalogNav(selectedTab, chapters, selectedChapter){
+  return `<div class="catalog-nav"><div class="strip">
+    ${TEXTBOOK_TABS.map(tab=>`<button type="button" class="tab2 ${tab===selectedTab?'on':''}"
+      aria-pressed="${tab===selectedTab}">${tab}</button>`).join("")}</div>
+    <div class="strip chips">${chapters.map(n=>
+      `<button type="button" class="chip3 ${n===selectedChapter?'on':''}"
+        aria-pressed="${n===selectedChapter}">${n}과</button>`).join("")}</div></div>`;
+}
+function chapterHead(seq,title){
+  return `<div class="chapter-head"><span class="seq">제${seq}과</span><strong>${title}</strong></div>`;
 }
 function tabbar(on){
   const T=[["home","홈","home"],["bookT","교재학습","book"],["game","게임","game"],
@@ -342,15 +374,9 @@ function homeView(){
 
 /* ── 교재학습 ── */
 function bookView(){
-  return `<div class="appbar"><span style="width:44px"></span>
-      <div class="lesson">교재학습</div><span style="width:44px"></span></div>
-    <div class="catalog-nav"><div class="strip">
-      <button class="tab2">한글</button><button class="tab2 on">1급</button>
-      <button class="tab2">2급</button><button class="tab2">3급</button></div>
-    <div class="strip chips">${[4,5,6,7,8,9].map(n=>
-      `<button class="chip3 ${n===6?'on':''}">${n}과</button>`).join("")}</div></div>
+  return `${appbar()}${catalogNav("1급",[4,5,6,7,8,9],6)}
     <div class="scroll">
-      <div class="chapter-head"><span class="seq">제6과</span><strong>가족</strong></div>
+      ${chapterHead(6,"가족")}
       <div class="listcard">
         <div class="body">${D.acts.map((sec,i)=>
           `${i?'<div style="height:16px"></div>':''}
@@ -363,15 +389,9 @@ function bookView(){
 
 /* ── 자모 목록 ── */
 function jamoView(){
-  return `<div class="appbar"><span style="width:44px"></span>
-      <div class="lesson">교재학습</div><span style="width:44px"></span></div>
-    <div class="catalog-nav"><div class="strip">
-      <button class="tab2 on">한글</button><button class="tab2">1급</button>
-      <button class="tab2">2급</button></div>
-    <div class="strip chips">${[1,2,3].map(n=>
-      `<button class="chip3 ${n===1?'on':''}">${n}과</button>`).join("")}</div></div>
+  return `${appbar()}${catalogNav("한글",[1,2,3],1)}
     <div class="scroll">
-      <div class="chapter-head"><span class="seq">제1과</span><strong>한글(1)</strong></div>
+      ${chapterHead(1,"한글(1)")}
       ${D.jamo.map(u=>`<div class="unit">
         <div class="ti">${u.t}</div>
         <div class="syls">${u.syl.map(s=>`<div>${s}</div>`).join("")}</div>
@@ -386,15 +406,30 @@ const VIEWS={ home:homeView, book:bookView, jamo:jamoView };
 const SPEC={
   home:[["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
     ["게이지","110 · SVG 90"],["통계","44 원 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
-  book:[["교재 탭","가로 스크롤 · 간격 11"],["과 칩","32 · 간격 6"],
-    ["활동 항목","높이 46 · radius 6"],["상태 자리","오른쪽 하나 · 4종"],["탭 바","60"]],
-  jamo:[["제목","17 semibold"],["과 헤더","36 · #f7f7f7"],["unit 카드","radius 10"],
-    ["음절 칩","28 정사각"],["활동 항목","높이 46"],["탭 바","60"]],
+  book:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
+    ["과 헤더","44+ · radius 12"],["활동 항목","높이 46 · radius 9"],
+    ["상태 자리","오른쪽 하나 · 4종"],["탭 바","60"]],
+  jamo:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
+    ["과 헤더","44+ · radius 12"],["unit 카드","radius 14"],
+    ["음절 칩","28 정사각 · 가로 스크롤"],["활동 항목","높이 46"],["탭 바","60"]],
 };
+function bindScrollCues(root){
+  root.querySelectorAll('.strip,.syls').forEach(el=>{
+    if(el.dataset.cueBound==='true') return;
+    el.dataset.cueBound='true';
+    const sync=()=>{
+      el.dataset.moreLeft=String(el.scrollLeft>1);
+      el.dataset.moreRight=String(el.scrollLeft+el.clientWidth<el.scrollWidth-1);
+    };
+    el.addEventListener('scroll',sync,{passive:true});
+    sync();
+  });
+}
 function render(){
   const dev=document.getElementById('device'), scr=document.getElementById('screen');
   dev.style.width=(+state.width+2)+'px';
   scr.innerHTML=VIEWS[state.screen]();
+  requestAnimationFrame(()=>bindScrollCues(scr));
   document.getElementById('caption').textContent=`${state.width} × 720`;
   document.getElementById('spec').innerHTML=SPEC[state.screen]
     .map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
