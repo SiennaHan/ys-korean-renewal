@@ -1,4 +1,5 @@
-<!-- 확정 디자인 토큰을 그대로 쓴다. 껍데기 손질은 디자인 세션에서. -->
+<!-- 확정 UI/UX(nav_mockup_uiux.html) 위에서 구조를 검증한 목업.
+     시각 마감은 디자인 세션 소유. 정보 구조 판단은 기획 소유 — 갈리는 지점은 토글로 둔다. -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>홈 · 교재학습 · 자모 목록 — 구조 목업</title>
@@ -11,8 +12,12 @@
     --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
     --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
     --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+    --radius-card:14px; --radius-control:9px;
   }
+* { box-sizing:border-box; }
 body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+button { font:inherit; }
 .workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
 .doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
 .doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
@@ -54,12 +59,13 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
 .dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
 .dock .slot svg { width:26px; height:26px; }  /* ── 홈 ─────────────────────────────────────── */
   .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
-  .pad { padding:0 20px; }
-  .greet { padding:20px 20px 4px; }
+  .scroll::-webkit-scrollbar { display:none; }
+  .pad { padding:0 var(--gutter); }
+  .greet { padding:18px var(--gutter) 2px; }
   .greet .hi { font-size:14px; color:#6B7B8D; }
-  .greet .name { font-size:24px; font-weight:700; color:var(--blue-900); }
+  .greet .name { margin-top:1px; font-size:24px; line-height:32px; font-weight:700; letter-spacing:-.02em; color:var(--blue-900); }
 
-  .week { display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px 0 4px; }
+  .week { display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px 0 8px; }
   .week .days { display:flex; gap:12px; }
   .week .d { display:flex; flex-direction:column; align-items:center; gap:4px; }
   .week .c { width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
@@ -70,25 +76,26 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
   .week .lb { font-size:12px; font-weight:500; color:var(--blue-900); }
   .week .lb.today { color:var(--blue-500); font-weight:700; }
   .week .lb.future { color:#C8CCD3; }
-  .week .streak { font-size:14px; color:#6B7B8D; }
+  .week .streak { font-size:13px; line-height:20px; color:#6B7B8D; }
   .week .streak b { color:var(--blue-900); font-weight:700; }
 
   /* 오늘 할 일 — 한 자리에 세 갈래 */
-  .task { display:flex; align-items:center; gap:14px; width:100%; padding:16px;
-    border-radius:16px; background:var(--blue-50); border:0; text-align:left; }
+  .task { display:flex; align-items:center; gap:var(--space-3); width:100%; padding:14px;
+    border:1px solid #e4f1ff; border-radius:var(--radius-card); background:#eef6ff; text-align:left; cursor:pointer; }
+  .task:hover { background:#e7f3ff; }
   .task .ic { width:48px; height:48px; border-radius:12px; flex:none; display:grid;
     place-items:center; background:var(--blue-500); color:#fff; font-size:20px; }
   .task .ic svg { width:22px; height:22px; }
   .task .tx { flex:1; min-width:0; }
-  .task .t1 { font-size:16px; font-weight:700; color:var(--blue-900); }
-  .task .t2 { font-size:13px; color:var(--blue-500); margin-top:2px;
+  .task .t1 { display:block; font-size:16px; line-height:24px; font-weight:700; letter-spacing:-.01em; color:var(--blue-900); }
+  .task .t2 { display:block; font-size:12px; line-height:18px; font-weight:500; color:var(--blue-600); margin-top:2px;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .task .go { width:22px; flex:none; color:var(--blue-500); }
   .task .go svg { width:22px; height:22px; }
 
-  .sec-title { font-size:16px; font-weight:700; color:var(--blue-900); margin:24px 0 12px; }
-  .status { border-radius:16px; background:var(--blue-gray-50); padding:16px;
-    display:flex; gap:12px; align-items:center; }
+  .sec-title { font-size:16px; line-height:24px; font-weight:700; color:var(--blue-900); margin:var(--space-6) 0 var(--space-2); }
+  .status { border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); padding:14px;
+    display:flex; gap:10px; align-items:center; }
   .gauge { width:110px; height:110px; flex:none; position:relative; }
   .gauge svg { width:100%; height:100%; transform:rotate(-90deg); }
   .gauge .mid { position:absolute; inset:0; display:flex; flex-direction:column;
@@ -97,83 +104,113 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
   .gauge .v small { font-size:14px; font-weight:400; color:#9BA5B0; }
   .gauge .lb { font-size:11px; color:#9BA5B0; }
   .stats { flex:1; display:flex; flex-direction:column; gap:8px; min-width:0; }
-  .stat2 { display:flex; align-items:center; gap:12px; background:#fff;
-    border-radius:12px; padding:14px; }
-  .stat2 .n { width:44px; height:44px; flex:none; border-radius:10px; background:var(--blue-500);
-    color:#fff; font-size:20px; font-weight:700; display:grid; place-items:center; }
-  .stat2 .l { font-size:13px; font-weight:600; color:var(--blue-900); }
+  .stat2 { display:flex; align-items:center; gap:11px; border:1px solid var(--control-border); background:#fafbfd;
+    border-radius:10px; padding:10px; }
+  .stat2 .n { width:44px; height:44px; flex:none; border-radius:var(--radius-control); background:var(--blue-50);
+    color:var(--blue-600); font-size:19px; font-weight:700; display:grid; place-items:center; }
+  .stat2 .l { font-size:12px; line-height:18px; font-weight:600; color:var(--blue-gray-800); }
 
   .chart { display:flex; align-items:flex-end; justify-content:space-between;
-    gap:8px; height:120px; }
+    gap:8px; height:120px; padding:12px 10px 10px; border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); }
   .chart .col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
   .chart .bx { width:100%; height:80px; display:flex; align-items:flex-end; justify-content:center; }
-  .chart .bar { width:100%; max-width:36px; border-radius:6px; background:var(--blue-500); }
-  .chart .bar.empty { border:2px dashed #C8CCD3; background:transparent; }
+  .chart .bar { width:100%; max-width:28px; border-radius:6px 6px 3px 3px; background:var(--blue-500); }
+  .chart .bar.empty { border:1px dashed #C8CCD3; background:transparent; }
   .chart .lb { font-size:12px; color:#6B7B8D; }
   .chart .lb.today { color:var(--blue-500); font-weight:700; }
   .chart .lb.future { color:#C8CCD3; }
 
   /* ── 탭 바 ──────────────────────────────────── */
   .tabbar { flex:none; height:60px; display:flex; background:#fff;
-    border-top:1px solid #F0F1F3; }
+    border-top:1px solid var(--control-border); }
   .tabbar a { flex:1; display:flex; flex-direction:column; align-items:center;
     justify-content:center; gap:2px; color:var(--blue-gray-400); text-decoration:none; }
-  .tabbar a.on { color:var(--blue-500); }
+  .tabbar a.on { color:var(--blue-600); font-weight:600; }
   .tabbar svg { width:22px; height:22px; }
   .tabbar span { font-size:10px; }
 
   /* ── 교재학습 · 자모 목록 ─────────────────────── */
-  .strip { display:flex; gap:11px; padding:8px 16px; overflow-x:auto; }
+  .catalog-nav { flex:none; border-bottom:1px solid var(--control-border); background:var(--white); }
+  .strip { display:flex; gap:11px; padding:11px 16px 7px; overflow-x:auto; overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch; }
   .strip.chips { gap:6px; padding:0 16px 12px; }
   .strip::-webkit-scrollbar { display:none; }
-  .tab2 { flex:none; padding:6px 2px; font-size:15px; font-weight:600;
+  .strip[data-more-right="true"], .syls[data-more-right="true"] {
+    -webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 18px),transparent 100%);
+    mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 18px),transparent 100%);
+  }
+  .strip[data-more-left="true"], .syls[data-more-left="true"] {
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 100%);
+  }
+  .strip[data-more-left="true"][data-more-right="true"],
+  .syls[data-more-left="true"][data-more-right="true"] {
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);
+  }
+  .tab2 { flex:none; padding:5px 2px 7px; font-size:14px; line-height:20px; font-weight:600;
     color:var(--blue-gray-400); background:none; border:0; border-bottom:2px solid transparent; }
-  .tab2.on { color:var(--blue-900); border-bottom-color:var(--blue-500); }
-  .chip3 { flex:none; height:32px; padding:0 12px; border-radius:16px; font-size:13px;
-    font-weight:600; background:var(--blue-gray-50); color:var(--blue-gray-600); border:0; }
-  .chip3.on { background:var(--blue-500); color:#fff; }
+  .tab2.on { color:var(--blue-gray-900); border-bottom-color:var(--blue-500); }
+  .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--control-border); border-radius:var(--radius-control); font-size:13px;
+    font-weight:600; background:var(--white); color:var(--blue-gray-600); }
+  .chip3.on { border-color:var(--blue-900); background:var(--blue-900); color:var(--white); }
 
-  .listcard { background:#fff; border-radius:12px; overflow:hidden; margin:0 16px; }
-  .listcard .head { padding:12px; border-bottom:1px solid var(--blue-gray-50);
-    font-size:14px; font-weight:700; color:var(--blue-500); }
-  .listcard .body { padding:10px 12px; }
-  .seclabel { font-size:10px; font-weight:600; color:#666B73; margin-bottom:8px; }
+  .catalog-scroll { padding-bottom:var(--space-6); scroll-padding-bottom:var(--space-6); }
+  .chapter-head { min-height:42px; display:flex; align-items:center; gap:var(--space-2); margin:var(--space-4) var(--gutter) 0;
+    padding:0; }
+  .chapter-head .seq { flex:none; color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:700; }
+  .chapter-head strong { min-width:0; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:700; letter-spacing:-.015em; }
+  .learning-sections { margin:var(--space-3) var(--gutter) 0; }
+  .learning-section,.unit { padding:14px; border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); }
+  .learning-section + .learning-section { margin-top:var(--space-3); }
+  .seclabel { margin-bottom:var(--space-3); color:var(--blue-gray-800); font-size:14px; line-height:20px; font-weight:700; }
   .acts { display:flex; flex-direction:column; gap:8px; }
   .act { display:flex; align-items:center; justify-content:space-between; gap:8px;
-    height:46px; padding:0 16px; border-radius:6px; background:#F9FAFC;
-    border:0; width:100%; text-align:left; }
-  .act .nm { font-size:14px; font-weight:600; color:var(--blue-900);
+    width:100%; height:46px; padding:0 13px; border:1px solid var(--control-border); border-radius:var(--radius-control); background:var(--white);
+    text-align:left; cursor:pointer; }
+  .act:hover { background:var(--control-hover); }
+  .act.doing { border-color:#dcecff; background:var(--white); }
+  .act .nm { min-width:0; font-size:14px; line-height:20px; font-weight:600; color:var(--blue-900);
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .act.off { background:#F2F3F5; opacity:.4; }
+  .act.off { background:#F7F8FA; opacity:.55; cursor:not-allowed; }
   .act.off .nm { color:var(--blue-gray-400); }
   /* 오른쪽 한 자리 — 상태에 따라 갈아 낀다 */
-  .st { flex:none; display:flex; align-items:center; gap:6px; }
-  .st .pr { font-size:13px; font-weight:700; color:var(--blue-500);
-    font-variant-numeric:tabular-nums; }
-  .st .bdg { height:20px; padding:0 6px; border-radius:4px; font-size:12px; font-weight:600;
-    display:grid; place-items:center; background:var(--positive-bg); color:var(--positive); }
-  .st .rv { height:20px; padding:0 6px; border-radius:4px; font-size:12px; font-weight:600;
-    display:grid; place-items:center; background:#FFF3E0; color:#F98900; }
+  .st { flex:0 0 92px; display:flex; align-items:center; justify-content:flex-end; gap:4px; }
+  .st .pr,.st .bdg,.st .rv { height:22px; padding:0 7px; border-radius:6px; font-size:11px; line-height:16px;
+    font-weight:700; display:grid; place-items:center; white-space:nowrap; }
+  .st .pr { background:var(--blue-50); color:var(--blue-600); font-variant-numeric:tabular-nums; }
+  .st .bdg { background:var(--positive-bg); color:var(--positive); }
+  .st .rv { background:#FFF3E0; color:#F98900; }
 
   /* 자모 — 과 → unit → 활동 3층 */
-  .jhead { display:flex; align-items:center; height:36px; padding:0 6px;
-    background:#f7f7f7; border-radius:10px; font-size:14px; color:var(--blue-gray-600);
-    margin:0 16px; }
-  .unit { background:#fff; border-radius:10px; padding:12px 0; margin:12px 16px 0; }
-  .unit .ti { padding:0 12px; font-size:14px; font-weight:700; color:var(--blue-500); }
-  .syls { display:flex; gap:4px; margin-top:10px; padding:0 12px; overflow-x:auto; }
+  .unit { margin:var(--space-3) var(--gutter) 0; }
+  .unit + .unit { margin-top:var(--space-3); }
+  .unit .ti { color:var(--blue-gray-800); font-size:14px; line-height:20px; font-weight:700; }
+  .syls { display:flex; gap:6px; margin-top:var(--space-2); padding:0; overflow-x:auto;
+    overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; }
   .syls::-webkit-scrollbar { display:none; }
-  .syls div { width:28px; height:28px; flex:none; border-radius:6px; background:var(--blue-50);
-    color:var(--blue-900); font-size:14px; font-weight:700; display:grid; place-items:center; }
-  .unit .div { height:12px; border-bottom:1px solid var(--blue-gray-50); margin-bottom:12px; }
-  .unit .acts { padding:0 12px; gap:10px; }
+  .syls div { width:28px; height:28px; flex:none; display:grid; place-items:center; border:1px solid #e5f2ff; border-radius:7px; background:#eef6ff;
+    color:var(--blue-900); font-size:14px; font-weight:700; }
+  .unit .acts { margin-top:var(--space-3); gap:var(--space-2); }
+  /* 좁은 폭 보정. 벤치는 뷰포트가 아니라 기기 박스의 폭을 바꾸므로 미디어쿼리가 걸리지 않는다.
+     같은 규칙을 [data-narrow] 로도 두어 320 을 실제로 검증할 수 있게 한다. */
+  @media (max-width:350px) {
+    .week .days { gap:6px; }
+    .week .c { width:36px; height:36px; }
+    .task { gap:10px; padding:12px; }
+    .task .ic { width:44px; height:44px; }
+  }
+  .screen[data-narrow] .week .days { gap:6px; }
+  .screen[data-narrow] .week .c { width:36px; height:36px; }
+  .screen[data-narrow] .task { gap:10px; padding:12px; }
+  .screen[data-narrow] .task .ic { width:44px; height:44px; }
 </style>
 <body>
 <main class="workbench">
   <header class="doc">
-    <div><div class="kicker">STRUCTURE · 기획 검증용</div><h1>홈 · 교재학습 · 자모 목록</h1></div>
-    <p>확정 디자인 토큰으로 <b>구조가 실제로 들어가는지</b>만 확인한 목업입니다.
-       시각 마감은 디자인 세션에서 합니다. 결정 3건(as-is 문서 §4)을 그대로 적용했습니다.</p>
+    <div><div class="kicker">STRUCTURE · 확정 디자인 적용</div><h1>홈 · 교재학습 · 자모 목록</h1></div>
+    <p>확정 UI/UX를 그대로 입히고 <b>구조가 실제로 들어가는지</b> 확인했습니다.
+       구 앱 코드와 어긋나는 두 지점은 <b>토글로 남겨</b> 두었습니다.</p>
   </header>
   <nav class="controls">
     <div class="control-group" data-set="screen">
@@ -186,6 +223,17 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
       <span class="control-label">오늘 할 일</span>
       <button class="option" data-value="resume" aria-pressed="true">이어하기</button>
       <button class="option" data-value="review" aria-pressed="false">다시 풀기</button>
+      <button class="option" data-value="none" aria-pressed="false">없음</button>
+    </div>
+    <div class="control-group" data-set="progress" id="prggrp">
+      <span class="control-label">진행 표기</span>
+      <button class="option" data-value="num" aria-pressed="true">n / N</button>
+      <button class="option" data-value="text" aria-pressed="false">진행 중</button>
+    </div>
+    <div class="control-group" data-set="title" id="ttlgrp">
+      <span class="control-label">앱바 제목</span>
+      <button class="option" data-value="fixed" aria-pressed="true">교재학습</button>
+      <button class="option" data-value="book" aria-pressed="false">교재명</button>
       <button class="option" data-value="none" aria-pressed="false">없음</button>
     </div>
     <div class="control-group" data-set="width">
@@ -205,8 +253,24 @@ body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink
       <div class="note-section">
         <h2>확인한 것</h2>
         <p><b>활동 항목 46 유지:</b> 상태 넷이 동시에 안 나타나므로 오른쪽 한 자리를 갈아 낀다.</p>
-        <p><b>미학습은 비운다:</b> 0/9 는 정보가 아니다. 표기 없음이 곧 미학습.</p>
+        <p><b>미학습은 비운다:</b> 0/9 는 정보가 아니다. 표기 없음이 곧 미학습.
+           구 앱은 회색 <b>"미완료"</b> 배지를 그렸다.</p>
         <p><b>오늘 할 일 한 자리:</b> 이어하기 · 다시 풀기 · 없음이 같은 카드를 쓴다.</p>
+        <p><b>못 하는 활동은 배지를 안 그린다:</b> 구 앱도 <code>disabled</code>면
+           배지를 빼고 이름만 남긴다. 그대로 맞췄다.</p>
+      </div>
+      <div class="note-section">
+        <h2>갈리는 것 — 토글로 둠</h2>
+        <p><b>진행 표기:</b> 확정 디자인은 전부 <b>"진행 중"</b>이다. 그런데
+           <code>getLearningProgress</code>가 <b>학습한 문항 수를 이미 준다</b> —
+           <code>p.total >= totalQuestions</code>로 완료를 계산하는 그 값이다.
+           홈의 이어하기 카드는 <b>"3/5"</b>를 쓴다.</p>
+        <p>목록에서 진행 중이 여럿일 때 <b>어느 걸 마무리할지</b> 고르는 판단은
+           숫자가 있어야 선다. 대신 <b>플래시카드 · 미션 대화는 분모가 없어</b>
+           (<code>content_counts</code>에 없다) 그 둘만 "진행 중"이 된다.</p>
+        <p><b>앱바 제목:</b> 구 앱은 <b>교재명</b>을 17 semibold 로 띄우고
+           탭 아래에 <b>한 번 더</b> 썼다(중복). 확정 디자인은 "교재학습" 고정인데,
+           <b>탭바 라벨과 같은 낱말</b>이 한 화면에 두 번 온다.</p>
       </div>
     </aside>
   </section>
@@ -225,9 +289,10 @@ const icons={
   user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
 };
 
-const state={ screen:"home", width:"390", task:"resume" };
+const state={ screen:"home", width:"390", task:"resume", progress:"num", title:"fixed" };
 
 const DAYS=["월","화","수","목","금","토","일"];
+const TEXTBOOK_TABS=["한글","1급","2급","3급"];
 const D={
   today:3, done:[0,1,2], streak:3,
   chart:[3,5,2,4,0,0,0],
@@ -238,7 +303,7 @@ const D={
       { n:"AI 롤플레잉",        st:"review", rv:2 },
       { n:"듣고 질문에 답하기", st:"doing", a:3, t:5 },
       { n:"빈칸 채워 말하기",   st:"none" },
-      { n:"읽고 질문에 답하기", st:"none" },
+      { n:"읽고 질문에 답하기", st:"off" },
     ]},
     { s:"심화학습", items:[
       { n:"AI 미션 대화",       st:"doing", a:0, t:1 },
@@ -260,16 +325,39 @@ const D={
 
 /* 오른쪽 한 자리 — 상태에 따라 갈아 낀다(§4 결정 1) */
 function stateSlot(x){
-  // 분모가 1이면 숫자가 정보를 못 준다 — 0/1 은 미학습과 구별되지 않는다
-  if(x.st==="doing" && x.t===1) return `<span class="st"><span class="pr">진행 중</span></span>`;
-  if(x.st==="doing")  return `<span class="st"><span class="pr">${x.a} / ${x.t}</span></span>`;
+  if(x.st==="doing"){
+    /* n/N 은 분모를 아는 5종에서만 낼 수 있다 — content_counts 에 flashcard·mission-chat 이 없다.
+       분모가 1이면 0/1 이 미학습과 구별되지 않아 숫자를 쓰지 않는다. */
+    const num = state.progress==="num" && x.t>1;
+    return `<span class="st"><span class="pr">${num?`${x.a} / ${x.t}`:"진행 중"}</span></span>`;
+  }
   if(x.st==="done")   return `<span class="st"><span class="bdg">완료</span></span>`;
   if(x.st==="review") return `<span class="st"><span class="bdg">완료</span><span class="rv">복습 ${x.rv}</span></span>`;
   return `<span class="st"></span>`;   // 미학습 — 비운다
 }
 function actRow(x){
-  return `<button class="act ${x.st==="off"?"off":""}">
+  const off=x.st==="off";
+  return `<button type="button" class="act ${x.st}" ${off?'disabled aria-disabled="true"':''}>
     <span class="nm">${x.n}</span>${stateSlot(x)}</button>`;
+}
+/* 구 앱은 교재명을 17 semibold 로 띄운다(그리고 탭 아래에 한 번 더 — 중복이었다).
+   확정 디자인은 "교재학습" 고정. 탭바 라벨과 같은 낱말이 되므로 세 갈래를 놓고 본다. */
+function appbar(bookName){
+  if(state.title==="none") return "";
+  const t = state.title==="book" ? bookName : "교재학습";
+  return `<div class="appbar"><span style="width:44px"></span>
+    <div class="lesson">${t}</div><span style="width:44px"></span></div>`;
+}
+function catalogNav(selectedTab, chapters, selectedChapter){
+  return `<div class="catalog-nav"><div class="strip">
+    ${TEXTBOOK_TABS.map(tab=>`<button type="button" class="tab2 ${tab===selectedTab?'on':''}"
+      aria-pressed="${tab===selectedTab}">${tab}</button>`).join("")}</div>
+    <div class="strip chips">${chapters.map(n=>
+      `<button type="button" class="chip3 ${n===selectedChapter?'on':''}"
+        aria-pressed="${n===selectedChapter}">${n}과</button>`).join("")}</div></div>`;
+}
+function chapterHead(seq,title){
+  return `<div class="chapter-head"><span class="seq">제${seq}과</span><strong>${title}</strong></div>`;
 }
 function tabbar(on){
   const T=[["home","홈","home"],["bookT","교재학습","book"],["game","게임","game"],
@@ -332,73 +420,75 @@ function homeView(){
 
 /* ── 교재학습 ── */
 function bookView(){
-  return `<div class="strip">
-      <button class="tab2">한글</button><button class="tab2 on">1급</button>
-      <button class="tab2">2급</button><button class="tab2">3급</button></div>
-    <div class="strip chips">${[4,5,6,7,8,9].map(n=>
-      `<button class="chip3 ${n===6?'on':''}">${n}과</button>`).join("")}</div>
-    <div class="scroll">
-      <div class="listcard">
-        <div class="head">6과 · 가족</div>
-        <div class="body">${D.acts.map((sec,i)=>
-          `${i?'<div style="height:16px"></div>':''}
-           <div class="seclabel">${sec.s}</div>
-           <div class="acts">${sec.items.map(actRow).join("")}</div>`).join("")}</div>
-      </div>
-      <div style="height:20px"></div>
+  return `${appbar("3주 완성 연세 한국어 1급")}${catalogNav("1급",[4,5,6,7,8,9],6)}
+    <div class="scroll catalog-scroll">
+      ${chapterHead(6,"가족")}
+      <div class="learning-sections">${D.acts.map(sec=>
+        `<section class="learning-section"><div class="seclabel">${sec.s}</div>
+         <div class="acts">${sec.items.map(actRow).join("")}</div></section>`).join("")}</div>
     </div>${tabbar("book")}`;
 }
 
 /* ── 자모 목록 ── */
 function jamoView(){
-  return `<div class="appbar"><span style="width:44px"></span>
-      <div class="lesson">한글 자모 익히기</div><span style="width:44px"></span></div>
-    <div class="strip">
-      <button class="tab2 on">한글</button><button class="tab2">1급</button>
-      <button class="tab2">2급</button></div>
-    <div class="strip chips">${[1,2,3].map(n=>
-      `<button class="chip3 ${n===1?'on':''}">${n}과</button>`).join("")}</div>
-    <div class="scroll">
-      <div class="jhead">제1과 한글(1)</div>
+  return `${appbar("한글 자모 익히기")}${catalogNav("한글",[1,2,3],1)}
+    <div class="scroll catalog-scroll">
+      ${chapterHead(1,"한글(1)")}
       ${D.jamo.map(u=>`<div class="unit">
         <div class="ti">${u.t}</div>
         <div class="syls">${u.syl.map(s=>`<div>${s}</div>`).join("")}</div>
-        <div class="div"></div>
         <div class="acts">${u.items.map(actRow).join("")}</div>
       </div>`).join("")}
-      <div style="height:20px"></div>
     </div>${tabbar("book")}`;
 }
 
 const VIEWS={ home:homeView, book:bookView, jamo:jamoView };
 const SPEC={
-  home:[["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
-    ["게이지","110 · SVG 90"],["통계","44 원 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
-  book:[["교재 탭","가로 스크롤 · 간격 11"],["과 칩","32 · 간격 6"],
-    ["활동 항목","높이 46 · radius 6"],["상태 자리","오른쪽 하나 · 4종"],["탭 바","60"]],
-  jamo:[["제목","17 semibold"],["과 헤더","36 · #f7f7f7"],["unit 카드","radius 10"],
-    ["음절 칩","28 정사각"],["활동 항목","높이 46"],["탭 바","60"]],
+  home:[["좌우 기준선","16"],["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
+    ["게이지","110 · SVG 90"],["통계","44 정사각 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
+  book:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
+    ["과 헤더","제목 영역 · 18 bold"],["학습 섹션","그룹 카드 · radius 14"],
+    ["활동 항목","높이 46 · radius 9"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
+  jamo:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
+    ["과 헤더","제목 영역 · 18 bold"],["unit 묶음","그룹 카드 · radius 14"],
+    ["음절 칩","28 정사각 · 가로 스크롤"],["활동 항목","높이 46"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
 };
+function bindScrollCues(root){
+  root.querySelectorAll('.strip,.syls').forEach(el=>{
+    if(el.dataset.cueBound==='true') return;
+    el.dataset.cueBound='true';
+    const sync=()=>{
+      el.dataset.moreLeft=String(el.scrollLeft>1);
+      el.dataset.moreRight=String(el.scrollLeft+el.clientWidth<el.scrollWidth-1);
+    };
+    el.addEventListener('scroll',sync,{passive:true});
+    sync();
+  });
+}
 function render(){
   const dev=document.getElementById('device'), scr=document.getElementById('screen');
-  dev.style.width=(+state.width+2)+'px';
+  /* border 1 + padding 1 을 양쪽으로 물어 화면 안쪽이 정확히 state.width 가 되게 한다 */
+  dev.style.width=(+state.width+4)+'px';
+  if(+state.width<=350) scr.dataset.narrow=''; else scr.removeAttribute('data-narrow');
   scr.innerHTML=VIEWS[state.screen]();
+  requestAnimationFrame(()=>bindScrollCues(scr));
   document.getElementById('caption').textContent=`${state.width} × 720`;
   document.getElementById('spec').innerHTML=SPEC[state.screen]
     .map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
   document.querySelectorAll('[data-set="screen"] .option').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.value===state.screen)));
-  document.querySelectorAll('[data-set="task"] .option').forEach(b=>
-    b.setAttribute('aria-pressed',String(b.dataset.value===state.task)));
-  document.getElementById('taskgrp').style.display = state.screen==='home'?'':'none';
+  ['task','progress','title','width'].forEach(set=>
+    document.querySelectorAll(`[data-set="${set}"] .option`).forEach(b=>
+      b.setAttribute('aria-pressed',String(b.dataset.value===state[set]))));
+  const onHome = state.screen==='home';
+  document.getElementById('taskgrp').style.display = onHome?'':'none';
+  document.getElementById('prggrp').style.display = onHome?'none':'';
+  document.getElementById('ttlgrp').style.display = onHome?'none':'';
 }
 document.addEventListener('click',e=>{
   const o=e.target.closest('.option'); if(!o) return;
   const set=o.closest('.control-group').dataset.set;
-  if(set==='width'){ state.width=o.dataset.value;
-    document.querySelectorAll('[data-set="width"] .option').forEach(b=>
-      b.setAttribute('aria-pressed',String(b.dataset.value===state.width))); }
-  else state[set]=o.dataset.value;
+  state[set]=o.dataset.value;
   render();
 });
 render();
