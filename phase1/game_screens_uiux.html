@@ -2825,18 +2825,142 @@ const UIUX_CSS=`
   body[data-screen^="ps_"] .ux-title { line-height:1.25 !important; letter-spacing:-.02em !important; }
   body[data-screen^="cs_"] .ux-control,
   body[data-screen^="ps_"] .ux-control { line-height:1.35; }
-  body[data-screen^="cs_"] .ux-choice,
-  body[data-screen^="cs_"] .ux-category,
   body[data-screen^="ps_"] .ux-level-card,
   body[data-screen^="ps_"] .ux-lesson-card { border-radius:13px !important;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 1px 0 rgba(0,0,0,.22); }
-  body[data-screen="cs_level"] .ux-primary { min-height:52px; border-radius:14px !important;
-    padding-inline:20px !important; line-height:20px; }
-  body[data-screen="cs_play"] .ux-category { min-height:52px; padding-inline:10px !important;
-    font-size:clamp(11px,3.4vw,13px) !important; }
+
+  /* 어휘 카드 마스터 — 네 상태를 하나의 정돈된 TCG 셸로 잇는다 */
+  body[data-screen^="cs_"] .ux-dark-stage { background:
+    radial-gradient(ellipse at 50% -12%,rgba(80,82,145,.22),transparent 44%),
+    linear-gradient(180deg,#090a17 0%,#060612 62%,#080916 100%) !important; }
+  body[data-screen^="cs_"] .cs-back { width:36px !important; height:36px !important;
+    border:1px solid rgba(255,255,255,.07) !important; background:rgba(255,255,255,.055) !important;
+    box-shadow:none !important; }
+
+  body[data-screen="cs_level"] .cs-level-shell { padding:18px 16px 20px !important; gap:0 !important; }
+  body[data-screen="cs_level"] .cs-level-header { padding-top:0 !important; gap:11px !important; }
+  body[data-screen="cs_level"] .ux-title { color:#f5f6fa !important; background:none !important;
+    -webkit-text-fill-color:currentColor !important; font-size:21px !important; line-height:28px !important;
+    font-weight:800 !important; letter-spacing:-.025em !important; }
+  body[data-screen="cs_level"] .cs-level-subtitle { margin:2px 0 16px 47px !important; text-align:left !important; }
+  body[data-screen="cs_level"] .cs-level-subtitle > * { margin:0 !important; color:#858b9e !important;
+    font-size:12px !important; line-height:18px !important; }
+  body[data-screen="cs_level"] .cs-config-panel { padding:15px; border:1px solid rgba(255,255,255,.065);
+    border-radius:18px; background:rgba(255,255,255,.035); }
+  body[data-screen="cs_level"] .cs-grade-section { margin-bottom:17px; }
+  body[data-screen="cs_level"] .cs-section-label { margin-bottom:8px !important; color:#9ca2b4 !important;
+    font-size:12px !important; line-height:18px !important; font-weight:600; }
+  body[data-screen="cs_level"] .cs-grade-section > div:last-child { padding:3px; gap:3px !important;
+    border-radius:12px; background:#080914; }
+  body[data-screen="cs_level"] .cs-grade { min-height:38px; padding:8px 0 !important; border:0 !important;
+    border-radius:9px !important; background:transparent !important; color:#777e91 !important;
+    box-shadow:none !important; }
+  body[data-screen="cs_level"] .cs-grade.is-selected { background:#f2d34f !important;
+    color:#15130a !important; }
+  body[data-screen="cs_level"] .cs-lesson-section { min-height:0; }
+  body[data-screen="cs_level"] .cs-lesson-section > div:last-child { gap:7px !important; }
+  body[data-screen="cs_level"] .cs-lesson { min-height:35px; padding:7px 4px !important;
+    border:1px solid rgba(255,255,255,.055) !important; border-radius:9px !important;
+    background:rgba(255,255,255,.035) !important; color:#aab0c0 !important; box-shadow:none !important; }
+  body[data-screen="cs_level"] .cs-lesson.is-selected { border-color:#e8cf58 !important;
+    background:rgba(232,207,88,.13) !important; color:#f2d95f !important; }
+  body[data-screen="cs_level"] .cs-lesson.is-locked { border-color:transparent !important;
+    background:rgba(255,255,255,.018) !important; color:#484c5b !important; }
+  body[data-screen="cs_level"] .cs-lesson > span { display:none !important; }
+  body[data-screen="cs_level"] .cs-preview-section { margin:14px 0 15px; }
+  body[data-screen="cs_level"] .cs-preview-row { gap:7px !important; }
+  body[data-screen="cs_level"] .cs-preview-chip { padding:5px 10px !important; border-width:1px !important;
+    border-radius:999px !important; background:rgba(255,255,255,.025) !important;
+    font-size:12px !important; line-height:18px !important; }
+  body[data-screen="cs_level"] .ux-primary { min-height:50px; padding:13px 20px !important;
+    border-radius:13px !important; background:#f2d34f !important; color:#15130a !important;
+    font-size:16px !important; line-height:22px; letter-spacing:.04em !important;
+    box-shadow:0 1px 0 rgba(255,255,255,.18) inset !important; }
+
+  body[data-screen="cs_intro"] .cs-intro-shell { padding:24px !important; }
+  body[data-screen="cs_intro"] .cs-intro-panel { width:100%; max-width:310px; padding:30px 22px 27px;
+    border:1px solid rgba(255,255,255,.07); border-radius:24px;
+    background:linear-gradient(180deg,rgba(255,255,255,.052),rgba(255,255,255,.025));
+    text-align:center; }
+  body[data-screen="cs_intro"] .cs-intro-label { color:#9ca2b4 !important; font-size:12px !important;
+    line-height:18px; font-weight:600; }
+  body[data-screen="cs_intro"] .cs-intro-categories { margin-top:16px; gap:8px !important; }
+  body[data-screen="cs_intro"] .cs-intro-chip { padding:7px 12px !important; border-width:1px !important;
+    border-radius:999px !important; background:rgba(255,255,255,.025) !important;
+    font-size:13px !important; line-height:19px; }
+  body[data-screen="cs_intro"] .cs-countdown { width:92px; height:92px; margin:28px auto 0;
+    border:1px solid rgba(242,211,79,.34); border-radius:50%; display:grid; place-items:center;
+    background:radial-gradient(circle,rgba(242,211,79,.11),rgba(242,211,79,.02) 64%,transparent 65%);
+    color:#f2d34f !important; font-size:54px !important; line-height:1 !important;
+    filter:none !important; box-shadow:0 0 0 7px rgba(242,211,79,.025); }
+
+  body[data-screen="cs_play"] .cs-play-shell { padding-bottom:0 !important; }
+  body[data-screen="cs_play"] .cs-time-track { background:#202233 !important; }
+  body[data-screen="cs_play"] .cs-time-track > div { background:#f2d34f !important; }
+  body[data-screen="cs_play"] .cs-hud { min-height:52px; padding:8px 14px !important;
+    border-bottom:1px solid rgba(255,255,255,.045); }
+  body[data-screen="cs_play"] .cs-hud > div:nth-child(2) { display:none !important; }
+  body[data-screen="cs_play"] .cs-life { gap:3px !important; }
+  body[data-screen="cs_play"] .cs-life span { font-size:14px !important; filter:none !important; color:#ff6077; }
+  body[data-screen="cs_play"] .cs-score { min-width:48px; text-align:right; font-size:18px !important;
+    color:#f5f6fa !important; font-variant-numeric:tabular-nums; }
+  body[data-screen="cs_play"] .cs-score::before { content:"SCORE"; display:block; color:#676e82;
+    font-family:"Exo 2",sans-serif; font-size:8px; line-height:10px; letter-spacing:.12em; }
+  body[data-screen="cs_play"] .cs-timer { align-self:center; margin:10px 0 0 !important; padding:5px 10px;
+    border-radius:999px; background:rgba(255,255,255,.045); color:#aeb4c4 !important;
+    font-size:12px !important; line-height:16px; font-variant-numeric:tabular-nums; }
+  body[data-screen="cs_play"] .cs-card-stage { padding:12px 0 18px; }
+  body[data-screen="cs_play"] .cs-vocab-card { width:min(68vw,246px) !important; min-height:186px !important;
+    padding:24px 20px 21px !important; gap:15px !important; border:1px solid rgba(255,74,236,.34) !important;
+    border-radius:20px !important; background:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.035)) !important;
+    box-shadow:0 14px 36px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.025) inset !important;
+    backdrop-filter:blur(10px); }
+  body[data-screen="cs_play"] .cs-vocab-card::before { content:""; position:absolute; inset:0 18px auto;
+    height:2px; border-radius:0 0 2px 2px; background:linear-gradient(90deg,transparent,#ff4aec,transparent);
+    opacity:.72; }
+  body[data-screen="cs_play"] .cs-card-meta { color:#8f95a8 !important; letter-spacing:.04em !important; }
+  body[data-screen="cs_play"] .cs-card-word { font-size:34px !important; line-height:45px;
+    letter-spacing:-.035em !important; text-shadow:none !important; }
+  body[data-screen="cs_play"] .cs-card-count { color:#6f7588 !important; }
+  body[data-screen="cs_play"] .cs-category-tray { padding:12px 12px 16px !important; gap:7px !important;
+    border-top:1px solid rgba(255,255,255,.055); background:rgba(4,5,13,.7); }
+  body[data-screen="cs_play"] .ux-category { min-height:58px; padding:11px 4px !important;
+    border-width:1px !important; border-radius:12px !important; background:rgba(255,255,255,.028) !important;
+    font-size:clamp(11px,3.4vw,13px) !important; box-shadow:none !important; }
+
+  body[data-screen="cs_result"] .cs-result-shell { justify-content:center !important;
+    padding:22px 20px !important; gap:14px !important; }
+  body[data-screen="cs_result"] .cs-result-panel { width:100%; max-width:300px; padding:18px 18px 15px;
+    border:1px solid rgba(255,255,255,.07); border-radius:20px;
+    background:linear-gradient(180deg,rgba(255,255,255,.052),rgba(255,255,255,.025)); }
+  body[data-screen="cs_result"] .cs-result-hero { display:grid; grid-template-columns:88px minmax(0,1fr);
+    align-items:center; gap:15px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,.065); }
+  body[data-screen="cs_result"] .cs-rank { width:82px; height:82px; border:1px solid rgba(242,211,79,.25);
+    border-radius:18px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(242,211,79,.055); }
+  body[data-screen="cs_result"] .cs-grade { font-size:56px !important; background:none !important;
+    -webkit-text-fill-color:#f2d34f !important; filter:none !important; }
+  body[data-screen="cs_result"] .cs-rank > div:last-child { margin-top:2px !important; color:#858b9e !important;
+    font-size:10px !important; line-height:14px; }
+  body[data-screen="cs_result"] .cs-score-block { text-align:left !important; font-size:34px !important;
+    line-height:40px; }
+  body[data-screen="cs_result"] .cs-best-score { margin-top:4px; color:#8f95a8; font-family:Pretendard,sans-serif;
+    font-size:11px; line-height:16px; font-weight:600; }
+  body[data-screen="cs_result"] .cs-stats { width:100% !important; max-width:none !important; padding:14px 2px 0 !important;
+    border-radius:0 !important; background:transparent !important; gap:9px !important; }
+  body[data-screen="cs_result"] .cs-stat-row { display:flex; align-items:center; justify-content:space-between; }
+  body[data-screen="cs_result"] .cs-stat-row span:first-child { color:#8f95a8 !important; font-size:13px !important; }
+  body[data-screen="cs_result"] .cs-stat-row span:last-child { font-size:14px !important; }
+  body[data-screen="cs_result"] .cs-result-actions { width:100% !important; max-width:300px !important; gap:8px !important; }
   body[data-screen="cs_result"] .ux-primary,
   body[data-screen="cs_result"] .ux-secondary { min-height:48px; height:auto !important;
-    padding:12px 15px !important; border-radius:13px !important; white-space:normal; }
+    padding:12px 14px !important; border-radius:13px !important; white-space:normal; }
+  body[data-screen="cs_result"] .ux-primary { background:#f2d34f !important; color:#15130a !important;
+    border:0 !important; box-shadow:0 1px 0 rgba(255,255,255,.18) inset !important; }
+  body[data-screen="cs_result"] .ux-secondary { border:1px solid rgba(255,255,255,.085) !important;
+    background:rgba(255,255,255,.04) !important; color:#c4c8d3 !important; }
+  body[data-screen="cs_result"] .ux-tertiary { width:100% !important; max-width:300px !important;
+    min-height:40px; padding:9px 12px !important; color:#73798b !important; }
   body[data-screen="ps_level"] .ux-level-card { min-height:58px; height:auto !important;
     padding-block:11px !important; }
   body[data-screen="ps_lesson"] .ux-back { width:auto !important; min-height:38px; height:auto !important;
@@ -2971,11 +3095,118 @@ function polishFrame(d,v){
     ['어휘 카드 마스터','조사 스나이퍼'].forEach(t=>{ const el=exactText(d,t); if(el) el.classList.add('ux-title'); });
   }
   if(v==='cs_level'){
-    buttons.slice(0,-1).forEach(b=>b.classList.add('ux-choice'));
+    const stage=d.querySelector('.ux-dark-stage');
+    const shell=stage&&[...stage.children].find(el=>el.style.zIndex==='5');
+    if(shell) shell.classList.add('cs-level-shell');
+
+    const title=exactText(d,'어휘 카드 마스터');
+    if(title&&title.parentElement) title.parentElement.classList.add('cs-level-header');
+    const subtitle=exactText(d,'TCG 스타일 어휘 분류 게임');
+    if(subtitle&&subtitle.parentElement) subtitle.parentElement.classList.add('cs-level-subtitle');
+
+    const gradeLabel=exactText(d,'급 선택');
+    const gradeSection=gradeLabel&&gradeLabel.parentElement;
+    if(gradeLabel) gradeLabel.classList.add('cs-section-label');
+    if(gradeSection) gradeSection.classList.add('cs-grade-section');
+
+    const lessonLabel=[...d.querySelectorAll('div')].find(el=>
+      el.children.length===1&&el.textContent.trim().startsWith('과 선택 —'));
+    const lessonSection=lessonLabel&&lessonLabel.parentElement;
+    if(lessonLabel) lessonLabel.classList.add('cs-section-label');
+    if(lessonSection) lessonSection.classList.add('cs-lesson-section');
+
+    if(gradeSection&&lessonSection&&gradeSection.parentElement===lessonSection.parentElement){
+      const config=d.createElement('div'); config.className='cs-config-panel';
+      gradeSection.parentElement.insertBefore(config,gradeSection);
+      config.append(gradeSection,lessonSection);
+    }
+
+    const previewLabel=exactText(d,'이번 라운드 카테고리 미리보기');
+    const previewSection=previewLabel&&previewLabel.parentElement;
+    if(previewLabel) previewLabel.classList.add('cs-section-label');
+    if(previewSection){
+      previewSection.classList.add('cs-preview-section');
+      const row=previewSection.lastElementChild; if(row){
+        row.classList.add('cs-preview-row');
+        [...row.children].forEach(ch=>ch.classList.add('cs-preview-chip'));
+      }
+    }
+
+    if(buttons[0]) buttons[0].classList.add('cs-back');
+    buttons.slice(1,5).forEach(b=>{
+      b.classList.add('cs-grade');
+      if(b.style.borderColor.includes('255, 229, 0')) b.classList.add('is-selected');
+    });
+    buttons.slice(5,20).forEach(b=>{
+      b.classList.add('cs-lesson');
+      if(b.style.borderColor.includes('255, 229, 0')) b.classList.add('is-selected');
+      if(b.style.color==='rgb(68, 68, 68)') b.classList.add('is-locked');
+    });
     if(buttons.at(-1)) buttons.at(-1).classList.add('ux-primary');
   }
-  if(v==='cs_play') buttons.forEach(b=>b.classList.add('ux-category'));
-  if(v==='cs_result') buttons.forEach((b,i)=>b.classList.add(i===0?'ux-primary':'ux-secondary'));
+  if(v==='cs_intro'){
+    const stage=d.querySelector('.ux-dark-stage');
+    const shell=stage&&[...stage.children].find(el=>el.style.zIndex==='5');
+    if(shell){
+      shell.classList.add('cs-intro-shell');
+      const children=[...shell.children], panel=d.createElement('div');
+      panel.className='cs-intro-panel'; shell.append(panel); children.forEach(ch=>panel.append(ch));
+      if(panel.children[0]) panel.children[0].classList.add('cs-intro-label');
+      if(panel.children[1]){
+        panel.children[1].classList.add('cs-intro-categories');
+        [...panel.children[1].children].forEach(ch=>ch.classList.add('cs-intro-chip'));
+      }
+      if(panel.children[2]) panel.children[2].classList.add('cs-countdown');
+    }
+  }
+  if(v==='cs_play'){
+    const stage=d.querySelector('.ux-dark-stage');
+    const shell=stage&&[...stage.children].find(el=>el.style.zIndex==='5');
+    if(shell){
+      shell.classList.add('cs-play-shell');
+      const parts=[...shell.children];
+      if(parts[0]) parts[0].classList.add('cs-time-track');
+      if(parts[1]) parts[1].classList.add('cs-hud');
+      if(parts[2]) parts[2].classList.add('cs-timer');
+      if(parts[3]) parts[3].classList.add('cs-card-stage');
+      if(parts[4]) parts[4].classList.add('cs-category-tray');
+    }
+    if(buttons[0]) buttons[0].classList.add('cs-back');
+    buttons.slice(1).forEach(b=>b.classList.add('ux-category'));
+    const heart=exactText(d,'♥'); if(heart&&heart.parentElement) heart.parentElement.classList.add('cs-life');
+    const score=exactText(d,'0'); if(score) score.classList.add('cs-score');
+    const word=exactText(d,'아래');
+    const card=word&&word.parentElement;
+    if(card){
+      card.classList.add('cs-vocab-card');
+      if(card.children[0]) card.children[0].classList.add('cs-card-meta');
+      if(card.children[1]) card.children[1].classList.add('cs-card-word');
+      if(card.children[2]) card.children[2].classList.add('cs-card-count');
+    }
+  }
+  if(v==='cs_result'){
+    const stage=d.querySelector('.ux-dark-stage');
+    const shell=stage&&[...stage.children].find(el=>el.style.zIndex==='5');
+    if(shell){
+      shell.classList.add('cs-result-shell');
+      const parts=[...shell.children], rank=parts[0], score=parts[1], stats=parts[2], actions=parts[3];
+      if(rank&&score&&stats&&actions){
+        const panel=d.createElement('div'), hero=d.createElement('div');
+        panel.className='cs-result-panel'; hero.className='cs-result-hero';
+        shell.insertBefore(panel,actions); panel.append(hero,stats); hero.append(rank,score);
+        rank.classList.add('cs-rank'); score.classList.add('cs-score-block'); stats.classList.add('cs-stats');
+        const grade=exactText(d,'C'); if(grade) grade.classList.add('cs-grade');
+        const best=d.createElement('div'); best.className='cs-best-score'; best.textContent='최고 점수 2,140점';
+        score.append(best);
+        [...stats.children].forEach(row=>row.classList.add('cs-stat-row'));
+        const matched=d.createElement('div'); matched.className='cs-stat-row';
+        matched.innerHTML='<span>맞힌 카드</span><span>1장</span>';
+        if(stats.children[1]) stats.insertBefore(matched,stats.children[1]); else stats.append(matched);
+        actions.classList.add('cs-result-actions');
+      }
+    }
+    buttons.forEach((b,i)=>b.classList.add(i===0?'ux-primary':i===1?'ux-secondary':'ux-tertiary'));
+  }
   if(v==='ps_level') buttons.forEach(b=>b.classList.add('ux-level-card'));
   if(v==='ps_lesson') buttons.forEach((b,i)=>b.classList.add(i===0?'ux-back':'ux-lesson-card'));
   if(v==='ps_play'){
