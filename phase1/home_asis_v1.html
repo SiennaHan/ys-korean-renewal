@@ -1,0 +1,177 @@
+<meta charset="utf-8">
+<title>홈 · 교재학습 — as-is 실측</title>
+<style>
+  :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
+    --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
+    --stop:#9a3f31; --stop-soft:#fbece9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb; --ink-3:#6f7887;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; } }
+  :root[data-theme="dark"] { --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb;
+    --ink-3:#6f7887; --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif}
+  main{max-width:900px;margin:0 auto;padding:46px 22px 96px}
+  header.doc{padding-bottom:22px;border-bottom:2px solid var(--accent);margin-bottom:10px}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    font-weight:800;margin-bottom:9px}
+  h1{font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:800;letter-spacing:-.015em}
+  .lead{color:var(--ink-2);margin:0;max-width:66ch}
+  .lead b{color:var(--ink)}
+  h2{font-size:19px;font-weight:800;margin:48px 0 4px}
+  h2 .n{color:var(--accent);margin-right:9px;font-variant-numeric:tabular-nums}
+  h3{font-size:15px;font-weight:700;margin:26px 0 3px}
+  p{margin:9px 0}
+  .qa{color:var(--ink-3);font-size:13px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+    background:var(--bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;overflow-x:auto;margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;margin:10px 0 5px;font-size:13px}
+  th{text-align:left;font-size:11px;letter-spacing:.05em;color:var(--ink-3);font-weight:800;
+    padding:7px 9px 5px;border-bottom:2px solid var(--line);white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  td code{white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .callout.stop{border-left-color:var(--stop)}
+  .callout .t{font-weight:800;font-size:13.5px;margin-bottom:4px}
+  .callout.stop .t{color:var(--stop)}
+  .callout p{font-size:14px;margin:6px 0}
+  ul,ol{padding-left:21px;margin:9px 0} li{margin:5px 0;font-size:14.5px}
+  li::marker{color:var(--ink-3)}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
+    border:1px solid rgba(0,0,0,.14);vertical-align:-1px;margin-right:5px}
+</style>
+
+<main>
+<header class="doc">
+  <div class="eyebrow">as-is 실측 · 홈 · 교재학습</div>
+  <h1>홈과 과 목록 — 지금 화면 그대로</h1>
+  <p class="lead">확정 목업이 <b>학습 활동만</b> 담고 있어서, 그 바깥의 두 화면이 비어 있다.
+     디자인을 그리기 전에 <b>지금 무엇이 있는지</b>를 코드에서 읽어 옮겼다.
+     추측은 넣지 않았고, 값은 전부 <code>components/main/</code> 실측이다.</p>
+</header>
+
+<h2 id="s1"><span class="n">1</span>탭 바 — 다섯 개</h2>
+<p><code>components/main/home/bottom-tab-bar.tsx</code> · <b>높이 60</b>, 흰 배경 + 위 테두리 <code>#F0F1F3</code>,
+   <code>sticky bottom-0</code>. 아이콘 22 + 라벨 10, 세로로 쌓고 간격 2.</p>
+<div class="tablewrap"><table>
+  <tr><th>라벨</th><th>경로</th><th>아이콘</th></tr>
+  <tr><td><b>홈</b></td><td><code>/main</code></td><td>House</td></tr>
+  <tr><td>교재학습</td><td><code>/main/textbook</code></td><td>BookOpen</td></tr>
+  <tr><td>게임</td><td><code>/main/game</code></td><td>Gamepad2</td></tr>
+  <tr><td>표현클립</td><td><code>/main/clip</code></td><td>Clapperboard</td></tr>
+  <tr><td>MY</td><td><code>/main/my</code></td><td>UserRound</td></tr>
+</table></div>
+
+<h2 id="s2"><span class="n">2</span>홈 — 위에서 아래로 다섯 덩어리</h2>
+<pre>① 인사        "안녕하세요," 14 · <b>{이름} 님</b> 24 bold
+② 주간 출석    원형 40 × 7개 · 간격 12 · 아래 "N일 연속 학습 중"
+③ 이어서 학습하기  카드 · 없으면 "학습 시작하기"로 바뀐다
+④ 학습 현황     원형 게이지 110 + 통계 카드 2개
+⑤ 주간 활동 차트  막대 7개 · 높이 120</pre>
+
+<h3>② 주간 출석</h3>
+<p>월~일 <b>원 40</b>. 상태가 셋이다.</p>
+<div class="tablewrap"><table>
+  <tr><th>상태</th><th>원</th><th>요일 글자 12</th></tr>
+  <tr><td>완료</td><td><span class="sw" style="background:#0180FF"></span><code>#0180FF</code> 채움 + 흰 ✓ 20</td><td><code>#24425F</code></td></tr>
+  <tr><td>오늘</td><td>흰 배경 + <b>2.5px 테두리</b> <code>#0180FF</code></td><td><code>#0180FF</code> bold</td></tr>
+  <tr><td>지나감 · 안 옴</td><td><span class="sw" style="background:#E5E8EC"></span><code>#E5E8EC</code></td><td>지나감 <code>#24425F</code> · 안 옴 <code>#C8CCD3</code></td></tr>
+</table></div>
+<p class="qa">아래에 <b>"{N}일 연속 학습 중"</b> 14 — 숫자만 <code>#24425F</code> bold, 나머지 <code>#6B7B8D</code>.</p>
+
+<h3>③ 이어서 학습하기</h3>
+<p>radius 16 · 배경 <code>#DBEDFF</code> · padding 16 · 누르면 <code>#C5DEFF</code>.
+   왼쪽에 <b>48 정사각</b>(radius 12, <code>#0180FF</code> 채움) 안에 ▶ 22 흰색,
+   가운데 <b>"이어서 학습하기"</b> 16 bold <code>#24425F</code> + 아래 진행 위치 13 <code>#0180FF</code>,
+   오른쪽 <b>›</b> 22.</p>
+<div class="callout stop">
+  <div class="t">이어할 것이 없으면 <b>다른 카드로 바뀐다</b></div>
+  <p>같은 자리에 <b>"학습 시작하기 / 교재학습 메뉴에서 시작해보세요"</b>가 들어가고,
+     아이콘이 ▶ 대신 <b>📖 이모지</b>다. 누르면 <code>/main/textbook</code>으로 간다.</p>
+  <p class="qa">두 카드가 <b>크기·색·자리가 같고 내용만 다르다</b>. 새 디자인에서도 한 자리로 두면 된다.</p>
+</div>
+
+<h3>④ 학습 현황</h3>
+<p>제목 <b>16 bold</b> <code>#24425F</code>. 그 아래 radius 16 · <code>#F6F7F8</code> 상자 안에 가로 두 덩어리.</p>
+<ul>
+  <li><b>원형 게이지 110</b> — SVG <code>viewBox 0 0 90 90</code>, <code>-rotate-90</code>.
+      가운데 <b>완료 과 수 22 bold</b> <code>#0180FF</code> + <b>/전체 14</b> <code>#9BA5B0</code>,
+      아래 <code>chapterLabel</code>(예: "학습 중").</li>
+  <li><b>통계 카드 2개</b> — 흰 배경 radius 12, 세로 padding 20.
+      <b>"오늘 활동 수"</b>와 <b>"주간 활동 수"</b>. 값 위, 라벨 13 아래.</li>
+</ul>
+
+<h3>⑤ 주간 활동 차트</h3>
+<p>제목 16 bold. 막대 영역 <b>높이 120</b>(막대 자체는 80), 막대 최대 폭 36 · radius 6 · 간격 8.
+   값이 <b>0인 날은 점선 테두리</b> <code>#C8CCD3</code>로 빈 막대를 그린다.
+   요일 글자 12 — 오늘 <code>#0180FF</code> bold, 안 온 날 <code>#C8CCD3</code>, 나머지 <code>#6B7B8D</code>.</p>
+
+<h2 id="s3"><span class="n">3</span>교재학습 — 과 목록</h2>
+<pre>① 교재 탭      가로 스크롤 · 간격 11 · "한글" + 급별
+② 과 칩        가로 스크롤 · 간격 6 · "N과"
+③ 활동 목록     흰 카드 radius 12</pre>
+<div class="tablewrap"><table>
+  <tr><th>요소</th><th>규격</th></tr>
+  <tr><td>교재 탭</td><td>가로 스크롤, 좌우 16 · 위아래 8 · 간격 <b>11</b>.
+      자모 과가 있으면 맨 앞에 <b>"한글"</b> 탭이 붙는다</td></tr>
+  <tr><td>과 칩</td><td>가로 스크롤, 좌우 16 · 간격 <b>6</b>. 라벨은 <code>{seq}과</code></td></tr>
+  <tr><td>과 제목 줄</td><td>카드 맨 위, padding 12 · 아래 테두리 <code>#F6F7F8</code>.
+      <b>14 bold <code>#0180FF</code></b></td></tr>
+  <tr><td>섹션 라벨</td><td><b>10 semibold</b> <code>#666B73</code> · 아래 간격 8 ·
+      섹션 사이 간격 16</td></tr>
+  <tr><td>활동 항목</td><td><b>높이 46</b> · radius 6 · 좌우 16 · 배경 <code>#F9FAFC</code> ·
+      제목 14 semibold. <b>항목 간 간격 8</b></td></tr>
+  <tr><td>완료 배지</td><td>radius 4 · padding 2/6 · 12 semibold.<br>
+      완료 <code>#E7FBCE</code> 배경 + <code>#11C378</code> 글자 · 미완료 <code>#E5E8EC</code> + <code>#ADB3BE</code></td></tr>
+  <tr><td>콘텐츠 없는 활동</td><td>배경 <code>#F2F3F5</code> + <b><code>opacity 40</code></b> + <code>cursor-not-allowed</code></td></tr>
+</table></div>
+
+<h3>섹션이 둘로 고정돼 있다</h3>
+<div class="tablewrap"><table>
+  <tr><th>섹션</th><th>활동</th><th><code>menuType</code></th></tr>
+  <tr><td rowspan="5"><b>기초학습</b></td><td>단어 학습하기</td><td><code>word</code></td></tr>
+  <tr><td>AI 롤플레잉</td><td><code>roleplay</code></td></tr>
+  <tr><td>듣고 질문에 답하기</td><td><code>listen-answer</code></td></tr>
+  <tr><td>빈칸 채워 말하기</td><td><code>fill-blank</code></td></tr>
+  <tr><td>읽고 질문에 답하기</td><td><code>read-answer</code></td></tr>
+  <tr><td rowspan="2"><b>심화학습</b></td><td>AI 미션 대화</td><td><code>mission-chat</code></td></tr>
+  <tr><td>단어 플래시카드</td><td><code>flashcard</code></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">활동 목록이 <b>하드코딩</b>이다</div>
+  <p>일곱 활동이 코드에 고정으로 박혀 있고, 콘텐츠가 없으면 <b>비활성으로 흐리게</b> 표시된다.
+     콘텐츠 유무로 목록을 만드는 게 아니다.</p>
+  <p><b>자모는 이 목록에 없다.</b> "한글" 교재 탭을 고르면 과 목록 자체가 자모 과로 바뀌고
+     활동 목록은 <code>null</code>이 된다 — 자모 6종은 <b>다른 경로</b>로 들어간다.</p>
+</div>
+
+<h2 id="s4"><span class="n">4</span>새 셸과 어긋나는 지점</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>지금</th><th>새 셸에서 정한 것</th></tr>
+  <tr><td>1</td><td>완료 배지가 <b>완료 / 미완료</b> 둘뿐</td>
+      <td>상태가 <b>넷</b>이다 — 미학습(표기 없음) · 진행 중 · 완료 · 복습 권장.
+          <b>진행 중과 복습 권장을 보여줄 자리가 없다</b></td></tr>
+  <tr><td>2</td><td>활동 목록에 <b>진행률이 없다</b></td>
+      <td>진행률이 주 지표다. 활동마다 <b>푼 문항 n/N</b>이 보여야 한다</td></tr>
+  <tr><td>3</td><td>자모가 활동 목록 밖에 있다</td>
+      <td><code>menuType='jamo'</code> + <code>sub 1~6</code>으로 <b>다른 활동과 같은 층</b>이다</td></tr>
+  <tr><td>4</td><td>홈에 <b>다시 풀기 카드가 없다</b></td>
+      <td>복습 큐가 핵심 동선이다. 홈에 <b>"다시 풀 문항 N개"</b> 카드가 필요하다</td></tr>
+  <tr><td>5</td><td>"이어서 학습하기"가 <b>이어하기만</b> 다룬다</td>
+      <td><code>todayTask</code>가 <b>resume · review · none</b> 셋이다.
+          복습이 오늘 할 일일 때 보여줄 자리가 없다</td></tr>
+  <tr><td>6</td><td>스트릭이 <b>문항 하나만 풀어도</b> 오른다</td>
+      <td><b>활동 1개 완료</b> 기준으로 바뀐다. 주간 출석 원의 의미가 달라진다</td></tr>
+</table></div>
+<p class="qa">근거: <code>components/main/home/*.tsx</code> ·
+   <code>components/main/textbook/*.tsx</code> · <code>api/dashboard.ts</code> 실측.</p>
+</main>
