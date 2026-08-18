@@ -3151,15 +3151,19 @@ const UIUX_CSS=`
   body[data-screen^="pc_"] .spg .t-cb,
   body[data-screen^="pc_"] .spg .g-h-cb { border:2px solid rgba(255,255,255,.92);
     box-shadow:0 3px 0 rgba(81,63,84,.11); }
+  body[data-screen^="pc_"] .spg .t-ch,
+  body[data-screen^="pc_"] .spg .g-h-ch { z-index:4; }
   body[data-screen^="pc_"] .spg .t-cb { width:30px; height:30px; font-size:17px; }
-  body[data-screen^="pc_"] .spg .t-bl { border:2px solid rgba(76,65,147,.18);
-    background:linear-gradient(135deg,#c2b9f0,#a99ee5); box-shadow:0 6px 0 rgba(74,59,139,.12);
+  body[data-screen^="pc_"] .spg .t-ch[style*="left: 128px"] { transform:translateX(-7px); }
+  body[data-screen^="pc_"] .spg .t-ch[style*="right: 116px"] { transform:translateX(7px); }
+  body[data-screen^="pc_"] .spg .t-bl { z-index:1; border:2px solid rgba(190,91,108,.23);
+    background:linear-gradient(135deg,#f8b8b4,#ef929f); box-shadow:0 6px 0 rgba(176,70,91,.13);
     transform:translateX(-50%) rotate(-2deg) !important; }
   body[data-screen^="pc_"] .spg .t-bl::after { content:""; position:absolute; left:5px; right:5px; bottom:-6px;
-    height:6px; background:repeating-linear-gradient(90deg,#8e83cf 0 2px,transparent 2px 7px); }
+    height:6px; background:repeating-linear-gradient(90deg,#d87886 0 2px,transparent 2px 7px); }
   body[data-screen^="pc_"] .spg .t-bn { z-index:2; filter:drop-shadow(0 3px 0 rgba(90,57,27,.12)); }
-  body[data-screen^="pc_"] .spg .ux-basket { position:absolute; z-index:2; left:calc(50% + 61px); bottom:31px;
-    width:31px; height:20px; border:2px solid #9a622b; border-radius:5px 5px 8px 8px;
+  body[data-screen^="pc_"] .spg .ux-basket { position:absolute; z-index:2; left:calc(50% + 22px); bottom:16px;
+    width:29px; height:18px; border:2px solid #9a622b; border-radius:5px 5px 8px 8px;
     background:repeating-linear-gradient(90deg,#d79a54 0 4px,#e6ad69 4px 8px); transform:rotate(4deg); }
   body[data-screen^="pc_"] .spg .ux-basket::before { content:""; position:absolute; left:6px; right:6px; top:-11px;
     height:15px; border:2px solid #9a622b; border-bottom:0; border-radius:12px 12px 0 0; }
@@ -3192,8 +3196,10 @@ const UIUX_CSS=`
   body[data-screen="pc_select"] .spg .t-illo { border-radius:0 0 24px 24px; }
   body[data-screen="pc_select"] .spg .ux-sun { top:19px; right:60px; width:23px; height:23px;
     box-shadow:0 0 0 5px rgba(255,230,154,.18); }
-  body[data-screen="pc_select"] .spg .ux-basket { left:calc(50% + 47px); bottom:23px; transform:scale(.72) rotate(4deg); }
+  body[data-screen="pc_select"] .spg .ux-basket { left:calc(50% + 20px); bottom:9px; transform:scale(.66) rotate(4deg); }
   body[data-screen="pc_select"] .spg .t-cb { width:20px; height:20px; font-size:11px; border-width:1px; }
+  body[data-screen="pc_select"] .spg .t-ch[style*="left: 108px"] { transform:translateX(-4px); }
+  body[data-screen="pc_select"] .spg .t-ch[style*="right: 96px"] { transform:translateX(4px); }
   body[data-screen="pc_select"] .spg .sel-body { gap:10px; padding:18px 16px 24px;
     background:linear-gradient(180deg,#fffafc,#fff); }
   body[data-screen="pc_select"] .spg .sel-row { border-color:#f3e8ed; border-radius:17px;
