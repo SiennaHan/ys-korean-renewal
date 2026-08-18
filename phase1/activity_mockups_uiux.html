@@ -68,10 +68,10 @@
 
   .response-area { margin-top:12px; }
   .choice-list { display:flex; flex-direction:column; gap:8px; }
-  .choice { position:relative; width:100%; min-height:64px; padding:16px 48px 16px 18px; border:0; border-radius:12px; background:#f4f6f9; color:var(--blue-gray-900); display:flex; align-items:center; justify-content:flex-start; text-align:left; font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
-  .choice:hover { background:#edf6ff; }
-  .choice.wrong { background:var(--destructive-bg); }
-  .choice.correct { background:var(--positive-bg); }
+  .choice { position:relative; width:100%; min-height:64px; padding:16px 48px 16px 18px; border:0; border-radius:12px; background:var(--white); color:var(--blue-gray-900); box-shadow:0 2px 7px rgba(36,52,76,.08); display:flex; align-items:center; justify-content:flex-start; text-align:left; font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+  .choice:hover { background:#f7fbff; box-shadow:0 3px 10px rgba(1,128,255,.12); }
+  .choice.wrong { background:var(--destructive-bg); box-shadow:0 2px 7px rgba(241,95,73,.12); }
+  .choice.correct { background:var(--positive-bg); box-shadow:0 2px 7px rgba(17,195,120,.12); }
   .choice-mark { position:absolute; right:17px; top:50%; transform:translateY(-50%); width:21px; height:21px; border-radius:50%; color:var(--white); display:grid; place-items:center; font-size:11px; line-height:1; font-weight:600; }
   .wrong .choice-mark { background:var(--destructive); }
   .correct .choice-mark { background:var(--positive); }
@@ -97,12 +97,12 @@
   .jamo-choices .choice { min-height:76px; justify-content:center; padding:16px 44px; font-size:24px; line-height:36px; font-weight:600; }
 
   .word-preview-list { display:flex; flex-direction:column; gap:7px; background:transparent; }
-  .preview-row { min-height:58px; display:grid; grid-template-columns:26px minmax(0,1fr) 36px; grid-template-rows:auto auto; align-items:center; padding:8px 10px; border:0; border-radius:12px; background:#f6f8fb; }
+  .preview-row { min-height:58px; display:grid; grid-template-columns:26px minmax(0,1fr) 36px; grid-template-rows:auto auto; align-items:center; padding:8px 10px; border:0; border-radius:12px; background:var(--white); box-shadow:0 2px 7px rgba(36,52,76,.07); }
   .preview-index { grid-column:1; grid-row:1 / 3; align-self:start; padding-top:2px; color:var(--blue-gray-400); font-size:11px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
   .preview-word { grid-column:2; color:var(--blue-900); font-size:16px; line-height:24px; font-weight:600; letter-spacing:-.01em; }
   .preview-meaning { grid-column:2; color:var(--blue-gray-600); font-size:13px; line-height:19px; }
   .preview-audio { grid-column:3; grid-row:1 / 3; width:34px; height:34px; border:0; border-radius:50%; background:var(--blue-gray-50); color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
-  .preview-row:hover { background:#edf6ff; }
+  .preview-row:hover { background:#f7fbff; box-shadow:0 3px 10px rgba(1,128,255,.11); }
   .preview-audio svg { width:18px; height:18px; }
 
   .combo-result { min-height:54px; display:flex; align-items:center; justify-content:space-between; }
@@ -114,8 +114,8 @@
   .jamo-label i { color:var(--blue-500); font-style:normal; font-size:12px; line-height:16px; font-weight:600; }
   .jamo-label b { color:var(--blue-gray-900); font-size:14px; line-height:20px; font-weight:600; }
   .jamo-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; }
-  .jamo-grid button { aspect-ratio:1; min-width:0; border:0; border-radius:7px; background:var(--white); color:var(--blue-gray-900); font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
-  .jamo-grid button.on { background:var(--blue-500); color:var(--white); }
+  .jamo-grid button { aspect-ratio:1; min-width:0; border:0; border-radius:7px; background:var(--white); color:var(--blue-gray-900); box-shadow:0 1px 4px rgba(36,52,76,.08); font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+  .jamo-grid button.on { background:var(--blue-500); color:var(--white); box-shadow:0 2px 7px rgba(1,128,255,.18); }
 
   .canvas { position:relative; width:min(100%,286px); aspect-ratio:1; margin:0 auto; overflow:hidden; border:1px solid var(--blue-gray-200); border-radius:10px; background:var(--white); cursor:crosshair; }
   .canvas::before,.canvas::after { content:""; position:absolute; z-index:1; background:var(--blue-gray-200); }
@@ -243,17 +243,17 @@
   .blank-card b { color:var(--blue-500); font-weight:700; }
   .blank-card b.miss { color:var(--blue-gray-900); }
   .chip-wrap { display:flex; flex-wrap:wrap; gap:8px; }
-  .chip-opt { border-radius:8px; border:0; background:#f4f6f9; padding:10px 16px; font-size:15px; font-weight:500; color:var(--blue-gray-900); cursor:pointer; }
-  .chip-opt.on { background:#e9f2fc; color:var(--blue-500); }
-  .chip-opt.ok { background:var(--positive-bg); color:var(--blue-gray-900); }
-  .chip-opt.no { background:var(--destructive-bg); color:var(--blue-gray-900); }
+  .chip-opt { border-radius:8px; border:0; background:var(--white); box-shadow:0 2px 7px rgba(36,52,76,.08); padding:10px 16px; font-size:15px; font-weight:500; color:var(--blue-gray-900); cursor:pointer; }
+  .chip-opt.on { background:#e9f2fc; color:var(--blue-500); box-shadow:0 2px 7px rgba(1,128,255,.13); }
+  .chip-opt.ok { background:var(--positive-bg); color:var(--blue-gray-900); box-shadow:0 2px 7px rgba(17,195,120,.12); }
+  .chip-opt.no { background:var(--destructive-bg); color:var(--blue-gray-900); box-shadow:0 2px 7px rgba(241,95,73,.12); }
   .focus-note { margin-top:10px; border-radius:10px; background:#f9fafc; padding:10px 14px; font-size:13px; line-height:1.6; color:var(--blue-gray-600); }
   .passage { border-radius:12px; background:#f9fafc; padding:16px; font-size:15px; line-height:1.75; color:var(--blue-gray-900); white-space:pre-line; }
   .q-text { font-size:16px; font-weight:600; color:var(--blue-gray-900); }
   .ox-row { display:flex; gap:12px; }
-  .ox-row button { flex:1; height:80px; border-radius:16px; border:0; background:#f4f6f9; color:var(--blue-gray-600); font-size:32px; font-weight:700; cursor:pointer; }
-  .ox-row button.ok { background:var(--positive-bg); color:var(--blue-gray-900); }
-  .ox-row button.no { background:var(--destructive-bg); color:var(--blue-gray-900); }
+  .ox-row button { flex:1; height:80px; border-radius:16px; border:0; background:var(--white); color:var(--blue-gray-600); box-shadow:0 2px 7px rgba(36,52,76,.08); font-size:32px; font-weight:700; cursor:pointer; }
+  .ox-row button.ok { background:var(--positive-bg); color:var(--blue-gray-900); box-shadow:0 2px 7px rgba(17,195,120,.12); }
+  .ox-row button.no { background:var(--destructive-bg); color:var(--blue-gray-900); box-shadow:0 2px 7px rgba(241,95,73,.12); }
 
   /* 자모 발음 · 단어 듣고 따라 · 단어 읽고 쓰기 */
   .mouth-video { aspect-ratio:16/9; width:100%; border-radius:10px; background:#f8faff; display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; position:relative; overflow:hidden; }
@@ -273,8 +273,8 @@
   .jamo-tabs button { width:27px; height:27px; border-radius:7px; border:0; background:transparent; color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
   .jamo-tabs button.on { background:var(--white); color:var(--blue-600); box-shadow:0 1px 2px rgba(36,66,95,.08); }
   .word-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; padding-top:8px; }
-  .word-cards button { height:52px; border-radius:10px; border:0; background:#fff; position:relative; font-size:18px; font-weight:600; color:var(--blue-900); cursor:pointer; }
-  .word-cards button.on { background:var(--blue-50); color:var(--blue-600); }
+  .word-cards button { height:52px; border-radius:10px; border:0; background:#fff; box-shadow:0 2px 7px rgba(36,52,76,.08); position:relative; font-size:18px; font-weight:600; color:var(--blue-900); cursor:pointer; }
+  .word-cards button.on { background:var(--blue-50); color:var(--blue-600); box-shadow:0 2px 7px rgba(1,128,255,.14); }
   .word-cards b { position:absolute; top:3px; right:3px; width:14px; height:14px; border-radius:50%; background:var(--blue-gray-100); }
   .word-cards button.done b { background:var(--positive); }
   .word-pic { width:min(100%,228px); height:auto; aspect-ratio:1; margin:0 auto; display:grid; place-items:center; overflow:hidden; border-radius:12px; background:transparent; }
@@ -295,9 +295,9 @@
   .modal-tools { display:flex; gap:12px; }
   .modal-tools button { flex:1; height:36px; border-radius:8px; background:#f4f6f9; border:0; color:var(--blue-gray-600); font-size:13px; }
   .wcards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; padding-top:8px; }
-  .wcards button { position:relative; min-width:0; min-height:54px; display:grid; grid-template-columns:44px minmax(0,1fr); align-items:center; gap:4px; padding:5px; border:0; border-radius:9px; background:var(--white); cursor:pointer; }
-  .wcards button:hover { background:#edf6ff; }
-  .wcards button.on { background:var(--blue-500); }
+  .wcards button { position:relative; min-width:0; min-height:54px; display:grid; grid-template-columns:44px minmax(0,1fr); align-items:center; gap:4px; padding:5px; border:0; border-radius:9px; background:var(--white); box-shadow:0 2px 7px rgba(36,52,76,.08); cursor:pointer; }
+  .wcards button:hover { background:#f7fbff; box-shadow:0 3px 10px rgba(1,128,255,.11); }
+  .wcards button.on { background:var(--blue-500); box-shadow:0 3px 10px rgba(1,128,255,.2); }
   .wcards button.on .lab { color:var(--white); font-weight:600; }
   .wcards .thumb { width:44px; height:44px; overflow:hidden; border-radius:7px; background:var(--white); display:grid; place-items:center; }
   .wcards .thumb img { width:100%; height:100%; display:block; object-fit:contain; padding:0; }
