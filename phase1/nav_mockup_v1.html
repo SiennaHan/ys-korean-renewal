@@ -225,11 +225,6 @@ button { font:inherit; }
       <button class="option" data-value="review" aria-pressed="false">다시 풀기</button>
       <button class="option" data-value="none" aria-pressed="false">없음</button>
     </div>
-    <div class="control-group" data-set="progress" id="prggrp">
-      <span class="control-label">진행 표기</span>
-      <button class="option" data-value="num" aria-pressed="true">n / N</button>
-      <button class="option" data-value="text" aria-pressed="false">진행 중</button>
-    </div>
     <div class="control-group" data-set="title" id="ttlgrp">
       <span class="control-label">앱바 제목</span>
       <button class="option" data-value="fixed" aria-pressed="true">교재학습</button>
@@ -260,14 +255,10 @@ button { font:inherit; }
            배지를 빼고 이름만 남긴다. 그대로 맞췄다.</p>
       </div>
       <div class="note-section">
-        <h2>갈리는 것 — 토글로 둠</h2>
-        <p><b>진행 표기:</b> 확정 디자인은 전부 <b>"진행 중"</b>이다. 그런데
-           <code>getLearningProgress</code>가 <b>학습한 문항 수를 이미 준다</b> —
-           <code>p.total >= totalQuestions</code>로 완료를 계산하는 그 값이다.
-           홈의 이어하기 카드는 <b>"3/5"</b>를 쓴다.</p>
-        <p>목록에서 진행 중이 여럿일 때 <b>어느 걸 마무리할지</b> 고르는 판단은
-           숫자가 있어야 선다. 대신 <b>플래시카드 · 미션 대화는 분모가 없어</b>
-           (<code>content_counts</code>에 없다) 그 둘만 "진행 중"이 된다.</p>
+        <h2>남은 하나 — 토글로 둠</h2>
+        <p><b>앱바 제목만 남았다.</b> 진행 표기는 <b>"진행 중" 하나로 확정</b>됐다 —
+           분모가 다른 숫자가 한 줄에 여럿 늘어서면 중구난방으로 읽힌다.
+           숫자는 <b>데이터로만 갖는다</b>.</p>
         <p><b>앱바 제목:</b> 구 앱은 <b>교재명</b>을 17 semibold 로 띄우고
            탭 아래에 <b>한 번 더</b> 썼다(중복). 확정 디자인은 "교재학습" 고정인데,
            <b>탭바 라벨과 같은 낱말</b>이 한 화면에 두 번 온다.</p>
@@ -289,7 +280,7 @@ const icons={
   user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
 };
 
-const state={ screen:"home", width:"390", task:"resume", progress:"num", title:"fixed" };
+const state={ screen:"home", width:"390", task:"resume", title:"fixed" };
 
 const DAYS=["월","화","수","목","금","토","일"];
 const TEXTBOOK_TABS=["한글","1급","2급","3급"];
@@ -325,12 +316,10 @@ const D={
 
 /* 오른쪽 한 자리 — 상태에 따라 갈아 낀다(§4 결정 1) */
 function stateSlot(x){
-  if(x.st==="doing"){
-    /* n/N 은 분모를 아는 5종에서만 낼 수 있다 — content_counts 에 flashcard·mission-chat 이 없다.
-       분모가 1이면 0/1 이 미학습과 구별되지 않아 숫자를 쓰지 않는다. */
-    const num = state.progress==="num" && x.t>1;
-    return `<span class="st"><span class="pr">${num?`${x.a} / ${x.t}`:"진행 중"}</span></span>`;
-  }
+  /* 목록에는 상태만 낸다. 숫자(x.a / x.t)는 데이터로 갖고 있고,
+     홈 이어하기 카드와 활동 안 진행바에서만 쓴다 — 한 줄에 여러 활동이 서로 다른
+     분모로 늘어서면 비교가 안 되고 중구난방으로 읽힌다. */
+  if(x.st==="doing") return `<span class="st"><span class="pr">진행 중</span></span>`;
   if(x.st==="done")   return `<span class="st"><span class="bdg">완료</span></span>`;
   if(x.st==="review") return `<span class="st"><span class="bdg">완료</span><span class="rv">복습 ${x.rv}</span></span>`;
   return `<span class="st"></span>`;   // 미학습 — 비운다
@@ -477,12 +466,11 @@ function render(){
     .map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
   document.querySelectorAll('[data-set="screen"] .option').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.value===state.screen)));
-  ['task','progress','title','width'].forEach(set=>
+  ['task','title','width'].forEach(set=>
     document.querySelectorAll(`[data-set="${set}"] .option`).forEach(b=>
       b.setAttribute('aria-pressed',String(b.dataset.value===state[set]))));
   const onHome = state.screen==='home';
   document.getElementById('taskgrp').style.display = onHome?'':'none';
-  document.getElementById('prggrp').style.display = onHome?'none':'';
   document.getElementById('ttlgrp').style.display = onHome?'none':'';
 }
 document.addEventListener('click',e=>{
