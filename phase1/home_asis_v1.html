@@ -270,10 +270,10 @@
   <p><b>둘 다 지우고 앱바를 없앤다.</b> 근거가 셋이다 —
      탭 최상단이라 <b>뒤로 갈 곳이 없고</b>, 어느 탭인지는 <b>탭바가 말하고</b>,
      <b>홈이 이미 앱바 없이</b> 인사로 시작한다. 교재 탭 스트립이 화면 최상단으로 온다.</p>
-  <p class="qa">앱바가 없어도 상단이 비지 않는다 — 구 앱도 <b>홈은 앱바 없이</b>
-     <code>pt</code> 18~20 만으로 시작하고 문제가 없다.
-     <code>env(safe-area-inset-top)</code>을 쓰는 곳이 저장소에 <b>한 군데도 없다</b>
-     (아래쪽만 쓴다). 셸이 상단 여백을 이미 먹고 있다는 뜻이다.</p>
+  <p class="qa">앱바가 없어도 상단이 비지 않는다. 근거는 <b>홈이 같은 셸에서
+     앱바 없이 이미 정상 동작한다</b>는 것이다 — <code>pt</code> 18~20 만으로 시작한다.
+     <code>env(safe-area-inset-top)</code>을 쓰는 곳이 저장소에 없다는 것은
+     <b>그것을 뒷받침하는 정황</b>일 뿐 그 자체가 근거는 아니다.</p>
 </div>
 <div class="callout stop">
   <div class="t">따라오는 것 — <b>탭 루트 다섯의 제목 규칙이 제각각</b>이다</div>
@@ -290,10 +290,26 @@
      <b>다섯을 한 규칙으로</b> 정해야 한다. 이 문서 범위 밖이라 여기 적어만 둔다.</p>
 </div>
 <div class="callout">
-  <div class="t">그려 보니 나온 것 — <b>최상단 여백이 7px 어긋난다</b></div>
-  <p>앱바를 빼면 교재 탭이 화면 위에서 <b>11</b>, 홈 인사가 <b>18</b>에서 시작한다.
-     탭 최상단끼리 맞추려고 앱바를 없앤 것이므로 <b>이 값도 맞춰야 한다</b>.
-     시각 마감이라 디자인 세션 몫이다.</p>
+  <div class="t">재 보니 나온 것 — 최상단 여백은 <b>이미 맞아 있다. 손대면 어긋난다</b></div>
+  <p>앱바를 빼면 교재 탭 스트립이 <b>11</b>에서, 홈 인사가 <b>18</b>에서 시작한다.
+     7px 차이로 보여 맞춰야 한다고 적었는데, <b>재 보니 아니었다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th></th><th class="n">요소 상단</th><th class="n">콘텐츠 상단</th>
+        <th class="n">글자 상자 상단</th><th class="n">잉크 상단</th></tr>
+    <tr><td><b>교재 탭</b> <span class="qa">14 / lh 20</span></td>
+        <td class="n">11</td><td class="n">16</td><td class="n"><b>18</b></td><td class="n">19.95</td></tr>
+    <tr><td><b>홈 인사</b> <span class="qa">14 / lh normal</span></td>
+        <td class="n">18</td><td class="n">18</td><td class="n"><b>18</b></td><td class="n">19.95</td></tr>
+  </table></div>
+  <p><code>.tab2</code>가 <b><code>line-height:20</code></b>을 갖고 있어서
+     반쪽 여백 <code>(20−16)/2 = 2</code>가 <b>그 차이를 정확히 먹는다</b>.
+     글자 상자와 잉크 상단이 <b>둘 다 같은 자리</b>다.</p>
+  <p><b>확인:</b> 홈 인사에 <code>line-height:20</code>을 강제로 주면 글자 상자가
+     <b>18 → 20으로 내려간다</b>. 지금 둘이 18에서 만나는 것이 그 반쪽 여백 덕이라는 뜻이다.
+     그러므로 스트립을 <b>11 → 13으로 올리면 탭이 20이 되어 홈보다 2px 내려간다</b>.</p>
+  <p class="qa"><b>11을 그대로 둔다.</b> 요소 상단(11 vs 18)이나 콘텐츠 상단(16 vs 18)만 보면
+     어긋난 것처럼 보이는데, <b>눈이 보는 것은 글자 상자</b>다.
+     여백을 손볼 때 <code>line-height</code>가 먹는 몫을 빼고 재면 이렇게 틀린다.</p>
 </div>
 
 <div class="callout">
