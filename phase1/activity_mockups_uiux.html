@@ -21,7 +21,7 @@
   .kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
   .doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
   .doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
-  .controls { display:flex; justify-content:space-between; gap:18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+  .controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
   .control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
   .control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
   .option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
@@ -30,7 +30,7 @@
   .stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
   .device-wrap { display:flex; flex-direction:column; align-items:center; }
   .device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
-  .screen { width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+  .screen { position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
   .caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
   .notes { padding-top:8px; }
   .note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
@@ -59,7 +59,7 @@
   .problem-card { padding:18px; border:1px solid var(--blue-gray-100); border-radius:16px; background:var(--white); }
   .instruction { display:block; }
   .instruction h2 { margin:0; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:600; letter-spacing:-.01em; }
-  .stimulus { margin-top:16px; padding-top:16px; border-top:1px solid var(--blue-gray-100); }
+  .stimulus { margin-top:16px; padding-top:16px; border-top:1px solid var(--blue-gray-100); display:flex; flex-direction:column; }
   .word-focus { display:flex; align-items:center; gap:8px; min-height:50px; }
   .word-focus strong { color:var(--blue-gray-900); font-size:32px; line-height:48px; font-weight:600; letter-spacing:-.02em; }
   .sound-icon { width:38px; height:38px; border:1px solid var(--blue-100); border-radius:50%; background:var(--blue-50); color:var(--blue-600); display:grid; place-items:center; cursor:pointer; }
@@ -221,6 +221,129 @@
   .arrow.left { left:16px; } .arrow.right { right:16px; }
   .arrow svg { width:24px; height:24px; }
 
+  /* 확정 하단 도크 — 가운데 주 조작 + 오른쪽 다음 */
+  .dock { display:flex; align-items:center; gap:12px; width:100%; }
+  .dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+  .dock .main .record-core { width:auto; }
+  .dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+  .dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+  .dock .slot svg { width:26px; height:26px; }
+  .turn[data-action] { cursor:pointer; }
+
+  /* 문법 · 읽기 */
+  .blank-card { border-radius:12px; border:1px solid var(--blue-50); background:#f0f7ff; padding:14px 16px; font-size:18px; line-height:1.7; color:var(--blue-gray-900); font-weight:500; }
+  .blank-card u { text-decoration:none; border-bottom:2px solid var(--blue-gray-400); padding:0 18px; color:transparent; }
+  .blank-card b { color:var(--blue-500); font-weight:700; }
+  .blank-card b.miss { color:var(--blue-gray-900); }
+  .chip-wrap { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip-opt { border-radius:8px; border:1px solid var(--blue-gray-100); background:var(--white); padding:10px 16px; font-size:15px; font-weight:500; color:var(--blue-gray-900); cursor:pointer; }
+  .chip-opt.on { border-color:var(--blue-500); background:#e9f2fc; color:var(--blue-500); }
+  .chip-opt.ok { border-color:var(--positive); background:var(--positive-bg); color:var(--blue-gray-900); }
+  .chip-opt.no { border-color:var(--destructive); background:var(--destructive-bg); color:var(--blue-gray-900); }
+  .focus-note { margin-top:10px; border-radius:10px; background:#f9fafc; padding:10px 14px; font-size:13px; line-height:1.6; color:var(--blue-gray-600); }
+  .passage { border-radius:12px; background:#f9fafc; padding:16px; font-size:15px; line-height:1.75; color:var(--blue-gray-900); white-space:pre-line; }
+  .q-text { font-size:16px; font-weight:600; color:var(--blue-gray-900); }
+  .ox-row { display:flex; gap:12px; }
+  .ox-row button { flex:1; height:80px; border-radius:16px; border:2px solid var(--blue-gray-100); background:#f9fafc; color:var(--blue-gray-600); font-size:32px; font-weight:700; cursor:pointer; }
+  .ox-row button.ok { border-color:var(--positive); background:var(--positive-bg); color:var(--blue-gray-900); }
+  .ox-row button.no { border-color:var(--destructive); background:var(--destructive-bg); color:var(--blue-gray-900); }
+
+  /* 자모 발음 · 단어 듣고 따라 · 단어 읽고 쓰기 */
+  .mouth-video { aspect-ratio:16/9; width:100%; border-radius:10px; background:#f8faff; display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; position:relative; overflow:hidden; }
+  .mouth-video::after { content:"▶"; position:absolute; width:48px; height:48px; border-radius:50%; background:rgba(1,128,255,.9); color:#fff; display:grid; place-items:center; font-size:16px; }
+  .audio-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .audio-pair > button { height:40px; border:0; border-radius:8px; display:flex; align-items:center; justify-content:space-between; padding:0 2px; font-size:16px; font-weight:600; cursor:pointer; }
+  .audio-pair .src { background:var(--blue-50); color:var(--blue-500); }
+  .audio-pair .mine { background:var(--blue-gray-50); color:var(--blue-gray-400); }
+  .audio-pair .mine.ok { color:var(--positive); }
+  .audio-pair .mine.no { color:var(--destructive); }
+  .audio-pair i { width:36px; display:grid; place-items:center; }
+  .audio-pair i svg { width:22px; height:22px; }
+  .jamo-tabs { display:flex; gap:6px; background:var(--blue-gray-100); border-radius:12px 12px 0 0; padding:16px; }
+  .jamo-tabs button { width:32px; height:32px; border-radius:8px; border:1px solid var(--blue-gray-50); background:var(--blue-gray-50); color:#9299a4; font-size:13px; font-weight:500; cursor:pointer; }
+  .jamo-tabs button.on { background:var(--blue-50); border-color:var(--blue-300); color:var(--blue-500); }
+  .word-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; padding:18px 16px 0; }
+  .word-cards button { height:56px; border-radius:10px; border:0; background:#fff; position:relative; font-size:20px; font-weight:600; color:var(--blue-900); cursor:pointer; }
+  .word-cards button.on { background:var(--blue-300); color:#fff; }
+  .word-cards b { position:absolute; top:3px; right:3px; width:14px; height:14px; border-radius:50%; background:var(--blue-gray-100); }
+  .word-cards button.done b { background:var(--positive); }
+  .word-pic { display:grid; place-items:center; background:#fff; border-radius:5px; }
+  .word-pic div { width:100%; height:150px; border-radius:8px; background:var(--blue-gray-50); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; }
+  .word-pic.sm div { height:130px; }
+  .audio-bar { width:100%; height:40px; border:0; border-radius:5px; background:var(--blue-50); display:flex; align-items:center; justify-content:space-between; font-size:16px; font-weight:600; color:var(--blue-500); cursor:pointer; }
+  .audio-bar i { width:38px; display:grid; place-items:center; }
+  .audio-bar i svg { width:20px; height:20px; }
+  .syl-row { display:flex; gap:10px; }
+  .syl { position:relative; flex:1; height:96px; border:0; border-radius:8px; background:#f9fafc; display:grid; place-items:center; cursor:pointer; }
+  .syl span { font-size:60px; font-weight:700; color:#ddd; line-height:1; }
+  .syl svg { position:absolute; inset:0; width:100%; height:100%; }
+  .syl path { fill:none; stroke:var(--blue-gray-900); stroke-linecap:round; stroke-linejoin:round; opacity:.85; }
+  .modal { position:absolute; inset:0; z-index:20; background:rgba(24,26,32,.5); display:flex; align-items:center; justify-content:center; padding:16px; }
+  .modal-box { width:100%; background:#fff; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; }
+  .modal-canvas { aspect-ratio:1; border-radius:12px; background:#fff; border:1px solid var(--blue-gray-100); position:relative; display:grid; place-items:center; }
+  .modal-canvas span { font-size:150px; font-weight:400; color:var(--gray-200); line-height:1; }
+  .modal-tools { display:flex; gap:12px; }
+  .modal-tools button { flex:1; height:36px; border-radius:8px; background:#fff; border:1px solid var(--blue-gray-100); color:var(--blue-gray-600); font-size:13px; }
+  .wcards { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 8px; padding:16px; }
+  .wcards button { display:flex; align-items:center; justify-content:center; gap:4px; background:transparent; border:0; padding:0; min-width:0; cursor:pointer; }
+  .wcards .thumb { width:50px; height:50px; border-radius:5px; background:#fff; display:grid; place-items:center; font-size:11px; color:var(--blue-gray-400); }
+  .wcards .lab { position:relative; width:50px; height:50px; display:grid; place-items:center; font-size:12px; color:var(--blue-gray-900); }
+  .wcards .lab b { position:absolute; top:0; right:0; width:14px; height:14px; border-radius:50%; background:var(--blue-gray-100); }
+  .wcards button.done .lab b { background:var(--positive); }
+  .heard-row { border-radius:12px; border:1px solid var(--blue-gray-100); background:var(--white); padding:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; color:var(--blue-gray-600); }
+  .heard-row b { font-size:20px; font-weight:700; color:var(--blue-gray-900); }
+  .heard-row.ok { border-color:var(--positive); background:var(--positive-bg); }
+
+  /* 결과 · 리포트 · 브리핑 · 예외 */
+  .result-head { background:var(--blue-500); color:#fff; padding:20px 16px 16px; }
+  .result-head h2 { margin:0; font-size:24px; line-height:1.4; }
+  .result-head p { margin:2px 0 14px; font-size:14px; color:var(--blue-100); }
+  .stat-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .stat-row div { background:#fff; border-radius:12px; padding:12px; text-align:center; }
+  .stat-row span { display:block; font-size:12px; color:var(--blue-gray-600); }
+  .stat-row strong { font-size:24px; color:var(--blue-gray-900); }
+  .wrong-card { border-radius:12px; border:1px solid var(--blue-gray-100); background:#fff; padding:14px; }
+  .tag { display:inline-flex; height:24px; align-items:center; padding:0 10px; border-radius:6px; font-size:12px; font-weight:700; }
+  .tag.w { background:var(--destructive-bg); color:var(--destructive); }
+  .tag.e { background:var(--blue-900); color:#fff; }
+  .rep-head { background:var(--blue-500); color:#fff; padding:12px 16px; }
+  .rep-head h2 { margin:0; font-size:20px; }
+  .rep-head p { margin:0; font-size:14px; color:var(--blue-100); }
+  .rep-tabs { display:grid; grid-template-columns:1fr 1fr; height:46px; background:#fff; }
+  .rep-tabs div { display:grid; place-items:center; font-size:14px; font-weight:600; color:var(--blue-gray-600); border-bottom:2px solid var(--blue-gray-100); }
+  .rep-tabs div.on { color:var(--blue-500); border-bottom-color:var(--blue-500); }
+  .as-row { border-radius:12px; background:#f9fafc; padding:12px; font-size:14px; }
+  .as-row span.k { display:inline-block; border-radius:5px; background:var(--blue-50); color:var(--blue-600); padding:2px 8px; font-weight:600; font-size:13px; }
+  .as-row p { margin:8px 0 0; line-height:1.6; color:var(--blue-gray-900); }
+  .brief-title { background:#fff; padding:14px 16px 20px; }
+  .brief-title h2 { margin:0; font-size:20px; font-weight:600; color:var(--blue-gray-900); }
+  .brief-title p { margin:0; font-size:14px; color:var(--blue-gray-600); }
+  .brief-sec { padding:0 16px; margin-top:15px; }
+  .brief-sec > h3 { margin:0 0 8px; font-size:16px; font-weight:600; color:var(--blue-gray-900); }
+  .brief-card { background:#fff; border-radius:10px; padding:12px; }
+  .scene-img { height:132px; border-radius:8px; background:var(--blue-gray-50); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; margin-bottom:16px; }
+  .scene-text { background:#f9fafc; border-radius:6px; padding:16px; text-align:center; font-size:14px; }
+  .kw-line { display:flex; align-items:center; gap:7px; }
+  .kw-line b { width:100px; flex:none; text-align:center; font-size:14px; font-weight:700; color:var(--blue-600); background:var(--blue-50); border-radius:5px; padding:4px 0; }
+  .kw-line span { flex:1; font-size:14px; color:var(--blue-gray-800); }
+  .word-strip { display:flex; gap:8px; overflow-x:auto; padding-top:12px; border-top:1px solid var(--blue-gray-50); margin-top:12px; }
+  .word-strip div { min-width:100px; background:var(--blue-gray-50); border-radius:6px; padding:8px; text-align:center; }
+  .word-strip b { display:block; font-size:14px; color:var(--blue-gray-900); }
+  .word-strip span { display:block; font-size:12px; color:var(--blue-gray-400); }
+  .state-view { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:0 32px; text-align:center; }
+  .state-view p { margin:0; font-size:16px; line-height:1.5; color:var(--blue-gray-900); }
+  .skeleton { width:100%; display:flex; flex-direction:column; gap:12px; }
+  .skeleton i { display:block; height:64px; border-radius:12px; background:var(--gray-200); }
+  .skeleton i.s { height:20px; width:60%; }
+
+  /* 전체보기 */
+  .overview { display:none; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:22px 14px; margin-top:26px; }
+  .overview.on { display:grid; }
+  .stage.overview-hidden { display:none; }
+  .overview-item h3 { margin:0 0 7px; color:var(--bench-ink); font-size:12px; line-height:18px; font-weight:600; }
+  .overview-viewport { width:198px; height:365px; margin:0 auto; overflow:hidden; border:1px solid #cbd2dc; border-radius:14px; background:#dde2e9; }
+  .overview-screen { position:relative; width:390px; height:720px; transform:scale(.505); transform-origin:top left; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+
   @media (max-width:800px) { .doc { grid-template-columns:1fr; gap:10px; } .stage { grid-template-columns:1fr; } .notes { display:none; } .controls { flex-direction:column; } }
   @media (max-width:520px) { .workbench { padding:18px 8px 40px; } .doc { padding:0 8px; } .doc h1 { font-size:25px; line-height:34px; } .controls { padding:10px 8px; } .device { width:min(392px,calc(100vw - 16px)); } }
 </style>
@@ -228,20 +351,41 @@
 <body>
 <main class="workbench">
   <header class="doc">
-    <div><div class="kicker">FINAL · FUNCTIONAL CLARITY</div><h1>확정 활동 UI/UX 목업</h1></div>
-    <p>시안 2를 최종 방향으로 확정했습니다. 지시문과 문제 자극을 하나의 문제 영역으로 묶고, 음성·응답·녹음 영역은 기능에 따라 분리합니다.</p>
+    <div><div class="kicker">FINAL · 20 SCREENS</div><h1>확정 활동 UI/UX 전체 목업</h1></div>
+    <p>시안 2의 디자인 언어로 기본 활동, 자모, 대화, 결과와 예외 화면까지 한 파일에 통합했습니다. ‘전체보기’에서 전 화면을 한 번에 비교할 수 있습니다.</p>
   </header>
   <nav class="controls" aria-label="목업 화면 제어">
     <div class="control-group" data-set="activity">
-      <span class="control-label">화면</span>
+      <span class="control-label">기본 활동</span>
       <button class="option" data-value="wordQuiz" aria-pressed="true">어휘 문제</button>
       <button class="option" data-value="wordPreview" aria-pressed="false">어휘 미리보기</button>
       <button class="option" data-value="listen" aria-pressed="false">일반 듣기</button>
-      <button class="option" data-value="jamoListen" aria-pressed="false">자모 듣기</button>
-      <button class="option" data-value="write" aria-pressed="false">자모 조합·쓰기</button>
+      <button class="option" data-value="grammar" aria-pressed="false">문법 · 빈칸</button>
+      <button class="option" data-value="reading" aria-pressed="false">읽기 · 지문</button>
       <button class="option" data-value="flash" aria-pressed="false">플래시카드</button>
       <button class="option" data-value="chat" aria-pressed="false">미션 대화</button>
       <button class="option" data-value="role" aria-pressed="false">롤플레잉</button>
+    </div>
+    <div class="control-group" data-set="activity">
+      <span class="control-label">자모 활동</span>
+      <button class="option" data-value="jamoListen" aria-pressed="false">자모 듣기</button>
+      <button class="option" data-value="write" aria-pressed="false">2단 조합·쓰기</button>
+      <button class="option" data-value="write3" aria-pressed="false">3단 받침·쓰기</button>
+      <button class="option" data-value="speak" aria-pressed="false">자모 발음</button>
+      <button class="option" data-value="wordrep" aria-pressed="false">단어 듣고 따라</button>
+      <button class="option" data-value="readwrite" aria-pressed="false">단어 읽고 쓰기</button>
+    </div>
+    <div class="control-group" data-set="activity">
+      <span class="control-label">문항 밖</span>
+      <button class="option" data-value="result" aria-pressed="false">결과</button>
+      <button class="option" data-value="report" aria-pressed="false">대화 리포트</button>
+      <button class="option" data-value="briefing" aria-pressed="false">미션 브리핑</button>
+    </div>
+    <div class="control-group" data-set="activity">
+      <span class="control-label">예외</span>
+      <button class="option" data-value="loading" aria-pressed="false">로딩</button>
+      <button class="option" data-value="failed" aria-pressed="false">로드 실패</button>
+      <button class="option" data-value="micdenied" aria-pressed="false">마이크 거부</button>
     </div>
     <div class="control-group" data-set="width">
       <span class="control-label">폭</span>
@@ -249,8 +393,13 @@
       <button class="option" data-value="360" aria-pressed="false">360</button>
       <button class="option" data-value="320" aria-pressed="false">320</button>
     </div>
+    <div class="control-group" data-set="display">
+      <span class="control-label">보기</span>
+      <button class="option" data-value="single" aria-pressed="true">한 화면</button>
+      <button class="option" data-value="overview" aria-pressed="false">전체보기</button>
+    </div>
   </nav>
-  <section class="stage">
+  <section class="stage" id="stage">
     <div class="device-wrap">
       <div class="device" id="device"><div class="screen" id="screen"></div></div>
       <div class="caption" id="caption">390 × 720 · 어휘 문제</div>
@@ -262,7 +411,7 @@
         <p><b>문제 단위:</b> 지시문과 자극을 하나의 흰 영역으로 묶음.</p>
         <p><b>조작 단위:</b> 선택지와 음성을 표면·테두리로 명확히 구분.</p>
         <p><b>진행 상태:</b> 분절 바와 현재 문항 수를 함께 표시.</p>
-        <p><b>녹음:</b> 콘텐츠 도크로 두고 다음·확인 푸터와 겹치지 않음.</p>
+        <p><b>녹음:</b> 하단 가운데에 두고, 오른쪽 [다음]과 칸을 나눠 충돌을 막음.</p>
       </div>
       <div class="note-section">
         <h2>절제한 요소</h2>
@@ -270,15 +419,17 @@
       </div>
     </aside>
   </section>
+  <section class="overview" id="overview" aria-label="전체 화면 검토"></section>
 </main>
 
 <script>
-const state={activity:"wordQuiz",width:"390",index:0,picked:null,resolved:false,feedback:null,writeStage:"select",strokes:0,judge:null,writeFails:0,wrongTimer:null,chosenConsonant:null,chosenVowel:null,flipped:false,known:0,unknown:0,chatTurn:4,chatFold:false,chatRecord:"idle",roleIndex:1,roleDir:"ai",roleRecord:"idle"};
+const state={activity:"wordQuiz",width:"390",display:"single",index:0,picked:null,resolved:false,feedback:null,writeStage:"select",strokes:0,judge:null,writeFails:0,wrongTimer:null,chosenConsonant:null,chosenVowel:null,chosenFinal:null,flipped:false,known:0,unknown:0,chatTurn:4,chatFold:false,chatRecord:"idle",roleIndex:1,roleDir:"ai",roleRecord:"idle",gPicked:null,gOk:false,rPicked:null,rOk:false,sMode:"idle",sTarget:"어",rwOpen:null,rwInk:[0,0,0]};
 const data={
   wordQuiz:[{prompt:"사과",promptType:"word",ch:["apple","grape","peach","pear"],a:0},{prompt:"college / university",promptType:"meaning",ch:["친구","대학교","학생","성"],a:1},{prompt:"친구",promptType:"word",ch:["teacher","sister","friend","doctor"],a:2},{prompt:"water",promptType:"meaning",ch:["우유","물","차","주스"],a:1}],
   listen:[{q:"여자 이름은 영주예요.",ch:["X","O"],a:1},{q:"남자 이름은 샤오밍이에요.",ch:["X","O"],a:1},{q:"슈테판은 회사원이에요.",ch:["X","O"],a:0}],
   jamoListen:[{q:"어",ch:["어","오"],a:0},{q:"외",ch:["어","오","외","아"],a:2},{q:"아",ch:["아","야"],a:0},{q:"오",ch:["어","오","외","아"],a:1}],
   write:[{q:"가",parts:"ㄱ + ㅏ",guide:"../handwriting/가.png",paths:["M170 190 H650 Q670 410 420 680","M690 140 V720","M690 430 H835"]},{q:"어",parts:"ㅇ + ㅓ",guide:"../handwriting/어.png",paths:["M220 440 A180 180 0 1 0 580 440 A180 180 0 1 0 220 440","M590 440 H760","M760 150 V730"]},{q:"오",parts:"ㅇ + ㅗ",guide:"../handwriting/오.png",paths:["M250 330 A170 170 0 1 0 590 330 A170 170 0 1 0 250 330","M420 520 V650","M170 650 H670"]}],
+  write3:[{q:"산",parts:"ㅅ + ㅏ + ㄴ",guide:"../handwriting/산.png",paths:["M190 180 L390 450","M590 180 L390 450","M680 150 V700","M680 400 H820","M180 600 V720 H760"]}],
   wordPreview:[{q:"안녕하다",m:"to be well / hello"},{q:"네",m:"yes"},{q:"제",m:"my"},{q:"이름",m:"name"},{q:"저",m:"I (formal)"},{q:"반갑다",m:"to be glad to meet"}]
 };
 const flashcards=[{word:"사과",meaning:"apple",kind:"명사"},{word:"학교",meaning:"school",kind:"명사"},{word:"친구",meaning:"friend",kind:"명사"}];
@@ -296,6 +447,16 @@ const roleTurns=[
   {who:"나",ko:"네, 따뜻한 걸로 주세요.",en:"Yes, hot please."},
   {who:"AI",ko:"삼천 원입니다.",en:"That will be 3,000 won."}
 ];
+const extra={
+  grammar:{q:["오늘 날씨가 ","밖에 나가고 싶어요."],answer:"좋아서",sels:["좋아서","좋지만","좋으면","좋아도"],focus:"-아서/어서 — 앞의 내용이 뒤의 이유가 될 때 씁니다."},
+  reading:{passage:"저는 마이클입니다. 미국 사람이에요.\n지금 한국에서 한국어를 배웁니다.\n학교는 신촌에 있어요. 매일 아침 아홉 시에 갑니다.",q:"마이클은 어디에서 한국어를 배웁니까?",type:"choice",ch:["미국","신촌","도쿄","부산"],a:1},
+  speak:{heard:"오",words:["아","어","오","우","으","이","애","에","외","위"]},
+  wordrep:{word:"어머니",tabs:["1","2","3"],cards:[["어머니",1],["바지",1],["모자",1],["새우",0],["지도",0],["쇠고기",0]]},
+  readwrite:{word:"바지",tabs:["1","2","3"],cards:[["바지",1],["모자",1],["어머니",0],["새우",0],["지도",0],["쇠고기",0]],ink:{"바":['<path d="M120 150 C 134 340 118 560 132 760" stroke-width="48"/>','<path d="M138 400 C 210 392 280 396 336 386" stroke-width="44"/>','<path d="M420 140 C 434 330 418 540 432 742" stroke-width="48"/>'],"지":['<path d="M150 190 C 300 176 470 180 600 194" stroke-width="46"/>','<path d="M600 194 C 560 300 440 400 300 470" stroke-width="42"/>','<path d="M140 620 C 320 600 540 604 700 618" stroke-width="46"/>']}},
+  result:{answered:3,total:4,correct:2,graded:3,wrongs:[{n:1,picked:"grape",exp:"사과는 apple 이에요."}]},
+  report:{hits:2,missions:3,vals:[78,62,85,70],rows:[["발음","전반적으로 또렷해요. 커피의 받침을 조금 더 살려 보세요."],["문법","어미가 대체로 정확해요. 높임 표현을 한 번 더 확인해 보세요."],["어휘","주문에 필요한 말을 잘 썼어요."],["내용","주문·가격·인사를 자연스럽게 다 다뤘어요."]]},
+  briefing:{title:"카페에서 주문하기",titleEn:"Ordering at a cafe",scene:"카페에 왔습니다. 마실 것을 주문해 보세요.",sceneEn:"You are at a cafe. Try ordering a drink.",kws:[["주문하기","마실 것을 골라 주문해요"],["가격 묻기","얼마인지 물어봐요"],["인사하기","헤어질 때 인사해요"]],words:[["커피","coffee"],["얼마","how much"],["따뜻하다","to be hot"]]}
+};
 const icons={
   close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
@@ -309,10 +470,10 @@ const icons={
   up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 15l6-6 6 6"/></svg>',
   down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
 };
-const consonants=["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅎ","ㅋ","ㅌ"],vowels=["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ","ㅑ","ㅕ"];
+const consonants=["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅎ","ㅋ","ㅌ"],vowels=["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ","ㅑ","ㅕ"],finalConsonants=["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ"];
 function items(){return data[state.activity]||[]}
 function item(){return items()[state.index]}
-function lesson(){return state.activity==="write"||state.activity==="jamoListen"?"1급 1과":"1급 4과"}
+function lesson(){return ["write","write3","jamoListen","speak","wordrep","readwrite"].includes(state.activity)?"1급 1과":"1급 4과"}
 function instruction(){if(state.activity==="wordQuiz")return "단어에 맞는 뜻을 고르세요.";if(state.activity==="wordPreview")return "이번 과의 단어를 먼저 살펴보세요.";if(state.activity==="listen")return "들은 내용과 같으면 O, 다르면 X를 고르세요.";if(state.activity==="jamoListen")return "듣고 맞는 것을 고르세요.";return state.writeStage==="select"?"글자를 만들고 써 보세요.":"글자를 순서에 맞게 써 보세요."}
 function progress(){const count=state.activity==="wordPreview"?1:items().length,current=state.activity==="wordPreview"?0:state.index;return `<div class="progress-wrap"><div class="progress-meta">${current+1} / ${count}</div><div class="progress">${Array.from({length:count},(_,i)=>`<i class="${i<current?'done':i===current?'now':''}"></i>`).join("")}</div></div>`}
 function feedback(){return state.feedback==="wrong"?'<div class="feedback-message wrong"><i>✕</i>다시 해보세요</div>':state.feedback==="correct"?'<div class="feedback-message correct"><i>✓</i>아주 잘 했어요!</div>':''}
@@ -328,8 +489,9 @@ function jamoListen(){const q=item(),response=`<div class="response-area jamo-ch
 function jamoGrid(list,on,type){return `<div class="jamo-grid">${list.map(x=>`<button class="${x===on?'on':''}" data-action="jamo" data-type="${type}" data-value="${x}">${x}</button>`).join("")}</div>`}
 function selectedConsonant(){return state.chosenConsonant||item().parts[0]}
 function selectedVowel(){return state.chosenVowel||item().parts[4]}
-function combinedSyllable(){const initial=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"],medial=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"],ci=initial.indexOf(selectedConsonant()),vi=medial.indexOf(selectedVowel());return ci<0||vi<0?"?":String.fromCharCode(0xac00+(ci*21+vi)*28)}
-function writeSelect(){const q=item(),consonant=selectedConsonant(),vowel=selectedVowel(),made=combinedSyllable(),stimulus=`<div class="combo-result"><div class="combo-left"><strong>${made}</strong><span>${consonant} + ${vowel}</span></div><button class="sound-icon" data-action="audio" aria-label="${q.q} 발음 듣기">${icons.volume}</button></div>`,response=`<div class="jamo-section"><div class="jamo-label"><i>01</i><b>맨 앞에 오는 소리</b></div>${jamoGrid(consonants,consonant,"consonant")}</div><div class="jamo-section"><div class="jamo-label"><i>02</i><b>가운데 오는 소리</b></div>${jamoGrid(vowels,vowel,"vowel")}</div>`;return shell(problem(stimulus),response,'<button class="primary on" data-action="toWrite">확인</button>')}
+function selectedFinal(){return state.activity==="write3"?(state.chosenFinal||item().parts[8]):""}
+function combinedSyllable(){const initial=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"],medial=["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"],finals=["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"],ci=initial.indexOf(selectedConsonant()),vi=medial.indexOf(selectedVowel()),fi=finals.indexOf(selectedFinal());return ci<0||vi<0||fi<0?"?":String.fromCharCode(0xac00+(ci*21+vi)*28+fi)}
+function writeSelect(){const q=item(),consonant=selectedConsonant(),vowel=selectedVowel(),final=selectedFinal(),made=combinedSyllable(),parts=final?`${consonant} + ${vowel} + ${final}`:`${consonant} + ${vowel}`,stimulus=`<div class="combo-result"><div class="combo-left"><strong>${made}</strong><span>${parts}</span></div><button class="sound-icon" data-action="audio" aria-label="${q.q} 발음 듣기">${icons.volume}</button></div>`,response=`<div class="jamo-section"><div class="jamo-label"><i>01</i><b>맨 앞에 오는 소리</b></div>${jamoGrid(consonants,consonant,"consonant")}</div><div class="jamo-section"><div class="jamo-label"><i>02</i><b>가운데 오는 소리</b></div>${jamoGrid(vowels,vowel,"vowel")}</div>${state.activity==="write3"?`<div class="jamo-section"><div class="jamo-label"><i>03</i><b>받침에 오는 소리</b></div>${jamoGrid(finalConsonants,final,"final")}</div>`:''}`;return shell(problem(stimulus),response,'<button class="primary on" data-action="toWrite">확인</button>')}
 function writeCanvas(){const q=item(),status=state.judge||'',paths=state.strokes?`<svg class="ink" viewBox="0 0 918 918">${q.paths.slice(0,state.strokes).map(path=>`<path d="${path}"/>`).join('')}</svg>`:'',response=`<div class="response-area"><div class="canvas ${status}" data-action="draw" aria-label="글자 쓰기 영역"><div class="guide" style="background-image:url('${q.guide}')"></div>${paths}</div><div class="tools"><button class="tool" data-action="undo">되돌리기</button><button class="tool" data-action="clear">전체 지우기</button></div></div>`,enabled=state.strokes>0,label=state.judge==="correct"?'다음':'확인',action=state.judge==="correct"?'next':'judge';return shell(problem(),response,`<button class="primary ${enabled?'on':''}" ${enabled?`data-action="${action}"`:''}>${label}</button>`)}
 function nextFooter(){const label=state.index===items().length-1?'결과 보기':'다음';return `<button class="primary ${state.resolved?'on':''}" ${state.resolved?'data-action="next"':''}>${label}</button>`}
 function activityAppbar(){return `<div class="appbar"><button class="icon-control" aria-label="닫기">${icons.close}</button><div class="lesson">1급 4과</div><button class="icon-control" data-action="skip" aria-label="건너뛰기">${icons.next}</button></div>`}
@@ -337,14 +499,46 @@ function flashProgress(){return `<div class="progress-wrap"><div class="progress
 function flash(){const card=flashcards[state.index];return `${activityAppbar()}${flashProgress()}<div class="flash-body"><div class="flash-stage" data-action="flip"><div class="flash-next"></div><div class="flash-card ${state.flipped?'flipped':''}"><div class="flash-face"><strong>${card.word}</strong><button class="card-audio" data-action="audio" aria-label="${card.word} 발음 듣기">${icons.volume}</button></div><div class="flash-face back"><strong>${card.meaning}</strong><span class="kind">${card.kind}</span><div class="flash-picture">그림</div><button class="card-audio" data-action="audio" aria-label="${card.word} 발음 듣기">${icons.volume}</button></div></div></div><div class="flash-meta">${state.flipped?'다시 뒤집으려면 누르세요':'카드를 눌러 뜻을 보세요'}</div></div><div class="footer"><div class="judge"><button class="unknown" data-action="unknown" ${state.flipped?'':'disabled'}><span class="badge">${state.unknown}</span><span class="label">몰라요</span></button><button class="known" data-action="known" ${state.flipped?'':'disabled'}><span class="badge">${state.known}</span><span class="label">알아요</span></button></div></div>`}
 function recordWave(){return `<span class="record-wave" aria-hidden="true">${Array.from({length:12},()=>'<i></i>').join('')}</span>`}
 function recordControl(mode,action){const recording=mode==="recording",done=mode==="done",title=recording?"녹음 중":done?"녹음 완료":"눌러서 녹음",sub=recording?"한 번 더 누르면 완료":done?"누르면 다시 녹음":"문장을 말해 보세요",symbol=recording?icons.stop:done?icons.check:icons.mic;return `<div class="record-core"><button class="record-button ${mode}" data-action="${action}" aria-label="${title}">${symbol}</button><span class="record-copy"><b>${title}</b><span>${sub}</span>${recording?recordWave():''}</span></div>`}
-function listenControl(){return `<div class="record-core"><button class="record-button listen" data-action="roleNext" aria-label="AI 말 듣기">${icons.volume}</button><span class="record-copy"><b>AI 말 듣기</b><span>듣고 다음 대사로 이동</span></span></div>`}
+function listenControl(){return `<div class="record-core"><button class="record-button listen" data-action="audio" aria-label="AI 말 듣기">${icons.volume}</button><span class="record-copy"><b>AI 말 듣기</b><span>대사를 듣고 확인하세요</span></span></div>`}
 function missionChat(){const shown=chatTurns.slice(0,state.chatTurn),hits=new Set(shown.filter(x=>x.hit!==undefined).map(x=>x.hit)),waiting=state.chatTurn<chatTurns.length&&chatTurns[state.chatTurn].who==="bot",complete=state.chatTurn>=chatTurns.length;const bottom=complete?'<div class="footer"><button class="primary on">결과 보기</button></div>':`<div class="chat-footer"><button class="keyboard" aria-label="키보드 입력">${icons.keyboard}</button>${recordControl(state.chatRecord,"chatRecord")}</div>`;return `${activityAppbar()}<section class="scenario ${state.chatFold?'folded':''}"><div class="scenario-copy"><div class="ko">카페에서 음료를 주문해 보세요</div>${state.chatFold?'':'<div class="en">Order a drink at the cafe</div>'}</div><button class="fold" data-action="chatFold" aria-label="시나리오 접기">${state.chatFold?icons.down:icons.up}</button></section><div class="missions"><span class="mission-title">미션 보기</span>${missions.map((m,i)=>`<span class="mission ${hits.has(i)?'done':''}">${hits.has(i)?'✓':'○'} ${m}</span>`).join('')}</div><div class="thread">${shown.map(x=>x.who==="bot"?`<div class="msg"><span class="avatar">🧑‍🍳</span><div class="bubble-wrap"><div class="bubble">${x.text}</div></div></div>`:`<div class="msg me ${x.bad?'bad':''}"><div class="bubble-wrap"><div class="bubble">${x.text}</div>${x.tip?`<div class="tip">! ${x.tip}</div>`:''}</div></div>`).join('')}${waiting?'<div class="msg"><span class="avatar">🧑‍🍳</span><span class="typing"><i></i><i></i><i></i></span></div>':''}</div>${bottom}`}
-function roleplay(){const current=roleTurns[state.roleIndex],mine=current.who==="나";const rows=roleTurns.map((t,i)=>{const cls=i===state.roleIndex?'current':i>state.roleIndex?'future':'',record=mine&&i===state.roleIndex&&state.roleRecord==="done"?`<div class="record-card"><div class="meta">${t.en} · [${t.ko}]</div><div class="heard">나의 발음 · ${t.ko}</div></div>`:'';return `<div class="turn ${cls} ${t.who==='나'?'me':'ai'}"><span class="who">${t.who}</span><span class="line">${t.ko}</span><span class="listen">${i<=state.roleIndex?icons.volume:''}</span></div>${record}`}).join('');return `${activityAppbar()}<section class="role-intro"><div class="role-title">AI와 함께 대화를 연습해 보세요.</div><div class="role-tabs"><button class="${state.roleDir==='ai'?'on':''}" data-action="roleAi">AI &gt; 나</button><button class="${state.roleDir==='me'?'on':''}" data-action="roleMe">나 &gt; AI</button></div></section><div class="turns"><div class="script-meta"><span>전체 대본</span><span>${state.roleIndex+1} / ${roleTurns.length}</span></div>${rows}</div><div class="role-footer"><button class="arrow left" data-action="rolePrev" ${state.roleIndex===0?'disabled':''}>${icons.left}</button>${mine?recordControl(state.roleRecord,"roleRecord"):listenControl()}<button class="arrow right" data-action="roleNext" ${state.roleIndex===roleTurns.length-1?'disabled':''}>${icons.right}</button></div>`}
-function render(){const device=document.getElementById('device'),screen=document.getElementById('screen');device.style.width=(+state.width+2)+'px';if(state.activity==="wordQuiz")screen.innerHTML=wordQuiz();else if(state.activity==="wordPreview")screen.innerHTML=wordPreview();else if(state.activity==="listen")screen.innerHTML=generalListen();else if(state.activity==="jamoListen")screen.innerHTML=jamoListen();else if(state.activity==="write")screen.innerHTML=state.writeStage==="select"?writeSelect():writeCanvas();else if(state.activity==="flash")screen.innerHTML=flash();else if(state.activity==="chat")screen.innerHTML=missionChat();else screen.innerHTML=roleplay();const names={wordQuiz:"어휘 문제",wordPreview:"어휘 미리보기",listen:"일반 듣기",jamoListen:"자모 듣기",write:state.writeStage==="select"?"자모 조합":"자모 쓰기",flash:"플래시카드",chat:"미션 대화",role:"롤플레잉"};document.getElementById('caption').textContent=`${state.width} × 720 · ${names[state.activity]}`;let specs;if(state.activity==="flash")specs=[["콘텐츠","뒤집기 카드"],["판정","알아요 · 몰라요"],["진행","수치 + 분절"],["음성","카드 내부"],["하단","자기 평가 88"]];else if(state.activity==="chat")specs=[["콘텐츠","시나리오 + 대화"],["진행","미션 체크"],["입력","음성 · 키보드"],["녹음","공통 3상태"],["하단","녹음 도크 92"]];else if(state.activity==="role")specs=[["콘텐츠","지시문 + 전체 대본"],["진행","대화 턴"],["방향","AI ↔ 나"],["녹음","공통 3상태"],["하단","턴 도크 92"]];else{const audioRole=state.activity==="jamoListen"?"주 자극":state.activity==="listen"?"문장 보조":state.activity==="write"?"쓰기 참고":"단어 보조";specs=[["문제 영역","통합 카드"],["선택지","독립 표면"],["진행","수치 + 분절"],["음성",audioRole],["하단","CTA 88"]]}document.getElementById('spec').innerHTML=specs.map(x=>`<dt>${x[0]}</dt><dd>${x[1]}</dd>`).join('')}
-function reset(){if(state.wrongTimer)clearTimeout(state.wrongTimer);state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;state.chosenConsonant=null;state.chosenVowel=null;state.flipped=false;state.known=0;state.unknown=0;state.chatTurn=4;state.chatFold=false;state.chatRecord='idle';state.roleIndex=1;state.roleDir='ai';state.roleRecord='idle';render()}
-function advance(){if(state.index<items().length-1)state.index++;else state.index=0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;state.chosenConsonant=null;state.chosenVowel=null;render()}
-document.getElementById('screen').addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;if(a==='choice'){if(state.resolved)return;if(state.wrongTimer){clearTimeout(state.wrongTimer);state.wrongTimer=null}const i=+el.dataset.index;state.picked=i;if(i===item().a){state.resolved=true;state.feedback='correct'}else{state.feedback='wrong';render();state.wrongTimer=setTimeout(()=>{state.picked=null;state.wrongTimer=null;render()},650);return}}else if(a==='next'){advance();return}else if(a==='skip'){if(state.activity==='flash'){state.index=(state.index+1)%flashcards.length;state.flipped=false}else if(state.activity==='chat'||state.activity==='role'){reset();return}else{advance();return}}else if(a==='toQuiz'){state.activity='wordQuiz';document.querySelectorAll('[data-set="activity"] .option').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.value==='wordQuiz')));reset();return}else if(a==='jamo'){if(el.dataset.type==='consonant')state.chosenConsonant=el.dataset.value;else state.chosenVowel=el.dataset.value}else if(a==='toWrite'){state.writeStage='write'}else if(a==='draw'){state.strokes=Math.min(state.strokes+1,item().paths.length);state.judge=null;state.feedback=null}else if(a==='clear'){state.strokes=0;state.judge=null;state.feedback=null}else if(a==='undo'){state.strokes=Math.max(0,state.strokes-1);state.judge=null;state.feedback=null}else if(a==='judge'){const ok=state.index===0||state.writeFails>=2;state.judge=ok?'correct':'wrong';state.feedback=state.judge;if(!ok)state.writeFails++}else if(a==='flip'){state.flipped=!state.flipped}else if((a==='known'||a==='unknown')&&state.flipped){state[a]++;state.index=(state.index+1)%flashcards.length;state.flipped=false}else if(a==='chatFold'){state.chatFold=!state.chatFold}else if(a==='chatRecord'){if(state.chatRecord==='idle')state.chatRecord='recording';else if(state.chatRecord==='recording'){state.chatRecord='done';state.chatTurn=state.chatTurn>=chatTurns.length?1:Math.min(chatTurns.length,state.chatTurn+1)}else state.chatRecord='recording'}else if(a==='roleAi')state.roleDir='ai';else if(a==='roleMe')state.roleDir='me';else if(a==='rolePrev'){state.roleIndex=Math.max(0,state.roleIndex-1);state.roleRecord='idle'}else if(a==='roleNext'){state.roleIndex=Math.min(roleTurns.length-1,state.roleIndex+1);state.roleRecord='idle'}else if(a==='roleRecord'){state.roleRecord=state.roleRecord==='idle'?'recording':state.roleRecord==='recording'?'done':'recording'}else if(a==='audio'){el.animate([{transform:'scale(1)'},{transform:'scale(.96)'},{transform:'scale(1)'}],200)}render()});
-document.querySelectorAll('[data-set]').forEach(group=>group.querySelectorAll('.option').forEach(button=>button.addEventListener('click',()=>{const key=group.dataset.set;state[key]=button.dataset.value;group.querySelectorAll('.option').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));if(key==='activity')reset();else render()})));
+function roleplay(){const current=roleTurns[state.roleIndex],mine=current.who==="나",ready=!mine||state.roleRecord==="done";const rows=roleTurns.map((t,i)=>{const cls=i===state.roleIndex?'current':i>state.roleIndex?'future':'',record=mine&&i===state.roleIndex&&state.roleRecord==="done"?`<div class="record-card"><div class="meta">${t.en} · [${t.ko}]</div><div class="heard">나의 발음 · ${t.ko}</div></div>`:'';return `<div class="turn ${cls} ${t.who==='나'?'me':'ai'}" data-action="roleJump" data-index="${i}"><span class="who">${t.who}</span><span class="line">${t.ko}</span><span class="listen">${i<=state.roleIndex?icons.volume:''}</span></div>${record}`}).join('');return `${activityAppbar()}<section class="role-intro"><div class="role-title">AI와 함께 대화를 연습해 보세요.</div><div class="role-tabs"><button class="${state.roleDir==='ai'?'on':''}" data-action="roleAi">AI &gt; 나</button><button class="${state.roleDir==='me'?'on':''}" data-action="roleMe">나 &gt; AI</button></div></section><div class="turns"><div class="script-meta"><span>대본에서 연습할 차례를 선택하세요</span><span>${state.roleIndex+1} / ${roleTurns.length}</span></div>${rows}</div><div class="footer"><div class="dock"><div class="main">${mine?recordControl(state.roleRecord,"roleRecord"):listenControl()}</div><button class="slot" data-action="roleNext" aria-label="다음" ${ready?'':'disabled'}>${icons.next}</button></div></div>`}
+
+/* 추가 화면도 같은 셸과 세 층 조작 원칙으로 조립한다. */
+function gapAppbar(label,skip=true){return `<div class="appbar"><button class="icon-control" aria-label="나가기">${icons.close}</button><div class="lesson">${label}</div>${skip?`<button class="icon-control" data-action="skip" aria-label="건너뛰기">${icons.next}</button>`:'<span style="width:44px"></span>'}</div>`}
+function gapProgress(cur,total){return `<div class="progress-wrap"><div class="progress-meta">${cur+1} / ${total}</div><div class="progress">${Array.from({length:total},(_,i)=>`<i class="${i<cur?'done':i===cur?'now':''}"></i>`).join('')}</div></div>`}
+function gapFeedback(kind){return `<div class="feedback-slot" aria-live="polite">${kind==='wrong'?'<div class="feedback-message wrong"><i>✕</i>다시 해보세요</div>':kind==='correct'?'<div class="feedback-message correct"><i>✓</i>아주 잘 했어요!</div>':''}</div>`}
+function gapFrame(bar,prog,body,feed,footer){return `${bar}${prog||''}<main class="activity-content"><div class="scroll-area">${body}</div>${feed||'<div class="feedback-slot"></div>'}</main>${footer?`<div class="footer">${footer}</div>`:''}`}
+function gapProblem(instr,stimulus=''){return `<section class="problem-card"><header class="instruction"><h2>${instr}</h2></header>${stimulus?`<div class="stimulus">${stimulus}</div>`:''}</section>`}
+function gapPrimary(label,on,action='nextExtra'){return `<button class="primary ${on?'on':''}" ${on?`data-action="${action}"`:''}>${label}</button>`}
+function gapDock(main,right){return `<div class="dock"><div class="main">${main}</div>${right===undefined?'':`<button class="slot" data-action="nextExtra" aria-label="다음" ${right?'':'disabled'}>${icons.next}</button>`}</div>`}
+
+function grammarView(){const g=extra.grammar,p=state.gPicked;const sentence=state.gOk?`${g.q[0]}<b>${g.answer}</b> ${g.q[1]}`:p?`${g.q[0]}<b class="${p===g.answer?'':'miss'}">${p}</b> ${g.q[1]}`:`${g.q[0]}<u>　</u> ${g.q[1]}`;const chips=g.sels.map(s=>{const on=p===s,cls=state.gOk&&on?'ok':on&&s!==g.answer?'no':on?'on':'';return `<button class="chip-opt ${cls}" data-action="gpick" data-value="${s}">${s}</button>`}).join('');const body=gapProblem('빈칸에 알맞은 것을 고르세요.',`<div class="blank-card">${sentence}</div>`)+`<div class="response-area"><div class="chip-wrap">${chips}</div>${p?`<div class="focus-note">${g.focus}</div>`:''}</div>`;return gapFrame(gapAppbar('1급 4과'),gapProgress(1,5),body,gapFeedback(state.gOk?'correct':p?'wrong':null),gapDock(gapPrimary('다음',state.gOk)))}
+function readingView(){const r=extra.reading,p=state.rPicked;const choices=r.ch.map((x,i)=>{const on=p===i,cls=on?(i===r.a?'correct':'wrong'):'';return `<button class="choice ${cls}" data-action="rpick" data-index="${i}"><span>${x}</span>${on?`<span class="choice-mark">${i===r.a?'✓':'✕'}</span>`:''}</button>`}).join('');const body=gapProblem('읽고 질문에 답하세요.',`<div class="passage">${r.passage}</div>`)+`<div class="response-area"><p class="q-text">${r.q}</p><div class="choice-list">${choices}</div></div>`;return gapFrame(gapAppbar('1급 6과'),gapProgress(0,3),body,gapFeedback(state.rOk?'correct':p!==null?'wrong':null),gapDock(gapPrimary('다음',state.rOk)))}
+function speakView(){const s=extra.speak,done=state.sMode==='done',words=s.words;const body=`<section class="problem-card"><header class="instruction"><h2>듣고 따라 말해 보세요.</h2></header><div class="stimulus" style="gap:16px"><div class="mouth-video">입모양 영상</div><div class="audio-pair"><button class="src" data-action="audio"><i>${icons.volume}</i><span>${state.sTarget}</span><i></i></button><button class="mine ${done?(s.heard===state.sTarget?'ok':'no'):''}" data-action="audio"><i>${icons.volume}</i><span>내 녹음</span><i></i></button></div></div></section><div class="jamo-tabs">${['1','2','3'].map((x,i)=>`<button class="${i===0?'on':''}">${x}</button>`).join('')}</div><div class="word-cards">${words.map((w,i)=>`<button class="${w===state.sTarget?'on':''} ${i<3?'done':''}" data-action="speakTarget" data-value="${w}">${w}<b></b></button>`).join('')}</div>${done?`<div class="response-area"><div class="heard-row ${s.heard===state.sTarget?'ok':''}"><span>이렇게 들렸어요</span><b>${s.heard}</b></div></div>`:''}`;return gapFrame(gapAppbar('1급 1과'),gapProgress(2,6),body,null,gapDock(recordControl(state.sMode,'srec'),done))}
+function wordCardsMarkup(list,current){return `<div class="wcards">${list.map(([word,done])=>`<button class="${done?'done':''}"><span class="thumb">그림</span><span class="lab" style="${word===current?'color:var(--blue-500);font-weight:700':''}">${word}<b></b></span></button>`).join('')}</div>`}
+function wordRepView(){const d=extra.wordrep,done=state.sMode==='done';const body=`<section class="problem-card"><header class="instruction"><h2>단어를 듣고 따라 말해 보세요.</h2></header><div class="stimulus" style="gap:20px"><div class="word-pic"><div>단어 그림</div></div><div class="audio-pair"><button class="src" data-action="audio"><i>${icons.volume}</i><span>${d.word}</span><i></i></button><button class="mine ${done?'ok':''}" data-action="audio"><i>${icons.volume}</i><span>내 녹음</span><i></i></button></div></div></section><div class="jamo-tabs">${d.tabs.map((x,i)=>`<button class="${i===0?'on':''}">${x}</button>`).join('')}</div>${wordCardsMarkup(d.cards,d.word)}`;return gapFrame(gapAppbar('1급 1과'),gapProgress(0,6),body,null,gapDock(recordControl(state.sMode,'srec'),done))}
+function readWriteView(){const d=extra.readwrite,syllables=d.word.split('');const body=`<section class="problem-card"><header class="instruction"><h2>단어를 읽고 쓰세요.</h2></header><div class="stimulus" style="gap:20px"><div class="word-pic sm"><div>단어 그림</div></div><button class="audio-bar" data-action="audio"><i>${icons.volume}</i><span>${d.word}</span><i></i></button><div class="syl-row">${syllables.map((c,i)=>{const ink=(d.ink[c]||[]).slice(0,state.rwInk[i]||0);return `<button class="syl" data-action="openCanvas" data-index="${i}"><span>${c}</span>${ink.length?`<svg viewBox="0 0 918 918">${ink.join('')}</svg>`:''}</button>`}).join('')}</div></div></section><div class="jamo-tabs">${d.tabs.map((x,i)=>`<button class="${i===0?'on':''}">${x}</button>`).join('')}</div>${wordCardsMarkup(d.cards,d.word)}`;const modal=state.rwOpen===null?'':`<div class="modal" data-action="closeCanvas"><div class="modal-box"><div class="modal-canvas" data-action="stroke"><span>${syllables[state.rwOpen]}</span>${(()=>{const ink=(d.ink[syllables[state.rwOpen]]||[]).slice(0,state.rwInk[state.rwOpen]||0);return ink.length?`<svg viewBox="0 0 918 918" style="position:absolute;inset:0;width:100%;height:100%">${ink.join('')}</svg>`:''})()}</div><div class="modal-tools"><button data-action="rwclear">전체 지우기</button><button data-action="rwundo">되돌리기</button></div><button class="primary on" data-action="closeCanvas">확인</button></div></div>`;const complete=syllables.every((c,i)=>(state.rwInk[i]||0)>=((d.ink[c]||[]).length||1));return gapFrame(gapAppbar('1급 1과'),gapProgress(1,6),body,null,gapDock(gapPrimary('다음',complete)))+modal}
+function resultView(){const r=extra.result,acc=r.graded?Math.round(r.correct/r.graded*100)+'%':'—';return `${gapAppbar('1급 4과',false)}<main class="activity-content" style="padding:0"><div class="result-head"><h2>다 했어요!</h2><p>${r.total}개 중 ${r.answered}개 풀었어요</p><div class="stat-row"><div><span>푼 문항</span><strong>${r.answered} / ${r.total}</strong></div><div><span>정답률</span><strong>${acc}</strong></div></div></div><div class="scroll-area" style="padding:16px">${r.wrongs.map(w=>`<div class="wrong-card"><span class="tag w">오답 ${w.n}</span><p style="margin:8px 0 0;font-size:16px">${w.picked}</p><span class="tag e" style="margin-top:10px">해설 ${w.n}</span><p style="margin:8px 0 0;font-size:14px;color:var(--blue-gray-600)">${w.exp}</p></div>`).join('')}</div></main><div class="footer"><div class="dock"><div class="main" style="gap:12px"><button class="primary on">다시 풀기</button><button class="primary on">다음 활동</button></div></div></div>`}
+function radar(vals){const cx=110,cy=104,R=74,ang=i=>Math.PI/2*i-Math.PI/2,pt=(i,r)=>[cx+Math.cos(ang(i))*R*r,cy+Math.sin(ang(i))*R*r],ring=r=>[0,1,2,3].map(i=>pt(i,r).map(Math.round).join(',')).join(' '),poly=vals.map((v,i)=>pt(i,v/100).map(n=>n.toFixed(1)).join(',')).join(' '),labels=['발음','문법','내용','어휘'].map((label,i)=>{const [x,y]=pt(i,1.32);return `<text x="${x.toFixed(0)}" y="${(y+4).toFixed(0)}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--blue-gray-600)">${label}</text>`}).join('');return `<svg viewBox="0 0 220 210" style="width:100%;max-width:220px;height:auto;display:block;margin:0 auto" aria-label="발음 문법 내용 어휘 평가">${[.25,.5,.75,1].map(r=>`<polygon points="${ring(r)}" fill="none" stroke="var(--blue-gray-100)"/>`).join('')}${[0,1,2,3].map(i=>{const [x,y]=pt(i,1);return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(0)}" y2="${y.toFixed(0)}" stroke="var(--blue-gray-100)"/>`}).join('')}<polygon points="${poly}" fill="var(--blue-500)" fill-opacity=".22" stroke="var(--blue-500)" stroke-width="2"/>${labels}</svg>`}
+function reportView(){const r=extra.report,pct=Math.floor(r.hits/r.missions*100);return `${gapAppbar('1급 4과',false)}<main class="activity-content" style="padding:0"><div class="rep-head"><h2>AI 대화 리포트</h2><p>AI Chat Report</p><div class="stat-row" style="margin-top:12px"><div><span>완료한 키워드</span><strong>${r.hits} / ${r.missions}</strong></div><div><span>점수</span><strong>${pct}%</strong></div></div></div><div class="rep-tabs"><div class="on">평가</div><div>나의 문장 피드백</div></div><div class="scroll-area" style="padding:12px"><div style="background:#fff;border-radius:10px;padding:10px">${radar(r.vals)}<div style="margin-top:20px;display:flex;flex-direction:column;gap:12px">${r.rows.map(([k,v])=>`<div class="as-row"><span class="k">${k}</span><p>${v}</p></div>`).join('')}</div></div></div></main><div class="footer"><div class="dock"><div class="main" style="gap:12px"><button class="primary on">다시 풀기</button><button class="primary on">다음 활동</button></div></div></div>`}
+function briefingView(){const b=extra.briefing;return `${gapAppbar('4과',false)}<main class="activity-content" style="padding:0"><div class="scroll-area" style="padding:0"><div class="brief-title"><h2>${b.title}</h2><p>${b.titleEn}</p></div><div class="brief-sec"><h3>Conversation Scenario</h3><div class="brief-card"><div class="scene-img">상황 이미지</div><div class="scene-text">${b.scene}<div style="color:var(--blue-gray-400)">${b.sceneEn}</div></div></div></div><div class="brief-sec"><h3>Mission Keyword</h3><div class="brief-card"><div style="display:grid;gap:8px">${b.kws.map(([k,v])=>`<div class="kw-line"><b>${k}</b><span>${v}</span></div>`).join('')}</div><div class="word-strip">${b.words.map(([w,e])=>`<div><b>${w}</b><span>${e}</span></div>`).join('')}</div></div></div></div></main><div class="footer">${gapDock(gapPrimary('대화 시작하기',true,'startChat'))}</div>`}
+function loadingView(){return gapFrame(gapAppbar('1급 4과',false),gapProgress(0,4),`<div class="skeleton"><i class="s"></i><i></i><i></i><i></i></div>`,null,gapDock(gapPrimary('다음',false)))}
+function failedView(){return gapFrame(gapAppbar('1급 4과',false),null,`<div class="state-view"><p>활동을 불러오지 못했어요.</p></div>`,null,gapDock(gapPrimary('다시 시도',true,'retry')))}
+function micDeniedView(){return gapFrame(gapAppbar('1급 4과',false),null,`<div class="state-view"><p>마이크가 꺼져 있어요.<br>브라우저 설정에서 켤 수 있어요.</p></div>`,null,gapDock(gapPrimary('이 활동 건너뛰기',true,'nextExtra')))}
+
+const SCREEN_ORDER=['wordQuiz','wordPreview','listen','grammar','reading','flash','chat','role','jamoListen','write','write3','speak','wordrep','readwrite','result','report','briefing','loading','failed','micdenied'];
+const SCREEN_NAMES={wordQuiz:'어휘 문제',wordPreview:'어휘 미리보기',listen:'일반 듣기',grammar:'문법 빈칸',reading:'읽기 지문',flash:'플래시카드',chat:'미션 대화',role:'롤플레잉',jamoListen:'자모 듣기',write:'2단 조합·쓰기',write3:'3단 받침·쓰기',speak:'자모 발음',wordrep:'단어 듣고 따라',readwrite:'단어 읽고 쓰기',result:'결과',report:'대화 리포트',briefing:'미션 브리핑',loading:'로딩',failed:'로드 실패',micdenied:'마이크 거부'};
+const EXTRA_VIEWS={grammar:grammarView,reading:readingView,speak:speakView,wordrep:wordRepView,readwrite:readWriteView,result:resultView,report:reportView,briefing:briefingView,loading:loadingView,failed:failedView,micdenied:micDeniedView};
+function screenMarkup(){if(state.activity==='wordQuiz')return wordQuiz();if(state.activity==='wordPreview')return wordPreview();if(state.activity==='listen')return generalListen();if(state.activity==='jamoListen')return jamoListen();if(state.activity==='write'||state.activity==='write3')return state.writeStage==='select'?writeSelect():writeCanvas();if(state.activity==='flash')return flash();if(state.activity==='chat')return missionChat();if(state.activity==='role')return roleplay();return (EXTRA_VIEWS[state.activity]||wordQuiz)()}
+function resetTransient(){if(state.wrongTimer){clearTimeout(state.wrongTimer);state.wrongTimer=null}Object.assign(state,{index:0,picked:null,resolved:false,feedback:null,writeStage:'select',strokes:0,judge:null,writeFails:0,chosenConsonant:null,chosenVowel:null,chosenFinal:null,flipped:false,known:0,unknown:0,chatTurn:4,chatFold:false,chatRecord:'idle',roleIndex:1,roleDir:'ai',roleRecord:'idle',gPicked:null,gOk:false,rPicked:null,rOk:false,sMode:'idle',sTarget:'어',rwOpen:null,rwInk:[0,0,0]})}
+function overviewMarkup(){const saved={...state,rwInk:[...state.rwInk]};const html=SCREEN_ORDER.map(id=>{state.activity=id;resetTransient();return `<article class="overview-item"><h3>${SCREEN_NAMES[id]}</h3><div class="overview-viewport"><div class="overview-screen">${screenMarkup()}</div></div></article>`}).join('');Object.assign(state,saved);return html}
+function screenSpecs(){if(['speak','wordrep','role'].includes(state.activity))return [['콘텐츠','자극과 보조 조작'],['녹음','공통 3상태'],['다음','녹음 후 활성'],['하단','가운데 주 조작 + 오른쪽 다음']];if(state.activity==='readwrite')return [['콘텐츠','그림 · 음성 · 글자 칸'],['쓰기','글자별 모달'],['도구','지우기 · 되돌리기'],['다음','모든 글자 작성 후 활성']];if(['result','report','briefing'].includes(state.activity))return [['종류','문항 흐름 밖'],['앱바','나가기만'],['하단','화면 고유 주 조작']];if(['loading','failed','micdenied'].includes(state.activity))return [['종류','예외 상태'],['건너뛰기','앱바에서 제거'],['복구','하단 주 조작']];if(state.activity==='flash')return [['콘텐츠','뒤집기 카드'],['판정','알아요 · 몰라요'],['음성','카드 내부'],['하단','자기 평가']];if(state.activity==='chat')return [['콘텐츠','시나리오 + 대화'],['진행','미션 체크'],['입력','음성 · 키보드'],['하단','대화 입력']];return [['문제 영역','지시문 + 자극 통합'],['오답','고른 것만 표시'],['진행','수치 + 분절'],['하단','문항 주 조작']]}
+function render(){const device=document.getElementById('device'),screen=document.getElementById('screen'),stage=document.getElementById('stage'),overview=document.getElementById('overview');device.style.width=(+state.width+2)+'px';screen.innerHTML=screenMarkup();document.getElementById('caption').textContent=`${state.width} × 720 · ${SCREEN_NAMES[state.activity]}`;document.getElementById('spec').innerHTML=screenSpecs().map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('');document.querySelectorAll('[data-set="activity"] .option').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.value===state.activity)));const all=state.display==='overview';stage.className=`stage${all?' overview-hidden':''}`;overview.className=`overview${all?' on':''}`;if(all)overview.innerHTML=overviewMarkup()}
+function reset(){resetTransient();render()}
+function advance(){const list=items();state.index=list.length?((state.index+1)%list.length):0;state.picked=null;state.resolved=false;state.feedback=null;state.writeStage='select';state.strokes=0;state.judge=null;state.writeFails=0;state.chosenConsonant=null;state.chosenVowel=null;state.chosenFinal=null;render()}
+
+document.getElementById('screen').addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;if(a==='choice'){if(state.resolved)return;if(state.wrongTimer){clearTimeout(state.wrongTimer);state.wrongTimer=null}const i=+el.dataset.index;state.picked=i;if(i===item().a){state.resolved=true;state.feedback='correct'}else{state.feedback='wrong';render();state.wrongTimer=setTimeout(()=>{state.picked=null;state.wrongTimer=null;render()},650);return}}else if(a==='next'){advance();return}else if(a==='skip'){if(state.activity==='flash'){state.index=(state.index+1)%flashcards.length;state.flipped=false}else if(['chat','role'].includes(state.activity)){reset();return}else if(items().length){advance();return}else{reset();return}}else if(a==='toQuiz'){state.activity='wordQuiz';reset();return}else if(a==='jamo'){if(el.dataset.type==='consonant')state.chosenConsonant=el.dataset.value;else if(el.dataset.type==='vowel')state.chosenVowel=el.dataset.value;else state.chosenFinal=el.dataset.value}else if(a==='toWrite'){state.writeStage='write'}else if(a==='draw'){state.strokes=Math.min(state.strokes+1,item().paths.length);state.judge=null;state.feedback=null}else if(a==='clear'){state.strokes=0;state.judge=null;state.feedback=null}else if(a==='undo'){state.strokes=Math.max(0,state.strokes-1);state.judge=null;state.feedback=null}else if(a==='judge'){const ok=state.index===0||state.writeFails>=2;state.judge=ok?'correct':'wrong';state.feedback=state.judge;if(!ok)state.writeFails++}else if(a==='flip'){state.flipped=!state.flipped}else if((a==='known'||a==='unknown')&&state.flipped){state[a]++;state.index=(state.index+1)%flashcards.length;state.flipped=false}else if(a==='chatFold'){state.chatFold=!state.chatFold}else if(a==='chatRecord'){if(state.chatRecord==='idle')state.chatRecord='recording';else if(state.chatRecord==='recording'){state.chatRecord='done';state.chatTurn=state.chatTurn>=chatTurns.length?1:Math.min(chatTurns.length,state.chatTurn+1)}else state.chatRecord='recording'}else if(a==='roleAi')state.roleDir='ai';else if(a==='roleMe')state.roleDir='me';else if(a==='roleJump'){state.roleIndex=+el.dataset.index;state.roleRecord='idle'}else if(a==='roleNext'){state.roleIndex=Math.min(roleTurns.length-1,state.roleIndex+1);state.roleRecord='idle'}else if(a==='roleRecord'){state.roleRecord=state.roleRecord==='idle'?'recording':state.roleRecord==='recording'?'done':'recording'}else if(a==='gpick'){if(!state.gOk){state.gPicked=el.dataset.value;state.gOk=state.gPicked===extra.grammar.answer}}else if(a==='rpick'){if(!state.rOk){state.rPicked=+el.dataset.index;state.rOk=state.rPicked===extra.reading.a}}else if(a==='srec'){state.sMode=state.sMode==='idle'?'recording':state.sMode==='recording'?'done':'recording'}else if(a==='speakTarget'){state.sTarget=el.dataset.value;state.sMode='idle'}else if(a==='openCanvas'){state.rwOpen=+el.dataset.index}else if(a==='closeCanvas'){if(el.classList.contains('modal')&&e.target!==el)return;state.rwOpen=null}else if(a==='stroke'){const char=extra.readwrite.word.split('')[state.rwOpen],max=(extra.readwrite.ink[char]||[]).length;if((state.rwInk[state.rwOpen]||0)<max)state.rwInk[state.rwOpen]++}else if(a==='rwundo'){if(state.rwInk[state.rwOpen]>0)state.rwInk[state.rwOpen]--}else if(a==='rwclear'){state.rwInk[state.rwOpen]=0}else if(a==='nextExtra'){state.sMode='idle';state.rwOpen=null}else if(a==='startChat'){state.activity='chat';reset();return}else if(a==='retry'){state.activity='wordQuiz';reset();return}else if(a==='audio'&&el.animate){el.animate([{transform:'scale(1)'},{transform:'scale(.96)'},{transform:'scale(1)'}],200)}render()});
+document.querySelectorAll('[data-set]').forEach(group=>group.querySelectorAll('.option').forEach(button=>button.addEventListener('click',()=>{const key=group.dataset.set;state[key]=button.dataset.value;document.querySelectorAll(`[data-set="${key}"] .option`).forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.value===state[key])));if(key==='activity')reset();else render()})));
 render();
 </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>연세 글로벌 한국어 · 확정 디자인 · 빠진 화면 8종</title>
+<title>연세 글로벌 한국어 · 확정 디자인 · 빠진 화면 11종</title>
 <style>
   :root {
     --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
@@ -59,7 +59,7 @@
   .problem-card { padding:18px; border:1px solid var(--blue-gray-100); border-radius:16px; background:var(--white); }
   .instruction { display:block; }
   .instruction h2 { margin:0; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:600; letter-spacing:-.01em; }
-  .stimulus { margin-top:16px; padding-top:16px; border-top:1px solid var(--blue-gray-100); }
+  .stimulus { margin-top:16px; padding-top:16px; border-top:1px solid var(--blue-gray-100); display:flex; flex-direction:column; }
   .word-focus { display:flex; align-items:center; gap:8px; min-height:50px; }
   .word-focus strong { color:var(--blue-gray-900); font-size:32px; line-height:48px; font-weight:600; letter-spacing:-.02em; }
   .sound-icon { width:38px; height:38px; border:1px solid var(--blue-100); border-radius:50%; background:var(--blue-50); color:var(--blue-600); display:grid; place-items:center; cursor:pointer; }
@@ -406,9 +406,9 @@
 </head><body>
 <main class="workbench">
   <header class="doc">
-    <div><div class="kicker">GAPS · 빠져 있던 화면</div><h1>확정 디자인으로 채운 나머지 화면</h1></div>
-    <p>확정 목업에 없던 8종을 같은 디자인 언어로 만들었습니다. 활동 3종(문법·읽기·자모 발음)은
-       구 앱 화면을 직접 열어 규격을 옮겼고, 나머지는 문항 흐름 밖 화면입니다.</p>
+    <div><div class="kicker">GAPS · 통합 전 검토 기록</div><h1>확정 디자인으로 채운 나머지 화면</h1></div>
+    <p>확정 목업에 없던 11종을 같은 디자인 언어로 정리한 검토용 원본입니다. 활동 5종은 구 앱 화면을
+       직접 열어 규격을 옮겼고, 최종 통합본은 <b>activity_mockups_uiux.html</b>에서 확인합니다.</p>
   </header>
   <nav class="controls" aria-label="목업 화면 제어">
     <div class="control-group" data-set="activity">
@@ -467,8 +467,8 @@ function recordWave(){return `<span class="record-wave" aria-hidden="true">${Arr
 function audioRow(label,sub){return `<div class="audio-row"><button class="audio-play" data-action="audio" aria-label="${label}">${icons.volume}</button><span class="audio-copy"><b>${label}</b><span>${sub}</span></span>${wave()}</div>`}
 function recordControl(mode,action){const recording=mode==="recording",done=mode==="done",title=recording?"녹음 중":done?"녹음 완료":"눌러서 녹음",sub=recording?"한 번 더 누르면 완료":done?"누르면 다시 녹음":"문장을 말해 보세요",symbol=recording?icons.stop:done?icons.check:icons.mic;return `<div class="record-core"><button class="record-button ${mode}" data-action="${action}" aria-label="${title}">${symbol}</button><span class="record-copy"><b>${title}</b><span>${sub}</span>${recording?recordWave():''}</span></div>`}
 function jamoGrid(list,on,type){return `<div class="jamo-grid">${list.map(x=>`<button class="${x===on?'on':''}" data-action="jamo" data-type="${type}" data-value="${x}">${x}</button>`).join("")}</div>`}
-function choiceMarkup(text,i){const active=state.picked===i,cls=active?(state.resolved?'correct':'wrong'):'',mark=active?`<span class="choice-mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice ${cls}" data-action="choice" data-index="${i}"><span>${text}</span>${mark}</button>`}/* 확정 목업(activity_mockups_uiux.html)의 shell 조립 방식을 그대로 따른다.
-   여기 있는 화면은 그 파일에 빠져 있던 것뿐이다. */
+function choiceMarkup(text,i){const active=state.picked===i,cls=active?(state.resolved?'correct':'wrong'):'',mark=active?`<span class="choice-mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice ${cls}" data-action="choice" data-index="${i}"><span>${text}</span>${mark}</button>`}/* 확정 목업과 시각 토큰은 공유하지만, 이 파일의 helper는 통합 전 검토용으로 분리돼 있다.
+   실제 공통 라우터와 상호작용 규칙은 activity_mockups_uiux.html에 병합했다. */
 const state = { view:"grammar", width:"390",
   gPicked:null, gOk:false,           // 문법
   rPicked:null, rOk:false,           // 읽기
@@ -585,8 +585,8 @@ function readingView(){
 }
 
 /* ── ③ 자모 발음 (sub=1·3) ────────────────────────
-   막지 않는다 — [다음]이 처음부터 켜져 있다.
-   인식 결과는 머무는 정보라 pill 이 아니라 도크 아래 별도 줄. */
+   녹음을 완료하면 도크 오른쪽 [다음]이 활성화된다.
+   인식 결과는 머무는 정보라 pill 이 아니라 콘텐츠 안 별도 줄에 둔다. */
 function speakView(){
   const s=D.speak, done=state.sMode==="done";
   const words=["아","어","오","우","으","이","애","에","외","위"];
@@ -826,7 +826,7 @@ const ORIGIN = {
   wordrep:"routes/.../listen-repeat2/$code.tsx — 그림 150 + 음성/내 녹음 2열 + 워드카드 3열",
   readwrite:"routes/.../read-write/$code.tsx — <b>캔버스가 모달</b>이다. 글자 칸을 누르면 HangulCanvas 가 Dialog 로 열린다",
   briefing:"routes/.../mission_chat/$code.tsx — 시나리오 · 미션 키워드 · 단어",
-  loading:"셸 예외 상태(구현 사양 §9)", failed:"동상", micdenied:"동상",
+  loading:"셸 예외 상태(구현 사양 §9)", failed:"동일", micdenied:"동일",
 };
 function render(){
   const dev=document.getElementById('device'), scr=document.getElementById('screen');
