@@ -176,7 +176,93 @@ complete 그 장소 완료</pre>
    <code>MasterAdminRequired</code>. <code>data</code>가 검증 없는 <code>dict</code>라
    <b>필드 이름을 하나 틀리면 조용히 깨진다</b>.</p>
 
-<h2 id="s2"><span class="n">2</span>봄소풍 숫자미션 <span class="qa">— 아직</span></h2>
+<h2 id="s2"><span class="n">2</span>봄소풍 숫자미션 — <b>듣고 숫자 고르기</b></h2>
+<p class="lead"><b>친구를 고르면 그 친구의 주제로 숫자 문항이 나온다.</b>
+   문장을 듣고 네 개 중에서 맞는 숫자를 고른다.
+   <code>components/main/game/spring-picnic.tsx</code> <b>1045줄</b>.</p>
+
+<div class="callout">
+  <div class="t">이 게임은 <b>잘 만들어져 있다</b> — 다른 게임이 여기서 배워야 한다</div>
+  <div class="tablewrap"><table>
+    <tr><th>하고 있는 것</th><th>다른 게임은</th></tr>
+    <tr><td><b>서버 우선 복원</b> — 켤 때 <code>getGameProgress</code>로 읽어
+        <code>localStorage</code>에 <b>merge</b> 한다</td>
+        <td><b>서울 퍼즐은 반대다</b> — XP 를 서버에 안 보내고 기기를 옮기면 값이 바뀐다(§1)</td></tr>
+    <tr><td><b>다국어 힌트</b> — <code>i18n.language</code>를 따라가고
+        <code>ko</code> 로 폴백한다(<code>q.hint[curLang] || q.hint.ko</code>)</td>
+        <td>VocaShot 은 <b>영어로만</b> 줬다 — 고치기로 했다</td></tr>
+    <tr><td><b>틀린 문항을 다음 판 앞으로</b> 당긴다
+        (<code>rounds = [...틀렸던 것, ...나머지]</code>)</td>
+        <td>VocaShot 은 <b>같은 판 안에서</b> 3문항 뒤에 다시 낸다 — 방식이 다를 뿐 둘 다 맞다</td></tr>
+    <tr><td><b>음성이 없으면 TTS</b> 로 대체한다
+        (<code>/sounds/spring-picnic/{id}.m4a</code> → <code>speechSynthesis</code>)</td>
+        <td>—</td></tr>
+  </table></div>
+  <p class="qa"><code>wrongHistory</code>도 <b><code>_meta.extra</code> 에 넣어</b> 서버에 남긴다.
+     "아직 못 외운 것"이 <b>기기를 옮겨도 따라온다</b>.</p>
+</div>
+
+<h3>한 판</h3>
+<pre>친구를 고른다 → 레벨을 고른다
+        ↓
+그 친구의 주제 · 그 레벨 문항이 <b>전부</b> 한 판이 된다
+<b>틀렸던 문항이 맨 앞</b>으로 온다
+        ↓
+문장을 듣고 넷 중 하나를 고른다
+  맞히면            +1점, 다음
+  <b>처음 틀리면</b>       그 자리에서 <b>한 번 더</b>
+  <b>두 번 틀리면</b>       넘어가고 <b>못 외운 것</b>으로 기록된다
+        ↓
+결과 — 정답 수 · <b>70% 이상이면 완료</b></pre>
+<div class="callout">
+  <div class="t">"못 외운 것"을 <b>정확히</b> 관리한다</div>
+  <p>두 번 틀린 것만 <code>wrongHistory</code>에 <b>남기고</b>,
+     한 번에 맞힌 것은 <b>지운다</b>. 목록이 <b>계속 자라지 않는다</b>.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">손볼 것 ① — <b>재시도로 맞혀도 첫 시도와 같은 1점</b></div>
+  <p>처음 틀리면 <code>answered:false, retrying:true</code>로 두고 <b>같은 문항을 다시 풀게</b> 한다.
+     거기서 맞히면 <code>newScore++</code> — <b>첫 시도에 맞힌 사람과 점수가 같다</b>.</p>
+  <p>서울 퍼즐만큼 나쁘지는 않다. <b>오답 자체에 점수를 주지는 않으므로</b>
+     "틀리는 게 이득"은 아니고 <b>"틀려도 손해가 없다"</b>이다.
+     그래도 <b>넷 중 하나를 찍고 보는 것</b>이 아무 비용 없는 전략이 된다 —
+     첫 시도에 반을 맞히고 나머지는 두 번째에 맞혀도 <b>만점</b>이다.</p>
+  <p class="qa">서울 퍼즐과 <b>같은 방향으로</b> 맞추는 것이 좋겠다 —
+     재시도 정답은 <b>0.5점</b>이거나, 점수를 <b>첫 시도 정답 수</b>로 세고
+     재시도 정답은 <b>완료 판정(70%)에만</b> 넣는 식.
+     VocaShot 이 <b>재출제 정답 0점</b>으로 간 것과도 방향이 같다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">손볼 것 ② — <code>wQueue</code> 가 <b>죽은 코드</b>다</div>
+  <p><code>wQueue</code>는 <b>어디에서도 채워지지 않는다</b> — 늘 빈 배열이다.
+     그런데 <b>네 곳</b>이 그 값을 보고 갈라진다.</p>
+  <pre>461  if (game.wQueue.length &gt; 0) { ... }        <b>← 절대 안 들어간다</b>
+763  isLast = cur &gt;= rounds.length-1 &amp;&amp; wQueue.length === 0
+893  onClick = isLast &amp;&amp; wQueue.length === 0 ? 결과 : 다음
+895  라벨도 같은 조건으로 갈린다</pre>
+  <p><b>"틀린 것을 판 뒤에 모아서 다시"</b> 였다가
+     <b>"그 자리에서 다시"</b> 로 바뀌면서 남은 흔적이다.
+     지금 동작이 맞고, <b>죽은 분기는 지운다</b>.</p>
+</div>
+
+<h3>콘텐츠 모델</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>필드</th></tr>
+  <tr><td><b>친구</b></td>
+      <td><code>id · face · name · bg · cats[] · mission · desc · desc2</code><br>
+          <span class="qa"><code>cats</code> 가 그 친구가 내는 <b>주제</b>다</span></td></tr>
+  <tr><td><b>문항</b></td>
+      <td><code>id · cat · level · il · hint{언어별} · num · tmpl · tts · correct · wrong[]</code><br>
+          <span class="qa"><code>il</code> 그림 · <code>tts</code> 읽어 줄 문장 · <code>tmpl</code> 문장 틀</span></td></tr>
+</table></div>
+<p class="qa">저장 단위는 <code>stage_id = "{친구id}_{레벨}"</code>,
+   <code>score</code> = 정답 수, <code>completed</code> = 70% 이상.
+   <code>_meta.extra</code> 에 <code>lastFriend · lastLv · lastScore · lastDate ·
+   totalPlayed · wrongHistory</code>.</p>
+
+
 <h2 id="s3"><span class="n">3</span>어휘 카드 마스터 <span class="qa">— 아직</span></h2>
 <h2 id="s4"><span class="n">4</span>조사 스나이퍼 <span class="qa">— 아직</span></h2>
 </main>
