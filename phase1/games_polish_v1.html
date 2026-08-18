@@ -101,40 +101,51 @@ complete 그 장소 완료</pre>
 </table></div>
 
 <div class="callout stop">
-  <div class="t">손볼 것 ① — <b>틀리는 쪽이 이득이다</b></div>
-  <p>오답이면 <b>정답 문장이 그대로 화면에 뜨고</b>, "다시 하기"는
+  <div class="t">정한 것 ① — <b>오답 0점, 재시도는 감점</b></div>
+  <p>지금은 오답이면 <b>정답 문장이 그대로 뜨고</b>, "다시 하기"가
      <code>loadPuzzle</code>을 다시 부르며 <code>hintUsed</code>를 <b>false 로 되돌린다</b>.
-     즉 <b>재시도에 아무 감점이 없다</b>.</p>
+     재시도에 감점이 없어서 <b>순서가 뒤집혀 있었다</b>.</p>
   <div class="tablewrap"><table>
-    <tr><th>어떻게 풀었나</th><th class="n">받는 XP</th></tr>
-    <tr><td><b>일부러 틀리고</b> → 정답을 보고 → 다시 맞힘</td><td class="n"><b>25</b></td></tr>
-    <tr><td>바로 맞힘</td><td class="n">20</td></tr>
-    <tr><td><b>정직하게 힌트를 쓰고</b> 맞힘</td><td class="n"><b>10</b></td></tr>
+    <tr><th>어떻게 풀었나</th><th class="n">지금</th><th class="n">바꾼 뒤</th></tr>
+    <tr><td>바로 맞힘</td><td class="n">20</td><td class="n"><b>20</b></td></tr>
+    <tr><td>힌트를 썼거나 · 틀린 적이 있음</td><td class="n">10 · <b>25</b></td><td class="n"><b>10</b></td></tr>
+    <tr><td>힌트도 쓰고 틀리기도 함</td><td class="n">15</td><td class="n"><b>5</b></td></tr>
+    <tr><td><b>오답</b> 그 자체</td><td class="n"><b>5</b></td><td class="n"><b>0</b></td></tr>
   </table></div>
-  <p><b>순서가 뒤집혀 있다.</b> 틀리는 것이 가장 많이 받고, <b>힌트를 쓰는 정직한 쪽이 가장 적게</b> 받는다.
-     아무 조각이나 넣고 확인 → 정답을 읽고 → 그대로 다시 넣는 것이
-     <b>최적 전략</b>이 된다.</p>
-  <p class="qa">고치는 방법은 여럿이다 — 오답 XP를 0으로 두거나,
-     재시도에 <code>hintUsed</code>를 유지하거나(즉 재시도 정답은 10점),
-     정답 공개를 <b>재시도를 포기했을 때만</b> 하거나.
-     <b>어느 쪽이든 "틀리는 게 이득"은 없애야 한다.</b></p>
+  <p><b>실수 하나에 반씩 깎는다.</b> 틀리는 것과 힌트를 <b>같은 무게</b>로 둔다 —
+     둘 다 "혼자 못 풀었다"는 같은 사실이고, 지금처럼 <b>힌트만 벌주면
+     정직한 쪽이 손해</b>가 된다.</p>
+  <p>끝까지 맞히면 <b>0점은 주지 않는다</b>(최소 5). 풀어낸 것은 풀어낸 것이다.
+     못 맞히고 넘어가야 0이다.</p>
+  <p class="qa">고칠 곳은 <code>checkAnswer</code> 하나다 —
+     오답 분기의 <code>const xp = 5</code>를 <b>0</b>으로,
+     정답 분기를 <code>hintUsed</code>와 <b>새 플래그(이 문항에서 틀린 적 있음)</b>로 가른다.
+     <code>retryPuzzle</code>은 그 플래그를 <b>지우지 않는다</b>.</p>
 </div>
 
 <div class="callout stop">
-  <div class="t">손볼 것 ② — <b>XP가 기기를 옮기면 값이 바뀐다</b></div>
-  <p>헤더에 <code>{totalXp} XP</code>가 늘 떠 있다. 그런데 <b>서버로는 XP를 보내지 않는다</b> —
-     장소별로 보내는 <code>score</code>가 <b><code>퍼즐 수 × 10</code></b>이라는 <b>상수</b>다(348줄).
-     실력과 무관하고 <b>누구나 같은 값</b>이다.</p>
-  <pre>저장할 때   stage_id = 장소id,  score = 퍼즐수 × 10   ← 실제 XP 아님
-           _meta.extra = { playerName, currentLoc }  ← XP 없음
-
-불러올 때   totalXp = <b>완료한 장소들의 score 합</b>   ← 내가 번 XP 가 아니다</pre>
-  <p>진짜 XP는 <b><code>localStorage</code>에만</b> 있다(<code>seoul-puzzle-v1</code>).
-     그래서 <b>다른 기기에서 로그인하면 내가 번 XP 가 사라지고</b>
-     "퍼즐 수 × 10"으로 <b>조용히 바뀐다</b>. 늘거나 줄어들 수 있다.</p>
-  <p class="qa">XP 를 계속 쓸 거면 <code>_meta.extra.totalXp</code> 에 넣으면 된다 —
-     <b>스키마를 안 바꿔도 된다</b>. 아니면 XP 표시를 없애고
-     <b>완료한 장소 수</b>만 보여 주는 쪽이 정직하다.</p>
+  <div class="t">정한 것 ② — <b>XP 를 서버에 보낸다</b>. 저장하는 값만 바꾸면 된다</div>
+  <p>헤더에 <code>{totalXp} XP</code>가 늘 떠 있는데 <b>서버로는 XP 를 안 보낸다</b>.
+     장소별 <code>score</code>가 <code>퍼즐 수 × 10</code>이라는 <b>상수</b>여서
+     실력과 무관하고 <b>누구나 같은 값</b>이다. 진짜 XP 는
+     <code>localStorage</code>에만 있어서 <b>기기를 옮기면 조용히 바뀐다</b>.</p>
+  <p><b>고칠 곳은 저장하는 줄 하나다.</b> 상수 대신 <b>그 장소에서 실제로 번 XP</b>를 보낸다 —
+     <code>sessionXp</code>가 이미 정확히 그 값이다(<code>startLocation</code>에서 0으로 리셋된다).</p>
+  <pre>지금   score = (puzzlesMap[id]?.length ?? 0) * 10   <b>← 상수</b>
+바꿔   score = sessionXp                          <b>← 그 장소에서 번 XP</b></pre>
+  <div class="callout" style="margin:10px 0 0">
+    <div class="t">불러오는 코드는 <b>안 고쳐도 된다</b></div>
+    <p>이미 <code>totalXp = 완료한 장소들의 score 합</code>으로 읽고 있다.
+       <b>더하던 숫자가 틀렸을 뿐</b>이라, 저장 값을 바로잡으면 그 계산이 <b>저절로 맞는다</b>.</p>
+    <p class="qa">그리고 서버 <code>upsert</code>가 <b><code>max()</code></b>로 유지하므로
+       같은 장소를 다시 해서 더 잘하면 <b>높은 쪽이 남는다</b>. 낮아지지 않는다.</p>
+  </div>
+  <p><b>같이 고칠 것 하나</b> — 지금은 <code>lastCompletedRef</code>가
+     <b>이미 완료한 장소는 다시 안 보낸다</b>. 그러면 <b>다시 해서 더 잘해도 반영이 안 된다</b>.
+     장소를 끝낼 때마다 그 판의 <code>sessionXp</code>를 보내고,
+     <b>높은 값 유지는 서버에 맡긴다</b>.</p>
+  <p class="qa"><code>_meta.extra</code>는 <code>{ playerName, currentLoc }</code> 그대로 둔다.
+     XP 를 거기 따로 넣을 필요가 없어진다 — <b>장소별 합이 곧 전체</b>다.</p>
 </div>
 
 <div class="callout">
