@@ -203,9 +203,10 @@ const state={ screen:"start", width:"390", startv:"has", resultv:"best" };
 /* 급 8개 · 문항 수는 n1_word_quiz.json 실측 */
 const LEVELS=[1,2,3,4,5,6,7,8];
 const D={
-  level:2, mode:"easy", best:245, lastLevel:2, hearts:5,
+  /* 점수 = 문항당 10~20(10 + 남은 시간 비율 × 10). 31 정답이면 310~620 */
+  level:2, mode:"easy", best:402, lastLevel:2, hearts:5,
   /* 하트 5 를 다 쓰고 끝난 판 — 그래서 놓친 단어가 정확히 5개다 */
-  run:{ score:280, correct:31, asked:36, wrong:[
+  run:{ score:468, correct:31, asked:36, wrong:[
     { w:"은행원", m:"bank teller" },
     { w:"흐리다", m:"to be cloudy" },
     { w:"싱겁다", m:"to be bland" },
@@ -248,10 +249,11 @@ function startView(){
 /* ── 결과 ── */
 function resultView(){
   const v=state.resultv, r=D.run;
-  const score = v==="under" ? 190 : v==="clean" ? 360 : r.score;
+  const score = v==="under" ? 355 : v==="clean" ? 1780 : r.score;
   const isBest = v!=="under";
   const wrong = v==="clean" ? [] : r.wrong;
-  const correct = v==="clean" ? r.asked : r.correct;
+  const correct = v==="clean" ? 146 : r.correct;
+  const asked   = v==="clean" ? 146 : r.asked;
   return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
     <div class="r-head">
       <div class="nm"><span class="av">${I.user}</span>
@@ -262,7 +264,7 @@ function resultView(){
     <div class="r-body">
       <h2 class="r-ttl ${v==="clean"?'ok':'no'}">${v==="clean"?"전부 맞혔어요":"게임 오버"}</h2>
       <p class="r-desc">${v==="clean"
-        ? `${D.level}급 문항을 다 풀었습니다.`
+        ? `${D.level}급 ${asked}문항을 다 풀었습니다.`
         : "하트가 0이 되어 끝났습니다."}</p>
       <div class="r-score">
         <div class="r-k">내 점수</div>
@@ -275,7 +277,7 @@ function resultView(){
         <div class="r-stat"><div class="r-k">맞힘</div>
           <div class="v" style="color:#34d399">${correct}</div></div>
         <div class="r-stat"><div class="r-k">낸 문항</div>
-          <div class="v" style="color:#e2e8f0">${r.asked}</div></div>
+          <div class="v" style="color:#e2e8f0">${asked}</div></div>
       </div>
       ${wrong.length
         ? `<div class="r-wrong"><div class="r-k cap">놓친 단어 ${wrong.length}개</div>

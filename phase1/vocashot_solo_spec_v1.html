@@ -219,6 +219,26 @@
      지금 동작이 맞고, <b>죽은 코드는 지운다</b>.</p>
 </div>
 
+<h3>난이도 — <b>교사가 돌리던 다이얼을 우리가 물려받는다</b></h3>
+<div class="callout stop">
+  <div class="t">이 값들은 원래 <b>교사가 방을 만들 때 맞춰 주는</b> 것이었다</div>
+  <div class="tablewrap"><table>
+    <tr><th><code>RoomConfig</code></th><th>혼자 하기에서</th></tr>
+    <tr><td><code>initialHearts</code></td><td><b>5 고정</b></td></tr>
+    <tr><td><code>difficultySpeed</code></td><td>버린다 — <b>판 안에서 자동으로 빨라진다</b>(유성마다 -0.25초)</td></tr>
+    <tr><td><code>gameDurationSec</code></td><td>버린다 — 하트 0 이 종료 조건이다</td></tr>
+    <tr><td><code>wrongPenaltyEnabled</code></td><td><b>켠 채 고정</b> — 안 켜면 찍고 넘어가는 게 이득이 된다</td></tr>
+    <tr><td><code>goldenMeteorEnabled</code></td><td><b>켠 채 고정</b></td></tr>
+    <tr><td><code>inputMode</code></td><td><b>사용자가 고른다</b> — 4개 중 고르기 / 직접 입력</td></tr>
+    <tr><td><code>questions</code></td><td><b>급 선택</b>으로 결정된다(§3 · §4)</td></tr>
+  </table></div>
+  <p><b>다이얼을 사용자에게 넘기지 않는다.</b> 시작 화면에 속도·하트 선택을 또 놓으면
+     <b>놀기 전에 설정을 하게 된다</b>. 게임은 바로 시작돼야 한다.</p>
+  <p>난이도 축은 <b>둘로 충분하다</b> — <b>급</b>이 어휘 난이도를 정하고,
+     <b>판 안에서 낙하 시간이 계속 줄어드는 것</b>이 실력에 따라 알아서 끝을 만든다.
+     잘하는 사람은 <b>급을 올리면</b> 된다. 상한이 없다.</p>
+</div>
+
 <h3>하트 · 점수 · 종료</h3>
 <div class="tablewrap"><table>
   <tr><th>무엇</th><th>규칙</th><th>왜</th></tr>
@@ -229,10 +249,9 @@
   <tr><td>오답</td><td>하트 <b>-1</b></td>
       <td><code>wrongPenaltyEnabled</code>를 <b>켠 상태로 고정</b>한다.
           안 켜면 4지선다를 <b>찍고 넘어가는</b> 것이 이득이 된다</td></tr>
-  <tr><td><b>점수</b></td><td>정답 <b>+5</b> · 낙하 시간이 <b>절반 이상 남았으면 +5</b></td>
-      <td><code>ko.ts</code>가 <code>firstBonus: "+5점"</code> ·
-          <code>graceBonus: "+1점"</code>이다 — <b>원래 규모가 +5</b>다.
-          거기에 속도 보상만 얹는다</td></tr>
+  <tr><td><b>점수</b></td>
+      <td><code>10 + 남은 시간 비율 × 10</code> (내림) → 문항당 <b>10~20</b></td>
+      <td>옛 점수를 물려받을 수 없다 — 아래 콜아웃</td></tr>
   <tr><td>골든 유성</td><td>그대로 둔다 — <code>heart</code> 또는 <code>score</code> 보너스</td>
       <td>혼자서도 성립한다. <code>goldenBonusType</code>이 이미 있다</td></tr>
   <tr><td><b>종료</b></td><td><b>하트 0</b> 또는 <b>문항 소진</b></td>
@@ -251,12 +270,27 @@
      세로 여백 4px만 줄이면 스크롤이 사라진다(목업에서 확인).</p>
   <p class="qa">이 결합은 표로만 정했으면 안 보였다. <b>하트 수를 바꾸면 결과 화면 높이가 바뀐다.</b></p>
 </div>
-<div class="callout">
-  <div class="t">점수 규모는 <b>i18n 문구에서 나왔다</b> — 다만 확인은 못 한다</div>
+<div class="callout stop">
+  <div class="t">옛 점수(<b>+5 / +1</b>)는 <b>물려받을 수 없다</b> — 그건 순위를 매기던 값이다</div>
   <p><code>ko.ts</code>에 <code>"+5점! 가장 먼저 맞혔습니다!"</code>와
-     <code>"+1점! 아슬아슬 성공!"</code>이 있다. <b>FIRST 가 +5, GRACE 가 +1</b>이었다는 뜻이다.</p>
-  <p class="qa">단 실제 <code>scoreDelta</code>는 리졸버가 주므로 <b>문구와 값이 어긋날 수도 있다</b>.
-     저장소에서 확인할 수 없다. 규모만 맞춰 쓴다.</p>
+     <code>"+1점! 아슬아슬 성공!"</code>이 있다.
+     이 둘은 난이도나 속도가 아니라 <b>여럿 중 몇 번째로 터뜨렸는지</b>를 매기는 값이었다 —
+     <b>가장 먼저면 5, 뒤따라오면 1</b>.</p>
+  <p>혼자 하면 <b>그 축이 아예 없어진다</b>. <code>GRACE</code>가 사라지면서
+     <b>5와 1의 구별도 함께 사라진다</b>. 남은 <b>5</b>를 기준 점수로 쓰는 것은
+     <b>근거 없이 숫자만 가져오는 것</b>이다.</p>
+  <p><b>점수를 새로 만든다.</b> 혼자 할 때 점수가 뜻할 수 있는 것은
+     <b>몇 개를 맞혔나</b>와 <b>얼마나 빨랐나</b> 둘뿐이고,
+     이 게임은 <b>떨어지는 속도보다 빠르게 입력하는</b> 놀이이므로 <b>속도가 점수여야 한다</b>.</p>
+  <pre>문항 점수 = 10 + floor(남은 시간 / 낙하 시간 × 10)
+
+  7.0초 문항을 1.5초에 맞힘  → 남은 79%  → 10 + 7 = <b>17</b>
+  7.0초 문항을 5.0초에 맞힘  → 남은 29%  → 10 + 2 = <b>12</b>
+  거의 놓칠 뻔하게 맞힘        → 남은  3%  → 10 + 0 = <b>10</b>
+  오답 · 놓침                                       <b>0</b> (하트 -1)</pre>
+  <p class="qa">한 판 30문항이면 <b>300~600점</b>이 된다.
+     맞힌 개수만으로도 점수가 오르고, <b>빠르면 최대 두 배</b>가 된다.
+     계수는 <b>손으로 조정할 전제</b>다.</p>
 </div>
 <div class="callout">
   <div class="t">제한 시간(<code>gameDurationSec</code>)은 <b>두지 않는다</b></div>
@@ -303,8 +337,11 @@
           실시간 구독 <b>4종</b>(<code>MeteorSpawned</code> · <code>MeteorUpdate</code> ·
           <code>PlayerUpdate</code> · <code>RoomUpdate</code>) ·
           <code>Player</code> 순위표 · <code>myRank</code> · 전광판 안내 ·
-          <code>GRACE</code> · <code>gameDurationSec</code> ·
-          <code>lib/vocashot/appsync.ts</code>(452줄) <b>전체</b></td></tr>
+          <code>GRACE</code> · <code>gameDurationSec</code> · <code>difficultySpeed</code> ·
+          <code>lib/vocashot/appsync.ts</code>(452줄) <b>전체</b><br>
+          <b>죽은 코드도 같이</b> — <code>easyChoiceLockMs</code>와
+          <code>wrongWait</code> 문구(설정되는 곳이 없다) ·
+          <code>firstBonus</code> · <code>graceBonus</code> 문구(순위 보상이라 쓸 데가 없어진다)</td></tr>
   <tr><td><b>남긴다</b></td>
       <td>교실용 경로. <b>지우지 않고 나란히 둔다</b> —
           교사 앱이 아직 그 길로 학생을 부른다</td></tr>
