@@ -155,19 +155,20 @@ button { font:inherit; }
   .chip3.on { border-color:var(--blue-900); background:var(--blue-900); color:var(--white); }
 
   .catalog-scroll { padding-bottom:var(--space-6); scroll-padding-bottom:var(--space-6); }
-  .chapter-head { min-height:56px; display:flex; align-items:center; gap:var(--space-2); margin:var(--space-4) var(--gutter) 0;
-    padding:12px var(--space-4); border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); }
+  .chapter-head { min-height:42px; display:flex; align-items:center; gap:var(--space-2); margin:var(--space-4) var(--gutter) 0;
+    padding:0; }
   .chapter-head .seq { flex:none; color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:700; }
   .chapter-head strong { min-width:0; color:var(--blue-900); font-size:18px; line-height:26px; font-weight:700; letter-spacing:-.015em; }
-  .learning-sections { margin:var(--space-4) var(--gutter) 0; }
-  .learning-section + .learning-section { margin-top:var(--space-6); }
-  .seclabel { margin-bottom:var(--space-2); color:var(--blue-gray-800); font-size:13px; line-height:20px; font-weight:700; }
+  .learning-sections { margin:var(--space-3) var(--gutter) 0; }
+  .learning-section,.unit { padding:14px; border:1px solid var(--control-border); border-radius:var(--radius-card); background:var(--white); }
+  .learning-section + .learning-section { margin-top:var(--space-3); }
+  .seclabel { margin-bottom:var(--space-3); color:var(--blue-gray-800); font-size:14px; line-height:20px; font-weight:700; }
   .acts { display:flex; flex-direction:column; gap:8px; }
   .act { display:flex; align-items:center; justify-content:space-between; gap:8px;
-    width:100%; height:46px; padding:0 13px; border:1px solid var(--control-border); border-radius:var(--radius-control); background:var(--white);
+    width:100%; height:46px; padding:0 13px; border:1px solid var(--control-border); border-radius:var(--radius-control); background:#f9fafb;
     text-align:left; cursor:pointer; }
-  .act:hover { background:var(--control-hover); }
-  .act.doing { border-color:#dcecff; background:#fbfdff; }
+  .act:hover { background:var(--white); }
+  .act.doing { border-color:#dcecff; background:#f5faff; }
   .act .nm { min-width:0; font-size:14px; line-height:20px; font-weight:600; color:var(--blue-900);
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .act.off { background:#F7F8FA; opacity:.55; cursor:not-allowed; }
@@ -181,8 +182,8 @@ button { font:inherit; }
   .st .rv { background:#FFF3E0; color:#F98900; }
 
   /* 자모 — 과 → unit → 활동 3층 */
-  .unit { margin:var(--space-4) var(--gutter) 0; }
-  .unit + .unit { margin-top:var(--space-6); padding-top:var(--space-4); border-top:1px solid var(--control-border); }
+  .unit { margin:var(--space-3) var(--gutter) 0; }
+  .unit + .unit { margin-top:var(--space-3); }
   .unit .ti { color:var(--blue-gray-800); font-size:14px; line-height:20px; font-weight:700; }
   .syls { display:flex; gap:6px; margin-top:var(--space-2); padding:0; overflow-x:auto;
     overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; }
@@ -404,10 +405,10 @@ const SPEC={
   home:[["좌우 기준선","16"],["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
     ["게이지","110 · SVG 90"],["통계","44 정사각 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
   book:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
-    ["과 헤더","56+ · 제목 18 · radius 14"],["학습 섹션","외곽 카드 없음 · 간격 24"],
+    ["과 헤더","제목 영역 · 18 bold"],["학습 섹션","그룹 카드 · radius 14"],
     ["활동 항목","높이 46 · radius 9"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
   jamo:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
-    ["과 헤더","56+ · 제목 18 · radius 14"],["unit 묶음","외곽 카드 없음 · 구분선"],
+    ["과 헤더","제목 영역 · 18 bold"],["unit 묶음","그룹 카드 · radius 14"],
     ["음절 칩","28 정사각 · 가로 스크롤"],["활동 항목","높이 46"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
 };
 function bindScrollCues(root){
