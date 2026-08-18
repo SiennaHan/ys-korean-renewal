@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>낱말맞추기 혼자 하기 — 설계</title>
+<title>VocaShot 혼자 하기 — 설계</title>
 <style>
   :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
     --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
@@ -52,7 +52,7 @@
 
 <main>
 <header class="doc">
-  <div class="eyebrow">설계 · 낱말맞추기 개인 플레이</div>
+  <div class="eyebrow">설계 · VocaShot 개인 플레이</div>
   <h1>혼자 하기 — 방 없이 돌리려면 무엇을 정해야 하나</h1>
   <p class="lead">게임 화면은 <b>이미 다 있다</b>(797줄). 없는 것은 <b>무엇이 유성을 만들고 누가 판정하느냐</b>다.
      지금은 그 둘이 <b>교사 앱과 AppSync</b>에 있다. 이 문서는 그것을 <b>클라이언트로 내리는 데</b>
@@ -416,8 +416,9 @@
 ④ 시작 화면 (급 선택) · 결과 화면 (놓친 단어)
 ⑤ game-progress 연결
 ⑥ 교실용 경로 삭제 — PIN 화면 · $pin 라우트 · appsync.ts · 방 관련 문구
-⑦ 게임 목록의 낱말맞추기 설명 교체
-   지금 "선생님이 만든 게임에 참여하세요" — 혼자 하기만 남으면 틀린 설명이 된다</pre>
+⑦ 게임 목록 문구 교체 — 이름 · 설명
+   이름  ko · ja · zh · vi 를 VocaShot 으로 (en 은 이미 그렇다)
+   설명  지금 "선생님이 만든 게임에 참여하세요" — 혼자 하기만 남으면 틀린 설명이 된다</pre>
 <p class="qa">⑥을 <b>마지막에 두는</b> 이유는 ①~⑤가 도는 것을 확인한 뒤 지우기 위해서다.
    먼저 지우면 비교할 대상이 없어진다.</p>
 <div class="callout">
@@ -433,13 +434,13 @@
    가로 넘침 · 세로 넘침 <b>0</b>.</p>
 <div class="tablewrap"><table>
   <tr><th>화면</th><th>무엇이 그 자리에 들어가나</th></tr>
-  <tr><td><b>시작</b><br><span class="qa">밝게 — 구 앱 진입 화면 값 그대로</span></td>
+  <tr><td><b>시작</b><br><span class="qa">어둡게 — 플레이 화면과 같은 <code>bg-slate-950</code></span></td>
       <td><b>PIN · 닉네임이 빠진 자리에 급 · 입력 방식</b>이 들어간다.
-          입력창 둘이 빠지고 선택 둘이 들어오므로 카드 높이가 비슷하게 유지된다.<br>
-          <b>급</b> 4열 격자 × 2줄(1~8급, 높이 44) · <b>입력 방식</b> 2열 ·
-          <b>급별 최고 점수</b> 한 줄 · 시작 버튼.<br>
-          아래에 <b>"선생님이 준 PIN으로 참여하기"</b> 밑줄 링크 — 교실용 경로를 남기되
-          <b>혼자 하기가 기본</b>이므로 내려 둔다</td></tr>
+          교실용을 버렸으므로 <b>진입점이 하나</b>다.<br>
+          <b>급</b> 4열 × 2줄 · <b>입력 방식</b> 2열 · <b>급별 최고 점수</b> 카드 ·
+          하단에 시작 버튼.<br>
+          요소를 새로 만들지 않았다 — <b>전부 플레이 화면에 있던 것</b>이다.
+          아래 콜아웃</td></tr>
   <tr><td><b>결과</b><br><span class="qa">어둡게 — 플레이 화면 안(<code>bg-slate-950</code>)</span></td>
       <td><b>순위표가 빠진 자리에 놓친 단어</b>가 들어간다.
           방 순위 · 전광판 안내가 없어지면 결과가 텅 비는데,
@@ -449,12 +450,43 @@
           하단 <b>다시 하기 + 나가기</b>.<br>
           헤더의 <b>RANK 자리는 BEST로</b> 바뀐다</td></tr>
 </table></div>
-<div class="callout">
-  <div class="t">표적 하나는 <b>구 앱 값이라 남긴다</b></div>
-  <p>진입 화면의 <b>뒤로 버튼이 32</b>다(<code>size-[32px]</code>). 44에 못 미치지만
-     <b>앱 공통값</b>이라 이 화면만 고치면 오히려 어긋난다. 그대로 두고 적어만 둔다.</p>
-  <p class="qa">내가 새로 넣은 것들은 44로 맞췄다 — 급 칩 44 · 입력 방식 44 ·
-     교실 참여 링크는 글자가 13이지만 <b>표적을 44</b>로 뒀다.</p>
+<div class="callout stop">
+  <div class="t">시작 화면도 <b>어둡게</b> — 새로 만들지 않고 <b>플레이 화면 것을 가져다 쓴다</b></div>
+  <p>처음에 구 진입 화면(<code>#F9FAFC</code> 밝은 배경 + 흰 카드)을 그대로 따랐다.
+     그런데 <b>시작 버튼을 누르면 곧바로 검은 화면</b>이 된다 — 게임에 들어가는 느낌이 끊긴다.
+     이 게임은 <b>어두운 화면이 정체성</b>이다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>시작 화면 요소</th><th>어디서 가져왔나</th></tr>
+    <tr><td>배경</td><td>플레이 화면 <code>bg-slate-950</code></td></tr>
+    <tr><td>헤더</td><td>플레이 헤더 — 원 28 <code>bg-slate-800</code> + 이름 18 semibold
+        + 아래 12 <code>text-slate-400</code></td></tr>
+    <tr><td>급 · 입력 방식 선택지</td><td>4지선다 버튼 —
+        <code>h-14 rounded-2xl border-slate-700 bg-slate-900</code></td></tr>
+    <tr><td><b>고른 것</b></td><td>결과 오버레이의 <b>내 순위 행</b> —
+        <code>border-emerald-500/50 bg-emerald-500/20</code></td></tr>
+    <tr><td>최고 점수 카드</td><td>결과 오버레이의 점수 카드 —
+        <code>rounded-2xl border-slate-700 bg-slate-900/80</code></td></tr>
+    <tr><td>시작 버튼</td><td><b>발사 버튼</b> — <code>bg-emerald-500 text-slate-950</code></td></tr>
+    <tr><td>나가기 버튼</td><td>나가기 확인 대화상자 — <code>rounded-xl bg-slate-700</code></td></tr>
+  </table></div>
+  <p class="qa"><b>새로 만든 것이 없다.</b> 그래서 시작 → 플레이 → 결과가 한 화면처럼 이어진다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">이름은 <b>VocaShot</b>이다 — 이미 그렇게 부르고 있었다</div>
+  <p>플레이 화면 헤더가 <b>하드코딩 <code>VocaShot</code></b>이고,
+     <b>영어판 i18n도 이미 <code>"VocaShot"</code></b>이다.
+     한국어·일본어·중국어·베트남어 <b>목록 이름만 번역돼</b> 있었다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>로케일</th><th>지금</th><th>바꾼 뒤</th></tr>
+    <tr><td><code>en</code></td><td>VocaShot</td><td>그대로</td></tr>
+    <tr><td><code>ko</code></td><td>낱말맞추기</td><td rowspan="4"><b>VocaShot</b></td></tr>
+    <tr><td><code>ja</code></td><td>単語当て</td></tr>
+    <tr><td><code>zh</code></td><td>猜单词</td></tr>
+    <tr><td><code>vi</code></td><td>Đoán từ</td></tr>
+  </table></div>
+  <p><b>고유명사는 번역하지 않는다.</b> 지금은 목록에서 "낱말맞추기"를 누르면
+     <b>VocaShot이라고 쓰인 화면</b>이 열린다 — 같은 것을 두 이름으로 부르고 있다.</p>
+  <p class="qa"><code>game.vocashot.title</code>("낱말맞추기 게임")도 같이 바꾼다.</p>
 </div>
 
 <h2 id="s9"><span class="n">9</span>아직 안 정한 것</h2>

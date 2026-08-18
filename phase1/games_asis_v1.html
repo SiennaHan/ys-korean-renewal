@@ -65,7 +65,7 @@
    오른쪽 <b>›</b> 20.</p>
 <div class="tablewrap"><table>
   <tr><th>게임</th><th>설명</th><th>아이콘 배경 · 색</th></tr>
-  <tr><td><b>낱말맞추기</b> <span class="qa">VocaShot</span></td><td>선생님이 만든 게임에 참여하세요</td>
+  <tr><td><b>낱말맞추기</b> <span class="qa">en 은 이미 VocaShot</span></td><td>선생님이 만든 게임에 참여하세요</td>
       <td><span class="sw" style="background:#FFF3E0"></span><code>#FFF3E0</code> · <code>#FF6D00</code></td></tr>
   <tr><td>봄소풍 숫자미션</td><td>친구들과 한국어 숫자를 연습해요</td>
       <td><span class="sw" style="background:#FFF0F5"></span><code>#FFF0F5</code> · <code>#D4537E</code></td></tr>
@@ -90,14 +90,14 @@
      학습 회피 경로가 생긴다는 이유였는데, <b>애초에 학습과 연결이 없다</b>.</p>
 </div>
 <div class="callout">
-  <div class="t">낱말맞추기만 성격이 다르다 — <b>교실용</b>이다</div>
+  <div class="t">VocaShot 만 성격이 다르다 — <b>교실용</b>이다</div>
   <p><b>PIN 번호 + 닉네임</b>을 넣어 방에 참가한다(<code>joinRoom</code>, AWS AppSync).
      "선생님이 만든 게임에 참여하세요"이고, 결과 화면에 <b>"전체 랭킹은 전광판을 확인하세요"</b>가 있다.</p>
   <p>혼자 하는 게임이 아니라 <b>교사가 화면에 띄우고 학생들이 붙는 구조</b>다.
      나머지 넷은 혼자 하는 게임이다.</p>
 </div>
 
-<h2 id="s1b"><span class="n">1b</span>낱말맞추기 개인 플레이 전환 — 무엇이 필요한가</h2>
+<h2 id="s1b"><span class="n">1b</span>VocaShot 개인 플레이 전환 — 무엇이 필요한가</h2>
 <p class="lead">게임을 학습 진도와 연결하지 않기로 했으므로, 게임 쪽에서 <b>실제로 할 일은 이것 하나</b>다.
    코드를 열어 무엇이 걸려 있는지 정리했다.</p>
 
@@ -152,8 +152,9 @@
   <p>지금은 그 둘이 <b>교사 앱과 AppSync에 있다</b>. 개인 플레이는 그것을
      <b>클라이언트로 내리는</b> 일이고, 그러면 <code>lib/vocashot/appsync.ts</code>(452줄)를
      쓰지 않는 <b>두 번째 실행 경로</b>가 생긴다.</p>
-  <p class="qa">교실용 경로를 <b>지우는 것이 아니라 나란히 두는</b> 것이므로,
-     게임 루프를 <b>방 상태와 분리</b>하는 작업이 먼저다.</p>
+  <p class="qa"><b>교실용 경로는 버리기로 했다</b>(설계 문서 §7). 나란히 둘 필요가 없으므로
+     분리가 아니라 <b>방 상태를 들어내고 그 자리에 로컬 상태를 넣는</b> 일이 된다 —
+     오히려 일이 줄어든다.</p>
 </div>
 
 <h3>혼자 하는 방식 — <b>방어형으로 간다</b> <span class="qa">확정</span></h3>
@@ -244,7 +245,7 @@
   <tr><td>1</td><td>게임 5종이 <b>교재와 무관</b>하다</td>
       <td><b>연결하지 않는다</b> <span class="qa">확정</span> — 부가 콘텐츠로 둔다.
           게임마다 콘텐츠를 급·과로 다시 나누는 비용이 얻는 것보다 크다</td></tr>
-  <tr><td>2</td><td>낱말맞추기는 <b>교실용</b>인데 개인 앱 탭에 있다</td>
+  <tr><td>2</td><td>VocaShot 은 <b>교실용</b>인데 개인 앱 탭에 있다</td>
       <td><b>개인 플레이 전환이 게임 쪽의 유일한 실제 작업</b>이다 <span class="qa">확정</span> —
           §1b 참조</td></tr>
   <tr><td>3</td><td>표현 클립이 <b>검색해야만</b> 쓸 수 있다</td>
