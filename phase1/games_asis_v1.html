@@ -1,0 +1,166 @@
+<meta charset="utf-8">
+<title>게임 · 표현클립 · MY — as-is 실측</title>
+<style>
+  :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
+    --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
+    --stop:#9a3f31; --stop-soft:#fbece9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb; --ink-3:#6f7887;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; } }
+  :root[data-theme="dark"] { --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb;
+    --ink-3:#6f7887; --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif}
+  main{max-width:900px;margin:0 auto;padding:46px 22px 96px}
+  header.doc{padding-bottom:22px;border-bottom:2px solid var(--accent);margin-bottom:10px}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    font-weight:800;margin-bottom:9px}
+  h1{font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:800;letter-spacing:-.015em}
+  .lead{color:var(--ink-2);margin:0;max-width:66ch}
+  .lead b{color:var(--ink)}
+  h2{font-size:19px;font-weight:800;margin:48px 0 4px}
+  h2 .n{color:var(--accent);margin-right:9px;font-variant-numeric:tabular-nums}
+  h3{font-size:15px;font-weight:700;margin:26px 0 3px}
+  p{margin:9px 0}
+  .qa{color:var(--ink-3);font-size:13px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+    background:var(--bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;overflow-x:auto;margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;margin:10px 0 5px;font-size:13px}
+  th{text-align:left;font-size:11px;letter-spacing:.05em;color:var(--ink-3);font-weight:800;
+    padding:7px 9px 5px;border-bottom:2px solid var(--line);white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  td code{white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .callout.stop{border-left-color:var(--stop)}
+  .callout .t{font-weight:800;font-size:13.5px;margin-bottom:4px}
+  .callout.stop .t{color:var(--stop)}
+  .callout p{font-size:14px;margin:6px 0}
+  ul,ol{padding-left:21px;margin:9px 0} li{margin:5px 0;font-size:14.5px}
+  li::marker{color:var(--ink-3)}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
+    border:1px solid rgba(0,0,0,.14);vertical-align:-1px;margin-right:5px}
+</style>
+<main>
+<header class="doc">
+  <div class="eyebrow">as-is 실측 · 게임 · 표현클립 · MY</div>
+  <h1>나머지 세 탭 — 지금 화면 그대로</h1>
+  <p class="lead">학습 동선(홈·교재학습·자모) 바깥의 세 탭이다.
+     <b>학습과 거의 이어져 있지 않다</b>는 것이 이 문서의 결론이고, 그게 리뉴얼에서 판단할 지점이다.
+     값은 전부 <code>components/main/</code> · <code>src/i18n/locales/ko.ts</code> 실측이다.</p>
+</header>
+
+<h2 id="s1"><span class="n">1</span>게임 — 목록 하나 + 게임 5종</h2>
+<p>제목 <b>"게임"</b> 17 semibold 가운데. 그 아래 카드 5장, radius 16 · 흰 배경 ·
+   padding 16 · 간격 12 · 그림자 <code>0 1px 4px rgba(0,0,0,.06)</code>.
+   왼쪽 <b>48 정사각</b>(radius 12) 안에 아이콘 24, 가운데 이름 16 bold + 설명 13,
+   오른쪽 <b>›</b> 20.</p>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th>설명</th><th>아이콘 배경 · 색</th></tr>
+  <tr><td><b>낱말맞추기</b> <span class="qa">VocaShot</span></td><td>선생님이 만든 게임에 참여하세요</td>
+      <td><span class="sw" style="background:#FFF3E0"></span><code>#FFF3E0</code> · <code>#FF6D00</code></td></tr>
+  <tr><td>봄소풍 숫자미션</td><td>친구들과 한국어 숫자를 연습해요</td>
+      <td><span class="sw" style="background:#FFF0F5"></span><code>#FFF0F5</code> · <code>#D4537E</code></td></tr>
+  <tr><td>서울 여행 퍼즐</td><td>서울을 여행하며 문장을 완성해요</td>
+      <td><span class="sw" style="background:#E8F5E9"></span><code>#E8F5E9</code> · <code>#2E7D32</code></td></tr>
+  <tr><td>어휘 카드 마스터</td><td>카드를 분류하며 어휘를 익혀요</td>
+      <td><span class="sw" style="background:#FFF8E1"></span><code>#FFF8E1</code> · <code>#F9A825</code></td></tr>
+  <tr><td>조사 스나이퍼</td><td>빠르게 조사를 맞혀보세요</td>
+      <td><span class="sw" style="background:#E8EAF6"></span><code>#E8EAF6</code> · <code>#5C6BC0</code></td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">게임 넷이 <b>교재 데이터를 전혀 쓰지 않는다</b></div>
+  <p>봄소풍·서울퍼즐·카드마스터·조사스나이퍼 네 개를 전수로 확인했다.
+     <code>book_id</code> · <code>chapter</code> · <code>menuType</code> · <code>learning-record</code>
+     <b>어느 것도 참조하지 않는다</b>. 각자 <code>game/data/</code> 아래 자기 JSON만 읽는다
+     (<code>sentences_lv1~6.json</code> · <code>seoul_puzzles.json</code> ·
+      <code>card_sort_categories.json</code> · <code>particle_sniper_levels.json</code> · <code>vocab.json</code>).</p>
+  <p>즉 <b>학습자가 어느 급·과를 배우고 있든 게임 내용이 바뀌지 않는다.</b>
+     레벨은 게임 자체의 <code>lv1~lv6</code>이지 교재의 급이 아니다.</p>
+  <p class="qa">스트릭에 게임이 안 들어가기로 한 결정(G2 §5-7)과 일관된다 —
+     학습 회피 경로가 생긴다는 이유였는데, <b>애초에 학습과 연결이 없다</b>.</p>
+</div>
+<div class="callout">
+  <div class="t">낱말맞추기만 성격이 다르다 — <b>교실용</b>이다</div>
+  <p><b>PIN 번호 + 닉네임</b>을 넣어 방에 참가한다(<code>joinRoom</code>, AWS AppSync).
+     "선생님이 만든 게임에 참여하세요"이고, 결과 화면에 <b>"전체 랭킹은 전광판을 확인하세요"</b>가 있다.</p>
+  <p>혼자 하는 게임이 아니라 <b>교사가 화면에 띄우고 학생들이 붙는 구조</b>다.
+     나머지 넷은 혼자 하는 게임이다.</p>
+</div>
+
+<h2 id="s2"><span class="n">2</span>표현 클립 — 유튜브 검색</h2>
+<p>제목 <b>"표현 클립"</b> 20 bold(높이 48, 위 여백 20). 아래 <b>검색창 48</b>(radius 10, 흰 배경,
+   오른쪽에 지우기 24 + 파랑 원형 검색 24).</p>
+<div class="tablewrap"><table>
+  <tr><th>요소</th><th>규격 · 동작</th></tr>
+  <tr><td>카테고리 칩</td><td><b>검색어가 있을 때만</b> 나온다. radius 8 · padding 6/12 · 14.<br>
+      All · Entertainment · Film &amp; Drama · News · Lifestyle</td></tr>
+  <tr><td>결과 헤더</td><td>왼쪽 <b>'검색어'</b> 17 bold <code>#0180ff</code> ·
+      오른쪽 <b>검색 결과 N개</b> 12 <code>#7f848d</code></td></tr>
+  <tr><td>영상 카드</td><td><b>높이 185</b> · radius 12. 유튜브 <code>hqdefault.jpg</code> 썸네일 위에
+      좌상단 배지(<code>#383a3f</code> radius 6), 우상단 24 아이콘.<br>
+      아래 제목 14 + 오른쪽 <b>⋮</b> 24</td></tr>
+  <tr><td>재생</td><td>카드 자리에서 <b>인라인 재생</b>으로 바뀐다(<code>react-youtube</code>).
+      구간 <code>start</code>~<code>end</code>만 재생</td></tr>
+  <tr><td>빈 상태</td><td><code>/images/search_empty_img.svg</code> <b>64</b> + 안내</td></tr>
+  <tr><td>결과 상한</td><td><code>results.slice(0, 10)</code> — <b>10개까지만</b> 보여준다</td></tr>
+</table></div>
+<p class="qa">데이터는 <code>shared/data/clip.ts</code>에 <b>329건</b>이 번들로 들어 있다.
+   각 항목이 <code>youtube_id</code> · <code>title</code> · <code>script</code> · <code>category</code>를 갖는다.</p>
+<div class="callout stop">
+  <div class="t">여기도 <b>교재와 연결이 없다</b></div>
+  <p>검색은 <b>클립 스크립트 전문</b>을 훑는다. 학습자가 배운 단어·문법을 알지 못하고,
+     급·과 정보를 받지도 않는다.</p>
+  <p>신고 기능(<code>listReport</code>·<code>createReport</code>)이 붙어 있는 것이
+     이 화면이 <b>외부 콘텐츠를 다룬다</b>는 성격을 보여준다.</p>
+</div>
+
+<h2 id="s3"><span class="n">3</span>MY — 계정 화면</h2>
+<p>제목 <b>"마이 페이지"</b> 20 bold. 배경 <code>#f6f7f8</code>, 좌우 16.
+   카드는 전부 radius 12 · 흰 배경 · 행 높이 <b>52</b> · 카드 간 간격 12.</p>
+<pre>프로필      아바타 64 원형 + 이름 16 semibold
+            (로그인 시 우하단에 24 원형 연필 버튼)
+계정 메뉴    프로필 정보 변경하기 / 비밀번호 변경하기   ← 로그인 시에만
+정보         Email                                  ← 로그인 시에만
+언어 설정    언어 설정하기 + LanguageSelector
+로그아웃     아이콘 18 + 글자, 가운데 정렬</pre>
+<div class="tablewrap"><table>
+  <tr><th>상태</th><th>보이는 것</th></tr>
+  <tr><td>로그인</td><td>다섯 덩어리 전부</td></tr>
+  <tr><td><b>게스트</b></td><td>이름이 <b>"게스트"</b>, 아바타 편집 버튼 없음,
+      <b>계정 메뉴와 Email 카드가 통째로 사라진다</b>. 언어 설정과 로그아웃만 남는다</td></tr>
+</table></div>
+<p class="qa">하위 화면 둘이 따로 있다 — <code>/my-profile</code>(국적·급/반 변경, <b>월 1회 제한</b>,
+   이메일 변경 불가) · <code>/my-password</code>(8~32자 · 영문 · 숫자 · 특수문자 조건 4개).</p>
+
+<h2 id="s4"><span class="n">4</span>세 탭에서 판단할 것</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>지금</th><th>생각해 볼 것</th></tr>
+  <tr><td>1</td><td>게임 5종이 <b>교재와 무관</b>하다</td>
+      <td>리뉴얼이 <b>학습 진도와 연결</b>할지, 아니면 <b>부가 콘텐츠로 분리</b>할지.
+          연결하려면 게임마다 콘텐츠를 급·과로 다시 나눠야 해서 <b>비용이 크다</b></td></tr>
+  <tr><td>2</td><td>낱말맞추기는 <b>교실용</b>인데 개인 앱 탭에 있다</td>
+      <td>혼자 열면 PIN을 받아야 시작된다. 이미 "VocaShot 개인 플레이 전환"이
+          별도 과제로 잡혀 있다(개발 명세 §8)</td></tr>
+  <tr><td>3</td><td>표현 클립이 <b>검색해야만</b> 쓸 수 있다</td>
+      <td>검색어를 넣기 전에는 빈 화면이다. <b>배운 표현을 추천</b>하면 학습과 이어지는데,
+          지금은 클립에 급·과 태그가 없다</td></tr>
+  <tr><td>4</td><td>MY에 <b>학습 기록이 없다</b></td>
+      <td>계정 설정만 있다. 누적 학습량·복습 큐 전체 같은 것을 볼 곳이 앱에 없다 —
+          홈의 주간 단위가 전부다</td></tr>
+  <tr><td>5</td><td>탭 다섯 중 <b>둘이 학습 밖</b>이다</td>
+      <td>게임·표현클립이 하단 탭의 40%를 쓴다. 학습 동선(홈·교재학습)과 비중이 맞는지</td></tr>
+</table></div>
+<p class="qa">근거: <code>routes/main/game/index.tsx</code> · <code>components/main/game/*.tsx</code> ·
+   <code>components/main/content4.tsx</code>(669줄) · <code>content5.tsx</code>(109줄) ·
+   <code>src/i18n/locales/ko.ts</code> 실측.</p>
+</main>
