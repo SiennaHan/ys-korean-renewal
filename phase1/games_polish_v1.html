@@ -326,8 +326,10 @@ complete 그 장소 완료</pre>
   <div class="t">정한 것 ② — <b>급을 연다</b>. 지금은 2~5급으로 막혀 있다</div>
   <p>클라이언트 타입이 <code>Grade = "2급" | "3급" | "4급" | "5급"</code>로
      <b>네 개에 고정</b>돼 있다. 서버는 <code>grade</code>를
-     <b>자유 문자열</b>(<code>max_length=20</code>)로 받는데,
-     <b>1급이나 6~8급 어휘를 넣어도 앱에서 고를 수 없다</b>.</p>
+     <b>자유 문자열</b>(<code>max_length=20</code>)로 받는다.</p>
+  <p class="qa"><b>지금 막고 있는 것은 없다</b> — 씨드 데이터(<code>vocab.json</code>)도
+     <b>2~5급뿐</b>이다(각 15과 + <code>rare</code>). 타입이 콘텐츠를 자르는 게 아니라
+     <b>둘이 같다</b>. 그래서 급한 일은 아니고, <b>나중에 콘텐츠가 늘 때를 위한</b> 손질이다.</p>
   <p><b>서버 데이터에서 받아 오게 바꾼다.</b> <code>Object.keys(vocab)</code>를 정렬해 쓰면
      <b>콘텐츠를 넣는 것만으로 급이 늘어난다</b> — 코드를 다시 안 고친다.</p>
   <p class="qa">VocaShot 이 <b>1~8급</b>을 다 쓰는 것과도 맞아진다.
@@ -383,6 +385,43 @@ complete 그 장소 완료</pre>
 <p class="qa">점수 공식이 <b>어휘 카드 마스터와 같다</b> — 2초 이내 +50, 4초부터 0,
    콤보 3·5·8 에서 ×1.5·×2.0·×3.0. 레어 배수만 없다.</p>
 
+<div class="callout">
+  <div class="t">과가 <b>띄엄띄엄한 것은 의도된 것</b>이다 — 확인했다</div>
+  <p>씨드 데이터의 과가 이렇게 비어 있다.</p>
+  <pre>1급  4 · 6 · 7 · 8 · 11 · 12 · 13 · 14 · 15과   <b>5 · 9 · 10과가 없다</b>
+2급  2 · 3 · 4 · 12과       3급  1 · 6 · 12 · 15과
+4급  3 · 13 · 14과          5급  4 · 13과      6급  1 · 14과</pre>
+  <p><b>어미만 있는 과에는 낼 조사가 없다.</b> 교재의
+     <code>grammar_focus</code>(<code>n4_blank_question</code>)와 맞춰 보면 그대로 나온다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>1급 과</th><th>게임</th><th>교재 문법</th></tr>
+    <tr><td>8과</td><td><b>있음</b></td><td>목적격 <code>을/를</code></td></tr>
+    <tr><td><b>9과</b></td><td>없음</td><td><code>-지 않다</code> · <code>ㅂ불규칙</code> — <b>전부 어미</b></td></tr>
+    <tr><td><b>10과</b></td><td>없음</td><td><code>-어요</code> 활용 · <code>-을까요/-ㄹ까요</code> — <b>전부 어미</b></td></tr>
+    <tr><td>12과</td><td><b>있음</b></td><td><code>부터 ~ 까지</code> · 시간명사<code>+에</code></td></tr>
+    <tr><td>15과</td><td><b>있음</b></td><td>단위명사<code>+에</code> · 사람<code>+에게</code></td></tr>
+  </table></div>
+  <p class="qa">5과만 예외처럼 보인다 — 주격 <code>이</code>가 있는데 빠졌다.
+     그런데 <b>4과·6과에 같은 주격 <code>이/가</code></b>가 있으므로
+     <b>겹쳐서 하나만 쓴 것</b>으로 읽힌다. <b>빠뜨린 것이 아니다.</b></p>
+</div>
+<div class="callout stop">
+  <div class="t">정정 — <b>씨드 파일은 낡았다. 정본은 어드민이다</b></div>
+  <p>처음에 <code>seed_data/</code>를 보고 <b>"7·8급은 문항이 없다"</b>고 적었는데
+     <b>틀렸다</b>. 어드민(<code>admin.korean.pulleyai.co.kr</code>)의 실제 데이터는
+     <b>1~8급 전부</b>에 레슨이 있다.</p>
+  <div class="tablewrap"><table>
+    <tr><th></th><th class="n">급</th><th class="n">레슨</th><th>7·8급</th></tr>
+    <tr><td>씨드 파일</td><td class="n">6</td><td class="n">24</td><td><b>없음</b></td></tr>
+    <tr><td><b>어드민(정본)</b></td><td class="n"><b>8</b></td><td class="n"><b>32</b></td>
+        <td>7급 1·2·3과 · 8급 4·5·11과</td></tr>
+  </table></div>
+  <p><b>사람이 손수 채워 온 것</b>이고 씨드는 초기 상태다.
+     <b>게임 콘텐츠를 볼 때는 어드민을 봐야 한다.</b></p>
+  <p class="qa">한 판이 8문항인데 레슨당 문항이 <b>4~8개</b>다.
+     그래서 <b>이전 과 복습으로 채우는 규칙</b>이 있어야 판이 성립한다 — 앞의 설계와 맞물린다.</p>
+</div>
+
 <div class="callout stop">
   <div class="t">손볼 것 — <b>저장을 안 한다</b>. 오답 목록까지 버려진다</div>
   <p><code>game-progress</code>도 <code>localStorage</code>도 <b>쓰지 않는다</b>.
@@ -394,6 +433,69 @@ complete 그 장소 완료</pre>
   <p class="qa">오답 목록을 <code>_meta.extra</code> 에 넣을지는 <b>나중 문제</b>다 —
      봄소풍이 <code>wrongHistory</code> 로 그렇게 하고 있으므로
      <b>따라갈 본보기가 이미 있다</b>. 먼저 점수만 붙인다.</p>
+</div>
+
+<h2 id="s6"><span class="n">6</span>신구판 대조 — <b>게임은 거의 안 바뀐다</b></h2>
+<p class="lead">어드민 콘텐츠는 <b>구판 교재 기준</b>으로 사람이 만든 것이다.
+   그러면 고칠 것은 <b>신구판에서 바뀐 것</b>뿐이다.
+   워크북(<code>글로벌_교재기반_콘텐츠_v15.xlsx</code>)의
+   <code>99_변경내역</code> <b>533건</b>과 맞춰 봤다.</p>
+<div class="tablewrap"><table>
+  <tr><th>변경 종류</th><th class="n">건</th><th>게임에 영향</th></tr>
+  <tr><td>어휘 폐기 · 교체 · 과이동 · 구판잔재 · 교정</td><td class="n"><b>106</b></td>
+      <td>구판 낱말 <b>58개</b>를 추려 다섯 게임 콘텐츠와 맞춰 봤다</td></tr>
+</table></div>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th class="n">낱말</th><th>바뀐 낱말과 정확히 일치</th></tr>
+  <tr><td>어휘 카드 마스터</td><td class="n">502</td><td class="n"><b>0</b></td></tr>
+  <tr><td>서울 퍼즐</td><td class="n">509</td><td class="n"><b>0</b></td></tr>
+  <tr><td>조사 스나이퍼</td><td class="n">249</td><td class="n"><b>0</b></td></tr>
+  <tr><td>봄소풍</td><td class="n">136</td><td class="n"><b>0</b></td></tr>
+  <tr><td>VocaShot 프리셋</td><td class="n">108</td><td class="n"><b>0</b></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">처음에 3건이 잡혔는데 <b>내 검사 탓이었다</b></div>
+  <p><code>되다</code> · <code>시험</code> · <code>야영</code>이 걸렸다.
+     그런데 <b>정확히 일치하는 항목은 하나도 없었다</b> —
+     게임이 <b>연어로 쓰기 때문에</b> 부분 문자열로 걸린 것이다.</p>
+  <pre>되다  →  수업이 시작되다 · 학기가 시작되다 · 소화가 안되다
+시험  →  시험을 보다
+야영  →  야영을 하다</pre>
+  <p><b>낱말을 포함만 해도 잡히게 검사해서</b> 3건이 나왔다.
+     낱말 단위로 맞추면 <b>0건</b>이다.</p>
+</div>
+<div class="callout">
+  <div class="t">다만 하나는 <b>사람이 봐야 한다</b> — <code>야영을 하다</code></div>
+  <p><code>야영</code>은 신판에서 <b>빠진 낱말</b>이다
+     (<code>VL-3-15-016</code> · <b>구판잔재 · 삭제/교체 판단 필요</b>).
+     게임은 <code>야영을 하다</code>를 쓰고 있다.</p>
+  <p><b>교재 대조로는 판정할 수 없다.</b> 교재 어휘 목록은 <b>낱말 단위</b>여서
+     <code>야영을 하다</code>라는 연어는 <b>구판에도 신판에도 없다</b>.
+     낱말 <code>야영</code>이 빠졌다는 사실만 있다.</p>
+  <p class="qa"><code>되다</code>·<code>시험</code>은 <b>과이동</b>이라 낱말이 살아 있다 —
+     게임이 연어로 쓰므로 <b>그냥 두면 된다</b>.</p>
+</div>
+<div class="callout">
+  <div class="t">1급 조사 배치는 <b>신판과 그대로 맞는다</b></div>
+  <p>어드민의 조사 스나이퍼 1급 <b>9개 과</b>를 신판 교재 문법
+     (<code>n4_blank_question.grammar_focus</code>)과 맞춰 보니 <b>9/9 일치</b>다 —
+     4과 <code>은/는</code> · 6과 <code>이/가</code> · 8과 <code>을/를</code> ·
+     12과 <code>부터~까지</code> · 15과 <code>에게</code>.</p>
+  <p><b>빠진 과도 근거가 있다.</b> 게임에 없는 <b>9·10과</b>는 신판 문법이
+     <code>-지 않다</code> · <code>ㅂ불규칙</code> · <code>-어요</code> 활용 —
+     <b>전부 어미</b>다. 조사 게임에 낼 것이 없다.</p>
+  <p class="qa">2급 이상은 <b>이 방법으로 검증할 수 없다</b>.
+     <code>n4_blank_question</code>은 <b>빈칸 활동이 쓰는 문법</b>만 담고 있어서
+     그 과의 문법 전체 목록이 아니다. 고급 조사(<code>마다</code>·<code>조차</code>·<code>로서</code>)는
+     빈칸 활동에 안 나오므로 <b>안 잡히는 것이 정상</b>이다 —
+     게임이 틀렸다는 뜻이 아니다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">그래서 — <b>진도 연결 작업은 없다</b></div>
+  <p><b>학습자가 급·과를 직접 고른다.</b> 카드 마스터와 조사 스나이퍼가 이미 그렇게 되어 있고,
+     자동으로 맞춰 줄 필요가 없다. 기본값만 <b>있는 것 중 가장 낮은 급</b>으로 두면 된다.</p>
+  <p><b>콘텐츠도 거의 안 바꾼다.</b> 신구판 변경 533건 중
+     게임에 손댈 것은 <b><code>야영을 하다</code> 하나</b>다.</p>
 </div>
 
 <h2 id="s5"><span class="n">5</span>넷을 나란히 놓으면</h2>
