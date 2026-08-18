@@ -1,0 +1,188 @@
+<!-- 게임 목록 — 구조 목업. 값은 routes/main/game/index.tsx 실측.
+     지금은 카드 5장이 통째로 복사돼 있고 진행 상태가 하나도 안 보인다. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>게임 목록 — 구조 목업</title>
+<style>
+
+
+:root {
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+    --radius-card:14px; --radius-control:9px;
+  }
+* { box-sizing:border-box; }
+body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+button { font:inherit; }
+.workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
+.doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
+.doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+.doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
+.kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+.controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+.control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
+.option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+.option:hover { background:rgba(255,255,255,.55); }
+.option[aria-pressed="true"] { border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }
+.stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
+.stage.overview-hidden { display:none; }
+.device-wrap { display:flex; flex-direction:column; align-items:center; }
+.device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
+.screen { position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+.caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+.notes { padding-top:8px; }
+.notes h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }
+.notes p { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+.notes p + p { margin-top:9px; }
+.notes b { color:var(--bench-ink); font-weight:600; }
+.note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+.note-section + .note-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+.spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+.spec dt { color:#87909d; }
+.spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
+.footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--control-border); }
+.primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+.primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
+.dock { display:flex; align-items:center; gap:12px; width:100%; }
+.dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+.dock .main .record-core { width:auto; }
+.dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+.dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+.dock .slot svg { width:26px; height:26px; }    .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
+  .scroll::-webkit-scrollbar { display:none; }
+
+  /* ── 게임 목록 — 구 앱 값 그대로 ────────────────── */
+  .gl { background:#F9FAFC; display:flex; flex-direction:column; height:100%; }
+  .gl-head { flex:none; display:flex; align-items:center; justify-content:center;
+    padding:16px; }
+  .gl-head .t { font-size:17px; font-weight:600; color:#383A3F; }
+  .gl-body { flex:1 1 auto; min-height:0; overflow-y:auto;
+    display:flex; flex-direction:column; gap:12px; padding:8px 16px 16px; }
+  .gl-body::-webkit-scrollbar { display:none; }
+  .gcard { display:flex; align-items:center; gap:14px; width:100%; padding:16px;
+    border:0; border-radius:16px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.06);
+    text-align:left; cursor:pointer; }
+  .gcard .ic { width:48px; height:48px; flex:none; border-radius:12px;
+    display:grid; place-items:center; }
+  .gcard .ic svg { width:24px; height:24px; }
+  .gcard .tx { flex:1; min-width:0; }
+  /* 이름도 잘려야 한다 — 320 에서 "어휘 카드 마스터"가 칸을 밀어낸다 */
+  .gcard .nm { display:block; font-size:16px; font-weight:700; color:#24425F;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* 한 자리 — 진행이 있으면 진행, 없으면 설명 */
+  .gcard .sub { display:block; margin-top:2px; font-size:13px; color:#9BA5B0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .gcard .sub.on { color:#0073E6; font-weight:600; }
+  .gcard .go { width:20px; flex:none; color:#C8CCD3; }
+  .gcard .go svg { width:20px; height:20px; }
+</style>
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div><div class="kicker">STRUCTURE · 기획 검증용</div><h1>게임 목록</h1></div>
+    <p>지금은 카드 5장이 <b>통째로 복사</b>돼 있고, <b>진행 상태가 하나도 안 보입니다</b>.
+       설명 줄 한 자리를 <b>진행이 있으면 진행으로</b> 갈아 끼우면 카드 높이를 그대로 둘 수 있습니다.</p>
+  </header>
+  <nav class="controls">
+    <div class="control-group" data-set="state">
+      <span class="control-label">진행</span>
+      <button class="option" data-value="mixed" aria-pressed="true">섞임</button>
+      <button class="option" data-value="none" aria-pressed="false">처음</button>
+      <button class="option" data-value="all" aria-pressed="false">다 해봄</button>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
+  <section class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720</div>
+    </div>
+    <aside class="notes">
+      <div class="note-section"><h2>현재 화면</h2><dl class="spec" id="spec"></dl></div>
+      <div class="note-section">
+        <h2>확인한 것</h2>
+        <p><b>점수를 저장하는 게임이 둘뿐이다:</b> 봄소풍 · 서울퍼즐.
+           카드마스터 · 조사스나이퍼는 <code>game-progress</code>를 안 쓴다.
+           VocaShot 은 <b>이번에 붙인다</b>.</p>
+        <p><b>진행 단위가 게임마다 다르다:</b> 급 · 장소 · 친구×단계 · 레벨.
+           그래서 <b>공통 숫자를 못 만든다</b> — 각자의 말로 한 줄씩 쓴다.</p>
+        <p><b>저장 안 하는 게임은 설명이 남는다.</b> 빈칸으로 두면 "고장난 것"처럼 보인다.</p>
+      </div>
+    </aside>
+  </section>
+</main>
+<script>
+const I={
+  right:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+  pad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="4"/></svg>',
+  cherry:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="18" r="3"/><circle cx="17" cy="16" r="3"/><path d="M7 15C7 8 12 4 20 3"/><path d="M17 13C15 9 13 6 12 4"/></svg>',
+  map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
+  layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 9l10 6 10-6z"/><path d="M2 15l10 6 10-6"/></svg>',
+  cross:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>',
+};
+const state={ state:"mixed", width:"390" };
+
+/* 아이콘 색은 routes/main/game/index.tsx 실측 */
+const GAMES=[
+  { k:"vocashot", ic:"pad",    bg:"#FFF3E0", fg:"#FF6D00", nm:"VocaShot",
+    desc:"떨어지는 단어를 골라 맞혀요", saves:true,
+    prog:"2급 최고 210점" },
+  { k:"spring",   ic:"cherry", bg:"#FFF0F5", fg:"#D4537E", nm:"봄소풍 숫자미션",
+    desc:"친구들과 한국어 숫자를 연습해요", saves:true,
+    prog:"민수 · 2단계까지 했어요" },
+  { k:"seoul",    ic:"map",    bg:"#E8F5E9", fg:"#2E7D32", nm:"서울 여행 퍼즐",
+    desc:"서울을 여행하며 문장을 완성해요", saves:true,
+    prog:"12곳 중 5곳 다녀왔어요" },
+  { k:"cardsort", ic:"layers", bg:"#FFF8E1", fg:"#F9A825", nm:"어휘 카드 마스터",
+    desc:"카드를 분류하며 어휘를 익혀요", saves:false, prog:null },
+  { k:"sniper",   ic:"cross",  bg:"#E8EAF6", fg:"#5C6BC0", nm:"조사 스나이퍼",
+    desc:"빠르게 조사를 맞혀보세요", saves:false, prog:null },
+];
+
+function card(g){
+  /* 한 자리 — 진행이 있으면 진행, 없으면 설명. 카드 높이는 그대로 */
+  const show = (state.state==="none" || !g.saves) ? null
+             : (state.state==="all" ? g.prog : (g.k==="seoul" ? null : g.prog));
+  return `<button class="gcard">
+    <span class="ic" style="background:${g.bg};color:${g.fg}">${I[g.ic]}</span>
+    <span class="tx"><span class="nm">${g.nm}</span>
+      <span class="sub ${show?'on':''}">${show || g.desc}</span></span>
+    <span class="go">${I.right}</span></button>`;
+}
+function view(){
+  return `<div class="gl">
+    <div class="gl-head"><span class="t">게임</span></div>
+    <div class="gl-body">${GAMES.map(card).join("")}</div>
+  </div>`;
+}
+const SPEC=[["배경","#F9FAFC"],["제목","게임 · 17 semibold 가운데"],
+  ["카드","radius 16 · padding 16 · 간격 12"],["그림자","0 1px 4px rgba(0,0,0,.06)"],
+  ["아이콘","48 · radius 12 · 아이콘 24"],["이름","16 bold #24425F"],
+  ["둘째 줄","13 · 진행 있으면 파랑 semibold"],["오른쪽","› 20 #C8CCD3"]];
+function render(){
+  const dev=document.getElementById('device'), scr=document.getElementById('screen');
+  dev.style.width=(+state.width+4)+'px';
+  scr.innerHTML=view();
+  document.getElementById('caption').textContent=`${state.width} × 720`;
+  document.getElementById('spec').innerHTML=SPEC.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  ['state','width'].forEach(s=>document.querySelectorAll(`[data-set="${s}"] .option`)
+    .forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.value===state[s]))));
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('.controls .option'); if(!o) return;
+  state[o.closest('.control-group').dataset.set]=o.dataset.value; render();
+});
+render();
+</script>

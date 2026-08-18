@@ -68,7 +68,7 @@
   <tr><th>탭</th><th>무엇을 하나</th><th>교재와의 관계</th></tr>
   <tr><td><b>게임</b></td>
       <td>어휘·문장 게임 <b>5종</b>. 목록에서 골라 들어간다</td>
-      <td><b>없다</b> — 넷은 자기 데이터를 쓰고, VocaShot 만 교사가 문항을 담아 줬다. §1</td></tr>
+      <td><b>교재와는 없다.</b> 다만 <b>다섯 다 서버에서 콘텐츠를 받는다</b> — §1c</td></tr>
   <tr><td><b>표현클립</b></td>
       <td>표현을 <b>검색</b>해 짧은 영상으로 본다. 클립 <b>329건</b></td>
       <td><b>없다</b> — 급·과 태그가 클립에 붙어 있지 않다. §2</td></tr>
@@ -144,6 +144,44 @@
      "선생님이 만든 게임에 참여하세요"이고, 결과 화면에 <b>"전체 랭킹은 전광판을 확인하세요"</b>가 있다.</p>
   <p>혼자 하는 게임이 아니라 <b>교사가 화면에 띄우고 학생들이 붙는 구조</b>다.
      나머지 넷은 혼자 하는 게임이다.</p>
+</div>
+
+<h2 id="s1c"><span class="n">1c</span>정정 — 게임은 <b>서버에서 콘텐츠를 받는다</b></h2>
+<div class="callout stop">
+  <div class="t">앞서 <b>"게임이 자기 데이터를 쓴다"</b>고 적은 것이 부정확했다</div>
+  <p>게임 컴포넌트가 <code>@/shared/data</code>를 하나도 안 쓰길래 콘텐츠가 코드에 박혀 있는 줄 알았다.
+     <b>아니다.</b> 다섯 게임 전부 <code>/game-content/{게임}</code>에서 받는다.
+     처음 확인할 때 <b>큰따옴표 import 만 세어서</b> 작은따옴표를 쓰는 두 게임을 놓쳤다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th>부르는 것</th><th>서버</th></tr>
+    <tr><td>봄소풍</td><td><code>getSpringPicnicFriends</code> · <code>...Questions</code></td>
+        <td><code>spring_picnic_accepter</code></td></tr>
+    <tr><td>서울 퍼즐</td><td><code>getSeoulPuzzleContent</code></td>
+        <td><code>seoul_puzzle_accepter</code></td></tr>
+    <tr><td>카드 마스터</td><td><code>getCardSortCategories</code> · <code>...Vocab</code> · <code>...Rare</code></td>
+        <td><code>card_sort_accepter</code></td></tr>
+    <tr><td>조사 스나이퍼</td><td><code>getParticleSniperLevels</code> · <code>...Sentences</code></td>
+        <td><code>particle_sniper_accepter</code></td></tr>
+    <tr><td><b>VocaShot</b></td><td><b>학생 앱은 안 부른다</b></td>
+        <td><code>vocashot_accepter</code> — 아래</td></tr>
+  </table></div>
+  <p><b>교재와 잇지 않았다는 것은 그대로 사실이다</b> — 어느 게임도
+     <code>book_id</code> · <code>chapter</code> · <code>menuType</code> · <code>learning-record</code>를 안 쓴다.
+     다만 콘텐츠가 <b>서버에 있고 관리자가 고칠 수 있다</b>는 점이 다르다.</p>
+</div>
+<div class="callout">
+  <div class="t">VocaShot 에도 <b>프리셋 테이블이 있다</b> — 교사 앱 전용이다</div>
+  <p><code>ko_vocashot_preset</code> = <code>{ id, label, vocab[], sort_order }</code>이고
+     <code>vocab</code> 한 항목이 <code>{ id, category?, image?, english?, answer, wrong[] }</code>다 —
+     <b><code>VocabQuestion</code>과 같은 모양</b>이다.</p>
+  <p>조회(<code>GET /game-content/vocashot/presets</code>)는 <b>인증 없이 열려 있고</b>,
+     쓰기는 <code>MasterAdminRequired</code>다. 그런데
+     <b>학생 앱은 이 엔드포인트를 한 번도 부르지 않는다</b> — 교사가 방을 만들 때 쓰던 것이다.</p>
+  <p class="qa">혼자 하기는 <b>급별로 고르게 나뉜 문항</b>이 필요한데
+     프리셋은 <b>교사가 수업용으로 묶은 것</b>이라 급과 대응하지 않는다.
+     그래서 <code>n1_word_quiz.json</code>을 쓰기로 한 판단은 <b>그대로 유효하다</b>
+     (<code>vocashot_solo_spec_v1.html</code> §3).
+     교실용을 버려도 <b>이 테이블은 교사 앱 몫으로 남는다</b>.</p>
 </div>
 
 <h2 id="s1b"><span class="n">1b</span>VocaShot 개인 플레이 전환 — 무엇이 필요한가</h2>
@@ -242,6 +280,47 @@
 <p class="qa"><b>봇은 지금 정하지 않는다.</b> ①②가 끝난 뒤 스폰 루프에
    <b>가짜 answer를 끼워넣는</b> 일이라 그 위에 얹힌다.
    먼저 만들어 보고 <b>실제로 밋밋한지 확인한 다음</b> 판단하는 편이 낫다.</p>
+
+<h2 id="s1d"><span class="n">1d</span>게임 목록 화면 — 그려 봤다</h2>
+<p><code>gamelist_mockup_v1.html</code>. <b>진행 3갈래 × 폭 3 = 9조합</b>에서 넘침 <b>0</b>.</p>
+<div class="callout stop">
+  <div class="t">지금 목록은 <b>아무것도 기억하지 않는다</b></div>
+  <p>카드 다섯이 <b>통째로 복사·붙여넣기</b>돼 있고(<code>index.tsx</code> 134줄이 거의 전부 그것),
+     <b>한 번도 안 한 게임과 어제 하던 게임이 똑같이 보인다</b>.
+     그런데 <b>점수를 저장하는 게임이 이미 둘</b>이다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th><code>game-progress</code></th><th>저장 단위</th></tr>
+    <tr><td>봄소풍</td><td><b>쓴다</b></td><td>친구 × 단계 + <code>_meta</code></td></tr>
+    <tr><td>서울 퍼즐</td><td><b>쓴다</b></td><td>장소별 완료 + XP</td></tr>
+    <tr><td><b>VocaShot</b></td><td>지금은 안 쓴다 → <b>붙인다</b></td><td>급별 최고 점수</td></tr>
+    <tr><td>카드 마스터</td><td>안 쓴다</td><td>—</td></tr>
+    <tr><td>조사 스나이퍼</td><td>안 쓴다</td><td>—</td></tr>
+  </table></div>
+</div>
+<div class="callout">
+  <div class="t">진행 단위가 <b>게임마다 달라서 공통 숫자를 못 만든다</b></div>
+  <p>급 · 장소 · 친구×단계 · 레벨. <b>"3/8"처럼 통일하면 거짓말이 된다</b> —
+     서울 퍼즐의 12곳과 VocaShot 의 8급은 같은 것이 아니다.</p>
+  <p><b>각자의 말로 한 줄씩 쓴다.</b> 그리고 그 한 줄을 <b>설명 줄 자리에</b> 넣는다 —
+     활동 목록·홈 카드와 같은 <b>"한 자리, 내용만 교체"</b>다. 카드 높이 <b>80</b>이 그대로 유지된다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th>진행이 있으면</th><th>없으면</th></tr>
+    <tr><td>VocaShot</td><td>2급 최고 210점</td><td rowspan="3">지금 설명 그대로</td></tr>
+    <tr><td>봄소풍</td><td>민수 · 2단계까지 했어요</td></tr>
+    <tr><td>서울 퍼즐</td><td>12곳 중 5곳 다녀왔어요</td></tr>
+    <tr><td>카드 마스터 · 조사 스나이퍼</td><td colspan="2"><b>설명이 그대로 남는다</b> —
+        저장을 안 하므로 쓸 말이 없다</td></tr>
+  </table></div>
+  <p class="qa">저장 안 하는 둘을 <b>빈칸으로 두면 "고장난 것"처럼 보인다</b>.
+     설명이 남는 것이 맞다.</p>
+</div>
+<div class="callout">
+  <div class="t">그려 보니 나온 것 — <b>이름도 잘려야 한다</b></div>
+  <p>설명 줄에만 말줄임을 걸어 뒀더니 <b>320에서 "어휘 카드 마스터"가 칸을 밀어냈다</b>.
+     이름에도 걸어야 한다.</p>
+  <p class="qa">설명은 320에서 <b>7px</b>(반 글자쯤) 잘린다 — 구 앱 문구 그대로이고 말줄임이 먹는다.
+     문구를 줄일 필요는 없다.</p>
+</div>
 
 <h2 id="s2"><span class="n">2</span>표현 클립 — 유튜브 검색</h2>
 <p>제목 <b>"표현 클립"</b> 20 bold(높이 48, 위 여백 20). 아래 <b>검색창 48</b>(radius 10, 흰 배경,
