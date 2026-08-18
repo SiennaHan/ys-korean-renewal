@@ -1,0 +1,168 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>게임 넷 — 손볼 것</title>
+<style>
+  :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
+    --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
+    --stop:#9a3f31; --stop-soft:#fbece9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb; --ink-3:#6f7887;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; } }
+  :root[data-theme="dark"] { --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb;
+    --ink-3:#6f7887; --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif}
+  main{max-width:900px;margin:0 auto;padding:46px 22px 96px}
+  header.doc{padding-bottom:22px;border-bottom:2px solid var(--accent);margin-bottom:10px}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    font-weight:800;margin-bottom:9px}
+  h1{font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:800;letter-spacing:-.015em}
+  .lead{color:var(--ink-2);margin:0;max-width:66ch}
+  .lead b{color:var(--ink)}
+  h2{font-size:19px;font-weight:800;margin:48px 0 4px}
+  h2 .n{color:var(--accent);margin-right:9px;font-variant-numeric:tabular-nums}
+  h3{font-size:15px;font-weight:700;margin:26px 0 3px}
+  p{margin:9px 0}
+  .qa{color:var(--ink-3);font-size:13px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+    background:var(--bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;overflow-x:auto;margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;margin:10px 0 5px;font-size:13px}
+  th{text-align:left;font-size:11px;letter-spacing:.05em;color:var(--ink-3);font-weight:800;
+    padding:7px 9px 5px;border-bottom:2px solid var(--line);white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  td code{white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .callout.stop{border-left-color:var(--stop)}
+  .callout .t{font-weight:800;font-size:13.5px;margin-bottom:4px}
+  .callout.stop .t{color:var(--stop)}
+  .callout p{font-size:14px;margin:6px 0}
+  ul,ol{padding-left:21px;margin:9px 0} li{margin:5px 0;font-size:14.5px}
+  li::marker{color:var(--ink-3)}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
+    border:1px solid rgba(0,0,0,.14);vertical-align:-1px;margin-right:5px}
+</style>
+<main>
+<header class="doc">
+  <div class="eyebrow">손볼 것 · 게임 넷</div>
+  <h1>VocaShot 말고 나머지 — 무슨 게임이고, 무엇이 어긋나 있나</h1>
+  <p class="lead">as-is(<code>games_asis_v1.html</code>)는 <b>목록에서 보이는 것</b>만 옮겼다.
+     이 문서는 게임 <b>안으로 들어가서</b> 규칙을 읽고, <b>고쳐야 할 것</b>을 적는다.
+     한 게임씩 채워 나간다. 값은 전부 컴포넌트와 서버 모델 실측이다.</p>
+</header>
+
+<h2 id="s1"><span class="n">1</span>서울 여행 퍼즐 — <b>문장 조립</b></h2>
+<p class="lead"><b>서울의 장소를 하나씩 여행하며, 친구와의 대화 속 문장을 조각으로 조립하는 게임.</b>
+   지도에서 장소를 고르고 → 도착 대화를 보고 → 퍼즐 몇 개를 풀면 그 장소가 완료된다.
+   <code>components/main/game/seoul-puzzle.tsx</code> <b>1222줄</b>.</p>
+
+<div class="callout stop">
+  <div class="t">이 게임은 <b>연세 1권 전용</b>이다 — 화면에 그렇게 쓰여 있다</div>
+  <p>장소 카드에 <code>연세 1권 {l.unit}</code>이 <b>하드코딩</b>돼 있고(750줄),
+     그 아래에 그 장소에서 다루는 <b>문법 칩</b>이 붙는다.
+     장소마다 <code>unit</code>과 <code>grammar[]</code>를 들고 있다.</p>
+  <p><b>"게임은 교재와 무관하다"는 말이 이 게임에는 안 맞는다.</b>
+     진도(<code>learning-record</code>)와는 안 이어져 있지만,
+     <b>콘텐츠 자체가 1권 과에 맞춰</b> 만들어져 있다.
+     그래서 <b>1급 학습자용</b>이고 2급 이상에게는 쉬울 것이다.</p>
+</div>
+
+<h3>화면 다섯</h3>
+<pre>name     이름을 입력한다 — 대화에 <b>[이름]</b> 자리로 들어간다
+map      서울 지도. 장소가 <b>순서대로</b> 열린다(앞을 끝내야 다음)
+entry    도착 대화 — 친구/나 말풍선이 오간다
+puzzle   <b>조각을 눌러 문장을 조립</b>한다
+complete 그 장소 완료</pre>
+<div class="callout">
+  <div class="t">이름이 <b>받침에 따라 조사를 바꾼다</b></div>
+  <p><code>resolveToken</code>이 <code>[이름]이에요.</code> / <code>[이름]예요.</code>를
+     이름 끝 받침 유무로 갈라 넣는다. <b>"수현이에요"와 "민수예요"가 각각 맞게</b> 나온다.</p>
+  <p class="qa">공들여 만든 부분이다. 손대지 말 것.</p>
+</div>
+
+<h3>퍼즐 한 문항의 규칙</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>지금</th></tr>
+  <tr><td>조각</td><td><code>answer[]</code> + <code>distractors[]</code>를 <b>섞어서</b> 트레이에 깐다</td></tr>
+  <tr><td>조립</td><td>트레이 조각을 누르면 슬롯 <b>뒤에 붙는다</b>. 슬롯 조각을 누르면 트레이로 돌아간다</td></tr>
+  <tr><td><b>채점</b></td><td><code>JSON.stringify(슬롯) === JSON.stringify(answer)</code> —
+      <b>어순이 하나라도 다르면 오답</b></td></tr>
+  <tr><td>힌트</td><td>장소당 <b>3개</b>. 누르면 <b>다음 조각을 자동으로</b> 놓아 준다</td></tr>
+  <tr><td>정답</td><td>+20 XP <span class="qa">힌트를 썼으면 +10</span></td></tr>
+  <tr><td><b>오답</b></td><td><b>+5 XP</b> · <b>정답 문장을 통째로 보여 준다</b> · <b>다시 하기</b> 버튼</td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">손볼 것 ① — <b>틀리는 쪽이 이득이다</b></div>
+  <p>오답이면 <b>정답 문장이 그대로 화면에 뜨고</b>, "다시 하기"는
+     <code>loadPuzzle</code>을 다시 부르며 <code>hintUsed</code>를 <b>false 로 되돌린다</b>.
+     즉 <b>재시도에 아무 감점이 없다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>어떻게 풀었나</th><th class="n">받는 XP</th></tr>
+    <tr><td><b>일부러 틀리고</b> → 정답을 보고 → 다시 맞힘</td><td class="n"><b>25</b></td></tr>
+    <tr><td>바로 맞힘</td><td class="n">20</td></tr>
+    <tr><td><b>정직하게 힌트를 쓰고</b> 맞힘</td><td class="n"><b>10</b></td></tr>
+  </table></div>
+  <p><b>순서가 뒤집혀 있다.</b> 틀리는 것이 가장 많이 받고, <b>힌트를 쓰는 정직한 쪽이 가장 적게</b> 받는다.
+     아무 조각이나 넣고 확인 → 정답을 읽고 → 그대로 다시 넣는 것이
+     <b>최적 전략</b>이 된다.</p>
+  <p class="qa">고치는 방법은 여럿이다 — 오답 XP를 0으로 두거나,
+     재시도에 <code>hintUsed</code>를 유지하거나(즉 재시도 정답은 10점),
+     정답 공개를 <b>재시도를 포기했을 때만</b> 하거나.
+     <b>어느 쪽이든 "틀리는 게 이득"은 없애야 한다.</b></p>
+</div>
+
+<div class="callout stop">
+  <div class="t">손볼 것 ② — <b>XP가 기기를 옮기면 값이 바뀐다</b></div>
+  <p>헤더에 <code>{totalXp} XP</code>가 늘 떠 있다. 그런데 <b>서버로는 XP를 보내지 않는다</b> —
+     장소별로 보내는 <code>score</code>가 <b><code>퍼즐 수 × 10</code></b>이라는 <b>상수</b>다(348줄).
+     실력과 무관하고 <b>누구나 같은 값</b>이다.</p>
+  <pre>저장할 때   stage_id = 장소id,  score = 퍼즐수 × 10   ← 실제 XP 아님
+           _meta.extra = { playerName, currentLoc }  ← XP 없음
+
+불러올 때   totalXp = <b>완료한 장소들의 score 합</b>   ← 내가 번 XP 가 아니다</pre>
+  <p>진짜 XP는 <b><code>localStorage</code>에만</b> 있다(<code>seoul-puzzle-v1</code>).
+     그래서 <b>다른 기기에서 로그인하면 내가 번 XP 가 사라지고</b>
+     "퍼즐 수 × 10"으로 <b>조용히 바뀐다</b>. 늘거나 줄어들 수 있다.</p>
+  <p class="qa">XP 를 계속 쓸 거면 <code>_meta.extra.totalXp</code> 에 넣으면 된다 —
+     <b>스키마를 안 바꿔도 된다</b>. 아니면 XP 표시를 없애고
+     <b>완료한 장소 수</b>만 보여 주는 쪽이 정직하다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">확인해야 할 것 — <b>정답이 정말 하나뿐인가</b></div>
+  <p>채점이 <b>어순 완전 일치</b>다. 한국어는 어순이 비교적 자유로워서
+     <b>다른 순서도 맞는 문장</b>일 수 있다 — 그러면 맞게 쓴 학습자가 오답 처리된다.</p>
+  <p class="qa">콘텐츠가 <b>서버 DB</b>(<code>ko_seoul_puzzle_step</code>)에 있어서
+     이 저장소만으로는 <b>실제 문장을 볼 수 없다</b>. 확인하지 않고 단정하지 않는다 —
+     <b>데이터를 받아 훑어봐야 하는 항목</b>으로 남긴다.</p>
+</div>
+
+<h3>콘텐츠 모델 — 관리자가 고칠 수 있다</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>필드</th></tr>
+  <tr><td><b>장소</b></td>
+      <td><code>id · name · num · x · y · unit · desc · grammar[] · entryMessages[] · sort_order</code><br>
+          <span class="qa">x · y 는 지도 위 좌표다</span></td></tr>
+  <tr><td><b>퍼즐</b></td>
+      <td><code>location_id · step_index · data</code> — <code>data</code>가 <b>자유형 dict</b>다.<br>
+          클라이언트가 기대하는 모양은
+          <code>friendMsg · friendMsgT · selfMsg · selfMsgT · friendMsg2 · friendMsg2T ·
+          hintText · answer[] · distractors[] · grammar · tip</code></td></tr>
+</table></div>
+<p class="qa"><code>GET /game-content/seoul-puzzle</code>은 누구나, 편집(<code>/locations</code> · <code>/steps</code>)은
+   <code>MasterAdminRequired</code>. <code>data</code>가 검증 없는 <code>dict</code>라
+   <b>필드 이름을 하나 틀리면 조용히 깨진다</b>.</p>
+
+<h2 id="s2"><span class="n">2</span>봄소풍 숫자미션 <span class="qa">— 아직</span></h2>
+<h2 id="s3"><span class="n">3</span>어휘 카드 마스터 <span class="qa">— 아직</span></h2>
+<h2 id="s4"><span class="n">4</span>조사 스나이퍼 <span class="qa">— 아직</span></h2>
+</main>
