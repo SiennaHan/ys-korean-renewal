@@ -501,36 +501,45 @@ complete 그 장소 완료</pre>
      게임에 손댈 것은 <b><code>야영을 하다</code> 하나</b>다.</p>
 </div>
 
-<h2 id="s7"><span class="n">7</span>다국어 — <b>둘에 넣는다. 번역이 지금 없다</b></h2>
-<p class="lead">봄소풍만 <code>hint{언어별}</code>을 갖고 있다.
-   <b>카드 마스터와 조사 스나이퍼에는 번역 필드가 아예 없다</b> —
-   그래서 이 둘은 <b>콘텐츠를 새로 만들어야</b> 한다.</p>
+<h2 id="s7"><span class="n">7</span>다국어 — <b>UI 문구가 전부 한국어로 박혀 있다</b></h2>
+<p class="lead">번역해야 하는 것은 <b>콘텐츠가 아니라 화면 문구</b>다 —
+   지시문 · 규칙 설명 · 버튼 라벨 · "점수" 같은 용어.
+   <b>네 게임 다 <code>t()</code>를 한 번도 부르지 않는다.</b></p>
 <div class="tablewrap"><table>
-  <tr><th>게임</th><th>지금 데이터</th><th>무엇을 번역하나</th><th class="n">분량</th></tr>
-  <tr><td>봄소풍</td><td><code>hint{ko,en,ja,zh,vi}</code></td>
-      <td><b>이미 있다</b></td><td class="n">—</td></tr>
-  <tr><td><b>카드 마스터</b></td><td><code>"직업": "#4A9EFF"</code> — 이름과 색만</td>
-      <td><b>갈래 이름</b></td><td class="n">갈래 <b>57</b> × 4언어</td></tr>
-  <tr><td><b>조사 스나이퍼</b></td>
-      <td><code>{sentence, blank, answer, choices, sourceLesson}</code></td>
-      <td><b>문장 번역</b></td><td class="n">문항 <b>약 160</b> × 4언어</td></tr>
+  <tr><th>게임</th><th><code>useTranslation</code></th><th class="n"><code>t()</code> 호출</th>
+      <th class="n">박혀 있는 한글 문구</th></tr>
+  <tr><td>봄소풍</td><td>import 함</td><td class="n"><b>0</b></td><td class="n">약 <b>42</b></td></tr>
+  <tr><td>서울 퍼즐</td><td>안 함</td><td class="n"><b>0</b></td><td class="n">약 <b>39</b></td></tr>
+  <tr><td>카드 마스터</td><td>안 함</td><td class="n"><b>0</b></td><td class="n">약 <b>29</b></td></tr>
+  <tr><td>조사 스나이퍼</td><td>안 함</td><td class="n"><b>0</b></td><td class="n">약 <b>18</b></td></tr>
 </table></div>
 <div class="callout stop">
-  <div class="t">카드 마스터는 <b>단어 뜻을 보여 주면 안 된다</b></div>
-  <p>이 게임은 <b>단어가 어느 갈래인지</b> 고르는 것이다.
-     <code>경찰관</code> 옆에 <b>"Police Officer"</b>를 띄우면
-     <b>정답이 그대로 새어 나간다</b> — 직업이라는 답을 알려 주는 셈이다.</p>
-  <p><b>갈래 이름만 번역한다.</b> <code>직업 / Jobs</code> ·
-     <code>교통수단 / Transport</code>. 갈래를 못 읽어서 못 고르는 것을
-     막는 것이 목적이고, 단어는 <b>한국어로 읽어 내야</b> 한다.</p>
-  <p class="qa">VocaShot 은 반대다 — 거기서는 <b>뜻이 곧 문제</b>이므로 번역이 있어야 한다.</p>
+  <div class="t">목록은 번역되는데 <b>들어가면 한국어가 된다</b></div>
+  <p><code>ko.ts</code>의 <code>game</code> 블록에는 다섯 게임의 <b>이름과 설명이 다 있다</b> —
+     목록 화면(<code>index.tsx</code>)이 <code>t()</code>로 쓴다.
+     그런데 <b>게임 안으로 들어가면 번역이 끊긴다</b>.</p>
+  <p>베트남 학습자가 <b>"Đoán từ"</b>를 눌러 들어가면
+     <code>급수를 선택하세요</code> · <code>과 선택</code> · <code>다시하기</code> ·
+     <code>로딩 중...</code>을 만난다. <b>게임을 시작하는 방법을 읽을 수 없다.</b></p>
+  <p class="qa">봄소풍이 <code>useTranslation</code>을 import 하고도
+     <code>i18n.language</code>(힌트 언어 고르기)에만 쓴다 — <b>문구는 그대로 한국어다</b>.</p>
 </div>
 <div class="callout">
-  <div class="t">조사 스나이퍼는 <b>문장 번역이 단서가 되지 않는다</b></div>
-  <p>고르는 것이 <b>조사</b>이므로, 문장 뜻을 알아도 <code>을</code>인지 <code>를</code>인지는
-     <b>받침을 봐야</b> 안다. 번역을 보조로 둬도 <b>정답이 새지 않는다</b>.</p>
-  <p class="qa">문항이 <b>떨어지는 중</b>이라 화면에 늘 띄우면 방해가 된다 —
-     <b>탭하면 보이게</b> 두는 편이 낫다. 봄소풍이 힌트를 그렇게 쓴다.</p>
+  <div class="t">콘텐츠는 <b>번역하지 않는다</b></div>
+  <p>앞서 이 문서에 <b>갈래 이름 번역</b>(57 × 4언어)과
+     <b>문장 번역</b>(약 160 × 4언어)을 적었는데 <b>범위를 잘못 잡은 것</b>이다.
+     그건 콘텐츠 저작이고, <b>지금 필요한 일이 아니다</b>.</p>
+  <p><b>필요한 것은 화면 문구뿐</b>이다 — 네 게임 합쳐 <b>약 128개</b>.
+     기존 <code>ko.ts</code> 구조에 <code>game.seoulPuzzle.*</code> 처럼 넣고
+     다섯 로케일에 채우면 된다. <b>콘텐츠 테이블은 손대지 않는다.</b></p>
+  <p class="qa">그래서 <b>카드 마스터에 단어 뜻이 새어 나갈 걱정도 없어진다</b> —
+     애초에 뜻을 띄우지 않는다.</p>
+</div>
+<div class="callout">
+  <div class="t">급·과 라벨은 <b>손대지 않아도 된다</b></div>
+  <p><code>2급</code>·<code>5과</code> 같은 것은 <b>교재의 이름</b>이라
+     번역 대상이 아니다. 다만 <code>급수를 선택하세요</code> 같은
+     <b>둘러싼 문구</b>는 번역해야 한다.</p>
 </div>
 <div class="callout">
   <div class="t">씨드 파일은 <b>갱신하지 않는다</b></div>
