@@ -1,0 +1,512 @@
+<!-- VocaShot 혼자 하기 — 실제로 돌아가는 시제품.
+     조정값(TUNING)을 오른쪽에서 바꾸며 직접 해 보고 고치기 위한 것.
+     문항 1149개 전부 실제 데이터(n1_word_quiz.json)를 압축해 넣었다.
+     그림 문항은 정적 서버가 떠 있어야 보인다 — http://localhost:8741 로 열 것. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VocaShot 혼자 하기 — 돌려 보기</title>
+<style>
+
+
+:root {
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+    --radius-card:14px; --radius-control:9px;
+  }
+* { box-sizing:border-box; }
+body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+button { font:inherit; }
+.workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
+.doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
+.doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+.doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
+.kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+.controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+.control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
+.option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+.option:hover { background:rgba(255,255,255,.55); }
+.option[aria-pressed="true"] { border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }
+.stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
+.stage.overview-hidden { display:none; }
+.device-wrap { display:flex; flex-direction:column; align-items:center; }
+.device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
+.screen { position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+.caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+.notes { padding-top:8px; }
+.notes h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }
+.notes p { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+.notes p + p { margin-top:9px; }
+.notes b { color:var(--bench-ink); font-weight:600; }
+.note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+.note-section + .note-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+.spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+.spec dt { color:#87909d; }
+.spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
+.footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--control-border); }
+.primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+.primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
+.dock { display:flex; align-items:center; gap:12px; width:100%; }
+.dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+.dock .main .record-core { width:auto; }
+.dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+.dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+.dock .slot svg { width:26px; height:26px; }    .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
+  .scroll::-webkit-scrollbar { display:none; }
+
+  /* ── 시작 화면 — 플레이 화면 언어 그대로(bg-slate-950) ────────
+     선택지 h-14 rounded-2xl border-slate-700 bg-slate-900 · 고른 것은 결과 오버레이의
+     "내 행"(border-emerald-500/50 bg-emerald-500/20) · 주 버튼은 발사 버튼(emerald-500) */
+  .g-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:24px 16px 16px; border-bottom:1px solid #1e293b; }
+  .g-head .nm { display:flex; align-items:center; gap:8px; }
+  .g-head .back { width:44px; height:44px; margin-left:-8px; border:0; background:none;
+    display:grid; place-items:center; cursor:pointer; }
+  .g-head .back i { width:28px; height:28px; border-radius:50%; background:#1e293b;
+    display:grid; place-items:center; color:#e2e8f0; }
+  .g-head .back svg { width:16px; height:16px; }
+  .g-head h1 { margin:0; font-size:18px; font-weight:600; letter-spacing:-.01em; }
+  .g-head .sub { font-size:12px; color:#94a3b8; }
+  .g-body { flex:1 1 auto; min-height:0; overflow-y:auto; padding:20px 16px; }
+  .g-body::-webkit-scrollbar { display:none; }
+  .g-lb { display:block; margin-bottom:8px; font-size:10px; letter-spacing:.06em;
+    text-transform:uppercase; color:#64748b; }
+  .lv { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:20px; }
+  .seg { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; }
+  .lv button, .seg button { height:56px; padding:0 8px; border:1px solid #334155;
+    border-radius:16px; background:#0f172a; color:#f8fafc; font-size:15px; font-weight:600;
+    line-height:1.15; cursor:pointer; }
+  .lv button.on, .seg button.on { border-color:rgba(16,185,129,.5);
+    background:rgba(16,185,129,.2); color:#6ee7b7; }
+  .best { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;
+    padding:14px 20px; border:1px solid #334155; border-radius:16px; background:rgba(15,23,42,.8); }
+  .best .k { font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#64748b; }
+  .best .v { font-family:ui-monospace,Menlo,monospace; font-size:26px; font-weight:700;
+    color:#34d399; }
+  .best.none .v { font-family:inherit; font-size:14px; font-weight:600; color:#64748b; }
+  .g-dock { flex:none; padding:16px; border-top:1px solid #1e293b; }
+  .g-go { width:100%; padding:14px; border:0; border-radius:16px; background:#10b981;
+    color:#020617; font-size:16px; font-weight:600; cursor:pointer; }
+
+  /* ── 결과 화면 — 플레이 화면 안(bg-slate-950) ──────── */
+  .g-dark { background:#020617; color:#f8fafc; }
+  .r-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:24px 16px 16px; border-bottom:1px solid #1e293b; }
+  .r-head .nm { display:flex; align-items:center; gap:8px; }
+  .r-head .av { width:28px; height:28px; border-radius:50%; background:#1e293b;
+    display:grid; place-items:center; color:#94a3b8; }
+  .r-head .av svg { width:16px; height:16px; }
+  .r-head h1 { margin:0; font-size:18px; font-weight:600; letter-spacing:-.01em; }
+  .r-head .sub { font-size:12px; color:#94a3b8; }
+  .r-k { font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#64748b; }
+  .r-v { font-family:ui-monospace,Menlo,monospace; font-size:20px; font-weight:600;
+    color:#34d399; }
+  /* 놓친 단어는 하트 수(5)를 넘을 수 없다 — 목록 최대 5행. 그 상한 위에서 720 에 맞춘다 */
+  .r-body { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column;
+    align-items:center; gap:14px; padding:20px 16px; }
+  .r-body::-webkit-scrollbar { display:none; }
+  .r-ttl { margin:0; font-size:28px; line-height:36px; font-weight:700; letter-spacing:-.02em; }
+  .r-ttl.ok { color:#34d399; } .r-ttl.no { color:#fb7185; }
+  .r-desc { margin:0; text-align:center; font-size:14px; color:#94a3b8; }
+  .r-score { width:100%; max-width:288px; border:1px solid #334155; border-radius:16px;
+    background:rgba(15,23,42,.8); padding:16px 24px; text-align:center; }
+  .r-score .big { margin:2px 0 0; font-family:ui-monospace,Menlo,monospace;
+    font-size:38px; line-height:44px; font-weight:700; color:#34d399; }
+  .r-new { display:inline-block; margin-top:8px; padding:3px 9px; border-radius:999px;
+    background:rgba(52,211,153,.16); color:#34d399; font-size:11px; font-weight:700; }
+  .r-prev { margin:8px 0 0; font-size:13px; color:#94a3b8; font-variant-numeric:tabular-nums; }
+  .r-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    width:100%; max-width:288px; }
+  .r-stat { border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8);
+    padding:10px 12px; text-align:center; }
+  .r-stat .v { font-family:ui-monospace,Menlo,monospace; font-size:18px; font-weight:700; }
+  .r-wrong { width:100%; max-width:288px; }
+  .r-wrong .cap { margin-bottom:8px; text-align:center; }
+  .r-row { display:flex; align-items:center; gap:10px; padding:9px 12px;
+    border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8); }
+  .r-row + .r-row { margin-top:6px; }
+  .r-row .w { flex:none; font-size:14px; font-weight:700; color:#f8fafc; }
+  .r-row .m { flex:1; min-width:0; font-size:12px; color:#94a3b8;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* 재출제에서 맞힌 단어 — 끝내 못 맞힌 것과 갈린다 */
+  .r-row .re { flex:none; padding:2px 7px; border-radius:999px; font-size:10px; font-weight:700;
+    background:rgba(52,211,153,.16); color:#34d399; }
+  .r-row.got { border-color:rgba(52,211,153,.35); }
+  .r-empty { width:100%; max-width:288px; padding:16px; border:1px dashed #334155;
+    border-radius:12px; text-align:center; font-size:13px; color:#94a3b8; }
+  .r-dock { flex:none; display:flex; gap:8px; padding:16px; border-top:1px solid #1e293b; }
+  /* 발사 버튼과 같은 emerald-500, 보조는 나가기 확인 대화상자와 같은 slate-700 */
+  .r-again { flex:1; height:52px; border:0; border-radius:16px; background:#10b981;
+    color:#020617; font-size:16px; font-weight:600; cursor:pointer; }
+  .r-exit { flex:none; padding:0 20px; height:52px; border:0; border-radius:12px;
+    background:#334155; color:#e2e8f0; font-size:15px; font-weight:600; cursor:pointer; }
+
+  /* ── 플레이 화면 ─────────────────────────────── */
+  .p-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:20px 16px 12px; border-bottom:1px solid #1e293b; }
+  .p-head h1 { margin:0; font-size:16px; font-weight:600; }
+  .p-head .sub { font-size:11px; color:#94a3b8; }
+  .hearts { display:flex; gap:3px; }
+  .hearts i { width:14px; height:14px; border-radius:50%; background:#f43f5e; }
+  .hearts i.off { background:#334155; }
+  .sky { position:relative; flex:1 1 auto; min-height:0; overflow:hidden; }
+  .meteor { position:absolute; left:50%; transform:translateX(-50%); top:0;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:12px 16px; border:1px solid rgba(251,146,60,.45); border-radius:18px;
+    background:rgba(124,45,18,.35); box-shadow:0 0 26px rgba(251,146,60,.28);
+    max-width:82%; text-align:center; }
+  .meteor .txt { font-size:17px; line-height:23px; font-weight:600; color:#fed7aa; }
+  .meteor img { width:118px; height:118px; object-fit:contain; border-radius:10px;
+    background:#0f172a; }
+  .ground { position:absolute; left:0; right:0; bottom:0; height:2px;
+    background:linear-gradient(90deg,transparent,#fb923c,transparent); opacity:.6; }
+  .fb { flex:none; height:26px; display:grid; place-items:center; font-size:13px;
+    font-weight:700; }
+  .fb.ok { color:#34d399; } .fb.no { color:#fb7185; }
+  .p-dock { flex:none; padding:12px 16px 16px; border-top:1px solid #1e293b; }
+  .choices { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .choices button { height:56px; padding:0 6px; border:1px solid #334155; border-radius:16px;
+    background:#0f172a; color:#f8fafc; font-size:15px; font-weight:600; cursor:pointer; }
+  .choices button:active { transform:scale(.97); }
+  .typerow { display:flex; gap:8px; }
+  .typerow input { flex:1; min-width:0; border:1px solid #334155; border-radius:16px;
+    background:#0f172a; color:#f8fafc; font-size:16px; padding:12px 16px; outline:none; }
+  .typerow input:focus { box-shadow:0 0 0 2px #10b981; }
+  .typerow button { flex:none; padding:0 20px; border:0; border-radius:16px;
+    background:#10b981; color:#020617; font-size:15px; font-weight:600; cursor:pointer; }
+
+  /* ── 조정판 ──────────────────────────────────── */
+  .tune { display:grid; grid-template-columns:1fr auto; gap:7px 10px; align-items:center;
+    font-size:12px; }
+  .tune label { color:#87909d; }
+  .tune input { width:64px; padding:4px 7px; border:1px solid var(--bench-line);
+    border-radius:6px; background:var(--white); color:#414852; font-size:12px;
+    font-weight:600; text-align:right; font-variant-numeric:tabular-nums; }
+  .tune .note { grid-column:1/-1; margin:2px 0 0; color:var(--bench-sub); line-height:18px; }
+  .log { max-height:210px; overflow-y:auto; font-size:11px; line-height:17px;
+    font-variant-numeric:tabular-nums; }
+  .log div { display:flex; gap:7px; border-bottom:1px solid var(--bench-line); padding:3px 0; }
+  .log .w { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .log .t { color:#87909d; } .log .s { font-weight:700; }
+  .log .s.ok { color:#0a8f5b; } .log .s.no { color:#b3392a; }
+</style>
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div><div class="kicker">PROTOTYPE · 돌려 보고 고치는 것</div><h1>VocaShot 혼자 하기</h1></div>
+    <p>실제 문항 <b>1149개</b>로 도는 시제품입니다. 오른쪽 <b>조정값</b>을 바꾸고
+       다시 시작하면 그대로 반영됩니다. 표에서 정하지 말고 <b>해 보고 고치기</b> 위한 것입니다.</p>
+  </header>
+  <nav class="controls">
+    <div class="control-group">
+      <span class="control-label">조작</span>
+      <button class="option" id="restart">처음으로</button>
+    </div>
+    <div class="control-group">
+      <span class="control-label">키보드</span>
+      <span class="control-label" style="color:#66707e">1~4 고르기 · Enter 발사</span>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
+  <section class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720</div>
+    </div>
+    <aside class="notes">
+      <div class="note-section">
+        <h2>조정값</h2>
+        <div class="tune" id="tune"></div>
+        <p class="note">바꾼 값은 <b>다음 판</b>부터 적용됩니다.</p>
+      </div>
+      <div class="note-section">
+        <h2>이번 판 기록</h2>
+        <div class="log" id="log"></div>
+      </div>
+    </aside>
+  </section>
+</main>
+<script src="vocashot_bank.js"></script>
+<script>
+const I={
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
+};
+const IMG_BASE="/korean-master/korean-master/public/textbook/";
+
+/* 난이도의 전부. 여기 여덟 개만 만지면 된다 */
+const TUNING={
+  fallFirstSec:7.0, fallMinSec:3.0, fallStepSec:0.25, hardModeBonusSec:2.0,
+  scoreBase:10, scoreSpeedMax:10, hearts:5, retryAfterN:3,
+  maxQuestions:30,   /* 한 판 문항 상한. 0 이면 무제한(하트 0 까지) */
+};
+const TUNE_META=[
+  ["fallFirstSec","첫 낙하(초)",0.5],["fallMinSec","최소 낙하(초)",0.5],
+  ["fallStepSec","줄어드는 폭(초)",0.05],["hardModeBonusSec","직접 입력 가산(초)",0.5],
+  ["scoreBase","정답 기본",1],["scoreSpeedMax","속도 보너스 상한",1],
+  ["hearts","하트",1],["retryAfterN","재출제 간격(문항)",1],
+  ["maxQuestions","한 판 문항 상한",5],
+];
+
+const LEVELS=[1,2,3,4,5,6,7,8];
+const BEST=JSON.parse(localStorage.getItem("vocashot-best")||"{}");
+let S={ view:"start", level:2, mode:"easy", width:"390" };
+let G=null, raf=0, timer=0;
+let FEEDBACK_MS=600;   /* 정답/오답을 보여 주는 시간. 자동 검사에서는 0 으로 낮춘다 */
+
+const shuffle=a=>{const x=a.slice(); for(let i=x.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]];} return x;};
+
+/* ── 판 시작 ── */
+function startRun(){
+  const pool=shuffle(BANK.filter(q=>q.l===S.level));
+  G={ queue:pool.map(q=>({q,retry:false})), idx:0, served:0,
+      score:0, hearts:TUNING.hearts, correct:0, asked:0,
+      missed:new Map(), log:[], done:false };
+  S.view="play"; nextMeteor();
+}
+
+function fallSec(){
+  const n=G.served;
+  let s=Math.max(TUNING.fallMinSec, TUNING.fallFirstSec - TUNING.fallStepSec*n);
+  if(S.mode==="hard") s+=TUNING.hardModeBonusSec;
+  return s;
+}
+
+function nextMeteor(){
+  cancelAnimationFrame(raf); clearTimeout(timer);
+  const cap=TUNING.maxQuestions>0 && G.served>=TUNING.maxQuestions;
+  if(G.hearts<=0 || cap || G.idx>=G.queue.length){ endRun(); return; }
+  const item=G.queue[G.idx];
+  const dur=fallSec();
+  G.locked=false;
+  G.cur={ ...item, dur, start:performance.now(),
+    choices: shuffle([item.q.a, ...shuffle(item.q.w).slice(0,3)]) };
+  G.served++; G.asked++;
+  renderPlay();
+  const el=document.querySelector('.meteor'), sky=document.querySelector('.sky');
+  if(el&&sky){
+    const travel=sky.clientHeight-el.offsetHeight;
+    el.animate([{transform:'translate(-50%,0)'},{transform:`translate(-50%,${travel}px)`}],
+      {duration:dur*1000, easing:'linear', fill:'forwards'});
+  }
+  timer=setTimeout(()=>resolve(null), dur*1000);
+}
+
+function resolve(picked){
+  if(!G || G.locked || !G.cur) return;   /* 한 유성에 한 번만 */
+  G.locked=true;
+  clearTimeout(timer);
+  const c=G.cur, right = picked!==null && picked.trim()===c.q.a;
+  const remain=Math.max(0, c.dur*1000-(performance.now()-c.start))/1000;
+  let gained=0;
+  if(right){
+    G.correct++;
+    /* 재출제로 맞힌 것은 점수를 주지 않는다 — 하트를 이미 잃었다 */
+    if(!c.retry) gained=TUNING.scoreBase+Math.floor(TUNING.scoreSpeedMax*remain/c.dur);
+    G.score+=gained;
+    if(c.retry && G.missed.has(c.q.a)) G.missed.get(c.q.a).got=true;
+  } else {
+    G.hearts--;
+    if(!G.missed.has(c.q.a))
+      G.missed.set(c.q.a,{w:c.q.a, m:c.q.m||"(그림)", got:false});
+    /* 틀린 문항은 한 번만 다시 낸다 */
+    if(!c.retry) G.queue.splice(G.idx+1+TUNING.retryAfterN, 0, {q:c.q, retry:true});
+  }
+  G.log.unshift({w:c.q.a, t:(c.dur-remain).toFixed(1), s:gained, right, retry:c.retry,
+    to:picked===null});
+  G.fb = right ? (gained?`정답 +${gained}`:"정답 · 다시 맞힘") : (picked===null?"놓침":"오답");
+  G.fbOk = right;
+  renderPlay(true); drawLog();
+  G.idx++;
+  setTimeout(()=>{ G.fb=null; nextMeteor(); }, FEEDBACK_MS);
+}
+
+function endRun(){
+  cancelAnimationFrame(raf); clearTimeout(timer);
+  G.done=true;
+  const prev=BEST[S.level]||0;
+  G.isBest=G.score>prev;
+  if(G.isBest){ BEST[S.level]=G.score; localStorage.setItem("vocashot-best",JSON.stringify(BEST)); }
+  G.prev=prev;
+  S.view="result"; render();
+}
+
+/* ── 화면 ── */
+function startView(){
+  const best=BEST[S.level];
+  return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
+    <div class="g-head">
+      <div class="nm">
+        <button class="back"><i>${I.back}</i></button>
+        <div><h1>VocaShot</h1><div class="sub">혼자 하기</div></div>
+      </div>
+    </div>
+    <div class="g-body">
+      <span class="g-lb">급</span>
+      <div class="lv">${LEVELS.map(n=>
+        `<button data-lv="${n}" class="${n===S.level?'on':''}">${n}급</button>`).join("")}</div>
+      <span class="g-lb">입력 방식</span>
+      <div class="seg">
+        <button data-mode="easy" class="${S.mode==='easy'?'on':''}">4개 중 고르기</button>
+        <button data-mode="hard" class="${S.mode==='hard'?'on':''}">직접 입력</button>
+      </div>
+      ${best
+        ? `<div class="best"><span class="k">${S.level}급 최고 점수</span>
+             <span class="v">${best}</span></div>`
+        : `<div class="best none"><span class="k">${S.level}급 최고 점수</span>
+             <span class="v">아직 없음</span></div>`}
+    </div>
+    <div class="g-dock"><button class="g-go" id="go">시작하기</button></div>
+  </div>`;
+}
+
+function playMarkup(){
+  const c=G.cur;
+  const body = c.q.i
+    ? `<img src="${IMG_BASE}${c.q.l}/${c.q.i}" alt="">`
+    : `<div class="txt">${c.q.m}</div>`;
+  const dock = S.mode==="easy"
+    ? `<div class="choices">${c.choices.map((x,i)=>
+        `<button data-pick="${x}">${x}</button>`).join("")}</div>`
+    : `<div class="typerow"><input id="typed" autocomplete="off" autocapitalize="off"
+         placeholder="한국어 단어를 입력하세요"><button id="fire">발사!</button></div>`;
+  return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
+    <div class="p-head">
+      <div><h1>VocaShot</h1><div class="sub">${S.level}급 · ${
+        S.mode==='easy'?'4개 중 고르기':'직접 입력'} · ${c.dur.toFixed(1)}초</div></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="hearts">${Array.from({length:TUNING.hearts},(_,i)=>
+          `<i class="${i<G.hearts?'':'off'}"></i>`).join("")}</div>
+        <div style="text-align:right"><div class="r-k">SCORE</div>
+          <div class="r-v">${G.score}</div></div>
+      </div>
+    </div>
+    <div class="sky"><div class="meteor">${body}</div><div class="ground"></div></div>
+    <div class="fb ${G.fbOk?'ok':'no'}">${G.fb||""}</div>
+    <div class="p-dock">${dock}</div>
+  </div>`;
+}
+
+function resultView(){
+  const missed=[...G.missed.values()];
+  const clean=missed.length===0;
+  return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
+    <div class="r-head">
+      <div class="nm"><span class="av">${I.user}</span>
+        <div><h1>VocaShot</h1><div class="sub">${S.level}급 · ${
+          S.mode==='easy'?'4개 중 고르기':'직접 입력'}</div></div></div>
+      <div style="text-align:right"><div class="r-k">BEST</div>
+        <div class="r-v" style="color:#fbbf24">${BEST[S.level]||0}</div></div>
+    </div>
+    <div class="r-body">
+      <h2 class="r-ttl ${G.hearts>0?'ok':'no'}">${G.hearts>0?"완주":"게임 오버"}</h2>
+      <p class="r-desc">${G.hearts>0
+        ? `${G.asked}문항을 하트 ${G.hearts}개 남기고 끝냈습니다.`
+        : "하트가 0이 되어 끝났습니다."}</p>
+      <div class="r-score">
+        <div class="r-k">내 점수</div>
+        <p class="big">${G.score}</p>
+        ${G.isBest ? `<span class="r-new">최고 점수 경신</span>`
+                   : `<p class="r-prev">최고 점수 ${G.prev}</p>`}
+      </div>
+      <div class="r-stats">
+        <div class="r-stat"><div class="r-k">맞힘</div>
+          <div class="v" style="color:#34d399">${G.correct}</div></div>
+        <div class="r-stat"><div class="r-k">낸 문항</div>
+          <div class="v" style="color:#e2e8f0">${G.asked}</div></div>
+      </div>
+      ${missed.length
+        ? `<div class="r-wrong"><div class="r-k cap">놓친 단어 ${missed.length}개 ·
+             다시 맞힘 ${missed.filter(x=>x.got).length}</div>
+             ${missed.map(x=>`<div class="r-row ${x.got?'got':''}"><span class="w">${x.w}</span>
+               <span class="m">${x.m}</span>
+               ${x.got?'<span class="re">다시 맞힘</span>':''}</div>`).join("")}</div>`
+        : `<div class="r-empty">놓친 단어가 없습니다.</div>`}
+    </div>
+    <div class="r-dock">
+      <button class="r-again" id="again">다시 하기</button>
+      <button class="r-exit" id="exit">나가기</button>
+    </div>
+  </div>`;
+}
+
+function renderPlay(keep){
+  const scr=document.getElementById('screen');
+  if(!keep){ scr.innerHTML=playMarkup(); const t=document.getElementById('typed'); if(t) t.focus(); }
+  else {
+    const fb=scr.querySelector('.fb');
+    if(fb){ fb.textContent=G.fb||""; fb.className='fb '+(G.fbOk?'ok':'no'); }
+    const sc=scr.querySelector('.p-head .r-v'); if(sc) sc.textContent=G.score;
+    scr.querySelectorAll('.hearts i').forEach((el,i)=>
+      el.className = i<G.hearts?'':'off');
+    scr.querySelectorAll('.choices button,.typerow button,.typerow input')
+      .forEach(b=>b.disabled=true);
+  }
+}
+function render(){
+  const dev=document.getElementById('device'), scr=document.getElementById('screen');
+  dev.style.width=(+S.width+4)+'px';
+  document.getElementById('caption').textContent=`${S.width} × 720`;
+  if(S.view==='start') scr.innerHTML=startView();
+  else if(S.view==='result') scr.innerHTML=resultView();
+  else renderPlay();
+  document.querySelectorAll('[data-set="width"] .option').forEach(b=>
+    b.setAttribute('aria-pressed',String(b.dataset.value===S.width)));
+}
+function drawLog(){
+  document.getElementById('log').innerHTML=G.log.map(r=>
+    `<div><span class="w">${r.w}${r.retry?' ↻':''}</span>
+      <span class="t">${r.to?'—':r.t+'s'}</span>
+      <span class="s ${r.right?'ok':'no'}">${r.right?'+'+r.s:'✕'}</span></div>`).join("");
+}
+function drawTune(){
+  document.getElementById('tune').innerHTML=TUNE_META.map(([k,lb,st])=>
+    `<label for="t_${k}">${lb}</label>
+     <input id="t_${k}" type="number" step="${st}" value="${TUNING[k]}" data-k="${k}">`).join("");
+}
+
+/* ── 입력 ── */
+document.addEventListener('click',e=>{
+  const w=e.target.closest('[data-set="width"] .option');
+  if(w){ S.width=w.dataset.value; render(); return; }
+  if(e.target.closest('#restart')){ cancelAnimationFrame(raf); clearTimeout(timer);
+    S.view='start'; render(); return; }
+  const lv=e.target.closest('[data-lv]');
+  if(lv){ S.level=+lv.dataset.lv; render(); return; }
+  const md=e.target.closest('[data-mode]');
+  if(md){ S.mode=md.dataset.mode; render(); return; }
+  if(e.target.closest('#go')||e.target.closest('#again')){ startRun(); return; }
+  if(e.target.closest('#exit')||e.target.closest('.back')){ S.view='start'; render(); return; }
+  const pick=e.target.closest('[data-pick]');
+  if(pick && !pick.disabled){ resolve(pick.dataset.pick); return; }
+  if(e.target.closest('#fire')){ const t=document.getElementById('typed');
+    if(t && !t.disabled) resolve(t.value); return; }
+});
+document.addEventListener('input',e=>{
+  const k=e.target.dataset.k; if(!k) return;
+  const v=parseFloat(e.target.value); if(!Number.isNaN(v)) TUNING[k]=v;
+});
+document.addEventListener('keydown',e=>{
+  if(S.view!=='play'||!G||G.done) return;
+  if(S.mode==='easy' && /^[1-4]$/.test(e.key)){
+    const b=document.querySelectorAll('.choices button')[+e.key-1];
+    if(b && !b.disabled) resolve(b.dataset.pick);
+  }
+  if(S.mode==='hard' && e.key==='Enter'){
+    const t=document.getElementById('typed'); if(t && !t.disabled) resolve(t.value);
+  }
+});
+drawTune(); render();
+</script>
