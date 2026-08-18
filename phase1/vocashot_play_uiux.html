@@ -261,6 +261,12 @@ button { font:inherit; }
     <div><div class="kicker">PROTOTYPE · 돌려 보고 고치는 것</div><h1>VocaShot 혼자 하기</h1></div>
     <p>실제 문항 <b>1149개</b>로 도는 시제품입니다. 오른쪽 <b>조정값</b>을 바꾸고
        다시 시작하면 그대로 반영됩니다. 표에서 정하지 말고 <b>해 보고 고치기</b> 위한 것입니다.</p>
+    <p id="imgwarn" style="display:none;grid-column:1/-1;margin-top:10px;padding:9px 13px;
+       border:1px solid #e0b48a;border-left:3px solid #c2703a;border-radius:8px;
+       background:#fdf3ea;color:#7a4520;font-size:13px;line-height:20px">
+      <b>그림 문항을 빼고 돌리는 중입니다.</b> 그림 경로가 풀리지 않았습니다 —
+      이 목업은 <code>http://localhost:8741</code> 아래에서 열어야 그림이 나옵니다.
+      지금은 <b>뜻 → 단어</b> 문항만 냅니다.</p>
   </header>
   <nav class="controls">
     <div class="control-group">
@@ -305,6 +311,23 @@ const I={
 };
 const IMG_BASE="/korean-master/korean-master/public/textbook/";
 
+/* 그림이 실제로 뜨는지 시작할 때 한 번 확인한다.
+   이 목업은 정적 서버(8741) 아래에서만 그림 경로가 풀린다 —
+   다른 데서 열면 그림 문항이 통째로 깨진 상자가 되므로, 그때는 아예 내지 않는다. */
+let IMAGES_OK=null;
+function probeImages(){
+  return new Promise(done=>{
+    const q=BANK.find(x=>x.i); if(!q){ done(false); return; }
+    const im=new Image();
+    im.onload =()=>done(true);
+    im.onerror=()=>done(false);
+    im.src=`${IMG_BASE}${q.l}/${q.i}`;
+  });
+}
+function playablePool(level){
+  return BANK.filter(q=>q.l===level && (IMAGES_OK || !q.i));
+}
+
 /* 난이도의 전부. 여기 여덟 개만 만지면 된다 */
 const TUNING={
   /* 낙하 시간은 앞선 값(7.0/3.0/0.25/2.0)을 0.9배 속도로 = 시간 ÷ 0.9 한 것 */
@@ -334,7 +357,7 @@ const shuffle=a=>{const x=a.slice(); for(let i=x.length-1;i>0;i--){
 
 /* ── 판 시작 ── */
 function startRun(){
-  const pool=shuffle(BANK.filter(q=>q.l===S.level));
+  const pool=shuffle(playablePool(S.level));
   G={ queue:pool.map(q=>({q,retry:false})), idx:0, served:0,
       score:0, hearts:TUNING.hearts, correct:0, asked:0,
       missed:new Map(), log:[], done:false };
@@ -490,7 +513,9 @@ function startView(){
 function playMarkup(){
   const c=G.cur;
   const body = c.q.i
-    ? `<img src="${IMG_BASE}${c.q.l}/${c.q.i}" alt="">`
+    ? `<img src="${IMG_BASE}${c.q.l}/${c.q.i}" alt=""
+         onerror="this.replaceWith(Object.assign(document.createElement('div'),
+           {className:'txt',textContent:'(그림을 불러오지 못했습니다)'}))">`
     : `<div class="txt">${c.q.m[S.lang] || c.q.m.en}</div>`;
   const dock = S.mode==="easy"
     ? `<div class="choices">${c.choices.map((x,i)=>
@@ -648,4 +673,7 @@ document.addEventListener('keydown',e=>{
   }
 });
 drawTune(); render();
+probeImages().then(ok=>{ IMAGES_OK=ok;
+  document.getElementById('imgwarn').style.display = ok ? 'none' : 'block';
+  render(); });
 </script>

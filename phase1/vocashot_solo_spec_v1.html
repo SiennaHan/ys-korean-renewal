@@ -269,6 +269,25 @@
      (한국어 단어를 묻는 문제이므로 당연하다).</p>
   <p class="qa">그림 문항 199개는 언어가 필요 없다. 그림이 곧 문제다.</p>
 </div>
+<div class="callout stop">
+  <div class="t">그림 문항 <b>6개는 그림 파일이 없다</b> — 지금 앱에서도 깨진다</div>
+  <p>그림 문항은 <b>그림이 곧 문제</b>다(<code>meaning_en</code>이 <b>199개 전부 비어 있다</b>).
+     그런데 <code>public/textbook/{급}/</code>에 <b>파일이 아예 없는</b> 문항이 여섯 있다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>급</th><th><code>image</code></th><th>정답</th><th>무엇이 문제</th></tr>
+    <tr><td>3</td><td><code>b3_ch1_p14_18</code></td><td>출석하다</td><td rowspan="5"><b>확장자가 없다</b></td></tr>
+    <tr><td>3</td><td><code>b3_ch10_p117_11</code></td><td>한옥마을</td></tr>
+    <tr><td>4</td><td><code>b4_ch9_p113_8</code></td><td>양복</td></tr>
+    <tr><td>5</td><td><code>b5_ch1_p13_10</code></td><td>사귀다</td></tr>
+    <tr><td>5</td><td><code>b5_ch12_p139_7</code></td><td>둥글다</td></tr>
+    <tr><td>6</td><td><code>b6_ch9_p83_3.jpg</code></td><td>실수하다</td><td>확장자는 있는데 <b>파일이 없다</b></td></tr>
+  </table></div>
+  <p><b>목업 이야기가 아니다.</b> 교사가 이 문항을 담으면 학생 화면에
+     <b>깨진 그림</b>이 뜨고, 그림이 문제이므로 <b>풀 수가 없다</b>.
+     확장자를 붙여도 파일이 없어서 <b>이름 오타가 아니라 누락</b>이다.</p>
+  <p class="qa">시제품 문항 은행에서는 <b>제외했다</b>(1149 → <b>1143</b>, 그림 199 → <b>193</b>).
+     본 구현에서도 <b>어댑터가 걸러야 한다</b> — 그림이 없는 그림 문항은 낼 수 없다.</p>
+</div>
 <div class="callout">
   <div class="t">그림 문항이 <b>급마다 골고루 섞여 있다</b> — 섞기 규칙이 따로 필요 없다</div>
   <div class="tablewrap"><table>
