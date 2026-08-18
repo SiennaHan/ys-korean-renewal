@@ -193,6 +193,10 @@ button { font:inherit; }
     .task { gap:10px; padding:12px; }
     .task .ic { width:44px; height:44px; }
   }
+  .screen[data-narrow] .week .days { gap:6px; }
+  .screen[data-narrow] .week .c { width:36px; height:36px; }
+  .screen[data-narrow] .task { gap:10px; padding:12px; }
+  .screen[data-narrow] .task .ic { width:44px; height:44px; }
 </style>
 <body>
 <main class="workbench">
@@ -415,7 +419,8 @@ function bindScrollCues(root){
 }
 function render(){
   const dev=document.getElementById('device'), scr=document.getElementById('screen');
-  dev.style.width=(+state.width+2)+'px';
+  dev.style.width=(+state.width+4)+'px';
+  if(+state.width<=350) scr.dataset.narrow=''; else scr.removeAttribute('data-narrow');
   scr.innerHTML=VIEWS[state.screen]();
   requestAnimationFrame(()=>bindScrollCues(scr));
   document.getElementById('caption').textContent=`${state.width} × 720`;
