@@ -2831,7 +2831,9 @@ function render(){
   scr.innerHTML=''; scr.appendChild(f);
   const d=f.contentDocument;
   d.open();
-  d.write('<!doctype html><meta charset="utf-8"><style>html,body{margin:0;height:100%}'
+  // --app-width 는 캡처 범위 바깥(app-layout)에서 정해진다.
+  // 목업에서는 기기 폭을 그대로 쓰게 둔다 — 안 그러면 375px 로 고정돼 양옆이 남는다.
+  d.write('<!doctype html><meta charset="utf-8"><style>html,body{margin:0;height:100%;--app-width:100%}'
     +'*,*::before,*::after{animation:none!important;transition:none!important}</style>'
     +'<style>'+APP_CSS+'</style><body>'+SCREENS[state.v]);
   d.close();
