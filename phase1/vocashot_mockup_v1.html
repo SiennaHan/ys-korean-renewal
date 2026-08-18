@@ -1,0 +1,328 @@
+<!-- 낱말맞추기 혼자 하기 — 시작·결과 화면 구조 목업.
+     시작 화면은 밝게(구 앱 진입 화면 그대로), 결과 화면은 어둡게(플레이 화면 안이므로).
+     값은 vocashot.tsx · vocashot_.$pin.tsx · ko.ts 실측. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>낱말맞추기 혼자 하기 — 시작 · 결과</title>
+<style>
+
+:root {
+    --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
+    --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
+    --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
+    --positive:#11c378; --positive-bg:#e7fbce; --destructive:#f15f49; --destructive-bg:#ffe8e8;
+    --control-surface:#fff; --control-hover:#f8fafc; --control-border:#f0f2f4;
+    --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+    --radius-card:14px; --radius-control:9px;
+  }
+* { box-sizing:border-box; }
+body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
+button { font:inherit; }
+.workbench { max-width:1040px; margin:0 auto; padding:32px 22px 72px; }
+.doc { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }
+.doc h1 { margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }
+.doc p { margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }
+.kicker { margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }
+.controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }
+.control-group { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.control-label { margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }
+.option { min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+.option:hover { background:rgba(255,255,255,.55); }
+.option[aria-pressed="true"] { border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }
+.stage { display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }
+.stage.overview-hidden { display:none; }
+.device-wrap { display:flex; flex-direction:column; align-items:center; }
+.device { width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }
+.screen { position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }
+.caption { margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+.notes { padding-top:8px; }
+.notes h2 { margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }
+.notes p { margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }
+.notes p + p { margin-top:9px; }
+.notes b { color:var(--bench-ink); font-weight:600; }
+.note-section { padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }
+.note-section + .note-section { padding-top:22px; border-top:1px solid var(--bench-line); }
+.spec { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }
+.spec dt { color:#87909d; }
+.spec dd { margin:0; text-align:right; color:#414852; font-weight:600; }
+.footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--control-border); }
+.primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }
+.primary.on { background:var(--blue-500); color:var(--white); cursor:pointer; }
+.dock { display:flex; align-items:center; gap:12px; width:100%; }
+.dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+.dock .main .record-core { width:auto; }
+.dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }
+.dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+.dock .slot svg { width:26px; height:26px; }    .scroll { flex:1 1 auto; min-height:0; overflow-y:auto; }
+  .scroll::-webkit-scrollbar { display:none; }
+
+  /* ── 시작 화면 — 구 앱 진입 화면 값 그대로 ────────── */
+  .g-light { background:#F9FAFC; color:#383A3F; }
+  .g-head { flex:none; position:relative; display:flex; align-items:center;
+    justify-content:center; padding:16px; }
+  .g-head .back { position:absolute; left:12px; width:32px; height:32px; border:0;
+    border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.06);
+    display:grid; place-items:center; cursor:pointer; color:#383A3F; }
+  .g-head .back svg { width:18px; height:18px; }
+  .g-head .t { font-size:17px; font-weight:600; color:#383A3F; }
+  .g-body { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex;
+    flex-direction:column; justify-content:center; padding:0 24px 24px; }
+  .g-body::-webkit-scrollbar { display:none; }
+  .g-card { width:100%; border-radius:20px; background:#fff; padding:24px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .g-ic { width:64px; height:64px; margin:0 auto 20px; border-radius:16px;
+    background:#FFF3E0; color:#FF6D00; display:grid; place-items:center; }
+  .g-ic svg { width:32px; height:32px; }
+  .g-lb { display:block; margin-bottom:6px; font-size:13px; font-weight:500; color:#6B7B8D; }
+  .lv { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:16px; }
+  .lv button { height:44px; border:1px solid #E5E8EC; border-radius:10px; background:#F9FAFC;
+    color:#6B7B8D; font-size:14px; font-weight:600; cursor:pointer; }
+  .lv button.on { border-color:#0180FF; background:#0180FF; color:#fff; }
+  .seg { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:16px; }
+  .seg button { min-height:44px; padding:0 8px; border:1px solid #E5E8EC; border-radius:10px;
+    background:#F9FAFC; color:#6B7B8D; font-size:13px; font-weight:600; cursor:pointer; }
+  .seg button.on { border-color:#0180FF; background:#EAF4FF; color:#0073E6; }
+  .best { display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:20px; padding:12px 14px; border-radius:12px; background:#FFF8E1; }
+  .best .k { font-size:13px; font-weight:500; color:#8A6D1F; }
+  .best .v { font-size:18px; font-weight:700; color:#B26A00;
+    font-variant-numeric:tabular-nums; }
+  .best.none { background:#F2F4F7; }
+  .best.none .k { color:#6B7B8D; } .best.none .v { color:#98A2B3; font-size:14px; font-weight:600; }
+  .g-go { width:100%; padding:14px; border:0; border-radius:12px; background:#0180FF;
+    color:#fff; font-size:15px; font-weight:600; cursor:pointer; }
+  /* 링크처럼 보이더라도 표적은 44 — 글자만 17 이면 누르기 어렵다 */
+  .g-alt { display:block; width:100%; min-height:44px; margin-top:6px; border:0; background:none;
+    color:#6B7B8D; font-size:13px; text-decoration:underline; text-underline-offset:3px;
+    cursor:pointer; }
+
+  /* ── 결과 화면 — 플레이 화면 안(bg-slate-950) ──────── */
+  .g-dark { background:#020617; color:#f8fafc; }
+  .r-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:24px 16px 16px; border-bottom:1px solid #1e293b; }
+  .r-head .nm { display:flex; align-items:center; gap:8px; }
+  .r-head .av { width:28px; height:28px; border-radius:50%; background:#1e293b;
+    display:grid; place-items:center; color:#94a3b8; }
+  .r-head .av svg { width:16px; height:16px; }
+  .r-head h1 { margin:0; font-size:18px; font-weight:600; letter-spacing:-.01em; }
+  .r-head .sub { font-size:12px; color:#94a3b8; }
+  .r-k { font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#64748b; }
+  .r-v { font-family:ui-monospace,Menlo,monospace; font-size:20px; font-weight:600;
+    color:#34d399; }
+  /* 놓친 단어는 하트 수(5)를 넘을 수 없다 — 목록 최대 5행. 그 상한 위에서 720 에 맞춘다 */
+  .r-body { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column;
+    align-items:center; gap:14px; padding:20px 16px; }
+  .r-body::-webkit-scrollbar { display:none; }
+  .r-ttl { margin:0; font-size:28px; line-height:36px; font-weight:700; letter-spacing:-.02em; }
+  .r-ttl.ok { color:#34d399; } .r-ttl.no { color:#fb7185; }
+  .r-desc { margin:0; text-align:center; font-size:14px; color:#94a3b8; }
+  .r-score { width:100%; max-width:288px; border:1px solid #334155; border-radius:16px;
+    background:rgba(15,23,42,.8); padding:16px 24px; text-align:center; }
+  .r-score .big { margin:2px 0 0; font-family:ui-monospace,Menlo,monospace;
+    font-size:38px; line-height:44px; font-weight:700; color:#34d399; }
+  .r-new { display:inline-block; margin-top:8px; padding:3px 9px; border-radius:999px;
+    background:rgba(52,211,153,.16); color:#34d399; font-size:11px; font-weight:700; }
+  .r-prev { margin:8px 0 0; font-size:13px; color:#94a3b8; font-variant-numeric:tabular-nums; }
+  .r-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    width:100%; max-width:288px; }
+  .r-stat { border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8);
+    padding:10px 12px; text-align:center; }
+  .r-stat .v { font-family:ui-monospace,Menlo,monospace; font-size:18px; font-weight:700; }
+  .r-wrong { width:100%; max-width:288px; }
+  .r-wrong .cap { margin-bottom:8px; text-align:center; }
+  .r-row { display:flex; align-items:center; gap:10px; padding:9px 12px;
+    border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8); }
+  .r-row + .r-row { margin-top:6px; }
+  .r-row .w { flex:none; font-size:14px; font-weight:700; color:#f8fafc; }
+  .r-row .m { flex:1; min-width:0; font-size:12px; color:#94a3b8;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .r-empty { width:100%; max-width:288px; padding:16px; border:1px dashed #334155;
+    border-radius:12px; text-align:center; font-size:13px; color:#94a3b8; }
+  .r-dock { flex:none; display:flex; gap:8px; padding:16px; border-top:1px solid #1e293b; }
+  .r-again { flex:1; height:52px; border:0; border-radius:14px; background:#34d399;
+    color:#022c22; font-size:15px; font-weight:700; cursor:pointer; }
+  .r-exit { flex:none; padding:0 20px; height:52px; border:0; border-radius:14px;
+    background:#334155; color:#e2e8f0; font-size:15px; font-weight:600; cursor:pointer; }
+</style>
+
+<body>
+<main class="workbench">
+  <header class="doc">
+    <div><div class="kicker">STRUCTURE · 기획 검증용</div><h1>낱말맞추기 혼자 하기 — 시작 · 결과</h1></div>
+    <p>설계(<code>vocashot_solo_spec_v1.html</code>)가 화면에 실제로 들어가는지만 확인한 목업입니다.
+       시작은 <b>구 앱 진입 화면 값 그대로</b>, 결과는 <b>플레이 화면 안</b>이라 어둡습니다.</p>
+  </header>
+  <nav class="controls">
+    <div class="control-group" data-set="screen">
+      <span class="control-label">화면</span>
+      <button class="option" data-value="start" aria-pressed="true">시작</button>
+      <button class="option" data-value="result" aria-pressed="false">결과</button>
+    </div>
+    <div class="control-group" data-set="startv" id="sgrp">
+      <span class="control-label">최고 점수</span>
+      <button class="option" data-value="has" aria-pressed="true">있음</button>
+      <button class="option" data-value="none" aria-pressed="false">첫 판</button>
+    </div>
+    <div class="control-group" data-set="resultv" id="rgrp">
+      <span class="control-label">결과</span>
+      <button class="option" data-value="best" aria-pressed="true">신기록</button>
+      <button class="option" data-value="under" aria-pressed="false">기록 미달</button>
+      <button class="option" data-value="clean" aria-pressed="false">전부 정답</button>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
+  <section class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device"><div class="screen" id="screen"></div></div>
+      <div class="caption" id="caption">390 × 720</div>
+    </div>
+    <aside class="notes">
+      <div class="note-section"><h2>현재 화면</h2><dl class="spec" id="spec"></dl></div>
+      <div class="note-section">
+        <h2>그려 보니</h2>
+        <p id="found"></p>
+      </div>
+    </aside>
+  </section>
+</main>
+<script>
+const I={
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
+  pad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="4"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
+};
+const state={ screen:"start", width:"390", startv:"has", resultv:"best" };
+
+/* 급 8개 · 문항 수는 n1_word_quiz.json 실측 */
+const LEVELS=[1,2,3,4,5,6,7,8];
+const D={
+  level:2, mode:"easy", best:245, lastLevel:2, hearts:5,
+  /* 하트 5 를 다 쓰고 끝난 판 — 그래서 놓친 단어가 정확히 5개다 */
+  run:{ score:280, correct:31, asked:36, wrong:[
+    { w:"은행원", m:"bank teller" },
+    { w:"흐리다", m:"to be cloudy" },
+    { w:"싱겁다", m:"to be bland" },
+    { w:"운동선수", m:"athlete" },
+    { w:"바람이 불다", m:"the wind blows" },
+  ]},
+};
+
+/* ── 시작 ── */
+function startView(){
+  const has = state.startv==="has";
+  return `<div class="g-light" style="display:flex;flex-direction:column;height:100%">
+    <div class="g-head">
+      <button class="back">${I.back}</button>
+      <span class="t">낱말맞추기</span>
+    </div>
+    <div class="g-body">
+      <div class="g-card">
+        <div class="g-ic">${I.pad}</div>
+        <span class="g-lb">급</span>
+        <div class="lv">${LEVELS.map(n=>
+          `<button class="${n===D.level?'on':''}">${n}급</button>`).join("")}</div>
+        <span class="g-lb">입력 방식</span>
+        <div class="seg">
+          <button class="${D.mode==='easy'?'on':''}">4개 중 고르기</button>
+          <button class="${D.mode==='hard'?'on':''}">직접 입력</button>
+        </div>
+        ${has
+          ? `<div class="best"><span class="k">${D.level}급 최고 점수</span>
+               <span class="v">${D.best}</span></div>`
+          : `<div class="best none"><span class="k">${D.level}급 최고 점수</span>
+               <span class="v">아직 없음</span></div>`}
+        <button class="g-go">시작하기</button>
+        <button class="g-alt">선생님이 준 PIN으로 참여하기</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── 결과 ── */
+function resultView(){
+  const v=state.resultv, r=D.run;
+  const score = v==="under" ? 190 : v==="clean" ? 360 : r.score;
+  const isBest = v!=="under";
+  const wrong = v==="clean" ? [] : r.wrong;
+  const correct = v==="clean" ? r.asked : r.correct;
+  return `<div class="g-dark" style="display:flex;flex-direction:column;height:100%">
+    <div class="r-head">
+      <div class="nm"><span class="av">${I.user}</span>
+        <div><h1>낱말맞추기</h1><div class="sub">${D.level}급 · 4개 중 고르기</div></div></div>
+      <div style="text-align:right"><div class="r-k">BEST</div>
+        <div class="r-v" style="color:#fbbf24">${isBest?score:D.best}</div></div>
+    </div>
+    <div class="r-body">
+      <h2 class="r-ttl ${v==="clean"?'ok':'no'}">${v==="clean"?"전부 맞혔어요":"게임 오버"}</h2>
+      <p class="r-desc">${v==="clean"
+        ? `${D.level}급 문항을 다 풀었습니다.`
+        : "하트가 0이 되어 끝났습니다."}</p>
+      <div class="r-score">
+        <div class="r-k">내 점수</div>
+        <p class="big">${score}</p>
+        ${isBest
+          ? `<span class="r-new">최고 점수 경신</span>`
+          : `<p class="r-prev">최고 점수 ${D.best}</p>`}
+      </div>
+      <div class="r-stats">
+        <div class="r-stat"><div class="r-k">맞힘</div>
+          <div class="v" style="color:#34d399">${correct}</div></div>
+        <div class="r-stat"><div class="r-k">낸 문항</div>
+          <div class="v" style="color:#e2e8f0">${r.asked}</div></div>
+      </div>
+      ${wrong.length
+        ? `<div class="r-wrong"><div class="r-k cap">놓친 단어 ${wrong.length}개</div>
+             ${wrong.map(x=>`<div class="r-row"><span class="w">${x.w}</span>
+               <span class="m">${x.m}</span></div>`).join("")}</div>`
+        : `<div class="r-empty">놓친 단어가 없습니다.</div>`}
+    </div>
+    <div class="r-dock">
+      <button class="r-again">다시 하기</button>
+      <button class="r-exit">나가기</button>
+    </div>
+  </div>`;
+}
+
+const VIEWS={ start:startView, result:resultView };
+const SPEC={
+  start:[["배경","#F9FAFC · 밝게"],["헤더","17 semibold · ← 32 원형"],
+    ["카드","radius 20 · padding 24"],["아이콘","64 · #FFF3E0 / #FF6D00"],
+    ["급 선택","4열 격자 · 높이 44"],["입력 방식","2열 · 최소 44"],
+    ["시작 버튼","#0180FF · padding 14"],["교실 참여","밑줄 링크 13 · 표적 44"]],
+  result:[["배경","#020617 · 어둡게"],["헤더","BEST 오른쪽 한 자리"],
+    ["제목","28 / 36 bold"],["점수 카드","최대 288 · radius 16"],
+    ["점수","mono 38"],["통계","2열 · 맞힘 / 낸 문항"],
+    ["놓친 단어","행 높이 38 · 단어 + 뜻"],["하단","다시 하기 + 나가기 · 52"]],
+};
+const FOUND={
+  start:'<b>PIN·닉네임이 사라진 자리에 급·입력 방식이 들어간다.</b> 입력창 둘이 빠지고 선택 둘이 들어와 카드 높이가 비슷하게 유지된다. 교실 참여는 <b>밑줄 링크</b>로 내려 둔다 — 기본이 혼자 하기이므로.',
+  result:'<b>순위표가 빠진 자리에 놓친 단어가 들어간다.</b> 방 순위·전광판 안내가 없어지면 결과가 텅 비는데, 그 자리가 <b>학습으로 돌아오는</b> 자리가 된다. 헤더의 RANK 자리는 <b>BEST</b>로 바뀐다.',
+};
+function render(){
+  const dev=document.getElementById('device'), scr=document.getElementById('screen');
+  dev.style.width=(+state.width+4)+'px';
+  scr.innerHTML=VIEWS[state.screen]();
+  document.getElementById('caption').textContent=`${state.width} × 720`;
+  document.getElementById('spec').innerHTML=SPEC[state.screen]
+    .map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  document.getElementById('found').innerHTML=FOUND[state.screen];
+  ['screen','startv','resultv','width'].forEach(set=>
+    document.querySelectorAll(`[data-set="${set}"] .option`).forEach(b=>
+      b.setAttribute('aria-pressed',String(b.dataset.value===state[set]))));
+  document.getElementById('sgrp').style.display = state.screen==='start'?'':'none';
+  document.getElementById('rgrp').style.display = state.screen==='result'?'':'none';
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('.controls .option'); if(!o) return;
+  state[o.closest('.control-group').dataset.set]=o.dataset.value;
+  render();
+});
+render();
+</script>

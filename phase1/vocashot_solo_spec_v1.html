@@ -49,7 +49,6 @@
   .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
     border:1px solid rgba(0,0,0,.14);vertical-align:-1px;margin-right:5px}
 </style>
-<main>
 
 <main>
 <header class="doc">
@@ -211,25 +210,54 @@
      <b>재시도가 없다.</b> 소거 문제를 이미 피하고 있다 — <b>그대로 둔다</b>.</p>
   <p class="qa">대신 <b>정답을 0.6초 보여준다</b>. 틀린 채로 넘어가면 배우는 것이 없다.</p>
 </div>
+<div class="callout">
+  <div class="t">오답 잠금 UI는 <b>죽은 코드</b>다 — 예전 설계의 흔적</div>
+  <p><code>easyChoiceLockMs</code>와 <code>"오답! {{seconds}}초 후 입력 가능"</code> 문구가 있다.
+     그런데 <code>setEasyChoiceLockMs</code>를 <b>양수로 설정하는 곳이 없다</b> —
+     줄이는 인터벌 안에서만 불린다. <b>그 문구는 절대 표시되지 않는다.</b></p>
+  <p class="qa">"오답 → N초 잠금 후 재시도"였다가 <b>"오답 → 그 문항 종료"로 바뀐</b> 흔적이다.
+     지금 동작이 맞고, <b>죽은 코드는 지운다</b>.</p>
+</div>
 
 <h3>하트 · 점수 · 종료</h3>
 <div class="tablewrap"><table>
   <tr><th>무엇</th><th>규칙</th><th>왜</th></tr>
-  <tr><td><b>하트</b></td><td><b>3개</b>로 시작. <b>개인 하트</b>다</td>
+  <tr><td><b>하트</b></td><td><b>5개</b>로 시작. <b>개인 하트</b>다 — 아래 콜아웃</td>
       <td><code>RoomRuntime.remainingHearts</code>가 방 공유였다.
           값 자체는 그대로 쓸 수 있다</td></tr>
   <tr><td>놓침</td><td>하트 <b>-1</b></td><td>지금과 같다</td></tr>
   <tr><td>오답</td><td>하트 <b>-1</b></td>
       <td><code>wrongPenaltyEnabled</code>를 <b>켠 상태로 고정</b>한다.
           안 켜면 4지선다를 <b>찍고 넘어가는</b> 것이 이득이 된다</td></tr>
-  <tr><td><b>점수</b></td><td><code>100 + 남은 시간(초) × 20</code></td>
-      <td>"떨어지는 속도보다 빠르게"가 이 게임의 규칙이므로
-          <b>빨리 맞히는 것이 점수여야 한다</b></td></tr>
+  <tr><td><b>점수</b></td><td>정답 <b>+5</b> · 낙하 시간이 <b>절반 이상 남았으면 +5</b></td>
+      <td><code>ko.ts</code>가 <code>firstBonus: "+5점"</code> ·
+          <code>graceBonus: "+1점"</code>이다 — <b>원래 규모가 +5</b>다.
+          거기에 속도 보상만 얹는다</td></tr>
   <tr><td>골든 유성</td><td>그대로 둔다 — <code>heart</code> 또는 <code>score</code> 보너스</td>
       <td>혼자서도 성립한다. <code>goldenBonusType</code>이 이미 있다</td></tr>
   <tr><td><b>종료</b></td><td><b>하트 0</b> 또는 <b>문항 소진</b></td>
       <td>아래 콜아웃</td></tr>
 </table></div>
+<div class="callout stop">
+  <div class="t">그려 보니 나온 것 — <b>하트 수가 결과 화면의 목록 길이를 정한다</b></div>
+  <p>오답과 놓침이 각각 하트 <b>-1</b>이고 하트 0에 끝나므로,
+     <b>한 판에서 틀리는 횟수는 정확히 하트 수</b>다.
+     그래서 결과 화면의 <b>"놓친 단어" 목록 길이가 하트 수에 묶인다</b>.</p>
+  <p>처음에 하트를 <b>3</b>으로 잡았는데, 그러면 4지선다에서 <b>세 번 틀리면 끝</b>이라
+     초보는 다섯 문항 만에 판이 닫힌다. 게임이 너무 짧고,
+     결과에 남는 복습거리도 세 단어뿐이다.</p>
+  <p><b>5로 올린다.</b> 실수 여유가 생기고, 결과에 <b>다섯 단어</b>가 남는다.
+     목록이 <b>5행을 넘을 수 없으므로</b> 결과 화면을 720 안에 고정 배치할 수 있다 —
+     세로 여백 4px만 줄이면 스크롤이 사라진다(목업에서 확인).</p>
+  <p class="qa">이 결합은 표로만 정했으면 안 보였다. <b>하트 수를 바꾸면 결과 화면 높이가 바뀐다.</b></p>
+</div>
+<div class="callout">
+  <div class="t">점수 규모는 <b>i18n 문구에서 나왔다</b> — 다만 확인은 못 한다</div>
+  <p><code>ko.ts</code>에 <code>"+5점! 가장 먼저 맞혔습니다!"</code>와
+     <code>"+1점! 아슬아슬 성공!"</code>이 있다. <b>FIRST 가 +5, GRACE 가 +1</b>이었다는 뜻이다.</p>
+  <p class="qa">단 실제 <code>scoreDelta</code>는 리졸버가 주므로 <b>문구와 값이 어긋날 수도 있다</b>.
+     저장소에서 확인할 수 없다. 규모만 맞춰 쓴다.</p>
+</div>
 <div class="callout">
   <div class="t">제한 시간(<code>gameDurationSec</code>)은 <b>두지 않는다</b></div>
   <p>교실에서는 <b>수업 시간</b>이 있어서 필요했다. 혼자 하면 끊을 이유가 없고,
@@ -302,6 +330,35 @@
      먼저 만들어 보고 <b>실제로 밋밋한지 확인한 다음</b> 판단한다.</p>
   <p class="qa">봇이 먼저 맞히면 <b>그 단어를 인출할 기회가 사라진다</b>는 것이
      처음에 봇을 미룬 이유였다(<code>games_asis_v1.html</code> §1b).</p>
+</div>
+
+<h2 id="s8b"><span class="n">8b</span>시작 · 결과 화면 — 그려서 확인했다</h2>
+<p><code>vocashot_mockup_v1.html</code>. <b>화면 2 × 폭 3 × 갈래 5 = 15조합</b>에서
+   가로 넘침 · 세로 넘침 <b>0</b>.</p>
+<div class="tablewrap"><table>
+  <tr><th>화면</th><th>무엇이 그 자리에 들어가나</th></tr>
+  <tr><td><b>시작</b><br><span class="qa">밝게 — 구 앱 진입 화면 값 그대로</span></td>
+      <td><b>PIN · 닉네임이 빠진 자리에 급 · 입력 방식</b>이 들어간다.
+          입력창 둘이 빠지고 선택 둘이 들어오므로 카드 높이가 비슷하게 유지된다.<br>
+          <b>급</b> 4열 격자 × 2줄(1~8급, 높이 44) · <b>입력 방식</b> 2열 ·
+          <b>급별 최고 점수</b> 한 줄 · 시작 버튼.<br>
+          아래에 <b>"선생님이 준 PIN으로 참여하기"</b> 밑줄 링크 — 교실용 경로를 남기되
+          <b>혼자 하기가 기본</b>이므로 내려 둔다</td></tr>
+  <tr><td><b>결과</b><br><span class="qa">어둡게 — 플레이 화면 안(<code>bg-slate-950</code>)</span></td>
+      <td><b>순위표가 빠진 자리에 놓친 단어</b>가 들어간다.
+          방 순위 · 전광판 안내가 없어지면 결과가 텅 비는데,
+          그 자리가 <b>학습으로 돌아오는</b> 자리가 된다.<br>
+          점수 카드(신기록이면 <b>경신 배지</b>, 아니면 <b>최고 점수 N</b>) ·
+          맞힘 / 낸 문항 · <b>놓친 단어 + 뜻</b> 최대 5행 ·
+          하단 <b>다시 하기 + 나가기</b>.<br>
+          헤더의 <b>RANK 자리는 BEST로</b> 바뀐다</td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">표적 하나는 <b>구 앱 값이라 남긴다</b></div>
+  <p>진입 화면의 <b>뒤로 버튼이 32</b>다(<code>size-[32px]</code>). 44에 못 미치지만
+     <b>앱 공통값</b>이라 이 화면만 고치면 오히려 어긋난다. 그대로 두고 적어만 둔다.</p>
+  <p class="qa">내가 새로 넣은 것들은 44로 맞췄다 — 급 칩 44 · 입력 방식 44 ·
+     교실 참여 링크는 글자가 13이지만 <b>표적을 44</b>로 뒀다.</p>
 </div>
 
 <h2 id="s9"><span class="n">9</span>아직 안 정한 것</h2>
