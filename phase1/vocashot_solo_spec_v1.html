@@ -514,29 +514,63 @@
      그래도 소진 종료는 <b>처리해 둔다</b> — 안 하면 목록 끝에서 무엇을 낼지가 없다.</p>
 </div>
 
-<h2 id="s6"><span class="n">6</span>결과 — 붙일 데가 있다</h2>
+<h2 id="s6"><span class="n">6</span>점수 저장 — <b>만들 것이 없다</b></h2>
 <p><code>ko_game_progress</code> 테이블과 <code>POST /game-progress</code> ·
    <code>GET /game-progress/{gameName}</code>가 이미 있고,
-   <b>서울 여행 퍼즐과 봄소풍이 이미 쓴다</b>. VocaShot만 안 쓴다.</p>
+   <b>서울 여행 퍼즐과 봄소풍이 이미 쓴다</b>. VocaShot만 안 쓴다.
+   계정마다 게임별로, <b>게임 안에서 다시 단계별로</b> 나뉘어 저장된다.</p>
+<div class="tablewrap"><table>
+  <tr><th>컬럼</th><th>무엇</th></tr>
+  <tr><td><code>user_id</code></td><td>계정. JWT 에서 꺼낸다 — 클라이언트가 안 보낸다</td></tr>
+  <tr><td><code>game_name</code></td><td><code>"vocashot"</code></td></tr>
+  <tr><td><b><code>stage_id</code></b></td><td><b>급</b>을 여기 넣는다 — 급별 최고 점수가 <b>행 하나씩</b> 생긴다</td></tr>
+  <tr><td><code>score</code></td><td>정수 하나</td></tr>
+  <tr><td><code>extra_data</code></td><td>JSON 텍스트. 나머지는 다 여기</td></tr>
+  <tr><td><code>completed_at</code></td><td>처음 완료한 시각. <b>한 번 찍히면 안 바뀐다</b></td></tr>
+</table></div>
 <div class="callout stop">
-  <div class="t">주의 — <b>upsert 가 그냥 덮어쓴다</b></div>
-  <p><code>business/game_progress.py</code>의 <code>saveProgress</code>는
-     <code>repo_game_progress.upsert</code>를 그대로 부른다.
-     <b>최고 점수를 <code>max</code> 로 유지하지 않는다.</b></p>
-  <p>그래서 <b>최고 점수는 클라이언트가 관리</b>해야 한다 —
-     저장 전에 <code>getGameProgress</code>로 읽어 비교하거나,
-     메타 행의 <code>extra</code>에 <code>bestScore</code>를 두고 갱신한다.
-     <b>봄소풍이 쓰는 방식</b>이 뒤엣것이다.</p>
+  <div class="t">정정 — <b>서버가 이미 최고 점수만 남긴다</b></div>
+  <p>앞서 이 문서에 <b>"upsert 가 그냥 덮어쓰므로 최고 점수는 클라이언트가 관리해야 한다"</b>고
+     적었는데 <b>틀렸다</b>. <code>repo_game_progress.upsert</code>는 이렇게 되어 있다.</p>
+  <pre>existing.score = score if existing.score is None else <b>max(existing.score, score)</b></pre>
+  <p>보낸 점수가 <b>기존보다 낮으면 무시</b>된다. 그러니 <b>매 판 그냥 보내면 된다</b> —
+     저장 전에 읽어 비교할 필요가 없다. <code>completed_at</code>도
+     <b>이미 있으면 덮어쓰지 않는다</b>.</p>
+  <p class="qa">봄소풍도 <b>비교 없이 그냥 보낸다</b>. 그게 맞는 사용법이었다.</p>
 </div>
+<h3>VocaShot 이 보낼 것</h3>
+<pre>판이 끝날 때마다 두 번 보낸다.
+
+POST /game-progress   { gameName:"vocashot", stageId:<b>"lv2"</b>,
+                        score:180, completed:true }
+POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
+                        extra:{ lastLevel:2, lastLang:"en", lastMode:"easy",
+                                lastScore:180, totalPlayed:14 } }</pre>
 <div class="tablewrap"><table>
   <tr><th>행</th><th><code>stageId</code></th><th>담는 것</th></tr>
-  <tr><td>급별</td><td><code>lv{급}</code></td><td><code>score</code> = 그 급 <b>최고 점수</b></td></tr>
-  <tr><td>메타</td><td><code>__meta</code></td>
-      <td><code>extra</code>에 <code>lastLevel</code>(다음에 기본값으로 쓴다) ·
-          <code>lastScore</code> · <code>totalPlayed</code></td></tr>
+  <tr><td><b>급별</b></td><td><code>lv1</code> ~ <code>lv8</code></td>
+      <td><code>score</code> = 그 급 <b>최고 점수</b>(서버가 유지) ·
+          <code>completed</code> = 완주했는가(30문항 도달)</td></tr>
+  <tr><td>메타</td><td><code>_meta</code></td>
+      <td><code>extra</code>에 <b>마지막 급 · 뜻 언어 · 입력 방식</b>(다음에 기본값으로 쓴다) ·
+          누적 판 수. <b><code>score</code>는 안 보낸다</b></td></tr>
 </table></div>
-<p class="qa">봄소풍과 <b>같은 모양</b>으로 둔다. 이미 있는 패턴을 따르는 것이
-   새 규칙을 만드는 것보다 낫다.</p>
+<div class="callout">
+  <div class="t">읽기는 <b>한 번이면 된다</b></div>
+  <p><code>GET /game-progress/vocashot</code>이 <b>그 계정의 모든 행</b>을 배열로 준다 —
+     급별 최고 점수 여덟 개와 메타가 <b>한 번에</b> 온다.
+     시작 화면이 <b>"2급 최고 점수 180"</b>을 띄우는 데 필요한 것이 이것뿐이다.</p>
+  <p class="qa"><code>_meta</code>는 봄소풍·서울퍼즐이 쓰는 이름 그대로다
+     (<code>META_STAGE = "_meta"</code>). 이름 규칙을 새로 만들지 않는다.</p>
+</div>
+<div class="callout">
+  <div class="t">틀린 단어는 <b>보내지 않는다</b></div>
+  <p><code>extra</code>에 넣을 수는 있지만(봄소풍은 <code>wrongHistory</code>를 넣는다),
+     게임을 학습 진도와 <b>잇지 않기로 했으므로</b> 판을 넘겨 쌓을 이유가 없다.
+     놓친 단어는 <b>그 판의 결과 화면에서 한 번 보여 주고 끝</b>이다.</p>
+  <p class="qa">나중에 "틀린 단어 모아 보기"를 하고 싶어지면 그때 <code>extra</code>에 넣으면 된다.
+     <b>스키마를 안 바꿔도 된다</b>는 것이 이 테이블의 장점이다.</p>
+</div>
 
 <h2 id="s7"><span class="n">7</span>그대로 쓰는 것 / 버리는 것</h2>
 <div class="tablewrap"><table>

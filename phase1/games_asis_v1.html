@@ -58,6 +58,55 @@
      값은 전부 <code>components/main/</code> · <code>src/i18n/locales/ko.ts</code> 실측이다.</p>
 </header>
 
+<h2 id="s0"><span class="n">0</span>이 세 탭이 무엇인가</h2>
+<p class="lead">앱 하단 탭 다섯 중 <b>학습 동선이 아닌 셋</b>이다.
+   홈과 교재학습은 <b>교재를 따라가는</b> 길이고(<code>home_asis_v1.html</code>),
+   이 셋은 <b>그 바깥</b>에 있다 — 놀이 · 곁들여 보는 것 · 계정.
+   지금까지 <b>아무도 열어 보지 않은 화면들</b>이라 as-is 부터 옮겼다.</p>
+
+<div class="tablewrap"><table>
+  <tr><th>탭</th><th>무엇을 하나</th><th>교재와의 관계</th></tr>
+  <tr><td><b>게임</b></td>
+      <td>어휘·문장 게임 <b>5종</b>. 목록에서 골라 들어간다</td>
+      <td><b>없다</b> — 넷은 자기 데이터를 쓰고, VocaShot 만 교사가 문항을 담아 줬다. §1</td></tr>
+  <tr><td><b>표현클립</b></td>
+      <td>표현을 <b>검색</b>해 짧은 영상으로 본다. 클립 <b>329건</b></td>
+      <td><b>없다</b> — 급·과 태그가 클립에 붙어 있지 않다. §2</td></tr>
+  <tr><td><b>MY</b></td>
+      <td>계정 · 언어 설정 · 로그아웃</td>
+      <td><b>학습 기록이 없다</b> — 계정 설정만 있다. §3</td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">셋 다 <b>학습과 끊겨 있다</b> — 그게 이 문서의 발견이다</div>
+  <p>탭 다섯 중 <b>둘(40%)</b>이 학습 밖인데, 그 둘이 <b>배운 것과 아무 연결이 없다</b>.
+     게임은 자기 콘텐츠를 쓰고, 표현클립은 검색해야만 쓸 수 있고,
+     MY 에는 누적 학습량을 볼 곳이 없다.</p>
+  <p>연결할지 말지를 <b>§4에서 판단</b>했다. 결론부터 말하면
+     <b>게임은 잇지 않기로</b> 했다 — 게임마다 콘텐츠를 급·과로 다시 나누는 비용이
+     얻는 것보다 크다. 대신 <b>VocaShot 을 혼자 할 수 있게</b> 바꾸는 것이
+     게임 쪽의 유일한 실제 작업이 됐다(§1b · <code>vocashot_solo_spec_v1.html</code>).</p>
+</div>
+
+<div class="callout">
+  <div class="t">게임 다섯이 <b>다 다른 사람이 만든 것처럼</b> 생겼다</div>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th>배경</th><th class="n">인라인 style</th><th class="n">className</th></tr>
+    <tr><td>VocaShot</td><td>어둡다 <code>#020617</code></td><td class="n">5</td><td class="n">거의 전부</td></tr>
+    <tr><td>조사 스나이퍼</td><td>어둡다 <code>#060612</code></td><td class="n">42</td><td class="n">71</td></tr>
+    <tr><td>어휘 카드 마스터</td><td>어둡다 <code>#060612</code></td><td class="n">67</td><td class="n"><b>0</b></td></tr>
+    <tr><td>서울 여행 퍼즐</td><td>밝다 <code>#f2f4f7</code></td><td class="n"><b>140</b></td><td class="n">4</td></tr>
+    <tr><td>봄소풍 숫자미션</td><td>밝다 <code>#F4C0D1</code></td><td class="n">48</td><td class="n">160</td></tr>
+  </table></div>
+  <p><b>셋이 어둡고 둘이 밝다.</b> 그리고 <b>카드 마스터와 서울 퍼즐은 Tailwind 를 거의 안 쓴다</b> —
+     인라인 스타일 객체로만 쓰여 있어서, 디자인을 바꾸려면 <b>다른 방식으로 손대야 한다</b>.</p>
+  <p class="qa">이 문서는 <b>그 상태를 그대로 기록</b>한다. 통일 여부는 별도 판단이다.
+     다만 손대는 비용이 게임마다 <b>같지 않다</b>는 것은 알고 시작해야 한다.</p>
+</div>
+
+<p class="qa">읽는 순서 — <b>§0 소개</b> → §1 게임 · <b>§1b VocaShot 전환</b> →
+   §2 표현클립 → §3 MY → <b>§4 판단할 것</b>.</p>
+
 <h2 id="s1"><span class="n">1</span>게임 — 목록 하나 + 게임 5종</h2>
 <p>제목 <b>"게임"</b> 17 semibold 가운데. 그 아래 카드 5장, radius 16 · 흰 배경 ·
    padding 16 · 간격 12 · 그림자 <code>0 1px 4px rgba(0,0,0,.06)</code>.
