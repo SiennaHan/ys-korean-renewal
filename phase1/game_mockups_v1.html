@@ -184,6 +184,31 @@ button { font:inherit; }
   .ps-ch button { width:80px; height:80px; border-radius:50%; font-size:18px;
     font-weight:700; cursor:pointer; }
 
+  /* ── 어휘 카드 마스터 — card-sort.tsx gameState "playing" 그대로 ── */
+  .cs { background:#060612; color:#fff; }
+  .cs-tm { flex:none; height:4px; background:#1a1a30; }
+  .cs-tm i { display:block; height:100%; }
+  .cs-hud { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px; }
+  .cs-hud .bk { width:28px; height:28px; border-radius:50%; border:0;
+    background:rgba(255,255,255,.08); color:rgba(255,255,255,.7); cursor:pointer; }
+  .cs-hud .hp { display:flex; gap:2px; font-size:13px; }
+  .cs-hud .hp span.off { opacity:.15; }
+  .cs-hud .cb { font-size:14px; font-weight:700; color:#FFE500; }
+  .cs-hud .sc { font-size:18px; font-weight:900; }
+  .cs-card-area { flex:1 1 auto; min-height:0; display:grid; place-items:center; padding:12px; }
+  .cs-card { position:relative; width:216px; padding:22px 18px; border-radius:14px;
+    border:1px solid #2a2a44; background:linear-gradient(160deg,#14142a,#0b0b18);
+    text-align:center; }
+  .cs-card .holo { position:absolute; inset:0; border-radius:14px; pointer-events:none;
+    background:linear-gradient(135deg,#4A9EFF33,#B44AFF33,#FF4AEC33,#FFE50033); }
+  .cs-card .rare { position:absolute; top:8px; right:10px; font-size:10px; font-weight:700;
+    letter-spacing:1px; color:#FFE500; }
+  .cs-card .gl { font-size:11px; font-weight:600; letter-spacing:1px; color:#7878A0; }
+  .cs-card .w { margin-top:8px; font-size:26px; font-weight:800; }
+  .cs-slots { flex:none; display:grid; gap:8px; padding:0 12px 16px; }
+  .cs-slots button { padding:14px 4px; border-radius:12px; font-weight:700;
+    word-break:keep-all; cursor:pointer; }
 </style>
 <body>
 <main class="workbench">
@@ -192,12 +217,13 @@ button { font:inherit; }
     <p>팔레트와 <b>화면에 놓이는 것</b>은 실제 컴포넌트 실측입니다.
        <b>정확한 간격은 원본을 열어</b> 확인해 주세요 — 이 목업은 <b>다시 칠할 대상</b>을 모아 둔 것입니다.
        VocaShot 은 <code>vocashot_play_uiux.html</code> 에 따로 있습니다.<br>
-       <b>서울 퍼즐 · 봄소풍 · 카드 마스터는 아직 안 옮겼습니다</b> — 근사치로 그렸다가 지웠습니다.</p>
+       <b>서울 퍼즐 · 봄소풍은 아직 안 옮겼습니다.</b></p>
   </header>
   <nav class="controls">
     <div class="control-group" data-set="v">
       <span class="control-label">화면</span>
       <button class="option" data-value="list" aria-pressed="true">목록</button>
+      <button class="option" data-value="cs" aria-pressed="false">카드 마스터</button>
       <button class="option" data-value="ps" aria-pressed="false">조사 스나이퍼</button>
     </div>
     <div class="control-group" data-set="width">
@@ -269,14 +295,50 @@ V.ps=()=>{
   </div>`;
 };
 
+V.cs=()=>{
+  const t=38/60;                                       // 남은 시간 (판 60초)
+  const tb = t*60<=10 ? '#FF4060' : 'linear-gradient(90deg,#FFE500,#FF9E4A)';
+  const CATS=[['교통시설','#4A9EFF'],['직업','#B44AFF'],['날씨','#FF4AEC'],['음식재료','#FFE500']];
+  const fs = CATS.length>=4 ? 11 : 13;
+  return `<div class="scr cs">
+    <div class="cs-tm"><i style="width:${t*100}%;background:${tb}"></i></div>
+    <div class="cs-hud">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="bk">←</button>
+        <span class="hp">${[1,1,1,0,0].map(v=>`<span class="${v?'':'off'}">❤️</span>`).join("")}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="cb">×5 COMBO</span><span class="sc">2,140</span>
+      </div>
+    </div>
+    <div class="cs-card-area">
+      <div class="cs-card">
+        <div class="holo"></div>
+        <div class="rare">✦ RARE</div>
+        <div class="gl">3급 · 5과</div>
+        <div class="w">개찰구</div>
+      </div>
+    </div>
+    <div class="cs-slots" style="grid-template-columns:repeat(${CATS.length},1fr)">
+      ${CATS.map(([c,col])=>`<button style="border:2px solid ${col}44;
+        background:${col}0a;color:${col}cc;font-size:${fs}px">${c}</button>`).join("")}
+    </div>
+  </div>`;
+};
+
 const SPEC={
  list:[["배경","#F9FAFC"],["제목","게임 · 17 semibold"],["카드","radius 16 · padding 16"],
    ["아이콘","48 · radius 12"],["둘째 줄","한 자리 · 진행/설명"],["카드 높이","80 고정"]],
+ cs:[["배경","#060612"],["판 타이머","막대 4 · 60초 · 10초 남으면 빨강"],
+   ["HP","❤️ 5개"],["콤보","3 이상일 때 ×N COMBO"],["점수","18 · weight 900"],
+   ["카드","radius 14 · 레어면 홀로그램"],["카드 안","급·과 11 + 단어"],
+   ["갈래 슬롯","N열 한 줄 · 갈래 색 따라감"]],
  ps:[["배경","#060612"],["HP","❤️ 5개 · 꺼지면 opacity .15"],["타이머","막대 8 · 색 3단"],
    ["문항","떨어진다 · top 18%→76%"],["과 칩","급별 색 20% 배경"],
    ["문장","radius 16 · 20 / 1.65"],["선택지","원 80 · 테두리 3"],["바닥","GROUND 라벨 + 발광선"]],
 };
 const NOTE={
+ cs:'<b>지금 배포된 화면 그대로다.</b> 갈래 슬롯이 <b>N열 한 줄</b>이고 <b>갈래마다 색이 다르다</b>(테두리 2px · 색+44). 갈래가 4개 이상이면 글자가 <b>13→11</b>로 줄어든다. 판 전체에 <b>60초 타이머</b>가 있고 10초 남으면 빨강으로 바뀐다. 레어 카드는 <b>홀로그램 그라디언트</b>가 돈다.<br><br>정할 것 — <b>저장을 붙이고</b>(지금 아무것도 안 남는다) <b>화면 문구를 i18n 으로</b>(t() 를 한 번도 안 부른다).',
  list:'<b>둘째 줄 한 자리</b>에 진행이 있으면 진행, 없으면 설명. 카드 높이 <b>80</b> 유지. 다섯 게임 다 저장을 붙이기로 했으므로 <b>다섯 다 진행을 쓸 수 있다</b>. — <code>routes/main/game/index.tsx</code> 실측',
  ps:'<b>지금 배포된 화면 그대로다.</b> 문항이 <b>실제로 떨어진다</b>(타이머에 맞춰 top 18%→76%) — VocaShot 과 같은 낙하형이다. 선택지는 <b>원형 80</b> 네 개. 색은 <b>급별 강조색</b>(1급 #4ADE80)을 전부 따라간다.<br><br>정할 것 — <b>저장과 다국어를 붙인다.</b> 다국어는 <b>화면 문구</b>다 — 이 게임은 <code>t()</code>를 <b>한 번도 안 부른다</b>(한글 문구 약 18개). 콘텐츠 번역은 <b>필요 없다</b>.',
 };
