@@ -3110,25 +3110,129 @@ const UIUX_CSS=`
   /* 봄소풍 — 원래 CSS 일러스트와 큰 숫자, 세로 선택지는 그대로 */
   body[data-screen^="pc_"] .spg { max-width:none; font-family:"Pretendard","Apple SD Gothic Neo",sans-serif;
     --pk:#fff4f7; --pkl:#fff0f4; --pkb:#f0c4d2; --pkm:#e899b2; --pkd:#c94f78;
-    --pkp:#7e304c; --pu:#5750b5; --pul:#f1efff; --pum:#b9b4eb; --pud:#2d285d;
-    --gr:#c9e2a8; --grd:#95bd6d; --gy:#777971; --gyl:#f5f3ee; --gyb:#dfdcd5; }
+    --pkp:#7e304c; --pu:#6558bd; --pul:#f2f0ff; --pum:#b9b4eb; --pud:#332d65;
+    --gr:#cfe7ad; --grd:#94bf69; --gy:#777971; --gyl:#f5f3ee; --gyb:#dfdcd5;
+    background:#fffafc; }
   body[data-screen^="pc_"] .spg .back-btn { width:40px; height:40px; top:12px; left:14px;
-    border:1px solid rgba(126,48,76,.09); background:rgba(255,255,255,.82); }
-  body[data-screen="pc_title"] .spg .t-body { padding:22px 24px 24px; }
+    border:1px solid rgba(126,48,76,.1); background:rgba(255,255,255,.88);
+    backdrop-filter:blur(8px); box-shadow:0 3px 0 rgba(126,48,76,.055); }
+
+  body[data-screen^="pc_"] .spg .ux-picnic-scene { isolation:isolate; }
+  body[data-screen^="pc_"] .spg .t-sky,
+  body[data-screen^="pc_"] .spg .g-h-sky { background:
+    radial-gradient(circle at 78% 18%,rgba(255,238,167,.48),transparent 22%),
+    linear-gradient(180deg,#fff1f6 0%,#fff8e9 100%); }
+  body[data-screen^="pc_"] .spg .t-cl,
+  body[data-screen^="pc_"] .spg .g-h-cl { box-shadow:0 3px 0 rgba(197,117,151,.055); }
+  body[data-screen^="pc_"] .spg .t-cl::before,
+  body[data-screen^="pc_"] .spg .t-cl::after,
+  body[data-screen^="pc_"] .spg .g-h-cl::before,
+  body[data-screen^="pc_"] .spg .g-h-cl::after { content:""; position:absolute; bottom:0;
+    border-radius:50%; background:#fff; }
+  body[data-screen^="pc_"] .spg .t-cl::before,
+  body[data-screen^="pc_"] .spg .g-h-cl::before { left:18%; width:42%; height:145%; }
+  body[data-screen^="pc_"] .spg .t-cl::after,
+  body[data-screen^="pc_"] .spg .g-h-cl::after { right:12%; width:34%; height:118%; }
+  body[data-screen^="pc_"] .spg .ux-sun { position:absolute; z-index:0; top:34px; right:76px;
+    width:34px; height:34px; border-radius:50%; background:#ffe69a;
+    box-shadow:0 0 0 7px rgba(255,230,154,.2),0 0 0 13px rgba(255,230,154,.08); }
+  body[data-screen^="pc_"] .spg .t-gr,
+  body[data-screen^="pc_"] .spg .g-h-gr { background:linear-gradient(180deg,#d8edb9,#c7e3a3); }
+  body[data-screen^="pc_"] .spg .t-gr::before,
+  body[data-screen^="pc_"] .spg .g-h-gr::before { content:""; position:absolute; left:-8%; right:43%;
+    top:-24px; height:42px; border-radius:50% 62% 0 0; background:#d8edb9; }
+  body[data-screen^="pc_"] .spg .t-gr::after,
+  body[data-screen^="pc_"] .spg .g-h-gr::after { content:""; position:absolute; left:38%; right:-9%;
+    top:-17px; height:34px; border-radius:58% 50% 0 0; background:#cbe5a8; }
+  body[data-screen^="pc_"] .spg .t-gd,
+  body[data-screen^="pc_"] .spg .g-h-gd { background:
+    repeating-linear-gradient(105deg,rgba(255,255,255,.13) 0 2px,transparent 2px 11px),#94bf69; }
+  body[data-screen^="pc_"] .spg .t-t1,
+  body[data-screen^="pc_"] .spg .g-h-t1 { background:
+    radial-gradient(circle at 34% 30%,#ffdbe6 0 15%,transparent 16%),
+    radial-gradient(circle at 68% 36%,#f4a9c0 0 17%,transparent 18%),
+    radial-gradient(circle at 42% 70%,#ec91af 0 18%,transparent 19%),#e9a0b7;
+    box-shadow:-13px 4px 0 -4px #f4bfd0,12px 5px 0 -5px #df87a6,0 -9px 0 -5px #ffd6e1; }
+  body[data-screen^="pc_"] .spg .t-t2,
+  body[data-screen^="pc_"] .spg .g-h-t2 { background:#f7c8d6;
+    box-shadow:-8px 3px 0 -3px #efadc2,8px 3px 0 -3px #ffdce6; }
+  body[data-screen^="pc_"] .spg .t-tt,
+  body[data-screen^="pc_"] .spg .g-h-tt { background:linear-gradient(90deg,#9d611f,#c48639 52%,#8e551b); }
+  body[data-screen^="pc_"] .spg .t-cb,
+  body[data-screen^="pc_"] .spg .g-h-cb { border:2px solid rgba(255,255,255,.92);
+    box-shadow:0 3px 0 rgba(81,63,84,.11); }
+  body[data-screen^="pc_"] .spg .t-cb { width:30px; height:30px; font-size:17px; }
+  body[data-screen^="pc_"] .spg .t-bl { border:2px solid rgba(76,65,147,.18);
+    background:linear-gradient(135deg,#c2b9f0,#a99ee5); box-shadow:0 6px 0 rgba(74,59,139,.12);
+    transform:translateX(-50%) rotate(-2deg) !important; }
+  body[data-screen^="pc_"] .spg .t-bl::after { content:""; position:absolute; left:5px; right:5px; bottom:-6px;
+    height:6px; background:repeating-linear-gradient(90deg,#8e83cf 0 2px,transparent 2px 7px); }
+  body[data-screen^="pc_"] .spg .t-bn { z-index:2; filter:drop-shadow(0 3px 0 rgba(90,57,27,.12)); }
+  body[data-screen^="pc_"] .spg .ux-basket { position:absolute; z-index:2; left:calc(50% + 61px); bottom:31px;
+    width:31px; height:20px; border:2px solid #9a622b; border-radius:5px 5px 8px 8px;
+    background:repeating-linear-gradient(90deg,#d79a54 0 4px,#e6ad69 4px 8px); transform:rotate(4deg); }
+  body[data-screen^="pc_"] .spg .ux-basket::before { content:""; position:absolute; left:6px; right:6px; top:-11px;
+    height:15px; border:2px solid #9a622b; border-bottom:0; border-radius:12px 12px 0 0; }
+  body[data-screen^="pc_"] .spg .ux-basket i { position:absolute; top:-5px; width:8px; height:8px; border-radius:50%; }
+  body[data-screen^="pc_"] .spg .ux-basket i:nth-child(1){left:4px;background:#ef7f7f}
+  body[data-screen^="pc_"] .spg .ux-basket i:nth-child(2){left:11px;background:#f4cf65}
+  body[data-screen^="pc_"] .spg .ux-basket i:nth-child(3){right:4px;background:#87bd72}
+  body[data-screen^="pc_"] .spg .ux-petals { position:absolute; z-index:1; inset:0; pointer-events:none; }
+  body[data-screen^="pc_"] .spg .ux-petal { position:absolute; z-index:1; width:7px; height:4px;
+    border-radius:70% 20% 70% 20%; background:#efa8bd; transform:rotate(var(--r,20deg)); opacity:.75; }
+  body[data-screen^="pc_"] .spg .ux-petal:nth-child(1){left:16%;top:28%;--r:18deg}
+  body[data-screen^="pc_"] .spg .ux-petal:nth-child(2){left:29%;top:17%;--r:-22deg}
+  body[data-screen^="pc_"] .spg .ux-petal:nth-child(3){right:32%;top:32%;--r:42deg}
+  body[data-screen^="pc_"] .spg .ux-petal:nth-child(4){right:15%;top:22%;--r:-15deg}
+  body[data-screen^="pc_"] .spg .ux-petal:nth-child(5){left:42%;top:39%;--r:65deg}
+  body[data-screen^="pc_"] .spg .ux-petal:nth-child(6){right:43%;top:12%;--r:8deg}
+
+  body[data-screen="pc_title"] .spg .t-illo { flex-basis:42vh; min-height:220px; max-height:300px; }
+  body[data-screen="pc_title"] .spg .t-body { padding:22px 24px 24px; background:#fffdfd; }
   body[data-screen="pc_title"] .spg .t-title { font-size:24px; line-height:32px;
     font-weight:800; letter-spacing:-.025em; }
   body[data-screen="pc_title"] .spg .t-sub { margin-top:8px; font-size:14px; line-height:21px; }
   body[data-screen="pc_title"] .spg .t-start { width:min(100%,280px); min-height:52px; height:auto;
-    padding:13px 22px; border-radius:14px; box-shadow:none; white-space:normal; }
-  body[data-screen="pc_select"] .spg .sel-body { gap:10px; padding:18px 16px 24px; }
-  body[data-screen="pc_select"] .spg .sel-row { border-color:#f0edf0; border-radius:16px;
-    box-shadow:0 1px 0 rgba(45,40,93,.035); }
+    padding:13px 22px; border-radius:15px; background:linear-gradient(135deg,#6659bd,#c95f8a);
+    box-shadow:0 4px 0 #4d448f; white-space:normal; }
+
+  body[data-screen="pc_select"] .spg .t-illo { border-radius:0 0 24px 24px; }
+  body[data-screen="pc_select"] .spg .ux-sun { top:19px; right:60px; width:23px; height:23px;
+    box-shadow:0 0 0 5px rgba(255,230,154,.18); }
+  body[data-screen="pc_select"] .spg .ux-basket { left:calc(50% + 47px); bottom:23px; transform:scale(.72) rotate(4deg); }
+  body[data-screen="pc_select"] .spg .t-cb { width:20px; height:20px; font-size:11px; border-width:1px; }
+  body[data-screen="pc_select"] .spg .sel-body { gap:10px; padding:18px 16px 24px;
+    background:linear-gradient(180deg,#fffafc,#fff); }
+  body[data-screen="pc_select"] .spg .sel-row { border-color:#f3e8ed; border-radius:17px;
+    background:#fff; box-shadow:0 2px 0 rgba(126,48,76,.035); }
+  body[data-screen="pc_select"] .spg .sel-face { width:43px; height:43px; display:grid; place-items:center;
+    border:1px solid rgba(126,48,76,.08); border-radius:50%; background:#fff3f7;
+    box-shadow:0 3px 0 rgba(126,48,76,.045); font-size:26px; }
+  body[data-screen="pc_select"] .spg .sel-row:nth-child(3) .sel-face { background:#fff5e7; }
+  body[data-screen="pc_select"] .spg .sel-row:nth-child(4) .sel-face { background:#fffbe4; }
+  body[data-screen="pc_select"] .spg .sel-row:nth-child(5) .sel-face { background:#f2efff; }
   body[data-screen="pc_select"] .spg .sel-lvbtn { min-height:44px; height:auto;
-    padding:9px 12px; border-radius:12px; white-space:normal; }
-  body[data-screen="pc_game"] .spg .g-card { border:1px solid #f1e9ed;
-    border-radius:18px; box-shadow:none; }
+    padding:9px 12px; border-radius:12px; white-space:normal; background:#fff; }
+  body[data-screen="pc_select"] .spg .sel-lvbtn.easy { background:#f1faec; border-color:#cbe6bd; }
+  body[data-screen="pc_select"] .spg .sel-lvbtn.hard { background:#f5f2ff; border-color:#d4cff2; }
+
+  body[data-screen="pc_game"] .spg .g-header { height:112px; border-radius:0 0 22px 22px; }
+  body[data-screen="pc_game"] .spg .ux-sun { top:18px; right:56px; width:22px; height:22px;
+    box-shadow:0 0 0 5px rgba(255,230,154,.18); }
+  body[data-screen="pc_game"] .spg .g-card { margin:5px 12px 0; padding-inline:15px;
+    border:1px solid #f3e7ec; border-radius:20px; background:#fffdfd; box-shadow:none; }
+  body[data-screen="pc_game"] .spg .g-illo { width:54px; height:54px; border-color:#efd4df;
+    border-radius:16px; background:linear-gradient(145deg,#fff0f5,#f4f0ff); font-size:28px; }
+  body[data-screen="pc_game"] .spg .g-num { color:#443d7a; }
+  body[data-screen="pc_game"] .spg .blank { background:#f1eeff; color:#6558bd; }
   body[data-screen="pc_game"] .spg .ch { min-height:52px; height:auto; padding:12px 16px;
-    border-color:#e9e6df; border-radius:14px; text-align:left; white-space:normal; }
+    border-color:#eee5e9; border-radius:15px; text-align:left; white-space:normal; background:#fff; }
+  body[data-screen="pc_game"] .spg .ch::before { flex:none; width:22px; height:22px; margin-right:11px;
+    border-radius:50%; display:grid; place-items:center; background:#fff0f5; color:#b85c7c;
+    font-size:10px; font-weight:800; }
+  body[data-screen="pc_game"] .spg .ch:nth-child(1)::before{content:"1"}
+  body[data-screen="pc_game"] .spg .ch:nth-child(2)::before{content:"2"}
+  body[data-screen="pc_game"] .spg .ch:nth-child(3)::before{content:"3"}
   body[data-screen="pc_game"] .spg .g-bottom { border-top-color:#f0ece8; }
   body[data-screen="pc_game"] .spg .g-exit { min-height:44px; height:auto;
     padding:11px 16px; border-radius:12px; white-space:normal; }
@@ -3410,6 +3514,17 @@ function polishFrame(d,v){
 
   if(v.startsWith('pc_')){
     const spring=d.querySelector('.spg'); if(spring) spring.style.setProperty('--app-width','100%');
+    [...d.querySelectorAll('.t-illo,.g-header')].forEach(scene=>{
+      scene.classList.add('ux-picnic-scene');
+      const sun=d.createElement('div'); sun.className='ux-sun';
+      const petals=d.createElement('div'); petals.className='ux-petals';
+      petals.innerHTML='<i class="ux-petal"></i>'.repeat(6);
+      scene.append(sun,petals);
+      if(scene.classList.contains('t-illo')){
+        const basket=d.createElement('div'); basket.className='ux-basket';
+        basket.innerHTML='<i></i><i></i><i></i>'; scene.append(basket);
+      }
+    });
     if(v==='pc_title'&&buttons[0]) buttons[0].classList.add('ux-back');
     if(v==='pc_select') buttons.forEach(b=>b.classList.add('ux-level'));
     if(v==='pc_game') buttons.forEach((b,i)=>b.classList.add(i===buttons.length-1?'ux-exit':'ux-answer'));
