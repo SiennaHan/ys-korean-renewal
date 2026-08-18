@@ -225,12 +225,6 @@ button { font:inherit; }
       <button class="option" data-value="review" aria-pressed="false">다시 풀기</button>
       <button class="option" data-value="none" aria-pressed="false">없음</button>
     </div>
-    <div class="control-group" data-set="title" id="ttlgrp">
-      <span class="control-label">앱바 제목</span>
-      <button class="option" data-value="fixed" aria-pressed="true">교재학습</button>
-      <button class="option" data-value="book" aria-pressed="false">교재명</button>
-      <button class="option" data-value="none" aria-pressed="false">없음</button>
-    </div>
     <div class="control-group" data-set="width">
       <span class="control-label">폭</span>
       <button class="option" data-value="390" aria-pressed="true">390</button>
@@ -255,13 +249,16 @@ button { font:inherit; }
            배지를 빼고 이름만 남긴다. 그대로 맞췄다.</p>
       </div>
       <div class="note-section">
-        <h2>남은 하나 — 토글로 둠</h2>
-        <p><b>앱바 제목만 남았다.</b> 진행 표기는 <b>"진행 중" 하나로 확정</b>됐다 —
-           분모가 다른 숫자가 한 줄에 여럿 늘어서면 중구난방으로 읽힌다.
-           숫자는 <b>데이터로만 갖는다</b>.</p>
-        <p><b>앱바 제목:</b> 구 앱은 <b>교재명</b>을 17 semibold 로 띄우고
-           탭 아래에 <b>한 번 더</b> 썼다(중복). 확정 디자인은 "교재학습" 고정인데,
-           <b>탭바 라벨과 같은 낱말</b>이 한 화면에 두 번 온다.</p>
+        <h2>정한 것 둘</h2>
+        <p><b>진행 표기는 "진행 중" 하나.</b> 분모가 다른 숫자가 한 줄에 여럿 늘어서면
+           비교가 안 되면서 눈에는 걸린다. 숫자는 <b>데이터로만 갖고</b>
+           홈 카드·진행바에서만 쓴다.</p>
+        <p><b>앱바는 두지 않는다.</b> 탭 최상단이라 뒤로 갈 곳이 없고,
+           어느 탭인지는 <b>탭바가 말한다</b>. 홈이 이미 앱바 없이 시작하므로
+           탭 최상단 화면끼리 맞는다.</p>
+        <p class="qa">따라오는 것 — 탭 루트 다섯의 제목 규칙이 지금 <b>제각각</b>이다.
+           홈 없음 · 교재학습 교재명 · 게임 가운데 17 · 표현클립 왼쪽 20 · MY 왼쪽 20.
+           <b>다섯을 한 규칙으로 맞춰야 한다.</b></p>
       </div>
     </aside>
   </section>
@@ -280,7 +277,7 @@ const icons={
   user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
 };
 
-const state={ screen:"home", width:"390", task:"resume", title:"fixed" };
+const state={ screen:"home", width:"390", task:"resume" };
 
 const DAYS=["월","화","수","목","금","토","일"];
 const TEXTBOOK_TABS=["한글","1급","2급","3급"];
@@ -329,14 +326,9 @@ function actRow(x){
   return `<button type="button" class="act ${x.st}" ${off?'disabled aria-disabled="true"':''}>
     <span class="nm">${x.n}</span>${stateSlot(x)}</button>`;
 }
-/* 구 앱은 교재명을 17 semibold 로 띄운다(그리고 탭 아래에 한 번 더 — 중복이었다).
-   확정 디자인은 "교재학습" 고정. 탭바 라벨과 같은 낱말이 되므로 세 갈래를 놓고 본다. */
-function appbar(bookName){
-  if(state.title==="none") return "";
-  const t = state.title==="book" ? bookName : "교재학습";
-  return `<div class="appbar"><span style="width:44px"></span>
-    <div class="lesson">${t}</div><span style="width:44px"></span></div>`;
-}
+/* 앱바를 두지 않는다. 탭 최상단이라 뒤로 갈 곳이 없고, 어느 탭인지는 탭바가 말한다.
+   구 앱은 여기에 교재명을 띄우고 탭 아래에 한 번 더 썼다(중복). 둘 다 지웠다.
+   홈이 이미 앱바 없이 인사로 시작하므로 탭 최상단 화면끼리 맞는다. */
 function catalogNav(selectedTab, chapters, selectedChapter){
   return `<div class="catalog-nav"><div class="strip">
     ${TEXTBOOK_TABS.map(tab=>`<button type="button" class="tab2 ${tab===selectedTab?'on':''}"
@@ -409,7 +401,7 @@ function homeView(){
 
 /* ── 교재학습 ── */
 function bookView(){
-  return `${appbar("3주 완성 연세 한국어 1급")}${catalogNav("1급",[4,5,6,7,8,9],6)}
+  return `${catalogNav("1급",[4,5,6,7,8,9],6)}
     <div class="scroll catalog-scroll">
       ${chapterHead(6,"가족")}
       <div class="learning-sections">${D.acts.map(sec=>
@@ -420,7 +412,7 @@ function bookView(){
 
 /* ── 자모 목록 ── */
 function jamoView(){
-  return `${appbar("한글 자모 익히기")}${catalogNav("한글",[1,2,3],1)}
+  return `${catalogNav("한글",[1,2,3],1)}
     <div class="scroll catalog-scroll">
       ${chapterHead(1,"한글(1)")}
       ${D.jamo.map(u=>`<div class="unit">
@@ -435,10 +427,10 @@ const VIEWS={ home:homeView, book:bookView, jamo:jamoView };
 const SPEC={
   home:[["좌우 기준선","16"],["주간 출석","원 40 × 7 · 간격 12"],["오늘 할 일","한 자리 · 3갈래"],
     ["게이지","110 · SVG 90"],["통계","44 정사각 + 라벨"],["차트","막대 120 / 80"],["탭 바","60"]],
-  book:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
+  book:[["앱바","없음 · 탭 최상단"],["교재 탭","공통 4종 · 가로 스크롤"],
     ["과 헤더","제목 영역 · 18 bold"],["학습 섹션","그룹 카드 · radius 14"],
     ["활동 항목","높이 46 · radius 9"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
-  jamo:[["공통 제목","교재학습 · 16 semibold"],["교재 탭","공통 4종 · 가로 스크롤"],
+  jamo:[["앱바","없음 · 탭 최상단"],["교재 탭","공통 4종 · 가로 스크롤"],
     ["과 헤더","제목 영역 · 18 bold"],["unit 묶음","그룹 카드 · radius 14"],
     ["음절 칩","28 정사각 · 가로 스크롤"],["활동 항목","높이 46"],["상태 자리","고정 92 · 배지 문법"],["탭 바","60"]],
 };
@@ -466,12 +458,10 @@ function render(){
     .map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
   document.querySelectorAll('[data-set="screen"] .option').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.value===state.screen)));
-  ['task','title','width'].forEach(set=>
+  ['task','width'].forEach(set=>
     document.querySelectorAll(`[data-set="${set}"] .option`).forEach(b=>
       b.setAttribute('aria-pressed',String(b.dataset.value===state[set]))));
-  const onHome = state.screen==='home';
-  document.getElementById('taskgrp').style.display = onHome?'':'none';
-  document.getElementById('ttlgrp').style.display = onHome?'none':'';
+  document.getElementById('taskgrp').style.display = state.screen==='home'?'':'none';
 }
 document.addEventListener('click',e=>{
   const o=e.target.closest('.option'); if(!o) return;
