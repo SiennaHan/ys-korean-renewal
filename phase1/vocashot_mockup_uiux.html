@@ -111,63 +111,65 @@ button { font:inherit; }
   /* ── 결과 화면 — 플레이 화면 안(bg-slate-950) ──────── */
   .g-dark { background:#020617; color:#f8fafc; }
   .r-head { flex:none; display:flex; align-items:center; justify-content:space-between;
-    padding:24px 16px 16px; border-bottom:1px solid #1e293b; }
+    padding:20px 16px 14px; border-bottom:1px solid #1e293b; }
   .r-head .nm { display:flex; align-items:center; gap:8px; }
-  .r-head .av { width:28px; height:28px; border-radius:50%; background:#1e293b;
+  .r-head .av { width:32px; height:32px; border-radius:50%; background:#1e293b;
     display:grid; place-items:center; color:#94a3b8; }
   .r-head .av svg { width:16px; height:16px; }
-  .r-head h1 { margin:0; font-size:18px; font-weight:600; letter-spacing:-.01em; }
-  .r-head .sub { font-size:12px; color:#94a3b8; }
+  .r-head h1 { margin:0; font-size:18px; line-height:24px; font-weight:700; letter-spacing:-.01em; }
+  .r-head .sub { font-size:12px; line-height:18px; color:#94a3b8; }
   .r-k { font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#64748b; }
   .r-v { font-family:ui-monospace,Menlo,monospace; font-size:20px; font-weight:600;
     color:#34d399; }
   /* 놓친 단어는 하트 수(5)를 넘을 수 없다 — 목록 최대 5행. 그 상한 위에서 720 에 맞춘다 */
   .r-body { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column;
-    align-items:center; gap:14px; padding:20px 16px; }
+    align-items:center; gap:12px; padding:18px 16px 20px; }
   .r-body::-webkit-scrollbar { display:none; }
   .r-ttl { margin:0; font-size:28px; line-height:36px; font-weight:700; letter-spacing:-.02em; }
   .r-ttl.ok { color:#34d399; } .r-ttl.no { color:#fb7185; }
-  .r-desc { margin:0; text-align:center; font-size:14px; color:#94a3b8; }
-  .r-score { width:100%; max-width:288px; border:1px solid #334155; border-radius:16px;
-    background:rgba(15,23,42,.8); padding:16px 24px; text-align:center; }
+  .r-desc { margin:0 0 2px; text-align:center; font-size:14px; line-height:20px; color:#94a3b8; }
+  .r-summary { width:100%; max-width:326px; overflow:hidden; border:1px solid #273548;
+    border-radius:18px; background:rgba(15,23,42,.78); }
+  .r-score { padding:14px 24px 12px; text-align:center; }
   .r-score .big { margin:2px 0 0; font-family:ui-monospace,Menlo,monospace;
-    font-size:38px; line-height:44px; font-weight:700; color:#34d399; }
+    font-size:38px; line-height:44px; font-weight:700; color:#f8fafc; }
+  .r-score .big.best-score { color:#34d399; }
   .r-new { display:inline-block; margin-top:8px; padding:3px 9px; border-radius:999px;
     background:rgba(52,211,153,.16); color:#34d399; font-size:11px; font-weight:700; }
   .r-prev { margin:8px 0 0; font-size:13px; color:#94a3b8; font-variant-numeric:tabular-nums; }
-  .r-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px;
-    width:100%; max-width:288px; }
-  .r-stat { border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8);
-    padding:10px 12px; text-align:center; }
+  .r-stats { display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #273548; }
+  .r-stat { padding:10px 12px 11px; text-align:center; }
+  .r-stat + .r-stat { border-left:1px solid #273548; }
   .r-stat .v { font-family:ui-monospace,Menlo,monospace; font-size:18px; font-weight:700; }
-  .r-wrong { width:100%; max-width:288px; }
-  .r-wrong .cap { margin-bottom:8px; text-align:center; }
-  .r-row { display:flex; align-items:center; gap:10px; padding:9px 12px;
-    border:1px solid #334155; border-radius:12px; background:rgba(15,23,42,.8); }
-  .r-row + .r-row { margin-top:6px; }
+  .r-wrong { width:100%; max-width:326px; overflow:hidden; border:1px solid #273548;
+    border-radius:14px; background:rgba(15,23,42,.58); }
+  .r-wrong .cap { padding:9px 12px; border-bottom:1px solid #273548; text-align:left; }
+  .r-row { display:flex; align-items:center; gap:10px; min-height:42px; padding:8px 12px;
+    background:transparent; }
+  .r-row + .r-row { border-top:1px solid #1e293b; }
   .r-row .w { flex:none; font-size:14px; font-weight:700; color:#f8fafc; }
   .r-row .m { flex:1; min-width:0; font-size:12px; color:#94a3b8;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   /* 재출제에서 맞힌 단어 — 끝내 못 맞힌 것과 갈린다 */
   .r-row .re { flex:none; padding:2px 7px; border-radius:999px; font-size:10px; font-weight:700;
     background:rgba(52,211,153,.16); color:#34d399; }
-  .r-row.got { border-color:rgba(52,211,153,.35); }
-  .r-empty { width:100%; max-width:288px; padding:16px; border:1px dashed #334155;
+  .r-row.got { background:rgba(52,211,153,.045); }
+  .r-empty { width:100%; max-width:326px; padding:16px; border:1px dashed #334155;
     border-radius:12px; text-align:center; font-size:13px; color:#94a3b8; }
-  .r-dock { flex:none; display:flex; gap:8px; padding:16px; border-top:1px solid #1e293b; }
+  .r-dock { flex:none; display:flex; gap:8px; padding:12px 16px 16px; border-top:1px solid #1e293b; }
   /* 발사 버튼과 같은 emerald-500, 보조는 나가기 확인 대화상자와 같은 slate-700 */
-  .r-again { flex:1; height:52px; border:0; border-radius:16px; background:#10b981;
+  .r-again { flex:1; height:56px; border:0; border-radius:14px; background:#10b981;
     color:#020617; font-size:16px; font-weight:600; cursor:pointer; }
-  .r-exit { flex:none; padding:0 20px; height:52px; border:0; border-radius:12px;
+  .r-exit { flex:0 0 92px; height:56px; border:0; border-radius:14px;
     background:#334155; color:#e2e8f0; font-size:15px; font-weight:600; cursor:pointer; }
 </style>
 
 <body>
 <main class="workbench">
   <header class="doc">
-    <div><div class="kicker">UIUX · 시작 화면 1차</div><h1>VocaShot 혼자 하기 — 시작 · 결과</h1></div>
-    <p><code>vocashot_mockup_v1.html</code>의 구조를 유지하고, 먼저 시작 화면에서
-       <b>게임 소개 · 설정 · 기록</b>의 위계를 나눴습니다. 결과 화면은 다음 단계에서 다듬습니다.</p>
+    <div><div class="kicker">UIUX · 시작·결과 1차</div><h1>VocaShot 혼자 하기 — 시작 · 결과</h1></div>
+    <p><code>vocashot_mockup_v1.html</code>의 구조를 유지하면서 시작 화면은
+       <b>게임 소개 · 설정 · 기록</b>, 결과 화면은 <b>결과 · 복습 · 다음 행동</b>의 위계로 정리했습니다.</p>
   </header>
   <nav class="controls">
     <div class="control-group" data-set="screen">
@@ -286,18 +288,20 @@ function resultView(){
       <p class="r-desc">${v==="clean"
         ? `${asked}문항을 하트 5개 남기고 끝냈습니다.`
         : "하트가 0이 되어 끝났습니다."}</p>
-      <div class="r-score">
-        <div class="r-k">내 점수</div>
-        <p class="big">${score}</p>
-        ${isBest
-          ? `<span class="r-new">최고 점수 경신</span>`
-          : `<p class="r-prev">최고 점수 ${D.best}</p>`}
-      </div>
-      <div class="r-stats">
-        <div class="r-stat"><div class="r-k">맞힘</div>
-          <div class="v" style="color:#34d399">${correct}</div></div>
-        <div class="r-stat"><div class="r-k">낸 문항</div>
-          <div class="v" style="color:#e2e8f0">${asked}</div></div>
+      <div class="r-summary">
+        <div class="r-score">
+          <div class="r-k">내 점수</div>
+          <p class="big ${isBest?'best-score':''}">${score}</p>
+          ${isBest
+            ? `<span class="r-new">최고 점수 경신</span>`
+            : `<p class="r-prev">최고 점수 ${D.best}</p>`}
+        </div>
+        <div class="r-stats">
+          <div class="r-stat"><div class="r-k">맞힘</div>
+            <div class="v" style="color:#34d399">${correct}</div></div>
+          <div class="r-stat"><div class="r-k">낸 문항</div>
+            <div class="v" style="color:#e2e8f0">${asked}</div></div>
+        </div>
       </div>
       ${wrong.length
         ? `<div class="r-wrong"><div class="r-k cap">놓친 단어 ${wrong.length}개 ·
@@ -322,13 +326,12 @@ const SPEC={
     ["고른 것","emerald 테두리 + 20% 채움"],
     ["최고 점수","카드 · mono 24"],["시작 버튼","56 · emerald-500 · 하단 고정"]],
   result:[["배경","#020617 · 어둡게"],["헤더","BEST 오른쪽 한 자리"],
-    ["제목","28 / 36 bold"],["점수 카드","최대 288 · radius 16"],
-    ["점수","mono 38"],["통계","2열 · 맞힘 / 낸 문항"],
-    ["놓친 단어","단어 + 뜻 + 재출제 표시"],["하단","다시 하기 + 나가기 · 52"]],
+    ["제목","28 / 36 bold"],["결과 패널","점수 + 통계 한 카드 · 최대 326"],["점수","mono 38"],
+    ["놓친 단어","한 목록 · 최대 5행"],["하단","다시 하기 + 나가기 · 56"]],
 };
 const FOUND={
   start:'<b>설정만 바로 시작하면 어두운 폼처럼 보였다.</b> 플레이의 유성 모티프와 한 줄 규칙을 먼저 보여 주고, 설정 버튼은 실제 플레이 선택지보다 작게 두어 <b>진입과 조작의 위계</b>를 나눴다.',
-  result:'<b>순위표가 빠진 자리에 놓친 단어가 들어간다.</b> 재출제를 넣으면서 그 목록이 <b>다시 맞힘 / 끝내 못 맞힘</b>으로 갈린다 — 결과가 곧 <b>다음에 볼 단어</b>가 된다. 헤더의 RANK 자리는 <b>BEST</b>로.',
+  result:'<b>점수·통계를 하나의 결과 패널로 합치고, 놓친 단어도 한 목록으로 묶었다.</b> 정보는 그대로지만 반복되던 카드 외곽이 줄어 <b>게임 결과 → 복습할 단어 → 다음 행동</b> 순서가 더 선명해졌다.',
 };
 function render(){
   const dev=document.getElementById('device'), scr=document.getElementById('screen');
