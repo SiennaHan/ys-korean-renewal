@@ -209,6 +209,78 @@ button { font:inherit; }
   .cs-slots { flex:none; display:grid; gap:8px; padding:0 12px 16px; }
   .cs-slots button { padding:14px 4px; border-radius:12px; font-weight:700;
     word-break:keep-all; cursor:pointer; }
+  /* ── 봄소풍 — spring-picnic.css 실측 (변수 그대로) ─────────── */
+  .pc { --pk:#fff0f5; --pkl:#fbeaf0; --pkb:#f4c0d1; --pkd:#d4537e; --pkp:#993556;
+    --pu:#534ab7; --pul:#eeedfe; --pud:#26215c; --gyb:#d3d1c7; --ogb:#faeeda;
+    background:var(--pk); color:#333; }
+  .pc-hud { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:8px 14px; }
+  .pc-hud .tbl { display:flex; align-items:center; gap:6px; }
+  .pc-hud .av { width:28px; height:28px; border-radius:50%; display:grid; place-items:center;
+    font-size:14px; border:2px solid var(--pkb); background:var(--pkl); }
+  .pc-hud .nm { font-size:11px; font-weight:700; color:var(--pkp); text-shadow:0 0 4px #fff; }
+  .pc-hud .ms { font-size:10px; color:var(--pkd); }
+  .pc-hud .sbdg { font-size:11px; font-weight:700; color:var(--pkp); }
+  .pc-prog { flex:none; display:flex; align-items:center; gap:6px; padding:0 14px 6px; }
+  .pc-prog .dots { display:flex; gap:3px; }
+  .pc-prog .dots i { width:6px; height:6px; border-radius:50%; background:var(--pkb); }
+  .pc-prog .dots i.on { background:var(--pkd); }
+  .pc-prog .dots i.rt { background:var(--ogb); border:1px solid #ef9f27; }
+  .pc-prog .txt { font-size:10px; color:var(--pkd); font-weight:700; }
+  .pc-card { flex:1 1 auto; min-height:0; overflow-y:auto; padding:0 14px;
+    display:flex; flex-direction:column; }
+  .pc-card::-webkit-scrollbar { display:none; }
+  .pc-q { flex:1; display:flex; flex-direction:column; justify-content:center; padding:8px 0; }
+  .pc-q .hint { font-size:13px; font-weight:700; color:var(--pkp); margin-bottom:10px; }
+  .pc-q .num { font-size:3.2rem; font-weight:700; color:var(--pud); line-height:1;
+    letter-spacing:-2px; margin-bottom:16px; }
+  .pc-q .iw { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .pc-q .illo { width:48px; height:48px; flex:none; border-radius:12px; font-size:26px;
+    display:grid; place-items:center; background:var(--pkl); border:1px solid var(--pkb); }
+  .pc-q .tmpl { flex:1; font-size:16px; line-height:1.7; font-weight:500; color:#444; }
+  .pc-q .blank { display:inline-block; padding:2px 10px; border-radius:6px;
+    background:var(--pul); color:var(--pu); font-weight:700; }
+  .pc-ch { display:flex; flex-direction:column; gap:9px; margin:4px 0 16px; }
+  .pc-ch button { padding:15px 18px; border:1.5px solid var(--gyb); border-radius:14px;
+    background:#fff; font-size:16px; line-height:1.4; font-weight:500; color:#333;
+    text-align:left; cursor:pointer; }
+
+  /* ── 서울 퍼즐 — seoul-puzzle.tsx puzzle 화면 실측 ─────────── */
+  .sp { --navy:#16213e; --teal:#0f9b82; --tealL:#e2f5f1; --amberL:#fef3c7;
+    --bg:#f2f4f7; --surf:#fff; --bdr:#e5e7eb; --t1:#111827; --t2:#6b7280; --t3:#adb5c4;
+    background:var(--bg); color:var(--t1); }
+  .sp-h { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:10px 20px 8px; background:var(--navy); }
+  .sp-h .bk { width:28px; height:28px; border-radius:50%; border:0;
+    background:rgba(255,255,255,.12); color:rgba(255,255,255,.85); cursor:pointer; }
+  .sp-h .xp { color:#f0c060; font-size:11px; font-weight:700; }
+  .sp-h .ti { color:rgba(255,255,255,.55); font-size:11px; letter-spacing:.4px; }
+  .sp-b { flex:1 1 auto; min-height:0; overflow-y:auto; padding:10px 14px; }
+  .sp-b::-webkit-scrollbar { display:none; }
+  .sp-gcard { border:1px solid var(--bdr); border-radius:14px; background:var(--surf);
+    padding:9px 13px 7px; margin-bottom:10px; }
+  .sp-gcard .lb { font-size:10px; color:var(--t2); }
+  .sp-gcard .gg { display:inline-block; margin-top:4px; padding:2px 8px; border-radius:20px;
+    font-size:10px; background:var(--amberL); border:1px solid rgba(245,158,11,.35); }
+  .sp-bub { max-width:260px; padding:10px 13px; margin-bottom:8px; font-size:13px;
+    line-height:1.6; border-radius:14px 14px 14px 4px; background:var(--surf);
+    border:1px solid var(--bdr); }
+  .sp-bub.me { margin-left:auto; border-radius:14px 14px 4px 14px;
+    background:var(--tealL); border-color:#bfe6dd; }
+  .sp-slot { display:flex; flex-wrap:wrap; align-items:center; gap:5px; min-height:44px;
+    padding:6px 8px; border:1.5px dashed var(--bdr); border-radius:10px; background:var(--bg); }
+  .sp-slot .ph { font-size:12px; color:var(--t3); padding:2px 4px; }
+  .sp-tray { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px;
+    padding:10px 14px 12px; border-radius:12px; background:rgba(255,255,255,.75); }
+  .sp-chip { padding:6px 12px; border:1px solid var(--bdr); border-radius:20px;
+    background:var(--surf); font-size:13px; font-weight:500; color:var(--t1); cursor:pointer; }
+  .sp-chip.used { opacity:.35; }
+  .sp-dock { flex:none; display:flex; gap:8px; padding:10px 14px 14px;
+    border-top:1px solid var(--bdr); background:var(--surf); }
+  .sp-dock button { height:46px; border:0; border-radius:12px; font-size:14px;
+    font-weight:700; cursor:pointer; }
+  .sp-dock .hint { flex:0 0 96px; background:var(--amberL); color:#92400e; }
+  .sp-dock .go { flex:1; background:var(--teal); color:#fff; }
 </style>
 <body>
 <main class="workbench">
@@ -217,12 +289,14 @@ button { font:inherit; }
     <p>팔레트와 <b>화면에 놓이는 것</b>은 실제 컴포넌트 실측입니다.
        <b>정확한 간격은 원본을 열어</b> 확인해 주세요 — 이 목업은 <b>다시 칠할 대상</b>을 모아 둔 것입니다.
        VocaShot 은 <code>vocashot_play_uiux.html</code> 에 따로 있습니다.<br>
-       <b>서울 퍼즐 · 봄소풍은 아직 안 옮겼습니다.</b></p>
+       <b>다섯 화면 다 옮겼습니다</b> — 목록 · 서울 퍼즐 · 봄소풍 · 카드 마스터 · 조사 스나이퍼.</p>
   </header>
   <nav class="controls">
     <div class="control-group" data-set="v">
       <span class="control-label">화면</span>
       <button class="option" data-value="list" aria-pressed="true">목록</button>
+      <button class="option" data-value="sp" aria-pressed="false">서울 퍼즐</button>
+      <button class="option" data-value="pc" aria-pressed="false">봄소풍</button>
       <button class="option" data-value="cs" aria-pressed="false">카드 마스터</button>
       <button class="option" data-value="ps" aria-pressed="false">조사 스나이퍼</button>
     </div>
@@ -326,9 +400,62 @@ V.cs=()=>{
   </div>`;
 };
 
+V.pc=()=>`<div class="scr pc">
+  <div class="pc-hud">
+    <div class="tbl"><span class="av">🌸</span>
+      <div><div class="nm">민수</div><div class="ms">숫자 미션 · 쉬움</div></div></div>
+    <span class="sbdg">⭐ 7</span>
+  </div>
+  <div class="pc-prog">
+    <div class="dots">${[1,1,1,1,0,0,0,0,0,0,0,0].map((v,i)=>
+      `<i class="${v?'on':''}${i>=12?' rt':''}"></i>`).join("")}</div>
+    <span class="txt">4 / 12</span>
+  </div>
+  <div class="pc-card">
+    <div class="pc-q">
+      <div class="hint">How many people are there?</div>
+      <div class="num">4</div>
+      <div class="iw"><span class="illo">🧺</span>
+        <div class="tmpl">사람이 <span class="blank">___</span> 있어요</div></div>
+    </div>
+    <div class="pc-ch">
+      ${['세 명','네 명','다섯 명','여섯 명'].map(c=>`<button>${c}</button>`).join("")}
+    </div>
+  </div>
+</div>`;
+
+V.sp=()=>`<div class="scr sp">
+  <div class="sp-h"><button class="bk">←</button>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="xp">240 XP</span><span class="ti">서울 여행</span></div></div>
+  <div class="sp-b">
+    <div class="sp-gcard"><div class="lb">이번 장소에서 배울 문법</div>
+      <span class="gg">장소+에 가다</span> <span class="gg">명사+와/과</span></div>
+    <div class="sp-bub">수현 씨, 어디에 가요?</div>
+    <div class="sp-bub me">저는 지금 학교에 가요.</div>
+    <div class="sp-slot">
+      <button class="sp-chip">저는</button>
+      <button class="sp-chip">학교에</button>
+      <span class="ph">카드를 탭해서 여기에 놓으세요</span>
+    </div>
+    <div class="sp-tray">
+      <button class="sp-chip used">저는</button><button class="sp-chip used">학교에</button>
+      <button class="sp-chip">가요</button><button class="sp-chip">와요</button>
+      <button class="sp-chip">에서</button><button class="sp-chip">지금</button>
+    </div>
+  </div>
+  <div class="sp-dock"><button class="hint">힌트 3</button><button class="go">확인하기</button></div>
+</div>`;
+
 const SPEC={
  list:[["배경","#F9FAFC"],["제목","게임 · 17 semibold"],["카드","radius 16 · padding 16"],
    ["아이콘","48 · radius 12"],["둘째 줄","한 자리 · 진행/설명"],["카드 높이","80 고정"]],
+ pc:[["배경","--pk #fff0f5"],["아바타","28 원형 · 테두리 2"],["진행","점 6px + n / N"],
+   ["숫자","3.2rem · --pud"],["그림","48 정사각 · radius 12"],
+   ["문장","16 / 1.7 · 빈칸 --pul"],["선택지","<b>세로 1열</b> · radius 14 · 왼쪽 정렬"]],
+ sp:[["헤더","navy #16213e · 28 원형"],["배경","#f2f4f7"],["문법 카드","radius 14 · 칩 radius 20"],
+   ["말풍선","radius 14/4 · 최대 260"],["슬롯","점선 1.5 · 최소 44 · radius 10"],
+   ["조각","radius 20 · 13"],["트레이","반투명 흰 · gap 7"],["하단","힌트 96 + 확인 · 46"]],
  cs:[["배경","#060612"],["판 타이머","막대 4 · 60초 · 10초 남으면 빨강"],
    ["HP","❤️ 5개"],["콤보","3 이상일 때 ×N COMBO"],["점수","18 · weight 900"],
    ["카드","radius 14 · 레어면 홀로그램"],["카드 안","급·과 11 + 단어"],
@@ -338,6 +465,8 @@ const SPEC={
    ["문장","radius 16 · 20 / 1.65"],["선택지","원 80 · 테두리 3"],["바닥","GROUND 라벨 + 발광선"]],
 };
 const NOTE={
+ pc:'<b>지금 배포된 화면 그대로다.</b> 선택지가 <b>세로 1열</b>이고 <b>왼쪽 정렬</b>이다 — 2열 격자가 아니다. 답이 되는 <b>숫자가 3.2rem</b>으로 크게 놓이고, 그림은 <b>48 정사각</b>으로 문장 왼쪽에 작게 붙는다. 힌트가 <b>학습자 언어</b>로 나온다(넷 중 유일).<br><br>정할 것 — <b>점수는 첫 시도 정답만</b>. <code>wQueue</code> 죽은 코드를 지운다. <b>화면 문구를 i18n 으로</b>.',
+ sp:'<b>지금 배포된 화면 그대로다.</b> 대화가 <b>말풍선으로 오가고</b> 그 아래에서 문장을 조립한다 — 슬롯은 <b>점선</b>, 조각은 <b>알약꼴</b>. 위에 <b>그 장소에서 배울 문법 칩</b>이 붙는다.<br><br>정할 것 — <b>오답 0점 · 재시도 감점</b>(지금은 틀리는 게 이득), <b>XP 를 서버에</b>(지금은 상수를 보낸다), <b>화면 문구를 i18n 으로</b>.',
  cs:'<b>지금 배포된 화면 그대로다.</b> 갈래 슬롯이 <b>N열 한 줄</b>이고 <b>갈래마다 색이 다르다</b>(테두리 2px · 색+44). 갈래가 4개 이상이면 글자가 <b>13→11</b>로 줄어든다. 판 전체에 <b>60초 타이머</b>가 있고 10초 남으면 빨강으로 바뀐다. 레어 카드는 <b>홀로그램 그라디언트</b>가 돈다.<br><br>정할 것 — <b>저장을 붙이고</b>(지금 아무것도 안 남는다) <b>화면 문구를 i18n 으로</b>(t() 를 한 번도 안 부른다).',
  list:'<b>둘째 줄 한 자리</b>에 진행이 있으면 진행, 없으면 설명. 카드 높이 <b>80</b> 유지. 다섯 게임 다 저장을 붙이기로 했으므로 <b>다섯 다 진행을 쓸 수 있다</b>. — <code>routes/main/game/index.tsx</code> 실측',
  ps:'<b>지금 배포된 화면 그대로다.</b> 문항이 <b>실제로 떨어진다</b>(타이머에 맞춰 top 18%→76%) — VocaShot 과 같은 낙하형이다. 선택지는 <b>원형 80</b> 네 개. 색은 <b>급별 강조색</b>(1급 #4ADE80)을 전부 따라간다.<br><br>정할 것 — <b>저장과 다국어를 붙인다.</b> 다국어는 <b>화면 문구</b>다 — 이 게임은 <code>t()</code>를 <b>한 번도 안 부른다</b>(한글 문구 약 18개). 콘텐츠 번역은 <b>필요 없다</b>.',
