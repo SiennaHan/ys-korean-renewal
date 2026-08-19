@@ -111,6 +111,10 @@ const ParticleSniper: React.FC = () => {
     correct: 0,
   });
   const [timerProgress, setTimerProgress] = useState(100);
+  // 과녁에 꽂힌 답과 그 결과. 목업의 ps-blank-value · is-hit · is-miss 가 이 둘로 갈린다.
+  // 시간 초과에는 고른 답이 없으므로 picked 는 null 이고 shotResult 만 miss 가 된다.
+  const [picked, setPicked] = useState<string | null>(null);
+  const [shotResult, setShotResult] = useState<'hit' | 'miss' | null>(null);
   const [verdict, setVerdict] = useState<Verdict>(null);
   const [verdictKey, setVerdictKey] = useState(0);
   const [scanlinePos, setScanlinePos] = useState(0);
@@ -302,6 +306,7 @@ const ParticleSniper: React.FC = () => {
     }));
     sound.playIncorrect();
     setFlashColor('red');
+    setShotResult('miss');
     setVerdict('MISS');
     setVerdictKey((k) => k + 1);
     setTimeout(() => {
@@ -315,8 +320,10 @@ const ParticleSniper: React.FC = () => {
 
     questionResolvedRef.current = true;
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    setPicked(choice);
     const q = questions[currentQuestionIndex];
     const isCorrect = choice === q.answer;
+    setShotResult(isCorrect ? 'hit' : 'miss');
     const isGameOver = !isCorrect && stats.hp <= 1;
 
     let gained = 0;
@@ -364,6 +371,8 @@ const ParticleSniper: React.FC = () => {
         return prev;
       }
       questionResolvedRef.current = false;
+      setPicked(null);
+      setShotResult(null);
       return prev + 1;
     });
   };
@@ -515,209 +524,116 @@ const ParticleSniper: React.FC = () => {
   );
 
   // ── Render: Gameplay ───────────────────────────────────────────────
+  // ── Render: Gameplay ───────────────────────────────────────────────
+  // 확정 목업(game_screens_uiux · ps_play)의 과녁 구조다. 예전 판은 문항이
+  // 위에서 아래로 떨어지고 바닥에 GROUND 선이 있었는데, 낙하는 남은 시간을
+  // 그리는 한 가지 방법일 뿐이었다. 지금은 ps-timer 가 그 일을 하고,
+  // 조준·명중·빗나감이 과녁에서 일어난다.
   const renderGameplay = () => {
     const q = questions[currentQuestionIndex];
     if (!q) return null;
 
-    const timerColor = timerProgress < 30 ? '#FF4060' : timerProgress < 60 ? '#FF9500' : '#FFE500';
-    const accentColor = levelMeta[selectedLevel]?.color ?? '#FFE500';
+    // 목업의 상태 클래스 — 쏘면 is-shot 이 붙고 결과에 따라 is-hit / is-miss 가 따라온다
+    const shot = shotResult !== null;
+    const targetState = shot ? `is-shot is-${shotResult}` : '';
 
     return (
-      <div className="min-h-full bg-[#060612] text-white overflow-hidden relative">
-        {/* Flash */}
-        {flashColor && (
-          <div
-            className="absolute inset-0 z-40 pointer-events-none"
-            style={{
-              background: flashColor === 'yellow' ? 'rgba(255,229,0,0.25)' : 'rgba(255,64,96,0.25)',
-            }}
-          />
-        )}
-
-        {/* HUD */}
-        <div className="relative z-10 px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center gap-3">
+      <div className="ps-game-shell">
+        <div className="ps-game-hud">
+          <div className="ps-hud-left">
             <button
-              onClick={() => nav({ to: '/main/game' })}
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.08)',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                flexShrink: 0,
-              }}
+              type="button"
+              className="ps-back"
+              aria-label="나가기"
+              onClick={() => setGameState('lesson-select')}
             >
-              <ArrowLeft size={16} color="rgba(255,255,255,0.7)" />
+              ←
             </button>
-            <div className="flex gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} style={{ opacity: i < stats.hp ? 1 : 0.15 }}>
-                  ❤️
+            <div className="ps-hearts" aria-label={`남은 기회 ${stats.hp}개`}>
+              {Array.from({ length: 5 }, (_, i) => (
+                <span key={i} style={i < stats.hp ? undefined : { opacity: 0.18 }}>
+                  ♥
                 </span>
               ))}
             </div>
-            {stats.combo >= 2 && (
-              <span className="text-sm font-bold" style={{ color: accentColor, fontFamily: 'Exo 2, sans-serif' }}>
-                {stats.combo}×
-              </span>
-            )}
+            {stats.combo > 1 && <div className="ps-combo">{stats.combo}×</div>}
           </div>
-          <div className="text-right">
-            <div className="text-lg font-bold" style={{ fontFamily: 'Exo 2, sans-serif' }}>
-              {stats.score}
-            </div>
-            <div className="text-xs text-[#7878A0]">
+          <div>
+            <div className="ps-score">{stats.score.toLocaleString('ko-KR')}</div>
+            <div className="ps-progress">
               {currentQuestionIndex + 1} / {questions.length}
             </div>
           </div>
         </div>
 
-        {/* Horizontal timer bar */}
-        <div className="relative z-10 px-4 mb-2">
-          <div className="h-2 bg-[#1a1a2e] rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-colors duration-200"
-              style={{
-                width: `${timerProgress}%`,
-                backgroundColor: timerColor,
-              }}
-            />
-          </div>
+        {/* 낙하가 하던 일 — 남은 시간 */}
+        <div
+          className="ps-timer"
+          aria-label={`남은 시간 ${Math.round(timerProgress)}%`}
+        >
+          <i style={{ width: `${timerProgress}%` }} />
         </div>
 
-        {/* Falling question */}
-        <div className="relative z-10 px-5 flex min-h-[430px] flex-col items-center">
-          <div className="relative mb-5 h-[310px] w-full max-w-sm overflow-hidden">
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: `linear-gradient(180deg,
-                  transparent ${scanlinePos}%,
-                  rgba(255,229,0,0.1) ${scanlinePos}%,
-                  rgba(255,229,0,0.1) ${scanlinePos + 5}%,
-                  transparent ${scanlinePos + 5}%)`,
-              }}
-            />
-
-            <div
-              className="absolute left-1/2 z-10 w-full max-w-xs -translate-x-1/2 -translate-y-1/2"
-              style={{
-                top: `${18 + ((100 - timerProgress) / 100) * 58}%`,
-                transition: 'top 100ms linear',
-                filter: `drop-shadow(0 0 14px ${accentColor}55)`,
-              }}
-            >
-              <div
-                className="mx-auto mb-2 w-fit rounded-full px-3 py-1 text-xs font-bold"
-                style={{
-                  background: `${accentColor}20`,
-                  color: accentColor,
-                  fontFamily: 'Pretendard, sans-serif',
-                }}
-              >
-                {q.sourceLesson}
-              </div>
-              <div className="w-full rounded-2xl bg-[#0a0a18] p-5 text-center" style={{ border: `1.5px solid ${accentColor}70` }}>
-                <p className="text-xl leading-relaxed tracking-wide" style={{ fontFamily: 'Pretendard, sans-serif' }}>
-                  {q.blank.split('[?]').map((part, i, arr) => (
-                    <React.Fragment key={i}>
-                      {part}
-                      {i < arr.length - 1 && (
-                        <span
-                          className="mx-0.5 inline-block rounded px-2 py-0.5 font-bold"
-                          style={{
-                            background: `${accentColor}30`,
-                            color: accentColor,
-                            borderBottom: `2px solid ${accentColor}`,
-                          }}
-                        >
-                          ?
-                        </span>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </p>
-              </div>
+        <div className="ps-range">
+          <div className={`ps-target-question ${targetState}`}>
+            <div className="ps-target-head">
+              <span className="ps-lock-state">
+                <i />
+                TARGET LOCK
+              </span>
+              <span className="ps-target-index">
+                {String(currentQuestionIndex + 1).padStart(2, '0')}
+              </span>
             </div>
-
-            <div
-              className="absolute bottom-2 left-0 right-0 h-1 rounded-full"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${timerColor}, transparent)`,
-                boxShadow: `0 0 12px ${timerColor}`,
-              }}
-            />
-            <div className="absolute bottom-4 right-1 text-[10px] tracking-[0.2em] text-[#7878A0]">GROUND</div>
-          </div>
-
-          {/* Choices */}
-          <div className="flex gap-5 justify-center flex-wrap">
-            {q.choices.map((choice) => (
-              <button
-                key={choice}
-                onPointerDown={() => handleAnswer(choice)}
-                onClick={(e) => {
-                  if (e.detail === 0) handleAnswer(choice);
-                }}
-                className="w-20 h-20 rounded-full font-bold text-lg flex items-center justify-center transition-transform active:scale-95"
-                style={{
-                  border: `3px solid ${accentColor}`,
-                  color: accentColor,
-                  background: `${accentColor}10`,
-                  fontFamily: 'Pretendard, sans-serif',
-                  minHeight: 48,
-                  minWidth: 48,
-                }}
-              >
-                {choice}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Verdict */}
-        {verdict && (
-          <div
-            key={verdictKey}
-            className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
-            style={{ animation: 'ascend 0.8s ease-out forwards' }}
-          >
-            <div
-              className="text-5xl font-bold"
-              style={{
-                color: verdict === 'MISS' ? '#FF4060' : '#FFE500',
-                fontFamily: 'Exo 2, sans-serif',
-                textShadow: `0 0 20px ${verdict === 'MISS' ? '#FF4060' : '#FFE500'}`,
-              }}
-            >
-              {verdict}
+            <div className="ps-reticle" aria-hidden="true">
+              <i />
+            </div>
+            <div className="ps-lesson-pill">{q.sourceLesson}</div>
+            <div className="ps-sentence">
+              {q.sentence.split('___')[0]}
+              <span className="ps-blank">
+                <span className="ps-blank-value">{picked ?? '?'}</span>
+                <span className="ps-impact" aria-hidden="true">
+                  <i />
+                </span>
+              </span>
+              {q.sentence.split('___')[1] ?? ''}
+            </div>
+            <div className="ps-target-guide" role="status" aria-live="polite">
+              <span>＋</span>
+              <b>
+                {!shot
+                  ? '조사를 선택해 조준하세요'
+                  : shotResult === 'hit'
+                    ? '명중'
+                    : '빗나감'}
+              </b>
             </div>
           </div>
-        )}
-
-        {/* Bottom progress */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#1a1a2e]">
-          <div
-            className="h-full"
-            style={{
-              width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
-              background: accentColor,
-              transition: 'width 300ms',
-            }}
-          />
         </div>
 
-        <style>{`
-          @keyframes ascend {
-            0%   { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-80px) scale(1.2); }
-          }
-        `}</style>
+        <div className="ps-answer-tray" aria-label="조사 선택지">
+          {q.choices.map((choice) => (
+            <button
+              key={choice}
+              type="button"
+              className={`ps-answer ${
+                shot && choice === picked
+                  ? shotResult === 'hit'
+                    ? 'is-correct'
+                    : 'is-wrong'
+                  : ''
+              }`}
+              aria-pressed={shot && choice === picked}
+              onPointerDown={() => handleAnswer(choice)}
+              onClick={(e) => {
+                if (e.detail === 0) handleAnswer(choice);
+              }}
+            >
+              {choice}
+            </button>
+          ))}
+        </div>
       </div>
     );
   };
@@ -828,7 +744,9 @@ const ParticleSniper: React.FC = () => {
   return (
     <div
       ref={rootRef}
-      className="game-frame relative w-full h-full overflow-hidden"
+      // ps-stage 는 목업이 이 루트에 주입하던 클래스다 — 무대의 어두운 배경과
+      // 스캔 그라디언트가 여기 걸린다. game-frame 만 붙이면 흰 화면이 된다.
+      className="game-frame ps-stage relative w-full h-full overflow-hidden"
       data-screen={screenId}
     >
       <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&display=swap" rel="stylesheet" />
