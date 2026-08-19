@@ -441,6 +441,35 @@ complete 그 장소 완료</pre>
 </div>
 
 <div class="callout stop">
+  <div class="t">손볼 것 — <b>한 판 8문항이 고정이다</b>. 급마다 사정이 다른데</div>
+  <p>어드민 실측으로 <b>32레슨 · 173문항</b>이 있다. 그런데
+     <code>MAX_QUESTIONS_PER_GAME = 8</code> 이 <b>모든 급에 똑같이</b> 걸린다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>급</th><th class="n">레슨</th><th class="n">문항</th><th class="n">한 판이 덮는 비율</th></tr>
+    <tr><td><b>1급</b></td><td class="n">9</td><td class="n"><b>64</b></td><td class="n"><b>12%</b></td></tr>
+    <tr><td>2급</td><td class="n">4</td><td class="n">22</td><td class="n">36%</td></tr>
+    <tr><td>3급</td><td class="n">4</td><td class="n">19</td><td class="n">42%</td></tr>
+    <tr><td><b>4급</b></td><td class="n">3</td><td class="n"><b>12</b></td><td class="n"><b>67%</b></td></tr>
+    <tr><td>5~8급</td><td class="n">3씩</td><td class="n">13~15</td><td class="n">53~62%</td></tr>
+  </table></div>
+  <p><b>1급에는 너무 적고 고급에는 이미 거의 전부다.</b>
+     1급은 64문항 중 8개만 보므로 <b>여덟 판을 해야 한 바퀴</b>이고,
+     4급은 <b>두 판이면 다 본다</b>. 같은 숫자가 정반대로 작동한다.</p>
+  <p><b>숫자를 고정하지 말고 조건으로 끝낸다.</b> 다른 게임과 같은 방식이다 —
+     VocaShot 은 <b>하트 0 또는 문항 소진</b>, 카드 마스터는 <b>60초</b>,
+     봄소풍은 <b>그 묶음의 전 문항</b>이다. 조사 스나이퍼만 고정 8이다.</p>
+  <pre>지금   문항 8개를 뽑는다 (현재 과 4 + 이전 과 4)
+바꿔   <b>하트 0</b> 이거나 <b>후보 소진</b>이면 끝. 상한은 넉넉히(20쯤) 둔다
+       현재 과 : 이전 과 = <b>1 : 1</b> 은 그대로 — 비율로 유지한다</pre>
+  <p class="qa">그러면 <b>1급은 실력만큼 길어지고</b>(하트 5가 버티는 만큼),
+     <b>4급은 12문항에서 저절로 끝난다</b>. 급마다 다른 사정을 규칙이 알아서 흡수한다.
+     상한을 두는 이유는 12초 × 문항이라 <b>잘하는 사람이 너무 오래</b> 잡고 있지 않게 하려는 것이다.</p>
+  <p class="qa">따라오는 것 — 결과 화면의 <code>n / 8</code> 이 <b>가변</b>이 된다.
+     그리고 <b>한 판에 같은 문항이 두 번 나오지는 않는다</b>(뽑을 때 섞어서 잘라 쓴다).
+     판을 넘기면 다시 무작위라 <b>겹칠 수는 있다</b> — 그건 지금도 같다.</p>
+</div>
+
+<div class="callout stop">
   <div class="t">손볼 것 — <b>저장을 안 한다</b>. 오답 목록까지 버려진다</div>
   <p><code>game-progress</code>도 <code>localStorage</code>도 <b>쓰지 않는다</b>.
      카드 마스터와 같은 문제인데 <b>더 아깝다</b> —
