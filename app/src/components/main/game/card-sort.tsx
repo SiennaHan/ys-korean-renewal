@@ -301,7 +301,8 @@ export default function CardSort() {
     setActiveSlot(null);
     cardTimerRef.current = Date.now();
     setGameState("intro");
-  }, [selectedGrade, selectedLesson]);
+    // vocab 이 빠져 있으면 어휘가 늦게 도착한 판이 빈 덱으로 시작한다
+  }, [vocab, selectedGrade, selectedLesson]);
 
   // ─── 카드 선택 처리 ───────────────────────────────────
   const handleAnswer = useCallback(

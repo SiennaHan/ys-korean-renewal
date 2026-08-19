@@ -36,8 +36,12 @@ interface GameStats {
 type LevelMeta = { summary: string; color: string; accent: string };
 
 const QUESTION_DURATION_SECONDS = 12;
-const MAX_QUESTIONS_PER_GAME = 8;
-const CURRENT_LESSON_QUESTION_COUNT = 4;
+// 한 판은 하트 0 · 후보 소진 · MAX 중 먼저 오는 것에서 끝난다.
+// 8이면 1급 7과부터 후보가 잘려 나갔다(1급 누적 64문항). 20은 거의 안 자른다.
+const MAX_QUESTIONS_PER_GAME = 20;
+// 현재 과를 먼저 채우고 나머지를 이전 과로 메운다. 현재 과가 이 수에 못 미치면
+// 있는 만큼만 쓰고 이전 과가 더 들어온다 — 한 판은 min(MAX, 누적 후보 수)가 된다.
+const CURRENT_LESSON_QUESTION_COUNT = MAX_QUESTIONS_PER_GAME / 2;
 
 const shuffle = <T,>(items: T[]): T[] => {
   const shuffled = [...items];
@@ -446,7 +450,7 @@ const ParticleSniper: React.FC = () => {
           {selectedLevel}
         </h2>
         <p className="text-[#7878A0] mb-6 text-sm" style={{ fontFamily: 'Pretendard, sans-serif' }}>
-          현재 과와 이전 과에서 최대 8문제가 랜덤 출제됩니다
+          현재 과와 이전 과에서 최대 {MAX_QUESTIONS_PER_GAME}문제가 랜덤 출제됩니다
         </p>
         <div className="space-y-3">
           {lessonKeys.map((lesson) => {
