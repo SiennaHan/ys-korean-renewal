@@ -3236,27 +3236,62 @@ const UIUX_CSS=`
   body[data-screen="pc_game"] .spg .g-exit { min-height:44px; height:auto;
     padding:11px 16px; border-radius:12px; white-space:normal; }
 
-  /* 서울 퍼즐 — 지도/문법/이름 치환은 그대로, 카드와 조작 표면만 정리 */
-  body[data-screen^="sp_"] .ux-seoul { font-family:"Pretendard","Apple SD Gothic Neo",sans-serif !important;
-    background:#f4f6f8 !important; }
-  body[data-screen^="sp_"] [style*="background: rgb(22, 33, 62)"] { background:#20364f !important; }
-  body[data-screen="sp_map"] .sp-loc-card { border-color:#eef0f3 !important;
-    border-radius:15px !important; box-shadow:none !important; }
-  body[data-screen="sp_map"] .sp-loc-card.active { border-color:#efc7c7 !important;
-    background:#fffafa !important; }
-  body[data-screen="sp_map"] .sp-loc-card.locked { opacity:.52 !important; }
+  /* 서울 퍼즐 — 행정 지도보다 밝고 생기 있는 도시 여행 팔레트 */
+  body[data-screen^="sp_"] { --sp-deep:#176f82; --sp-blue:#3a83aa; --sp-sky:#eaf7fb;
+    --sp-river:#67c5e3; --sp-green:#bce4ad; --sp-coral:#ff786b; --sp-mint:#42bda8;
+    --sp-sun:#ffd166; --sp-ink:#244457; --sp-muted:#718691; }
+  body[data-screen^="sp_"] .ux-seoul { max-width:none !important;
+    font-family:"Pretendard","Apple SD Gothic Neo",sans-serif !important;
+    background:#f6fafb !important; }
+  body[data-screen^="sp_"] [style*="background: rgb(22, 33, 62)"] {
+    background:var(--sp-deep) !important; }
+  body[data-screen^="sp_"] .ux-travel-header { background:
+    linear-gradient(135deg,#14798a 0%,#2d819b 52%,#3a83aa 100%) !important; }
+  body[data-screen^="sp_"] [style*="color: rgb(240, 192, 96)"] { color:var(--sp-sun) !important; }
+  body[data-screen^="sp_"] [style*="background: rgb(254, 243, 199)"] { background:#fff4d4 !important; }
+  body[data-screen^="sp_"] [style*="color: rgb(146, 64, 14)"] { color:#a85b20 !important; }
+  body[data-screen^="sp_"] [style*="background: rgb(242, 244, 247)"] { background:#f4f9fa !important; }
+  body[data-screen^="sp_"] [style*="background: rgb(240, 242, 245)"] { background:#eef7f9 !important; }
+  body[data-screen^="sp_"] [style*="background: rgb(238, 242, 255)"] { background:#eaf6ff !important; }
+  body[data-screen^="sp_"] [style*="color: rgb(55, 48, 163)"] { color:#31729a !important; }
+  body[data-screen^="sp_"] .ux-seoul-map { background:var(--sp-sky) !important;
+    border-bottom:1px solid rgba(23,111,130,.08); }
+  body[data-screen^="sp_"] .ux-seoul-map::after { content:""; position:absolute; inset:0; pointer-events:none;
+    box-shadow:inset 0 -16px 24px rgba(68,128,144,.045); }
+  body[data-screen^="sp_"] .ux-seoul-map svg rect[fill="#e4eef6"] { fill:var(--sp-sky) !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg ellipse[fill="#c4d9a8"] { fill:var(--sp-green) !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg ellipse[fill="#cce0b4"] { fill:#ccebbd !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg rect[fill="#d0dce8"] { fill:#dcecf1 !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg path[stroke="#a0c4e0"] { stroke:var(--sp-river) !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg path[stroke="#bdd8f0"] { stroke:#beeaf7 !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg [fill="#e03e3e"] { fill:var(--sp-coral) !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg [stroke="#e03e3e"] { stroke:var(--sp-coral) !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg text[fill="#c02020"] { fill:#c94d49 !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg [fill="#adb5c4"] { fill:#91aab5 !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg [stroke="#adb5c4"] { stroke:#91aab5 !important; }
+  body[data-screen^="sp_"] .ux-seoul-map svg text[fill="#7a8494"] { fill:#617b87 !important; }
+  body[data-screen="sp_map"] .sp-loc-card { border-color:#e8f0f2 !important;
+    border-radius:16px !important; background:#fff !important; box-shadow:none !important; }
+  body[data-screen="sp_map"] .sp-loc-card.done { border-color:#a9ded4 !important; background:#f5fcfa !important; }
+  body[data-screen="sp_map"] .sp-loc-card.active { border-color:#ffb7b0 !important;
+    background:#fff8f6 !important; }
+  body[data-screen="sp_map"] .sp-loc-card.locked { opacity:.58 !important; }
   body[data-screen^="sp_"] .ux-back { width:auto !important; min-width:40px; min-height:36px;
     height:auto !important; padding:8px 12px !important; border-radius:999px !important;
     white-space:normal; }
   body[data-screen="sp_entry"] .ux-primary { min-height:50px; height:auto !important;
-    padding:13px 18px !important; border-radius:14px !important; background:#20364f !important;
+    padding:13px 18px !important; border-radius:14px !important;
+    background:linear-gradient(135deg,#176f82,#3a83aa) !important;
     white-space:normal; }
-  body[data-screen="sp_puzzle"] .sp-chip-tray { border-color:#eceff2 !important;
-    border-radius:999px !important; box-shadow:none !important; }
+  body[data-screen="sp_puzzle"] .sp-chip-tray { border-color:#dfecef !important;
+    border-radius:999px !important; background:#fff !important; box-shadow:none !important; }
+  body[data-screen="sp_puzzle"] .sp-chip-slot { background:var(--sp-deep) !important; }
+  body[data-screen="sp_puzzle"] .sp-chip-slot.cor { background:var(--sp-mint) !important; }
   body[data-screen="sp_puzzle"] .ux-secondary,
   body[data-screen="sp_puzzle"] .ux-primary { min-height:48px; height:auto !important;
     padding:12px 14px !important; border-radius:13px !important; white-space:normal; }
-  body[data-screen="sp_puzzle"] .ux-primary:not(:disabled) { background:#20364f !important; }
+  body[data-screen="sp_puzzle"] .ux-primary:not(:disabled) {
+    background:linear-gradient(135deg,#176f82,#3a83aa) !important; }
 
   @media (max-width:350px){
     body[data-screen="list"] .ux-game-card { padding-inline:12px !important; gap:10px !important; }
@@ -3532,6 +3567,11 @@ function polishFrame(d,v){
   if(v.startsWith('sp_')){
     const seoul=[...d.querySelectorAll('div')].find(el=>el.style.maxWidth==='390px');
     if(seoul) seoul.classList.add('ux-seoul');
+    [...d.querySelectorAll('div')].forEach(el=>{
+      if(el.style.background==='rgb(22, 33, 62)'&&el.style.padding) el.classList.add('ux-travel-header');
+      if(el.style.background==='rgb(228, 238, 246)'&&el.style.position==='relative')
+        el.classList.add('ux-seoul-map');
+    });
   }
   if(v==='sp_entry') buttons.forEach((b,i)=>b.classList.add(i===0?'ux-back':'ux-primary'));
   if(v==='sp_puzzle'){
