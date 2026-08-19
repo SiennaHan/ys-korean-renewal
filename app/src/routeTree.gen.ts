@@ -55,6 +55,7 @@ import { Route as MainGameParticleSniperRouteImport } from './routes/main/game/p
 import { Route as MainGameSeoulPuzzleRouteImport } from './routes/main/game/seoul-puzzle'
 import { Route as MainGameSpringPicnicRouteImport } from './routes/main/game/spring-picnic'
 import { Route as MainGameVocashotRouteImport } from './routes/main/game/vocashot'
+import { Route as MainGameVocashotSoloRouteImport } from './routes/main/game/vocashot-solo'
 import { Route as MainTextbookIndexRouteImport } from './routes/main/textbook/index'
 import { Route as MainTextbookJamoRouteImport } from './routes/main/textbook/jamo'
 import { Route as BookChapterUnitIdRouteImport } from './routes/book/chapter/unit/$id'
@@ -304,6 +305,11 @@ const MainGameVocashotRoute = MainGameVocashotRouteImport.update({
   path: '/vocashot',
   getParentRoute: () => MainGameRoute,
 } as any)
+const MainGameVocashotSoloRoute = MainGameVocashotSoloRouteImport.update({
+  id: '/vocashot-solo',
+  path: '/vocashot-solo',
+  getParentRoute: () => MainGameRoute,
+} as any)
 const MainTextbookIndexRoute = MainTextbookIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -454,6 +460,7 @@ export interface FileRoutesByFullPath {
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
   '/main/game/spring-picnic': typeof MainGameSpringPicnicRoute
   '/main/game/vocashot': typeof MainGameVocashotRoute
+  '/main/game/vocashot-solo': typeof MainGameVocashotSoloRoute
   '/main/textbook/jamo': typeof MainTextbookJamoRoute
   '/main/game/': typeof MainGameIndexRoute
   '/main/textbook/': typeof MainTextbookIndexRoute
@@ -517,6 +524,7 @@ export interface FileRoutesByTo {
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
   '/main/game/spring-picnic': typeof MainGameSpringPicnicRoute
   '/main/game/vocashot': typeof MainGameVocashotRoute
+  '/main/game/vocashot-solo': typeof MainGameVocashotSoloRoute
   '/main/textbook/jamo': typeof MainTextbookJamoRoute
   '/main/game': typeof MainGameIndexRoute
   '/main/textbook': typeof MainTextbookIndexRoute
@@ -584,6 +592,7 @@ export interface FileRoutesById {
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
   '/main/game/spring-picnic': typeof MainGameSpringPicnicRoute
   '/main/game/vocashot': typeof MainGameVocashotRoute
+  '/main/game/vocashot-solo': typeof MainGameVocashotSoloRoute
   '/main/textbook/jamo': typeof MainTextbookJamoRoute
   '/main/game/': typeof MainGameIndexRoute
   '/main/textbook/': typeof MainTextbookIndexRoute
@@ -652,6 +661,7 @@ export interface FileRouteTypes {
     | '/main/game/seoul-puzzle'
     | '/main/game/spring-picnic'
     | '/main/game/vocashot'
+    | '/main/game/vocashot-solo'
     | '/main/textbook/jamo'
     | '/main/game/'
     | '/main/textbook/'
@@ -715,6 +725,7 @@ export interface FileRouteTypes {
     | '/main/game/seoul-puzzle'
     | '/main/game/spring-picnic'
     | '/main/game/vocashot'
+    | '/main/game/vocashot-solo'
     | '/main/textbook/jamo'
     | '/main/game'
     | '/main/textbook'
@@ -781,6 +792,7 @@ export interface FileRouteTypes {
     | '/main/game/seoul-puzzle'
     | '/main/game/spring-picnic'
     | '/main/game/vocashot'
+    | '/main/game/vocashot-solo'
     | '/main/textbook/jamo'
     | '/main/game/'
     | '/main/textbook/'
@@ -1178,6 +1190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainGameVocashotRouteImport
       parentRoute: typeof MainGameRoute
     }
+    '/main/game/vocashot-solo': {
+      id: '/main/game/vocashot-solo'
+      path: '/vocashot-solo'
+      fullPath: '/main/game/vocashot-solo'
+      preLoaderRoute: typeof MainGameVocashotSoloRouteImport
+      parentRoute: typeof MainGameRoute
+    }
     '/main/textbook/': {
       id: '/main/textbook/'
       path: '/'
@@ -1314,6 +1333,7 @@ interface MainGameRouteChildren {
   MainGameSeoulPuzzleRoute: typeof MainGameSeoulPuzzleRoute
   MainGameSpringPicnicRoute: typeof MainGameSpringPicnicRoute
   MainGameVocashotRoute: typeof MainGameVocashotRoute
+  MainGameVocashotSoloRoute: typeof MainGameVocashotSoloRoute
   MainGameIndexRoute: typeof MainGameIndexRoute
   MainGameVocashotPinRoute: typeof MainGameVocashotPinRoute
 }
@@ -1325,6 +1345,7 @@ const MainGameRouteChildren: MainGameRouteChildren = {
   MainGameSeoulPuzzleRoute: MainGameSeoulPuzzleRoute,
   MainGameSpringPicnicRoute: MainGameSpringPicnicRoute,
   MainGameVocashotRoute: MainGameVocashotRoute,
+  MainGameVocashotSoloRoute: MainGameVocashotSoloRoute,
   MainGameIndexRoute: MainGameIndexRoute,
   MainGameVocashotPinRoute: MainGameVocashotPinRoute,
 }
