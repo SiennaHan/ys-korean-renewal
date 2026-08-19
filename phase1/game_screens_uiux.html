@@ -2796,16 +2796,21 @@ const UIUX_CSS=`
   body { text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }
   button { min-width:0; max-width:100%; overflow-wrap:anywhere; }
 
-  /* 목록 — 카드 높이는 80 그대로, 그림자 대신 아주 옅은 경계로 층을 만든다 */
-  body[data-screen="list"] .ux-list-shell { background:#f6f7f8 !important; }
-  body[data-screen="list"] .ux-list-title { color:#26384b !important; font-size:18px !important;
-    line-height:24px !important; font-weight:700 !important; letter-spacing:-.02em; }
-  body[data-screen="list"] .ux-game-list { gap:10px !important; padding-top:8px !important; }
-  body[data-screen="list"] .ux-game-card { height:80px; padding:14px 15px !important; gap:12px !important;
-    border:1px solid #f0f2f4 !important; border-radius:15px !important; background:#fff !important;
-    box-shadow:none !important; }
+  /* 목록 — 교재학습 탭과 같은 셸/간격/카드/탭바 문법을 쓴다 */
+  body[data-screen="list"] { background:#f6f7f8 !important; color:#383a3f; }
+  body[data-screen="list"] .ux-list-scroll { min-height:0; background:#f6f7f8 !important; }
+  body[data-screen="list"] .ux-list-shell { min-height:100%; background:#f6f7f8 !important; }
+  body[data-screen="list"] .ux-list-head { flex:none; justify-content:flex-start !important;
+    padding:18px 16px 2px !important; }
+  body[data-screen="list"] .ux-list-title { color:#24425f !important; font-size:18px !important;
+    line-height:26px !important; font-weight:700 !important; letter-spacing:-.015em; }
+  body[data-screen="list"] .ux-game-list { gap:8px !important; padding:12px 16px 24px !important; }
+  body[data-screen="list"] .ux-game-card { height:80px; padding:14px !important; gap:12px !important;
+    border:1px solid #f0f2f4 !important; border-radius:14px !important; background:#fff !important;
+    box-shadow:none !important; transition:background-color .15s ease,border-color .15s ease; }
+  body[data-screen="list"] .ux-game-card:active { background:#f8fafc !important; border-color:#e5e8ec !important; }
   body[data-screen="list"] .ux-game-icon { width:48px !important; height:48px !important;
-    border-radius:13px !important; }
+    border-radius:12px !important; }
   body[data-screen="list"] .ux-game-copy { min-width:0; }
   body[data-screen="list"] .ux-game-name { color:#203b59 !important; font-size:15px !important;
     line-height:21px !important; font-weight:700 !important; letter-spacing:-.015em;
@@ -2815,6 +2820,18 @@ const UIUX_CSS=`
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   body[data-screen="list"] .ux-game-sub.is-progress { color:#0073e6 !important; font-weight:600; }
   body[data-screen="list"] .ux-game-chevron { color:#c8cdd5 !important; }
+  body[data-screen="list"] .ux-list-tabbar { flex:none; position:relative !important; bottom:auto !important;
+    width:100%; height:60px !important; display:flex; background:#fff !important;
+    border-top:1px solid #f0f2f4 !important; }
+  body[data-screen="list"] .ux-list-tabbar a { flex:1; height:100%; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px; color:#adb3be !important; text-decoration:none; }
+  body[data-screen="list"] .ux-list-tabbar a span { color:currentColor !important; font-size:10px !important;
+    line-height:14px; font-weight:400; }
+  body[data-screen="list"] .ux-list-tabbar a svg { width:22px !important; height:22px !important;
+    color:currentColor !important; }
+  body[data-screen="list"] .ux-list-tabbar a[href="/main/game"] { color:#0073e6 !important; }
+  body[data-screen="list"] .ux-list-tabbar a[href="/main/game"] span { font-weight:600; }
+  body[data-screen="list"] .ux-list-tabbar a .lucide { color:currentColor !important; stroke:currentColor !important; }
 
   /* 어두운 두 게임 — 갈래/급 색은 건드리지 않고 배경과 표면 단계만 만든다 */
   body[data-screen^="cs_"] .ux-dark-stage,
@@ -3378,9 +3395,19 @@ function polishFrame(d,v){
   buttons.forEach(b=>b.classList.add('ux-control'));
 
   if(v==='list'){
-    const title=exactText(d,'Games'); if(title){ title.textContent='게임'; title.classList.add('ux-list-title'); }
+    const title=exactText(d,'Games');
+    if(title){
+      title.textContent='게임'; title.classList.add('ux-list-title');
+      if(title.parentElement) title.parentElement.classList.add('ux-list-head');
+    }
     const cards=buttons.slice(0,5), list=cards[0]&&cards[0].parentElement;
-    if(list){ list.classList.add('ux-game-list'); list.parentElement.classList.add('ux-list-shell'); }
+    if(list){
+      list.classList.add('ux-game-list');
+      if(list.parentElement){
+        list.parentElement.classList.add('ux-list-shell');
+        if(list.parentElement.parentElement) list.parentElement.parentElement.classList.add('ux-list-scroll');
+      }
+    }
     cards.forEach((card,i)=>{
       const data=LIST_COPY[i], parts=[...card.children], ps=[...card.querySelectorAll('p')];
       card.classList.add('ux-game-card');
@@ -3392,6 +3419,16 @@ function polishFrame(d,v){
         if(data.progress) ps[1].classList.add('is-progress'); }
       card.setAttribute('aria-label',data.name+' · '+data.sub);
     });
+    const tabbar=d.querySelector('div.sticky.bottom-0.h-\\[60px\\]');
+    if(tabbar){
+      tabbar.classList.add('ux-list-tabbar');
+      [...tabbar.querySelectorAll('a')].forEach(link=>{
+        const current=link.getAttribute('href')==='/main/game';
+        link.classList.toggle('active',current);
+        if(current){ link.dataset.status='active'; link.setAttribute('aria-current','page'); }
+        else { link.removeAttribute('data-status'); link.removeAttribute('aria-current'); }
+      });
+    }
   }
 
   if(v.startsWith('cs_')||v.startsWith('ps_')){
