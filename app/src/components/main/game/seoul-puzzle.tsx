@@ -97,11 +97,98 @@ interface MapSvgProps {
   locations: Location[];
 }
 
+/* ══════════════════════════
+   확정 목업(game_screens_uiux · sp_*)의 지도 좌표
+   ──────────────────────────
+   목업은 캡처한 SVG 의 핀과 라벨을 런타임에 옮겼다. 앱에서는 옮길 것이 아니라
+   처음부터 이 자리에 그린다. 표는 목업 소스에서 그대로 뽑았다.
+══════════════════════════ */
+
+/** 전체 지도(viewBox 높이 ≥150)의 핀 자리 */
+const PIN_FULL: Record<string, [number, number]> = {
+	"북한산": [174, 38],
+	"북촌한옥마을": [190, 75],
+	"경복궁": [174, 82],
+	"광장시장": [226, 94],
+	"DDP": [244, 96],
+	"명동": [183, 105],
+	"홍대": [112, 114],
+	"성수동": [276, 125],
+	"국립중앙박물관": [184, 145],
+	"한강공원": [130, 148],
+};
+
+/** 전체 지도의 라벨 상자 자리 */
+const LABEL_FULL: Record<string, [number, number]> = {
+	"북한산": [174, 48],
+	"북촌한옥마을": [222, 63],
+	"경복궁": [144, 75],
+	"광장시장": [258, 85],
+	"DDP": [272, 98],
+	"명동": [180, 114],
+	"홍대": [84, 105],
+	"성수동": [304, 117],
+	"국립중앙박물관": [218, 137],
+	"한강공원": [100, 137],
+};
+
+/** 좁은 지도(높이 <150)의 핀 자리 */
+const PIN_COMPACT: Record<string, [number, number]> = {
+	"북한산": [174, 20],
+	"북촌한옥마을": [190, 45],
+	"경복궁": [174, 52],
+	"광장시장": [226, 58],
+	"DDP": [244, 62],
+	"명동": [183, 68],
+	"홍대": [112, 74],
+	"성수동": [276, 79],
+	"국립중앙박물관": [184, 88],
+	"한강공원": [130, 91],
+};
+
+/** 좁은 지도의 라벨 자리. 없으면 핀 위로 올린다 */
+const LABEL_COMPACT: Record<string, [number, number]> = {
+	"북한산": [160, 30],
+	"경복궁": [143, 45],
+	"광장시장": [226, 37],
+	"명동": [204, 68],
+	"홍대": [86, 66],
+	"성수동": [302, 71],
+	"국립중앙박물관": [222, 83],
+};
+
+/**
+ * 좁은 지도에서 라벨을 계속 보여 줄 장소.
+ * 현재 장소와 완료한 장소는 이 목록과 무관하게 항상 보인다.
+ */
+const COMPACT_CONTEXT = new Set([
+	"북한산",
+	"경복궁",
+	"광장시장",
+	"명동",
+	"성수동",
+	"국립중앙박물관",
+]);
+
+/** 라벨 상자 규격 — 목업과 같은 계산 */
+const LABEL_H = 13;
+const labelWidth = (name: string) => Math.max(28, name.length * 7 + 10);
+const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+
 function MapSvg({ viewBox, height, completed, currentLoc, onPinTap, riverPath, showAllLines, locations }: MapSvgProps) {
+  // 목업이 쓰던 판정 그대로 — viewBox 높이로 전체/좁은 지도를 가른다
+  const [viewX, viewY, viewW, viewH] = viewBox.split(/\s+/).map(Number);
+  const isCompact = viewH < 150;
+  const pinTable = isCompact ? PIN_COMPACT : PIN_FULL;
+
+  /** 이 장소의 핀 자리. 표에 없으면 데이터의 좌표를 쓴다 */
+  const pinOf = (l: Location): [number, number] =>
+    pinTable[l.name] ?? [l.x, l.y - 17];
+
   // Compute route points through completed + active locs
   const routeLocs = locations.filter(l => completed.has(l.id) || l.id === currentLoc);
   const routePoints = routeLocs.length >= 2
-    ? routeLocs.map(l => `${l.x},${l.y - 14}`).join(' ')
+    ? routeLocs.map(l => { const [px, py] = pinOf(l); return `${px},${py}`; }).join(' ')
     : '';
 
   return (
@@ -117,8 +204,11 @@ function MapSvg({ viewBox, height, completed, currentLoc, onPinTap, riverPath, s
       <ellipse cx="320" cy="58" rx="32" ry="18" fill="#c4d9a8" opacity=".55" />
       <ellipse cx="42"  cy="190" rx="26" ry="16" fill="#c4d9a8" opacity=".5" />
       <ellipse cx="348" cy="210" rx="30" ry="16" fill="#c4d9a8" opacity=".5" />
+      {/* 목업: viewBox 높이가 105 미만이면 강을 16 내린다 */}
+      <g transform={viewH < 105 ? 'translate(0 16)' : undefined}>
       <path d={riverPath} fill="none" stroke="#a0c4e0" strokeWidth="18" strokeLinecap="round" />
       <path d={riverPath.replace(/C/g,'C').replace(/178,/g,'178,').replace(/178 /g,'178 ')} fill="none" stroke="#bdd8f0" strokeWidth="6" strokeLinecap="round" opacity=".6" />
+      </g>
       {showAllLines && <>
         <line x1="0" y1="52"  x2="390" y2="52"  stroke="#fff" strokeWidth="1.2" opacity=".45"/>
         <line x1="0" y1="80"  x2="390" y2="80"  stroke="#fff" strokeWidth="2"   opacity=".65"/>
@@ -162,24 +252,50 @@ function MapSvg({ viewBox, height, completed, currentLoc, onPinTap, riverPath, s
         const textColor = isDone ? '#0a6b58' : isActive ? '#c02020' : '#7a8494';
         const pinOpacity = (locked ? 0.35 : (!isDone && !isActive) ? 0.55 : 1);
 
+        // ── 목업의 배치 계산을 그대로 옮긴 것 ──────────────────────
+        const [pinX, pinY] = pinOf(l);
+        const width = labelWidth(l.name);
+        const target =
+          isCompact
+            ? (LABEL_COMPACT[l.name] ?? [pinX, pinY - LABEL_H - 10])
+            : (LABEL_FULL[l.name] ?? [pinX, pinY - LABEL_H - 10]);
+        const centerX = clamp(target[0], viewX + width / 2 + 3, viewX + viewW - width / 2 - 3);
+        const topY = clamp(target[1], viewY + 3, viewY + viewH - LABEL_H - 3);
+        // 리더선은 핀에서 라벨 상자의 가까운 쪽 변으로 뻗는다
+        const leadY1 = pinY + 3;
+        const leadY2 = topY + LABEL_H < leadY1 ? topY + LABEL_H + 1 : topY - 1;
+        // 좁은 지도에서는 현재·완료 장소와 context 목록만 라벨을 보인다
+        const showLabel = !isCompact || isActive || isDone || COMPACT_CONTEXT.has(l.name);
+
         return (
           <g key={l.id}
+             className={[
+               'ux-map-place',
+               isActive ? 'is-active' : '',
+               isDone ? 'is-done' : '',
+               locked ? 'is-locked' : '',
+               isCompact && COMPACT_CONTEXT.has(l.name) ? 'is-context' : '',
+             ].filter(Boolean).join(' ')}
              opacity={pinOpacity}
              style={{ cursor: (onPinTap && !locked) ? 'pointer' : 'default', transition: 'opacity .4s' }}
              onPointerDown={(onPinTap && !locked) ? () => onPinTap(l.id) : undefined}
              onClick={(onPinTap && !locked) ? (e) => { if (e.detail === 0) onPinTap(l.id); } : undefined}>
-            <line x1={x} y1={y-14} x2={x} y2={y-4} stroke={pinColor} strokeWidth={isActive ? 2 : 1.5} style={{ transition: 'stroke .4s' }}/>
-            <circle cx={x} cy={y-17} r={pinR} fill={pinColor} stroke="#fff" strokeWidth={isActive ? 2 : 1.8} style={{ transition: 'r .4s, fill .4s' }}/>
-            <circle cx={x} cy={y-17} r={dotR} fill="#fff" style={{ transition: 'r .4s' }}/>
+            {showLabel && (
+              <line className="ux-pin-leader" x1={pinX} y1={leadY1} x2={centerX} y2={leadY2} stroke={pinColor} strokeWidth={isActive ? 2 : 1.5} style={{ transition: 'stroke .4s' }}/>
+            )}
+            <circle cx={pinX} cy={pinY} r={pinR} fill={pinColor} stroke="#fff" strokeWidth={isActive ? 2 : 1.8} style={{ transition: 'r .4s, fill .4s' }}/>
+            <circle cx={pinX} cy={pinY} r={dotR} fill="#fff" style={{ transition: 'r .4s' }}/>
             {isActive && (
-              <circle cx={x} cy={y-17} r={16} fill="none" stroke="#e03e3e" strokeWidth="1.5" opacity=".3">
+              <circle cx={pinX} cy={pinY} r={16} fill="none" stroke="#e03e3e" strokeWidth="1.5" opacity=".3">
                 <animate attributeName="r" values="11;19;11" dur="2s" repeatCount="indefinite"/>
                 <animate attributeName="opacity" values=".3;0;.3" dur="2s" repeatCount="indefinite"/>
               </circle>
             )}
-            <rect x={x-20} y={y+2} width={40} height={12} rx={3} fill="rgba(255,255,255,.95)"/>
-            <text x={x} y={y+12} textAnchor="middle" fontSize={7} fontWeight={700} fill={textColor} fontFamily="'Noto Sans KR',sans-serif" style={{ transition: 'fill .4s' }}>{l.name}</text>
-            {onPinTap && !locked && <circle cx={x} cy={y-17} r={20} fill="transparent"/>}
+            {showLabel && <>
+              <rect className="ux-map-label-bg" x={centerX - width / 2} y={topY} width={width} height={LABEL_H} rx={5} fill="rgba(255,255,255,.95)"/>
+              <text className="ux-map-label" x={centerX} y={topY + 9.25} textAnchor="middle" fontSize={7} fontWeight={700} fill={textColor} fontFamily="'Noto Sans KR',sans-serif" style={{ transition: 'fill .4s' }}>{l.name}</text>
+            </>}
+            {onPinTap && !locked && <circle cx={pinX} cy={pinY} r={20} fill="transparent"/>}
           </g>
         );
       })}
@@ -579,8 +695,17 @@ export default function SeoulPuzzle() {
     );
   }
 
+  // 이관한 게임 CSS 는 화면을 data-screen 으로 가른다
+  const screenId =
+    screen === 'map' ? 'sp_map'
+    : screen === 'entry' ? 'sp_entry'
+    : screen === 'complete' ? 'sp_complete'
+    : 'sp_puzzle';
+
   return (
-    <div style={{ width: '100%', maxWidth: 390, height: '100%', background: C.bg, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', margin: '0 auto', fontFamily: "'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" }}>
+    // 목업이 max-width:390 인 div 에 ux-seoul 을 붙였다. .game-frame 은 그 바깥이다.
+    <div className="game-frame" data-screen={screenId}>
+    <div className="ux-seoul" style={{ width: '100%', maxWidth: 390, height: '100%', background: C.bg, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', margin: '0 auto', fontFamily: "'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" }}>
 
       {/* CSS Keyframes */}
       <style>{`
@@ -625,7 +750,7 @@ export default function SeoulPuzzle() {
       <Confetti show={showConfetti} />
 
       {/* Status Bar */}
-      <div style={{ background: C.navy, padding: '10px 20px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, zIndex: 10 }}>
+      <div className="ux-travel-header" style={{ background: C.navy, padding: '10px 20px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, zIndex: 10 }}>
         <button onPointerDown={() => nav({ to: '/main/game' })} onClick={(e) => { if (e.detail === 0) nav({ to: '/main/game' }); }} style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(255,255,255,.12)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
           <ArrowLeft size={16} color="rgba(255,255,255,.85)" />
         </button>
@@ -705,7 +830,7 @@ export default function SeoulPuzzle() {
           </div>
 
           {/* SVG Map */}
-          <div style={{ height: 240, flexShrink: 0, overflow: 'hidden', background: '#e4eef6', position: 'relative' }}>
+          <div className="ux-seoul-map" style={{ height: 240, flexShrink: 0, overflow: 'hidden', background: '#e4eef6', position: 'relative' }}>
             <MapSvg
               viewBox="50 22 280 170"
               height={240}
@@ -772,7 +897,7 @@ export default function SeoulPuzzle() {
           {/* Scrollable area */}
           <div className="scrollbar-hide" style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
             {/* Mini map */}
-            <div style={{ height: 160, flexShrink: 0, overflow: 'hidden', background: '#e4eef6', position: 'relative' }}>
+            <div className="ux-seoul-map" style={{ height: 160, flexShrink: 0, overflow: 'hidden', background: '#e4eef6', position: 'relative' }}>
               <div style={{ pointerEvents: 'none', width: '100%', height: '100%' }}>
                 <MapSvg viewBox="65 5 270 112" height={160} completed={completed} currentLoc={currentLoc} riverPath={RIVER_ENTRY} locations={locations} />
               </div>
@@ -853,7 +978,7 @@ export default function SeoulPuzzle() {
       {screen === 'puzzle' && loc && resolvedPuzzle && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', animation: navDir === 'forward' ? 'sp-slideUp .28s ease both' : 'sp-slideDown .28s ease both' }}>
           {/* Mini map */}
-          <div style={{ height: 140, flexShrink: 0, overflow: 'hidden', background: '#e4eef6', position: 'relative' }}>
+          <div className="ux-seoul-map" style={{ height: 140, flexShrink: 0, overflow: 'hidden', background: '#e4eef6', position: 'relative' }}>
             <div style={{ pointerEvents: 'none', width: '100%', height: '100%' }}>
               <MapSvg viewBox="65 5 270 98" height={140} completed={completed} currentLoc={currentLoc} riverPath={RIVER_PUZZLE} locations={locations} />
             </div>
@@ -1156,6 +1281,7 @@ export default function SeoulPuzzle() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
