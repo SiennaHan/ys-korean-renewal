@@ -167,7 +167,6 @@ const en = {
 	},
 	player: {
 		exit: "Exit",
-		cancel: "Cancel",
 		skip: "Skip",
 		next: "Next",
 		progress: "{{current}} / {{total}}",
