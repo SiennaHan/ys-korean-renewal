@@ -3,6 +3,10 @@ import json, os, re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 SEED='../koreanapi-master/koreanapi-master/seed_data'
+
+# 게임 진행 — 서버는 upsert 에서 max() 로 최고 점수를 유지한다. 같게 흉내낸다.
+# {game_name: {stage_id: row}}
+GAME_PROGRESS = {}
 def load(n): return json.load(open(os.path.join(SEED,n),encoding='utf-8'))
 
 def sniper_sentences():
@@ -42,6 +46,25 @@ class H(BaseHTTPRequestHandler):
     def do_POST(self):
         # /capture/<name> : 목업에서 렌더된 마크업을 파일로 받는다.
         # 마크업을 손으로 옮겨 적다 틀리는 일을 없애기 위한 통로다.
+        if self.path.rstrip('/') == '/game-progress':
+            n = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(n) or b'{}')
+            game, stage = body.get('gameName',''), body.get('stageId','')
+            rows = GAME_PROGRESS.setdefault(game, {})
+            prev = rows.get(stage)
+            score = body.get('score')
+            # 최고 점수 유지 — 실서버의 max() 와 같다
+            if prev and prev.get('score') is not None and score is not None:
+                score = max(prev['score'], score)
+            rows[stage] = {
+                'id': len(rows) + 1, 'user_id': 'local', 'game_name': game,
+                'stage_id': stage, 'score': score,
+                'extra_data': None, 'extra': body.get('extra'),
+                'completed_at': '2026-08-19T00:00:00' if body.get('completed') else None,
+                'created_at': '2026-08-19T00:00:00', 'updated_at': '2026-08-19T00:00:00',
+            }
+            return self._send({'result':True,'code':200,'message':None,'data':rows[stage]})
+
         if self.path.startswith('/capture/'):
             name = re.sub(r'[^A-Za-z0-9_.-]', '_', self.path[len('/capture/'):]) or 'unnamed'
             n = int(self.headers.get('Content-Length', 0))
@@ -54,6 +77,11 @@ class H(BaseHTTPRequestHandler):
         self._send({'result':True,'code':200,'message':None,'data':{}})
     def do_GET(self):
         path=self.path.split('?')[0]
+        if path.startswith('/game-progress/'):
+            game = path[len('/game-progress/'):]
+            from urllib.parse import unquote
+            rows = list(GAME_PROGRESS.get(unquote(game), {}).values())
+            return self._send({'result':True,'code':200,'message':None,'data':rows})
         fn=ROUTES.get(path)
         # 목록을 기대하는 곳에 {} 를 주면 화면이 "records is not iterable" 로 죽는다.
         # 진짜 오류를 가리므로, 배열을 기대하는 경로는 빈 배열로 답한다.

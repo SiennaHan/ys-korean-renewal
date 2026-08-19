@@ -109,7 +109,7 @@ const zh = {
 			title: "游戏",
 			vocashot: {
 				name: "猜单词",
-				description: "参加老师创建的游戏",
+				description: "独自射击流星，练习词汇",
 			},
 			springPicnic: {
 				name: "春游数字任务",

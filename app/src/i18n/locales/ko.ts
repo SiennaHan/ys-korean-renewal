@@ -111,8 +111,8 @@ const ko = {
 		list: {
 			title: "게임",
 			vocashot: {
-				name: "낱말맞추기",
-				description: "선생님이 만든 게임에 참여하세요",
+				name: "VocaShot",
+				description: "혼자 유성을 맞히며 어휘를 익혀요",
 			},
 			springPicnic: {
 				name: "봄소풍 숫자미션",

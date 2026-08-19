@@ -112,7 +112,7 @@ const ja = {
 			title: "ゲーム",
 			vocashot: {
 				name: "単語当て",
-				description: "先生が作成したゲームに参加しましょう",
+				description: "ひとりで流星を撃って語彙を練習します",
 			},
 			springPicnic: {
 				name: "春のピクニック 数字ミッション",
