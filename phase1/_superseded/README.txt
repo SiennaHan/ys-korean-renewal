@@ -18,3 +18,10 @@ game_mockups_v1 · card_sort_mockup_v1 · seoul_puzzle_mockup_v1 · spring_picni
 
 대체: 앱을 로컬에서 띄워 실제 화면을 본다. 방법은 game_handoff_note.txt 에.
 남긴 것: gamelist_mockup_v1.html(단순 정적 화면이고 진행 표시 제안을 담고 있다)
+
+vocashot_mockup_uiux.html  (08-18 15:58)
+  VocaShot 시작·결과만 담은 옛 판. 정본은 vocashot_play_uiux.html (16:22) 로,
+  startView · playMarkup · resultView 를 다 들고 있어 전 흐름을 덮는다.
+  둘이 같은 셀렉터 31개에서 값이 달랐다 — .g-go 가 여기서는 height 56/radius 14,
+  정본에서는 padding 14/radius 16. 앱에는 정본 값만 들어갔다.
+

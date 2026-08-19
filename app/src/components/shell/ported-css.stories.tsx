@@ -66,10 +66,10 @@ export const SniperPlay: Story = {
 	),
 };
 
-/** VocaShot 시작 */
+/** VocaShot 시작 — 정본은 vocashot_play_uiux.html 하나다 */
 export const VocashotStart: Story = {
 	render: () => (
-		<div className="vocashot-start" style={{ height: 720 }}>
+		<div className="vocashot-frame" style={{ height: 720 }}>
 			<div className="g-body">
 				<div className="g-intro">
 					<span className="g-lb">VOCASHOT</span>
