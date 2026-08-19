@@ -3246,7 +3246,7 @@ const UIUX_CSS=`
   body[data-screen^="sp_"] [style*="background: rgb(22, 33, 62)"] {
     background:var(--sp-deep) !important; }
   body[data-screen^="sp_"] .ux-travel-header { background:
-    linear-gradient(135deg,#14798a 0%,#2d819b 52%,#3a83aa 100%) !important; }
+    linear-gradient(135deg,#142942 0%,#193450 52%,#204363 100%) !important; }
   body[data-screen^="sp_"] [style*="color: rgb(240, 192, 96)"] { color:var(--sp-sun) !important; }
   body[data-screen^="sp_"] [style*="background: rgb(254, 243, 199)"] { background:#fff4d4 !important; }
   body[data-screen^="sp_"] [style*="color: rgb(146, 64, 14)"] { color:#a85b20 !important; }
@@ -3276,9 +3276,14 @@ const UIUX_CSS=`
   body[data-screen="sp_map"] .sp-loc-card.active { border-color:#ffb7b0 !important;
     background:#fff8f6 !important; }
   body[data-screen="sp_map"] .sp-loc-card.locked { opacity:.58 !important; }
-  body[data-screen^="sp_"] .ux-back { width:auto !important; min-width:40px; min-height:36px;
-    height:auto !important; padding:8px 12px !important; border-radius:999px !important;
-    white-space:normal; }
+  body[data-screen^="sp_"] .ux-top-back { width:36px !important; min-width:36px; height:36px !important;
+    min-height:36px; padding:0 !important; border-radius:50% !important;
+    background:rgba(255,255,255,.12) !important; }
+  body[data-screen^="sp_"] .ux-map-nav { width:auto !important; min-width:0; min-height:36px; height:auto !important;
+    padding:8px 13px !important; border:1px solid rgba(31,66,89,.13) !important;
+    border-radius:999px !important; background:rgba(255,255,255,.94) !important;
+    color:#173851 !important; font-size:12px !important; font-weight:700 !important;
+    box-shadow:0 3px 10px rgba(36,68,87,.12) !important; backdrop-filter:blur(6px); white-space:normal; }
   body[data-screen="sp_entry"] .ux-primary { min-height:50px; height:auto !important;
     padding:13px 18px !important; border-radius:14px !important;
     background:linear-gradient(135deg,#176f82,#3a83aa) !important;
@@ -3573,12 +3578,18 @@ function polishFrame(d,v){
         el.classList.add('ux-seoul-map');
     });
   }
-  if(v==='sp_entry') buttons.forEach((b,i)=>b.classList.add(i===0?'ux-back':'ux-primary'));
+  if(v==='sp_map'&&buttons[0]) buttons[0].classList.add('ux-top-back');
+  if(v==='sp_entry'){
+    if(buttons[0]) buttons[0].classList.add('ux-top-back');
+    if(buttons[1]) buttons[1].classList.add('ux-map-nav');
+    if(buttons[2]) buttons[2].classList.add('ux-primary');
+  }
   if(v==='sp_puzzle'){
-    buttons.forEach(b=>{
+    if(buttons[0]) buttons[0].classList.add('ux-top-back');
+    if(buttons[1]) buttons[1].classList.add('ux-map-nav');
+    buttons.slice(2).forEach(b=>{
       const tx=b.textContent.trim();
-      if(tx.startsWith('←')) b.classList.add('ux-back');
-      else if(tx.startsWith('힌트')) b.classList.add('ux-secondary');
+      if(tx.startsWith('힌트')) b.classList.add('ux-secondary');
       else if(tx.includes('확인')) b.classList.add('ux-primary');
     });
   }
