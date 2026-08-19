@@ -3272,6 +3272,7 @@ const UIUX_CSS=`
   body[data-screen^="sp_"] .ux-seoul-map svg text[fill="#7a8494"] { fill:#617b87 !important; }
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-locked { opacity:.68 !important; }
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-active { opacity:1 !important; }
+  body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-done { opacity:1 !important; }
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-label-bg { fill:rgba(255,255,255,.96) !important;
     stroke:rgba(69,112,127,.13); stroke-width:.6px; }
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-label { fill:#385969 !important;
@@ -3281,11 +3282,15 @@ const UIUX_CSS=`
     fill:#c94d49 !important; }
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-active .ux-map-label-bg {
     stroke:rgba(255,120,107,.34); }
+  body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-done .ux-map-label {
+    fill:#247a70 !important; }
+  body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-done .ux-map-label-bg {
+    stroke:rgba(66,189,168,.34); }
   body[data-screen^="sp_"] .ux-seoul-map .ux-pin-leader { stroke:#8ba7b3 !important;
     stroke-width:1px !important; opacity:.72; display:none; }
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-context { opacity:.78 !important; }
-  body[data-screen="sp_entry"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-context) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader),
-  body[data-screen="sp_puzzle"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-context) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader) {
+  body[data-screen="sp_entry"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-done):not(.is-context) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader),
+  body[data-screen="sp_puzzle"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-done):not(.is-context) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader) {
     display:none; }
   body[data-screen="sp_map"] .sp-loc-card { border-color:#e8f0f2 !important;
     border-radius:16px !important; background:#fff !important; box-shadow:none !important; }
@@ -3613,6 +3618,7 @@ function polishFrame(d,v){
       '북한산':[174,30], '명동':[157,61], '홍대':[86,66],
       '성수동':[302,71], '국립중앙박물관':[222,80]
     };
+    // 현재 장소와 방문 완료 장소는 context 목록과 무관하게 항상 라벨을 보여 준다.
     const compactContext=new Set(['북한산','명동','성수동','국립중앙박물관']);
     d.querySelectorAll('.ux-seoul-map svg').forEach(svg=>{
       const view=(svg.getAttribute('viewBox')||'0 0 390 240').split(/\s+/).map(Number);
@@ -3642,7 +3648,16 @@ function polishFrame(d,v){
         const centerX=Math.max(viewX+width/2+3,Math.min(viewX+viewW-width/2-3,target[0]));
         const topY=Math.max(viewY+3,Math.min(viewY+viewH-height-3,target[1]));
         place.classList.add('ux-map-place');
-        if(place.querySelector('[fill="#e03e3e"]')) place.classList.add('is-active');
+        const isActive=!!place.querySelector('[fill="#e03e3e"]');
+        const stateHint=(place.getAttribute('data-state')||place.className?.baseVal||'').toLowerCase();
+        const placeOpacity=Number(place.getAttribute('opacity'));
+        const isDone=!isActive&&(
+          /done|complete|completed|visited/.test(stateHint)||
+          !!place.querySelector('[fill="#0f9b82"],[fill="#42bda8"],[fill="#14b8a6"]')||
+          (place.hasAttribute('opacity')&&placeOpacity>=.95)
+        );
+        if(isActive) place.classList.add('is-active');
+        if(isDone) place.classList.add('is-done');
         else if(place.hasAttribute('opacity')&&Number(place.getAttribute('opacity'))<1)
           place.classList.add('is-locked');
         if(isCompact&&compactContext.has(name)) place.classList.add('is-context');
