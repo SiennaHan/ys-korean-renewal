@@ -1,0 +1,130 @@
+/**
+ * VocaShot 시작 · 결과 CSS — vocashot_mockup_uiux.html 에서 이관 (2026-08-19)
+ *
+ * 게임은 토큰 팔레트 밖이다 — 무대가 검정이라 어두운 색을 리터럴로 쓴다.
+ * 그래서 색 치환을 하지 않고 목업 값을 그대로 가져온다.
+ *
+ * 시작·결과 목업과 플레이 목업이 같은 셀렉터 31개에서 값이 다르다
+ * (.g-go 가 한쪽은 height 56, 다른 쪽은 padding 14 등).
+ * 확정 디자인을 내 판단으로 합치지 않고 스코프를 갈라 각자 값을 지켰다.
+ */
+.vocashot-start {
+  line-height: normal;
+  font-family: var(--font-sans);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* 토큰에 대응이 없어 리터럴로 남긴 목업 색 */
+  --blue-100: #a2d1ff;
+  --blue-300: #59acff;
+  --blue-gray-200: #d7dbe3;
+  --blue-gray-400: #adb3be;
+  --blue-gray-800: #4b505a;
+}
+
+.vocashot-start /* ── 시작 화면 — 플레이 화면 언어 그대로(bg-slate-950) ────────
+     선택지 h-14 rounded-2xl border-slate-700 bg-slate-900 · 고른 것은 결과 오버레이의
+     "내 행"(border-emerald-500/50 bg-emerald-500/20) · 주 버튼은 발사 버튼(emerald-500) */
+  .g-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:20px 16px 14px; border-bottom:1px solid #1e293b; }
+.vocashot-start .g-head .nm { display:flex; align-items:center; gap:8px; }
+.vocashot-start .g-head .back { width:44px; height:44px; margin-left:-8px; border:0; background:none;
+    display:grid; place-items:center; cursor:pointer; }
+.vocashot-start .g-head .back i { width:32px; height:32px; border-radius:50%; background:#1e293b;
+    display:grid; place-items:center; color:#e2e8f0; }
+.vocashot-start .g-head .back svg { width:16px; height:16px; }
+.vocashot-start .g-head h1 { margin:0; font-size:18px; line-height:24px; font-weight:700; letter-spacing:-.01em; }
+.vocashot-start .g-head .sub { font-size:12px; line-height:18px; color:#94a3b8; }
+.vocashot-start .g-body { flex:1 1 auto; min-height:0; overflow-y:auto; padding:18px 16px 20px; }
+.vocashot-start .g-body::-webkit-scrollbar { display:none; }
+.vocashot-start .g-intro { position:relative; min-height:112px; margin-bottom:20px; overflow:hidden;
+    padding:17px 18px; border:1px solid rgba(52,211,153,.16); border-radius:18px;
+    background:linear-gradient(135deg,rgba(15,118,110,.24),rgba(15,23,42,.8) 62%); }
+.vocashot-start .g-intro .eyebrow { display:block; margin-bottom:6px; color:#6ee7b7; font-size:10px;
+    line-height:16px; font-weight:700; letter-spacing:.1em; }
+.vocashot-start .g-intro h2 { max-width:180px; margin:0; color:#f8fafc; font-size:20px; line-height:27px;
+    font-weight:700; letter-spacing:-.02em; }
+.vocashot-start .g-intro p { margin:7px 0 0; color:#94a3b8; font-size:12px; line-height:18px; }
+.vocashot-start .meteor-mark { position:absolute; right:18px; top:28px; width:48px; height:48px;
+    border:1px solid rgba(251,146,60,.5); border-radius:18px; transform:rotate(-9deg);
+    background:rgba(124,45,18,.5); box-shadow:0 0 24px rgba(251,146,60,.22); }
+.vocashot-start .meteor-mark::before { content:""; position:absolute; right:37px; top:18px; width:58px; height:10px;
+    border-radius:99px; background:linear-gradient(90deg,transparent,rgba(251,146,60,.35)); }
+.vocashot-start .meteor-mark::after { content:"가을"; position:absolute; inset:0; display:grid; place-items:center;
+    color:#fed7aa; font-size:11px; font-weight:700; }
+.vocashot-start .g-lb { display:block; margin-bottom:8px; font-size:12px; line-height:18px;
+    font-weight:600; color:#94a3b8; }
+.vocashot-start .lv { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:20px; }
+.vocashot-start .seg { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; }
+.vocashot-start .lv button, .vocashot-start .seg button { padding:0 8px; border:1px solid #334155;
+    border-radius:12px; background:#0f172a; color:#f8fafc; font-size:14px; font-weight:600;
+    line-height:20px; cursor:pointer; }
+.vocashot-start .lv button { height:44px; }
+.vocashot-start .seg button { height:48px; }
+.vocashot-start .lv button.on, .vocashot-start .seg button.on { border-color:rgba(16,185,129,.5);
+    background:rgba(16,185,129,.2); color:#6ee7b7; }
+.vocashot-start .best { display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px; border:1px solid #273548; border-radius:14px; background:rgba(15,23,42,.72); }
+.vocashot-start .best .k { font-size:12px; line-height:18px; font-weight:600; color:#94a3b8; }
+.vocashot-start .best .v { font-family:ui-monospace,Menlo,monospace; font-size:24px; line-height:30px; font-weight:700;
+    color:#34d399; }
+.vocashot-start .best.none .v { font-family:inherit; font-size:14px; font-weight:600; color:#64748b; }
+.vocashot-start .g-dock { flex:none; padding:12px 16px 16px; border-top:1px solid #1e293b; }
+.vocashot-start .g-go { width:100%; height:56px; border:0; border-radius:14px; background:#10b981;
+    color:#020617; font-size:16px; font-weight:600; cursor:pointer; }
+.vocashot-start /* ── 결과 화면 — 플레이 화면 안(bg-slate-950) ──────── */
+  .g-dark { background:#020617; color:#f8fafc; }
+.vocashot-start .r-head { flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:20px 16px 14px; border-bottom:1px solid #1e293b; }
+.vocashot-start .r-head .nm { display:flex; align-items:center; gap:8px; }
+.vocashot-start .r-head .av { width:32px; height:32px; border-radius:50%; background:#1e293b;
+    display:grid; place-items:center; color:#94a3b8; }
+.vocashot-start .r-head .av svg { width:16px; height:16px; }
+.vocashot-start .r-head h1 { margin:0; font-size:18px; line-height:24px; font-weight:700; letter-spacing:-.01em; }
+.vocashot-start .r-head .sub { font-size:12px; line-height:18px; color:#94a3b8; }
+.vocashot-start .r-k { font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#64748b; }
+.vocashot-start .r-v { font-family:ui-monospace,Menlo,monospace; font-size:20px; font-weight:600;
+    color:#34d399; }
+.vocashot-start /* 놓친 단어는 하트 수(5)를 넘을 수 없다 — 목록 최대 5행. 그 상한 위에서 720 에 맞춘다 */
+  .r-body { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column;
+    align-items:center; gap:12px; padding:18px 16px 20px; }
+.vocashot-start .r-body::-webkit-scrollbar { display:none; }
+.vocashot-start .r-ttl { margin:0; font-size:28px; line-height:36px; font-weight:700; letter-spacing:-.02em; }
+.vocashot-start .r-ttl.ok { color:#34d399; }
+.vocashot-start .r-ttl.no { color:#fb7185; }
+.vocashot-start .r-desc { margin:0 0 2px; text-align:center; font-size:14px; line-height:20px; color:#94a3b8; }
+.vocashot-start .r-summary { width:100%; max-width:326px; overflow:hidden; border:1px solid #273548;
+    border-radius:18px; background:rgba(15,23,42,.78); }
+.vocashot-start .r-score { padding:14px 24px 12px; text-align:center; }
+.vocashot-start .r-score .big { margin:2px 0 0; font-family:ui-monospace,Menlo,monospace;
+    font-size:38px; line-height:44px; font-weight:700; color:#f8fafc; }
+.vocashot-start .r-score .big.best-score { color:#34d399; }
+.vocashot-start .r-new { display:inline-block; margin-top:8px; padding:3px 9px; border-radius:999px;
+    background:rgba(52,211,153,.16); color:#34d399; font-size:11px; font-weight:700; }
+.vocashot-start .r-prev { margin:8px 0 0; font-size:13px; color:#94a3b8; font-variant-numeric:tabular-nums; }
+.vocashot-start .r-stats { display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #273548; }
+.vocashot-start .r-stat { padding:10px 12px 11px; text-align:center; }
+.vocashot-start .r-stat + .r-stat { border-left:1px solid #273548; }
+.vocashot-start .r-stat .v { font-family:ui-monospace,Menlo,monospace; font-size:18px; font-weight:700; }
+.vocashot-start .r-wrong { width:100%; max-width:326px; overflow:hidden; border:1px solid #273548;
+    border-radius:14px; background:rgba(15,23,42,.58); }
+.vocashot-start .r-wrong .cap { padding:9px 12px; border-bottom:1px solid #273548; text-align:left; }
+.vocashot-start .r-row { display:flex; align-items:center; gap:10px; min-height:42px; padding:8px 12px;
+    background:transparent; }
+.vocashot-start .r-row + .r-row { border-top:1px solid #1e293b; }
+.vocashot-start .r-row .w { flex:none; font-size:14px; font-weight:700; color:#f8fafc; }
+.vocashot-start .r-row .m { flex:1; min-width:0; font-size:12px; color:#94a3b8;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.vocashot-start /* 재출제에서 맞힌 단어 — 끝내 못 맞힌 것과 갈린다 */
+  .r-row .re { flex:none; padding:2px 7px; border-radius:999px; font-size:10px; font-weight:700;
+    background:rgba(52,211,153,.16); color:#34d399; }
+.vocashot-start .r-row.got { background:rgba(52,211,153,.045); }
+.vocashot-start .r-empty { width:100%; max-width:326px; padding:16px; border:1px dashed #334155;
+    border-radius:12px; text-align:center; font-size:13px; color:#94a3b8; }
+.vocashot-start .r-dock { flex:none; display:flex; gap:8px; padding:12px 16px 16px; border-top:1px solid #1e293b; }
+.vocashot-start /* 발사 버튼과 같은 emerald-500, .vocashot-start 보조는 나가기 확인 대화상자와 같은 slate-700 */
+  .r-again { flex:1; height:56px; border:0; border-radius:14px; background:#10b981;
+    color:#020617; font-size:16px; font-weight:600; cursor:pointer; }
+.vocashot-start .r-exit { flex:0 0 92px; height:56px; border:0; border-radius:14px;
+    background:#334155; color:#e2e8f0; font-size:15px; font-weight:600; cursor:pointer; }

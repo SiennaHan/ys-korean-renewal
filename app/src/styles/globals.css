@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./tokens.css";
 @import "./activity.css";
+@import "./nav.css";
+@import "./game.css";
+@import "./vocashot-start.css";
+@import "./vocashot-play.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
