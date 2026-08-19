@@ -57,7 +57,7 @@
 
 <main>
 <h1>0단계 · 활동 목업 읽기</h1>
-<p class="sub"><code>activity_mockups_uiux.html</code> 20화면 — 소스에서 뽑은 구조와 실측. 코드는 아직 쓰지 않았다.</p>
+<p class="sub">확정 목업 다섯을 소스에서 읽었다 — 활동 20화면 · 내비 3화면 · VocaShot 둘 · 게임 17화면. 코드는 아직 쓰지 않았다.</p>
 
 <div class="card">
   <div class="t">읽는 방법을 바꿨다</div>
@@ -87,7 +87,7 @@ footer          flex 0 0 <b>89</b>   background white · padding 16
   <tr><td>오른쪽 44</td><td>건너뛰기 → — <code>data-action="skip"</code></td></tr>
 </table></div>
 
-<h3>진행바 — 문서와 어긋난다 <span class="pill stop">확인 필요</span></h3>
+<h3>진행바 — 문서와 어긋난다 <span class="pill ok">목업으로 확정</span></h3>
 <pre>progressMarkup(current, count)
   continuous = count &gt;= 16
   &lt;div class="progress-wrap segmented|continuous"&gt;
@@ -104,7 +104,7 @@ footer          flex 0 0 <b>89</b>   background white · padding 16
      맞았는지 틀렸는지를 진행바에 <b>넣지 않았다</b>. 그러면 §13 의 논의 자체가 성립하지 않는다.</p>
   <p class="qa">칸 높이도 다르다 — 문서 <b>6</b> / 목업 <b>5</b>. 현재 위치는 문서가 "높이 10"이라 했는데
      목업은 <code>now</code> 에 <b>색으로</b> 표시한다(높이가 같다).</p>
-  <p><b>규칙상 목업이 기준이지만 이건 디자인이 아니라 정보 설계라 확인이 필요하다.</b></p>
+  <p><b>목업대로 간다 — 정오답을 진행바에 넣지 않는다.</b> 기획 판단이다: 표시하면 촌스럽다. §9 참조.</p>
 </div>
 
 <h2 id="s2"><span class="n">2</span>응답 영역 — 여덟 갈래</h2>
@@ -226,18 +226,83 @@ footer          flex 0 0 <b>89</b>   background white · padding 16
 <p><b>열한 군데다.</b> 숫자만 보고 지으면 전부 틀린다.
    그래서 다음 단계는 Tailwind 유틸리티로 옮겨 적는 대신 <b>목업 CSS 를 클래스 이름째로 가져오는</b> 것이다.</p>
 
-<h2 id="s7"><span class="n">7</span>이 다음</h2>
-<ol>
-  <li>나머지 목업 다섯(<code>nav</code> · <code>shell</code> · <code>vocashot</code> 둘 · <code>game</code>)도 같은 방식으로 읽는다</li>
-  <li>§6 의 어긋남 열한 건에 대해 <b>목업으로 확정</b>하고 <code>build_spec</code> 을 고친다 —
-      단 <b>진행바 정오답 표시</b>는 정보 설계라 판단을 받는다</li>
-  <li><code>--control-border</code> semantic 이름을 정한다</li>
-  <li>그다음 1단계 — 목업 CSS 이관</li>
-</ol>
-<div class="card">
-  <div class="t">정해 주셔야 할 것</div>
-  <p><b>진행바에 정오답을 표시할 것인가.</b> 목업은 안 하고, 문서는 한다고 적혀 있고,
-     문서의 접근성 절(§13)은 "한다"를 전제로 쓰여 있다.</p>
+<h2 id="s7"><span class="n">7</span>정본이 어느 것인가 — 폐기본을 걸러냈다</h2>
+<p>목업이 여러 벌이라 <b>날짜와 제목으로 정리</b>했다. 내가 앞서 "변형 5종 중 확정본을 모른다"고 했는데,
+   <b>제목에 다 적혀 있었다</b>.</p>
+<div class="tablewrap"><table>
+  <tr><th>파일</th><th>수정</th><th>제목</th><th></th></tr>
+  <tr><td><code>activity_mockups_uiux</code></td><td class="n">08-18 10:56</td>
+      <td><b>확정</b> 활동 UI/UX 목업 · FINAL 20 SCREENS</td><td><span class="pill ok">정본</span></td></tr>
+  <tr><td><code>nav_mockup_uiux</code></td><td class="n">08-18 14:09</td>
+      <td>내비 · 홈 · 교재학습 · 자모</td><td><span class="pill ok">정본</span></td></tr>
+  <tr><td><code>vocashot_mockup_uiux</code></td><td class="n">08-18</td><td>VocaShot 시작 · 결과</td><td><span class="pill ok">정본</span></td></tr>
+  <tr><td><code>vocashot_play_uiux</code></td><td class="n">08-18</td><td>VocaShot 플레이</td><td><span class="pill ok">정본</span></td></tr>
+  <tr><td><code>game_screens_uiux</code></td><td class="n">08-19 11:19</td><td>게임 17화면</td><td><span class="pill ok">정본</span></td></tr>
+  <tr><td><code>shell_mockup_uiux</code></td><td class="n">08-17 19:57</td>
+      <td>플레이어 공통 셸 UI/UX 목업</td><td><span class="pill stop">폐기</span></td></tr>
+  <tr><td><code>..._unified</code></td><td class="n">08-17 20:30</td><td>통합 활동 카드</td><td><span class="pill stop">폐기</span></td></tr>
+  <tr><td><code>..._modular</code></td><td class="n">08-17 21:04</td><td>모듈형</td><td><span class="pill stop">폐기</span></td></tr>
+  <tr><td><code>..._editorial</code></td><td class="n">08-17 22:56</td><td>시안 1 에디토리얼</td><td><span class="pill stop">폐기</span></td></tr>
+  <tr><td><code>..._extended_compare</code></td><td class="n">08-17 23:30</td><td>확장 시안 비교</td><td><span class="pill stop">폐기</span></td></tr>
+</table></div>
+<div class="card stop">
+  <div class="t"><code>shell_mockup_uiux</code> 를 옮기면 안 된다</div>
+  <p>클래스 이름이 확정본과 <b>다르다</b> — <code>choices</code>/<code>miczone</code>/<code>pill</code>/<code>jamogrid</code> 인데
+     확정본은 <code>choice-list</code>/<code>record-core</code>/<code>feedback-slot</code>/<code>jamo-grid</code> 다.
+     확정본보다 <b>15시간 앞선 것</b>이고 <code>handoff_v1</code> §03 의 시각 정본 목록에도 없다.</p>
+  <p class="qa">내가 앞선 계획에서 이 파일을 "이관 대상 169규칙"으로 세었는데 <b>틀렸다</b>.
+     이관 대상은 <b>1,060규칙</b>(342+315+156+139+108)이다.</p>
 </div>
+
+<h2 id="s8"><span class="n">8</span>내비 목업 — 처음 읽었다</h2>
+<p><code>nav_mockup_uiux</code> 는 <b>3화면 × 3상태</b>다 — 화면 <code>home·book·jamo</code>,
+   오늘 할 일 <code>resume·review·none</code>.</p>
+<div class="tablewrap"><table>
+  <tr><th>빌더</th><th>구조</th><th>문구</th></tr>
+  <tr><td><code>tabbar</code></td><td><code>tabbar</code> — 하단 내비</td><td>—</td></tr>
+  <tr><td><code>homeView</code></td>
+      <td><code>greet</code>(hi·name) + <code>week</code>(days·streak) + <code>status</code>(<code>gauge</code> 110×110 + <code>stats</code>·<code>stat2</code>) + <code>task</code></td>
+      <td>"수현 님" · "연속 학습 중" · "학습 현황" · "오늘 활동 수" · "주간 활동 수"</td></tr>
+  <tr><td><code>bookView</code></td>
+      <td><code>catalog-scroll</code> + <code>learning-section</code>(<code>seclabel</code> + <code>acts</code>)</td>
+      <td>—</td></tr>
+  <tr><td><code>jamoView</code></td>
+      <td><code>catalog-scroll</code> + <code>unit</code>(<code>ti</code> + <code>syls</code> + <code>acts</code>)</td>
+      <td>—</td></tr>
+  <tr><td><code>stateSlot</code></td><td><code>st</code>·<code>pr</code>·<code>bdg</code>·<code>rv</code></td>
+      <td><b>"진행 중" · "완료"</b></td></tr>
+  <tr><td><code>catalogNav</code></td><td><code>catalog-nav</code> &gt; <code>strip</code> &gt; <code>tab2</code> · <code>chips</code> &gt; <code>chip3</code></td><td>급·과 선택</td></tr>
+</table></div>
+<div class="card ok">
+  <div class="t">앞서 정한 것이 여기 들어와 있다</div>
+  <p><code>stateSlot</code> 의 문구가 <b>"진행 중"과 "완료"뿐</b>이다 —
+     이 세션 초반에 "3/5 와 진행중이 일관성 없으니 보이는 건 진행중 하나로 맞추고 숫자는 세부 정보로"라고
+     정한 것이 <b>그대로 반영돼 있다</b>.</p>
+  <p class="qa"><code>.primary</code> 규격도 활동 목업과 <b>같다</b> — width 100% · height 56 · radius 12 · 16/24 · 600.
+     두 목업이 같은 디자인 언어를 쓴다는 뜻이라, 하단 버튼은 <b>한 컴포넌트로 공유</b>할 수 있다.</p>
+</div>
+
+<h2 id="s9"><span class="n">9</span>확정된 결정</h2>
+<div class="card ok">
+  <div class="t">진행바에 정오답을 표시하지 않는다</div>
+  <p>기획 판단 — <b>"정오답 표시하니까 촌스럽다"</b>. 목업이 이미 그렇게 되어 있으므로 목업이 그대로 정본이다.</p>
+  <p>따라오는 것 — <code>build_spec_uiux</code> 두 군데를 고쳐야 한다.</p>
+  <ul>
+    <li><b>§3 칸 상태표</b> — 4상태를 <b>3상태</b>로. <code>fill-correct</code>·<code>fill-wrong</code> 행을 없앤다</li>
+    <li><b>§13 접근성</b> — "진행바가 색으로만 남아 적록색각이상에서 구별 불가, 결과 화면이 담보한다"는 논의가
+        <b>성립하지 않는다</b>. 진행바에 정오답이 애초에 없으니 담보할 것도 없다.
+        정오답은 <b>피드백 pill 문구</b>가 전달하고, 그것이 <b>보조가 아니라 유일한 경로</b>가 된다</li>
+  </ul>
+  <p class="qa">§14 검증 #10 도 같이 손봐야 한다 — "진행바는 색만이며 그것이 유일한 정보원이 아니다"가
+     <b>진행 표시만 한다</b>로 바뀐다.</p>
+</div>
+
+<h2 id="s10"><span class="n">10</span>1단계로 넘어가기 전 남은 것</h2>
+<ol>
+  <li><b>VocaShot 목업 둘</b> — 축은 읽었다(시작/결과 · has/none · best/under/clean). 구조 실측이 남았다</li>
+  <li><b><code>--control-border</code> semantic 이름</b> — 선택지·칩·카드 테두리 전부가 이 색이다</li>
+  <li><b><code>build_spec_uiux</code> 정정</b> — §6 의 열한 건 + §9 의 진행바 결정</li>
+  <li><b>koreanapi 를 저장소로 들일지</b> — Phase 1 의 1·2번이 서버이고 5·8번을 막고 있다</li>
+</ol>
 
 </main>
