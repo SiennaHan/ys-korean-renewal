@@ -3282,7 +3282,7 @@ const UIUX_CSS=`
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-active .ux-map-label-bg {
     stroke:rgba(255,120,107,.34); }
   body[data-screen^="sp_"] .ux-seoul-map .ux-pin-leader { stroke:#8ba7b3 !important;
-    stroke-width:1px !important; opacity:.72; }
+    stroke-width:1px !important; opacity:.72; display:none; }
   body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-context { opacity:.78 !important; }
   body[data-screen="sp_entry"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-context) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader),
   body[data-screen="sp_puzzle"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-context) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader) {
@@ -3594,13 +3594,18 @@ function polishFrame(d,v){
       if(el.style.background==='rgb(228, 238, 246)'&&el.style.position==='relative')
         el.classList.add('ux-seoul-map');
     });
-    const labelOffsets={
-      '홍대':[-6,6], '명동':[-26,12], '경복궁':[-34,-8], '한강공원':[-24,16],
-      '광장시장':[28,-5], '성수동':[28,21], '국립중앙박물관':[-10,24],
-      '북촌한옥마을':[19,-18], 'DDP':[48,9], '북한산':[-6,-2]
+    const fullPinTargets={
+      '북한산':[170,38], '경복궁':[168,72], '북촌한옥마을':[190,66],
+      '명동':[176,96], '광장시장':[212,88], 'DDP':[224,101], '홍대':[112,96],
+      '성수동':[266,108], '한강공원':[135,128], '국립중앙박물관':[176,154]
+    };
+    const fullLabelTargets={
+      '북한산':[170,48], '경복궁':[140,64], '북촌한옥마을':[225,54],
+      '명동':[171,105], '광장시장':[244,78], 'DDP':[252,98], '홍대':[84,88],
+      '성수동':[294,101], '한강공원':[105,105], '국립중앙박물관':[176,164]
     };
     const compactTargets={
-      '북한산':[174,31], '경복궁':[140,42], '광장시장':[248,48], 'DDP':[262,66]
+      '북한산':[174,31], '경복궁':[150,55], '광장시장':[235,60], 'DDP':[242,75]
     };
     const compactContext=new Set(Object.keys(compactTargets));
     d.querySelectorAll('.ux-seoul-map svg').forEach(svg=>{
@@ -3609,16 +3614,32 @@ function polishFrame(d,v){
       const isCompact=viewH<150;
       if(viewH<105) svg.querySelectorAll('path[stroke="#a0c4e0"],path[stroke="#bdd8f0"]')
         .forEach(river=>river.setAttribute('transform','translate(0 14)'));
+      if(!isCompact){
+        svg.querySelectorAll('path[stroke="#a0c4e0"],path[stroke="#bdd8f0"]')
+          .forEach(river=>river.setAttribute('transform','translate(0 -42)'));
+        svg.querySelectorAll('rect[fill="#d0dce8"]').forEach(block=>{
+          if(Number(block.getAttribute('y'))===116) block.setAttribute('y','151');
+        });
+      }
       svg.querySelectorAll('g').forEach(place=>{
         const text=place.querySelector('text');
         const name=text?.textContent.trim();
-        if(!text||!labelOffsets[name]) return;
+        if(!text||!fullPinTargets[name]) return;
         const rect=place.querySelector('rect'), leader=place.querySelector('line');
         if(!rect||!leader) return;
-        const [dx,dy]=labelOffsets[name], width=Math.max(28,name.length*7+10), height=13;
-        const baseX=Number(text.getAttribute('x')), baseTop=Number(rect.getAttribute('y'));
+        const width=Math.max(28,name.length*7+10), height=13;
+        const baseX=Number(text.getAttribute('x'));
         const pin=place.querySelector('circle[stroke="#fff"]');
-        const target=isCompact?(compactTargets[name]||[baseX,Number(pin?.getAttribute('cy'))-height-10]):[baseX+dx,baseTop+dy];
+        if(!isCompact&&pin){
+          const [pinX,pinY]=fullPinTargets[name];
+          const moveX=pinX-Number(pin.getAttribute('cx')), moveY=pinY-Number(pin.getAttribute('cy'));
+          place.querySelectorAll('circle[cx][cy]').forEach(dot=>{
+            dot.setAttribute('cx',Number(dot.getAttribute('cx'))+moveX);
+            dot.setAttribute('cy',Number(dot.getAttribute('cy'))+moveY);
+          });
+          leader.setAttribute('x1',pinX); leader.setAttribute('y1',pinY+3);
+        }
+        const target=isCompact?(compactTargets[name]||[baseX,Number(pin?.getAttribute('cy'))-height-10]):fullLabelTargets[name];
         const centerX=Math.max(viewX+width/2+3,Math.min(viewX+viewW-width/2-3,target[0]));
         const topY=Math.max(viewY+3,Math.min(viewY+viewH-height-3,target[1]));
         place.classList.add('ux-map-place');
