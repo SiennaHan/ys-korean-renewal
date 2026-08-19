@@ -13,18 +13,23 @@
 		"lint:fix": "biome lint --write",
 		"format:write": "biome format --write",
 		"format:check": "biome format",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@rsbuild/core": "^1.0.2",
 		"@rsbuild/plugin-react": "^1.0.1",
+		"@storybook/react": "^10.5.9",
 		"@tanstack/router-plugin": "^1.114.13",
 		"@types/canvas-confetti": "^1.9.0",
 		"@types/node": "^24.8.1",
 		"@types/react": "^18.2.0",
 		"@types/react-dom": "^18.2.0",
 		"@types/react-youtube": "^7.10.0",
+		"storybook": "^10.5.9",
+		"storybook-react-rsbuild": "^3.4.2",
 		"typescript": "^5.9.2"
 	},
 	"dependencies": {

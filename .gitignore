@@ -25,3 +25,6 @@ handwriting/
 # ── 파이썬 ──
 __pycache__/
 *.pyc
+
+# ── Storybook 빌드 산출물 ────────────────────────
+app/storybook-static/
