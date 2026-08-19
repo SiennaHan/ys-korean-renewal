@@ -3522,14 +3522,14 @@ const SCREENS={
 // 조사 스나이퍼 결과 표본. 실제 화면에서는 한 판이 끝난 시점의
 // stats.correct / stats.answered를 그대로 받아 같은 값에서 모든 지표를 계산한다.
 const PS_RESULT_SAMPLE={
-  level:"3급",
-  lesson:"6과",
+  level:"1급",
+  lesson:"13과",
   score:1860,
   bestScore:2480,
   maxCombo:4,
-  grade:"B",
-  answered:12,
-  correct:9,
+  grade:"A",
+  answered:20,
+  correct:17,
   mistakes:[
     {sentence:"친구___ 같이 영화를 봤어요.",mine:"와",answer:"하고"},
     {sentence:"학교___ 버스로 가요.",mine:"에서",answer:"에"},
@@ -3761,8 +3761,18 @@ function polishFrame(d,v){
     if(stage){ stage.classList.add('ps-stage','ps-lesson-shell'); }
     buttons.filter(b=>b.isConnected).forEach((b,i)=>b.classList.add(i===0?'ux-back':'ux-lesson-card'));
     const title=exactText(d,'1급'); if(title) title.classList.add('ps-lesson-title');
-    const note=exactText(d,'현재 과와 이전 과에서 최대 8문제가 랜덤 출제됩니다');
-    if(note) note.classList.add('ps-lesson-note');
+    const note=[...d.querySelectorAll('p')].find(el=>el.textContent.includes('현재 과와 이전 과에서 최대'));
+    if(note){
+      note.textContent='현재 과와 이전 과에서 최대 20문제가 랜덤 출제됩니다';
+      note.classList.add('ps-lesson-note');
+    }
+    const roundLengths=[8,16,20,20,20,20,20,20,20];
+    buttons.slice(1).filter(button=>button.isConnected).forEach((button,index)=>{
+      const label=[...button.querySelectorAll('div')].find(el=>
+        el.children.length===0&&el.textContent.trim()==='랜덤 문제');
+      const count=label&&label.previousElementSibling;
+      if(count&&roundLengths[index]) count.textContent=String(roundLengths[index]);
+    });
     if(buttons[1]&&buttons[1].parentElement) buttons[1].parentElement.classList.add('ps-lesson-list');
   }
   if(v==='ps_play'){
