@@ -599,6 +599,67 @@ complete 그 장소 완료</pre>
      <code>seed_data</code> 를 그대로 내보내면 충분하다.</p>
 </div>
 
+<h2 id="s9"><span class="n">9</span>확정 디자인 검수 — <b>game_screens_uiux.html</b></h2>
+<p class="lead">디자인 세션이 <b>17화면</b>으로 다듬어 왔다(내가 넘긴 14 + <b>결과 화면 3개 추가</b>).
+   제약과 결정이 지켜졌는지 하나씩 확인했다.</p>
+
+<div class="callout">
+  <div class="t">넘긴 것보다 <b>늘려 왔다</b> — 결과 화면 셋</div>
+  <p><code>pc_result</code> · <code>ps_result</code> · <code>sp_complete</code>.
+     내가 캡처를 못 했던 화면들이다. 게임을 끝까지 몰고 가야 나오는 것이라 빠뜨렸는데
+     <b>채워 왔다</b>.</p>
+</div>
+
+<h3>손대지 말라고 한 것 — <b>전부 지켜졌다</b></h3>
+<div class="tablewrap"><table>
+  <tr><th>제약</th><th>확인</th></tr>
+  <tr><td>조사 스나이퍼 <b>문항 낙하</b></td>
+      <td><code>.ps-falling-question</code> <code>top:192px</code> ·
+          <code>.ps-ground</code> GROUND <b>살아 있다</b></td></tr>
+  <tr><td>카드 마스터 <b>60초 타이머</b></td><td><b>60s</b> 표기 유지</td></tr>
+  <tr><td>카드 마스터 <b>갈래 색</b>(데이터 유래)</td>
+      <td>네 갈래 색 <b>그대로</b> — <code>#4A9EFF</code> 계열 유지</td></tr>
+  <tr><td>서울 퍼즐 <b>[이름] 치환</b></td><td>"저는 <b>수현이에요</b>" — 받침 처리 유지</td></tr>
+  <tr><td>봄소풍 <b>숫자 3.2rem</b></td><td><b>51.2px</b> = 3.2rem 그대로</td></tr>
+  <tr><td>봄소풍 <b>선택지 세로 1열 · 왼쪽 정렬</b></td><td><code>text-align:left</code> · 전체폭 유지</td></tr>
+  <tr><td><b>CSS 일러스트</b></td>
+      <td>소풍 풍경 <code>.t-illo</code> <b>260 → 300px</b>(키움) · 서울 지도 요소 <b>33개</b> 유지</td></tr>
+  <tr><td>목록 <b>카드 높이 80</b></td><td><b>80px</b> 다섯 장 모두 유지</td></tr>
+</table></div>
+
+<h3>결정이 화면에 들어왔다</h3>
+<div class="tablewrap"><table>
+  <tr><th>결정</th><th>어떻게 반영됐나</th></tr>
+  <tr><td><b>목록 둘째 줄에 진행</b></td>
+      <td>"2급 최고 210점" · "<b>솔이</b> · 2단계까지 했어요" · "12곳 중 5곳 다녀왔어요".
+          내가 쓴 예시 이름(민수)을 <b>실제 친구 이름(솔이)</b>으로 고쳐 왔다</td></tr>
+  <tr><td><b>점수 저장</b></td>
+      <td>결과에 <b>"최고 점수 2,140점"</b> 자리가 생겼다 — 카드 마스터·조사 스나이퍼 둘 다</td></tr>
+  <tr><td><b>맞힘 ≠ 점수</b></td>
+      <td>봄소풍 결과에 <b>"6 첫 시도 정답 / 7 끝까지 맞힘"</b>이 <b>나란히</b> 놓였다.
+          §2 에서 정한 "점수는 첫 시도만, 완료는 재시도 포함"이 <b>그대로 화면이 됐다</b></td></tr>
+  <tr><td>서울 퍼즐 힌트</td><td>완료 화면에 <b>"1 힌트 사용"</b>이 남았다 — 감점 규칙과 맞물린다</td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">하나 남았다 — <b>조사 스나이퍼 결과의 <code>6 / 8</code></b></div>
+  <p>분모 <b>8이 고정</b>으로 박혀 있다. 그런데 §4 에서 한 판 길이를
+     <b>하트 0 · 후보 소진 · 20문항 중 먼저 오는 것</b>으로 바꾸기로 했다.
+     급마다 <b>12~20</b>으로 달라진다.</p>
+  <p><b>디자인 세션 탓이 아니다</b> — 그 결정은 목업을 넘긴 <b>뒤에</b> 나왔다.
+     분모가 가변이라는 것만 알려 주면 된다. 자리 자체는 이미 있다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">검사한 것 — <b>회귀 없음</b></div>
+  <p><b>폭</b> 17화면 × 320 에서 <b>문서 가로 스크롤 0</b>.
+     봄소풍 일러스트가 29px 넘치지만 <b>조상이 잘라 준다</b> — 배경 장식이라 의도된 것이다.</p>
+  <p><b>번역</b> 난이도 버튼(72.9px)에 <code>むずかしい</code> · <code>Play again</code> 등
+     실제 번역을 넣어 봤다 — <b>넘치는 것 없음</b>.</p>
+  <p class="qa">처음에 넘침 4건으로 잡혔는데 <b>내 검사가 과했다</b> —
+     조상이 자르는지, 문서가 실제로 스크롤되는지를 안 봤다. 원본과 대조해서 확인했다.</p>
+</div>
+
 <h2 id="s7"><span class="n">7</span>다국어 — <b>UI 문구가 전부 한국어로 박혀 있다</b></h2>
 <p class="lead">번역해야 하는 것은 <b>콘텐츠가 아니라 화면 문구</b>다 —
    지시문 · 규칙 설명 · 버튼 라벨 · "점수" 같은 용어.
