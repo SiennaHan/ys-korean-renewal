@@ -1,0 +1,243 @@
+<title>0단계 · 활동 목업 읽기 — 구조와 실측</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root{
+    --bg:#f7f8fa; --surface:#fff; --ink:#16181d; --ink-2:#3f454f; --ink-3:#6b7280;
+    --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
+    --stop:#9a3f31; --stop-soft:#fbece9; --ok:#1f7a52; --ok-soft:#e8f6ef; }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme=light]){
+    --bg:#14161a; --surface:#1b1e24; --ink:#e9ecf1; --ink-2:#c2c8d2; --ink-3:#8b93a1;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; --ok:#6dc79b; --ok-soft:#16281f; } }
+  :root[data-theme=dark]{
+    --bg:#14161a; --surface:#1b1e24; --ink:#e9ecf1; --ink-2:#c2c8d2; --ink-3:#8b93a1;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; --ok:#6dc79b; --ok-soft:#16281f; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo",sans-serif;
+    line-height:1.68;-webkit-text-size-adjust:100%}
+  main{max-width:980px;margin:0 auto;padding:40px 22px 90px}
+  h1{font-size:26px;line-height:1.32;margin:0 0 6px;letter-spacing:-.02em}
+  .sub{color:var(--ink-3);font-size:14.5px;margin:0 0 34px}
+  h2{font-size:19px;margin:44px 0 12px;padding-top:20px;border-top:1px solid var(--line);
+    letter-spacing:-.01em;display:flex;align-items:baseline;gap:9px}
+  h2 .n{display:inline-flex;align-items:center;justify-content:center;flex:none;
+    width:24px;height:24px;border-radius:7px;background:var(--accent);color:#fff;
+    font-size:12.5px;font-weight:800}
+  h3{font-size:15.5px;margin:26px 0 8px;color:var(--ink-2)}
+  p{margin:9px 0;font-size:14.5px;color:var(--ink-2)}
+  b{color:var(--ink);font-weight:650}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;
+    background:var(--bg);padding:1.5px 6px;border-radius:5px;border:1px solid var(--line)}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;overflow-x:auto;margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.62}
+  .tablewrap{overflow-x:auto;margin:10px 0}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th{text-align:left;font-size:11px;letter-spacing:.05em;color:var(--ink-3);font-weight:800;
+    padding:7px 9px 5px;border-bottom:2px solid var(--line);white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  td code{white-space:nowrap}
+  .card{border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .card.stop{border-left-color:var(--stop)}
+  .card.ok{border-left-color:var(--ok)}
+  .card .t{font-weight:800;font-size:13.5px;margin-bottom:3px}
+  .card.stop .t{color:var(--stop)} .card.ok .t{color:var(--ok)}
+  .card p{font-size:14px;margin:7px 0}
+  .qa{color:var(--ink-3);font-size:13.5px}
+  ul,ol{padding-left:20px;margin:9px 0} li{margin:5px 0;font-size:14.5px;color:var(--ink-2)}
+  .pill{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;
+    background:var(--accent-soft);color:var(--accent)}
+  .pill.stop{background:var(--stop-soft);color:var(--stop)}
+  .pill.ok{background:var(--ok-soft);color:var(--ok)}
+</style>
+
+<main>
+<h1>0단계 · 활동 목업 읽기</h1>
+<p class="sub"><code>activity_mockups_uiux.html</code> 20화면 — 소스에서 뽑은 구조와 실측. 코드는 아직 쓰지 않았다.</p>
+
+<div class="card">
+  <div class="t">읽는 방법을 바꿨다</div>
+  <p>브라우저로 화면을 하나씩 눌러 재는 방식은 패널이 숨겨지면 타이머가 눌려 20화면에 20분이 걸린다.
+     <b>소스의 빌더 함수와 CSS 규칙을 직접 파싱</b>했다 — 337규칙 · 셀렉터 330개.</p>
+</div>
+
+<h2 id="s1"><span class="n">1</span>공통 골격</h2>
+<p>모든 활동이 같은 다섯 층을 쓴다. <b>세로 flex 이고 높이가 못박혀 있다</b>.</p>
+<pre>appbar          flex 0 0 <b>58</b>   grid 44px 1fr 44px · padding 0 9
+progress-wrap   flex 0 0 <b>28</b>   grid minmax(0,1fr) auto · gap 10 · padding 0 18 8
+activity-content flex 1 1 auto    background blue-gray-50
+  scroll-area     flex 1 1 auto   padding 16
+    problem-card    padding 18 · border 1 control-border · radius <b>16</b>
+    response-area   margin-top 12          ← 활동별로 갈린다
+feedback-slot   flex 0 0 <b>44</b>   background blue-gray-50 · padding 4 16
+footer          flex 0 0 <b>89</b>   background white · padding 16
+  primary         width 100% · height <b>56</b> · radius 12 · 16/24 · 600</pre>
+<p class="qa">고정 블록 합이 58 + 28 + 44 + 89 = <b>219</b> — <code>Phase1_dev_spec</code> §1 이 말한
+   "세로는 고정 블록 219 + 가변 밴드"가 이 넷이다. 숫자가 맞는다.</p>
+
+<h3>appbar</h3>
+<div class="tablewrap"><table>
+  <tr><th>자리</th><th>내용</th></tr>
+  <tr><td>왼쪽 44</td><td>닫기 ✕ — <code>icon-control</code></td></tr>
+  <tr><td>가운데</td><td><code>lesson</code> — "1급 4과"만</td></tr>
+  <tr><td>오른쪽 44</td><td>건너뛰기 → — <code>data-action="skip"</code></td></tr>
+</table></div>
+
+<h3>진행바 — 문서와 어긋난다 <span class="pill stop">확인 필요</span></h3>
+<pre>progressMarkup(current, count)
+  continuous = count &gt;= 16
+  &lt;div class="progress-wrap segmented|continuous"&gt;
+    &lt;div class="progress"&gt;          display flex · gap <b>4</b>
+      &lt;i class="<b>done</b>|<b>now</b>|"&gt;         height <b>5</b> · radius 3 · flex 1 · bg gray-300
+    &lt;div class="progress-meta"&gt;     연속형만 · 11/16 · 500 · 오른쪽 정렬
+      {current+1}/{count}</pre>
+<div class="card stop">
+  <div class="t">칸 상태가 <b>3개</b>다 — 정오답 구분이 없다</div>
+  <p><code>build_spec_uiux</code> §3 은 칸을 <b>4상태</b>로 색 구분한다고 적었다 —
+     정답 <code>fill-correct</code> · 오답 <code>fill-wrong</code> · 채점없음 <code>fill-primary</code> · 미응답 <code>fill-track</code>.
+     §13 은 그 대가(적록색각이상에서 진행바만으로 구별 불가)까지 논한다.</p>
+  <p>그런데 <b>목업은 <code>done</code> · <code>now</code> · 빈 것 셋뿐</b>이다.
+     맞았는지 틀렸는지를 진행바에 <b>넣지 않았다</b>. 그러면 §13 의 논의 자체가 성립하지 않는다.</p>
+  <p class="qa">칸 높이도 다르다 — 문서 <b>6</b> / 목업 <b>5</b>. 현재 위치는 문서가 "높이 10"이라 했는데
+     목업은 <code>now</code> 에 <b>색으로</b> 표시한다(높이가 같다).</p>
+  <p><b>규칙상 목업이 기준이지만 이건 디자인이 아니라 정보 설계라 확인이 필요하다.</b></p>
+</div>
+
+<h2 id="s2"><span class="n">2</span>응답 영역 — 여덟 갈래</h2>
+<p><code>response-area</code> 안에 오는 것이 활동마다 다르다. <b>선택지 컴포넌트가 둘</b>이다.</p>
+<div class="tablewrap"><table>
+  <tr><th>활동</th><th>빌더</th><th>응답 UI</th><th>실측</th></tr>
+  <tr><td>어휘 문제</td><td><code>wordQuiz</code></td><td><code>choice-list</code> &gt; <code>choice</code></td>
+      <td>flex · gap 8</td></tr>
+  <tr><td>일반 듣기</td><td><code>generalListen</code></td><td><code>binary-grid</code> 또는 <code>listen-choices</code> &gt; <code>choice</code></td>
+      <td>2지선다는 <b>grid 1fr 1fr</b> · gap 8</td></tr>
+  <tr><td>읽기 · 지문</td><td><code>readingView</code></td><td><code>passage</code> + <code>q-text</code> + <code>choice-list</code></td>
+      <td>지문이 따로 있다</td></tr>
+  <tr><td>문법 · 빈칸</td><td><code>grammarView</code></td><td><code>blank-card</code> + <code>chip-wrap</code> &gt; <code>chip-opt</code></td>
+      <td>flex · gap 8</td></tr>
+  <tr><td>어휘 미리보기</td><td><code>wordPreview</code></td><td><code>word-preview-list</code> &gt; <code>preview-row</code></td>
+      <td>문항이 아니라 목록 · 진행바 <b>1칸</b></td></tr>
+  <tr><td>자모 듣기</td><td><code>jamoListen</code></td><td><code>jamo-choices</code> &gt; <code>choice</code></td>
+      <td>212자 — 가장 단순하다</td></tr>
+  <tr><td>자모 조합</td><td><code>writeSelect</code></td><td><code>jamo-section</code> + <code>combo-result</code></td>
+      <td>자·모 골라 조합</td></tr>
+  <tr><td>자모 쓰기</td><td><code>writeCanvas</code> · <code>readWriteView</code></td><td><code>canvas</code> + <code>guide</code> + <code>tools</code> / <code>modal-canvas</code></td>
+      <td><b>읽고쓰기는 캔버스가 모달</b></td></tr>
+</table></div>
+
+<h3>선택지 두 종류 — 실측</h3>
+<div class="tablewrap"><table>
+  <tr><th></th><th><code>.choice</code></th><th><code>.chip-opt</code></th><th>내가 만들었던 것 <span class="pill stop">폐기</span></th></tr>
+  <tr><td>폭</td><td>100%</td><td>내용에 맞춤 (실측 73)</td><td>100%</td></tr>
+  <tr><td>높이</td><td>min-height <b>64</b></td><td>auto (실측 40)</td><td>min-height 68</td></tr>
+  <tr><td>패딩</td><td>16 <b>48</b> 16 18 <span class="qa">— 오른쪽이 넓다. ✓/✕ 자리</span></td><td>10 16</td><td>16</td></tr>
+  <tr><td>radius</td><td><b>12</b></td><td><b>8</b></td><td>14</td></tr>
+  <tr><td>글자</td><td>16 / 24</td><td>15 / 500</td><td>22 / 30 · 600</td></tr>
+  <tr><td>테두리</td><td>1px <code>control-border</code></td><td>1px <code>control-border</code></td><td>1px <code>line-normal</code></td></tr>
+</table></div>
+<p><code>choiceMarkup</code> 이 마크를 안에 넣는다 —
+   <code>&lt;button class="choice correct|wrong"&gt;&lt;span&gt;텍스트&lt;/span&gt;&lt;span class="choice-mark"&gt;✓|✕&lt;/span&gt;</code>.
+   패딩 오른쪽 48 이 그 마크 자리다.</p>
+
+<h2 id="s3"><span class="n">3</span>셸을 안 쓰는 화면 셋</h2>
+<div class="tablewrap"><table>
+  <tr><th>화면</th><th>골격</th><th>다른 점</th></tr>
+  <tr><td>플래시카드</td><td><code>appbar</code> + <code>progress</code> + <code>flash-body</code></td>
+      <td><code>scroll-area</code>·<code>problem-card</code>·<code>feedback-slot</code> 없음.
+          <code>flash-stage</code> &gt; <code>flash-card</code> &gt; <code>flash-face</code></td></tr>
+  <tr><td>미션 대화</td><td><code>appbar</code> + <code>scenario</code> + <code>missions</code> + <code>thread</code></td>
+      <td><b>진행바가 없다.</b> 하단이 <code>chat-footer</code>(키보드 입력) 이고
+          <code>footer/dock</code> 이 아니다</td></tr>
+  <tr><td>롤플레잉</td><td><code>appbar</code> + <code>role-intro</code> + <code>turns</code></td>
+      <td>진행바 없음. <code>dock</code> 안에 <code>record-core</code></td></tr>
+</table></div>
+<p class="qa">즉 <code>ActivityShell</code> 은 <b>모든 활동을 감싸는 틀이 아니다</b>.
+   선택지형 다섯 + 자모 여섯은 공통 골격을 쓰고, 이 셋은 <b>appbar 만 공유</b>한다.</p>
+
+<h2 id="s4"><span class="n">4</span>문항 밖 · 예외</h2>
+<div class="tablewrap"><table>
+  <tr><th>화면</th><th>구조</th><th>실측</th></tr>
+  <tr><td>결과</td><td><code>result-head</code> + <code>stat-row</code> + <code>wrong-card</code>(<code>tag</code>·<code>w</code>·<code>e</code>)</td>
+      <td><code>stat-row</code> grid <b>1fr 1fr</b> gap 12 · <code>wrong-card</code> padding 14 radius 12</td></tr>
+  <tr><td>대화 리포트</td><td><code>rep-head</code> + <code>stat-row</code> + <code>rep-tabs</code> + <code>as-row</code></td>
+      <td>탭이 있다</td></tr>
+  <tr><td>미션 브리핑</td><td><code>brief-title</code> + <code>brief-sec</code> + <code>brief-card</code>(<code>scene-img</code>·<code>kw-line</code>·<code>word-strip</code>)</td>
+      <td>대화 <b>시작 전</b> 화면</td></tr>
+  <tr><td>로딩</td><td><code>skeleton</code> &gt; <code>s</code></td><td>188자</td></tr>
+  <tr><td>로드 실패 · 마이크 거부</td><td><code>state-view</code></td>
+      <td>같은 클래스 · padding 0 32 · gap 12 · 가운데 정렬</td></tr>
+</table></div>
+<div class="card stop">
+  <div class="t">내가 놓쳤던 화면 둘</div>
+  <p><b>대화 리포트</b>와 <b>미션 브리핑</b>은 목업에 있는데 내 계획에 없었다.
+     <code>build_spec</code> §9 의 예외 5상태만 보고 <b>"문항 밖" 3화면을 세지 않았다</b>.</p>
+  <p class="qa">그리고 §9 의 <b>종료 확인 시트</b>는 <b>목업에 없다</b> —
+     그래서 취소 버튼 문구가 55키에 없었던 것이다. 내가 <code>player.cancel</code> 을 만들어 넣은 것은
+     <b>목업에 없는 화면을 상상한 결과</b>였다.</p>
+</div>
+
+<h2 id="s5"><span class="n">5</span>색 — 목업 변수를 토큰으로</h2>
+<p>목업은 자기 변수 31개를 쓴다. bench 계열 4개는 목업 자체 크롬이라 제외하면 <b>27개 중 25개가 토큰과 1:1</b>이다.</p>
+<div class="tablewrap"><table>
+  <tr><th>목업</th><th>HEX</th><th>토큰 semantic</th></tr>
+  <tr><td><code>--blue-500</code></td><td>#0180ff</td><td><code>fill-primary</code></td></tr>
+  <tr><td><code>--blue-gray-50</code></td><td>#f6f7f8</td><td><code>background-base</code></td></tr>
+  <tr><td><code>--blue-gray-100</code></td><td>#e5e8ec</td><td><code>line-normal</code></td></tr>
+  <tr><td><code>--blue-gray-900</code></td><td>#383a3f</td><td><code>text-strong</code></td></tr>
+  <tr><td><code>--gray-300</code></td><td>#e0e0e0</td><td><code>fill-track</code></td></tr>
+  <tr><td><code>--positive</code> / <code>-bg</code></td><td>#11c378 / #e7fbce</td><td><code>fill-correct</code> / <code>background-correct</code></td></tr>
+  <tr><td><code>--destructive</code> / <code>-bg</code></td><td>#f15f49 / #ffe8e8</td><td><code>fill-wrong</code> / <code>background-wrong</code></td></tr>
+  <tr><td><code>--white</code> / <code>--control-surface</code></td><td>#fff</td><td><code>background-surface</code></td></tr>
+  <tr><td><code>--gray-200</code></td><td>#eee</td><td><code>background-disable</code></td></tr>
+</table></div>
+<div class="card stop">
+  <div class="t">토큰에 없는 색 둘</div>
+  <div class="tablewrap"><table>
+    <tr><th>목업</th><th>HEX</th><th>가장 가까운 토큰</th><th>차이</th></tr>
+    <tr><td><code>--control-hover</code></td><td>#f8fafc</td><td><code>primitive-white-50</code> #f9fafc</td><td class="n">1</td></tr>
+    <tr><td><code>--control-border</code></td><td>#f0f2f4</td><td><code>primitive-gray-100</code> #f5f5f5</td><td class="n">9</td></tr>
+  </table></div>
+  <p><b><code>--control-border</code> 가 문제다.</b> 선택지·칩·problem-card 의 테두리가 전부 이 색인데,
+     토큰의 <code>line-normal</code>(#e5e8ec)을 쓰면 <b>눈에 보이게 진해진다</b>.
+     내가 만들었던 것이 그랬다.</p>
+  <p class="qa"><code>--control-hover</code> 는 차이 1 이라 <code>white-50</code> 으로 붙여도 된다.
+     <code>--control-border</code> 는 <b>semantic 이름을 새로 추가</b>하는 쪽이 맞다 — §5.0 이 그렇게 하라고 적어 뒀다.</p>
+</div>
+
+<h2 id="s6"><span class="n">6</span>문서와 어긋난 것 — 전부</h2>
+<div class="tablewrap"><table>
+  <tr><th>항목</th><th><code>build_spec_uiux</code></th><th>목업 <span class="pill">기준</span></th></tr>
+  <tr><td>선택지 종류</td><td>§5 한 종류(세로 1열 전폭)</td><td><b>둘</b> — <code>choice</code> · <code>chip-opt</code></td></tr>
+  <tr><td>선택지 높이</td><td>min-height <b>68</b></td><td><b>64</b></td></tr>
+  <tr><td>선택지 radius</td><td><b>14</b></td><td><b>12</b></td></tr>
+  <tr><td>선택지 패딩</td><td>16</td><td>16 <b>48</b> 16 18 — 마크 자리</td></tr>
+  <tr><td>선택지 간격</td><td>gap <b>10</b></td><td>gap <b>8</b></td></tr>
+  <tr><td>2지선다 배치</td><td>세로 1열</td><td><code>binary-grid</code> <b>1fr 1fr</b></td></tr>
+  <tr><td>진행바 칸 높이</td><td><b>6</b> · 현재 위치 10</td><td><b>5</b> · 현재는 색으로</td></tr>
+  <tr><td>진행바 칸 상태</td><td><b>4상태</b> 정오답 색 구분</td><td><b>3상태</b> 정오답 없음</td></tr>
+  <tr><td>진행바 간격</td><td>칸 사이 <b>3</b></td><td>gap <b>4</b></td></tr>
+  <tr><td>문항 밖 화면</td><td>§8 결과만</td><td><b>결과 · 리포트 · 브리핑</b> 셋</td></tr>
+  <tr><td>종료 확인 시트</td><td>§9 5상태 중 하나</td><td><b>없다</b></td></tr>
+</table></div>
+<p><b>열한 군데다.</b> 숫자만 보고 지으면 전부 틀린다.
+   그래서 다음 단계는 Tailwind 유틸리티로 옮겨 적는 대신 <b>목업 CSS 를 클래스 이름째로 가져오는</b> 것이다.</p>
+
+<h2 id="s7"><span class="n">7</span>이 다음</h2>
+<ol>
+  <li>나머지 목업 다섯(<code>nav</code> · <code>shell</code> · <code>vocashot</code> 둘 · <code>game</code>)도 같은 방식으로 읽는다</li>
+  <li>§6 의 어긋남 열한 건에 대해 <b>목업으로 확정</b>하고 <code>build_spec</code> 을 고친다 —
+      단 <b>진행바 정오답 표시</b>는 정보 설계라 판단을 받는다</li>
+  <li><code>--control-border</code> semantic 이름을 정한다</li>
+  <li>그다음 1단계 — 목업 CSS 이관</li>
+</ol>
+<div class="card">
+  <div class="t">정해 주셔야 할 것</div>
+  <p><b>진행바에 정오답을 표시할 것인가.</b> 목업은 안 하고, 문서는 한다고 적혀 있고,
+     문서의 접근성 절(§13)은 "한다"를 전제로 쓰여 있다.</p>
+</div>
+
+</main>
