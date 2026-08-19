@@ -27,12 +27,9 @@
 .game-frame[data-screen^="ps_"] {
   --app-width: 100%;
 }
-.game-frame *,
-.game-frame *::before,
-.game-frame *::after {
-  animation: none !important;
-  transition: none !important;
-}
+/* 목업 render() 는 정지 화면을 캡처하려고 애니메이션을 전부 껐다.
+   앱에서는 그러면 안 된다 — 서울 퍼즐의 화면 전환(sp-slideUp)·컨페티·토스트,
+   봄소풍의 등장 효과가 다 죽는다. 그 규칙은 옮기지 않는다. */
 
 :root { color-scheme:light; }
   html,.game-frame { font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif; }
