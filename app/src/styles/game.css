@@ -17,9 +17,15 @@
    --app-width 는 app-layout 래퍼가 주는 값이라 캡처 안에 없고,
    없으면 게임 화면의 폭이 무너진다. */
 .game-frame {
-  --app-width: 100%;
   width: 100%;
   height: 100%;
+}
+/* --app-width 는 캡처 범위 밖(app-layout 래퍼)에서 오던 값이라 캡처형 화면에만 넣는다.
+   봄소풍·서울 퍼즐의 .spg / .seoul 은 앱이 이 변수로 폭 상한을 잡으므로
+   여기서 100% 로 덮으면 position:fixed 인 그것들이 화면 밖으로 퍼진다. */
+.game-frame[data-screen^="cs_"],
+.game-frame[data-screen^="ps_"] {
+  --app-width: 100%;
 }
 .game-frame *,
 .game-frame *::before,
@@ -431,7 +437,10 @@
   }
 
   /* 봄소풍 — 원래 CSS 일러스트와 큰 숫자, 세로 선택지는 그대로 */
-  .game-frame[data-screen^="pc_"] .spg { max-width:none; font-family:"Pretendard","Apple SD Gothic Neo",sans-serif;
+  /* 목업은 390 기기 안에서 .spg 를 그렸으므로 max-width 를 풀어도 됐다.
+     앱의 .spg 는 position:fixed 라 상한이 없으면 뷰포트 전체로 퍼진다 —
+     앱이 쓰는 var(--app-width, 375px) 를 그대로 둔다. */
+  .game-frame[data-screen^="pc_"] .spg { max-width:var(--app-width, 375px); font-family:"Pretendard","Apple SD Gothic Neo",sans-serif;
     --pk:#fff4f7; --pkl:#fff0f4; --pkb:#f0c4d2; --pkm:#e899b2; --pkd:#c94f78;
     --pkp:#7e304c; --pu:#6558bd; --pul:#f2f0ff; --pum:#b9b4eb; --pud:#332d65;
     --gr:#cfe7ad; --grd:#94bf69; --gy:#777971; --gyl:#f5f3ee; --gyb:#dfdcd5;

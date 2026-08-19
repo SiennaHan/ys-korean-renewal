@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import useSound from "use-sound";
-import { useConfetti } from "@/components/effect/confetti-provider";
-import { useSoundEffects } from "@/components/effect/use-sound-effects";
-import { getGameProgress, saveGameProgress } from "@/api/game-progress";
 import {
 	getSpringPicnicFriends,
 	getSpringPicnicQuestions,
 } from "@/api/game-content";
+import { getGameProgress, saveGameProgress } from "@/api/game-progress";
+import { useConfetti } from "@/components/effect/confetti-provider";
+import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import { useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import useSound from "use-sound";
 import "./spring-picnic.css";
 
 const GAME_NAME = "spring-picnic";
@@ -42,7 +42,6 @@ interface Question {
 	correct: string;
 	wrong: string[];
 }
-
 
 /* ══════════════════════════
    Helpers
@@ -105,9 +104,7 @@ function stopQuestionAudio() {
 function speakQuestion(question: Question, delayMs = 0) {
 	stopQuestionAudio();
 	const play = () => {
-		const audio = new Audio(
-			`/sounds/spring-picnic/${question.id}.m4a`,
-		);
+		const audio = new Audio(`/sounds/spring-picnic/${question.id}.m4a`);
 		activeQuestionAudio = audio;
 		audio.addEventListener(
 			"error",
@@ -141,13 +138,49 @@ function speakQuestion(question: Question, delayMs = 0) {
    Decorative Banner Components
 ══════════════════════════ */
 
+/**
+ * 확정 목업(game_screens_uiux)이 봄소풍 장면마다 넣던 장식이다.
+ * 목업은 캡처한 DOM 에 런타임으로 append 했지만 앱에서는 마크업에 둔다.
+ * 해와 꽃잎은 모든 장면에, 바구니는 t-illo 장면에만 들어간다.
+ */
+function PicnicDecor({ basket = false }: { basket?: boolean }) {
+	return (
+		<>
+			<div className="ux-sun" />
+			<div className="ux-petals">
+				{/* 꽃잎 6장 — 목업과 같은 수 */}
+				{Array.from({ length: 6 }, (_, i) => (
+					<i key={i} className="ux-petal" />
+				))}
+			</div>
+			{basket && (
+				<div className="ux-basket">
+					<i />
+					<i />
+					<i />
+				</div>
+			)}
+		</>
+	);
+}
+
 function TitleBanner() {
 	return (
-		<div className="t-illo">
+		<div className="t-illo ux-picnic-scene">
+			<PicnicDecor basket />
 			<div className="t-sky" />
-			<div className="t-cl" style={{ width: 60, height: 22, top: 18, left: 30, opacity: 0.9 }} />
-			<div className="t-cl" style={{ width: 44, height: 16, top: 28, left: 70 }} />
-			<div className="t-cl" style={{ width: 52, height: 18, top: 16, right: 38, opacity: 0.85 }} />
+			<div
+				className="t-cl"
+				style={{ width: 60, height: 22, top: 18, left: 30, opacity: 0.9 }}
+			/>
+			<div
+				className="t-cl"
+				style={{ width: 44, height: 16, top: 28, left: 70 }}
+			/>
+			<div
+				className="t-cl"
+				style={{ width: 52, height: 18, top: 16, right: 38, opacity: 0.85 }}
+			/>
 			<div className="t-gr" />
 			<div className="t-gd" />
 			<div className="t-tr" style={{ left: 22 }}>
@@ -164,15 +197,31 @@ function TitleBanner() {
 				<div className="t-bk" />
 			</div>
 			<div className="t-bn">{"\u{1F371}"}</div>
-			<div className="t-pt" style={{ top: 32, left: 80, background: "#F4C0D1" }} />
-			<div className="t-pt" style={{ top: 52, right: 72, background: "#AFA9EC" }} />
-			<div className="t-pt" style={{ top: 24, right: 112, background: "#F4C0D1" }} />
-			<div className="t-pt" style={{ top: 66, left: 56, background: "#9FE1CB" }} />
+			<div
+				className="t-pt"
+				style={{ top: 32, left: 80, background: "#F4C0D1" }}
+			/>
+			<div
+				className="t-pt"
+				style={{ top: 52, right: 72, background: "#AFA9EC" }}
+			/>
+			<div
+				className="t-pt"
+				style={{ top: 24, right: 112, background: "#F4C0D1" }}
+			/>
+			<div
+				className="t-pt"
+				style={{ top: 66, left: 56, background: "#9FE1CB" }}
+			/>
 			<div className="t-ch" style={{ left: 128 }}>
-				<div className="t-cb" style={{ background: "#AFA9EC" }}>{"\u{1F430}"}</div>
+				<div className="t-cb" style={{ background: "#AFA9EC" }}>
+					{"\u{1F430}"}
+				</div>
 			</div>
 			<div className="t-ch" style={{ right: 116 }}>
-				<div className="t-cb" style={{ background: "#F0997B" }}>{"\u{1F43B}"}</div>
+				<div className="t-cb" style={{ background: "#F0997B" }}>
+					{"\u{1F43B}"}
+				</div>
 			</div>
 		</div>
 	);
@@ -180,11 +229,24 @@ function TitleBanner() {
 
 function SmallBanner({ label }: { label: string }) {
 	return (
-		<div className="t-illo" style={{ flex: "0 0 120px", minHeight: 120, maxHeight: 120 }}>
+		<div
+			className="t-illo ux-picnic-scene"
+			style={{ flex: "0 0 120px", minHeight: 120, maxHeight: 120 }}
+		>
+			<PicnicDecor basket />
 			<div className="t-sky" />
-			<div className="t-cl" style={{ width: 50, height: 18, top: 14, left: 22, opacity: 0.9 }} />
-			<div className="t-cl" style={{ width: 36, height: 13, top: 22, left: 58 }} />
-			<div className="t-cl" style={{ width: 44, height: 15, top: 12, right: 32, opacity: 0.85 }} />
+			<div
+				className="t-cl"
+				style={{ width: 50, height: 18, top: 14, left: 22, opacity: 0.9 }}
+			/>
+			<div
+				className="t-cl"
+				style={{ width: 36, height: 13, top: 22, left: 58 }}
+			/>
+			<div
+				className="t-cl"
+				style={{ width: 44, height: 15, top: 12, right: 32, opacity: 0.85 }}
+			/>
 			<div className="t-gr" />
 			<div className="t-gd" />
 			<div className="t-tr" style={{ left: 16 }}>
@@ -200,18 +262,51 @@ function SmallBanner({ label }: { label: string }) {
 			<div className="t-bl" style={{ width: 70, height: 34, bottom: 24 }}>
 				<div className="t-bk" />
 			</div>
-			<div className="t-bn" style={{ bottom: 40, fontSize: 16 }}>{"\u{1F371}"}</div>
-			<div className="t-pt" style={{ top: 24, left: 64, background: "#F4C0D1" }} />
-			<div className="t-pt" style={{ top: 38, right: 58, background: "#AFA9EC" }} />
-			<div className="t-pt" style={{ top: 18, right: 88, background: "#F4C0D1" }} />
+			<div className="t-bn" style={{ bottom: 40, fontSize: 16 }}>
+				{"\u{1F371}"}
+			</div>
+			<div
+				className="t-pt"
+				style={{ top: 24, left: 64, background: "#F4C0D1" }}
+			/>
+			<div
+				className="t-pt"
+				style={{ top: 38, right: 58, background: "#AFA9EC" }}
+			/>
+			<div
+				className="t-pt"
+				style={{ top: 18, right: 88, background: "#F4C0D1" }}
+			/>
 			<div className="t-ch" style={{ left: 108, bottom: 26 }}>
-				<div className="t-cb" style={{ background: "#AFA9EC", fontSize: 10 }}>{"\u{1F430}"}</div>
+				<div className="t-cb" style={{ background: "#AFA9EC", fontSize: 10 }}>
+					{"\u{1F430}"}
+				</div>
 			</div>
 			<div className="t-ch" style={{ right: 96, bottom: 26 }}>
-				<div className="t-cb" style={{ background: "#F0997B", fontSize: 10 }}>{"\u{1F43B}"}</div>
+				<div className="t-cb" style={{ background: "#F0997B", fontSize: 10 }}>
+					{"\u{1F43B}"}
+				</div>
 			</div>
-			<div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", paddingBottom: 30 }}>
-				<span style={{ fontSize: 16, fontWeight: 700, color: "var(--pud)", background: "rgba(255,255,255,.75)", padding: "4px 14px", borderRadius: 20 }}>
+			<div
+				style={{
+					position: "absolute",
+					inset: 0,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					paddingBottom: 30,
+				}}
+			>
+				<span
+					style={{
+						fontSize: 16,
+						fontWeight: 700,
+						color: "var(--pud)",
+						background: "rgba(255,255,255,.75)",
+						padding: "4px 14px",
+						borderRadius: 20,
+					}}
+				>
 					{label}
 				</span>
 			</div>
@@ -221,11 +316,22 @@ function SmallBanner({ label }: { label: string }) {
 
 function GameBanner() {
 	return (
-		<div className="g-header">
+		<div className="g-header ux-picnic-scene">
+			{/* g-header 는 t-illo 가 아니므로 바구니가 없다 */}
+			<PicnicDecor />
 			<div className="g-h-sky" />
-			<div className="g-h-cl" style={{ width: 44, height: 14, top: 10, left: 20, opacity: 0.9 }} />
-			<div className="g-h-cl" style={{ width: 32, height: 11, top: 16, left: 52 }} />
-			<div className="g-h-cl" style={{ width: 38, height: 13, top: 8, right: 28, opacity: 0.85 }} />
+			<div
+				className="g-h-cl"
+				style={{ width: 44, height: 14, top: 10, left: 20, opacity: 0.9 }}
+			/>
+			<div
+				className="g-h-cl"
+				style={{ width: 32, height: 11, top: 16, left: 52 }}
+			/>
+			<div
+				className="g-h-cl"
+				style={{ width: 38, height: 13, top: 8, right: 28, opacity: 0.85 }}
+			/>
 			<div className="g-h-gr" />
 			<div className="g-h-gd" />
 			<div className="g-h-tr" style={{ left: 14 }}>
@@ -238,14 +344,27 @@ function GameBanner() {
 				<div className="g-h-t1" />
 				<div className="g-h-tt" />
 			</div>
-			<div className="g-h-pt" style={{ top: 18, left: 56, background: "#F4C0D1" }} />
-			<div className="g-h-pt" style={{ top: 30, right: 50, background: "#AFA9EC" }} />
-			<div className="g-h-pt" style={{ top: 14, right: 76, background: "#F4C0D1" }} />
+			<div
+				className="g-h-pt"
+				style={{ top: 18, left: 56, background: "#F4C0D1" }}
+			/>
+			<div
+				className="g-h-pt"
+				style={{ top: 30, right: 50, background: "#AFA9EC" }}
+			/>
+			<div
+				className="g-h-pt"
+				style={{ top: 14, right: 76, background: "#F4C0D1" }}
+			/>
 			<div className="g-h-ch" style={{ left: 88 }}>
-				<div className="g-h-cb" style={{ background: "#AFA9EC" }}>{"\u{1F430}"}</div>
+				<div className="g-h-cb" style={{ background: "#AFA9EC" }}>
+					{"\u{1F430}"}
+				</div>
 			</div>
 			<div className="g-h-ch" style={{ right: 80 }}>
-				<div className="g-h-cb" style={{ background: "#F0997B" }}>{"\u{1F43B}"}</div>
+				<div className="g-h-cb" style={{ background: "#F0997B" }}>
+					{"\u{1F43B}"}
+				</div>
 			</div>
 		</div>
 	);
@@ -277,10 +396,9 @@ export default function SpringPicnicGame() {
 	const navigate = useNavigate();
 	const { i18n } = useTranslation();
 	const sound = useSoundEffects();
-	const [playRetrySound] = useSound(
-		"/sounds/spring-picnic/incorrect.mp3",
-		{ volume: 0.85 },
-	);
+	const [playRetrySound] = useSound("/sounds/spring-picnic/incorrect.mp3", {
+		volume: 0.85,
+	});
 	const confetti = useConfetti();
 
 	const curLang = useMemo(() => {
@@ -341,7 +459,8 @@ export default function SpringPicnicGame() {
 						if (e.lastLv !== undefined) merged.lastLv = e.lastLv;
 						if (e.lastDate !== undefined) merged.lastDate = e.lastDate;
 						if (e.totalPlayed !== undefined) merged.totalPlayed = e.totalPlayed;
-						if (e.wrongHistory !== undefined) merged.wrongHistory = e.wrongHistory;
+						if (e.wrongHistory !== undefined)
+							merged.wrongHistory = e.wrongHistory;
 					}
 					try {
 						localStorage.setItem(SK, JSON.stringify(merged));
@@ -374,7 +493,7 @@ export default function SpringPicnicGame() {
 			if (!f) return;
 			const st = loadSt();
 
-			let pool = questions.filter(
+			const pool = questions.filter(
 				(q) => f.cats.includes(q.cat) && q.level === level,
 			);
 			const hist = ((st.wrongHistory as string[]) || []).filter((id: string) =>
@@ -383,14 +502,9 @@ export default function SpringPicnicGame() {
 			const histQs = hist
 				.map((id: string) => pool.find((q) => q.id === id))
 				.filter(Boolean) as Question[];
-			const rest = shuffle(
-				pool.filter((q) => !hist.includes(q.id)),
-			);
+			const rest = shuffle(pool.filter((q) => !hist.includes(q.id)));
 			const rounds = [...histQs, ...rest];
-			const choices = shuffle([
-				rounds[0].correct,
-				...rounds[0].wrong,
-			]);
+			const choices = shuffle([rounds[0].correct, ...rounds[0].wrong]);
 
 			setGame({
 				friend: f,
@@ -469,9 +583,7 @@ export default function SpringPicnicGame() {
 					retrying: false,
 					chosenAnswer: null,
 					wQueue: [],
-					choices: nextQ
-						? shuffle([nextQ.correct, ...nextQ.wrong])
-						: [],
+					choices: nextQ ? shuffle([nextQ.correct, ...nextQ.wrong]) : [],
 				});
 			} else {
 				showResult();
@@ -499,9 +611,7 @@ export default function SpringPicnicGame() {
 		const played = (st.played as Record<string, boolean>) || {};
 		if (pct >= 70) played[`${game.friend.id}_${game.level}`] = true;
 
-		const hist = new Set<string>(
-			(st.wrongHistory as string[]) || [],
-		);
+		const hist = new Set<string>((st.wrongHistory as string[]) || []);
 		game.wSet.forEach((id) => {
 			if (game.w2.has(id)) hist.add(id);
 			else hist.delete(id);
@@ -589,87 +699,104 @@ export default function SpringPicnicGame() {
 			</div>
 		);
 	}
+	// 이관한 게임 CSS 는 화면을 data-screen 으로 가른다
+	const screenId =
+		screen === "title"
+			? "pc_title"
+			: screen === "select"
+				? "pc_select"
+				: screen === "result"
+					? "pc_result"
+					: "pc_game";
 
+	// 이관한 CSS 는 .game-frame[data-screen] .spg 형태다 — .spg 가 하위여야 한다
 	return (
-		<div className="spg">
-			{screen === "title" && (
-				<div className="scr s-title">
-					<button type="button" className="back-btn" onClick={goBack}>
-						<ArrowLeft size={18} color="#993556" />
-					</button>
-					<TitleBanner />
-					<div className="t-body">
-						{lastPlay && (
-							<div className="t-lp">
-								지난 미션: {lastPlay.friend}{" "}
-								{lastPlay.lv === 1 ? "🌱" : "🌸"}{" "}
-								{lastPlay.score}점 · {lastPlay.date}
+		<div className="game-frame" data-screen={screenId}>
+			{/* 목업은 .spg 에 --app-width:100% 를 넣었다. 목업에서는 .spg 가 캡처 폭 안에
+			    갇혀 있어 문제가 없었지만, 앱의 .spg 는 position:fixed 이고
+			    max-width:var(--app-width, 375px) 라 100% 로 덮으면 화면 밖으로 퍼진다.
+			    앱에서는 기본값(375px)을 그대로 쓴다. */}
+			<div className="spg">
+				{screen === "title" && (
+					<div className="scr s-title">
+						{/* 목업(pc_title)은 이 버튼에 ux-back 을 붙인다 */}
+						<button type="button" className="back-btn ux-back" onClick={goBack}>
+							<ArrowLeft size={18} color="#993556" />
+						</button>
+						<TitleBanner />
+						<div className="t-body">
+							{lastPlay && (
+								<div className="t-lp">
+									지난 미션: {lastPlay.friend} {lastPlay.lv === 1 ? "🌱" : "🌸"}{" "}
+									{lastPlay.score}점 · {lastPlay.date}
+								</div>
+							)}
+							<div className="t-title">🌸 봄 소풍 숫자 미션</div>
+							<div className="t-sub">
+								친구들과 소풍을 즐기며
+								<br />
+								한국어 숫자 미션을 완수해요!
 							</div>
-						)}
-						<div className="t-title">🌸 봄 소풍 숫자 미션</div>
-						<div className="t-sub">
-							친구들과 소풍을 즐기며
-							<br />
-							한국어 숫자 미션을 완수해요!
+							<button
+								type="button"
+								className="t-start"
+								onClick={() => setScreen("select")}
+							>
+								시작하기 🌸
+							</button>
 						</div>
+					</div>
+				)}
+
+				{screen === "select" && (
+					<div className="scr" style={{ justifyContent: "flex-start" }}>
 						<button
 							type="button"
-							className="t-start"
-							onClick={() => setScreen("select")}
+							className="back-btn"
+							onClick={() => setScreen("title")}
 						>
-							시작하기 🌸
+							<ArrowLeft size={18} color="#993556" />
 						</button>
-					</div>
-				</div>
-			)}
-
-			{screen === "select" && (
-				<div className="scr" style={{ justifyContent: "flex-start" }}>
-					<button type="button" className="back-btn" onClick={() => setScreen("title")}>
-						<ArrowLeft size={18} color="#993556" />
-					</button>
-					<SmallBanner label="미션 선택" />
-					<div className="sel-body">
-						<div className="sel-subtitle">
-							친구와 난이도를 골라요
+						<SmallBanner label="미션 선택" />
+						<div className="sel-body">
+							<div className="sel-subtitle">친구와 난이도를 골라요</div>
+							{friends.map((f) => {
+								const st = loadSt();
+								const played = (st.played as Record<string, boolean>) || {};
+								return (
+									<SelectRow
+										key={f.id}
+										friend={f}
+										played={played}
+										onStart={startGame}
+									/>
+								);
+							})}
 						</div>
-						{friends.map((f) => {
-							const st = loadSt();
-							const played =
-								(st.played as Record<string, boolean>) || {};
-							return (
-								<SelectRow
-									key={f.id}
-									friend={f}
-									played={played}
-									onStart={startGame}
-								/>
-							);
-						})}
 					</div>
-				</div>
-			)}
+				)}
 
-			{screen === "game" && game && (
-				<GameScreen
-					game={game}
-					curLang={curLang}
-					onChoose={choose}
-					onNext={nextQuestion}
-					onShowResult={showResult}
-					onExit={goBack}
-				/>
-			)}
+				{screen === "game" && game && (
+					<GameScreen
+						game={game}
+						curLang={curLang}
+						onChoose={choose}
+						onNext={nextQuestion}
+						onShowResult={showResult}
+						onExit={goBack}
+					/>
+				)}
 
-			{screen === "result" && game && (
-				<ResultScreen
-					game={game}
-					friends={friends}
-					questions={questions}
-					onSelectScreen={() => setScreen("select")}
-					onReset={resetStorage}
-				/>
-			)}
+				{screen === "result" && game && (
+					<ResultScreen
+						game={game}
+						friends={friends}
+						questions={questions}
+						onSelectScreen={() => setScreen("select")}
+						onReset={resetStorage}
+					/>
+				)}
+			</div>
 		</div>
 	);
 }
@@ -701,36 +828,24 @@ function SelectRow({
 			<div className="sel-lvbtns">
 				<button
 					type="button"
-					className="sel-lvbtn easy"
+					className="sel-lvbtn easy ux-level"
 					onClick={() => onStart(friend.id, 1)}
-					onMouseEnter={() =>
-						setDesc(`🌱 ${friend.desc}`)
-					}
-					onMouseLeave={() =>
-						setDesc(`🌱 ${friend.desc}`)
-					}
+					onMouseEnter={() => setDesc(`🌱 ${friend.desc}`)}
+					onMouseLeave={() => setDesc(`🌱 ${friend.desc}`)}
 				>
-					<div
-						className={`sel-ck${played[`${friend.id}_1`] ? " show" : ""}`}
-					>
+					<div className={`sel-ck${played[`${friend.id}_1`] ? " show" : ""}`}>
 						✓
 					</div>
 					🌱 쉬움
 				</button>
 				<button
 					type="button"
-					className="sel-lvbtn hard"
+					className="sel-lvbtn hard ux-level"
 					onClick={() => onStart(friend.id, 2)}
-					onMouseEnter={() =>
-						setDesc(`🌸 ${friend.desc2}`)
-					}
-					onMouseLeave={() =>
-						setDesc(`🌱 ${friend.desc}`)
-					}
+					onMouseEnter={() => setDesc(`🌸 ${friend.desc2}`)}
+					onMouseLeave={() => setDesc(`🌱 ${friend.desc}`)}
 				>
-					<div
-						className={`sel-ck${played[`${friend.id}_2`] ? " show" : ""}`}
-					>
+					<div className={`sel-ck${played[`${friend.id}_2`] ? " show" : ""}`}>
 						✓
 					</div>
 					🌸 어려움
@@ -759,8 +874,7 @@ function GameScreen({
 	if (!q) return null;
 
 	const isCorrect = game.chosenAnswer === q.correct;
-	const isLast =
-		game.cur >= game.rounds.length - 1 && game.wQueue.length === 0;
+	const isLast = game.cur >= game.rounds.length - 1 && game.wQueue.length === 0;
 
 	const tmplParts = q.tmpl.split("___");
 
@@ -774,8 +888,7 @@ function GameScreen({
 						<div>
 							<div className="g-nm">{game.friend.name}</div>
 							<div className="g-ms">
-								{game.friend.mission}{" "}
-								{game.level === 1 ? "🌱" : "🌸"}
+								{game.friend.mission} {game.level === 1 ? "🌱" : "🌸"}
 							</div>
 						</div>
 					</div>
@@ -803,12 +916,8 @@ function GameScreen({
 
 			<div className="g-card">
 				<div className="g-qarea">
-					{game.wSet.has(q.id) && (
-						<div className="g-rb">🔄 다시 도전!</div>
-					)}
-					<div className="g-hint">
-						{q.hint[curLang] || q.hint.ko}
-					</div>
+					{game.wSet.has(q.id) && <div className="g-rb">🔄 다시 도전!</div>}
+					<div className="g-hint">{q.hint[curLang] || q.hint.ko}</div>
 					<div className="g-num">{q.num}</div>
 					<div className="g-illo-wrap">
 						<div className="g-illo">{q.il}</div>
@@ -820,11 +929,11 @@ function GameScreen({
 					</div>
 					<div className="g-choices">
 						{game.choices.map((c) => {
-							let cls = "ch";
+							// 목업(pc_game)은 선택지에 ux-answer, 나가기에 ux-exit 를 붙인다
+							let cls = "ch ux-answer";
 							if (game.answered) {
 								if (c === q.correct) cls += " ok";
-								else if (c === game.chosenAnswer)
-									cls += " ng";
+								else if (c === game.chosenAnswer) cls += " ng";
 							} else if (game.retrying && c === game.chosenAnswer) {
 								cls += " ng";
 							}
@@ -834,8 +943,7 @@ function GameScreen({
 									type="button"
 									className={cls}
 									disabled={
-										game.answered ||
-										(game.retrying && c === game.chosenAnswer)
+										game.answered || (game.retrying && c === game.chosenAnswer)
 									}
 									onClick={() => onChoose(c)}
 								>
@@ -849,21 +957,21 @@ function GameScreen({
 				<div className="g-bottom">
 					{(game.answered || game.retrying) && (
 						<>
-							<div
-								className={`g-fb ${isCorrect ? "ok" : "ng"}`}
-							>
-								<div
-									className={`g-fbi ${isCorrect ? "ok" : "ng"}`}
-								>
+							<div className={`g-fb ${isCorrect ? "ok" : "ng"}`}>
+								<div className={`g-fbi ${isCorrect ? "ok" : "ng"}`}>
 									{game.retrying ? "↻" : isCorrect ? "✓" : "✗"}
 								</div>
 								<div className="g-fbr">
 									<div className="g-fbt">
-										{game.retrying
-											? "아쉬워요! 한 번 더 해 보세요."
-											: isCorrect
-											? q.tts
-											: <>정답: <strong>{q.correct}</strong></>}
+										{game.retrying ? (
+											"아쉬워요! 한 번 더 해 보세요."
+										) : isCorrect ? (
+											q.tts
+										) : (
+											<>
+												정답: <strong>{q.correct}</strong>
+											</>
+										)}
 									</div>
 									{game.answered && (
 										<button
@@ -879,18 +987,16 @@ function GameScreen({
 						</>
 					)}
 					<div className="g-btn-row">
-						<button
-							type="button"
-							className="g-exit"
-							onClick={onExit}
-						>
+						<button type="button" className="g-exit ux-exit" onClick={onExit}>
 							나가기
 						</button>
 						{game.answered && (
 							<button
 								type="button"
 								className="g-nxt"
-								onClick={isLast && game.wQueue.length === 0 ? onShowResult : onNext}
+								onClick={
+									isLast && game.wQueue.length === 0 ? onShowResult : onNext
+								}
 							>
 								{isLast && game.wQueue.length === 0
 									? isCorrect
@@ -955,11 +1061,7 @@ function ResultScreen({
 					<div className="r-bnr">{banner}</div>
 					<div className="r-chrs">
 						{friends.map((f) => (
-							<div
-								key={f.id}
-								className="r-chr"
-								style={{ background: f.bg }}
-							>
+							<div key={f.id} className="r-chr" style={{ background: f.bg }}>
 								{f.face}
 							</div>
 						))}
@@ -970,8 +1072,7 @@ function ResultScreen({
 					{game.score} / {total}
 				</div>
 				<div className="r-sub">
-					{game.friend.name}{" "}
-					{game.level === 1 ? "🌱쉬운" : "🌸어려운"} 미션
+					{game.friend.name} {game.level === 1 ? "🌱쉬운" : "🌸어려운"} 미션
 				</div>
 				<div className="r-stats">
 					<div className="r-st">
@@ -991,10 +1092,7 @@ function ResultScreen({
 				{wrongItems.length > 0 && (
 					<div className="r-wnote">
 						<div className="r-wnt">
-							오답 노트{" "}
-							<span className="r-wnc">
-								{wrongItems.length}개
-							</span>
+							오답 노트 <span className="r-wnc">{wrongItems.length}개</span>
 						</div>
 						{wrongItems.map((q) => (
 							<div key={q.id} className="r-wni">
@@ -1012,11 +1110,7 @@ function ResultScreen({
 											🔊
 										</button>
 									</div>
-									{game.w2.has(q.id) && (
-										<div className="r-wn2">
-											두 번 틀림
-										</div>
-									)}
+									{game.w2.has(q.id) && <div className="r-wn2">두 번 틀림</div>}
 								</div>
 							</div>
 						))}
@@ -1025,18 +1119,10 @@ function ResultScreen({
 			</div>
 
 			<div className="r-btns">
-				<button
-					type="button"
-					className="r-back"
-					onClick={onSelectScreen}
-				>
+				<button type="button" className="r-back" onClick={onSelectScreen}>
 					다른 미션 하기 🌸
 				</button>
-				<button
-					type="button"
-					className="r-rst"
-					onClick={onReset}
-				>
+				<button type="button" className="r-rst" onClick={onReset}>
 					저장 데이터 초기화
 				</button>
 			</div>
