@@ -132,7 +132,7 @@ const en = {
 			},
 		},
 		vocashot: {
-			title: "VocaShot Game",
+			title: "VocaShot",
 			roomPin: "Room PIN",
 			nickname: "Nickname",
 			nicknamePlaceholder: "Name or nickname",

@@ -111,7 +111,7 @@ const ja = {
 		list: {
 			title: "ゲーム",
 			vocashot: {
-				name: "単語当て",
+				name: "VocaShot",
 				description: "ひとりで流星を撃って語彙を練習します",
 			},
 			springPicnic: {
@@ -132,7 +132,7 @@ const ja = {
 			},
 		},
 		vocashot: {
-			title: "単語当てゲーム",
+			title: "VocaShot",
 			roomPin: "ルームPIN番号",
 			nickname: "ニックネーム",
 			nicknamePlaceholder: "名前またはニックネーム",

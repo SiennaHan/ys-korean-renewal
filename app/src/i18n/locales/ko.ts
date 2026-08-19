@@ -132,7 +132,7 @@ const ko = {
 			},
 		},
 		vocashot: {
-			title: "낱말맞추기 게임",
+			title: "VocaShot",
 			roomPin: "방 PIN 번호",
 			nickname: "닉네임",
 			nicknamePlaceholder: "이름 또는 닉네임",

@@ -111,7 +111,7 @@ const vi = {
 		list: {
 			title: "Trò chơi",
 			vocashot: {
-				name: "Đoán từ",
+				name: "VocaShot",
 				description: "Một mình bắn thiên thạch để luyện từ vựng",
 			},
 			springPicnic: {
@@ -132,7 +132,7 @@ const vi = {
 			},
 		},
 		vocashot: {
-			title: "Trò chơi Đoán từ",
+			title: "VocaShot",
 			roomPin: "Mã PIN phòng",
 			nickname: "Biệt danh",
 			nicknamePlaceholder: "Tên hoặc biệt danh",

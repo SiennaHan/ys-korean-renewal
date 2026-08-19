@@ -108,7 +108,7 @@ const zh = {
 		list: {
 			title: "游戏",
 			vocashot: {
-				name: "猜单词",
+				name: "VocaShot",
 				description: "独自射击流星，练习词汇",
 			},
 			springPicnic: {
@@ -129,7 +129,7 @@ const zh = {
 			},
 		},
 		vocashot: {
-			title: "猜单词游戏",
+			title: "VocaShot",
 			roomPin: "房间PIN码",
 			nickname: "昵称",
 			nicknamePlaceholder: "姓名或昵称",
