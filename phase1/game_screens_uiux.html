@@ -3604,16 +3604,22 @@ function polishFrame(d,v){
       '광장시장':[258,85], 'DDP':[272,98], '명동':[180,114], '홍대':[84,105],
       '성수동':[304,117], '국립중앙박물관':[218,137], '한강공원':[100,137]
     };
-    const compactTargets={
-      '북한산':[174,31], '경복궁':[150,55], '광장시장':[235,60], 'DDP':[242,75]
+    const compactPinTargets={
+      '북한산':[174,20], '북촌한옥마을':[190,45], '경복궁':[174,52],
+      '광장시장':[226,58], 'DDP':[244,62], '명동':[183,68], '홍대':[112,74],
+      '성수동':[276,79], '국립중앙박물관':[184,88], '한강공원':[130,91]
     };
-    const compactContext=new Set(Object.keys(compactTargets));
+    const compactLabelTargets={
+      '북한산':[174,30], '명동':[157,61], '홍대':[86,66],
+      '성수동':[302,71], '국립중앙박물관':[222,80]
+    };
+    const compactContext=new Set(['북한산','명동','성수동','국립중앙박물관']);
     d.querySelectorAll('.ux-seoul-map svg').forEach(svg=>{
       const view=(svg.getAttribute('viewBox')||'0 0 390 240').split(/\s+/).map(Number);
       const [viewX,viewY,viewW,viewH]=view;
       const isCompact=viewH<150;
       if(viewH<105) svg.querySelectorAll('path[stroke="#a0c4e0"],path[stroke="#bdd8f0"]')
-        .forEach(river=>river.setAttribute('transform','translate(0 14)'));
+        .forEach(river=>river.setAttribute('transform','translate(0 16)'));
       svg.querySelectorAll('g').forEach(place=>{
         const text=place.querySelector('text');
         const name=text?.textContent.trim();
@@ -3621,10 +3627,9 @@ function polishFrame(d,v){
         const rect=place.querySelector('rect'), leader=place.querySelector('line');
         if(!rect||!leader) return;
         const width=Math.max(28,name.length*7+10), height=13;
-        const baseX=Number(text.getAttribute('x'));
         const pin=place.querySelector('circle[stroke="#fff"]');
-        if(!isCompact&&pin){
-          const [pinX,pinY]=fullPinTargets[name];
+        if(pin){
+          const [pinX,pinY]=(isCompact?compactPinTargets:fullPinTargets)[name];
           const moveX=pinX-Number(pin.getAttribute('cx')), moveY=pinY-Number(pin.getAttribute('cy'));
           place.querySelectorAll('circle[cx][cy]').forEach(dot=>{
             dot.setAttribute('cx',Number(dot.getAttribute('cx'))+moveX);
@@ -3632,7 +3637,8 @@ function polishFrame(d,v){
           });
           leader.setAttribute('x1',pinX); leader.setAttribute('y1',pinY+3);
         }
-        const target=isCompact?(compactTargets[name]||[baseX,Number(pin?.getAttribute('cy'))-height-10]):fullLabelTargets[name];
+        const [compactPinX,compactPinY]=compactPinTargets[name]||[Number(pin?.getAttribute('cx')),Number(pin?.getAttribute('cy'))];
+        const target=isCompact?(compactLabelTargets[name]||[compactPinX,compactPinY-height-10]):fullLabelTargets[name];
         const centerX=Math.max(viewX+width/2+3,Math.min(viewX+viewW-width/2-3,target[0]));
         const topY=Math.max(viewY+3,Math.min(viewY+viewH-height-3,target[1]));
         place.classList.add('ux-map-place');
