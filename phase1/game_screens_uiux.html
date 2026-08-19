@@ -3087,10 +3087,48 @@ const UIUX_CSS=`
     background:#153038; overflow:hidden; }
   body[data-screen="ps_play"] .ps-timer > i { display:block; width:62%; height:100%; border-radius:inherit;
     background:linear-gradient(90deg,var(--ps-blue),var(--ps-mint)); }
-  body[data-screen="ps_play"] .ps-sky { position:relative; flex:1; min-height:250px; margin:0 18px 12px;
-    overflow:hidden; }
-  body[data-screen="ps_play"] .ps-falling-question { position:absolute; top:35%; left:50%; width:100%;
-    max-width:320px; transform:translate(-50%,-50%); text-align:center; }
+  @keyframes ps-impact-ring {
+    0% { opacity:.95; transform:translate(-50%,-50%) scale(.25); }
+    100% { opacity:0; transform:translate(-50%,-50%) scale(2.2); }
+  }
+  @keyframes ps-impact-spark {
+    0% { opacity:0; transform:translate(-50%,-50%) scale(.45) rotate(0); }
+    30% { opacity:1; }
+    100% { opacity:.45; transform:translate(-50%,-50%) scale(1) rotate(22deg); }
+  }
+  body[data-screen="ps_play"] .ps-range { position:relative; flex:1; min-height:250px; margin:0 16px 12px;
+    display:grid; place-items:center; overflow:hidden; border:1px solid rgba(106,216,195,.09);
+    border-radius:22px; background:
+      linear-gradient(rgba(106,216,195,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(106,216,195,.035) 1px,transparent 1px),
+      radial-gradient(circle at 50% 48%,rgba(31,111,108,.17),transparent 56%),
+      linear-gradient(180deg,rgba(8,31,37,.72),rgba(4,22,28,.4));
+    background-size:28px 28px,28px 28px,auto,auto; }
+  body[data-screen="ps_play"] .ps-range::after { content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(circle at 50% 48%,transparent 0 43%,rgba(2,15,20,.28) 78%,rgba(2,15,20,.62)); }
+  body[data-screen="ps_play"] .ps-target-question { position:relative; z-index:2; width:100%; max-width:320px;
+    padding:20px 0 16px; text-align:center; }
+  body[data-screen="ps_play"] .ps-target-head { width:calc(100% - 34px); margin:0 auto 9px;
+    display:flex; align-items:center; justify-content:space-between; color:#718b90;
+    font-family:"Exo 2",sans-serif; font-size:9px; line-height:14px; letter-spacing:.12em; }
+  body[data-screen="ps_play"] .ps-lock-state { display:inline-flex; align-items:center; gap:6px; }
+  body[data-screen="ps_play"] .ps-lock-state i { width:5px; height:5px; border-radius:50%;
+    background:var(--ps-mint); box-shadow:0 0 0 4px rgba(106,216,195,.09),0 0 10px rgba(106,216,195,.6); }
+  body[data-screen="ps_play"] .ps-target-index { color:#9ac7c3; font-weight:800; }
+  body[data-screen="ps_play"] .ps-reticle { position:absolute; z-index:-1; top:51%; left:50%; width:246px; height:246px;
+    border:1px solid rgba(106,216,195,.21); border-radius:50%; transform:translate(-50%,-50%);
+    opacity:.72; pointer-events:none; transition:opacity .16s ease,border-color .16s ease; background:
+      radial-gradient(circle,transparent 0 24%,rgba(106,216,195,.15) 24.5% 25%,transparent 25.5% 46%,rgba(106,216,195,.13) 46.5% 47%,transparent 47.5%),
+      radial-gradient(circle,rgba(106,216,195,.055),transparent 66%);
+    box-shadow:0 0 0 18px rgba(106,216,195,.022),0 0 0 42px rgba(106,216,195,.015); }
+  body[data-screen="ps_play"] .ps-reticle::before,
+  body[data-screen="ps_play"] .ps-reticle::after { content:""; position:absolute; top:50%; left:50%;
+    background:linear-gradient(90deg,transparent,rgba(106,216,195,.32) 18%,rgba(106,216,195,.32) 82%,transparent); }
+  body[data-screen="ps_play"] .ps-reticle::before { width:310px; height:1px; transform:translate(-50%,-50%); }
+  body[data-screen="ps_play"] .ps-reticle::after { width:1px; height:310px; transform:translate(-50%,-50%);
+    background:linear-gradient(180deg,transparent,rgba(106,216,195,.32) 18%,rgba(106,216,195,.32) 82%,transparent); }
+  body[data-screen="ps_play"] .ps-reticle i { position:absolute; inset:21px; border:1px dashed rgba(106,216,195,.13);
+    border-radius:50%; }
   body[data-screen="ps_play"] .ps-lesson-pill { display:inline-flex; margin-bottom:8px; padding:4px 10px;
     border:1px solid rgba(106,216,195,.17); border-radius:999px; background:rgba(106,216,195,.075);
     color:#86d6c7; font-size:11px; line-height:16px; font-weight:700; }
@@ -3105,18 +3143,47 @@ const UIUX_CSS=`
   body[data-screen="ps_play"] .ps-sentence::after { right:7px; bottom:7px; border-right:1px solid; border-bottom:1px solid; }
   body[data-screen="ps_play"] .ps-blank { display:inline-flex; min-width:34px; justify-content:center;
     margin:0 3px; padding:0 7px; border-bottom:2px solid var(--ps-mint); border-radius:5px 5px 2px 2px;
-    background:rgba(106,216,195,.12); color:var(--ps-mint); }
-  body[data-screen="ps_play"] .ps-ground { position:absolute; inset:auto 0 8px; height:1px;
-    background:linear-gradient(90deg,transparent,#ef6f63 20%,#ef6f63 80%,transparent); }
-  body[data-screen="ps_play"] .ps-ground::before { content:""; position:absolute; inset:-5px 0;
-    background:linear-gradient(90deg,transparent,rgba(239,111,99,.1),transparent); }
-  body[data-screen="ps_play"] .ps-ground span { position:absolute; right:2px; bottom:8px; color:#6b8186;
-    font-family:"Exo 2",sans-serif; font-size:9px; letter-spacing:.18em; }
+    background:rgba(106,216,195,.12); color:var(--ps-mint); position:relative; transition:.18s ease; }
+  body[data-screen="ps_play"] .ps-impact { position:absolute; z-index:3; top:23%; left:72%; width:8px; height:8px;
+    color:var(--ps-mint); opacity:0; pointer-events:none; transform:translate(-50%,-50%); }
+  body[data-screen="ps_play"] .ps-impact::before { content:""; position:absolute; top:50%; left:50%; width:7px; height:7px;
+    border:2px solid currentColor; border-radius:50%; background:#06171b; transform:translate(-50%,-50%);
+    box-shadow:0 0 0 3px rgba(106,216,195,.15),0 0 12px currentColor; }
+  body[data-screen="ps_play"] .ps-impact::after { content:""; position:absolute; top:50%; left:50%; width:28px; height:28px;
+    border:1px solid currentColor; border-radius:50%; transform:translate(-50%,-50%); }
+  body[data-screen="ps_play"] .ps-impact i,
+  body[data-screen="ps_play"] .ps-impact i::before,
+  body[data-screen="ps_play"] .ps-impact i::after { position:absolute; top:50%; left:50%; width:28px; height:1px;
+    background:linear-gradient(90deg,transparent,currentColor,transparent); transform:translate(-50%,-50%); }
+  body[data-screen="ps_play"] .ps-impact i::before,
+  body[data-screen="ps_play"] .ps-impact i::after { content:""; }
+  body[data-screen="ps_play"] .ps-impact i::before { transform:translate(-50%,-50%) rotate(60deg); }
+  body[data-screen="ps_play"] .ps-impact i::after { transform:translate(-50%,-50%) rotate(-60deg); }
+  body[data-screen="ps_play"] .ps-target-question.is-shot .ps-impact { opacity:1; }
+  body[data-screen="ps_play"] .ps-target-question.is-shot .ps-reticle { opacity:1; border-color:rgba(106,216,195,.42); }
+  body[data-screen="ps_play"] .ps-target-question.is-shot .ps-impact::after { animation:ps-impact-ring .55s ease-out both; }
+  body[data-screen="ps_play"] .ps-target-question.is-shot .ps-impact i { animation:ps-impact-spark .35s ease-out both; }
+  body[data-screen="ps_play"] .ps-target-question.is-hit .ps-blank { background:rgba(106,216,195,.2); }
+  body[data-screen="ps_play"] .ps-target-question.is-miss .ps-blank { border-bottom-color:#ff777e;
+    background:rgba(255,91,101,.13); color:#ff8d92; }
+  body[data-screen="ps_play"] .ps-target-question.is-miss .ps-impact { color:#ff777e; }
+  body[data-screen="ps_play"] .ps-target-guide { display:flex; align-items:center; justify-content:center; gap:6px;
+    margin-top:11px; color:#6f878b; font-size:10px; line-height:15px; letter-spacing:.02em; }
+  body[data-screen="ps_play"] .ps-target-guide span { color:#86d6c7; font-family:"Exo 2",sans-serif;
+    font-size:13px; line-height:1; }
   body[data-screen="ps_play"] .ps-answer-tray { display:flex; justify-content:center; gap:10px;
     padding:0 14px 19px; }
-  body[data-screen="ps_play"] .ps-answer { width:70px; height:70px; border:1px solid rgba(106,216,195,.34);
+  body[data-screen="ps_play"] .ps-answer { position:relative; width:70px; height:70px; border:1px solid rgba(106,216,195,.34);
     border-radius:50%; background:linear-gradient(145deg,rgba(106,216,195,.095),rgba(255,255,255,.025));
-    color:#9be2d6; font-size:18px; font-weight:700; box-shadow:0 1px 0 rgba(255,255,255,.04) inset; }
+    color:#9be2d6; font-size:18px; font-weight:700; box-shadow:0 1px 0 rgba(255,255,255,.04) inset;
+    transition:transform .12s ease,border-color .16s ease,background .16s ease,color .16s ease; }
+  body[data-screen="ps_play"] .ps-answer::before { content:""; position:absolute; inset:7px;
+    border:1px solid rgba(106,216,195,.12); border-radius:50%; pointer-events:none; }
+  body[data-screen="ps_play"] .ps-answer:active { transform:scale(.94); }
+  body[data-screen="ps_play"] .ps-answer.is-correct { border-color:#6ad8c3; background:rgba(106,216,195,.22);
+    color:#dffcf7; box-shadow:0 0 0 4px rgba(106,216,195,.08),0 0 20px rgba(106,216,195,.16); }
+  body[data-screen="ps_play"] .ps-answer.is-wrong { border-color:#ff6d76; background:rgba(255,91,101,.12);
+    color:#ff9da2; }
 
   @media (max-width:350px) {
     body[data-screen="ps_level"] .ps-level-shell { padding-inline:14px !important; }
@@ -3125,6 +3192,8 @@ const UIUX_CSS=`
     body[data-screen="ps_play"] .ps-answer-tray { gap:8px; padding-inline:12px; }
     body[data-screen="ps_play"] .ps-answer { width:62px; height:62px; }
     body[data-screen="ps_play"] .ps-sentence { font-size:17px; line-height:29px; }
+    body[data-screen="ps_play"] .ps-range { margin-inline:12px; }
+    body[data-screen="ps_play"] .ps-reticle { width:218px; height:218px; }
   }
 
   /* 봄소풍 — 원래 CSS 일러스트와 큰 숫자, 세로 선택지는 그대로 */
@@ -3795,18 +3864,41 @@ function polishFrame(d,v){
           <div><div class="ps-score">1,180</div><div class="ps-progress">4 / 20</div></div>
         </div>
         <div class="ps-timer" aria-label="남은 시간 62%"><i></i></div>
-        <div class="ps-sky">
-          <div class="ps-falling-question">
+        <div class="ps-range">
+          <div class="ps-target-question">
+            <div class="ps-target-head">
+              <span class="ps-lock-state"><i></i>TARGET LOCK</span>
+              <span class="ps-target-index">04</span>
+            </div>
+            <div class="ps-reticle" aria-hidden="true"><i></i></div>
             <div class="ps-lesson-pill">8과</div>
-            <div class="ps-sentence">저는 한국어<span class="ps-blank">?</span> 공부해요</div>
+            <div class="ps-sentence">저는 한국어<span class="ps-blank"><span class="ps-blank-value">?</span><span class="ps-impact" aria-hidden="true"><i></i></span></span> 공부해요</div>
+            <div class="ps-target-guide" role="status" aria-live="polite"><span>＋</span><b>조사를 선택해 조준하세요</b></div>
           </div>
-          <div class="ps-ground"><span>GROUND</span></div>
         </div>
         <div class="ps-answer-tray" aria-label="조사 선택지">
-          <button class="ps-answer">을</button><button class="ps-answer">를</button>
+          <button class="ps-answer">을</button><button class="ps-answer" data-correct="true">를</button>
           <button class="ps-answer">이</button><button class="ps-answer">가</button>
         </div>`;
       root.append(game);
+      const target=game.querySelector('.ps-target-question');
+      const blankValue=game.querySelector('.ps-blank-value');
+      const guide=game.querySelector('.ps-target-guide b');
+      const answers=[...game.querySelectorAll('.ps-answer')];
+      answers.forEach(answer=>answer.addEventListener('click',()=>{
+        const correct=answer.dataset.correct==='true';
+        answers.forEach(item=>{
+          item.classList.remove('is-correct','is-wrong');
+          item.setAttribute('aria-pressed','false');
+        });
+        target.classList.remove('is-shot','is-hit','is-miss');
+        void target.offsetWidth;
+        target.classList.add('is-shot',correct?'is-hit':'is-miss');
+        answer.classList.add(correct?'is-correct':'is-wrong');
+        answer.setAttribute('aria-pressed','true');
+        blankValue.textContent=answer.textContent.trim();
+        guide.textContent=correct?'명중':'빗나감';
+      }));
     }
   }
 

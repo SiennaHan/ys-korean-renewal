@@ -28,3 +28,4 @@ __pycache__/
 
 # ── Storybook 빌드 산출물 ────────────────────────
 app/storybook-static/
+app/.tanstack/
