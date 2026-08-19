@@ -3256,6 +3256,9 @@ const UIUX_CSS=`
   body[data-screen^="sp_"] [style*="color: rgb(55, 48, 163)"] { color:#31729a !important; }
   body[data-screen^="sp_"] .ux-seoul-map { background:var(--sp-sky) !important;
     border-bottom:1px solid rgba(23,111,130,.08); }
+  body[data-screen="sp_map"] .ux-seoul-map { height:auto !important; aspect-ratio:280/170; }
+  body[data-screen="sp_entry"] .ux-seoul-map { height:auto !important; aspect-ratio:270/112; }
+  body[data-screen="sp_puzzle"] .ux-seoul-map { height:auto !important; aspect-ratio:270/98; }
   body[data-screen^="sp_"] .ux-seoul-map::after { content:""; position:absolute; inset:0; pointer-events:none;
     box-shadow:inset 0 -16px 24px rgba(68,128,144,.045); }
   body[data-screen^="sp_"] .ux-seoul-map svg rect[fill="#e4eef6"] { fill:var(--sp-sky) !important; }
