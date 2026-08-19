@@ -71,6 +71,7 @@
   --color-primitive-gray-900: #212121;
 
   /* white */
+  --color-primitive-control-border: #F0F2F4;
   --color-primitive-white-50: #F9FAFC;
   --color-primitive-white-100: #FFFFFF;
 
@@ -137,6 +138,7 @@
 
   /* line */
   --color-line-normal: var(--color-primitive-blue-gray-100);            /* 구분선 */
+  --color-line-control: var(--color-primitive-control-border);   /* 선택지·칩·problem-card 테두리 */
   --color-line-disable: var(--color-primitive-gray-400);           /* 비활성 테두리 */
   --color-line-focus: var(--color-primitive-blue-500);             /* 키보드 포커스 링 */
 

@@ -297,12 +297,70 @@ footer          flex 0 0 <b>89</b>   background white · padding 16
      <b>진행 표시만 한다</b>로 바뀐다.</p>
 </div>
 
-<h2 id="s10"><span class="n">10</span>1단계로 넘어가기 전 남은 것</h2>
-<ol>
-  <li><b>VocaShot 목업 둘</b> — 축은 읽었다(시작/결과 · has/none · best/under/clean). 구조 실측이 남았다</li>
-  <li><b><code>--control-border</code> semantic 이름</b> — 선택지·칩·카드 테두리 전부가 이 색이다</li>
-  <li><b><code>build_spec_uiux</code> 정정</b> — §6 의 열한 건 + §9 의 진행바 결정</li>
-  <li><b>koreanapi 를 저장소로 들일지</b> — Phase 1 의 1·2번이 서버이고 5·8번을 막고 있다</li>
-</ol>
+<h2 id="s10"><span class="n">10</span>목업 다섯이 한 시스템이다</h2>
+<p><code>:root</code> 변수를 대조했더니 <b>다섯 목업이 같은 31개를 공유</b>한다.
+   내비·게임·VocaShot 은 여기에 <b>간격·radius 8개</b>를 더 쓴다.</p>
+<div class="tablewrap"><table>
+  <tr><th>변수</th><th>값</th><th><code>tokens.css</code></th></tr>
+  <tr><td>색 31개</td><td>—</td><td><b>25개 일치</b> · <code>control-border</code> 없었음</td></tr>
+  <tr><td><code>--gutter</code></td><td>16px</td><td><span class="pill stop">없음</span></td></tr>
+  <tr><td><code>--radius-card</code></td><td>14px</td><td><span class="pill stop">없음</span></td></tr>
+  <tr><td><code>--radius-control</code></td><td>9px</td><td><span class="pill stop">없음</span></td></tr>
+  <tr><td><code>--space-1·2·3·4·6</code></td><td>4·8·12·16·24</td><td><span class="pill stop">없음</span></td></tr>
+</table></div>
+<p><b><code>tokens.css</code> 에는 색과 타이포만 있다</b> — 간격도 radius 도 없다.
+   그래서 이관할 때 <b>수치를 리터럴로 쓸지 토큰을 추가할지</b>를 정해야 한다.</p>
+
+<div class="card stop">
+  <div class="t">확정 목업 <b>둘끼리도</b> radius 관례가 다르다</div>
+  <div class="tablewrap"><table>
+    <tr><th></th><th>활동 목업</th><th>내비 목업</th></tr>
+    <tr><td>방식</td><td><b>전부 리터럴</b> · 변수 0회</td><td><code>--radius-card</code> 4회 · <code>--radius-control</code> 3회</td></tr>
+    <tr><td>카드</td><td><code>problem-card</code> <b>16</b></td><td><code>--radius-card</code> <b>14</b></td></tr>
+    <tr><td>컨트롤</td><td><code>choice</code> 12 · <code>chip-opt</code> 8</td><td><code>--radius-control</code> <b>9</b></td></tr>
+  </table></div>
+  <p><b>지금 억지로 맞추지 않는다.</b> 확정된 디자인을 내 판단으로 바꾸는 일이 된다.
+     <b>목업별로 그 목업의 CSS 를 그대로</b> 옮기고, 통일은 <b>별도 판단</b>으로 남긴다.</p>
+</div>
+
+<h3>게임은 팔레트가 따로다</h3>
+<p>VocaShot·게임 화면은 <code>#10b981</code> · <code>#1e293b</code> · <code>#020617</code> 처럼
+   <b>토큰 밖 어두운 색을 리터럴로</b> 쓴다. 무대가 검정이라 의도된 것이다.</p>
+<p class="qa">즉 게임 이관은 <b>토큰으로 치환하는 작업이 아니다</b> — 그 팔레트를 그대로 가져온다.
+   활동 셸(밝은 파랑·흰색)과 게임(검정)은 <b>다른 시각 언어</b>이고, 그래야 맞는다.</p>
+
+<h2 id="s11"><span class="n">11</span>0단계에서 고친 것</h2>
+<div class="tablewrap"><table>
+  <tr><th>파일</th><th>무엇</th></tr>
+  <tr><td><code>build_spec_uiux</code> §3</td>
+      <td>칸 상태표 <b>4 → 3상태</b> · 칸 높이 6 → <b>5</b> · 블록 32→20 을 <b>32→28</b> ·
+          "현재 위치만 높이 10" 삭제(목업은 색으로 구분) · 팔레트 표에서
+          <code>fill-correct</code>·<code>fill-wrong</code> 용도를 <b>선택지 전용</b>으로 정정</td></tr>
+  <tr><td><code>build_spec_uiux</code> §5</td>
+      <td>선택지가 <b>두 종류</b>임을 명시 · <code>choice</code> 64/12/16 48 16 18 ·
+          <code>chip-opt</code> 10 16/8/15 · gap <b>8</b> · 2지선다 <b>1fr 1fr</b> ·
+          테두리 <code>line-normal</code> → <b><code>line-control</code></b></td></tr>
+  <tr><td><code>build_spec_uiux</code> §13</td>
+      <td>색각이상 논의를 <b>걷어냈다</b> — 진행바에 정오답이 없으니 담보할 것도 없다.
+          정오답은 <b>pill 문구가 유일한 경로</b>로 다시 썼다</td></tr>
+  <tr><td><code>build_spec_uiux</code> §14</td><td>검증 9 수치 정정 · 검증 10을 "진행바는 검사 대상 아님"으로</td></tr>
+  <tr><td><code>tokens.css</code></td>
+      <td><code>--color-primitive-control-border: #F0F2F4</code> +
+          <code>--color-line-control</code> 추가. 브라우저에서 <code>#f0f2f4</code> 로 확인</td></tr>
+</table></div>
+
+<h2 id="s12"><span class="n">12</span>1단계로 넘어간다</h2>
+<p>0단계는 끝났다. 남긴 판단 둘은 1단계를 막지 않는다.</p>
+<ul>
+  <li><b>radius·간격을 토큰으로 뺄지</b> — 목업 둘이 다르므로 우선 <b>목업별 리터럴</b>로 옮긴다</li>
+  <li><b>koreanapi 를 저장소로 들일지</b> — Phase 1 의 1·2번이고 5·8번을 막는다. 표현 계층은 안 막힌다</li>
+</ul>
+<div class="card ok">
+  <div class="t">1단계 방식</div>
+  <p>목업 CSS 를 <b>클래스 이름째로</b> 앱 스타일시트로 옮긴다. 색만 토큰 semantic 으로 치환한다.
+     Tailwind 유틸리티로 수치를 다시 적지 않는다 — <b>그게 이번 실패의 원인이었다</b>.</p>
+  <p class="qa">스토리는 목업 화면과 <b>1:1</b>. 목업에 없는 상태를 새로 만들지 않는다 —
+     <code>player.cancel</code> 같은 일이 다시 생기지 않게.</p>
+</div>
 
 </main>

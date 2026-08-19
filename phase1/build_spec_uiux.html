@@ -109,10 +109,10 @@
 <div class="tablewrap"><table>
   <tr><th>토큰</th><th>값</th><th>쓰임</th></tr>
   <tr><td><code>fill-primary</code></td><td class="n"><span class="sw" style="background:#0180FF"></span>#0180FF</td><td>주요 버튼 · 현재 위치 · 선택 중</td></tr>
-  <tr><td><code>fill-correct</code></td><td class="n"><span class="sw" style="background:#11C378"></span>#11C378</td><td>진행바 정답 칸 · ✓ 아이콘</td></tr>
-  <tr><td><code>fill-wrong</code></td><td class="n"><span class="sw" style="background:#F15F49"></span>#F15F49</td><td>진행바 오답 칸 · ✕ 아이콘</td></tr>
+  <tr><td><code>fill-correct</code></td><td class="n"><span class="sw" style="background:#11C378"></span>#11C378</td><td>선택지 정답 표면·테두리 · ✓ 아이콘 <b>(진행바에는 쓰지 않는다)</b></td></tr>
+  <tr><td><code>fill-wrong</code></td><td class="n"><span class="sw" style="background:#F15F49"></span>#F15F49</td><td>선택지 오답 표면·테두리 · ✕ 아이콘 <b>(진행바에는 쓰지 않는다)</b></td></tr>
   <tr><td><code>fill-caution</code></td><td class="n"><span class="sw" style="background:#F98900"></span>#F98900</td><td>3회 이상 틀린 문항 강조</td></tr>
-  <tr><td><code>fill-track</code></td><td class="n"><span class="sw" style="background:#E0E0E0"></span>#E0E0E0</td><td>진행바 미응답 칸</td></tr>
+  <tr><td><code>fill-track</code></td><td class="n"><span class="sw" style="background:#E0E0E0"></span>#E0E0E0</td><td>진행바 미응답 칸 · 연속바 트랙</td></tr>
   <tr><td><code>fill-known</code> / <code>fill-unknown</code></td><td class="n">#0180FF / #FFDB5C</td><td>플래시카드 알아요 / 몰라요</td></tr>
   <tr><td><code>text-strong</code></td><td class="n"><span class="sw" style="background:#383A3F"></span>#383A3F</td><td>본문</td></tr>
   <tr><td><code>text-sub</code></td><td class="n"><span class="sw" style="background:#7F848D"></span>#7F848D</td><td>보조 문구 · 해설</td></tr>
@@ -163,7 +163,7 @@
 <div class="rule stop">
   <div class="t">폭에 비례해 키우지 않는 것</div>
   <p><b>글자 크기 전부</b> · 좌우 여백 16 · 앱바 58 · 버튼 높이 56 · 아이콘 24 · 탭 대상 44.
-     선택지 최소 높이 68 · padding 16 · gap 10도 고정한다. 긴 문장은 높이가 늘고, 목록만 스크롤한다.</p>
+     선택지 최소 높이 64 · padding 16/18 · gap 8도 고정한다. 긴 문장은 높이가 늘고, 목록만 스크롤한다.</p>
 </div>
 
 <h2 id="s3"><span class="n">3</span>헤더</h2>
@@ -182,26 +182,27 @@
       <b>바 오른쪽에</b> <code>n/N</code></td></tr>
 </table></div>
 <div class="rule stop">
-  <div class="t">얇은 선이다 — 칸 안 아이콘을 버렸다</div>
-  <p>칸 높이 <b>24 → 6</b>, 블록 <b>32 → 20</b>. 24px 사각형이 줄지어 있으면 화면 위쪽이 무겁고,
+  <div class="t">얇은 선이다 — 칸 안 아이콘을 버렸다 <b>· 정오답도 버렸다</b></div>
+  <p>칸 높이 <b>24 → 5</b>, 블록 <b>32 → 28</b>. 24px 사각형이 줄지어 있으면 화면 위쪽이 무겁고,
      문항이 많을수록 더 그렇다. <b>밴드가 12 늘어난다.</b></p>
-  <p><b>대가</b> — ✓ / ✕ 아이콘이 6px에 들어가지 않는다. 정오답이 <b>색으로만</b> 남으므로
-     <b>적록색각이상에서는 진행바만 보고 구별할 수 없다</b>(§13).</p>
-  <p><b>대신 결과 화면이 담보한다</b> — 오답 목록에 <code>[오답 N]</code> 칩과 고른 답·해설이
-     <b>글자로</b> 있다. 진행바는 <b>"어디까지 왔나"</b>가 주된 일이고 정오답은 보조 신호다 —
-     진행률을 주 지표로 올린 결정(§8)과도 맞는다.</p>
-  <p class="qa"><b>현재 위치만 높이 10</b>으로 조금 길다. 얇은 바에서는 테두리 2px가 보이지 않아
-     길이 차이로 표시한다 — 재생 헤드처럼 읽힌다.</p>
+  <p><b>정오답은 진행바에 넣지 않는다</b> — 기획 확정(2026-08-19). 표시하면 촌스럽다.
+     확정 목업이 이미 그렇게 되어 있고, 칸은 <b>지난 문항 · 현재 · 미응답</b> 셋뿐이다.
+     그래서 ✓/✕ 아이콘도, 색각이상 대응도 진행바에서는 <b>논점이 아니다</b>(§13).</p>
+  <p class="qa"><b>현재 칸은 길이가 아니라 색으로 구분한다</b> — 목업 <code>now</code>.
+     예전 판은 "현재 위치만 높이 10"이라 적었는데 목업은 <b>모든 칸이 같은 높이</b>다.</p>
+  <p class="qa">실측이 문서와 달랐던 것 — 칸 높이 <b>5</b>(문서 6) · 칸 사이 <b>4</b>(문서 3).
+     목업 <code>.progress i</code> 가 <code>height:5px · border-radius:3px</code>, <code>.progress</code> 가 <code>gap:4px</code> 다.</p>
 </div>
 <div class="tablewrap"><table>
   <tr><th>칸 상태</th><th>색</th><th>높이</th><th>기준</th></tr>
-  <tr><td>정답</td><td><code>fill-correct</code></td><td class="n">6</td><td><b>첫 시도에 맞힌 것만</b></td></tr>
-  <tr><td>오답</td><td><code>fill-wrong</code></td><td class="n">6</td><td><b>첫 시도 오답. 재시도로 맞혀도 유지</b></td></tr>
+  
+  
   <tr><td><b>응답</b> <span class="qa">채점 없는 활동</span></td><td><code>fill-primary</code></td><td class="n">6</td>
       <td><b>발음 · 플래시카드 · 롤플레잉</b> — 정오답 의미색을 쓰지 않는다</td></tr>
-  <tr><td>미응답</td><td><code>fill-track</code></td><td class="n">6</td><td>건너뛴 문항 포함</td></tr>
-  <tr><td>현재 위치</td><td><code>fill-primary</code></td><td class="n"><b>10</b></td>
-      <td>길이로 구분한다 — 얇은 바에서 테두리는 보이지 않는다</td></tr>
+  <tr><td>지난 문항</td><td><code>fill-primary</code></td><td class="n">5</td><td>목업 <code>done</code></td></tr>
+  <tr><td>현재</td><td><code>fill-primary</code></td><td class="n">5</td><td>목업 <code>now</code> — 색이 진하다. <b>길이는 같다</b></td></tr>
+  <tr><td>미응답</td><td><code>fill-track</code></td><td class="n">5</td><td>건너뛴 문항 포함. 목업 클래스 없음</td></tr>
+  
 </table></div>
 <p class="qa">카운트 표기는 <b>연속형에서 바 오른쪽 <code>n/N</code></b> 하나로 통일한다. 분절형은 칸이 곧 카운트라 숫자를 넣지 않는다.</p>
 
@@ -232,10 +233,19 @@
 <h2 id="s5"><span class="n">5</span>선택지</h2>
 <div class="tablewrap"><table>
   <tr><th>항목</th><th>값</th><th>규칙</th></tr>
-  <tr><td>배치</td><td>세로 1열 · gap 10</td><td>번호 없음</td></tr>
-  <tr><td>표면</td><td>흰색 · 1px <code>line-normal</code> · radius 14</td><td>그림자 없음</td></tr>
-  <tr><td>크기</td><td>width 100% · min-height 68 · padding 16</td><td>height auto · 말줄임 없음</td></tr>
+  <tr><td>종류</td><td><b>둘이다</b> — <code>choice</code> 목록형 · <code>chip-opt</code> 칩형</td>
+      <td>문법·빈칸만 칩. 나머지는 목록</td></tr>
+  <tr><td>배치</td><td><code>choice-list</code> 세로 1열 · <b>gap 8</b> · 번호 없음</td>
+      <td><b>2지선다는 <code>binary-grid</code> 1fr 1fr</b></td></tr>
+  <tr><td><code>choice</code> 표면</td><td>흰색 · 1px <code>line-control</code> · <b>radius 12</b></td><td>그림자 없음</td></tr>
+  <tr><td><code>choice</code> 크기</td><td>width 100% · <b>min-height 64</b> · <b>padding 16 48 16 18</b></td>
+      <td>오른쪽 48은 <code>choice-mark</code>(✓/✕) 자리. height auto · 말줄임 없음</td></tr>
+  <tr><td><code>chip-opt</code></td><td>내용폭 · padding <b>10 16</b> · <b>radius 8</b> · 15/500</td>
+      <td><code>chip-wrap</code> flex · gap 8</td></tr>
 </table></div>
+<p class="qa"><b>이 표는 2026-08-19 에 확정 목업 실측으로 고쳤다.</b>
+   예전 판은 "세로 1열 · gap 10 · <code>line-normal</code> · radius 14 · min-height 68 · padding 16" 한 종류였는데,
+   목업과 <b>여섯 군데가 달랐다</b>. 시각 정본은 <code>activity_mockups_uiux.html</code> 이다.</p>
 <div class="tablewrap"><table>
   <tr><th>콘텐츠</th><th>글자</th><th><code>contentAlign</code></th></tr>
   <tr><td>자모</td><td>24 / 32 · 600</td><td><b>center</b></td></tr>
@@ -658,10 +668,12 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
 
 <h2 id="s13"><span class="n">13</span>접근성</h2>
 <ul>
-  <li><b>정답/오답 구분은 결과 화면이 담보한다</b> — 오답 목록의 <code>[오답 N]</code> 칩과
-      고른 답·해설이 <b>글자</b>다. 의미색이 초록–빨강이라 색만으로는 구별되지 않는데,
-      <b>진행바는 얇아져 아이콘을 넣을 수 없다</b>(§3). 그래서 <b>진행바는 진행 표시가 주된 일</b>이고
-      정오답은 보조 신호로 둔다 — 색각이상 학습자도 결과 화면에서 정확히 안다.</li>
+  <li><b>진행바는 정오답을 표시하지 않는다</b>(§3) — 지난 문항 · 현재 · 미응답 셋뿐이다.
+      그래서 <b>색각이상 문제가 진행바에서는 생기지 않는다</b>. 예전 판에는
+      "정오답이 색으로만 남아 적록색각이상에서 구별할 수 없으나 결과 화면이 담보한다"고 적혀 있었는데,
+      <b>진행바에 정오답이 없으므로 담보할 것도 없다</b>.</li>
+  <li><b>정오답을 전달하는 것은 피드백 pill 문구다</b> — 보조가 아니라 <b>유일한 경로</b>다(§7).
+      결과 화면의 오답 목록(<code>[오답 N]</code> 칩 · 고른 답 · 해설)이 <b>글자</b>로 다시 확인해 준다.</li>
   <li><b>피드백 pill에는 문구가 반드시 있다</b>(§7) — 정답 "아주 잘 했어요!" · 오답 "다시 해보세요".
       문항을 푸는 순간의 정오답은 <b>색이 아니라 이 문구</b>로 전달된다.</li>
   <li>진행바 칸에 <code>aria-label</code> — <code>player.a11ySegment</code> 사용.</li>
@@ -684,10 +696,10 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
   <tr><td>6</td><td>플래시카드 45장 활동 진입</td><td>분절이 아니라 <b>연속 진행바 + <code>n/N</code></b></td></tr>
   <tr><td>7</td><td>듣기 활동에서 2개·4개 문항을 오가며 진행</td><td><b>첫 선택지의 시작 y가 동일</b>하고 빈 공간은 목록 아래에 남는다</td></tr>
   <tr><td>8</td><td>UI 언어 5종 전환</td><td>미번역 0. 가장 긴 문자열(보통 베트남어)에서 레이아웃이 깨지지 않는다</td></tr>
-  <tr><td>9</td><td>폭 320 · 긴 문장 4개</td><td>min-height 68·padding 16을 유지하고 <b>선택지 목록만 스크롤</b>. 하단 버튼은 고정</td></tr>
+  <tr><td>9</td><td>폭 320 · 긴 문장 4개</td><td>min-height 64·padding 16 18을 유지하고 <b>선택지 목록만 스크롤</b>. 하단 버튼은 고정</td></tr>
   <tr><td>10</td><td>색각 시뮬레이터</td>
       <td>문항 화면에서 정오답이 <b>pill 문구로</b>, 결과 화면에서 <b>오답 목록 글자로</b> 구분된다.
-          <b>진행바는 색만</b>이며 그것이 유일한 정보원이 아니다</td></tr>
+          <b>진행바는 정오답을 아예 표시하지 않으므로</b> 검사 대상이 아니다 — 진행만 나타낸다</td></tr>
   <tr><td>11</td><td><code>prefers-reduced-motion</code> 켬</td><td>진동 대신 테두리 깜빡. 위치 이동 없음</td></tr>
   <tr><td>12</td><td>셸 코드에서 <code>#</code> 검색</td><td><b>0건</b> — semantic 토큰만 쓴다</td></tr>
   <tr><td>13</td><td>자모 1과에서 <b>하위활동 1을 완료</b>한 뒤 하위활동 2 진입</td>
