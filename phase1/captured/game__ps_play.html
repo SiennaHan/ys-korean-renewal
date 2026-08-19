@@ -1,0 +1,29 @@
+<div id="app"><style>
+				.hide-scrollbar::-webkit-scrollbar { display: none; }
+				.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+			</style><div class="h-dvh w-full bg-gray-100 dark:bg-gray-900 flex justify-center relative overflow-hidden"><div class="h-full w-full bg-white dark:bg-black shadow-2xl relative flex flex-col overflow-y-auto hide-scrollbar ps-width-shell" style="--app-width: 375px; max-width: 375px;"><div class="h-full bg-white" style="opacity: 1;"><div class="flex h-full flex-col"><div class="scrollbar-hide h-full w-full flex-1 overflow-y-auto"><div class="relative w-full h-full overflow-hidden ps-stage"><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&amp;display=swap" rel="stylesheet"><canvas class="absolute inset-0"></canvas><div class="ps-game-shell">
+        <div class="ps-game-hud">
+          <div class="ps-hud-left">
+            <button class="ps-back" aria-label="나가기">←</button>
+            <div class="ps-hearts" aria-label="남은 기회 3개"><span>♥</span><span>♥</span><span>♥</span><span style="opacity:.18">♥</span><span style="opacity:.18">♥</span></div>
+            <div class="ps-combo">5×</div>
+          </div>
+          <div><div class="ps-score">1,180</div><div class="ps-progress">4 / 20</div></div>
+        </div>
+        <div class="ps-timer" aria-label="남은 시간 62%"><i></i></div>
+        <div class="ps-range">
+          <div class="ps-target-question">
+            <div class="ps-target-head">
+              <span class="ps-lock-state"><i></i>TARGET LOCK</span>
+              <span class="ps-target-index">04</span>
+            </div>
+            <div class="ps-reticle" aria-hidden="true"><i></i></div>
+            <div class="ps-lesson-pill">8과</div>
+            <div class="ps-sentence">저는 한국어<span class="ps-blank"><span class="ps-blank-value">?</span><span class="ps-impact" aria-hidden="true"><i></i></span></span> 공부해요</div>
+            <div class="ps-target-guide" role="status" aria-live="polite"><span>＋</span><b>조사를 선택해 조준하세요</b></div>
+          </div>
+        </div>
+        <div class="ps-answer-tray" aria-label="조사 선택지">
+          <button class="ps-answer">을</button><button class="ps-answer" data-correct="true">를</button>
+          <button class="ps-answer">이</button><button class="ps-answer">가</button>
+        </div></div></div></div></div></div><div class="absolute bottom-20 left-1/2 -translate-x-1/2 items-center z-50 pointer-events-none"></div><audio class="hidden" playsinline="" preload="auto"></audio></div></div></div>

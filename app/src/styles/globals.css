@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* 캡처한 목업 마크업의 임의값 클래스(bg-[#060612] 등)를 Tailwind 가 보게 한다.
+   .ts 안의 JSON 문자열은 추출기가 못 읽어서 .html 원본을 스캔 대상으로 둔다. */
+@source "../mockups/*.html";
 @import "./tokens.css";
 @import "./activity.css";
 @import "./nav.css";

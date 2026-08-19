@@ -817,8 +817,20 @@ const ParticleSniper: React.FC = () => {
     );
   }
 
+  // 이관한 게임 디자인(game.css)은 화면을 data-screen 으로 가른다 —
+  // 목업이 body[data-screen] 으로 하던 것을 래퍼로 옮긴 것이다.
+  const screenId =
+    gameState === 'level-select' ? 'ps_level'
+    : gameState === 'lesson-select' ? 'ps_lesson'
+    : gameState === 'result' ? 'ps_result'
+    : 'ps_play';
+
   return (
-    <div ref={rootRef} className="relative w-full h-full overflow-hidden">
+    <div
+      ref={rootRef}
+      className="game-frame relative w-full h-full overflow-hidden"
+      data-screen={screenId}
+    >
       <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&display=swap" rel="stylesheet" />
       <canvas ref={canvasRef} className="absolute inset-0" />
       {gameState === 'level-select' && renderLevelSelect()}

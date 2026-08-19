@@ -13,6 +13,21 @@
  * APP_CSS(20만 자)는 앱이 이미 가진 것이라 옮기지 않았다.
  */
 
+/* 캡처 범위 밖에서 정해지던 것들 — 목업 render() 가 주입했다.
+   --app-width 는 app-layout 래퍼가 주는 값이라 캡처 안에 없고,
+   없으면 게임 화면의 폭이 무너진다. */
+.game-frame {
+  --app-width: 100%;
+  width: 100%;
+  height: 100%;
+}
+.game-frame *,
+.game-frame *::before,
+.game-frame *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
 :root { color-scheme:light; }
   html,.game-frame { font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif; }
   .game-frame { text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }

@@ -6,7 +6,7 @@ import type { StorybookConfig } from "storybook-react-rsbuild";
  * 셸 9종만 올린다. 나머지 화면은 이미 앱에 있으므로 대상이 아니다.
  */
 const config: StorybookConfig = {
-	stories: ["../src/components/shell/**/*.stories.@(ts|tsx)"],
+	stories: ["../src/components/**/*.stories.@(ts|tsx)"],
 	framework: { name: "storybook-react-rsbuild", options: {} },
 	typescript: { reactDocgen: "react-docgen-typescript" },
 };

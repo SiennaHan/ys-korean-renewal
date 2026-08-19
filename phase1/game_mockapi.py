@@ -39,7 +39,19 @@ class H(BaseHTTPRequestHandler):
         self.send_header('Content-Length',str(len(b)))
         self.end_headers(); self.wfile.write(b)
     def do_OPTIONS(self): self._send({})
-    def do_POST(self):    self._send({'result':True,'code':200,'message':None,'data':{}})
+    def do_POST(self):
+        # /capture/<name> : 목업에서 렌더된 마크업을 파일로 받는다.
+        # 마크업을 손으로 옮겨 적다 틀리는 일을 없애기 위한 통로다.
+        if self.path.startswith('/capture/'):
+            name = re.sub(r'[^A-Za-z0-9_.-]', '_', self.path[len('/capture/'):]) or 'unnamed'
+            n = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(n) if n else b''
+            os.makedirs('captured', exist_ok=True)
+            with open(os.path.join('captured', name), 'wb') as f:
+                f.write(raw)
+            return self._send({'result':True,'code':200,'message':None,
+                               'data':{'saved':name,'bytes':len(raw)}})
+        self._send({'result':True,'code':200,'message':None,'data':{}})
     def do_GET(self):
         path=self.path.split('?')[0]
         fn=ROUTES.get(path)
