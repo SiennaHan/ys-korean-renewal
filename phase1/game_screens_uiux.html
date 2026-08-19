@@ -3283,8 +3283,9 @@ const UIUX_CSS=`
     stroke:rgba(255,120,107,.34); }
   body[data-screen^="sp_"] .ux-seoul-map .ux-pin-leader { stroke:#8ba7b3 !important;
     stroke-width:1px !important; opacity:.72; }
-  body[data-screen="sp_entry"] .ux-seoul-map .ux-map-place:not(.is-active) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader),
-  body[data-screen="sp_puzzle"] .ux-seoul-map .ux-map-place:not(.is-active) :is(.ux-map-label-bg,.ux-map-label,.ux-pin-leader) {
+  body[data-screen^="sp_"] .ux-seoul-map .ux-map-place.is-context { opacity:.78 !important; }
+  body[data-screen="sp_entry"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-context),
+  body[data-screen="sp_puzzle"] .ux-seoul-map .ux-map-place:not(.is-active):not(.is-context) {
     display:none; }
   body[data-screen="sp_map"] .sp-loc-card { border-color:#e8f0f2 !important;
     border-radius:16px !important; background:#fff !important; box-shadow:none !important; }
@@ -3598,9 +3599,16 @@ function polishFrame(d,v){
       '광장시장':[28,-5], '성수동':[28,21], '국립중앙박물관':[-10,24],
       '북촌한옥마을':[19,-18], 'DDP':[48,9], '북한산':[-6,-2]
     };
+    const compactTargets={
+      '북한산':[174,31], '경복궁':[140,42], '광장시장':[248,48], 'DDP':[262,66]
+    };
+    const compactContext=new Set(Object.keys(compactTargets));
     d.querySelectorAll('.ux-seoul-map svg').forEach(svg=>{
       const view=(svg.getAttribute('viewBox')||'0 0 390 240').split(/\s+/).map(Number);
       const [viewX,viewY,viewW,viewH]=view;
+      const isCompact=viewH<150;
+      if(viewH<105) svg.querySelectorAll('path[stroke="#a0c4e0"],path[stroke="#bdd8f0"]')
+        .forEach(river=>river.setAttribute('transform','translate(0 14)'));
       svg.querySelectorAll('g').forEach(place=>{
         const text=place.querySelector('text');
         const name=text?.textContent.trim();
@@ -3610,13 +3618,14 @@ function polishFrame(d,v){
         const [dx,dy]=labelOffsets[name], width=Math.max(28,name.length*7+10), height=13;
         const baseX=Number(text.getAttribute('x')), baseTop=Number(rect.getAttribute('y'));
         const pin=place.querySelector('circle[stroke="#fff"]');
-        const target=viewH<150?[baseX,Number(pin?.getAttribute('cy'))-height-10]:[baseX+dx,baseTop+dy];
+        const target=isCompact?(compactTargets[name]||[baseX,Number(pin?.getAttribute('cy'))-height-10]):[baseX+dx,baseTop+dy];
         const centerX=Math.max(viewX+width/2+3,Math.min(viewX+viewW-width/2-3,target[0]));
         const topY=Math.max(viewY+3,Math.min(viewY+viewH-height-3,target[1]));
         place.classList.add('ux-map-place');
         if(place.querySelector('[fill="#e03e3e"]')) place.classList.add('is-active');
         else if(place.hasAttribute('opacity')&&Number(place.getAttribute('opacity'))<1)
           place.classList.add('is-locked');
+        if(isCompact&&compactContext.has(name)) place.classList.add('is-context');
         rect.classList.add('ux-map-label-bg');
         rect.setAttribute('x',centerX-width/2); rect.setAttribute('y',topY);
         rect.setAttribute('width',width); rect.setAttribute('height',height); rect.setAttribute('rx','5');
