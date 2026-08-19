@@ -164,6 +164,7 @@ const zh = {
 	},
 	player: {
 		exit: "退出",
+		cancel: "取消",
 		skip: "跳过",
 		next: "下一个",
 		progress: "{{current}} / {{total}}",

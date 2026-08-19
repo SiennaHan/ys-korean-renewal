@@ -167,6 +167,7 @@ const ja = {
 	},
 	player: {
 		exit: "終了",
+		cancel: "キャンセル",
 		skip: "スキップ",
 		next: "次へ",
 		progress: "{{current}} / {{total}}",

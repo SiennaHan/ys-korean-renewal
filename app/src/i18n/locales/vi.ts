@@ -167,6 +167,7 @@ const vi = {
 	},
 	player: {
 		exit: "Thoát",
+		cancel: "Hủy",
 		skip: "Bỏ qua",
 		next: "Tiếp theo",
 		progress: "{{current}} / {{total}}",

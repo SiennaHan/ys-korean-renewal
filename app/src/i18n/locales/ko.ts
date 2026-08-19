@@ -167,6 +167,7 @@ const ko = {
 	},
 	player: {
 		exit: "나가기",
+		cancel: "취소",
 		skip: "건너뛰기",
 		next: "다음",
 		progress: "{{current}} / {{total}}",
