@@ -3615,11 +3615,11 @@ function polishFrame(d,v){
       '성수동':[276,79], '국립중앙박물관':[184,88], '한강공원':[130,91]
     };
     const compactLabelTargets={
-      '북한산':[174,30], '명동':[157,61], '홍대':[86,66],
-      '성수동':[302,71], '국립중앙박물관':[222,80]
+      '북한산':[174,30], '경복궁':[143,45], '광장시장':[254,48],
+      '명동':[157,61], '홍대':[86,66], '성수동':[302,71], '국립중앙박물관':[222,80]
     };
     // 현재 장소와 방문 완료 장소는 context 목록과 무관하게 항상 라벨을 보여 준다.
-    const compactContext=new Set(['북한산','명동','성수동','국립중앙박물관']);
+    const compactContext=new Set(['북한산','경복궁','광장시장','명동','성수동','국립중앙박물관']);
     d.querySelectorAll('.ux-seoul-map svg').forEach(svg=>{
       const view=(svg.getAttribute('viewBox')||'0 0 390 240').split(/\s+/).map(Number);
       const [viewX,viewY,viewW,viewH]=view;
