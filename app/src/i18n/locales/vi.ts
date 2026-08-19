@@ -112,7 +112,7 @@ const vi = {
 			title: "Trò chơi",
 			vocashot: {
 				name: "VocaShot",
-				description: "Một mình bắn thiên thạch để luyện từ vựng",
+				description: "Bắn thiên thạch để luyện từ vựng",
 			},
 			springPicnic: {
 				name: "Nhiệm vụ số dã ngoại mùa xuân",

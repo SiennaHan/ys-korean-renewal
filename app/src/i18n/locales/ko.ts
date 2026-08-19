@@ -112,7 +112,7 @@ const ko = {
 			title: "게임",
 			vocashot: {
 				name: "VocaShot",
-				description: "혼자 유성을 맞히며 어휘를 익혀요",
+				description: "운석을 맞히며 어휘를 익혀요",
 			},
 			springPicnic: {
 				name: "봄소풍 숫자미션",

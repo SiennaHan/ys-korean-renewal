@@ -112,7 +112,7 @@ const en = {
 			title: "Games",
 			vocashot: {
 				name: "VocaShot",
-				description: "Shoot meteors solo to practice vocabulary",
+				description: "Shoot meteors to practice vocabulary",
 			},
 			springPicnic: {
 				name: "Spring Picnic Number Mission",

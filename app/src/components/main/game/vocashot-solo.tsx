@@ -126,7 +126,7 @@ export default function VocashotSolo() {
 		timerRef.current = null;
 	};
 
-	/** 지금 점수에서 유성이 떨어지는 데 걸리는 시간 */
+	/** 지금 점수에서 운석이 떨어지는 데 걸리는 시간 */
 	const fallSec = useCallback(
 		(atScore: number) => {
 			const steps = Math.floor(atScore / TUNING.fallStepPoints);
