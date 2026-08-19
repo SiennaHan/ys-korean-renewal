@@ -3595,14 +3595,14 @@ function polishFrame(d,v){
         el.classList.add('ux-seoul-map');
     });
     const fullPinTargets={
-      '북한산':[170,38], '경복궁':[168,72], '북촌한옥마을':[190,66],
-      '명동':[176,96], '광장시장':[212,88], 'DDP':[224,101], '홍대':[112,96],
-      '성수동':[266,108], '한강공원':[135,128], '국립중앙박물관':[176,154]
+      '북한산':[174,38], '북촌한옥마을':[190,75], '경복궁':[174,82],
+      '광장시장':[226,94], 'DDP':[244,96], '명동':[183,105], '홍대':[112,114],
+      '성수동':[276,125], '국립중앙박물관':[184,145], '한강공원':[130,148]
     };
     const fullLabelTargets={
-      '북한산':[170,48], '경복궁':[140,64], '북촌한옥마을':[225,54],
-      '명동':[171,105], '광장시장':[244,78], 'DDP':[252,98], '홍대':[84,88],
-      '성수동':[294,101], '한강공원':[105,105], '국립중앙박물관':[176,164]
+      '북한산':[174,48], '북촌한옥마을':[222,63], '경복궁':[144,75],
+      '광장시장':[258,85], 'DDP':[272,98], '명동':[180,114], '홍대':[84,105],
+      '성수동':[304,117], '국립중앙박물관':[218,137], '한강공원':[100,137]
     };
     const compactTargets={
       '북한산':[174,31], '경복궁':[150,55], '광장시장':[235,60], 'DDP':[242,75]
@@ -3614,13 +3614,6 @@ function polishFrame(d,v){
       const isCompact=viewH<150;
       if(viewH<105) svg.querySelectorAll('path[stroke="#a0c4e0"],path[stroke="#bdd8f0"]')
         .forEach(river=>river.setAttribute('transform','translate(0 14)'));
-      if(!isCompact){
-        svg.querySelectorAll('path[stroke="#a0c4e0"],path[stroke="#bdd8f0"]')
-          .forEach(river=>river.setAttribute('transform','translate(0 -42)'));
-        svg.querySelectorAll('rect[fill="#d0dce8"]').forEach(block=>{
-          if(Number(block.getAttribute('y'))===116) block.setAttribute('y','151');
-        });
-      }
       svg.querySelectorAll('g').forEach(place=>{
         const text=place.querySelector('text');
         const name=text?.textContent.trim();
