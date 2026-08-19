@@ -35,7 +35,7 @@ export const gameUiKo = {
     backToLevel: "← 급수 선택",
     pickLesson: "과 선택",
     randomLesson: "랜덤 문제",
-    lessonHint: "현재 과와 이전 과에서 최대 8문제가 랜덤 출제됩니다",
+    lessonHint: "현재 과와 이전 과에서 최대 {n}문제가 랜덤 출제됩니다",
     wrongList: "틀린 문제",
     yourPick: "나의 선택",
     notPicked: "선택 안 함",
@@ -120,7 +120,7 @@ export const gameUiEn = {
     title: "Particle Sniper", pickLevel: "Choose a level",
     pickLevelHint: "Choose a level to start", backToLevel: "← Levels",
     pickLesson: "Choose a lesson", randomLesson: "Random",
-    lessonHint: "Up to 8 questions, drawn from this lesson and earlier ones",
+    lessonHint: "Up to {n} questions, drawn from this lesson and earlier ones",
     wrongList: "What you missed", yourPick: "You chose", notPicked: "No answer",
   },
   cardSort: {
@@ -179,7 +179,7 @@ export const gameUiJa = {
     title: "助詞スナイパー", pickLevel: "級を選ぶ",
     pickLevelHint: "級を選んでください", backToLevel: "← 級を選ぶ",
     pickLesson: "課を選ぶ", randomLesson: "ランダム",
-    lessonHint: "この課と前の課から最大8問が出ます",
+    lessonHint: "この課と前の課から最大{n}問が出ます",
     wrongList: "間違えた問題", yourPick: "選んだ答え", notPicked: "未選択",
   },
   cardSort: {
@@ -239,7 +239,7 @@ export const gameUiZh = {
     title: "助词狙击手", pickLevel: "选择级别",
     pickLevelHint: "请选择级别", backToLevel: "← 选择级别",
     pickLesson: "选择课", randomLesson: "随机出题",
-    lessonHint: "从本课和之前的课中随机出最多8题",
+    lessonHint: "从本课和之前的课中随机出最多{n}题",
     wrongList: "错题", yourPick: "你的选择", notPicked: "未选择",
   },
   cardSort: {
@@ -298,7 +298,7 @@ export const gameUiVi = {
     title: "Thợ bắn trợ từ", pickLevel: "Chọn cấp",
     pickLevelHint: "Hãy chọn cấp", backToLevel: "← Chọn cấp",
     pickLesson: "Chọn bài", randomLesson: "Ngẫu nhiên",
-    lessonHint: "Tối đa 8 câu, lấy từ bài này và các bài trước",
+    lessonHint: "Tối đa {n} câu, lấy từ bài này và các bài trước",
     wrongList: "Câu đã sai", yourPick: "Bạn chọn", notPicked: "Không chọn",
   },
   cardSort: {

@@ -4,14 +4,14 @@
 <style>
   :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
     --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
-    --stop:#9a3f31; --stop-soft:#fbece9; }
+    --stop:#9a3f31; --stop-soft:#fbece9; --ok:#1f7a52; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
     --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb; --ink-3:#6f7887;
     --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
-    --stop:#e2988a; --stop-soft:#2e1e1a; } }
+    --stop:#e2988a; --stop-soft:#2e1e1a; --ok:#6dc79b; } }
   :root[data-theme="dark"] { --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb;
     --ink-3:#6f7887; --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
-    --stop:#e2988a; --stop-soft:#2e1e1a; }
+    --stop:#e2988a; --stop-soft:#2e1e1a; --ok:#6dc79b; }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
     font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif}
@@ -44,6 +44,8 @@
   .callout.stop{border-left-color:var(--stop)}
   .callout .t{font-weight:800;font-size:13.5px;margin-bottom:4px}
   .callout.stop .t{color:var(--stop)}
+  .callout.ok{border-left-color:var(--ok)}
+  .callout.ok .t{color:var(--ok)}
   .callout p{font-size:14px;margin:6px 0}
   ul,ol{padding-left:21px;margin:9px 0} li{margin:5px 0;font-size:14.5px}
   li::marker{color:var(--ink-3)}
@@ -641,18 +643,85 @@ complete 그 장소 완료</pre>
   <tr><td>서울 퍼즐 힌트</td><td>완료 화면에 <b>"1 힌트 사용"</b>이 남았다 — 감점 규칙과 맞물린다</td></tr>
 </table></div>
 
+<h3>2차 — <b>분모 고정 지적 뒤</b></h3>
+<p>디자인 세션이 두 커밋을 올렸다(<code>a065dd1</code> 이름 정렬 · <code>1e94d83</code> 분모 파생).
+   다시 열어 봤다.</p>
+
+<div class="callout ok">
+  <div class="t">분모가 <b>풀렸다</b> — 그것도 제대로</div>
+  <p>결과 화면을 <code>PS_RESULT_SAMPLE</code> 한 덩어리로 빼고
+     <b><code>answered</code> 하나에서 분수도 정확도도 파생</b>시켰다.
+     <code>9 / 12</code> 와 <code>75%</code> 가 <b>같은 수에서 나온다</b> —
+     숫자 둘을 따로 적어 두면 어긋나는데, 그걸 막아 놨다.</p>
+</div>
+
 <div class="callout stop">
-  <div class="t">하나 남았다 — <b>조사 스나이퍼 결과의 <code>6 / 8</code></b></div>
-  <p>분모 <b>8이 고정</b>으로 박혀 있다. 그런데 §4 에서 한 판 길이를
-     <b>하트 0 · 후보 소진 · 20문항 중 먼저 오는 것</b>으로 바꾸기로 했다.
-     급마다 <b>12~20</b>으로 달라진다.</p>
-  <p><b>디자인 세션 탓이 아니다</b> — 그 결정은 목업을 넘긴 <b>뒤에</b> 나왔다.
-     분모가 가변이라는 것만 알려 주면 된다. 자리 자체는 이미 있다.</p>
+  <div class="t">더 큰 자리가 <b>아직 8</b>이다 — 과 선택 화면</div>
+  <p><code>ps_lesson</code> 이 그대로다.
+     안내 문구가 <b>"현재 과와 이전 과에서 최대 <u>8</u>문제가 랜덤 출제됩니다"</b>,
+     과 카드 숫자도 <b>4 / 8 / 8 / 8 …</b>.</p>
+  <p><b>여기가 학생이 판 길이를 실제로 보는 자리다.</b> 결과 화면은 끝나고 한 번 보지만,
+     과 선택은 <b>시작하기 전에</b> 본다. 결과만 고치면 앞뒤가 어긋난다.</p>
+  <p class="qa">카드 숫자는 코드가 <code>Math.min(MAX_QUESTIONS_PER_GAME, 누적)</code> 이라
+     <b>상수만 20으로 올리면 따라온다</b>. 손대야 하는 건 <b>문구 안의 "8"</b> —
+     그건 문자열에 박혀 있다.</p>
+</div>
+
+<div class="callout ok">
+  <div class="t">플레이 화면 <code>4 / 8</code> 은 <b>고칠 게 없다</b></div>
+  <p>실제 코드가 이미 <code>{currentQuestionIndex + 1} / {questions.length}</code> —
+     <b>처음부터 가변이었다</b>. 목업의 8은 내가 캡처한 판이 8문항이었을 뿐이다.
+     상한을 올리면 <b>저절로 따라온다</b>. 표본만 갈아 주면 된다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">표본의 <b>3급 6과 → 12</b> 는 <b>확인을 못 했다</b></div>
+  <p>§4 표가 <b>3급 전체 19문항 / 4과</b>라고만 적혀 있고
+     <b>과별 수</b>는 안 적어 뒀다. 6과는 3급의 <b>두 번째 과</b>이니
+     누적 12면 남은 두 과가 7문항이라는 뜻인데 — <b>가능은 하다</b>.
+     맞는지 <b>단정할 수 없다</b>.</p>
+  <p class="qa">저장소의 씨드로 세면 <b>6</b>이 나오는데,
+     <b>씨드를 근거로 삼으면 안 된다</b> — 씨드는 <b>24레슨 96문항</b>,
+     어드민은 <b>32레슨 173문항</b>이다. <b>씨드가 낡았다.</b>
+     어드민을 열어 3급 과별 수를 보면 <b>한 번에 끝난다</b>.</p>
+</div>
+
+<h3>내가 §9 에 <b>덜 적은 것</b></h3>
+<div class="callout">
+  <div class="t">"급마다 <b>12~20</b>" 은 <b>마지막 과 기준</b>이다</div>
+  <p>§4 표의 12(4급)~20(1·2급)은 <b>각 급을 끝까지 갔을 때</b>의 판 길이다.
+     <b>앞쪽 과는 훨씬 짧다</b> — 1급 4과는 <b>4문항</b>짜리 한 판이다.
+     실제 범위는 <b>4~20</b>.</p>
+  <p class="qa">그래서 <b>"20문항짜리 게임"이라고 부르면 안 된다.</b>
+     20은 <b>상한</b>이지 길이가 아니다. 화면 문구도 <b>"최대"</b>를 살려야 한다 —
+     지금 문구가 이미 "최대 8문제"라 <b>그 형태는 맞게 잡혀 있다</b>. 숫자만 바뀐다.</p>
+</div>
+
+<div class="callout ok">
+  <div class="t">문구 다국어도 <b>8이 박혀 있었다</b> — 고쳤다</div>
+  <p><code>game_ui_i18n_v1.ts</code> 의 <code>lessonHint</code> 가
+     <b>5개 로케일 전부</b> "8"을 문자열에 물고 있었다.
+     <code>{n}</code> 매개변수로 바꿨다.</p>
+<pre>ko  현재 과와 이전 과에서 최대 <b>{n}</b>문제가 랜덤 출제됩니다
+en  Up to <b>{n}</b> questions, drawn from this lesson and earlier ones
+ja  この課と前の課から最大<b>{n}</b>問が出ます
+zh  从本课和之前的课中随机出最多<b>{n}</b>题
+vi  Tối đa <b>{n}</b> câu, lấy từ bài này và các bài trước</pre>
+  <p class="qa">나머지 문구에 박힌 숫자는 <b>봄소풍 "2번 틀리면"</b> 하나뿐인데
+     그건 <b>안 바뀌는 규칙</b>이라 그대로 둔다.</p>
 </div>
 
 <div class="callout">
   <div class="t">검사한 것 — <b>회귀 없음</b></div>
-  <p><b>폭</b> 17화면 × 320 에서 <b>문서 가로 스크롤 0</b>.
+  <p><b>2차에서 다시 돌렸다.</b> 17화면 × 320 에서 <b>문서 가로 스크롤 0</b> ·
+     <b>안 잘리는 넘침 0</b> · <b>빈 화면 0</b>. 제약 8건도 <b>그대로</b>.</p>
+  <p class="qa">중간에 <code>60s</code> 와 <b>최고 점수</b>가 사라진 줄 알았는데
+     <b>내 검사가 틀렸다</b> — 숫자와 단위가 다른 요소라 <code>innerText</code> 에
+     <b>줄바꿈이 끼어</b> 정규식이 못 넘었다. 화면에는 둘 다 있다.</p>
+  <p class="qa"><code>ps_level</code>·<code>ps_lesson</code> 이 <b>빈 화면으로 잡히기도 했다</b> —
+     이것도 검사 탓이다. 그 둘은 <b>외부 스타일시트와 canvas</b>가 있어 늦게 그려지는데
+     <code>render()</code> 직후에 <b>동기로</b> 읽었다. 기다렸다 읽으니 <b>186자로 정상</b>이다.</p>
+  <p><b>폭</b> 1차 기록 — 17화면 × 320 에서 <b>문서 가로 스크롤 0</b>.
      봄소풍 일러스트가 29px 넘치지만 <b>조상이 잘라 준다</b> — 배경 장식이라 의도된 것이다.</p>
   <p><b>번역</b> 난이도 버튼(72.9px)에 <code>むずかしい</code> · <code>Play again</code> 등
      실제 번역을 넣어 봤다 — <b>넘치는 것 없음</b>.</p>
