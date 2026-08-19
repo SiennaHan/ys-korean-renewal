@@ -43,7 +43,16 @@ class H(BaseHTTPRequestHandler):
     def do_GET(self):
         path=self.path.split('?')[0]
         fn=ROUTES.get(path)
-        data = fn() if fn else ([] if path.startswith('/game-progress') else {})
+        # 목록을 기대하는 곳에 {} 를 주면 화면이 "records is not iterable" 로 죽는다.
+        # 진짜 오류를 가리므로, 배열을 기대하는 경로는 빈 배열로 답한다.
+        LIST_PATHS = ('/game-progress', '/learning-record/list', '/flashcard/word/',
+                      '/dialog/mission/book/', '/review-queue')
+        if fn:
+            data = fn()
+        elif any(path.startswith(x) for x in LIST_PATHS):
+            data = []
+        else:
+            data = {}
         self._send({'result':True,'code':200,'message':None,'data':data})
     def log_message(self,*a): pass
 

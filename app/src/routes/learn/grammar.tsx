@@ -1,21 +1,21 @@
-import AiRoleplay from "@/components/learn/ai-roleplay";
+import FillBlank from "@/components/learn/fill-blank";
 import { useStudySessionPing } from "@/hooks/use-study-session-ping";
 import { createFileRoute } from "@tanstack/react-router";
 import { type LearnSearch, parseLearnSearch } from "./-search";
 
-export const Route = createFileRoute("/learn/roleplay")({
+export const Route = createFileRoute("/learn/grammar")({
 	validateSearch: (search: Record<string, unknown>): LearnSearch =>
 		parseLearnSearch(search),
 	component: Page,
 });
 
 function Page() {
-	useStudySessionPing("roleplay");
+	useStudySessionPing("fill-blank");
 	const { level, lesson } = Route.useSearch();
-	const chapterLabel = lesson ? `${lesson}과 AI 롤플레잉` : "AI 롤플레잉";
+	const chapterLabel = lesson ? `${lesson}과 빈칸 채워 말하기` : "빈칸 채워 말하기";
 
 	return (
-		<AiRoleplay
+		<FillBlank
 			bookId={level}
 			chapterSeq={lesson}
 			chapterLabel={chapterLabel}

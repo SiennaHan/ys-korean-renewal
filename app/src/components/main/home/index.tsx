@@ -1,6 +1,5 @@
 import { type DashboardData, getDashboard } from "@/api/dashboard";
 import { useAuth } from "@/components/sign/sign-provider";
-import { chapters } from "@/shared/data/chapter";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -53,19 +52,22 @@ export default function HomeContent() {
 		.map((done, i) => (done ? i : -1))
 		.filter((i) => i >= 0);
 
+	// 서버는 아직 구 경로를 준다. 구 경로도 리다이렉트로 살아 있지만,
+	// 우리 쪽 이동은 신규 경로로 곧장 보낸다 (§4).
+	const RENAMED: Record<string, string> = {
+		"/learn/fill-blank": "/learn/grammar",
+		"/learn/listen-answer": "/learn/listen",
+		"/learn/read-answer": "/learn/read",
+	};
+
 	const handleContinue = () => {
 		if (!continueLearning) return;
-		// chapter id 찾기: book_id + seq 로 매칭
-		const ch = chapters.find(
-			(c) =>
-				c.book_id === continueLearning.bookId &&
-				c.seq === continueLearning.chapterSeq,
-		);
+		// 급·과가 응답에 그대로 있으므로 chapter id 를 되찾을 필요가 없다.
 		navigate({
-			to: continueLearning.route,
+			to: RENAMED[continueLearning.route] ?? continueLearning.route,
 			search: {
-				...continueLearning.routeParams,
-				chapter: ch?.id,
+				level: continueLearning.bookId,
+				lesson: continueLearning.chapterSeq,
 			},
 		});
 	};

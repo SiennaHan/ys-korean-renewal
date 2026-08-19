@@ -319,12 +319,13 @@ export default function TextbookContent() {
 		}
 
 		// Basic learning modules → /learn routes
+		// menu_type → 신규 라우트 (§4). 콘텐츠 ID 는 URL 에 싣지 않는다.
 		const learnRouteMap: Record<string, string> = {
 			word: "/learn/word",
 			roleplay: "/learn/roleplay",
-			"listen-answer": "/learn/listen-answer",
-			"fill-blank": "/learn/fill-blank",
-			"read-answer": "/learn/read-answer",
+			"listen-answer": "/learn/listen",
+			"fill-blank": "/learn/grammar",
+			"read-answer": "/learn/read",
 		};
 
 		const learnRoute = learnRouteMap[id];
@@ -332,9 +333,8 @@ export default function TextbookContent() {
 			navigate({
 				to: learnRoute,
 				search: {
-					book: activeBookTab as number,
-					chapter: selectedChapterId ?? undefined,
-					chapterSeq: selectedChapter?.seq,
+					level: activeBookTab as number,
+					lesson: selectedChapter?.seq,
 				},
 			});
 			return;
