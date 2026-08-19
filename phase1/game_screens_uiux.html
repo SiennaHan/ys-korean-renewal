@@ -3527,7 +3527,6 @@ const PS_RESULT_SAMPLE={
   score:1860,
   bestScore:2480,
   maxCombo:4,
-  grade:"A",
   answered:20,
   correct:17,
   mistakes:[
@@ -3537,10 +3536,12 @@ const PS_RESULT_SAMPLE={
   ]
 };
 PS_RESULT_SAMPLE.accuracy=Math.round(PS_RESULT_SAMPLE.correct/PS_RESULT_SAMPLE.answered*100);
+// 등급은 앱과 같은 경계로 정확도에서 파생한다 (particle-sniper.tsx: 90/75/60)
+PS_RESULT_SAMPLE.grade=PS_RESULT_SAMPLE.accuracy>=90?"S":PS_RESULT_SAMPLE.accuracy>=75?"A":PS_RESULT_SAMPLE.accuracy>=60?"B":"C";
 const PS_RESULT_MISTAKES=PS_RESULT_SAMPLE.mistakes.map(item=>`<div class="ps-mistake"><p class="sentence">${item.sentence}</p><p class="mine">나의 선택: ${item.mine}</p><p class="answer">정답: ${item.answer}</p></div>`).join("");
 
 const RESULT_SCREENS={
-  pc_result:`<div id="app" style="height:100%;"><div class="result-screen pc-result"><div class="pc-result-scroll"><div class="pc-result-scene"><div class="pc-result-cloud"></div><div class="pc-result-sun"></div><div class="pc-result-banner">👍 잘했어요!</div><div class="pc-result-mat"></div><div class="pc-result-friends"><div class="pc-result-friend">🐰</div><div class="pc-result-friend">🐻</div><div class="pc-result-friend">🐿️</div></div></div><div class="pc-result-main"><div class="pc-result-title">조금만 더 연습해요!</div><div class="pc-result-score">6 / 8</div><div class="pc-result-sub">솔이 🌱 쉬운 미션 · 총 플레이 4회</div></div><div class="pc-result-stats"><div class="pc-result-stat"><b>6</b><span>첫 시도 정답</span></div><div class="pc-result-stat"><b>7</b><span>끝까지 맞힘</span></div><div class="pc-result-stat"><b>75%</b><span>점수 정답률</span></div></div><div class="pc-wrong"><div class="pc-wrong-head">오답 노트 <span>2개</span></div><div class="pc-wrong-row"><div class="pc-wrong-num">15</div><div class="pc-wrong-copy"><div>사과가 열다섯 개 있어요.</div><div class="pc-wrong-answer">정답: 15 · 🔊</div></div></div><div class="pc-wrong-row"><div class="pc-wrong-num">24</div><div class="pc-wrong-copy"><div>학생이 스물네 명 왔어요.</div><div class="pc-wrong-answer">정답: 24 · 두 번 틀림</div></div></div></div></div><div class="pc-result-actions"><button class="pc-result-primary">다른 미션 하기 🌸</button><button class="pc-result-reset">저장 데이터 초기화</button></div></div></div>`,
+  pc_result:`<div id="app" style="height:100%;"><div class="result-screen pc-result"><div class="pc-result-scroll"><div class="pc-result-scene"><div class="pc-result-cloud"></div><div class="pc-result-sun"></div><div class="pc-result-banner">👍 잘했어요!</div><div class="pc-result-mat"></div><div class="pc-result-friends"><div class="pc-result-friend">🐱</div><div class="pc-result-friend">🐰</div><div class="pc-result-friend">🐻</div></div></div><div class="pc-result-main"><div class="pc-result-title">조금만 더 연습해요!</div><div class="pc-result-score">4 / 6</div><div class="pc-result-sub">냥이 🌸 어려운 미션 · 총 플레이 4회</div></div><div class="pc-result-stats"><div class="pc-result-stat"><b>4</b><span>첫 시도 정답</span></div><div class="pc-result-stat"><b>5</b><span>끝까지 맞힘</span></div><div class="pc-result-stat"><b>67%</b><span>점수 정답률</span></div></div><div class="pc-wrong"><div class="pc-wrong-head">오답 노트 <span>2개</span></div><div class="pc-wrong-row"><div class="pc-wrong-num">15</div><div class="pc-wrong-copy"><div>책 ___ 권 읽었어요.</div><div class="pc-wrong-answer">정답: 열다섯 · 🔊</div></div></div><div class="pc-wrong-row"><div class="pc-wrong-num">32</div><div class="pc-wrong-copy"><div>학생이 ___ 명 있어요.</div><div class="pc-wrong-answer">정답: 서른두 · 두 번 틀림</div></div></div></div></div><div class="pc-result-actions"><button class="pc-result-primary">다른 미션 하기 🌸</button><button class="pc-result-reset">저장 데이터 초기화</button></div></div></div>`,
   ps_result:`<div id="app" style="height:100%;"><div class="result-screen ps-result ux-dark-stage"><div class="ps-result-scroll"><div class="ps-result-hero"><div class="ps-result-grade">${PS_RESULT_SAMPLE.grade}</div><div class="ps-result-stage">${PS_RESULT_SAMPLE.level} · ${PS_RESULT_SAMPLE.lesson}</div><div class="ps-result-score">${PS_RESULT_SAMPLE.score.toLocaleString("ko-KR")}점</div><div class="ps-result-best">최고 점수 <b>${PS_RESULT_SAMPLE.bestScore.toLocaleString("ko-KR")}점</b></div></div><div class="ps-result-stats"><div class="ps-result-stat"><b>${PS_RESULT_SAMPLE.accuracy}%</b><span>정확도</span></div><div class="ps-result-stat"><b>${PS_RESULT_SAMPLE.maxCombo}×</b><span>최고 콤보</span></div><div class="ps-result-stat"><b>${PS_RESULT_SAMPLE.correct} / ${PS_RESULT_SAMPLE.answered}</b><span>맞힌 문항</span></div><div class="ps-result-stat"><b>${PS_RESULT_SAMPLE.mistakes.length}</b><span>오답</span></div></div><div class="ps-mistakes"><h3>틀린 문제</h3>${PS_RESULT_MISTAKES}</div></div><div class="ps-result-actions"><button class="ps-result-retry">다시하기</button><div class="ps-result-links"><button>과 선택</button><button>급수 선택</button></div></div></div></div>`,
   sp_complete:`<div id="app" style="height:100%;"><div class="result-screen sp-complete"><div class="sp-complete-scroll"><div class="sp-complete-hero"><div class="sp-complete-check">✓</div><div class="sp-complete-title">홍대 완료!</div><div class="sp-complete-copy">모든 문장을 완성했어요!</div><div class="sp-complete-xp">55 <span>XP</span></div></div><div class="sp-complete-body"><div class="sp-complete-stats"><div class="sp-complete-stat"><b>3 / 4</b><span>정답</span></div><div class="sp-complete-stat"><b>1</b><span>힌트 사용</span></div><div class="sp-complete-stat"><b>55 XP</b><span>누적 XP</span></div></div><div class="sp-grammar-review"><div class="sp-grammar-title">이 장소에서 배운 문법</div><div class="sp-grammar-chips"><span class="sp-grammar-chip">이에요/예요</span><span class="sp-grammar-chip">은/는</span></div></div></div></div><div class="sp-complete-actions"><button class="sp-complete-map">지도로 돌아가기 →</button><button class="sp-complete-replay">다시 풀기</button></div></div></div>`
 };
@@ -3568,7 +3569,7 @@ const state={ v:"pc_result", width:"390" };
 const LIST_COPY=[
   {name:"VocaShot", sub:"2급 최고 210점", progress:true},
   {name:"봄소풍 숫자미션", sub:"솔이 · 2단계까지 했어요", progress:true},
-  {name:"서울 여행 퍼즐", sub:"12곳 중 5곳 다녀왔어요", progress:true},
+  {name:"서울 여행 퍼즐", sub:"10곳 중 5곳 다녀왔어요", progress:true},
   {name:"어휘 카드 마스터", sub:"3급 5과 최고 2,140점", progress:true},
   {name:"조사 스나이퍼", sub:"빠르게 조사를 맞혀보세요", progress:false}
 ];
@@ -3791,7 +3792,7 @@ function polishFrame(d,v){
             <div class="ps-hearts" aria-label="남은 기회 3개"><span>♥</span><span>♥</span><span>♥</span><span style="opacity:.18">♥</span><span style="opacity:.18">♥</span></div>
             <div class="ps-combo">5×</div>
           </div>
-          <div><div class="ps-score">1,180</div><div class="ps-progress">4 / 8</div></div>
+          <div><div class="ps-score">1,180</div><div class="ps-progress">4 / 20</div></div>
         </div>
         <div class="ps-timer" aria-label="남은 시간 62%"><i></i></div>
         <div class="ps-sky">
@@ -3936,11 +3937,22 @@ function render(){
     +'*,*::before,*::after{animation:none!important;transition:none!important}</style>'
     +'<style>'+APP_CSS+'</style><style>'+UIUX_CSS+'</style><body>'+SCREENS[state.v]);
   d.close();
-  polishFrame(d,state.v);
-  // framer-motion 이 페이드 도중에 굳혀 놓은 inline opacity:0 만 푼다
-  d.querySelectorAll('[style*="opacity"]').forEach(el=>{
-    if(parseFloat(el.style.opacity)===0) el.style.opacity='1';
-  });
+  // 화면에 따라 d.close() 직후엔 아직 body 가 안 채워져 있다(외부 stylesheet·canvas 가 있는 것들).
+  // 그때 polishFrame 을 부르면 아무것도 못 찾고 조용히 지나간다 — 파싱을 기다렸다 한 번만 적용한다.
+  const v=state.v;
+  const applyPolish=()=>{
+    if(d.body.dataset.polished==='1'||!d.body.firstElementChild) return;
+    d.body.dataset.polished='1';
+    polishFrame(d,v);
+    // framer-motion 이 페이드 도중에 굳혀 놓은 inline opacity:0 만 푼다
+    d.querySelectorAll('[style*="opacity"]').forEach(el=>{
+      if(parseFloat(el.style.opacity)===0) el.style.opacity='1';
+    });
+  };
+  applyPolish();
+  f.addEventListener('load',applyPolish);
+  requestAnimationFrame(applyPolish);
+  setTimeout(applyPolish,0);
   document.getElementById('caption').textContent=state.width+' × 720';
   document.getElementById('ttl').innerHTML='<b>'+T[state.v]+'</b>';
   ['v','width'].forEach(s=>document.querySelectorAll('[data-set="'+s+'"] .option')

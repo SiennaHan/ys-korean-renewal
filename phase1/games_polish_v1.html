@@ -740,6 +740,67 @@ vi  Tối đa <b>{n}</b> câu, lấy từ bài này và các bài trước</pre>
      그건 <b>안 바뀌는 규칙</b>이라 그대로 둔다.</p>
 </div>
 
+<h3>3차 — <b>여섯 군데를 고쳤다</b></h3>
+<p>디자인 세션이 <code>a0a3547</code> 로 조사 스나이퍼 표본과 과 선택 숫자를 이미 반영했다.
+   나머지와, <b>확인하다 나온 것들</b>을 내가 고쳤다.</p>
+<div class="tablewrap"><table>
+  <tr><th>화면</th><th>무엇이 틀렸나</th><th>어떻게 고쳤나</th></tr>
+  <tr><td>조사 · 결과</td><td>급·과가 <b>3급 6과</b>인데 <code>answered:12</code> — 최대 10.
+      오답 셋이 <b>1급 조사</b>라 3급 판에 못 나온다</td>
+      <td><b>1급 13과 · 20 · 17</b> <span class="qa">(디자인 세션)</span></td></tr>
+  <tr><td>조사 · 결과</td><td><code>grade:"A"</code> 가 <b>하드코딩</b> — 분수는 파생시켜 놓고 등급만 남았다</td>
+      <td>정확도에서 파생. 앱과 같은 경계 <b>90/75/60</b></td></tr>
+  <tr><td>조사 · 과 선택</td><td>문구 "최대 <b>8</b>문제" · 카드 숫자가 <b>낡은 씨드</b> 기준</td>
+      <td>"최대 20문제" · <b>8·16·20…</b> <span class="qa">(디자인 세션)</span></td></tr>
+  <tr><td>조사 · 플레이</td><td><code>4 / 8</code> — 1급 8과 한 판은 <b>20</b>이다</td>
+      <td><code>4 / 20</code></td></tr>
+  <tr><td>목록</td><td>"<b>12곳</b> 중 5곳" — 장소는 <b>10곳</b>.
+      같은 목업의 지도가 이미 "0 / 10"이라 <b>자기모순</b>이었다</td>
+      <td>"10곳 중 5곳"</td></tr>
+  <tr><td>봄소풍 · 결과</td><td><code>6 / 8</code> · 솔이 쉬움 — 솔이 쉬움은 <b>10문항</b>.
+      게다가 오답 예시 두 문장이 <b>운영 콘텐츠에 없다</b></td>
+      <td><b>냥이 어려움</b>(단위 6문항) <code>4 / 6</code> · 67% ·
+          오답을 <b>어드민 실제 문항</b>으로</td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">뿌리 원인 — <b>목업 표본이 낡은 씨드에서 나왔다</b></div>
+  <p>목업은 내가 로컬 앱을 띄워 캡처한 것인데, 그 앱이 <code>game_mockapi.py</code> 를 통해
+     <b>저장소 씨드</b>를 물고 있었다. 그래서 화면에 박힌 수와 문장이
+     <b>운영 콘텐츠와 어긋났다</b>. 디자인이 아니라 <b>데이터 출처</b> 문제였다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">고치다 나온 것 — <b>보정 코드가 절반은 안 돌고 있었다</b></div>
+  <p><code>render()</code> 가 <code>d.close()</code> 직후 <code>polishFrame()</code> 을 부르는데,
+     <b>외부 stylesheet 와 canvas 가 있는 화면</b>은 그 시점에 <b>body 가 비어 있다</b>.
+     버튼을 세어 보니 <code>ps_lesson</code>·<code>ps_level</code>·<code>cs_level</code> 이
+     <b>0개</b>였다 — 아무것도 못 찾고 <b>조용히 지나갔다</b>.</p>
+  <p><b>디자인 세션의 과 선택 수정이 안 보인 것도 이것 때문</b>이다.
+     코드는 맞게 들어와 있었는데 <b>실행이 안 됐다</b>.</p>
+  <p class="qa">파싱을 기다렸다 <b>한 번만</b> 적용하도록 고쳤다
+     (<code>load</code> · <code>rAF</code> · <code>setTimeout</code> 셋으로 받고
+     <code>dataset.polished</code> 로 중복을 막는다).
+     이제 <b>17화면 전부 보정이 적용된다</b>.</p>
+  <p class="qa">앞선 검수에서 이 화면들이 <b>빈 화면으로 잡혔던 것</b>도 같은 뿌리였다.
+     그때는 <b>내 검사 탓</b>으로만 적었는데, <b>절반은 목업의 실제 결함</b>이었다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">고치고 다시 검사</div>
+  <p>17화면을 <b>동시에 띄워</b> 한 번에 읽었다(패널이 숨겨지면 타이머가 눌려 순차 검사가 안 끝난다).
+     <b>보정 미적용 0 · 빈 화면 0 · 320폭 넘침 0</b>, 제약 <b>9건 전부 유지</b>.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">목업 밖 — <b>봄소풍 삐약 "쉬움"은 4문항뿐이다</b></div>
+  <p><code>전화</code> 카테고리에 <b>레벨1 문항이 0개</b>다.
+     삐약은 주소·전화 담당인데 쉬움을 고르면 <b>주소 4문항만</b> 나온다.
+     다른 친구는 6~10문항이다.</p>
+  <p class="qa">목업 문제가 아니라 <b>콘텐츠 구멍</b>이다 —
+     어드민에서 채우거나 그 버튼을 막아야 한다. <b>기획 판단으로 남긴다.</b></p>
+</div>
+
 <div class="callout">
   <div class="t">검사한 것 — <b>회귀 없음</b></div>
   <p><b>2차에서 다시 돌렸다.</b> 17화면 × 320 에서 <b>문서 가로 스크롤 0</b> ·
