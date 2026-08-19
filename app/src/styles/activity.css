@@ -1,0 +1,323 @@
+/**
+ * 활동 화면 CSS — activity_mockups_uiux.html 에서 이관 (2026-08-19)
+ *
+ * 시각 정본은 그 목업이다. 수치를 Tailwind 유틸리티로 옮겨 적지 않고
+ * 목업의 CSS 를 클래스 이름째로 가져온다 — 그래야 목업과 눈으로 대조된다.
+ * 색만 tokens.css 의 semantic 으로 치환했다.
+ *
+ * 모든 규칙을 .activity-frame 아래로 넣었다. .tag · .line · .msg 처럼 흔한 이름이 있어
+ * 앱 나머지로 새지 않게 한다. 클래스 이름 자체는 목업과 같다.
+ */
+.activity-frame {
+  /* 목업 body 는 line-height 를 정하지 않아 normal(≈1.2)로 상속된다.
+     앱은 Tailwind preflight 가 1.5 를 넣어 두므로 되돌려야 수치가 맞는다 —
+     그대로 두면 chip-opt 가 40 이 아니라 45 로 나온다. */
+  line-height: normal;
+  /* 목업 body 의 글꼴. 앱 전역과 같지만 명시해 둔다 */
+  font-family: var(--font-sans);
+
+  /* 목업 .screen 이 하던 일 — 화면 프레임이다.
+     높이는 host 가 준다(앱은 dvh, 스토리는 720 고정으로 목업과 맞춘다). */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-background-base);
+
+  /* 토큰에 대응이 없어 리터럴로 남긴 목업 색 */
+  --blue-100: #a2d1ff;
+  --blue-300: #59acff;
+  --blue-gray-200: #d7dbe3;
+  --blue-gray-400: #adb3be;
+  --blue-gray-800: #4b505a;
+}
+
+.activity-frame .appbar { flex:0 0 58px; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:0 9px; background:var(--color-background-surface); }
+.activity-frame .icon-control { width:44px; height:44px; border:0; background:transparent; color:var(--blue-gray-800); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .icon-control svg { width:24px; height:24px; }
+.activity-frame .lesson { text-align:center; color:var(--color-text-strong); font-size:16px; line-height:24px; font-weight:600; }
+.activity-frame .progress-wrap { flex:0 0 28px; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px; padding:0 18px 8px; background:var(--color-background-surface); }
+.activity-frame .progress-wrap.segmented { grid-template-columns:minmax(0,1fr); gap:0; }
+.activity-frame .progress-meta { grid-column:2; grid-row:1; min-width:26px; color:var(--color-text-sub); font-size:11px; line-height:16px; font-weight:500; text-align:right; white-space:nowrap; }
+.activity-frame .progress { grid-column:1; grid-row:1; min-width:0; display:flex; gap:4px; }
+.activity-frame .progress i { flex:1; height:5px; border-radius:3px; background:var(--color-fill-track); }
+.activity-frame .progress i.done { background:var(--blue-300); }
+.activity-frame .progress i.now { background:var(--color-fill-primary); }
+.activity-frame .activity-content { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; background:var(--color-background-base); }
+.activity-frame .scroll-area { flex:1 1 auto; min-height:0; overflow-y:auto; padding:16px; }
+.activity-frame .problem-card { padding:18px; border:1px solid var(--color-line-control); border-radius:16px; background:var(--color-background-surface); }
+.activity-frame .instruction { display:block; }
+.activity-frame .instruction h2 { margin:0; color:var(--color-text-heading); font-size:18px; line-height:26px; font-weight:600; letter-spacing:-.01em; }
+.activity-frame .stimulus { margin-top:16px; padding-top:16px; border-top:1px solid var(--color-line-control); display:flex; flex-direction:column; }
+.activity-frame .word-focus { display:flex; align-items:center; gap:8px; min-height:50px; }
+.activity-frame .word-focus strong { color:var(--color-text-strong); font-size:32px; line-height:48px; font-weight:600; letter-spacing:-.02em; }
+.activity-frame .sound-icon { width:38px; height:38px; border:0; border-radius:50%; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .sound-icon svg { width:19px; height:19px; }
+.activity-frame .meaning-focus { min-height:50px; display:flex; align-items:center; color:var(--color-text-strong); font-size:24px; line-height:36px; font-weight:600; }
+.activity-frame .response-area { margin-top:12px; }
+.activity-frame .choice-list { display:flex; flex-direction:column; gap:8px; }
+.activity-frame .choice { position:relative; width:100%; min-height:64px; padding:16px 48px 16px 18px; border:1px solid var(--color-line-control); border-radius:12px; background:var(--color-background-surface); color:var(--color-text-strong); display:flex; align-items:center; justify-content:flex-start; text-align:left; font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+.activity-frame .choice:hover { background:var(--color-primitive-white-50); }
+.activity-frame .choice.wrong { background:var(--color-background-wrong); }
+.activity-frame .choice.correct { background:var(--color-background-correct); }
+.activity-frame .choice-mark { position:absolute; right:17px; top:50%; transform:translateY(-50%); width:21px; height:21px; border-radius:50%; color:var(--color-background-surface); display:grid; place-items:center; font-size:11px; line-height:1; font-weight:600; }
+.activity-frame .wrong .choice-mark { background:var(--color-fill-wrong); }
+.activity-frame .correct .choice-mark { background:var(--color-fill-correct); }
+.activity-frame .statement { margin:0; color:var(--color-text-heading); font-size:19px; line-height:30px; font-weight:500; letter-spacing:-.01em; }
+.activity-frame .listen-stimulus { margin-top:14px; }
+.activity-frame .listen-copy { display:flex; flex-direction:column; gap:5px; }
+.activity-frame .listen-copy small { color:var(--blue-gray-400); font-size:12px; line-height:18px; font-weight:500; }
+.activity-frame .audio-row { min-height:46px; display:flex; align-items:center; gap:10px; padding:6px 10px; border:0; border-radius:12px; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .audio-play { width:34px; height:34px; border:0; border-radius:50%; background:var(--color-fill-primary); color:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .audio-play svg { width:18px; height:18px; }
+.activity-frame .audio-copy { display:flex; flex-direction:column; }
+.activity-frame .audio-copy b { font-size:14px; line-height:20px; font-weight:600; }
+.activity-frame .audio-copy span { color:var(--color-text-sub); font-size:12px; line-height:16px; font-weight:500; }
+.activity-frame .wave { display:flex; align-items:center; gap:3px; margin-left:auto; }
+.activity-frame .wave i { width:2px; border-radius:2px; background:var(--blue-300); }
+.activity-frame .wave i:nth-child(3n+1) { height:8px; }
+.activity-frame .wave i:nth-child(3n+2) { height:16px; }
+.activity-frame .wave i:nth-child(3n) { height:11px; }
+.activity-frame .binary-grid, .activity-frame .jamo-choices { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.activity-frame .listen-choices .choice { min-height:74px; justify-content:center; flex-direction:column; gap:1px; padding:12px 42px; font-size:23px; line-height:30px; font-weight:600; }
+.activity-frame .listen-choices .choice em { color:var(--color-text-sub); font-size:12px; line-height:18px; font-style:normal; font-weight:500; }
+.activity-frame .listen-choices .choice.wrong em, .activity-frame .listen-choices .choice.correct em { color:inherit; }
+.activity-frame .jamo-choices .choice { min-height:76px; justify-content:center; padding:16px 44px; font-size:24px; line-height:36px; font-weight:600; }
+.activity-frame .word-preview-list { overflow:hidden; border:1px solid var(--color-line-control); border-radius:14px; background:var(--color-background-surface); }
+.activity-frame .preview-row { min-height:61px; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; align-items:center; padding:9px 12px 9px 16px; border-bottom:1px solid var(--color-line-control); }
+.activity-frame .preview-row:last-child { border-bottom:0; }
+.activity-frame .preview-word { color:var(--color-text-strong); font-size:17px; line-height:26px; font-weight:600; }
+.activity-frame .preview-meaning { color:var(--color-text-sub); font-size:14px; line-height:20px; }
+.activity-frame .preview-audio { grid-column:2; grid-row:1 / 3; width:36px; height:36px; border:1px solid var(--color-line-control); border-radius:50%; background:var(--color-background-surface); color:var(--color-fill-primary); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .preview-audio svg { width:18px; height:18px; }
+.activity-frame .combo-result { min-height:54px; display:flex; align-items:center; justify-content:space-between; }
+.activity-frame .combo-left { display:flex; align-items:baseline; gap:12px; }
+.activity-frame .combo-left strong { color:var(--color-text-strong); font-size:32px; line-height:48px; font-weight:600; }
+.activity-frame .combo-left span { color:var(--color-text-sub); font-size:14px; line-height:20px; font-weight:500; }
+.activity-frame .jamo-section { margin-top:14px; padding:14px; border:0; border-radius:12px; background:#f6f8fb; }
+.activity-frame .jamo-label { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+.activity-frame .jamo-label i { color:var(--color-fill-primary); font-style:normal; font-size:12px; line-height:16px; font-weight:600; }
+.activity-frame .jamo-label b { color:var(--color-text-strong); font-size:14px; line-height:20px; font-weight:600; }
+.activity-frame .jamo-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; }
+.activity-frame .jamo-grid button { aspect-ratio:1; min-width:0; border:1px solid var(--color-line-control); border-radius:7px; background:var(--color-background-surface); color:var(--color-text-strong); font-size:16px; line-height:24px; font-weight:500; cursor:pointer; }
+.activity-frame .jamo-grid button.on { background:var(--color-fill-primary); color:var(--color-background-surface); }
+.activity-frame .canvas { position:relative; width:min(100%,286px); aspect-ratio:1; margin:0 auto; overflow:hidden; border:1px solid var(--color-line-control); border-radius:10px; background:var(--color-background-surface); cursor:crosshair; }
+.activity-frame .canvas::before, .activity-frame .canvas::after { content:""; position:absolute; z-index:1; background:var(--blue-gray-200); }
+.activity-frame .canvas::before { left:0; right:0; top:50%; height:1px; }
+.activity-frame .canvas::after { top:0; bottom:0; left:50%; width:1px; }
+.activity-frame .canvas.wrong { border-color:var(--color-fill-wrong); }
+.activity-frame .canvas.correct { border-color:var(--color-fill-correct); }
+.activity-frame .guide { position:absolute; inset:12px; z-index:2; background:center/contain no-repeat; opacity:.48; }
+.activity-frame .ink { position:absolute; inset:12px; z-index:3; width:calc(100% - 24px); height:calc(100% - 24px); }
+.activity-frame .ink path { fill:none; stroke:var(--color-fill-primary); stroke-width:34; stroke-linecap:round; stroke-linejoin:round; }
+.activity-frame .canvas.wrong .ink path { stroke:var(--color-fill-wrong); }
+.activity-frame .canvas.correct .ink path { stroke:var(--color-fill-correct); }
+.activity-frame .tools { width:min(100%,286px); margin:9px auto 0; display:flex; justify-content:flex-end; gap:16px; }
+.activity-frame .tool { min-height:30px; padding:4px 0; border:0; background:transparent; color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
+.activity-frame .feedback-slot { flex:0 0 44px; display:flex; align-items:center; justify-content:center; padding:4px 16px; background:var(--color-background-base); }
+.activity-frame .feedback-message { min-height:34px; padding:7px 13px; border-radius:99px; background:var(--color-text-strong); color:var(--color-background-surface); display:flex; align-items:center; gap:7px; font-size:12px; line-height:18px; font-weight:600; }
+.activity-frame .feedback-message i { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; color:var(--color-background-surface); font-style:normal; font-size:10px; }
+.activity-frame .feedback-message.wrong i { background:var(--color-fill-wrong); }
+.activity-frame .feedback-message.correct i { background:var(--color-fill-correct); }
+.activity-frame .footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--color-background-surface); border-top:1px solid var(--color-line-control); }
+.activity-frame .primary { width:100%; height:56px; border:0; border-radius:12px; background:var(--color-background-disable); color:var(--color-text-disable); font-size:16px; line-height:24px; font-weight:600; }
+.activity-frame .primary.on { background:var(--color-fill-primary); color:var(--color-background-surface); cursor:pointer; }
+.activity-frame /* 플래시카드 */
+  .flash-body { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; padding:18px 16px 12px; }
+.activity-frame .flash-stage { position:relative; flex:1 1 auto; min-height:0; perspective:1000px; cursor:pointer; }
+.activity-frame .flash-next { position:absolute; inset:12px 11px -10px; border:1px solid var(--color-line-control); border-radius:16px; background:var(--color-background-surface); opacity:.55; }
+.activity-frame .flash-card { position:absolute; inset:0; transform-style:preserve-3d; transition:transform .3s ease; }
+.activity-frame .flash-card.flipped { transform:rotateY(180deg); }
+.activity-frame .flash-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; border:1px solid var(--color-line-control); border-radius:16px; background:var(--color-background-surface); }
+.activity-frame .flash-face.back { transform:rotateY(180deg); justify-content:flex-start; padding-top:42px; }
+.activity-frame .flash-face strong { color:var(--color-text-strong); font-size:32px; line-height:48px; font-weight:600; text-align:center; }
+.activity-frame .flash-face .kind { color:var(--color-text-sub); font-size:14px; line-height:20px; font-weight:500; }
+.activity-frame .flash-picture { width:100%; height:155px; margin-top:34px; display:grid; place-items:center; border-radius:12px; background:var(--color-background-base); color:var(--blue-gray-400); font-size:12px; line-height:18px; }
+.activity-frame .card-audio { position:absolute; right:15px; bottom:15px; width:40px; height:40px; border:0; border-radius:50%; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .card-audio svg { width:20px; height:20px; }
+.activity-frame .flash-meta { flex:0 0 40px; display:flex; align-items:flex-end; color:var(--color-text-sub); font-size:12px; line-height:18px; }
+.activity-frame .judge { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.activity-frame .judge button { height:56px; border:0; border-radius:28px; display:grid; grid-template-columns:40px 1fr; align-items:center; padding:8px; font-size:16px; line-height:24px; font-weight:600; cursor:pointer; }
+.activity-frame .judge button:disabled { background:var(--color-background-disable); color:var(--color-text-disable); cursor:default; }
+.activity-frame .judge .unknown { background:var(--color-fill-unknown); color:var(--color-text-strong); }
+.activity-frame .judge .known { background:var(--color-fill-primary); color:var(--color-background-surface); }
+.activity-frame .judge .badge { display:grid; width:40px; height:40px; border-radius:50%; place-items:center; background:rgba(255,255,255,.55); font-size:14px; }
+.activity-frame .judge .label { text-align:center; }
+.activity-frame /* 미션 대화 */
+  .scenario { flex:0 0 auto; min-height:76px; padding:13px 16px; display:flex; align-items:flex-start; gap:10px; background:var(--color-fill-primary); color:var(--color-background-surface); }
+.activity-frame .scenario.folded { min-height:44px; padding-top:10px; padding-bottom:10px; }
+.activity-frame .scenario-copy { flex:1; }
+.activity-frame .scenario .ko { font-size:16px; line-height:24px; font-weight:600; }
+.activity-frame .scenario .en { margin-top:2px; color:var(--color-background-choice); font-size:13px; line-height:18px; }
+.activity-frame .scenario .fold { width:28px; height:28px; border:0; background:transparent; color:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .scenario .fold svg { width:20px; height:20px; }
+.activity-frame .missions { flex:0 0 50px; display:flex; align-items:center; gap:9px; overflow-x:auto; padding:0 14px; background:var(--color-background-surface); border-bottom:0; }
+.activity-frame .mission-title { flex:0 0 auto; padding:4px 9px; border-radius:12px; background:var(--color-background-base); color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; }
+.activity-frame .mission { flex:0 0 auto; display:flex; gap:4px; align-items:center; color:var(--blue-gray-400); font-size:12px; line-height:18px; font-weight:600; white-space:nowrap; }
+.activity-frame .mission.done { color:var(--color-fill-correct); }
+.activity-frame .thread { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding:14px; }
+.activity-frame .msg { display:flex; gap:8px; align-items:flex-start; }
+.activity-frame .avatar { width:34px; height:34px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; background:var(--color-background-choice); font-size:16px; }
+.activity-frame .bubble-wrap { max-width:248px; }
+.activity-frame .bubble { padding:9px 11px; border-radius:12px; background:var(--color-background-surface); color:var(--color-text-strong); font-size:14px; line-height:20px; }
+.activity-frame .msg.me { justify-content:flex-end; }
+.activity-frame .msg.me .bubble { color:var(--color-background-surface); background:var(--color-fill-primary); }
+.activity-frame .msg.me.bad .bubble { color:var(--color-text-strong); background:var(--color-background-wrong); }
+.activity-frame .tip { margin-top:6px; padding:7px 9px; border-radius:8px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:12px; line-height:18px; }
+.activity-frame .typing { width:54px; height:36px; display:flex; align-items:center; justify-content:center; gap:5px; border-radius:12px; background:var(--color-background-surface); }
+.activity-frame .typing i { width:5px; height:5px; border-radius:50%; background:var(--blue-gray-400); }
+.activity-frame .chat-footer, .activity-frame .role-footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--color-background-surface); border-top:1px solid var(--color-line-control); }
+.activity-frame .keyboard { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--color-text-sub); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .keyboard svg { width:22px; height:22px; }
+.activity-frame .record-core { width:210px; display:grid; grid-template-columns:56px 1fr; align-items:center; gap:11px; }
+.activity-frame .record-button { position:relative; width:56px; height:56px; border:0; border-radius:50%; background:var(--color-fill-primary); color:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .record-button::after { content:""; position:absolute; inset:-5px; border:1px solid transparent; border-radius:50%; }
+.activity-frame .record-button.recording::after { border-color:var(--blue-300); animation:record-pulse 1.2s ease-out infinite; }
+.activity-frame .record-button.done { border:0; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .record-button.listen { border:0; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .record-button svg { width:24px; height:24px; }
+.activity-frame .record-copy { min-width:0; display:flex; flex-direction:column; align-items:flex-start; text-align:left; }
+.activity-frame .record-copy b { color:var(--color-text-strong); font-size:14px; line-height:20px; font-weight:600; }
+.activity-frame .record-copy span { color:var(--color-text-sub); font-size:12px; line-height:16px; }
+.activity-frame .record-wave { height:12px; display:flex; align-items:center; gap:2px; margin-top:3px; }
+.activity-frame .record-wave i { width:2px; border-radius:2px; background:var(--blue-300); }
+.activity-frame .record-wave i:nth-child(3n+1) { height:5px; }
+.activity-frame .record-wave i:nth-child(3n+2) { height:11px; }
+.activity-frame .record-wave i:nth-child(3n) { height:8px; }
+@keyframes record-pulse { 0% { transform:scale(.92); opacity:.8; } 100% { transform:scale(1.16); opacity:0; } }
+
+@media (prefers-reduced-motion:reduce) {
+  .activity-frame .record-button.recording::after { animation:none; }
+}
+
+.activity-frame /* 롤플레잉 */
+  .role-intro { flex:0 0 auto; margin:12px 16px 10px; padding:14px 16px; border:1px solid var(--color-line-control); border-radius:14px; background:var(--color-background-surface); }
+.activity-frame .role-title { color:var(--color-text-heading); font-size:17px; line-height:24px; font-weight:600; }
+.activity-frame .turns { flex:1 1 auto; min-height:0; overflow-y:auto; margin:0 16px; padding:0; border:1px solid var(--color-line-control); border-radius:14px; background:var(--color-background-surface); }
+.activity-frame .script-toolbar { min-height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 10px 8px 12px; border-bottom:1px solid var(--color-line-control); }
+.activity-frame .script-toolbar > span { color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; }
+.activity-frame .role-order { display:flex; align-items:center; gap:5px; }
+.activity-frame .role-order button { height:34px; padding:0 11px; border:1px solid var(--color-line-control); border-radius:8px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; cursor:pointer; }
+.activity-frame .role-order button.on { border-color:#dcecff; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .turn { display:grid; grid-template-columns:34px 1fr 22px; gap:8px; align-items:start; margin:0; padding:9px 12px 9px 9px; border:0; border-left:3px solid transparent; border-bottom:1px solid var(--color-line-control); border-radius:0; background:var(--color-background-surface); }
+.activity-frame .turn.current.ai, .activity-frame .turn.current.me { border-left-color:var(--color-fill-primary); background:#eef6ff; }
+.activity-frame .turn .who { width:34px; height:24px; display:grid; place-items:center; border-radius:6px; background:#f1f3f6; color:var(--blue-gray-800); font-size:11px; line-height:18px; font-weight:700; }
+.activity-frame .turn.me .who { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .turn .line { color:var(--color-text-strong); font-size:15px; line-height:24px; }
+.activity-frame .turn .listen { padding-top:2px; color:var(--color-text-sub); }
+.activity-frame .turn .listen svg { width:17px; height:17px; }
+.activity-frame .turn.future .who { background:#f7f8f9; color:var(--color-text-disable); }
+.activity-frame .turn.future .line { color:var(--color-text-disable); }
+.activity-frame .record-card { margin:0; padding:7px 12px 8px 54px; border-bottom:1px solid var(--color-line-control); border-radius:0; background:#f7fbff; }
+.activity-frame .record-card .meta { color:var(--color-text-sub); font-size:12px; line-height:18px; }
+.activity-frame .record-card .heard { margin-top:5px; color:var(--color-text-strong); font-size:14px; line-height:20px; }
+.activity-frame /* 확정 하단 도크 — 가운데 주 조작 + 오른쪽 다음 */
+  .dock { display:flex; align-items:center; gap:12px; width:100%; }
+.activity-frame .dock .main { flex:1; min-width:0; display:flex; justify-content:center; }
+.activity-frame .dock .main .record-core { width:auto; }
+.activity-frame .dock .slot { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--color-fill-primary); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .dock .slot:disabled { color:var(--blue-gray-200); cursor:default; }
+.activity-frame .dock .slot svg { width:26px; height:26px; }
+.activity-frame .turn[data-action] { cursor:pointer; }
+.activity-frame /* 문법 · 읽기 */
+  .blank-card { border-radius:12px; border:0; background:#f0f7ff; padding:14px 16px; font-size:18px; line-height:1.7; color:var(--color-text-strong); font-weight:500; }
+.activity-frame .blank-card u { text-decoration:none; border-bottom:2px solid var(--blue-gray-400); padding:0 18px; color:transparent; }
+.activity-frame .blank-card b { color:var(--color-fill-primary); font-weight:700; }
+.activity-frame .blank-card b.miss { color:var(--color-text-strong); }
+.activity-frame .chip-wrap { display:flex; flex-wrap:wrap; gap:8px; }
+.activity-frame .chip-opt { border-radius:8px; border:1px solid var(--color-line-control); background:var(--color-background-surface); padding:10px 16px; font-size:15px; font-weight:500; color:var(--color-text-strong); cursor:pointer; }
+.activity-frame .chip-opt.on { background:#e9f2fc; color:var(--color-fill-primary); }
+.activity-frame .chip-opt.ok { background:var(--color-background-correct); color:var(--color-text-strong); }
+.activity-frame .chip-opt.no { background:var(--color-background-wrong); color:var(--color-text-strong); }
+.activity-frame .focus-note { margin-top:10px; border-radius:10px; background:#f9fafc; padding:10px 14px; font-size:13px; line-height:1.6; color:var(--color-text-sub); }
+.activity-frame .passage { border-radius:12px; background:#f9fafc; padding:16px; font-size:15px; line-height:1.75; color:var(--color-text-strong); white-space:pre-line; }
+.activity-frame .q-text { font-size:16px; font-weight:600; color:var(--color-text-strong); }
+.activity-frame /* 자모 발음 · 단어 듣고 따라 · 단어 읽고 쓰기 */
+  .mouth-video { aspect-ratio:16/9; width:100%; border-radius:10px; background:#f8faff; display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; position:relative; overflow:hidden; }
+.activity-frame .mouth-video::after { content:"▶"; position:absolute; width:48px; height:48px; border-radius:50%; background:rgba(1,128,255,.9); color:#fff; display:grid; place-items:center; font-size:16px; }
+.activity-frame .audio-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.activity-frame .audio-pair > button { height:40px; border:0; border-radius:8px; display:flex; align-items:center; justify-content:space-between; padding:0 2px; font-size:16px; font-weight:600; cursor:pointer; }
+.activity-frame .audio-pair .src { background:var(--color-background-choice); color:var(--color-fill-primary); }
+.activity-frame .audio-pair .mine { background:var(--color-background-base); color:var(--blue-gray-400); }
+.activity-frame .audio-pair .mine.ok { color:var(--color-fill-correct); }
+.activity-frame .audio-pair .mine.no { color:var(--color-fill-wrong); }
+.activity-frame .audio-pair i { width:36px; display:grid; place-items:center; }
+.activity-frame .audio-pair i svg { width:22px; height:22px; }
+.activity-frame .jamo-tabs button.on { background:var(--color-background-surface); color:var(--color-fill-primary-pressed); }
+.activity-frame .word-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; padding-top:8px; }
+.activity-frame .word-cards button { height:52px; border-radius:10px; border:1px solid var(--color-line-control); background:#fff; position:relative; font-size:18px; font-weight:600; color:var(--color-text-heading); cursor:pointer; }
+.activity-frame .word-cards button.on { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .word-cards b { position:absolute; top:3px; right:3px; width:14px; height:14px; border-radius:50%; background:var(--color-line-normal); }
+.activity-frame .word-cards button.done b { background:var(--color-fill-correct); }
+.activity-frame .word-pic { width:min(100%,228px); height:auto; aspect-ratio:1; margin:0 auto; display:grid; place-items:center; overflow:hidden; border-radius:12px; background:transparent; }
+.activity-frame .word-pic.sm { width:min(100%,196px); height:auto; }
+.activity-frame .word-pic img { width:100%; height:100%; display:block; object-fit:contain; padding:0; }
+.activity-frame .audio-bar { width:100%; height:40px; border:0; border-radius:5px; background:var(--color-background-choice); display:flex; align-items:center; justify-content:space-between; font-size:16px; font-weight:600; color:var(--color-fill-primary); cursor:pointer; }
+.activity-frame .audio-bar i { width:38px; display:grid; place-items:center; }
+.activity-frame .audio-bar i svg { width:20px; height:20px; }
+.activity-frame .syl-row { display:flex; gap:10px; }
+.activity-frame .syl { position:relative; flex:1; height:96px; border:0; border-radius:8px; background:#f9fafc; display:grid; place-items:center; cursor:pointer; }
+.activity-frame .syl span { font-size:60px; font-weight:700; color:#ddd; line-height:1; }
+.activity-frame .syl svg { position:absolute; inset:0; width:100%; height:100%; }
+.activity-frame .syl path { fill:none; stroke:var(--color-text-strong); stroke-linecap:round; stroke-linejoin:round; opacity:.85; }
+.activity-frame .modal { position:absolute; inset:0; z-index:20; background:rgba(24,26,32,.5); display:flex; align-items:center; justify-content:center; padding:16px; }
+.activity-frame .modal-box { width:100%; background:#fff; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; }
+.activity-frame .modal-canvas { aspect-ratio:1; border-radius:12px; background:#f6f8fb; border:0; position:relative; display:grid; place-items:center; }
+.activity-frame .modal-canvas span { font-size:150px; font-weight:400; color:var(--color-background-disable); line-height:1; }
+.activity-frame .modal-tools { display:flex; gap:12px; }
+.activity-frame .modal-tools button { flex:1; height:36px; border-radius:8px; background:#f4f6f9; border:0; color:var(--color-text-sub); font-size:13px; }
+.activity-frame .wcards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; padding-top:8px; }
+.activity-frame .wcards button { position:relative; min-width:0; min-height:54px; display:grid; grid-template-columns:44px minmax(0,1fr); align-items:center; gap:4px; padding:5px; border:1px solid var(--color-line-control); border-radius:9px; background:var(--color-background-surface); cursor:pointer; }
+.activity-frame .wcards button:hover { background:var(--color-primitive-white-50); }
+.activity-frame .wcards button.on { background:var(--color-fill-primary); }
+.activity-frame .wcards button.on .lab { color:var(--color-background-surface); font-weight:600; }
+.activity-frame .wcards .thumb { width:44px; height:44px; overflow:hidden; border-radius:7px; background:var(--color-background-surface); display:grid; place-items:center; }
+.activity-frame .wcards .thumb img { width:100%; height:100%; display:block; object-fit:contain; padding:0; }
+.activity-frame .wcards .lab { min-width:0; display:grid; place-items:center; color:var(--color-text-strong); font-size:11px; line-height:15px; font-weight:500; text-align:center; word-break:keep-all; }
+.activity-frame .wcards .status-dot { position:absolute; z-index:1; top:4px; right:4px; width:13px; height:13px; display:grid; place-items:center; border:0; border-radius:50%; background:var(--color-line-normal); color:var(--color-background-surface); font-size:8px; line-height:1; font-weight:700; }
+.activity-frame .wcards button.done .status-dot { background:var(--color-fill-correct); }
+.activity-frame .wcards button.on .status-dot { background:var(--color-background-surface); color:var(--color-fill-primary); }
+.activity-frame .heard-row { border-radius:12px; border:0; background:#f4f6f9; padding:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; color:var(--color-text-sub); }
+.activity-frame .heard-row b { font-size:20px; font-weight:700; color:var(--color-text-strong); }
+.activity-frame .heard-row.ok { background:var(--color-background-correct); }
+.activity-frame /* 결과 · 리포트 · 브리핑 · 예외 */
+  .result-head { background:var(--color-fill-primary); color:#fff; padding:20px 16px 16px; }
+.activity-frame .result-head h2 { margin:0; font-size:24px; line-height:1.4; }
+.activity-frame .result-head p { margin:2px 0 14px; font-size:14px; color:var(--blue-100); }
+.activity-frame .stat-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.activity-frame .stat-row div { background:#fff; border-radius:12px; padding:12px; text-align:center; }
+.activity-frame .stat-row span { display:block; font-size:12px; color:var(--color-text-sub); }
+.activity-frame .stat-row strong { font-size:24px; color:var(--color-text-strong); }
+.activity-frame .wrong-card { border-radius:12px; border:0; background:#fff; padding:14px; }
+.activity-frame .tag { display:inline-flex; height:24px; align-items:center; padding:0 10px; border-radius:6px; font-size:12px; font-weight:700; }
+.activity-frame .tag.w { background:var(--color-background-wrong); color:var(--color-fill-wrong); }
+.activity-frame .tag.e { background:var(--color-text-heading); color:#fff; }
+.activity-frame .rep-head { background:var(--color-fill-primary); color:#fff; padding:12px 16px; }
+.activity-frame .rep-head h2 { margin:0; font-size:20px; }
+.activity-frame .rep-head p { margin:0; font-size:14px; color:var(--blue-100); }
+.activity-frame .rep-tabs { display:grid; grid-template-columns:1fr 1fr; height:46px; background:#fff; }
+.activity-frame .rep-tabs div { display:grid; place-items:center; font-size:14px; font-weight:600; color:var(--color-text-sub); border-bottom:2px solid var(--color-line-control); }
+.activity-frame .rep-tabs div.on { color:var(--color-fill-primary); border-bottom-color:var(--color-fill-primary); }
+.activity-frame .as-row { border-radius:12px; background:#f9fafc; padding:12px; font-size:14px; }
+.activity-frame .as-row span.k { display:inline-block; border-radius:5px; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); padding:2px 8px; font-weight:600; font-size:13px; }
+.activity-frame .as-row p { margin:8px 0 0; line-height:1.6; color:var(--color-text-strong); }
+.activity-frame .brief-title { background:#fff; padding:14px 16px 20px; }
+.activity-frame .brief-title h2 { margin:0; font-size:20px; font-weight:600; color:var(--color-text-strong); }
+.activity-frame .brief-title p { margin:0; font-size:14px; color:var(--color-text-sub); }
+.activity-frame .brief-sec { padding:0 16px; margin-top:15px; }
+.activity-frame .brief-sec > h3 { margin:0 0 8px; font-size:16px; font-weight:600; color:var(--color-text-strong); }
+.activity-frame .brief-card { background:#fff; border-radius:10px; padding:12px; }
+.activity-frame .scene-img { height:132px; border-radius:8px; background:var(--color-background-base); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; margin-bottom:16px; }
+.activity-frame .scene-text { background:#f9fafc; border-radius:6px; padding:16px; text-align:center; font-size:14px; }
+.activity-frame .kw-line { display:flex; align-items:center; gap:7px; }
+.activity-frame .kw-line b { width:100px; flex:none; text-align:center; font-size:14px; font-weight:700; color:var(--color-fill-primary-pressed); background:var(--color-background-choice); border-radius:5px; padding:4px 0; }
+.activity-frame .kw-line span { flex:1; font-size:14px; color:var(--blue-gray-800); }
+.activity-frame .word-strip { display:flex; gap:8px; overflow-x:auto; padding-top:12px; border-top:1px solid var(--color-background-base); margin-top:12px; }
+.activity-frame .word-strip div { min-width:100px; background:var(--color-background-base); border-radius:6px; padding:8px; text-align:center; }
+.activity-frame .word-strip b { display:block; font-size:14px; color:var(--color-text-strong); }
+.activity-frame .word-strip span { display:block; font-size:12px; color:var(--blue-gray-400); }
+.activity-frame .state-view { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:0 32px; text-align:center; }
+.activity-frame .state-view p { margin:0; font-size:16px; line-height:1.5; color:var(--color-text-strong); }
+.activity-frame .skeleton { width:100%; display:flex; flex-direction:column; gap:12px; }
+.activity-frame .skeleton i { display:block; height:64px; border-radius:12px; background:var(--color-background-disable); }
+.activity-frame .skeleton i.s { height:20px; width:60%; }
+.activity-frame .overview.on { display:grid; }
