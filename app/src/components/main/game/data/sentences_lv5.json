@@ -1,0 +1,30 @@
+{
+  "4과": {
+    "new_particles": ["에 비해서"],
+    "cumulative_particles": ["에 비해서"],
+    "note": "에 비해서 = compared to (에의 확장 용법 — 비교 기준)",
+    "questions": [
+      {
+        "sentence": "시내 은행에 비해서 할인이 많아요",
+        "blank": "시내 은행[?] 할인이 많아요",
+        "answer": "에 비해서",
+        "choices": ["에 비해서", "보다", "만큼"],
+        "sourceLesson": "5급 4과"
+      },
+      {
+        "sentence": "작년에 비해서 많이 늘었어요",
+        "blank": "작년[?] 많이 늘었어요",
+        "answer": "에 비해서",
+        "choices": ["에 비해서", "보다", "만큼"],
+        "sourceLesson": "5급 4과"
+      },
+      {
+        "sentence": "다른 나라에 비해서 물가가 비싸요",
+        "blank": "다른 나라[?] 물가가 비싸요",
+        "answer": "에 비해서",
+        "choices": ["에 비해서", "보다", "에서"],
+        "sourceLesson": "5급 4과"
+      }
+    ]
+  }
+}

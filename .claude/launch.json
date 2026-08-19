@@ -16,7 +16,7 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "--prefix",
-        "korean-master/korean-master",
+        "app",
         "run",
         "dev"
       ],

@@ -1,0 +1,1070 @@
+/* ── Spring Picnic Number Mission ── */
+/* Scoped under .spg to avoid conflicts */
+
+.spg {
+	--pk: #fff0f5;
+	--pkl: #fbeaf0;
+	--pkb: #f4c0d1;
+	--pkm: #ed93b1;
+	--pkd: #d4537e;
+	--pkp: #993556;
+	--pu: #534ab7;
+	--pul: #eeedfe;
+	--pum: #afa9ec;
+	--pud: #26215c;
+	--gb: #e1f5ee;
+	--gn: #1d9e75;
+	--gd: #085041;
+	--rb: #fcebeb;
+	--rd: #e24b4a;
+	--rdd: #501313;
+	--og: #ef9f27;
+	--ogb: #faeeda;
+	--gr: #c0dd97;
+	--grd: #97c459;
+	--tr: #ba7517;
+	--gy: #888780;
+	--gyl: #f1efe8;
+	--gyb: #d3d1c7;
+
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 50;
+	width: 100%;
+	max-width: var(--app-width, 375px);
+	height: 100dvh;
+	background: #fff;
+	overflow: hidden;
+}
+
+.spg *,
+.spg *::before,
+.spg *::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.spg button {
+	font-family: inherit;
+}
+
+/* ── Screen base ── */
+.spg .scr {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	inset: 0;
+}
+
+/* ══════════════════════════
+   1. Title Screen
+══════════════════════════ */
+.spg .s-title {
+	align-items: stretch;
+	justify-content: space-between;
+}
+
+.spg .t-illo {
+	position: relative;
+	flex: 0 0 40vh;
+	min-height: 180px;
+	max-height: 260px;
+	overflow: hidden;
+}
+
+.spg .t-sky {
+	position: absolute;
+	inset: 0;
+	background: var(--pk);
+}
+
+.spg .t-cl {
+	position: absolute;
+	background: #fff;
+	border-radius: 20px;
+}
+
+.spg .t-gr {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 56px;
+	background: var(--gr);
+}
+
+.spg .t-gd {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 24px;
+	background: var(--grd);
+}
+
+.spg .t-tr {
+	position: absolute;
+	bottom: 52px;
+}
+
+.spg .t-tt {
+	width: 10px;
+	height: 24px;
+	background: var(--tr);
+	border-radius: 3px;
+	margin: 0 auto;
+}
+
+.spg .t-t1 {
+	width: 44px;
+	height: 44px;
+	background: var(--pkm);
+	border-radius: 50%;
+	margin: 0 auto -10px;
+}
+
+.spg .t-t2 {
+	width: 34px;
+	height: 34px;
+	background: var(--pkb);
+	border-radius: 50%;
+	margin: 0 auto -8px;
+}
+
+.spg .t-bl {
+	position: absolute;
+	bottom: 32px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 90px;
+	height: 44px;
+	background: var(--pum);
+	border-radius: 8px;
+	border: 2px solid var(--pu);
+}
+
+.spg .t-bk {
+	position: absolute;
+	inset: 0;
+	background-image: repeating-linear-gradient(
+			0deg,
+			transparent,
+			transparent 10px,
+			rgba(255, 255, 255, 0.2) 10px,
+			rgba(255, 255, 255, 0.2) 11px
+		),
+		repeating-linear-gradient(
+			90deg,
+			transparent,
+			transparent 10px,
+			rgba(255, 255, 255, 0.2) 10px,
+			rgba(255, 255, 255, 0.2) 11px
+		);
+	border-radius: 6px;
+}
+
+.spg .t-bn {
+	position: absolute;
+	bottom: 54px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 22px;
+}
+
+.spg .t-pt {
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+}
+
+.spg .t-ch {
+	position: absolute;
+	bottom: 36px;
+}
+
+.spg .t-cb {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 13px;
+}
+
+.spg .t-body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.spg .t-lp {
+	font-size: 11px;
+	color: var(--gy);
+	background: var(--gyl);
+	padding: 4px 12px;
+	border-radius: 20px;
+	margin-bottom: 0.8rem;
+}
+
+.spg .t-title {
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--pud);
+	margin-bottom: 6px;
+	text-align: center;
+}
+
+.spg .t-sub {
+	font-size: 13px;
+	color: var(--gy);
+	margin-bottom: 1.25rem;
+	text-align: center;
+	line-height: 1.6;
+}
+
+.spg .t-start {
+	width: 100%;
+	padding: 15px;
+	background: var(--pu);
+	color: var(--pul);
+	font-size: 16px;
+	font-weight: 700;
+	border: none;
+	border-radius: 14px;
+	cursor: pointer;
+}
+
+.spg .t-start:active {
+	transform: scale(0.98);
+}
+
+/* Back button */
+.spg .back-btn {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	z-index: 10;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.8);
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+/* ══════════════════════════
+   2. Select Screen
+══════════════════════════ */
+.spg .sel-body {
+	flex: 1;
+	overflow-y: auto;
+	padding: 0.75rem 1rem 1rem;
+}
+
+.spg .sel-subtitle {
+	font-size: 12px;
+	color: var(--gy);
+	text-align: center;
+	margin-bottom: 0.75rem;
+}
+
+.spg .sel-row {
+	background: #fff;
+	border: 1px solid var(--gyb);
+	border-radius: 18px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 14px;
+	margin-bottom: 10px;
+	position: relative;
+}
+
+.spg .sel-avatar {
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	width: 52px;
+}
+
+.spg .sel-face {
+	font-size: 30px;
+	line-height: 1;
+}
+
+.spg .sel-name {
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--pud);
+}
+
+.spg .sel-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.spg .sel-mission {
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--pud);
+	margin-bottom: 2px;
+}
+
+.spg .sel-desc {
+	font-size: 11px;
+	color: var(--gy);
+	line-height: 1.4;
+}
+
+.spg .sel-lvbtns {
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.spg .sel-lvbtn {
+	padding: 8px 14px;
+	border: 1.5px solid var(--gyb);
+	border-radius: 10px;
+	background: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	cursor: pointer;
+	text-align: center;
+	transition: all 0.13s;
+	position: relative;
+	white-space: nowrap;
+}
+
+.spg .sel-lvbtn:active {
+	transform: scale(0.97);
+}
+
+.spg .sel-lvbtn.easy {
+	color: var(--gd);
+	border-color: #9fe1cb;
+}
+
+.spg .sel-lvbtn.hard {
+	color: var(--pu);
+	border-color: var(--pum);
+}
+
+.spg .sel-ck {
+	display: none;
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--gn);
+	color: #fff;
+	font-size: 8px;
+	font-weight: 700;
+	align-items: center;
+	justify-content: center;
+}
+
+.spg .sel-ck.show {
+	display: flex;
+}
+
+/* ══════════════════════════
+   3. Game Screen
+══════════════════════════ */
+
+/* Spring banner header */
+.spg .g-header {
+	position: relative;
+	flex-shrink: 0;
+	height: 100px;
+	overflow: hidden;
+	background: var(--pk);
+}
+
+.spg .g-h-sky {
+	position: absolute;
+	inset: 0;
+	background: var(--pk);
+}
+
+.spg .g-h-cl {
+	position: absolute;
+	background: #fff;
+	border-radius: 20px;
+}
+
+.spg .g-h-gr {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 32px;
+	background: var(--gr);
+}
+
+.spg .g-h-gd {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 14px;
+	background: var(--grd);
+}
+
+.spg .g-h-tr {
+	position: absolute;
+	bottom: 28px;
+}
+
+.spg .g-h-tt {
+	width: 7px;
+	height: 16px;
+	background: var(--tr);
+	border-radius: 2px;
+	margin: 0 auto;
+}
+
+.spg .g-h-t1 {
+	width: 28px;
+	height: 28px;
+	background: var(--pkm);
+	border-radius: 50%;
+	margin: 0 auto -6px;
+}
+
+.spg .g-h-t2 {
+	width: 22px;
+	height: 22px;
+	background: var(--pkb);
+	border-radius: 50%;
+	margin: 0 auto -5px;
+}
+
+.spg .g-h-pt {
+	position: absolute;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+}
+
+.spg .g-h-ch {
+	position: absolute;
+	bottom: 20px;
+}
+
+.spg .g-h-cb {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 9px;
+}
+
+/* HUD */
+.spg .g-hud {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 8px 14px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	z-index: 2;
+}
+
+.spg .g-tbl {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.spg .g-av {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	border: 2px solid var(--pkb);
+	background: var(--pkl);
+	flex-shrink: 0;
+}
+
+.spg .g-nm {
+	font-size: 11px;
+	color: var(--pkp);
+	font-weight: 700;
+	text-shadow: 0 0 4px #fff;
+}
+
+.spg .g-ms {
+	font-size: 9px;
+	color: var(--pkd);
+	text-shadow: 0 0 4px #fff;
+}
+
+.spg .g-tbr {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.spg .g-sbdg {
+	background: var(--pu);
+	color: var(--pul);
+	font-size: 11px;
+	font-weight: 700;
+	padding: 3px 9px;
+	border-radius: 20px;
+}
+
+/* Progress bar */
+.spg .g-progress {
+	flex-shrink: 0;
+	padding: 8px 16px 4px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.spg .g-dots {
+	display: flex;
+	gap: 3px;
+	align-items: center;
+	flex: 1;
+	flex-wrap: wrap;
+}
+
+.spg .pd {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--gyl);
+	transition: all 0.2s;
+}
+
+.spg .pd.done {
+	background: var(--gn);
+}
+
+.spg .pd.cur {
+	background: var(--pu);
+	width: 8px;
+	height: 8px;
+}
+
+.spg .pd.retry.cur {
+	background: var(--og);
+	width: 8px;
+	height: 8px;
+}
+
+.spg .g-prog {
+	font-size: 11px;
+	color: var(--gy);
+	flex-shrink: 0;
+}
+
+/* Question card */
+.spg .g-card {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	padding: 0 14px 0;
+	overflow-y: auto;
+}
+
+.spg .g-qarea {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-height: 0;
+	padding: 8px 0;
+}
+
+.spg .g-hint {
+	font-size: 13px;
+	color: var(--pkp);
+	font-weight: 700;
+	margin-bottom: 10px;
+}
+
+.spg .g-rb {
+	background: var(--ogb);
+	color: #633806;
+	font-size: 9px;
+	font-weight: 700;
+	padding: 2px 7px;
+	border-radius: 8px;
+	margin-bottom: 5px;
+	display: inline-block;
+	width: fit-content;
+}
+
+.spg .g-num {
+	font-size: 3.2rem;
+	font-weight: 700;
+	color: var(--pud);
+	line-height: 1;
+	letter-spacing: -2px;
+	margin-bottom: 16px;
+}
+
+.spg .g-illo-wrap {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 18px;
+}
+
+.spg .g-illo {
+	width: 48px;
+	height: 48px;
+	border-radius: 12px;
+	background: var(--pkl);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 26px;
+	flex-shrink: 0;
+	border: 1px solid var(--pkb);
+}
+
+.spg .g-tmpl {
+	font-size: 16px;
+	color: #444;
+	line-height: 1.7;
+	font-weight: 500;
+	flex: 1;
+}
+
+.spg .blank {
+	display: inline-block;
+	background: var(--pul);
+	color: var(--pu);
+	font-weight: 700;
+	padding: 2px 10px;
+	border-radius: 6px;
+}
+
+/* Choices */
+.spg .g-choices {
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+	margin-top: 4px;
+}
+
+.spg .ch {
+	background: #fff;
+	border: 1.5px solid var(--gyb);
+	border-radius: 14px;
+	padding: 15px 18px;
+	font-size: 16px;
+	color: #333;
+	cursor: pointer;
+	text-align: left;
+	transition: all 0.12s;
+	line-height: 1.4;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+}
+
+.spg .ch:active {
+	transform: scale(0.97);
+}
+
+.spg .ch.ok {
+	border-color: var(--gn);
+	background: var(--gb);
+	color: var(--gd);
+}
+
+.spg .ch.ng {
+	border-color: var(--rd);
+	background: var(--rb);
+	color: var(--rdd);
+}
+
+.spg .ch:disabled {
+	cursor: default;
+}
+
+/* Feedback + Next */
+.spg .g-bottom {
+	flex-shrink: 0;
+	position: sticky;
+	bottom: 0;
+	z-index: 2;
+	background: #fff;
+	padding-bottom: 14px;
+	padding-top: 4px;
+}
+
+.spg .g-fb {
+	padding: 10px 14px;
+	border-radius: 12px;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	line-height: 1.5;
+	margin-bottom: 8px;
+}
+
+.spg .g-fb.ok {
+	background: var(--gb);
+	color: var(--gd);
+}
+
+.spg .g-fb.ng {
+	background: var(--rb);
+	color: var(--rdd);
+}
+
+.spg .g-fbi {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 11px;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.spg .g-fbi.ok {
+	background: var(--gn);
+	color: #fff;
+}
+
+.spg .g-fbi.ng {
+	background: var(--rd);
+	color: #fff;
+}
+
+.spg .g-fbr {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex: 1;
+	min-width: 0;
+}
+
+.spg .g-fbt {
+	flex: 1;
+	min-width: 0;
+	font-size: 13px;
+}
+
+.spg .tbtn {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: #fff;
+	border: 1px solid var(--gyb);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	font-size: 13px;
+	flex-shrink: 0;
+}
+
+.spg .tbtn.pl {
+	background: var(--pul);
+	border-color: var(--pum);
+}
+
+.spg .g-nxt {
+	flex: 1;
+	padding: 15px;
+	background: var(--pu);
+	color: var(--pul);
+	font-size: 16px;
+	font-weight: 700;
+	border: none;
+	border-radius: 14px;
+	cursor: pointer;
+}
+
+.spg .g-nxt:active {
+	transform: scale(0.98);
+}
+
+.spg .g-btn-row {
+	display: flex;
+	gap: 8px;
+}
+
+.spg .g-exit {
+	padding: 15px 16px;
+	background: var(--gyl);
+	color: var(--gy);
+	font-size: 13px;
+	font-weight: 700;
+	border: none;
+	border-radius: 14px;
+	cursor: pointer;
+	flex-shrink: 0;
+	white-space: nowrap;
+}
+
+.spg .g-exit:active {
+	transform: scale(0.98);
+}
+
+/* ══════════════════════════
+   4. Result Screen
+══════════════════════════ */
+.spg .s-result {
+	padding: 1.25rem 1rem 0;
+	overflow-y: auto;
+}
+
+.spg .r-top {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.spg .r-scene {
+	position: relative;
+	width: 100%;
+	height: 110px;
+	border-radius: 14px;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.spg .r-sky {
+	position: absolute;
+	inset: 0;
+	background: var(--pk);
+}
+
+.spg .r-gr {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 34px;
+	background: var(--gr);
+}
+
+.spg .r-bnr {
+	position: absolute;
+	top: 14px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: var(--pu);
+	color: var(--pul);
+	font-size: 12px;
+	font-weight: 700;
+	padding: 4px 14px;
+	border-radius: 20px;
+	white-space: nowrap;
+}
+
+.spg .r-chrs {
+	position: absolute;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 6px;
+}
+
+.spg .r-chr {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+}
+
+.spg .r-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--pud);
+	text-align: center;
+}
+
+.spg .r-score {
+	font-size: 3rem;
+	font-weight: 700;
+	color: var(--pu);
+	line-height: 1;
+	text-align: center;
+}
+
+.spg .r-sub {
+	font-size: 12px;
+	color: var(--gy);
+	text-align: center;
+}
+
+.spg .r-stats {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 7px;
+	width: 100%;
+}
+
+.spg .r-st {
+	background: var(--pul);
+	border-radius: 10px;
+	padding: 9px;
+	text-align: center;
+}
+
+.spg .r-stv {
+	font-size: 17px;
+	font-weight: 700;
+	color: var(--pu);
+}
+
+.spg .r-stl {
+	font-size: 10px;
+	color: var(--pum);
+	margin-top: 1px;
+}
+
+.spg .r-wnote {
+	width: 100%;
+	background: var(--rb);
+	border-radius: 12px;
+	padding: 10px 12px;
+	max-height: 25vh;
+	overflow-y: auto;
+}
+
+.spg .r-wnt {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--rdd);
+	margin-bottom: 6px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.spg .r-wnc {
+	background: var(--rd);
+	color: #fff;
+	font-size: 10px;
+	padding: 2px 7px;
+	border-radius: 10px;
+}
+
+.spg .r-wni {
+	background: #fff;
+	border-radius: 8px;
+	padding: 8px 10px;
+	margin-bottom: 5px;
+	display: flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.spg .r-wnn {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--pud);
+	min-width: 50px;
+}
+
+.spg .r-wnb {
+	flex: 1;
+	min-width: 0;
+}
+
+.spg .r-wntm {
+	font-size: 10px;
+	color: var(--gy);
+	margin-bottom: 1px;
+}
+
+.spg .r-wna {
+	font-size: 12px;
+	color: var(--gd);
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+}
+
+.spg .r-wn2 {
+	font-size: 10px;
+	color: var(--rd);
+}
+
+.spg .r-btns {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	width: 100%;
+	flex-shrink: 0;
+	position: sticky;
+	bottom: 0;
+	z-index: 2;
+	background: #fff;
+	padding-top: 8px;
+	padding-bottom: 1.5rem;
+}
+
+.spg .r-back {
+	width: 100%;
+	padding: 13px;
+	background: var(--pu);
+	color: var(--pul);
+	font-size: 15px;
+	font-weight: 700;
+	border: none;
+	border-radius: 12px;
+	cursor: pointer;
+}
+
+.spg .r-back:active {
+	transform: scale(0.98);
+}
+
+.spg .r-rst {
+	width: 100%;
+	padding: 8px;
+	background: none;
+	color: var(--gy);
+	font-size: 11px;
+	border: none;
+	cursor: pointer;
+	text-decoration: underline;
+}

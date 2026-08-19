@@ -1,0 +1,30 @@
+{
+  "14과": {
+    "new_particles": ["이라든가", "라든가"],
+    "cumulative_particles": ["이라든가", "라든가"],
+    "note": "이라든가/라든가 = such as, things like (예시 나열 조사)",
+    "questions": [
+      {
+        "sentence": "노래방이라든가 카페에 가요",
+        "blank": "노래방[?] 카페에 가요",
+        "answer": "이라든가",
+        "choices": ["이라든가", "라든가", "이나"],
+        "sourceLesson": "6급 14과"
+      },
+      {
+        "sentence": "영화라든가 드라마를 좋아해요",
+        "blank": "영화[?] 드라마를 좋아해요",
+        "answer": "라든가",
+        "choices": ["이라든가", "라든가", "나"],
+        "sourceLesson": "6급 14과"
+      },
+      {
+        "sentence": "책이라든가 잡지를 읽어요",
+        "blank": "책[?] 잡지를 읽어요",
+        "answer": "이라든가",
+        "choices": ["이라든가", "라든가", "이나"],
+        "sourceLesson": "6급 14과"
+      }
+    ]
+  }
+}
