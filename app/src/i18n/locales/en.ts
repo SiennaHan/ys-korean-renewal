@@ -165,6 +165,77 @@ const en = {
 			leave: "Leave",
 		},
 	},
+	player: {
+		exit: "Exit",
+		skip: "Skip",
+		next: "Next",
+		progress: "{{current}} / {{total}}",
+		correctCount: "Correct: {{count}}",
+		answerIs: "The answer is {{answer}}",
+		// 접근성 — 진행 표시 aria-label (G2 §8)
+		a11ySegment: "Question {{index}}, {{state}}",
+		a11yStateCorrect: "correct",
+		a11yStateWrong: "incorrect",
+		a11yStateUnanswered: "not answered",
+		// S1~S3 확정 반영 (2026-08-14)
+		lessonTitle: "Level {{level}} Lesson {{lesson}}",
+		showResult: "See results",
+		wellDone: "Nice!",
+		tryAgain: "Try again",
+		playAudio: "Listen",
+		viewMission: "Missions",
+		eraseAll: "Erase all",
+		undo: "Undo",
+		done: "Done",
+		drawWithFinger: "Draw the character with your finger.",
+
+		// 발음(STT)·자모 쓰기 화면 — v2 추가
+		confirm: "Check",
+		recordHint: "Tap to record",
+		recordListening: "Listening…",
+		recordRetry: "Record again",
+		heard: "We heard",
+		tipQuiet: "Find a quiet spot",
+		tipLouder: "Try speaking louder",
+		canSkipHint: "Having trouble? You can skip this one and come back later.",
+	},
+	result: {
+		title: "Done!",
+		accuracy: "{{correct}} of {{total}} correct",
+		perfect: "All correct. Nice work!",
+		toPractice: "{{count}} to practice again",
+		practiceAgain: "Practice again",
+		nextActivity: "Next activity",
+		backToLessons: "Back to lessons",
+		// 결과 화면 오답 목록
+		wrongItem: "Incorrect {{index}}",
+		explanation: "Explanation {{index}}",
+		showMore: "Show more",
+		hardItem: "Often missed",
+
+		// 통계 카드 2개 — 주 진행률 / 부 정답률(없으면 "—")
+		kAnswered: "Answered",
+		kAccuracy: "Accuracy",
+		allAnswered: "All {{total}} answered",
+	},
+	review: {
+		homeCardTitle: "Practice again",
+		homeCardBody: "{{count}} questions waiting",
+		homeCardEmpty: "Nothing to practice right now",
+		sessionTitle: "Practice again",
+		sessionDone: "All caught up!",
+	},
+	// 화면 상태 (G2 §7)
+	state: {
+		loading: "Loading…",
+		loadFailed: "Couldn't load this activity.",
+		retry: "Try again",
+		audioPreparing: "Audio is being prepared.",
+		micDenied: "Microphone access is off. You can turn it on in your browser settings.",
+		micDeniedSkip: "Skip this activity",
+		recordAgain: "Please say that again.",
+		exitConfirmChat: "Your conversation will start over. Leave anyway?",
+	},
 } as const;
 
 export default en;
