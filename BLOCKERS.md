@@ -5,33 +5,39 @@
 
 ---
 
-## 1. 프로덕션 빌드가 되지 않는다 · 막힘
+## 1. 프로덕션 빌드 · 고쳤다 (2026-08-20)
+
+원인은 React 버전이 아니라 **락파일이 둘이었던 것**이다.
 
 ```
-cd app && npm run build
-
-error  ESModulesLinkingError:
-       export 'use' (imported as 'React$1') was not found in 'react'
-       ./node_modules/@tanstack/react-router/dist/esm/utils.js:8
+package.json     "@tanstack/react-router": "^1.114.13"
+pnpm-lock.yaml   1.136.8      ← 이 프로젝트의 도구는 pnpm 이다
+package-lock.json 1.170.29    ← 섞여 들어온 것. node_modules 는 이쪽으로 깔려 있었다
 ```
 
-`@tanstack/react-router` 가 React 19 의 `use` 를 쓰는데 앱은 **React 18**
-(`react ^18.2.0`)이다. `pnpm dev` 는 돌고 `tsc --noEmit` 도 통과한다 —
-**배포 빌드만 깨진다.**
+캐럿이 1.170 까지 떠올랐고 그 사이에서 라이브러리가 `React["use"]` 를 쓰기 시작했다.
+1.136.8 은 쓰지 않는다 — 그래서 **의존성을 올리거나 내릴 필요가 없었다.**
 
-리뉴얼 작업 전부터 있던 것이고 이번 작업이 만든 것이 아니다.
+한 일 세 가지.
 
-**갈래 둘**
+| | |
+|---|---|
+| `package.json` | 라우터 셋을 <b>정확히 `1.136.8`</b> 로 고정(캐럿 제거) |
+| `package-lock.json` | 지웠다 — `README`·`.claude/launch.json` 둘 다 pnpm 을 쓴다 |
+| `pnpm-lock.yaml` | specifier 를 새 값으로 갱신 |
 
-| | 할 일 | 위험 |
-|---|---|---|
-| React 19 로 올린다 | 라이브러리가 기대하는 버전이 된다 | framer-motion · chart.js · react-youtube 등 20여 개를 함께 본다 |
-| react-router 를 내린다 | 지금 스택을 안 건드린다 | 파일 기반 라우팅 API 가 바뀌었는지 확인해야 한다 |
+```
+npm run build            통과 · 총 21.2MB (gzip 4.7MB)
+npm run typecheck        통과
+npm run parity:activity  22개 화면 일치
+```
 
-`app/README.md` 는 **"React 19" 라고 적혀 있다 — 틀렸다.** 그 파일은 다른 저장소
-(Speako 모노레포) 설명이고 포트도 8000 으로 잘못 적혀 있다. 갱신 대상이다.
+⚠️ **npm 으로 설치하지 마라.** `package-lock.json` 이 다시 생기면 같은 일이 반복된다.
+`pnpm install` 을 쓴다.
 
----
+한 가지 남는다 — `app/README.md` 가 아직 **"React 19"** 라고 적고 있고(실제 18.3.1),
+`koreanapi` 포트도 8000 으로 적혀 있다(앱 `.env` 는 8799). 그 파일은 다른 저장소
+설명이라 통째로 갱신 대상이다.
 
 ## 2. 자모 라우트가 명세와 다르다 · 판단 필요
 
@@ -164,7 +170,7 @@ cd app
 npm run typecheck        # 통과
 npm run parity:activity  # 22개 화면 일치
 npx biome check src      # 통과
-npm run build            # ✗ 깨진다 — §1
+npm run build            # 통과 — §1 에서 고쳤다
 ```
 
 i18n 은 5개 로케일 287키가 일치한다.
