@@ -165,6 +165,21 @@ const zh = {
 	/** 하단 탭 바 */
 	/** 홈 화면 */
 	/** 교재학습 · 자모 목록 */
+	/** 표현 클립 */
+	clip: {
+		title: "表达短片",
+		searchPlaceholder: "请输入想学的表达",
+		emptyLine1: "搜索你想学的",
+		emptyLine2: "表达吧",
+		resultCount: "搜索结果 {{count}} 条",
+		catAll: "全部",
+		catEntertainment: "综艺",
+		catFilm: "电影·电视剧",
+		catNews: "新闻",
+		catLifestyle: "日常",
+		reportAudio: "发音听不太清",
+		reportInappropriate: "举报不当视频",
+	},
 	catalog: {
 		done: "完成",
 		doing: "进行中",

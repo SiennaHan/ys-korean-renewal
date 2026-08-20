@@ -168,6 +168,21 @@ const ko = {
 	/** 하단 탭 바 */
 	/** 홈 화면 */
 	/** 교재학습 · 자모 목록 */
+	/** 표현 클립 */
+	clip: {
+		title: "표현 클립",
+		searchPlaceholder: "배우고 싶은 표현을 넣어 보세요",
+		emptyLine1: "배우고 싶은 표현을",
+		emptyLine2: "검색해 보세요",
+		resultCount: "검색 결과 {{count}}개",
+		catAll: "전체",
+		catEntertainment: "예능",
+		catFilm: "영화·드라마",
+		catNews: "뉴스",
+		catLifestyle: "일상",
+		reportAudio: "발음이 잘 안 들려요",
+		reportInappropriate: "부적절한 영상 신고",
+	},
 	catalog: {
 		done: "완료",
 		doing: "진행 중",

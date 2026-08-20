@@ -168,6 +168,21 @@ const vi = {
 	/** 하단 탭 바 */
 	/** 홈 화면 */
 	/** 교재학습 · 자모 목록 */
+	/** 표현 클립 */
+	clip: {
+		title: "Clip biểu đạt",
+		searchPlaceholder: "Nhập cách nói bạn muốn học",
+		emptyLine1: "Hãy tìm cách nói",
+		emptyLine2: "bạn muốn học",
+		resultCount: "{{count}} kết quả",
+		catAll: "Tất cả",
+		catEntertainment: "Giải trí",
+		catFilm: "Phim ảnh",
+		catNews: "Tin tức",
+		catLifestyle: "Đời sống",
+		reportAudio: "Khó nghe rõ phát âm",
+		reportInappropriate: "Báo cáo video không phù hợp",
+	},
 	catalog: {
 		done: "Hoàn thành",
 		doing: "Đang học",

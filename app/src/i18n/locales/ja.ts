@@ -168,6 +168,21 @@ const ja = {
 	/** 하단 탭 바 */
 	/** 홈 화면 */
 	/** 교재학습 · 자모 목록 */
+	/** 표현 클립 */
+	clip: {
+		title: "表現クリップ",
+		searchPlaceholder: "学びたい表現を入力してください",
+		emptyLine1: "学びたい表現を",
+		emptyLine2: "検索してみましょう",
+		resultCount: "検索結果 {{count}}件",
+		catAll: "すべて",
+		catEntertainment: "バラエティ",
+		catFilm: "映画・ドラマ",
+		catNews: "ニュース",
+		catLifestyle: "日常",
+		reportAudio: "発音が聞き取りにくいです",
+		reportInappropriate: "不適切な動画を報告",
+	},
 	catalog: {
 		done: "完了",
 		doing: "進行中",

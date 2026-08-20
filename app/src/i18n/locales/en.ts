@@ -168,6 +168,21 @@ const en = {
 	/** 하단 탭 바 */
 	/** 홈 화면 */
 	/** 교재학습 · 자모 목록 */
+	/** 표현 클립 */
+	clip: {
+		title: "Expression clips",
+		searchPlaceholder: "Type an expression to search",
+		emptyLine1: "Search for the expression",
+		emptyLine2: "you want to learn",
+		resultCount: "{{count}} results",
+		catAll: "All",
+		catEntertainment: "Entertainment",
+		catFilm: "Film & Drama",
+		catNews: "News",
+		catLifestyle: "Lifestyle",
+		reportAudio: "Hard to hear the speech",
+		reportInappropriate: "Report inappropriate video",
+	},
 	catalog: {
 		done: "Done",
 		doing: "In progress",

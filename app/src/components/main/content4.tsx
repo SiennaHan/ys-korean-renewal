@@ -1,16 +1,19 @@
+import { getGuestId } from "@/api/api";
+import { createReport, listReport } from "@/api/report";
 import { clips } from "@/shared/data/clip";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Heart, MoreVertical, Search, X } from "lucide-react";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import YouTube, {
 	type YouTubeProps,
 	type YouTubeEvent,
 	type YouTubePlayer,
 } from "react-youtube";
-import { Search, X, MoreVertical, Heart } from "lucide-react";
-import { listReport, createReport } from "@/api/report";
-import { getGuestId } from "@/api/api";
 
 const CATEGORY = "video";
 
+/** 값은 클립 데이터가 쓰는 영어 그대로다 — 보이는 글자만 번역한다 */
 const CATEGORIES = [
 	"All",
 	"Entertainment",
@@ -18,6 +21,13 @@ const CATEGORIES = [
 	"News",
 	"Lifestyle",
 ] as const;
+const CATEGORY_KEY: Record<(typeof CATEGORIES)[number], string> = {
+	All: "clip.catAll",
+	Entertainment: "clip.catEntertainment",
+	"Film & Drama": "clip.catFilm",
+	News: "clip.catNews",
+	Lifestyle: "clip.catLifestyle",
+};
 
 type CategoryType = (typeof CATEGORIES)[number];
 
@@ -53,25 +63,26 @@ const SearchInputField = ({
 	onSearchChanged: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	onClear: () => void;
 }) => {
+	const { t } = useTranslation();
 	return (
-		<div className="relative h-[48px] w-full rounded-[10px] bg-white overflow-hidden flex items-center">
+		<div className="relative flex h-[48px] w-full items-center overflow-hidden rounded-[10px] bg-white">
 			<input
 				type="text"
-				className="h-full w-full bg-transparent pl-[12px] pr-[72px] text-[14px] font-medium leading-[20px] text-[#383a3f] placeholder:text-[#adb3be] focus:outline-none"
+				className="h-full w-full bg-transparent pr-[72px] pl-[12px] font-medium text-[#383a3f] text-[14px] leading-[20px] placeholder:text-[#adb3be] focus:outline-none"
 				value={searchWord}
 				onChange={onSearchChanged}
-				placeholder="Type an expression to search!"
+				placeholder={t("clip.searchPlaceholder")}
 			/>
 			{searchWord && (
 				<button
 					type="button"
 					onClick={onClear}
-					className="absolute right-[36px] top-1/2 -translate-y-1/2 size-[24px] flex items-center justify-center text-[#adb3be]"
+					className="-translate-y-1/2 absolute top-1/2 right-[36px] flex size-[24px] items-center justify-center text-[#adb3be]"
 				>
 					<X size={16} />
 				</button>
 			)}
-			<div className="absolute right-[12px] top-1/2 -translate-y-1/2 size-[24px] rounded-full bg-[#0180ff] flex items-center justify-center">
+			<div className="-translate-y-1/2 absolute top-1/2 right-[12px] flex size-[24px] items-center justify-center rounded-full bg-[#0180ff]">
 				<Search size={16} className="text-white" />
 			</div>
 		</div>
@@ -86,8 +97,9 @@ const CategoryChips = ({
 	selected: CategoryType;
 	onSelect: (cat: CategoryType) => void;
 }) => {
+	const { t } = useTranslation();
 	return (
-		<div className="flex gap-[6px] items-center overflow-x-auto scrollbar-hide py-[8px]">
+		<div className="scrollbar-hide flex items-center gap-[6px] overflow-x-auto py-[8px]">
 			{CATEGORIES.map((cat) => {
 				const isSelected = cat === selected;
 				return (
@@ -95,13 +107,13 @@ const CategoryChips = ({
 						type="button"
 						key={cat}
 						onClick={() => onSelect(cat)}
-						className={`shrink-0 rounded-[8px] px-[12px] py-[6px] text-[14px] leading-[20px] text-center whitespace-nowrap ${
+						className={`shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] ${
 							isSelected
-								? "bg-[#dbedff] border border-[#59acff] font-bold text-[#0a6acb]"
-								: "bg-white border border-transparent font-semibold text-[#c8ccd3]"
+								? "border border-[#59acff] bg-[#dbedff] font-bold text-[#0a6acb]"
+								: "border border-transparent bg-white font-semibold text-[#c8ccd3]"
 						}`}
 					>
-						{cat === "Film & Drama" ? "Film/Drama" : cat}
+						{t(CATEGORY_KEY[cat])}
 					</button>
 				);
 			})}
@@ -128,7 +140,10 @@ const VideoCard = ({
 
 	const highlightKeyword = (text: string, keyword: string) => {
 		if (!keyword || !text) return <span>{text}</span>;
-		const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+		const regex = new RegExp(
+			`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+			"gi",
+		);
 		const parts = text.split(regex);
 		return (
 			<span>
@@ -151,38 +166,38 @@ const VideoCard = ({
 			<button
 				type="button"
 				onClick={() => onPlay(video)}
-				className="relative h-[185px] w-full rounded-[12px] overflow-hidden bg-white"
+				className="relative h-[185px] w-full overflow-hidden rounded-[12px] bg-white"
 			>
 				<img
 					src={thumbnailUrl}
 					alt={video.title}
-					className="absolute inset-0 w-full h-full object-cover"
+					className="absolute inset-0 h-full w-full object-cover"
 				/>
 				{/* 시간 뱃지 */}
-				<div className="absolute top-[12px] left-[12px] bg-[#383a3f] rounded-[6px] px-[8px] py-[2px]">
-					<span className="text-[12px] font-medium leading-[16px] text-white whitespace-nowrap">
+				<div className="absolute top-[12px] left-[12px] rounded-[6px] bg-[#383a3f] px-[8px] py-[2px]">
+					<span className="whitespace-nowrap font-medium text-[12px] text-white leading-[16px]">
 						{formatTime(video.start)}
 					</span>
 				</div>
 				{/* 좋아요 아이콘 */}
-				<div className="absolute top-[12px] right-[12px] size-[24px] flex items-center justify-center">
+				<div className="absolute top-[12px] right-[12px] flex size-[24px] items-center justify-center">
 					<Heart size={20} className="text-white" />
 				</div>
 			</button>
 
 			{/* 제목 + 스크립트 + 메뉴 */}
 			<div className="flex flex-col gap-[2px]">
-				<div className="text-[14px] font-medium leading-[20px] text-[#383a3f]">
+				<div className="font-medium text-[#383a3f] text-[14px] leading-[20px]">
 					{highlightKeyword(video.content, video.word)}
 				</div>
 				<div className="flex items-center justify-between">
-					<p className="text-[14px] font-medium leading-[20px] text-[#383a3f] w-[296px] truncate">
+					<p className="w-[296px] truncate font-medium text-[#383a3f] text-[14px] leading-[20px]">
 						{video.title}
 					</p>
 					<button
 						type="button"
 						onClick={() => onMenuClick(video)}
-						className="shrink-0 size-[24px] flex items-center justify-center text-[#7f848d]"
+						className="flex size-[24px] shrink-0 items-center justify-center text-[#7f848d]"
 					>
 						<MoreVertical size={16} />
 					</button>
@@ -202,8 +217,7 @@ const VideoPlayer = ({
 }) => {
 	const tempTime = video.start - 2;
 	const startTime = tempTime < 0 ? 0 : tempTime;
-	const endTime =
-		video.start === video.end ? video.start + 1 : video.end;
+	const endTime = video.start === video.end ? video.start + 1 : video.end;
 	const opts: YouTubeProps["opts"] = {
 		width: "100%",
 		height: "185",
@@ -270,7 +284,7 @@ const VideoPlayer = ({
 	}, []);
 
 	return (
-		<div ref={containerRef} className="rounded-[12px] overflow-hidden bg-white">
+		<div ref={containerRef} className="overflow-hidden rounded-[12px] bg-white">
 			<YouTube
 				videoId={video.youtubeId}
 				opts={opts}
@@ -292,21 +306,22 @@ const ReportBottomSheet = ({
 	onClose: () => void;
 	onReport: (type: string) => void;
 }) => {
+	const { t } = useTranslation();
 	return (
 		<>
 			{/* 딤드 배경 */}
 			<div
-				className="fixed inset-0 bg-[rgba(56,58,63,0.5)] z-40"
+				className="fixed inset-0 z-40 bg-[rgba(56,58,63,0.5)]"
 				onClick={onClose}
 				onKeyDown={(e) => e.key === "Escape" && onClose()}
 			/>
 			{/* 바텀시트 */}
-			<div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[16px] z-50 pb-[40px]">
+			<div className="fixed right-0 bottom-0 left-0 z-50 rounded-t-[16px] bg-white pb-[40px]">
 				<div className="flex items-center justify-end px-[16px] pt-[16px] pb-[8px]">
 					<button
 						type="button"
 						onClick={onClose}
-						className="size-[24px] flex items-center justify-center text-[#383a3f]"
+						className="flex size-[24px] items-center justify-center text-[#383a3f]"
 					>
 						<X size={14} />
 					</button>
@@ -314,9 +329,9 @@ const ReportBottomSheet = ({
 				<button
 					type="button"
 					onClick={() => onReport("audio_quality")}
-					className="w-full flex items-center gap-[4px] px-[16px] py-[12px] bg-white"
+					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px]"
 				>
-					<div className="size-[24px] flex items-center justify-center">
+					<div className="flex size-[24px] items-center justify-center">
 						<svg
 							width="18"
 							height="18"
@@ -330,16 +345,16 @@ const ReportBottomSheet = ({
 							/>
 						</svg>
 					</div>
-					<span className="text-[16px] font-medium leading-[24px] text-[#383a3f]">
-						발음이 잘 안들려요
+					<span className="font-medium text-[#383a3f] text-[16px] leading-[24px]">
+						{t("clip.reportAudio")}
 					</span>
 				</button>
 				<button
 					type="button"
 					onClick={() => onReport("inappropriate")}
-					className="w-full flex items-center gap-[4px] px-[16px] py-[12px] bg-white"
+					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px]"
 				>
-					<div className="size-[24px] flex items-center justify-center">
+					<div className="flex size-[24px] items-center justify-center">
 						<svg
 							width="16"
 							height="18"
@@ -352,18 +367,11 @@ const ReportBottomSheet = ({
 								fill="#383A3F"
 								transform="translate(-2, 2) scale(0.8)"
 							/>
-							<rect
-								x="2"
-								y="15"
-								width="12"
-								height="2"
-								rx="1"
-								fill="#383A3F"
-							/>
+							<rect x="2" y="15" width="12" height="2" rx="1" fill="#383A3F" />
 						</svg>
 					</div>
-					<span className="text-[16px] font-medium leading-[24px] text-[#4b505a]">
-						부적절한 영상 신고
+					<span className="font-medium text-[#4b505a] text-[16px] leading-[24px]">
+						{t("clip.reportInappropriate")}
 					</span>
 				</button>
 			</div>
@@ -390,11 +398,11 @@ const reportError = async (
 };
 
 export default function Content4() {
+	const { t } = useTranslation();
 	const [searchWord, setSearchWord] = useState("");
 	const [results, setResults] = useState<ResultItem[]>([]);
 	const [filteredClips, setFilteredClips] = useState<ClipItem[]>([]);
-	const [selectedCategory, setSelectedCategory] =
-		useState<CategoryType>("All");
+	const [selectedCategory, setSelectedCategory] = useState<CategoryType>("All");
 	const [playingVideo, setPlayingVideo] = useState<ResultItem | null>(null);
 	const [reportVideo, setReportVideo] = useState<ResultItem | null>(null);
 
@@ -534,9 +542,7 @@ export default function Content4() {
 	const onReport = async (type: string) => {
 		if (!reportVideo) return;
 		const errorMsg =
-			type === "audio_quality"
-				? "발음이 잘 안들려요"
-				: "부적절한 영상 신고";
+			type === "audio_quality" ? "발음이 잘 안들려요" : "부적절한 영상 신고";
 		await reportError(reportVideo, type, errorMsg);
 		setReportVideo(null);
 	};
@@ -561,11 +567,11 @@ export default function Content4() {
 	const hasSearchWord = searchWord.trim().length >= 2;
 
 	return (
-		<div className="flex flex-col h-full w-full bg-[#f9fafc]">
+		<div className="flex h-full w-full flex-col bg-[#f9fafc]">
 			{/* 타이틀 */}
-			<div className="h-[48px] flex px-[16px] items-center mt-[20px]">
-				<span className="text-[20px] font-bold leading-[32px] text-[#383a3f]">
-					표현 클립
+			<div className="mt-[20px] flex h-[48px] items-center px-[16px]">
+				<span className="font-bold text-[#383a3f] text-[20px] leading-[32px]">
+					{t("clip.title")}
 				</span>
 			</div>
 
@@ -589,21 +595,21 @@ export default function Content4() {
 			)}
 
 			{/* 컨텐츠 영역 */}
-			<div className="flex-1 overflow-y-auto scrollbar-hide">
+			<div className="scrollbar-hide flex-1 overflow-y-auto">
 				{hasSearchWord && hasResults && (
 					<>
 						{/* 검색 결과 헤더 */}
-						<div className="px-[16px] py-[12px] flex items-center justify-between">
-							<span className="text-[17px] font-bold leading-[26px] text-[#0180ff]">
+						<div className="flex items-center justify-between px-[16px] py-[12px]">
+							<span className="font-bold text-[#0180ff] text-[17px] leading-[26px]">
 								'{searchWord}'
 							</span>
-							<span className="text-[12px] font-semibold leading-[18px] text-[#7f848d]">
-								검색 결과 {results.length}개
+							<span className="font-semibold text-[#7f848d] text-[12px] leading-[18px]">
+								{t("clip.resultCount", { count: results.length })}
 							</span>
 						</div>
 
 						{/* 비디오 리스트 */}
-						<div className="px-[16px] flex flex-col gap-[16px] pb-[16px]">
+						<div className="flex flex-col gap-[16px] px-[16px] pb-[16px]">
 							{results.slice(0, 10).map((item, index) => (
 								<div key={`${item.youtubeId}-${item.start}-${index}`}>
 									{playingVideo?.youtubeId === item.youtubeId &&
@@ -614,13 +620,13 @@ export default function Content4() {
 												onClose={() => setPlayingVideo(null)}
 											/>
 											<div className="flex items-center justify-between">
-												<p className="text-[14px] font-medium leading-[20px] text-[#383a3f] w-[296px] truncate">
+												<p className="w-[296px] truncate font-medium text-[#383a3f] text-[14px] leading-[20px]">
 													{item.title}
 												</p>
 												<button
 													type="button"
 													onClick={() => onMenuClick(item)}
-													className="shrink-0 size-[24px] flex items-center justify-center text-[#7f848d]"
+													className="flex size-[24px] shrink-0 items-center justify-center text-[#7f848d]"
 												>
 													<MoreVertical size={16} />
 												</button>
@@ -641,16 +647,16 @@ export default function Content4() {
 
 				{/* 빈 상태 */}
 				{!hasResults && (
-					<div className="h-full flex flex-col justify-center items-center mt-[-30px]">
+					<div className="mt-[-30px] flex h-full flex-col items-center justify-center">
 						<img
 							src="/images/search_empty_img.svg"
 							alt=""
 							className="size-[64px]"
 						/>
-						<p className="text-center text-[16px] font-semibold leading-[24px] text-[#24425f] mt-[8px]">
-							Search for the expression
+						<p className="mt-[8px] text-center font-semibold text-[#24425f] text-[16px] leading-[24px]">
+							{t("clip.emptyLine1")}
 							<br />
-							you want to learn!
+							{t("clip.emptyLine2")}
 						</p>
 					</div>
 				)}
