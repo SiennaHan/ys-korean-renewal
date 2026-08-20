@@ -283,7 +283,7 @@ export default function ReadAnswer({
 			</ActivityBody>
 
 			<ActivityFooter>
-				<Dock left={{ enabled: hasPrev, onClick: handlePrev }}>
+				<Dock>
 					<PrimaryButton
 						label={hasNext ? t("player.next") : t("player.showResult")}
 						on={hasNext ? isSolved : allSolved}

@@ -244,6 +244,8 @@ const en = {
 		oxSame: "Matches",
 		oxDifferent: "Does not match",
 		audioSub: "Audio",
+		statementLabel: "Given sentence",
+		playSentence: "Play the sentence again",
 		instrJamoListen: "Listen and choose the right one.",
 		instrGrammar: "Choose what fits the blank.",
 		instrReading: "Read and answer the question.",

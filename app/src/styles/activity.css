@@ -247,6 +247,9 @@
 .activity-frame .blank-card u { text-decoration:none; border-bottom:2px solid var(--blue-gray-400); padding:0 18px; color:transparent; }
 .activity-frame .blank-card b { color:var(--color-fill-primary); font-weight:700; }
 .activity-frame .blank-card b.miss { color:var(--color-text-strong); }
+/* 목업에 없는 줄 — 고른 뒤 그 문법이 무엇인지 한 줄로 알려 준다.
+   원장의 grammar_focus 를 그대로 싣는다 */
+.activity-frame .grammar-note { margin-top:12px; padding:10px 14px; border-radius:10px; background:var(--color-background-base); color:var(--color-text-sub); font-size:13px; line-height:19px; }
 .activity-frame .chip-wrap { display:flex; flex-wrap:wrap; gap:8px; }
 .activity-frame .chip-opt { border-radius:8px; border:1px solid var(--color-line-control); background:var(--color-background-surface); padding:10px 16px; font-size:15px; font-weight:500; color:var(--color-text-strong); cursor:pointer; }
 .activity-frame .chip-opt.on { background:#e9f2fc; color:var(--color-fill-primary); }

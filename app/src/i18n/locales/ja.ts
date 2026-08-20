@@ -243,6 +243,8 @@ const ja = {
 		oxSame: "内容が同じです",
 		oxDifferent: "内容が違います",
 		audioSub: "オーディオ",
+		statementLabel: "提示文",
+		playSentence: "文をもう一度聞く",
 		instrJamoListen: "聞いて正しいものを選んでください。",
 		instrGrammar: "空欄に合うものを選んでください。",
 		instrReading: "読んで質問に答えてください。",

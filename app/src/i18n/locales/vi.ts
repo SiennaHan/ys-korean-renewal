@@ -243,6 +243,8 @@ const vi = {
 		oxSame: "Giống nội dung",
 		oxDifferent: "Khác nội dung",
 		audioSub: "Âm thanh",
+		statementLabel: "Câu đưa ra",
+		playSentence: "Nghe lại câu",
 		instrJamoListen: "Nghe và chọn đáp án đúng.",
 		instrGrammar: "Hãy chọn từ phù hợp với chỗ trống.",
 		instrReading: "Đọc và trả lời câu hỏi.",

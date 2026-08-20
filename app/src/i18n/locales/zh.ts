@@ -240,6 +240,8 @@ const zh = {
 		oxSame: "内容相同",
 		oxDifferent: "内容不同",
 		audioSub: "音频",
+		statementLabel: "提示句子",
+		playSentence: "再听一次句子",
 		instrJamoListen: "听后选择正确的一项。",
 		instrGrammar: "请选择适合填入空格的选项。",
 		instrReading: "阅读后回答问题。",

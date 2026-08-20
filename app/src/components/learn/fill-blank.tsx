@@ -1,5 +1,19 @@
 import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import {
+	ActivityAppBar,
+	ActivityBody,
+	ActivityFooter,
+	ActivityFrame,
+	ActivityProgress,
+	BlankCard,
+	ChipOption,
+	ChipWrap,
+	Dock,
+	FeedbackMessage,
+	PrimaryButton,
+	ProblemCard,
+} from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import blankQuestions from "@/shared/data/n4_blank_question.json";
@@ -7,6 +21,7 @@ import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface BlankQuestion {
 	id: number;
@@ -36,6 +51,7 @@ export default function FillBlank({
 	chapterLabel,
 }: FillBlankProps) {
 	const router = useRouter();
+	const { t } = useTranslation();
 	const sound = useSoundEffects();
 	const { addToast } = useToast();
 
@@ -195,214 +211,114 @@ export default function FillBlank({
 
 	if (!question) {
 		return (
-			<div className="flex h-full flex-col items-center justify-center bg-white">
-				<p className="text-[#888] text-[14px]">데이터가 없습니다</p>
-			</div>
+			<ActivityFrame>
+				<ActivityAppBar
+					lesson={chapterLabel}
+					onExit={() => router.history.back()}
+				/>
+				<ActivityBody>
+					<div className="state-view">
+						<p>{t("state.loadFailed")}</p>
+					</div>
+				</ActivityBody>
+			</ActivityFrame>
 		);
 	}
 
+	const solved = answerState === "correct";
+	const allSolved =
+		questions.length > 0 && questions.every((q) => savedAnswers[q.id]?.correct);
+
 	return (
-		<div className="relative flex h-full flex-col bg-white">
-			{/* Header */}
-			<div className="sticky top-0 z-10 bg-white">
-				<div className="flex h-[48px] items-center px-[4px]">
-					<button
-						type="button"
-						onClick={() => router.history.back()}
-						className="flex size-[44px] cursor-pointer items-center justify-center"
-					>
-						<X className="size-[20px] text-[#383A3F]" />
-					</button>
-					<div className="flex-1 pr-[44px] text-center">
-						<p className="text-[#979DA8] text-[14px]">{chapterLabel}</p>
-					</div>
-				</div>
-			</div>
+		<ActivityFrame>
+			<ActivityAppBar
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+			/>
+			<ActivityProgress current={currentIndex} total={totalSteps} />
 
-			{/* Content */}
-			<div className="scrollbar-hide flex-1 overflow-y-auto px-[20px] pt-[8px] pb-[180px]">
-				{/* Title */}
-				<h1 className="font-bold text-[#383A3F] text-[20px] leading-tight">
-					{instruction.ko}
-				</h1>
-				{instruction.translated && (
-					<p className="mt-[4px] text-[#979DA8] text-[14px]">
-						{instruction.translated}
-					</p>
-				)}
-
-				{/* Question with blank */}
-				<div className="mt-[20px] rounded-[12px] border border-[#DBEDFF] bg-[#F0F7FF] px-[16px] py-[14px]">
-					<p className="font-medium text-[#383A3F] text-[18px] leading-relaxed">
-						{selectedAnswer && isSelectionCorrect ? (
+			<ActivityBody
+				feedback={
+					answerState === "correct" ? (
+						<FeedbackMessage kind="correct" />
+					) : answerState === "wrong" ? (
+						<FeedbackMessage kind="wrong" />
+					) : null
+				}
+			>
+				<ProblemCard
+					instruction={
+						<>
+							{instruction.ko}
+							{instruction.translated && <p>{instruction.translated}</p>}
+						</>
+					}
+				>
+					{/* 고른 어미가 문장에 들어간 모습을 그대로 보여 준다 */}
+					<BlankCard>
+						{solved ? (
 							<>
 								{questionParts.completionBefore}
-								<span className="font-bold text-[#0180FF]">
-									{questionParts.completionFilled}
-								</span>
+								<b>{questionParts.completionFilled}</b>
 								{questionParts.completionAfter}
 							</>
 						) : selectedAnswer ? (
 							<>
 								{questionParts.before}
-								<span
-									className={clsx(
-										"font-bold",
-										isSelectionCorrect ? "text-[#0180FF]" : "text-[#bbb]",
-									)}
-								>
+								<b className={isSelectionCorrect ? "" : "miss"}>
 									{selectedAnswer}
-								</span>
+								</b>
 								{questionParts.after}
 							</>
 						) : (
 							<>
 								{questionParts.before}
-								<span className="inline-block w-[80px] text-center text-[#C8CCD3]">
-									({"　　　　"})
-								</span>
+								<u>　</u>
 								{questionParts.after}
 							</>
 						)}
-					</p>
-				</div>
+					</BlankCard>
+					{selectedAnswer && (
+						<div className="grammar-note">{question.grammar_focus}</div>
+					)}
+				</ProblemCard>
 
-				{/* Selection buttons */}
-				<div className="mt-[16px] flex flex-wrap gap-[8px]">
+				<ChipWrap>
 					{selections.map((sel) => {
-						const isSelected = selectedAnswer === sel;
-						const isCorrectSel = sel === question?.answer;
-						const showCorrect = answerState === "correct" && isSelected;
-						const showWrongSel = isSelected && !isCorrectSel;
-
+						const chosen = selectedAnswer === sel;
 						return (
-							<button
+							<ChipOption
 								key={sel}
-								type="button"
+								value={sel}
+								// 칩에는 목록형에 없는 중간 상태가 있다 — 고른 뒤 채점 전
+								state={
+									chosen
+										? sel === question.answer
+											? "ok"
+											: answerState === "wrong"
+												? "no"
+												: "on"
+										: ""
+								}
 								onClick={() => handleSelectAnswer(sel)}
-								disabled={answerState === "correct"}
-								className={clsx(
-									"rounded-[8px] border px-[16px] py-[10px] font-medium text-[15px] transition-colors",
-									showCorrect
-										? "border-[#359AFF] border-[2px] bg-[#359AFF] text-white"
-										: showWrongSel
-											? "border-[#E5E8EC] bg-gray-100 text-[#bbb] opacity-70"
-											: isSelected
-												? "border-[#0180FF] bg-[#E9F2FC] text-[#0180FF]"
-												: "border-[#E5E8EC] bg-white text-[#383A3F]",
-									answerState === "correct"
-										? "cursor-not-allowed"
-										: "cursor-pointer",
-								)}
 							>
 								{sel}
-							</button>
+							</ChipOption>
 						);
 					})}
-				</div>
+				</ChipWrap>
+			</ActivityBody>
 
-				{/* Grammar focus — shown after selecting an answer */}
-				{selectedAnswer && (
-					<div className="mt-[12px] rounded-[10px] bg-[#F9FAFC] px-[14px] py-[10px]">
-						<p className="text-[#7F848D] text-[13px]">
-							{question.grammar_focus}
-						</p>
-					</div>
-				)}
-
-				{/* 정답 표시 */}
-				{answerState === "correct" && (
-					<div className="mt-[16px] flex items-center gap-[6px]">
-						<div className="flex size-[20px] items-center justify-center rounded-full bg-[#359AFF]">
-							<span className="font-bold text-[12px] text-white">✓</span>
-						</div>
-						<span className="font-medium text-[#359AFF] text-[14px]">
-							정답입니다!
-						</span>
-					</div>
-				)}
-
-				{/* 오답 표시 */}
-				{answerState === "wrong" && (
-					<div className="mt-[16px] flex items-center gap-[6px]">
-						<div className="flex size-[20px] items-center justify-center rounded-full bg-[#ADB3BE]">
-							<span className="font-bold text-[12px] text-white">✗</span>
-						</div>
-						<span className="font-medium text-[#ADB3BE] text-[14px]">
-							다시 골라 보세요
-						</span>
-					</div>
-				)}
-			</div>
-
-			{/* Bottom bar with recording + navigation */}
-			<div className="absolute right-0 bottom-0 left-0 z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0)0%,#FFF_50%)] pt-[40px]">
-				<div className="flex items-center px-[16px]">
-					{/* Left arrow */}
-					<button
-						type="button"
-						onClick={handlePrev}
-						disabled={!hasPrev}
-						className={clsx(
-							"flex size-[36px] shrink-0 items-center justify-center",
-							hasPrev
-								? "cursor-pointer text-[#0180FF]"
-								: "cursor-default text-[#E5E8EC]",
-						)}
-					>
-						<ChevronLeft className="size-[24px]" />
-					</button>
-
-					<div className="flex-1" />
-
-					{/* Right arrow / 완료 */}
-					{!hasNext ? (
-						<button
-							type="button"
-							onClick={() => router.history.back()}
-							disabled={
-								questions.length === 0 ||
-								!questions.every((q) => savedAnswers[q.id]?.correct)
-							}
-							className={clsx(
-								"flex h-[36px] shrink-0 items-center justify-center gap-[4px] rounded-full px-[14px] font-semibold text-[14px]",
-								questions.length > 0 &&
-									questions.every((q) => savedAnswers[q.id]?.correct)
-									? "cursor-pointer bg-[#0180FF] text-white"
-									: "bg-[#E5E8EC] text-[#ADB3BE]",
-							)}
-						>
-							<Check className="size-[16px]" />
-							완료
-						</button>
-					) : (
-						<button
-							type="button"
-							onClick={handleNext}
-							className="flex size-[36px] shrink-0 cursor-pointer items-center justify-center text-[#0180FF]"
-						>
-							<ChevronRight className="size-[24px]" />
-						</button>
-					)}
-				</div>
-
-				{/* Progress dots */}
-				{totalSteps > 1 && (
-					<div className="flex items-center justify-center gap-[4px] pt-[4px] pb-[8px]">
-						{Array.from({ length: totalSteps }, (_, i) => (
-							<div
-								key={questions[i].id}
-								className={clsx(
-									"rounded-full",
-									i === currentIndex
-										? "h-[5px] w-[16px] bg-[#0180FF]"
-										: "size-[5px] bg-[#E5E8EC]",
-								)}
-							/>
-						))}
-					</div>
-				)}
-			</div>
-		</div>
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={hasNext ? t("player.next") : t("player.showResult")}
+						on={hasNext ? solved : allSolved}
+						action="next"
+						onClick={hasNext ? handleNext : () => router.history.back()}
+					/>
+				</Dock>
+			</ActivityFooter>
+		</ActivityFrame>
 	);
 }

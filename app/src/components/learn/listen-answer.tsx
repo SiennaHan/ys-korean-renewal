@@ -14,6 +14,7 @@ import {
 	ChoiceList,
 	Dock,
 	FeedbackMessage,
+	ListenCopy,
 	PrimaryButton,
 	ProblemCard,
 	QuestionText,
@@ -269,15 +270,29 @@ export default function ListenAnswer({
 						</>
 					}
 				>
-					<AudioRow
-						label={t("player.playAudio")}
-						sub={isPlaying ? t("state.audioPreparing") : t("activity.audioSub")}
-						onPlay={handlePlay}
-					/>
+					{/* O/X 가 판단할 문장. 들은 것이 아니라 제시된 것이다 —
+					    들은 것은 오디오뿐이고 이 글자는 맞는지 가릴 대상이다.
+					    카드 안에서 가장 큰 글자가 된다. 객관식은 질문이 따로 있으므로
+					    선택지 위로 뺀다 */}
+					{isOxType && (
+						<ListenCopy
+							label={t("activity.statementLabel")}
+							statement={question.question}
+						/>
+					)}
+					<div className="listen-stimulus">
+						<AudioRow
+							label={t("activity.playSentence")}
+							sub={
+								isPlaying ? t("state.audioPreparing") : t("activity.audioSub")
+							}
+							onPlay={handlePlay}
+						/>
+					</div>
 				</ProblemCard>
 
 				<div className="response-area">
-					<QuestionText>{question.question}</QuestionText>
+					{!isOxType && <QuestionText>{question.question}</QuestionText>}
 					<ChoiceList
 						variant={isImageType ? "image" : isOxType ? "binary" : "list"}
 						inResponseArea={false}
@@ -321,7 +336,7 @@ export default function ListenAnswer({
 			</ActivityBody>
 
 			<ActivityFooter>
-				<Dock left={{ enabled: currentIndex > 0, onClick: handlePrev }}>
+				<Dock>
 					<PrimaryButton
 						label={
 							currentIndex < totalSteps - 1
