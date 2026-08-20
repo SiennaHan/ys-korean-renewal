@@ -67,3 +67,28 @@ export function IconCheck() {
 		</svg>
 	);
 }
+
+export function IconKeyboard() {
+	return (
+		<svg viewBox="0 0 24 24" {...line} aria-hidden="true">
+			<rect x="2" y="6" width="20" height="12" rx="2" />
+			<path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" />
+		</svg>
+	);
+}
+
+export function IconUp() {
+	return (
+		<svg viewBox="0 0 24 24" {...line} aria-hidden="true">
+			<path d="M6 15l6-6 6 6" />
+		</svg>
+	);
+}
+
+export function IconDown() {
+	return (
+		<svg viewBox="0 0 24 24" {...line} aria-hidden="true">
+			<path d="M6 9l6 6 6-6" />
+		</svg>
+	);
+}

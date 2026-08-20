@@ -255,6 +255,11 @@
 .activity-frame .audio-pair .mine.no { color:var(--color-fill-wrong); }
 .activity-frame .audio-pair i { width:36px; display:grid; place-items:center; }
 .activity-frame .audio-pair i svg { width:22px; height:22px; }
+.activity-frame .practice-browser { margin-top:18px; padding:12px; border-radius:16px; background:#f4f7fb; }
+.activity-frame .practice-nav { min-height:34px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.activity-frame .practice-label { color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:500; }
+.activity-frame .jamo-tabs { display:flex; align-items:center; gap:3px; padding:2px; border-radius:9px; background:var(--color-line-normal); }
+.activity-frame .jamo-tabs button { width:27px; height:27px; border-radius:7px; border:0; background:transparent; color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
 .activity-frame .jamo-tabs button.on { background:var(--color-background-surface); color:var(--color-fill-primary-pressed); }
 .activity-frame .word-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; padding-top:8px; }
 .activity-frame .word-cards button { height:52px; border-radius:10px; border:1px solid var(--color-line-control); background:#fff; position:relative; font-size:18px; font-weight:600; color:var(--color-text-heading); cursor:pointer; }

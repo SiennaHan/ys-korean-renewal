@@ -2,11 +2,17 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactElement } from "react";
 import { AudioRow } from "./audio";
 import { BriefingScreen } from "./briefing-screen";
+import { ChatScreen } from "./chat";
 import { ChipOption, ChipWrap, Choice, ChoiceList } from "./choice";
 import { FeedbackMessage } from "./feedback";
+import { FlashcardScreen } from "./flashcard";
+import { JamoSection, WriteCanvas } from "./jamo-write";
+import { PracticeBrowser, ThumbWordCards, WordCards } from "./practice-browser";
 import { ProblemCard } from "./problem-card";
+import { RecordControl } from "./record";
 import { ReportScreen } from "./report-screen";
 import { ResultScreen } from "./result-screen";
+import { RoleplayScreen } from "./roleplay";
 import {
 	ActivityAppBar,
 	ActivityBody,
@@ -17,6 +23,17 @@ import {
 	PrimaryButton,
 } from "./shell";
 import { FailedScreen, LoadingScreen, MicDeniedScreen } from "./state-screens";
+import {
+	AudioBar,
+	AudioPair,
+	ComboResult,
+	MouthVideo,
+	Passage,
+	QuestionText,
+	SyllableRow,
+	WordPicture,
+} from "./stimulus";
+import { WordPreviewList } from "./word-preview";
 
 /**
  * 컴포넌트로 그린 활동 화면.
@@ -42,12 +59,16 @@ function Screen({
 	body,
 	footer,
 	feedback,
+	noFeedback,
+	dockRight,
 }: {
 	lesson?: string;
 	progress?: [number, number];
 	body: ReactElement;
 	footer: ReactElement;
 	feedback?: ReactElement | null;
+	noFeedback?: boolean;
+	dockRight?: { enabled: boolean };
 }) {
 	return (
 		<ActivityFrame style={{ height: 720, width: "100%" }}>
@@ -55,9 +76,11 @@ function Screen({
 			{progress && (
 				<ActivityProgress current={progress[0]} total={progress[1]} />
 			)}
-			<ActivityBody feedback={feedback ?? null}>{body}</ActivityBody>
+			<ActivityBody feedback={noFeedback ? undefined : (feedback ?? null)}>
+				{body}
+			</ActivityBody>
 			<ActivityFooter>
-				<Dock>{footer}</Dock>
+				<Dock right={dockRight}>{footer}</Dock>
 			</ActivityFooter>
 		</ActivityFrame>
 	);
@@ -375,6 +398,454 @@ export const 마이크거부: Story = {
 	render: () => (
 		<div style={{ height: 720 }}>
 			<MicDeniedScreen lesson={LESSON} />
+		</div>
+	),
+};
+
+const IMG = "../illust/images";
+const FAMILY = [
+	{ word: "어머니", image: `${IMG}/b1/b1_ch8_p85_13.png`, done: true },
+	{ word: "아버지", image: `${IMG}/b1/b1_ch8_p85_12.png`, done: true },
+	{ word: "형", image: `${IMG}/b1/b1_ch8_p85_15.png`, done: true },
+	{ word: "누나", image: `${IMG}/b1/b1_ch8_p85_16.png`, done: false },
+	{ word: "남동생", image: `${IMG}/b1/b1_ch8_p85_18.png`, done: false },
+	{ word: "여동생", image: `${IMG}/b1/b1_ch8_p85_19.png`, done: false },
+];
+const ROLE_TURNS = [
+	{
+		who: "AI",
+		mine: false,
+		ko: "어서 오세요. 뭘 도와드릴까요?",
+		en: "Welcome.",
+	},
+	{
+		who: "나",
+		mine: true,
+		ko: "커피 한 잔 주세요.",
+		en: "One coffee, please.",
+	},
+	{ who: "AI", mine: false, ko: "따뜻한 걸로 드릴까요?", en: "Hot?" },
+	{ who: "나", mine: true, ko: "네, 따뜻한 걸로 주세요.", en: "Yes, hot." },
+	{ who: "AI", mine: false, ko: "삼천 원입니다.", en: "3,000 won." },
+];
+
+export const 읽기지문: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 6과"
+			progress={[0, 3]}
+			body={
+				<>
+					<ProblemCard instruction="읽고 질문에 답하세요.">
+						<Passage>
+							{`저는 마이클입니다. 미국 사람이에요.
+지금 한국에서 한국어를 배웁니다.
+학교는 신촌에 있어요. 매일 아침 아홉 시에 갑니다.`}
+						</Passage>
+					</ProblemCard>
+					<div className="response-area">
+						<QuestionText>마이클은 어디에서 한국어를 배웁니까?</QuestionText>
+						<ChoiceList inResponseArea={false}>
+							{["미국", "신촌", "도쿄", "부산"].map((x, i) => (
+								<Choice
+									key={x}
+									index={i}
+									action="rpick"
+									state={i === 1 ? "correct" : ""}
+								>
+									{x}
+								</Choice>
+							))}
+						</ChoiceList>
+					</div>
+				</>
+			}
+			feedback={<FeedbackMessage kind="correct" />}
+			footer={<PrimaryButton label="다음" on action="next" />}
+		/>
+	),
+};
+
+export const 어휘미리보기: Story = {
+	render: () => (
+		<Screen
+			progress={[0, 1]}
+			body={
+				<>
+					<ProblemCard instruction="이번 과의 단어를 먼저 살펴보세요." />
+					<WordPreviewList
+						words={[
+							{ word: "안녕하다", meaning: "to be well / hello" },
+							{ word: "네", meaning: "yes" },
+							{ word: "제", meaning: "my" },
+							{ word: "이름", meaning: "name" },
+							{ word: "저", meaning: "I (formal)" },
+							{ word: "반갑다", meaning: "to be glad to meet" },
+						]}
+					/>
+				</>
+			}
+			footer={<PrimaryButton label="문제 풀기" on action="toQuiz" />}
+		/>
+	),
+};
+
+const CONSONANTS = "ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅅ ㅇ ㅈ ㅎ ㅋ ㅌ".split(" ");
+const VOWELS = "ㅏ ㅓ ㅗ ㅜ ㅡ ㅣ ㅐ ㅔ ㅚ ㅟ ㅑ ㅕ".split(" ");
+const FINALS = "ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅅ ㅇ".split(" ");
+
+export const 자모조합_2단: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[0, 3]}
+			body={
+				<>
+					<ProblemCard instruction="글자를 만들고 써 보세요.">
+						<ComboResult syllable="가" parts="ㄱ + ㅏ" word="가" />
+					</ProblemCard>
+					<JamoSection
+						step={1}
+						slot="consonant"
+						options={CONSONANTS}
+						picked="ㄱ"
+					/>
+					<JamoSection step={2} slot="vowel" options={VOWELS} picked="ㅏ" />
+				</>
+			}
+			footer={<PrimaryButton label="확인" on action="toWrite" />}
+		/>
+	),
+};
+
+/** 받침이 붙으면 고르는 줄이 하나 더 는다 */
+export const 자모조합_3단받침: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[0, 1]}
+			body={
+				<>
+					<ProblemCard instruction="글자를 만들고 써 보세요.">
+						<ComboResult syllable="산" parts="ㅅ + ㅏ + ㄴ" word="산" />
+					</ProblemCard>
+					<JamoSection
+						step={1}
+						slot="consonant"
+						options={CONSONANTS}
+						picked="ㅅ"
+					/>
+					<JamoSection step={2} slot="vowel" options={VOWELS} picked="ㅏ" />
+					<JamoSection step={3} slot="final" options={FINALS} picked="ㄴ" />
+				</>
+			}
+			footer={<PrimaryButton label="확인" on action="toWrite" />}
+		/>
+	),
+};
+
+export const 따라쓰기_빈판: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[0, 3]}
+			body={
+				<>
+					<ProblemCard instruction="글자를 순서에 맞게 써 보세요." />
+					<WriteCanvas guide="../handwriting/가.png" />
+				</>
+			}
+			footer={<PrimaryButton label="확인" on={false} />}
+		/>
+	),
+};
+
+export const 자모발음: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[2, 6]}
+			noFeedback
+			body={
+				<>
+					<ProblemCard
+						instruction="듣고 따라 말해 보세요."
+						stimulusStyle={{ gap: 16 }}
+					>
+						<MouthVideo>입모양 영상</MouthVideo>
+						<AudioPair source="어" mine="" />
+					</ProblemCard>
+					<PracticeBrowser tabs={["1", "2", "3"]} current="1">
+						<WordCards
+							words={"아 어 오 우 으 이 애 에 외 위".split(" ")}
+							current="어"
+							done={(w) => "아 어 오".includes(w)}
+						/>
+					</PracticeBrowser>
+				</>
+			}
+			dockRight={{ enabled: false }}
+			footer={<RecordControl mode="idle" action="srec" />}
+		/>
+	),
+};
+
+/** 녹음을 마치면 버튼 모습과 옆 글자가 같이 바뀌고 오른쪽 다음이 열린다 */
+export const 자모발음_녹음완료: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[2, 6]}
+			noFeedback
+			body={
+				<>
+					<ProblemCard
+						instruction="듣고 따라 말해 보세요."
+						stimulusStyle={{ gap: 16 }}
+					>
+						<MouthVideo>입모양 영상</MouthVideo>
+						<AudioPair source="어" mine="ok" />
+					</ProblemCard>
+					<PracticeBrowser tabs={["1", "2", "3"]} current="1">
+						<WordCards
+							words={"아 어 오 우 으 이 애 에 외 위".split(" ")}
+							current="어"
+							done={(w) => "아 어 오".includes(w)}
+						/>
+					</PracticeBrowser>
+				</>
+			}
+			dockRight={{ enabled: true }}
+			footer={<RecordControl mode="done" action="srec" />}
+		/>
+	),
+};
+
+export const 녹음중: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[2, 6]}
+			noFeedback
+			body={
+				<ProblemCard
+					instruction="듣고 따라 말해 보세요."
+					stimulusStyle={{ gap: 16 }}
+				>
+					<MouthVideo>입모양 영상</MouthVideo>
+					<AudioPair source="어" mine="" />
+				</ProblemCard>
+			}
+			dockRight={{ enabled: false }}
+			footer={<RecordControl mode="recording" action="srec" />}
+		/>
+	),
+};
+
+export const 단어따라말하기: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[0, 6]}
+			noFeedback
+			body={
+				<>
+					<ProblemCard
+						instruction="단어를 듣고 따라 말해 보세요."
+						stimulusStyle={{ gap: 20 }}
+					>
+						<WordPicture word="어머니" image={FAMILY[0].image} />
+						<AudioPair source="어머니" mine="" />
+					</ProblemCard>
+					<PracticeBrowser tabs={["1", "2", "3"]} current="1">
+						<ThumbWordCards cards={FAMILY} current="어머니" />
+					</PracticeBrowser>
+				</>
+			}
+			dockRight={{ enabled: false }}
+			footer={<RecordControl mode="idle" action="srec" />}
+		/>
+	),
+};
+
+export const 단어읽고쓰기: Story = {
+	render: () => (
+		<Screen
+			lesson="1급 1과"
+			progress={[1, 6]}
+			noFeedback
+			body={
+				<>
+					<ProblemCard
+						instruction="단어를 읽고 쓰세요."
+						stimulusStyle={{ gap: 20 }}
+					>
+						<WordPicture word="바지" image={FAMILY[0].image} small />
+						<AudioBar label="바지" />
+						<SyllableRow syllables={["바", "지"]} />
+					</ProblemCard>
+					<PracticeBrowser tabs={["1", "2", "3"]} current="1">
+						<ThumbWordCards cards={FAMILY} current="어머니" />
+					</PracticeBrowser>
+				</>
+			}
+			footer={<PrimaryButton label="다음" on={false} />}
+		/>
+	),
+};
+
+export const 플래시카드_앞면: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<FlashcardScreen
+				lesson={LESSON}
+				index={0}
+				total={3}
+				card={{ word: "사과", meaning: "apple", kind: "명사" }}
+				flipped={false}
+				knownCount={0}
+				unknownCount={0}
+				onSkip={() => {}}
+			/>
+		</div>
+	),
+};
+
+/** 카드를 뒤집으면 뜻·품사·그림이 같이 나온다 */
+export const 플래시카드_뒷면: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<FlashcardScreen
+				lesson={LESSON}
+				index={1}
+				total={3}
+				card={{ word: "사과", meaning: "apple", kind: "명사" }}
+				flipped
+				knownCount={1}
+				unknownCount={0}
+				onSkip={() => {}}
+			/>
+		</div>
+	),
+};
+
+export const 미션대화: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<ChatScreen
+				lesson={LESSON}
+				scenario="카페에서 음료를 주문해 보세요"
+				scenarioTranslated="Order a drink at the cafe"
+				missions={["주문하기", "가격 묻기", "인사하기"]}
+				hits={new Set([0, 1])}
+				turns={[
+					{ who: "bot", text: "어서 오세요. 무엇을 드릴까요?" },
+					{ who: "me", text: "커피 주세요." },
+					{ who: "bot", text: "네, 아메리카노요? 따뜻한 걸로 드릴까요?" },
+					{ who: "me", text: "얼마예요?" },
+				]}
+				waiting
+				recordMode="idle"
+				onSkip={() => {}}
+			/>
+		</div>
+	),
+};
+
+/** 고칠 곳이 있던 말에는 밑에 한 줄이 붙는다 */
+export const 미션대화_고칠곳: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<ChatScreen
+				lesson={LESSON}
+				scenario="카페에서 음료를 주문해 보세요"
+				scenarioTranslated="Order a drink at the cafe"
+				folded
+				missions={["주문하기", "가격 묻기", "인사하기"]}
+				hits={new Set([0])}
+				turns={[
+					{ who: "bot", text: "어서 오세요. 무엇을 드릴까요?" },
+					{
+						who: "me",
+						text: "커피 주다.",
+						bad: true,
+						tip: "커피 주세요 라고 해 보세요",
+					},
+				]}
+				recordMode="recording"
+				onSkip={() => {}}
+			/>
+		</div>
+	),
+};
+
+export const 미션대화_끝: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<ChatScreen
+				lesson={LESSON}
+				scenario="카페에서 음료를 주문해 보세요"
+				scenarioTranslated="Order a drink at the cafe"
+				missions={["주문하기", "가격 묻기", "인사하기"]}
+				hits={new Set([0, 1, 2])}
+				turns={[
+					{ who: "bot", text: "어서 오세요. 무엇을 드릴까요?" },
+					{ who: "me", text: "커피 주세요." },
+					{ who: "bot", text: "삼천 원입니다." },
+					{ who: "me", text: "안녕히 계세요." },
+				]}
+				complete
+				recordMode="done"
+				onSkip={() => {}}
+			/>
+		</div>
+	),
+};
+
+export const 롤플레잉: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<RoleplayScreen
+				lesson={LESSON}
+				turns={ROLE_TURNS}
+				current={1}
+				direction="ai"
+				recordMode="idle"
+				onSkip={() => {}}
+			/>
+		</div>
+	),
+};
+
+/** 내 차례에 녹음을 마치면 그 줄 밑에 확인 카드가 붙고 다음이 열린다 */
+export const 롤플레잉_녹음완료: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<RoleplayScreen
+				lesson={LESSON}
+				turns={ROLE_TURNS}
+				current={1}
+				direction="ai"
+				recordMode="done"
+				heard="커피 한 잔 주세요"
+				onSkip={() => {}}
+			/>
+		</div>
+	),
+};
+
+/** AI 차례에는 같은 자리가 듣기 조작으로 바뀐다 */
+export const 롤플레잉_AI차례: Story = {
+	render: () => (
+		<div style={{ height: 720 }}>
+			<RoleplayScreen
+				lesson={LESSON}
+				turns={ROLE_TURNS}
+				current={2}
+				direction="ai"
+				recordMode="idle"
+				onSkip={() => {}}
+			/>
 		</div>
 	),
 };
