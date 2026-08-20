@@ -3,6 +3,15 @@ import { evaluateSpeech } from "@/api/speech";
 import { SpeakerIcon } from "@/assets/icons";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import {
+	ActivityAppBar,
+	ActivityFooter,
+	ActivityFrame,
+	ActivityProgress,
+	IconClose,
+	IconNext,
+	IconVolume,
+} from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { type RoleplayTurn, getScenarios } from "@/shared/data/roleplay";
 import { getTTSAudio, prefetchTTSAudio } from "@/shared/tts-cache";
@@ -16,7 +25,14 @@ import {
 	RotateCcw,
 	X,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 interface AiRoleplayProps {
@@ -75,7 +91,7 @@ export default function AiRoleplay({
 	chapterLabel,
 }: AiRoleplayProps) {
 	const router = useRouter();
-	const { i18n } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const sharedAudio = useSharedAudio();
 	const sound = useSoundEffects();
 
@@ -450,226 +466,127 @@ export default function AiRoleplay({
 	}
 
 	return (
-		<div className="relative flex h-full flex-col bg-white">
-			{/* Header */}
-			<div className="sticky top-0 z-10 border-[#F6F7F8] border-b bg-white">
-				<div className="flex h-[48px] items-center justify-between px-[16px]">
-					<button
-						type="button"
-						onClick={() => router.history.back()}
-						className="flex cursor-pointer items-center justify-center"
-					>
-						<X className="size-[20px] text-[#383A3F]" />
-					</button>
-					<p className="text-[#878787] text-[14px]">{chapterLabel}</p>
-					<button
-						type="button"
-						onClick={handleSkip}
-						className="flex cursor-pointer items-center gap-[2px]"
-					>
-						<span className="text-[#8d8d8d] text-[12px]">skip</span>
-						<ChevronRight className="size-[12px] text-[#8d8d8d]" />
-					</button>
-				</div>
-			</div>
+		<ActivityFrame>
+			<ActivityAppBar
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+				onSkip={handleSkip}
+			/>
+			{/* 목업 롤플레잉에는 진행 막대가 없지만, 시나리오 사이를 오갈 길이
+			    도크에서 사라졌으므로 그 역할을 여기로 옮겼다 */}
+			<ActivityProgress
+				current={scenarioIdx}
+				total={scenarios.length}
+				onJump={setScenarioIdx}
+			/>
 
-			{/* Title */}
-			<div className="px-[20px] pt-[16px]">
-				<h1 className="font-semibold text-[24px] text-black leading-[32px]">
-					AI와 함께 대화를 연습해 보세요.
-				</h1>
-				<p className="mt-[2px] text-[#555] text-[18px] leading-[23px]">
-					Practice having conversations with AI.
-				</p>
-			</div>
+			<section className="role-intro">
+				<div className="role-title">{t("activity.roleIntro")}</div>
+			</section>
 
-			{/* Tab buttons — [AI > 나] [나 > AI] */}
-			<div className="flex items-center gap-[8px] px-[20px] pt-[20px] pb-[16px]">
-				<button
-					type="button"
-					onClick={() => {
-						tabSwitchedRef.current = true;
-						setActiveTab("ai-to-me");
-					}}
-					className={clsx(
-						"cursor-pointer rounded-[8px] px-[16px] py-[8px] font-semibold text-[14px] transition-colors",
-						activeTab === "ai-to-me"
-							? "bg-[#383A3F] text-white"
-							: "bg-[#F6F7F8] text-[#7F848D]",
-					)}
-				>
-					AI &gt; 나
-				</button>
-				<button
-					type="button"
-					onClick={() => {
-						tabSwitchedRef.current = true;
-						setActiveTab("me-to-ai");
-					}}
-					className={clsx(
-						"cursor-pointer rounded-[8px] px-[16px] py-[8px] font-semibold text-[14px] transition-colors",
-						activeTab === "me-to-ai"
-							? "bg-[#383A3F] text-white"
-							: "bg-[#F6F7F8] text-[#7F848D]",
-					)}
-				>
-					나 &gt; AI
-				</button>
-				<div className="flex-1" />
-				{turns.length > 0 && completedScenarios.has(turns[0].id) && (
-					<>
+			<div className="turns">
+				<div className="script-toolbar">
+					<span>{t("activity.rolePracticeOrder")}</span>
+					<div
+						className="role-order"
+						role="group"
+						aria-label={t("activity.rolePracticeOrder")}
+					>
 						<button
 							type="button"
-							onClick={handleRetry}
-							className="flex size-[28px] cursor-pointer items-center justify-center rounded-full bg-[#F6F7F8] text-[#7F848D] transition-colors hover:bg-[#E5E8EC]"
+							className={activeTab === "ai-to-me" ? "on" : ""}
+							aria-pressed={activeTab === "ai-to-me"}
+							onClick={() => {
+								tabSwitchedRef.current = true;
+								setActiveTab("ai-to-me");
+							}}
 						>
-							<RotateCcw className="size-[14px]" />
+							{t("activity.roleAiFirst")}
 						</button>
-						<div className="flex size-[28px] items-center justify-center rounded-full bg-[#22C55E]">
-							<Check className="size-[16px] text-white" />
-						</div>
-					</>
-				)}
-			</div>
-
-			{/* Dialog lines */}
-			<div className="scrollbar-hide flex-1 overflow-y-auto px-[20px] pb-[180px]">
-				<div className="flex flex-col gap-[8px]">
-					{turns.map((turn, idx) => {
-						const isCurrent = idx === currentTurnIdx;
-						const isPast = idx < currentTurnIdx;
-						const isFuture = idx > currentTurnIdx;
-						const record = userRecords[idx];
-						const isPractice = isPracticeTurn(turn.turn_seq);
-						// 정답 처리된 녹음만 다시 듣기 대상 (교정 중인 오답은 제외)
-						const myRecordUrl =
-							record?.isCorrect && record.audioUrl
-								? record.audioUrl
-								: undefined;
-
-						return (
-							<div key={turn.id}>
-								{/* Turn line */}
-								<TurnLine
-									turn={turn}
-									isCurrent={isCurrent}
-									isPast={isPast}
-									isFuture={isFuture}
-									playState={playState}
-									isPractice={isPractice}
-									myRecordUrl={myRecordUrl}
-									onReplay={() =>
-										isPractice
-											? myRecordUrl && handleReplayMyVoice(myRecordUrl)
-											: handleReplayTurn(turn)
-									}
-								/>
-
-								{/* 연습 턴에서 녹음 결과가 있으면 교정 카드 표시 */}
-								{isPractice && record && isCurrent && (
-									<UserRecordCard
-										turn={turn}
-										record={record}
-										onClear={() => handleClearRecord(idx)}
-										lang={i18n.language}
-									/>
-								)}
-							</div>
-						);
-					})}
-				</div>
-
-				{/* Status message */}
-				<div className="mt-[32px] flex justify-center">
-					<div className="flex items-center gap-[6px] rounded-[20px] bg-[#F6F7F8] px-[16px] py-[8px]">
-						{evaluating && (
-							<Loader2 className="size-[14px] animate-spin text-[#979DA8]" />
-						)}
-						<p className="text-[#979DA8] text-[13px]">{statusMessage}</p>
+						<button
+							type="button"
+							className={activeTab === "me-to-ai" ? "on" : ""}
+							aria-pressed={activeTab === "me-to-ai"}
+							onClick={() => {
+								tabSwitchedRef.current = true;
+								setActiveTab("me-to-ai");
+							}}
+						>
+							{t("activity.roleMeFirst")}
+						</button>
 					</div>
 				</div>
-			</div>
 
-			{/* Bottom bar with recording + navigation arrows */}
-			<div className="absolute right-0 bottom-0 left-0 z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0)0%,#FFF_50%)] pt-[40px]">
-				<div className="relative flex items-center justify-center px-[16px]">
-					{/* Left arrow */}
-					<button
-						type="button"
-						onClick={handlePrev}
-						disabled={!hasPrev}
-						className={clsx(
-							"absolute left-[16px] flex size-[36px] shrink-0 items-center justify-center",
-							hasPrev
-								? "cursor-pointer text-[#0180FF]"
-								: "cursor-default text-[#E5E8EC]",
-						)}
-					>
-						<ChevronLeft className="size-[24px]" />
-					</button>
+				{turns.map((turn, idx) => {
+					const isCurrent = idx === currentTurnIdx;
+					const isPast = idx < currentTurnIdx;
+					const isFuture = idx > currentTurnIdx;
+					const record = userRecords[idx];
+					const isPractice = isPracticeTurn(turn.turn_seq);
+					// 정답 처리된 녹음만 다시 듣기 대상 (교정 중인 오답은 제외)
+					const myRecordUrl =
+						record?.isCorrect && record.audioUrl ? record.audioUrl : undefined;
 
-					{/* Recorder — always centered */}
-					<AudioRecorder
-						setResult={handleRecordResult}
-						disabled={playState !== "practice-turn" || evaluating}
-					/>
-
-					{/* Right arrow / 완료 */}
-					{!hasNext ? (
-						<button
-							type="button"
-							onClick={() => router.history.back()}
-							disabled={
-								scenarios.length === 0 ||
-								!scenarios.every(
-									(s) =>
-										s.turns.length > 0 && completedScenarios.has(s.turns[0].id),
-								)
-							}
-							className={clsx(
-								"absolute right-[16px] flex h-[36px] shrink-0 items-center justify-center gap-[4px] rounded-full px-[14px] font-semibold text-[14px]",
-								scenarios.length > 0 &&
-									scenarios.every(
-										(s) =>
-											s.turns.length > 0 &&
-											completedScenarios.has(s.turns[0].id),
-									)
-									? "cursor-pointer bg-[#0180FF] text-white"
-									: "bg-[#E5E8EC] text-[#ADB3BE]",
-							)}
-						>
-							<Check className="size-[16px]" />
-							완료
-						</button>
-					) : (
-						<button
-							type="button"
-							onClick={handleNext}
-							className="absolute right-[16px] flex size-[36px] shrink-0 cursor-pointer items-center justify-center text-[#0180FF]"
-						>
-							<ChevronRight className="size-[24px]" />
-						</button>
-					)}
-				</div>
-
-				{/* Progress dots */}
-				{scenarios.length > 1 && (
-					<div className="flex items-center justify-center gap-[4px] pt-[4px] pb-[8px]">
-						{scenarios.map((_, i) => (
-							<div
-								key={scenarios[i].scenarioId}
-								className={clsx(
-									"rounded-full",
-									i === scenarioIdx
-										? "h-[5px] w-[16px] bg-[#0180FF]"
-										: "size-[5px] bg-[#E5E8EC]",
-								)}
+					return (
+						<Fragment key={turn.id}>
+							<TurnLine
+								turn={turn}
+								isCurrent={isCurrent}
+								isPast={isPast}
+								isFuture={isFuture}
+								playState={playState}
+								isPractice={isPractice}
+								myRecordUrl={myRecordUrl}
+								onReplay={() =>
+									isPractice
+										? myRecordUrl && handleReplayMyVoice(myRecordUrl)
+										: handleReplayTurn(turn)
+								}
 							/>
-						))}
-					</div>
-				)}
+							{isPractice && record && isCurrent && (
+								<UserRecordCard
+									turn={turn}
+									record={record}
+									onClear={() => handleClearRecord(idx)}
+									lang={i18n.language}
+								/>
+							)}
+						</Fragment>
+					);
+				})}
 			</div>
-		</div>
+
+			<ActivityFooter>
+				<div className="dock">
+					{/* 오른쪽 다음과 폭을 맞춰 녹음을 가운데 세운다 */}
+					<span className="slot" aria-hidden="true" />
+					<div className="main">
+						<AudioRecorder
+							setResult={handleRecordResult}
+							disabled={playState !== "practice-turn" || evaluating}
+						/>
+					</div>
+					<button
+						type="button"
+						className="slot"
+						data-action="roleNext"
+						aria-label={t("player.next")}
+						disabled={
+							hasNext
+								? false
+								: !scenarios.every(
+										(sc) =>
+											sc.turns.length > 0 &&
+											completedScenarios.has(sc.turns[0].id),
+									)
+						}
+						onClick={hasNext ? handleNext : () => router.history.back()}
+					>
+						<IconNext />
+					</button>
+				</div>
+			</ActivityFooter>
+		</ActivityFrame>
 	);
 }
 
@@ -721,53 +638,30 @@ function TurnLine({
 	const replayDisabled = playState === "model-speaking";
 
 	return (
-		<div className="flex items-start gap-[12px] py-[8px]">
-			<div
-				className={clsx(
-					"w-[24px] shrink-0 pt-[8px] font-bold text-[14px]",
-					isFuture ? "text-[#C8CCD3]" : "text-[#383A3F]",
-				)}
-			>
-				{showSpeakerIcon ? <SpeakerIcon color="#4396F4" size={14} /> : label}
-			</div>
-			<div
-				className={clsx(
-					"flex-1 whitespace-pre-line rounded-[8px] px-[10px] py-[6px] text-[16px] leading-relaxed",
-					bgColor,
-					isFuture ? "text-[#C8CCD3]" : "font-medium text-[#383A3F]",
-				)}
-			>
-				{showReplay ? (
-					<div className="flex items-center justify-between">
-						<span>{displayText}</span>
-						<button
-							type="button"
-							onClick={onReplay}
-							disabled={replayDisabled}
-							aria-label={showMyReplay ? "내 발음 다시 듣기" : "다시 듣기"}
-							className={clsx(
-								"flex shrink-0 items-center justify-center",
-								replayDisabled
-									? "cursor-default"
-									: "cursor-pointer transition-opacity hover:opacity-60",
-							)}
-						>
-							<SpeakerIcon
-								color={
-									replayDisabled
-										? "#D9DDE3"
-										: showMyReplay
-											? "#4396F4"
-											: "#B0B0B0"
-								}
-								size={14}
-							/>
-						</button>
-					</div>
-				) : (
-					displayText
-				)}
-			</div>
+		// biome-ignore lint/a11y/useKeyWithClickEvents: 오른쪽 소리 버튼이 초점을 받는다
+		<div
+			className={`turn ${isCurrent ? "current" : isFuture ? "future" : ""} ${
+				isPractice ? "me" : "ai"
+			}`}
+			data-action="roleJump"
+		>
+			<span className="who">{label}</span>
+			<span className="line">{displayText}</span>
+			{/* 아직 안 지나온 줄은 소리를 미리 들려주지 않는다 */}
+			<span className="listen">
+				{showSpeakerIcon ? (
+					<IconVolume />
+				) : showReplay ? (
+					<button
+						type="button"
+						aria-label={label}
+						disabled={replayDisabled}
+						onClick={onReplay}
+					>
+						<IconVolume />
+					</button>
+				) : null}
+			</span>
 		</div>
 	);
 }
@@ -787,41 +681,20 @@ function UserRecordCard({
 	const charDiff = diffChars(turn.ko, record.sttText);
 
 	return (
-		<div className="mb-[4px] ml-[36px] rounded-[8px] border border-[#E5E8EC] bg-white px-[12px] py-[10px]">
-			{/* 영어 뜻 + 발음 */}
-			<div className="flex items-center justify-between">
-				<span className="text-[#878787] text-[13px]">
-					{getMeaning(turn, lang)}
-				</span>
-				<span className="text-[#B0B0B0] text-[13px]">[{turn.ko}]</span>
+		<div className="record-card">
+			<div className="meta">
+				{getMeaning(turn, lang)} · [{turn.ko}]
 			</div>
-
-			{/* 나의 발음 */}
-			<div className="mt-[8px]">
-				<span className="text-[#878787] text-[12px]">나의 발음</span>
-			</div>
-
-			{/* STT 결과 */}
-			<div className="mt-[4px] flex items-center justify-between">
-				<p className="text-[16px]">
-					{charDiff.map((c, i) => (
-						<span
-							key={`${i}-${c.char}`}
-							className={c.correct ? "text-[#383A3F]" : "text-[#FF4444]"}
-						>
-							{c.char}
-						</span>
-					))}
-				</p>
-
-				{/* X 버튼: 녹음 결과 삭제 */}
+			<div className="heard">
+				{/* 틀린 글자만 붉게 — 어디를 고쳐야 하는지가 글자 단위로 보인다 */}
+				{charDiff.map((c, i) => (
+					<span key={`${i}-${c.char}`} className={c.correct ? "" : "miss"}>
+						{c.char}
+					</span>
+				))}
 				{!record.isCorrect && (
-					<button
-						type="button"
-						onClick={onClear}
-						className="flex size-[24px] shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#E5E8EC]"
-					>
-						<X className="size-[12px] text-[#878787]" />
+					<button type="button" className="clear" onClick={onClear}>
+						<IconClose />
 					</button>
 				)}
 			</div>

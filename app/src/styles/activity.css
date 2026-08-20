@@ -225,6 +225,12 @@
 .activity-frame /* 롤플레잉 */
   .role-intro { flex:0 0 auto; margin:12px 16px 10px; padding:14px 16px; border:1px solid var(--color-line-control); border-radius:14px; background:var(--color-background-surface); }
 .activity-frame .role-title { color:var(--color-text-heading); font-size:17px; line-height:24px; font-weight:600; }
+/* 목업에 없는 것 — 내 발음에서 틀린 글자를 짚어 준다.
+   record-card 의 heard 줄 안에서만 쓴다 */
+.activity-frame .record-card .heard .miss { color:var(--color-fill-wrong); }
+.activity-frame .record-card .heard { display:flex; align-items:center; gap:2px; flex-wrap:wrap; }
+.activity-frame .record-card .heard .clear { margin-left:auto; width:24px; height:24px; flex:none; border:0; border-radius:50%; background:var(--color-line-normal); color:var(--color-text-sub); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .record-card .heard .clear svg { width:14px; height:14px; }
 .activity-frame .turns { flex:1 1 auto; min-height:0; overflow-y:auto; margin:0 16px; padding:0; border:1px solid var(--color-line-control); border-radius:14px; background:var(--color-background-surface); }
 .activity-frame .script-toolbar { min-height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 10px 8px 12px; border-bottom:1px solid var(--color-line-control); }
 .activity-frame .script-toolbar > span { color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; }
