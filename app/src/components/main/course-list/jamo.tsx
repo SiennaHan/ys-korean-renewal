@@ -97,9 +97,24 @@ export default function Jamo() {
 		[setActiveChapterSeq],
 	);
 
+	/** 구 scene_type → /learn/jamo/* 경로. 이름은 무엇을 하는 활동인지로 바꿨다 */
+	const JAMO_ROUTE: Record<string, string> = {
+		"listen-repeat": "/learn/jamo/pronounce",
+		"listen-repeat2": "/learn/jamo/word-repeat",
+		write: "/learn/jamo/combine",
+		write3: "/learn/jamo/combine3",
+		"read-write": "/learn/jamo/word-write",
+		listen: "/learn/jamo/choose",
+	};
+
 	const handleModuleClick = useCallback(
 		(id: string) => {
-			navigate({ to: `/book/chapter/unit/${id}` });
+			const [sceneType, code] = id.split("/");
+			const to = JAMO_ROUTE[sceneType];
+			// 아직 안 옮긴 활동이 있으면 구 경로로 보낸다 — 리다이렉트가 받아 준다
+			navigate(
+				to ? { to, search: { code } } : { to: `/book/chapter/unit/${id}` },
+			);
 		},
 		[navigate],
 	);
