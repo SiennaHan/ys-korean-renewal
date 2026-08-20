@@ -63,4 +63,8 @@ export {
 	WordFocus,
 	WordPicture,
 } from "./stimulus";
-export { type PreviewWord, WordPreviewList } from "./word-preview";
+export {
+	PreviewRow,
+	type PreviewWord,
+	WordPreviewList,
+} from "./word-preview";

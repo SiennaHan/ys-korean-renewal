@@ -1,9 +1,56 @@
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { IconVolume } from "./icons";
 
 export interface PreviewWord {
 	word: string;
 	meaning: string;
+}
+
+/**
+ * 낱말 한 줄 — 한국어 · 뜻 · 소리.
+ *
+ * 낱말 학습 화면은 이 줄을 눌러 펼치고 그 아래에 그림과 녹음을 붙인다.
+ * 그래서 목록과 줄을 따로 내보낸다.
+ */
+export function PreviewRow({
+	word,
+	meaning,
+	on,
+	loading,
+	onSelect,
+	onPlay,
+}: {
+	word: string;
+	meaning: string;
+	/** 펼쳐진 줄 */
+	on?: boolean;
+	/** 소리를 받아 오는 중 */
+	loading?: boolean;
+	onSelect?: () => void;
+	onPlay?: () => void;
+}) {
+	const { t } = useTranslation();
+	return (
+		// biome-ignore lint/a11y/useKeyWithClickEvents: 아래 소리 버튼이 초점을 받는다
+		<div className={`preview-row ${on ? "on" : ""}`} onClick={onSelect}>
+			<div className="preview-word">{word}</div>
+			<div className="preview-meaning">{meaning}</div>
+			<button
+				type="button"
+				className="preview-audio"
+				data-action="audio"
+				aria-label={t("activity.audioOf", { word })}
+				disabled={loading}
+				onClick={(e) => {
+					e.stopPropagation();
+					onPlay?.();
+				}}
+			>
+				<IconVolume />
+			</button>
+		</div>
+	);
 }
 
 /**
@@ -14,28 +61,24 @@ export interface PreviewWord {
 export function WordPreviewList({
 	words,
 	onPlay,
+	children,
 }: {
 	words: PreviewWord[];
 	onPlay?: (word: string) => void;
+	/** 줄을 직접 조립할 때 */
+	children?: ReactNode;
 }) {
-	const { t } = useTranslation();
 	return (
 		<div className="response-area word-preview-list">
-			{words.map((w) => (
-				<div className="preview-row" key={w.word}>
-					<div className="preview-word">{w.word}</div>
-					<div className="preview-meaning">{w.meaning}</div>
-					<button
-						type="button"
-						className="preview-audio"
-						data-action="audio"
-						aria-label={t("activity.audioOf", { word: w.word })}
-						onClick={() => onPlay?.(w.word)}
-					>
-						<IconVolume />
-					</button>
-				</div>
-			))}
+			{children ??
+				words.map((w) => (
+					<PreviewRow
+						key={w.word}
+						word={w.word}
+						meaning={w.meaning}
+						onPlay={() => onPlay?.(w.word)}
+					/>
+				))}
 		</div>
 	);
 }

@@ -1,8 +1,13 @@
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import {
+	Choice,
+	ChoiceList,
+	MeaningFocus,
+	ProblemCard,
+} from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { wordList } from "@/shared/data/word-list";
 import type { WordQuizItem } from "@/shared/data/word-quiz";
-import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -126,57 +131,37 @@ export default function WordQuizCard({
 	);
 
 	return (
-		<div className="flex flex-1 flex-col px-[16px] pt-[16px]">
-			{/* Title */}
-			<h1 className="font-semibold text-[24px] text-black leading-[32px]">
-				{localizedPrompt}
-			</h1>
-
-			{/* Prompt area */}
-			<div className="mt-[16px] flex items-center justify-center">
-				{quiz.type === "image-to-word" && imageSrc ? (
-					<img
-						src={imageSrc}
-						alt={quiz.prompt}
-						className="h-[160px] w-auto rounded-[12px] object-contain"
-					/>
-				) : (
-					<div className="flex h-[160px] w-full items-center justify-center rounded-[12px] bg-[#F6F7F8]">
-						<p className="text-center font-medium text-[#383A3F] text-[22px]">
-							{localizedMeaning}
-						</p>
+		<>
+			<ProblemCard instruction={localizedPrompt}>
+				{/* 그림을 주고 낱말을 고르거나, 뜻을 주고 낱말을 고른다 */}
+				{imageSrc ? (
+					<div className="word-pic">
+						<img src={imageSrc} alt={quiz.prompt} />
 					</div>
+				) : (
+					<MeaningFocus>{localizedMeaning}</MeaningFocus>
 				)}
-			</div>
+			</ProblemCard>
 
-			{/* 2x2 Selection grid */}
-			<div className="mt-[16px] grid grid-cols-2 gap-[12px]">
-				{selections.map((sel, idx) => {
-					const isAnswer = idx === quiz.answer_index;
-					const isWrong = wrongIndices.has(idx);
-					const isSolvedCorrect = solved && isAnswer;
-
-					return (
-						<button
-							key={idx}
-							type="button"
-							onClick={() => handleSelect(idx)}
-							disabled={solved || isWrong}
-							className={clsx(
-								"flex h-[64px] cursor-pointer items-center justify-center rounded-[15px] border text-center font-medium text-[18px] transition-all",
-								isSolvedCorrect
-									? "border-[#359AFF] border-[3px] bg-[#359AFF] text-white"
-									: isWrong
-										? "border-[#E5E8EC] bg-gray-100 text-[#bbb] opacity-70"
-										: "border-[#B9DAFF] bg-[#E9F2FC] text-black",
-								(solved || isWrong) && "cursor-not-allowed",
-							)}
-						>
-							{sel}
-						</button>
-					);
-				})}
-			</div>
-		</div>
+			<ChoiceList>
+				{selections.map((sel, idx) => (
+					<Choice
+						key={sel}
+						index={idx}
+						// 맞을 때까지 다시 고를 수 있어 틀린 것이 여럿 남는다
+						state={
+							solved && idx === quiz.answer_index
+								? "correct"
+								: wrongIndices.has(idx)
+									? "wrong"
+									: ""
+						}
+						onClick={() => handleSelect(idx)}
+					>
+						{sel}
+					</Choice>
+				))}
+			</ChoiceList>
+		</>
 	);
 }

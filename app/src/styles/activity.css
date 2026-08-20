@@ -109,6 +109,10 @@
 .activity-frame .preview-row:last-child { border-bottom:0; }
 .activity-frame .preview-word { color:var(--color-text-strong); font-size:17px; line-height:26px; font-weight:600; }
 .activity-frame .preview-meaning { color:var(--color-text-sub); font-size:14px; line-height:20px; }
+/* 목업에 없는 상태 — 낱말 학습은 줄을 눌러 펼치고 그 아래 녹음을 붙인다 */
+.activity-frame .preview-row.on { background:var(--color-background-selected, #E9F2FC); }
+.activity-frame .preview-extra { padding:12px 16px; border-top:1px solid var(--color-line-control); background:var(--color-background-surface); display:flex; flex-direction:column; align-items:center; gap:8px; }
+.activity-frame .preview-extra img { max-height:120px; width:auto; border-radius:8px; }
 .activity-frame .preview-audio { grid-column:2; grid-row:1 / 3; width:36px; height:36px; border:1px solid var(--color-line-control); border-radius:50%; background:var(--color-background-surface); color:var(--color-fill-primary); display:grid; place-items:center; cursor:pointer; }
 .activity-frame .preview-audio svg { width:18px; height:18px; }
 .activity-frame .combo-result { min-height:54px; display:flex; align-items:center; justify-content:space-between; }

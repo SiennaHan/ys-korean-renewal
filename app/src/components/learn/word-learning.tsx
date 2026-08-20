@@ -1,6 +1,19 @@
 import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
 import { SpeakerIcon } from "@/assets/icons";
 import { useSharedAudio } from "@/components/audio/audio-provider";
+import {
+	ActivityAppBar,
+	ActivityBody,
+	ActivityFooter,
+	ActivityFrame,
+	ActivityProgress,
+	Dock,
+	FeedbackMessage,
+	PreviewRow,
+	PrimaryButton,
+	ProblemCard,
+	WordPreviewList,
+} from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { type WordItem, wordList } from "@/shared/data/word-list";
 import { wordQuizList } from "@/shared/data/word-quiz";
@@ -67,7 +80,7 @@ export default function WordLearning({
 	chapterLabel,
 }: WordLearningProps) {
 	const router = useRouter();
-	const { i18n } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [selectedWordId, setSelectedWordId] = useState<number | null>(null);
 	const [recordings, setRecordings] = useState<Record<number, RecordingResult>>(
 		{},
@@ -246,31 +259,25 @@ export default function WordLearning({
 		const quiz = quizzes[quizIndex];
 
 		return (
-			<div className="relative flex h-full flex-col bg-white">
-				{/* Header */}
-				<div className="sticky top-0 z-10 border-[#F6F7F8] border-b bg-white">
-					<div className="flex h-[48px] items-center justify-between px-[16px]">
-						<button
-							type="button"
-							onClick={() => router.history.back()}
-							className="flex cursor-pointer items-center justify-center"
-						>
-							<X className="size-[20px] text-[#383A3F]" />
-						</button>
-						<p className="text-[#878787] text-[14px]">{chapterLabel}</p>
-						<button
-							type="button"
-							onClick={handleSkip}
-							className="flex cursor-pointer items-center gap-[2px]"
-						>
-							<span className="text-[#8d8d8d] text-[12px]">skip</span>
-							<ChevronRight className="size-[12px] text-[#8d8d8d]" />
-						</button>
-					</div>
-				</div>
+			<ActivityFrame>
+				<ActivityAppBar
+					lesson={chapterLabel}
+					onExit={() => router.history.back()}
+					onSkip={handleSkip}
+				/>
+				<ActivityProgress
+					current={currentPage}
+					total={totalPages}
+					onJump={setCurrentPage}
+				/>
 
-				{/* Quiz content */}
-				<div className="flex-1 overflow-y-auto pb-[120px]">
+				<ActivityBody
+					feedback={
+						quiz && savedAnswers[quiz.id] !== undefined ? (
+							<FeedbackMessage kind="correct" />
+						) : null
+					}
+				>
 					{quiz && (
 						<WordQuizCard
 							key={quiz.id}
@@ -302,114 +309,48 @@ export default function WordLearning({
 							}}
 						/>
 					)}
-				</div>
+				</ActivityBody>
 
-				{/* Footer — roleplay style */}
-				<div className="absolute right-0 bottom-0 left-0 z-10">
-					<div className="flex items-center bg-[linear-gradient(180deg,rgba(255,255,255,0)0%,#FFF_50%)] px-[16px] pt-[40px]">
-						<button
-							type="button"
-							onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-							className={clsx(
-								"flex size-[36px] shrink-0 items-center justify-center",
-								hasPrev
-									? "cursor-pointer text-[#0180FF]"
-									: "cursor-default text-[#E5E8EC]",
-							)}
-							disabled={!hasPrev}
-						>
-							<ChevronLeft className="size-[24px]" />
-						</button>
-						<div className="flex-1" />
-						{!hasNext ? (
-							<button
-								type="button"
-								onClick={() => router.history.back()}
-								disabled={
-									quizzes.length === 0 ||
-									!quizzes.every((q) => savedAnswers[q.id] !== undefined)
-								}
-								className={clsx(
-									"flex h-[36px] shrink-0 items-center justify-center gap-[4px] rounded-full px-[14px] font-semibold text-[14px]",
-									quizzes.length > 0 &&
+				<ActivityFooter>
+					<Dock>
+						<PrimaryButton
+							label={hasNext ? t("player.next") : t("player.showResult")}
+							on={
+								hasNext
+									? quiz !== undefined && savedAnswers[quiz.id] !== undefined
+									: quizzes.length > 0 &&
 										quizzes.every((q) => savedAnswers[q.id] !== undefined)
-										? "cursor-pointer bg-[#0180FF] text-white"
-										: "bg-[#E5E8EC] text-[#ADB3BE]",
-								)}
-							>
-								<Check className="size-[16px]" />
-								완료
-							</button>
-						) : (
-							<button
-								type="button"
-								onClick={() =>
-									setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-								}
-								className="flex size-[36px] shrink-0 cursor-pointer items-center justify-center text-[#0180FF]"
-							>
-								<ChevronRight className="size-[24px]" />
-							</button>
-						)}
-					</div>
-					{totalPages > 1 && (
-						<div className="flex items-center justify-center gap-[4px] bg-white pt-[4px] pb-[8px]">
-							{Array.from({ length: totalPages }, (_, i) => (
-								<div
-									key={i}
-									className={clsx(
-										"rounded-full transition-all",
-										i === currentPage
-											? "h-[5px] w-[16px] bg-[#0180FF]"
-											: "size-[5px] bg-[#E5E8EC]",
-									)}
-								/>
-							))}
-						</div>
-					)}
-				</div>
-			</div>
+							}
+							action="next"
+							onClick={
+								hasNext
+									? () => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
+									: () => router.history.back()
+							}
+						/>
+					</Dock>
+				</ActivityFooter>
+			</ActivityFrame>
 		);
 	}
 
 	// Word list page (page 0)
 	return (
-		<div className="relative flex h-full flex-col bg-white">
-			{/* Header */}
-			<div className="sticky top-0 z-10 border-[#F6F7F8] border-b bg-white">
-				<div className="flex h-[48px] items-center justify-between px-[16px]">
-					<button
-						type="button"
-						onClick={() => router.history.back()}
-						className="flex cursor-pointer items-center justify-center"
-					>
-						<X className="size-[20px] text-[#383A3F]" />
-					</button>
-					<p className="text-[#878787] text-[14px]">{chapterLabel}</p>
-					<button
-						type="button"
-						onClick={handleSkip}
-						className="flex cursor-pointer items-center gap-[2px]"
-					>
-						<span className="text-[#8d8d8d] text-[12px]">skip</span>
-						<ChevronRight className="size-[12px] text-[#8d8d8d]" />
-					</button>
-				</div>
-			</div>
+		<ActivityFrame>
+			<ActivityAppBar
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+				onSkip={handleSkip}
+			/>
+			<ActivityProgress
+				current={currentPage}
+				total={totalPages}
+				onJump={setCurrentPage}
+			/>
 
-			{/* Title */}
-			<div className="px-[16px] pt-[16px] pb-[8px]">
-				<h1 className="font-semibold text-[24px] text-black leading-[32px]">
-					전체 단어를 읽어 보세요.
-				</h1>
-				<p className="mt-[2px] text-[#555] text-[18px] leading-[23px]">
-					Preview the words from this lesson.
-				</p>
-			</div>
-
-			{/* Word list */}
-			<div className="scrollbar-hide flex-1 overflow-y-auto px-[16px] pb-[120px]">
-				<div className="flex flex-col gap-[12px] pt-[8px]">
+			<ActivityBody>
+				<ProblemCard instruction={t("activity.instrWordPreview")} />
+				<WordPreviewList words={[]}>
 					{words.map((w) => {
 						const isSelected = selectedWordId === w.id;
 						const recording = recordings[w.id];
@@ -417,190 +358,116 @@ export default function WordLearning({
 						const pronunciation = getPronunciationDisplay(w);
 
 						return (
-							<div
-								key={w.id}
-								className="w-full overflow-hidden rounded-[8px] text-left shadow-[0px_0px_5px_-0.4px_rgba(94,129,169,0.3)]"
-							>
-								{/* Blue top section */}
-								<div
-									className={clsx(
-										"flex h-[41px] cursor-pointer items-center gap-[8px] px-[16px]",
-										isSelected ? "bg-[#4396F4]" : "bg-[#e9f2fc]",
-									)}
-									onClick={() => handleWordClick(w.id)}
-									onKeyDown={() => {}}
-								>
-									{/* Speaker button — TTS 재생 */}
-									<button
-										type="button"
-										onClick={(e) => handleSpeakerClick(e, w)}
-										disabled={ttsLoadingWordId === w.id}
-										className="flex shrink-0 cursor-pointer items-center justify-center disabled:cursor-not-allowed"
-									>
-										{ttsLoadingWordId === w.id ? (
-											<div className="size-[14px] animate-spin rounded-full border-2 border-transparent border-b-[#4396F4]" />
-										) : (
-											<SpeakerIcon
-												color={isSelected ? "#fff" : "#4396F4"}
-												size={14}
-											/>
-										)}
-									</button>
-									<span
-										className={clsx(
-											"font-medium text-[20px]",
-											isSelected ? "text-white" : "text-black",
-										)}
-									>
-										{w.word}
-									</span>
-								</div>
-								{/* Meaning section */}
-								<div
-									className="flex h-[27px] cursor-pointer items-center border-[#f0f0f0] border-t px-[16px]"
-									onClick={() => handleWordClick(w.id)}
-									onKeyDown={() => {}}
-								>
-									<span className="text-[#878787] text-[14px]">
-										{getMeaning(w, i18n.language)}
-									</span>
-								</div>
-
-								{/* Word image — only when selected and image exists */}
-								{isSelected && w.image && (
-									<div className="flex items-center justify-center border-[#f0f0f0] border-t bg-white px-[12px] py-[10px]">
-										<img
-											src={`/textbook/${w.book_id}/${w.image}`}
-											alt={w.word}
-											className="h-[120px] w-auto rounded-[8px] object-contain"
-										/>
-									</div>
-								)}
-
-								{/* Expanded recording area — only when selected */}
+							<div key={w.id}>
+								<PreviewRow
+									word={w.word}
+									meaning={getMeaning(w, i18n.language)}
+									on={isSelected}
+									loading={ttsLoadingWordId === w.id}
+									onSelect={() => handleWordClick(w.id)}
+									onPlay={() =>
+										handleSpeakerClick(
+											{ stopPropagation: () => {} } as React.MouseEvent,
+											w,
+										)
+									}
+								/>
+								{/* 펼친 줄에만 붙는 그림과 녹음 — 목업 미리보기에는 없는 자리다 */}
 								{isSelected && (
-									<div className="flex items-center gap-[8px] border-[#f0f0f0] border-t bg-white px-[12px] py-[10px]">
-										{/* X button — only after recording */}
-										<div className="w-[28px]">
-											{recording && (
-												<button
-													type="button"
-													onClick={() => handleClearRecording(w.id)}
-													className="flex size-[28px] cursor-pointer items-center justify-center rounded-full bg-[#E5E8EC]"
-												>
-													<X className="size-[14px] text-[#878787]" />
-												</button>
-											)}
-										</div>
+									<div className="preview-extra">
+										{/* Word image — only when selected and image exists */}
+										{isSelected && w.image && (
+											<div className="flex items-center justify-center border-[#f0f0f0] border-t bg-white px-[12px] py-[10px]">
+												<img
+													src={`/textbook/${w.book_id}/${w.image}`}
+													alt={w.word}
+													className="h-[120px] w-auto rounded-[8px] object-contain"
+												/>
+											</div>
+										)}
 
-										{/* Center: pronunciation text + recorded word */}
-										<div className="flex flex-1 flex-col items-center gap-[2px]">
-											{recording ? (
-												<span className="text-[#4396F4] text-[14px]">
-													{recording.resultWord}
-												</span>
-											) : (
-												<>
-													<span className="text-[#B0B0B0] text-[14px]">
-														{pronunciation.text}
-													</span>
-													{pronunciation.bracket && (
-														<span className="text-[#C8C8C8] text-[12px]">
-															{pronunciation.bracket}
-														</span>
+										{/* Expanded recording area — only when selected */}
+										{isSelected && (
+											<div className="flex items-center gap-[8px] border-[#f0f0f0] border-t bg-white px-[12px] py-[10px]">
+												{/* X button — only after recording */}
+												<div className="w-[28px]">
+													{recording && (
+														<button
+															type="button"
+															onClick={() => handleClearRecording(w.id)}
+															className="flex size-[28px] cursor-pointer items-center justify-center rounded-full bg-[#E5E8EC]"
+														>
+															<X className="size-[14px] text-[#878787]" />
+														</button>
 													)}
-												</>
-											)}
-										</div>
+												</div>
 
-										{/* Right: play/stop button + timer — only after recording */}
-										<div className="flex w-[60px] items-center justify-end gap-[4px]">
-											{recording && (
-												<>
-													<span className="text-[#878787] text-[12px]">
-														{formatTime(isPlaying ? playTime : 0)}
-													</span>
-													<button
-														type="button"
-														onClick={() =>
-															handleTogglePlay(w.id, recording.audioUrl)
-														}
-														className="flex size-[28px] cursor-pointer items-center justify-center rounded-full bg-[#0180FF]"
-													>
-														{isPlaying ? (
-															<Square className="size-[12px] text-white" />
-														) : (
-															<Play className="ml-[2px] size-[12px] text-white" />
-														)}
-													</button>
-												</>
-											)}
-										</div>
+												{/* Center: pronunciation text + recorded word */}
+												<div className="flex flex-1 flex-col items-center gap-[2px]">
+													{recording ? (
+														<span className="text-[#4396F4] text-[14px]">
+															{recording.resultWord}
+														</span>
+													) : (
+														<>
+															<span className="text-[#B0B0B0] text-[14px]">
+																{pronunciation.text}
+															</span>
+															{pronunciation.bracket && (
+																<span className="text-[#C8C8C8] text-[12px]">
+																	{pronunciation.bracket}
+																</span>
+															)}
+														</>
+													)}
+												</div>
+
+												{/* Right: play/stop button + timer — only after recording */}
+												<div className="flex w-[60px] items-center justify-end gap-[4px]">
+													{recording && (
+														<>
+															<span className="text-[#878787] text-[12px]">
+																{formatTime(isPlaying ? playTime : 0)}
+															</span>
+															<button
+																type="button"
+																onClick={() =>
+																	handleTogglePlay(w.id, recording.audioUrl)
+																}
+																className="flex size-[28px] cursor-pointer items-center justify-center rounded-full bg-[#0180FF]"
+															>
+																{isPlaying ? (
+																	<Square className="size-[12px] text-white" />
+																) : (
+																	<Play className="ml-[2px] size-[12px] text-white" />
+																)}
+															</button>
+														</>
+													)}
+												</div>
+											</div>
+										)}
 									</div>
 								)}
 							</div>
 						);
 					})}
-				</div>
-			</div>
+				</WordPreviewList>
+			</ActivityBody>
 
-			{/* Bottom bar — roleplay style: arrows flanking recorder */}
-			<div className="absolute right-0 bottom-0 left-0 z-10">
-				<div className="flex items-center bg-[linear-gradient(180deg,rgba(255,255,255,0)0%,#FFF_50%)] px-[16px] pt-[40px]">
-					<button
-						type="button"
-						onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-						className={clsx(
-							"flex size-[36px] shrink-0 items-center justify-center",
-							hasPrev
-								? "cursor-pointer text-[#0180FF]"
-								: "cursor-default text-[#E5E8EC]",
-						)}
-						disabled={!hasPrev}
-					>
-						<ChevronLeft className="size-[24px]" />
-					</button>
-					<div className="flex-1">
-						<AudioRecorder
-							setResult={handleRecordResult}
-							disabled={selectedWordId == null}
-						/>
-					</div>
-					<button
-						type="button"
-						onClick={() =>
-							setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-						}
-						className={clsx(
-							"flex size-[36px] shrink-0 items-center justify-center",
-							hasNext
-								? "cursor-pointer text-[#0180FF]"
-								: "cursor-default text-[#E5E8EC]",
-						)}
-						disabled={!hasNext}
-					>
-						<ChevronRight className="size-[24px]" />
-					</button>
-				</div>
-				{totalPages > 1 && (
-					<div className="flex items-center justify-center gap-[4px] bg-white pt-[4px] pb-[8px]">
-						{Array.from({ length: totalPages }, (_, i) => (
-							<div
-								key={i}
-								className={clsx(
-									"rounded-full transition-all",
-									i === currentPage
-										? "h-[5px] w-[16px] bg-[#0180FF]"
-										: "size-[5px] bg-[#E5E8EC]",
-								)}
-							/>
-						))}
-					</div>
-				)}
-			</div>
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={t("activity.toQuiz")}
+						on
+						action="toQuiz"
+						onClick={() => setCurrentPage(1)}
+					/>
+				</Dock>
+			</ActivityFooter>
 
-			{/* biome-ignore lint/a11y/useMediaCaption: playback-only hidden audio */}
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
 			<audio ref={playAudioRef} className="hidden" />
-		</div>
+		</ActivityFrame>
 	);
 }
