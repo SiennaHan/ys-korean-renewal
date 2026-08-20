@@ -1,9 +1,7 @@
-import {
-	getLearningRecords,
-	saveLearningRecord,
-} from "@/api/learning-record";
+import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import { useToast } from "@/components/toast/toast-context";
+import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import readQuestions from "@/shared/data/n5_read_answer_questions.json";
 import readTexts from "@/shared/data/n5_read_answer_text.json";
 import { useRouter } from "@tanstack/react-router";
@@ -31,6 +29,9 @@ interface ReadQuestion {
 	selection4: string;
 	answer_index: number;
 }
+
+/** 지시문은 원장이 문항마다 들고 온다 */
+type ReadItem = ReadQuestion & InstructedItem;
 
 interface ReadAnswerProps {
 	bookId?: number;
@@ -60,7 +61,7 @@ export default function ReadAnswer({
 
 	/** 해당 지문의 질문들 */
 	const questions = useMemo(() => {
-		return (readQuestions as ReadQuestion[])
+		return (readQuestions as ReadItem[])
 			.filter((q) => textIds.includes(q.text_id))
 			.sort((a, b) => a.seq - b.seq);
 	}, [textIds]);
@@ -70,7 +71,9 @@ export default function ReadAnswer({
 	/** questionId → 정답 인덱스 (정답 맞힌 경우만) */
 	const [savedAnswers, setSavedAnswers] = useState<Record<number, number>>({});
 	/** questionId → 틀린 인덱스 목록 */
-	const [wrongAttempts, setWrongAttempts] = useState<Record<number, Set<number>>>({});
+	const [wrongAttempts, setWrongAttempts] = useState<
+		Record<number, Set<number>>
+	>({});
 
 	/** Fetch existing records on mount — 정답만 복원 + 첫 미풀이 문제로 이동 */
 	useEffect(() => {
@@ -90,7 +93,8 @@ export default function ReadAnswer({
 		});
 	}, [bookId, chapterSeq, questions]);
 
-	const question = questions[currentIndex] as ReadQuestion | undefined;
+	const question = questions[currentIndex];
+	const instruction = useInstruction(question, "activity.instrReading");
 
 	/** Restore saved answer when navigating to a question — 정답만 복원 */
 	useEffect(() => {
@@ -102,7 +106,9 @@ export default function ReadAnswer({
 	}, [currentIndex, question?.id, savedAnswers]);
 
 	/** 현재 문제의 틀린 시도 목록 */
-	const currentWrongSet = question ? wrongAttempts[question.id] ?? new Set<number>() : new Set<number>();
+	const currentWrongSet = question
+		? (wrongAttempts[question.id] ?? new Set<number>())
+		: new Set<number>();
 	/** 현재 문제 정답 맞힘 여부 */
 	const isSolved = question ? savedAnswers[question.id] !== undefined : false;
 	const totalSteps = questions.length;
@@ -203,12 +209,15 @@ export default function ReadAnswer({
 
 			{/* Content */}
 			<div className="scrollbar-hide flex-1 overflow-y-auto px-[20px] pt-[8px] pb-[100px]">
+				{/* O/X 문항은 지시문이 다르다. 원장이 문항마다 들고 온다 */}
 				<h1 className="font-bold text-[#383A3F] text-[20px] leading-tight">
-					다음을 읽고 맞는 답을 고르세요.
+					{instruction.ko}
 				</h1>
-				<p className="mt-[4px] text-[#979DA8] text-[14px]">
-					Read and choose the correct answer.
-				</p>
+				{instruction.translated && (
+					<p className="mt-[4px] text-[#979DA8] text-[14px]">
+						{instruction.translated}
+					</p>
+				)}
 
 				{/* Passage */}
 				<div className="mt-[20px] rounded-[12px] bg-[#F9FAFC] p-[16px]">
@@ -279,7 +288,18 @@ export default function ReadAnswer({
 										(isSolved || isWrong) && "cursor-not-allowed",
 									)}
 								>
-									<span className={clsx("text-[15px]", isSolvedCorrect ? "font-semibold text-[#359AFF]" : isWrong ? "text-[#bbb]" : "text-[#383A3F]")}>{opt}</span>
+									<span
+										className={clsx(
+											"text-[15px]",
+											isSolvedCorrect
+												? "font-semibold text-[#359AFF]"
+												: isWrong
+													? "text-[#bbb]"
+													: "text-[#383A3F]",
+										)}
+									>
+										{opt}
+									</span>
 								</button>
 							);
 						})}

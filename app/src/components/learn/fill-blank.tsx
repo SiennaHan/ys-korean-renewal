@@ -1,9 +1,7 @@
-import {
-	getLearningRecords,
-	saveLearningRecord,
-} from "@/api/learning-record";
+import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import { useToast } from "@/components/toast/toast-context";
+import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import blankQuestions from "@/shared/data/n4_blank_question.json";
 import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
@@ -20,6 +18,9 @@ interface BlankQuestion {
 	completion: string;
 	grammar_focus: string;
 }
+
+/** 지시문은 원장이 문항마다 들고 온다 */
+type BlankItem = BlankQuestion & InstructedItem;
 
 interface FillBlankProps {
 	bookId?: number;
@@ -39,7 +40,7 @@ export default function FillBlank({
 	const { addToast } = useToast();
 
 	const questions = useMemo(() => {
-		return (blankQuestions as BlankQuestion[]).filter(
+		return (blankQuestions as BlankItem[]).filter(
 			(q) =>
 				(bookId == null || q.book_id === bookId) &&
 				(chapterSeq == null || q.chapter === chapterSeq),
@@ -68,16 +69,15 @@ export default function FillBlank({
 				}
 			}
 			setSavedAnswers(map);
-			const firstUnsolved = questions.findIndex(
-				(q) => !map[q.id]?.correct,
-			);
+			const firstUnsolved = questions.findIndex((q) => !map[q.id]?.correct);
 			if (firstUnsolved > 0) {
 				setCurrentIndex(firstUnsolved);
 			}
 		});
 	}, [bookId, chapterSeq, questions]);
 
-	const question = questions[currentIndex] as BlankQuestion | undefined;
+	const question = questions[currentIndex];
+	const instruction = useInstruction(question, "activity.instrGrammar");
 
 	/** Restore saved answer when navigating to a question */
 	useEffect(() => {
@@ -168,7 +168,13 @@ export default function FillBlank({
 			completionAfter = comp.slice(bMatch.index + bMatch[0].length);
 		}
 
-		return { before, after, completionBefore, completionFilled, completionAfter };
+		return {
+			before,
+			after,
+			completionBefore,
+			completionFilled,
+			completionAfter,
+		};
 	}, [question]);
 
 	/** 이전/다음 문제 */
@@ -217,11 +223,13 @@ export default function FillBlank({
 			<div className="scrollbar-hide flex-1 overflow-y-auto px-[20px] pt-[8px] pb-[180px]">
 				{/* Title */}
 				<h1 className="font-bold text-[#383A3F] text-[20px] leading-tight">
-					빈칸에 알맞은 것을 고르세요.
+					{instruction.ko}
 				</h1>
-				<p className="mt-[4px] text-[#979DA8] text-[14px]">
-					Choose the correct word.
-				</p>
+				{instruction.translated && (
+					<p className="mt-[4px] text-[#979DA8] text-[14px]">
+						{instruction.translated}
+					</p>
+				)}
 
 				{/* Question with blank */}
 				<div className="mt-[20px] rounded-[12px] border border-[#DBEDFF] bg-[#F0F7FF] px-[16px] py-[14px]">
@@ -240,9 +248,7 @@ export default function FillBlank({
 								<span
 									className={clsx(
 										"font-bold",
-										isSelectionCorrect
-											? "text-[#0180FF]"
-											: "text-[#bbb]",
+										isSelectionCorrect ? "text-[#0180FF]" : "text-[#bbb]",
 									)}
 								>
 									{selectedAnswer}

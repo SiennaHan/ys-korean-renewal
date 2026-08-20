@@ -11,20 +11,20 @@ export default function LearnHeader({ chapterLabel, title }: LearnHeaderProps) {
 
 	return (
 		<div className="sticky top-0 z-10 bg-white">
-			<div className="flex items-center h-[48px] px-[4px]">
+			<div className="flex h-[48px] items-center px-[4px]">
 				<button
 					type="button"
 					onClick={() => router.history.back()}
-					className="w-[44px] h-[44px] flex items-center justify-center cursor-pointer"
+					className="flex h-[44px] w-[44px] cursor-pointer items-center justify-center"
 				>
 					<ChevronLeft className="size-[24px] text-[#383A3F]" />
 				</button>
-				<div className="flex-1 text-center pr-[44px]">
-					<p className="text-[14px] text-[#979DA8]">{chapterLabel}</p>
+				<div className="flex-1 pr-[44px] text-center">
+					<p className="text-[#979DA8] text-[14px]">{chapterLabel}</p>
 				</div>
 			</div>
 			<div className="px-[20px] pt-[8px] pb-[20px]">
-				<h1 className="text-[20px] font-bold text-[#383A3F] leading-tight">
+				<h1 className="font-bold text-[#383A3F] text-[20px] leading-tight">
 					{title}
 				</h1>
 			</div>

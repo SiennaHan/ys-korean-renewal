@@ -1,7 +1,4 @@
-import {
-	getLearningRecords,
-	saveLearningRecord,
-} from "@/api/learning-record";
+import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
 import { SpeakerIcon } from "@/assets/icons";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import AudioRecorder from "@/components/problem/audio-recorder";
@@ -10,7 +7,14 @@ import { wordQuizList } from "@/shared/data/word-quiz";
 import { getWordTTSAudio } from "@/shared/tts-cache";
 import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
-import { Check, ChevronLeft, ChevronRight, Play, Square, X } from "lucide-react";
+import {
+	Check,
+	ChevronLeft,
+	ChevronRight,
+	Play,
+	Square,
+	X,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import WordQuizCard from "./word-quiz-card";
@@ -291,9 +295,7 @@ export default function WordLearning({
 										if (autoAdvanceRef.current)
 											clearTimeout(autoAdvanceRef.current);
 										autoAdvanceRef.current = setTimeout(() => {
-											setCurrentPage((p) =>
-												Math.min(totalPages - 1, p + 1),
-											);
+											setCurrentPage((p) => Math.min(totalPages - 1, p + 1));
 										}, 3000);
 									}
 								}

@@ -1,5 +1,5 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface LearnFooterProps {
 	current: number;
@@ -26,10 +26,10 @@ export default function LearnFooter({
 					onClick={onPrev}
 					disabled={!hasPrev}
 					className={clsx(
-						"shrink-0 flex size-[36px] items-center justify-center",
+						"flex size-[36px] shrink-0 items-center justify-center",
 						hasPrev
-							? "text-[#0180FF] cursor-pointer"
-							: "text-[#E5E8EC] cursor-default",
+							? "cursor-pointer text-[#0180FF]"
+							: "cursor-default text-[#E5E8EC]",
 					)}
 				>
 					<ChevronLeft className="size-[24px]" />
@@ -42,10 +42,10 @@ export default function LearnFooter({
 					onClick={onNext}
 					disabled={!hasNext}
 					className={clsx(
-						"shrink-0 flex size-[36px] items-center justify-center",
+						"flex size-[36px] shrink-0 items-center justify-center",
 						hasNext
-							? "text-[#0180FF] cursor-pointer"
-							: "text-[#E5E8EC] cursor-default",
+							? "cursor-pointer text-[#0180FF]"
+							: "cursor-default text-[#E5E8EC]",
 					)}
 				>
 					<ChevronRight className="size-[24px]" />
