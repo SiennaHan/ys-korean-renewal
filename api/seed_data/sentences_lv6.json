@@ -1,0 +1,64 @@
+{
+  "1과": {
+    "new_particles": ["랑", "이랑"],
+    "cumulative_particles": ["랑", "이랑"],
+    "questions": [
+      {
+        "sentence": "어제 엄마랑 마트에서 과일을 샀어요",
+        "blank": "어제 엄마[?] 마트에서 과일을 샀어요",
+        "answer": "랑",
+        "choices": ["랑", "이랑", "이라든가"],
+        "sourceLesson": "6급 1과"
+      },
+      {
+        "sentence": "주말에 동생이랑 영화를 보기로 했어",
+        "blank": "주말에 동생[?] 영화를 보기로 했어",
+        "answer": "이랑",
+        "choices": ["랑", "이랑", "한테서"],
+        "sourceLesson": "6급 1과"
+      },
+      {
+        "sentence": "비 오는 날에는 파전이랑 따뜻한 국물이 생각나",
+        "blank": "비 오는 날에는 파전[?] 따뜻한 국물이 생각나",
+        "answer": "이랑",
+        "choices": ["랑", "이랑", "밖에"],
+        "sourceLesson": "6급 1과"
+      },
+      {
+        "sentence": "저는 친구랑 도서관에서 공부했어요",
+        "blank": "저는 친구[?] 도서관에서 공부했어요",
+        "answer": "랑",
+        "choices": ["라든가", "랑", "이랑"],
+        "sourceLesson": "6급 1과"
+      }
+    ]
+  },
+  "14과": {
+    "new_particles": ["이라든가", "라든가"],
+    "cumulative_particles": ["랑", "이랑", "이라든가", "라든가"],
+    "note": "이라든가/라든가 = such as, things like (예시 나열 조사)",
+    "questions": [
+      {
+        "sentence": "노래방이라든가 카페에 가요",
+        "blank": "노래방[?] 카페에 가요",
+        "answer": "이라든가",
+        "choices": ["이라든가", "라든가", "이나"],
+        "sourceLesson": "6급 14과"
+      },
+      {
+        "sentence": "영화라든가 드라마를 좋아해요",
+        "blank": "영화[?] 드라마를 좋아해요",
+        "answer": "라든가",
+        "choices": ["이라든가", "라든가", "나"],
+        "sourceLesson": "6급 14과"
+      },
+      {
+        "sentence": "책이라든가 잡지를 읽어요",
+        "blank": "책[?] 잡지를 읽어요",
+        "answer": "이라든가",
+        "choices": ["이라든가", "라든가", "이나"],
+        "sourceLesson": "6급 14과"
+      }
+    ]
+  }
+}

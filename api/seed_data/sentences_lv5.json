@@ -1,0 +1,71 @@
+{
+  "4과": {
+    "new_particles": ["에 비해서"],
+    "cumulative_particles": ["에 비해서"],
+    "note": "에 비해서 = compared to (에의 확장 용법 — 비교 기준)",
+    "questions": [
+      {
+        "sentence": "시내 은행에 비해서 할인이 많아요",
+        "blank": "시내 은행[?] 할인이 많아요",
+        "answer": "에 비해서",
+        "choices": ["에 비해서", "보다", "만큼"],
+        "sourceLesson": "5급 4과"
+      },
+      {
+        "sentence": "작년에 비해서 많이 늘었어요",
+        "blank": "작년[?] 많이 늘었어요",
+        "answer": "에 비해서",
+        "choices": ["에 비해서", "보다", "만큼"],
+        "sourceLesson": "5급 4과"
+      },
+      {
+        "sentence": "다른 나라에 비해서 물가가 비싸요",
+        "blank": "다른 나라[?] 물가가 비싸요",
+        "answer": "에 비해서",
+        "choices": ["에 비해서", "보다", "에서"],
+        "sourceLesson": "5급 4과"
+      }
+    ]
+  },
+  "13과": {
+    "new_particles": ["께"],
+    "cumulative_particles": ["에 비해서", "께"],
+    "questions": [
+      {
+        "sentence": "할머니께 안부 전화를 드렸어요",
+        "blank": "할머니[?] 안부 전화를 드렸어요",
+        "answer": "께",
+        "choices": ["에", "에다가", "께"],
+        "sourceLesson": "5급 13과"
+      },
+      {
+        "sentence": "선생님께 모르는 문제를 여쭤봤다",
+        "blank": "선생님[?] 모르는 문제를 여쭤봤다",
+        "answer": "께",
+        "choices": ["께", "을", "에 비해서"],
+        "sourceLesson": "5급 13과"
+      },
+      {
+        "sentence": "사장님께 이 서류를 전달해 주세요",
+        "blank": "사장님[?] 이 서류를 전달해 주세요",
+        "answer": "께",
+        "choices": ["과", "께", "만큼"],
+        "sourceLesson": "5급 13과"
+      },
+      {
+        "sentence": "어른께 물건을 드릴 때는 두 손으로 드려야 한다",
+        "blank": "어른[?] 물건을 드릴 때는 두 손으로 드려야 한다",
+        "answer": "께",
+        "choices": ["한테서", "으로", "께"],
+        "sourceLesson": "5급 13과"
+      },
+      {
+        "sentence": "어버이날에 부모님께 편지를 드렸다",
+        "blank": "어버이날에 부모님[?] 편지를 드렸다",
+        "answer": "께",
+        "choices": ["께", "은", "에 비해서"],
+        "sourceLesson": "5급 13과"
+      }
+    ]
+  }
+}

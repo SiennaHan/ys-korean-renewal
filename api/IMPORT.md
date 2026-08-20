@@ -1,0 +1,32 @@
+# 이 디렉터리에 대하여
+
+`koreanapi-master` 를 그대로 들여왔다 (2026-08-20). 손댄 것은 `.gitignore` 하나뿐이고
+코드는 상류 그대로다 — 여기서부터가 리뉴얼의 출발점이다.
+
+## 왜 들여왔나
+
+리뉴얼 Phase 1 이 API 6종과 마이그레이션 2종을 요구하는데, 서버가 저장소 밖에 있는
+동안에는 그 작업을 시작할 수 없었다. 앱의 `ActivityShell` 이 여기에 걸려 있다.
+
+## 자격증명
+
+전부 환경변수로 읽는다. 하드코딩된 키가 없고 `.env` 도 들어오지 않았다.
+`.gitignore` 가 `.env*` · `key` · `ssh` 를 계속 막는다.
+
+    OPENAI_API_KEY · GEMINI_API_KEY · TUTORUS_CLIENT_ID / _SECRET
+    JWT_SECRET · QR_TRACKING_SECRET · SERVER_ADDRESS / _PORT
+
+## 교재 파생 자산
+
+`seed_data/` 와 `tools/data/` 는 연세 교재에서 뽑은 문장·문항이다.
+저장소 루트가 이미 `illust/` · `book/` · `*.xlsx` · `*.pdf` 를 같은 이유로 막고 있고,
+`app/src/shared/data/vocashot-bank.ts` 도 같은 성격이다.
+
+**이 저장소는 공개로 돌릴 수 없다.** 부록 PDF 8권이 이력에 남아 있어 이력을
+다시 쓰지 않는 한 되돌릴 수 없고, 이번 반입이 그 사실을 하나 더 굳혔다.
+
+## 앱과 겹치는 것
+
+`seed_data/` 의 게임 시드가 `app/src/components/main/game/data/` 와 이름이 같다.
+지금은 양쪽이 각자 사본을 들고 있다 — 어느 쪽이 정본인지는 게임 콘텐츠를
+서버에서 내려받게 만들 때 정한다.

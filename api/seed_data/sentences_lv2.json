@@ -1,0 +1,152 @@
+{
+  "2과": {
+    "new_particles": ["로", "으로"],
+    "cumulative_particles": ["로", "으로"],
+    "questions": [
+      {
+        "sentence": "버스로 학교에 가요",
+        "blank": "버스[?] 학교에 가요",
+        "answer": "로",
+        "choices": ["로", "으로", "에서"],
+        "sourceLesson": "2과"
+      },
+      {
+        "sentence": "젓가락으로 밥을 먹어요",
+        "blank": "젓가락[?] 밥을 먹어요",
+        "answer": "으로",
+        "choices": ["로", "으로", "에서"],
+        "sourceLesson": "2과"
+      },
+      {
+        "sentence": "영어로 말해요",
+        "blank": "영어[?] 말해요",
+        "answer": "로",
+        "choices": ["로", "으로", "에"],
+        "sourceLesson": "2과"
+      },
+      {
+        "sentence": "연필로 써요",
+        "blank": "연필[?] 써요",
+        "answer": "로",
+        "choices": ["로", "으로", "을"],
+        "sourceLesson": "2과"
+      },
+      {
+        "sentence": "지하철역에서 집까지 얼마나 걸려요",
+        "blank": "지하철역[?] 집까지 얼마나 걸려요",
+        "answer": "에서",
+        "choices": ["에서", "에", "로"],
+        "sourceLesson": "2과"
+      },
+      {
+        "sentence": "학교에서 도서관까지 걸어서 10분이에요",
+        "blank": "학교에서 도서관[?] 걸어서 10분이에요",
+        "answer": "까지",
+        "choices": ["까지", "에서", "로"],
+        "sourceLesson": "2과"
+      }
+    ]
+  },
+  "3과": {
+    "new_particles": ["의"],
+    "cumulative_particles": ["로", "으로", "의"],
+    "questions": [
+      {
+        "sentence": "이것은 제 동생의 가방입니다",
+        "blank": "이것은 제 동생[?] 가방입니다",
+        "answer": "의",
+        "choices": ["의", "은", "에서"],
+        "sourceLesson": "3과"
+      },
+      {
+        "sentence": "나의 꿈은 요리사입니다.",
+        "blank": "나[?] 꿈은 요리사입니다",
+        "answer": "의",
+        "choices": ["만", "를", "의"],
+        "sourceLesson": "3과"
+      },
+      {
+        "sentence": "한국의 수도는 서울입니다",
+        "blank": "한국[?] 수도는 서울입니다",
+        "answer": "의",
+        "choices": ["으로", "의", "한테"],
+        "sourceLesson": "3과"
+      },
+      {
+        "sentence": "비빔밥은 한국의 대표 음식입니다",
+        "blank": "비빔밥은 한국[?] 대표 음식입니다",
+        "answer": "의",
+        "choices": ["의", "밖에", "이나"],
+        "sourceLesson": "3과"
+      }
+    ]
+  },
+  "4과": {
+    "new_particles": ["보다"],
+    "cumulative_particles": ["로", "으로", "보다"],
+    "questions": [
+      {
+        "sentence": "커피가 차보다 비싸요",
+        "blank": "커피가 차[?] 비싸요",
+        "answer": "보다",
+        "choices": ["보다", "에서", "만"],
+        "sourceLesson": "4과"
+      },
+      {
+        "sentence": "이 가방이 저 가방보다 작아요",
+        "blank": "이 가방이 저 가방[?] 작아요",
+        "answer": "보다",
+        "choices": ["보다", "에서", "하고"],
+        "sourceLesson": "4과"
+      },
+      {
+        "sentence": "동생이 나보다 키가 커요",
+        "blank": "동생이 나[?] 키가 커요",
+        "answer": "보다",
+        "choices": ["보다", "와", "에"],
+        "sourceLesson": "4과"
+      },
+      {
+        "sentence": "여름이 겨울보다 더워요",
+        "blank": "여름이 겨울[?] 더워요",
+        "answer": "보다",
+        "choices": ["보다", "에서", "로"],
+        "sourceLesson": "4과"
+      }
+    ]
+  },
+  "12과": {
+    "new_particles": ["만"],
+    "cumulative_particles": ["로", "으로", "보다", "만"],
+    "questions": [
+      {
+        "sentence": "저만 한국어를 알아요",
+        "blank": "저[?] 한국어를 알아요",
+        "answer": "만",
+        "choices": ["만", "도", "는"],
+        "sourceLesson": "12과"
+      },
+      {
+        "sentence": "물만 마셔요",
+        "blank": "물[?] 마셔요",
+        "answer": "만",
+        "choices": ["만", "도", "를"],
+        "sourceLesson": "12과"
+      },
+      {
+        "sentence": "오늘만 일찍 왔어요",
+        "blank": "오늘[?] 일찍 왔어요",
+        "answer": "만",
+        "choices": ["만", "도", "에서"],
+        "sourceLesson": "12과"
+      },
+      {
+        "sentence": "한 개만 사요",
+        "blank": "한 개[?] 사요",
+        "answer": "만",
+        "choices": ["만", "도", "에"],
+        "sourceLesson": "12과"
+      }
+    ]
+  }
+}

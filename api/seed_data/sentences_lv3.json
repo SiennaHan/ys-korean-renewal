@@ -1,0 +1,124 @@
+{
+  "1과": {
+    "new_particles": ["한테서"],
+    "cumulative_particles": ["한테서"],
+    "questions": [
+      {
+        "sentence": "선생님한테서 한국어를 배웠어요",
+        "blank": "선생님[?] 한국어를 배웠어요",
+        "answer": "한테서",
+        "choices": ["한테서", "에서", "에게"],
+        "sourceLesson": "3급 1과"
+      },
+      {
+        "sentence": "친구한테서 선물을 받았어요",
+        "blank": "친구[?] 선물을 받았어요",
+        "answer": "한테서",
+        "choices": ["한테서", "에서", "에게"],
+        "sourceLesson": "3급 1과"
+      },
+      {
+        "sentence": "어머니한테서 전화가 왔어요",
+        "blank": "어머니[?] 전화가 왔어요",
+        "answer": "한테서",
+        "choices": ["한테서", "에서", "에게"],
+        "sourceLesson": "3급 1과"
+      }
+    ]
+  },
+  "6과": {
+    "new_particles": ["밖에"],
+    "cumulative_particles": ["한테서", "밖에"],
+    "questions": [
+      {
+        "sentence": "돈이 천 원밖에 없어요",
+        "blank": "돈이 천 원[?] 없어요",
+        "answer": "밖에",
+        "choices": ["밖에", "만", "도"],
+        "sourceLesson": "3급 6과"
+      },
+      {
+        "sentence": "이것밖에 없어요",
+        "blank": "이것[?] 없어요",
+        "answer": "밖에",
+        "choices": ["밖에", "만", "이나"],
+        "sourceLesson": "3급 6과"
+      },
+      {
+        "sentence": "한 개밖에 안 남았어요",
+        "blank": "한 개[?] 안 남았어요",
+        "answer": "밖에",
+        "choices": ["밖에", "만", "도"],
+        "sourceLesson": "3급 6과"
+      }
+    ]
+  },
+  "12과": {
+    "new_particles": ["이나", "나"],
+    "cumulative_particles": ["한테서", "밖에", "이나", "나"],
+    "questions": [
+      {
+        "sentence": "밥이나 빵을 먹어요",
+        "blank": "밥[?] 빵을 먹어요",
+        "answer": "이나",
+        "choices": ["이나", "나", "하고"],
+        "sourceLesson": "3급 12과"
+      },
+      {
+        "sentence": "커피나 차를 마셔요",
+        "blank": "커피[?] 차를 마셔요",
+        "answer": "나",
+        "choices": ["이나", "나", "하고"],
+        "sourceLesson": "3급 12과"
+      },
+      {
+        "sentence": "영화나 드라마를 봐요",
+        "blank": "영화[?] 드라마를 봐요",
+        "answer": "나",
+        "choices": ["이나", "나", "도"],
+        "sourceLesson": "3급 12과"
+      },
+      {
+        "sentence": "책이나 잡지를 읽어요",
+        "blank": "책[?] 잡지를 읽어요",
+        "answer": "이나",
+        "choices": ["이나", "나", "도"],
+        "sourceLesson": "3급 12과"
+      }
+    ]
+  },
+  "15과": {
+    "new_particles": ["처럼"],
+    "cumulative_particles": ["한테서", "밖에", "이나", "나", "처럼"],
+    "questions": [
+      {
+        "sentence": "언니는 연예인처럼 예뻐요",
+        "blank": "언니는 연예인[?] 예뻐요",
+        "answer": "처럼",
+        "choices": ["이나", "처럼", "한테서"],
+        "sourceLesson": "3급 15과"
+      },
+      {
+        "sentence": "오늘은 어제처럼 날씨가 따뜻하네요",
+        "blank": "오늘은 어제[?] 날씨가 따뜻하네요",
+        "answer": "처럼",
+        "choices": ["밖에", "처럼", "만"],
+        "sourceLesson": "3급 15과"
+      },
+      {
+        "sentence": "친구가 영화 주인공처럼 멋있다",
+        "blank": "친구가 영화 주인공[?] 멋있다",
+        "answer": "처럼",
+        "choices": ["밖에", "로", "처럼"],
+        "sourceLesson": "3급 15과"
+      },
+      {
+        "sentence": "손이 얼음처럼 차갑다",
+        "blank": "손이 얼음[?] 차갑다",
+        "answer": "처럼",
+        "choices": ["처럼", "로", "까지"],
+        "sourceLesson": "3급 15과"
+      }
+    ]
+  }
+}

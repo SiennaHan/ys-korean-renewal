@@ -1,0 +1,21 @@
+openai
+fastapi
+sqlalchemy
+uvicorn
+mysql-connector-python
+pyjwt
+psutil
+dotenv
+numpy
+redis
+slowapi
+gunicorn
+requests
+boto3
+# pip install --upgrade google-cloud-texttospeech
+google-cloud-texttospeech
+bcrypt
+openpyxl
+python-multipart
+# Tutorus 비원어민 STT(korstt) WebSocket 클라이언트용
+websockets

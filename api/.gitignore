@@ -1,0 +1,14 @@
+# 상류(koreanapi-master)가 쥐고 있던 규칙 그대로.
+# 자격증명은 전부 환경변수로 읽는다 — .env 는 저장소에 들어오지 않는다.
+.env*
+*.log
+*.pyc
+__pycache__
+ssh
+logs
+key
+newssh
+
+# 파이썬 가상환경
+.venv/
+venv/
