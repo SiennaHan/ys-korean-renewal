@@ -16,7 +16,6 @@ interface BlankQuestion {
 	chapter: number;
 	question: string;
 	selections: string;
-	options: string;
 	answer: string;
 	completion: string;
 	grammar_focus: string;

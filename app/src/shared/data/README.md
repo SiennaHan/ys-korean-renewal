@@ -1,0 +1,14 @@
+# 이 폴더의 JSON 은 산출물이다
+
+`n1_*` · `n2_*` · `n3_*` · `n4_*` · `n5_*` · `n6_*` · `grammar_list.json` 은
+교재 콘텐츠 원장(`글로벌_교재기반_콘텐츠_v*.xlsx`)에서 만들어진다.
+**손으로 고치지 마라 — 다음 생성에서 지워진다.** 고칠 것은 원장이다.
+
+    python3 scripts/build-content.py            # 최신 원장으로 다시 만든다
+    python3 scripts/build-content.py --check    # 쓰지 않고 무엇이 달라지는지만
+
+원장은 교재 파생이라 저장소에 없다(`.gitignore`의 `*.xlsx`). 돌리려면 저장소
+루트에 원장 파일이 있어야 한다.
+
+`.ts` 로 된 것들(`chapter.ts` · `module.ts` · `unit.ts` · `clip.ts` 등)은
+원장에서 나오지 않는다. 구 앱에서 그대로 가져온 것이라 생성 대상이 아니다.

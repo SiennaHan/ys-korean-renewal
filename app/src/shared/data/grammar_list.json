@@ -1,0 +1,1640 @@
+[
+	{
+		"level": 1,
+		"grammar_tag": "은/는",
+		"category": "조사",
+		"intro_chapter": 4,
+		"item_count": 3
+	},
+	{
+		"level": 1,
+		"grammar_tag": "이에요/예요",
+		"category": "종결",
+		"intro_chapter": 4,
+		"item_count": 6
+	},
+	{
+		"level": 1,
+		"grammar_tag": "이/가",
+		"category": "조사",
+		"intro_chapter": 5,
+		"item_count": 6
+	},
+	{
+		"level": 1,
+		"grammar_tag": "이/가 아니에요",
+		"category": "종결",
+		"intro_chapter": 5,
+		"item_count": 1
+	},
+	{
+		"level": 1,
+		"grammar_tag": "이것/그것/저것",
+		"category": "대명사",
+		"intro_chapter": 6,
+		"item_count": 2
+	},
+	{
+		"level": 1,
+		"grammar_tag": "-아/어요 (해요체)",
+		"category": "종결",
+		"intro_chapter": 7,
+		"item_count": 5
+	},
+	{
+		"level": 1,
+		"grammar_tag": "도",
+		"category": "조사",
+		"intro_chapter": 7,
+		"item_count": 2
+	},
+	{
+		"level": 1,
+		"grammar_tag": "에 (장소·존재)",
+		"category": "조사",
+		"intro_chapter": 7,
+		"item_count": 2
+	},
+	{
+		"level": 1,
+		"grammar_tag": "을/를",
+		"category": "조사",
+		"intro_chapter": 8,
+		"item_count": 7
+	},
+	{
+		"level": 1,
+		"grammar_tag": "-지 않다",
+		"category": "부정",
+		"intro_chapter": 9,
+		"item_count": 2
+	},
+	{
+		"level": 1,
+		"grammar_tag": "ㅂ불규칙",
+		"category": "활용",
+		"intro_chapter": 9,
+		"item_count": 5
+	},
+	{
+		"level": 1,
+		"grammar_tag": "-(으)ㄹ까요",
+		"category": "종결",
+		"intro_chapter": 10,
+		"item_count": 4
+	},
+	{
+		"level": 1,
+		"grammar_tag": "-(으)세요",
+		"category": "종결",
+		"intro_chapter": 11,
+		"item_count": 3
+	},
+	{
+		"level": 1,
+		"grammar_tag": "하고",
+		"category": "조사",
+		"intro_chapter": 11,
+		"item_count": 1
+	},
+	{
+		"level": 1,
+		"grammar_tag": "까지",
+		"category": "조사",
+		"intro_chapter": 12,
+		"item_count": 1
+	},
+	{
+		"level": 1,
+		"grammar_tag": "부터",
+		"category": "조사",
+		"intro_chapter": 12,
+		"item_count": 2
+	},
+	{
+		"level": 1,
+		"grammar_tag": "에 (시간)",
+		"category": "조사",
+		"intro_chapter": 12,
+		"item_count": 3
+	},
+	{
+		"level": 1,
+		"grammar_tag": "에서 (행위 장소)",
+		"category": "조사",
+		"intro_chapter": 13,
+		"item_count": 3
+	},
+	{
+		"level": 1,
+		"grammar_tag": "에 (방향)",
+		"category": "조사",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 1,
+		"grammar_tag": "와/과",
+		"category": "조사",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 1,
+		"grammar_tag": "에 (단위·가격)",
+		"category": "조사",
+		"intro_chapter": 15,
+		"item_count": 3
+	},
+	{
+		"level": 1,
+		"grammar_tag": "에게",
+		"category": "조사",
+		"intro_chapter": 15,
+		"item_count": 3
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-입니까?",
+		"category": "종결",
+		"intro_chapter": 1,
+		"item_count": 3
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-입니다",
+		"category": "표현",
+		"intro_chapter": 1,
+		"item_count": 6
+	},
+	{
+		"level": 2,
+		"grammar_tag": "에서 ~까지",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 4
+	},
+	{
+		"level": 2,
+		"grammar_tag": "으로",
+		"category": "조사",
+		"intro_chapter": 2,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-어 주다",
+		"category": "표현",
+		"intro_chapter": 3,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-읍시다",
+		"category": "표현",
+		"intro_chapter": 3,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-고1",
+		"category": "연결",
+		"intro_chapter": 4,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "보다",
+		"category": "조사",
+		"intro_chapter": 4,
+		"item_count": 4
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-어서1",
+		"category": "연결",
+		"intro_chapter": 5,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-지만",
+		"category": "연결",
+		"intro_chapter": 5,
+		"item_count": 4
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-겠-",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 2
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-으시-",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-으러",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-을까요? -으십시오",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-고2",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "에 ~쯤",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 4
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-었-",
+		"category": "연결",
+		"intro_chapter": 9,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "ㄷ 동사",
+		"category": "활용",
+		"intro_chapter": 9,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-은",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 6
+	},
+	{
+		"level": 2,
+		"grammar_tag": "ㄹ 동사",
+		"category": "활용",
+		"intro_chapter": 10,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-는",
+		"category": "연결",
+		"intro_chapter": 11,
+		"item_count": 2
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-을",
+		"category": "연결",
+		"intro_chapter": 11,
+		"item_count": 2
+	},
+	{
+		"level": 2,
+		"grammar_tag": "ㅎ 동사",
+		"category": "활용",
+		"intro_chapter": 11,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-어서2",
+		"category": "연결",
+		"intro_chapter": 12,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "만",
+		"category": "조사",
+		"intro_chapter": 12,
+		"item_count": 4
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-으니까",
+		"category": "종결",
+		"intro_chapter": 13,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-지 말다",
+		"category": "표현",
+		"intro_chapter": 13,
+		"item_count": 4
+	},
+	{
+		"level": 2,
+		"grammar_tag": "- 을 수 있다",
+		"category": "표현",
+		"intro_chapter": 14,
+		"item_count": 5
+	},
+	{
+		"level": 2,
+		"grammar_tag": "-지요?",
+		"category": "종결",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 2,
+		"grammar_tag": "동안",
+		"category": "조사",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 2,
+		"grammar_tag": "못",
+		"category": "조사",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-기 전에",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "한테서",
+		"category": "조사",
+		"intro_chapter": 1,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-는데1",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-을게요",
+		"category": "종결",
+		"intro_chapter": 2,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-는군요",
+		"category": "종결",
+		"intro_chapter": 3,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-은 적이 있다",
+		"category": "표현",
+		"intro_chapter": 3,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-고 있다",
+		"category": "표현",
+		"intro_chapter": 4,
+		"item_count": 1
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-으려고 하다",
+		"category": "표현",
+		"intro_chapter": 4,
+		"item_count": 6
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-는 것 같다",
+		"category": "표현",
+		"intro_chapter": 5,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "으로",
+		"category": "조사",
+		"intro_chapter": 5,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-으면",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "밖에",
+		"category": "조사",
+		"intro_chapter": 6,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-게",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-을 거예요1",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-어 보다1",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "르 동사",
+		"category": "활용",
+		"intro_chapter": 8,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-겠-",
+		"category": "연결",
+		"intro_chapter": 9,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-은 후에",
+		"category": "연결",
+		"intro_chapter": 9,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-으려고",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-을 때",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-어",
+		"category": "연결",
+		"intro_chapter": 11,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "이야",
+		"category": "조사",
+		"intro_chapter": 11,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-는데요",
+		"category": "종결",
+		"intro_chapter": 12,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "이나",
+		"category": "조사",
+		"intro_chapter": 12,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-기 때문에",
+		"category": "연결",
+		"intro_chapter": 13,
+		"item_count": 4
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-을 거예요2",
+		"category": "연결",
+		"intro_chapter": 13,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-는데2",
+		"category": "연결",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-어 보다2",
+		"category": "연결",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-어 보이다",
+		"category": "표현",
+		"intro_chapter": 14,
+		"item_count": 1
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-는데3",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 3
+	},
+	{
+		"level": 3,
+		"grammar_tag": "-었으면 좋겠다",
+		"category": "표현",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-기는 하지만",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 6
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-은 지",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 1
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-겠군요",
+		"category": "종결",
+		"intro_chapter": 2,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-어지다",
+		"category": "표현",
+		"intro_chapter": 2,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-어도 되다",
+		"category": "표현",
+		"intro_chapter": 3,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "에다가",
+		"category": "조사",
+		"intro_chapter": 3,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-어야 하다",
+		"category": "표현",
+		"intro_chapter": 4,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-으려면",
+		"category": "연결",
+		"intro_chapter": 4,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-나요?",
+		"category": "종결",
+		"intro_chapter": 5,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-으면 안 되다",
+		"category": "표현",
+		"intro_chapter": 5,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-는데",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 6
+	},
+	{
+		"level": 4,
+		"grammar_tag": "아무",
+		"category": "조사",
+		"intro_chapter": 6,
+		"item_count": 1
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-다가",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "격식체 반말",
+		"category": "활용",
+		"intro_chapter": 7,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-었다가",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-으니까",
+		"category": "종결",
+		"intro_chapter": 8,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-어 보이다",
+		"category": "표현",
+		"intro_chapter": 9,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "ㅅ 동사",
+		"category": "활용",
+		"intro_chapter": 9,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-어 가지고",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-을지 모르겠다",
+		"category": "표현",
+		"intro_chapter": 10,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-을까 하다",
+		"category": "표현",
+		"intro_chapter": 11,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-지 말고",
+		"category": "연결",
+		"intro_chapter": 11,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-기로 하다",
+		"category": "표현",
+		"intro_chapter": 12,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-는데요?",
+		"category": "종결",
+		"intro_chapter": 12,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-을지 -을지",
+		"category": "연결",
+		"intro_chapter": 13,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "이든지",
+		"category": "조사",
+		"intro_chapter": 13,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-는지 알다",
+		"category": "표현",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "만큼",
+		"category": "조사",
+		"intro_chapter": 14,
+		"item_count": 4
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-어도",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 3
+	},
+	{
+		"level": 4,
+		"grammar_tag": "-어서 그런지",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-기 위해서",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "이라서",
+		"category": "조사",
+		"intro_chapter": 1,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-으면 -을수록",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-으면서",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-거든요",
+		"category": "종결",
+		"intro_chapter": 3,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-을걸요",
+		"category": "종결",
+		"intro_chapter": 3,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-는 편이다",
+		"category": "표현",
+		"intro_chapter": 4,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "에 비해서",
+		"category": "연결",
+		"intro_chapter": 4,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-는다고 하다",
+		"category": "표현",
+		"intro_chapter": 5,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-더군요",
+		"category": "종결",
+		"intro_chapter": 5,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-어지다",
+		"category": "표현",
+		"intro_chapter": 6,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-으라고 하다",
+		"category": "표현",
+		"intro_chapter": 6,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-는 줄 알다",
+		"category": "표현",
+		"intro_chapter": 7,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-었던",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-나 보다",
+		"category": "표현",
+		"intro_chapter": 8,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-는 데다가",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-네요",
+		"category": "종결",
+		"intro_chapter": 9,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-는데도",
+		"category": "연결",
+		"intro_chapter": 9,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-어야",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-을래요?",
+		"category": "종결",
+		"intro_chapter": 10,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-잖아요",
+		"category": "종결",
+		"intro_chapter": 11,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-지 그래요?",
+		"category": "종결",
+		"intro_chapter": 11,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-는 대로",
+		"category": "연결",
+		"intro_chapter": 12,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-어 있다",
+		"category": "표현",
+		"intro_chapter": 12,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-던",
+		"category": "연결",
+		"intro_chapter": 13,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "얼마나 -는지 모르다",
+		"category": "표현",
+		"intro_chapter": 13,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-어 달라고 하다",
+		"category": "표현",
+		"intro_chapter": 14,
+		"item_count": 4
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-을 테니까",
+		"category": "종결",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-게 되다",
+		"category": "표현",
+		"intro_chapter": 15,
+		"item_count": 3
+	},
+	{
+		"level": 5,
+		"grammar_tag": "-어야겠다",
+		"category": "표현",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-거든",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "만 못하다",
+		"category": "표현",
+		"intro_chapter": 1,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-게",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-고 해서",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-기는요",
+		"category": "종결",
+		"intro_chapter": 3,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "간접화법의 축약형",
+		"category": "표현",
+		"intro_chapter": 3,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-고요",
+		"category": "종결",
+		"intro_chapter": 4,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "피동",
+		"category": "활용",
+		"intro_chapter": 4,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-는 대신에",
+		"category": "연결",
+		"intro_chapter": 5,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-을 뿐만 아니라",
+		"category": "연결",
+		"intro_chapter": 5,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-느라고",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-자마자",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-는다면서요?",
+		"category": "종결",
+		"intro_chapter": 7,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-던데요",
+		"category": "종결",
+		"intro_chapter": 7,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-을까 봐",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "사동",
+		"category": "활용",
+		"intro_chapter": 8,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-게 하다",
+		"category": "표현",
+		"intro_chapter": 9,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-는다는 것이",
+		"category": "연결",
+		"intro_chapter": 9,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-도록 하다",
+		"category": "표현",
+		"intro_chapter": 10,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-어다가",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-는단 말이에요?",
+		"category": "종결",
+		"intro_chapter": 11,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-을 만하다",
+		"category": "표현",
+		"intro_chapter": 11,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-는 모양이다",
+		"category": "표현",
+		"intro_chapter": 12,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-어 놓다",
+		"category": "표현",
+		"intro_chapter": 12,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-는다면",
+		"category": "연결",
+		"intro_chapter": 13,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-는답니다",
+		"category": "표현",
+		"intro_chapter": 13,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-더라",
+		"category": "연결",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "이라든가",
+		"category": "조사",
+		"intro_chapter": 14,
+		"item_count": 4
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-으려던 참이다",
+		"category": "표현",
+		"intro_chapter": 15,
+		"item_count": 3
+	},
+	{
+		"level": 6,
+		"grammar_tag": "-을 텐데",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-다가 보면",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "어찌나 -는지",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는지",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-을 뻔하다",
+		"category": "표현",
+		"intro_chapter": 2,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-기에는",
+		"category": "연결",
+		"intro_chapter": 3,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-었더니",
+		"category": "연결",
+		"intro_chapter": 3,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-다니",
+		"category": "종결",
+		"intro_chapter": 4,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-을 수가 있어야지요",
+		"category": "종결",
+		"intro_chapter": 4,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-었더라면",
+		"category": "연결",
+		"intro_chapter": 5,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-을 뿐이다",
+		"category": "표현",
+		"intro_chapter": 5,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는 바람에",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-었던 것 같아요",
+		"category": "종결",
+		"intro_chapter": 6,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는다기에",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-었다가",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-다가는",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-도록",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는 듯이",
+		"category": "연결",
+		"intro_chapter": 9,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-어 버리다",
+		"category": "표현",
+		"intro_chapter": 9,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-게 마련이다",
+		"category": "표현",
+		"intro_chapter": 10,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-만 해도",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는 법이다",
+		"category": "표현",
+		"intro_chapter": 11,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-더니",
+		"category": "연결",
+		"intro_chapter": 11,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는 김에",
+		"category": "연결",
+		"intro_chapter": 12,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-을 따름이다",
+		"category": "표현",
+		"intro_chapter": 12,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는다 싶다",
+		"category": "표현",
+		"intro_chapter": 13,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-으라고",
+		"category": "연결",
+		"intro_chapter": 13,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-는가 하면",
+		"category": "연결",
+		"intro_chapter": 14,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-을걸 그랬다",
+		"category": "표현",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-을 게 아니라",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 7,
+		"grammar_tag": "-을 겸",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-긴 -나 봐요",
+		"category": "종결",
+		"intro_chapter": 1,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "아무리 -기로서니",
+		"category": "연결",
+		"intro_chapter": 1,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-기는커녕",
+		"category": "연결",
+		"intro_chapter": 2,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-는 둥 마는 둥 하다",
+		"category": "표현",
+		"intro_chapter": 2,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-으랴 -으랴",
+		"category": "연결",
+		"intro_chapter": 3,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-으면 몰라도",
+		"category": "연결",
+		"intro_chapter": 3,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-건만",
+		"category": "연결",
+		"intro_chapter": 4,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "같아선",
+		"category": "조사",
+		"intro_chapter": 4,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-는다기보다는",
+		"category": "연결",
+		"intro_chapter": 5,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-을래야 -을 수가 없다",
+		"category": "표현",
+		"intro_chapter": 5,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-는다뿐이지",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-는답시고",
+		"category": "연결",
+		"intro_chapter": 6,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-으련만",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-은 채",
+		"category": "연결",
+		"intro_chapter": 7,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-거니와",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-더라도",
+		"category": "연결",
+		"intro_chapter": 8,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-더라고요",
+		"category": "종결",
+		"intro_chapter": 9,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-음으로써",
+		"category": "연결",
+		"intro_chapter": 9,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-길래",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-는 데",
+		"category": "연결",
+		"intro_chapter": 10,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-기에 망정이지",
+		"category": "연결",
+		"intro_chapter": 11,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-는다는 듯이",
+		"category": "연결",
+		"intro_chapter": 11,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-기 나름이다",
+		"category": "표현",
+		"intro_chapter": 12,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-을 줄만 알았지",
+		"category": "연결",
+		"intro_chapter": 12,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-다시피 하다",
+		"category": "표현",
+		"intro_chapter": 13,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-을 법하다",
+		"category": "표현",
+		"intro_chapter": 13,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-는 한",
+		"category": "연결",
+		"intro_chapter": 14,
+		"item_count": 3
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-되",
+		"category": "연결",
+		"intro_chapter": 14,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-느니",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 4
+	},
+	{
+		"level": 8,
+		"grammar_tag": "-을뿐더러",
+		"category": "연결",
+		"intro_chapter": 15,
+		"item_count": 3
+	}
+]
