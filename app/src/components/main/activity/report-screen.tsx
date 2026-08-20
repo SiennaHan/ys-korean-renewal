@@ -46,10 +46,14 @@ function Radar({ values }: { values: RadarValues }) {
 	];
 	return (
 		<svg
-			viewBox="0 0 220 210"
+			// 목업은 220 폭이면 됐다 — 축 이름이 "발음" 두 글자였기 때문이다.
+			// 이름을 번역하면 좌우로 넘쳐 잘린다(Từ vựng · Pronunciation).
+			// 양옆에 30 씩 넓히고 max-width 를 같은 만큼 키워, 그려지는 크기는
+			// 그대로 두고 글자가 앉을 자리만 만든다.
+			viewBox="-30 0 280 210"
 			style={{
 				width: "100%",
-				maxWidth: 220,
+				maxWidth: 280,
 				height: "auto",
 				display: "block",
 				margin: "0 auto",

@@ -12,6 +12,8 @@ IGNORED = {
     "disabled": "꺼진 버튼에 붙였다 — 목업은 data-action 을 빼는 것으로 같은 뜻을 냈다",
     'aria-hidden="true"': "장식 svg 를 읽지 않게 한다",
     'role="img"': "라벨 붙은 svg 를 그림으로 읽게 한다",
+    "레이더 viewBox": "목업은 220 폭. 축 이름을 번역하면 좌우로 넘쳐 잘려서"
+    " -30 0 280 210 으로 넓혔다. 그려지는 크기는 max-width 를 같이 키워 그대로다",
     'aria-label 닫기': "목업이 스스로 갈렸다 — shell() 은 닫기, gapAppbar() 는 나가기."
     " 눈에 보이지 않는 글자라 i18n 이 정한 player.exit(나가기) 하나로 모았다",
 }
@@ -36,6 +38,9 @@ class Flat(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         a = {k: (v or "") for k, v in attrs if k not in DROP_ATTRS}
+        if a.get("viewBox" if "viewBox" in a else "viewbox", "") == "-30 0 280 210":
+            a["viewbox"] = "0 0 220 210"
+            a["style"] = a.get("style", "").replace("max-width:280px", "max-width:220px")
         if a.get("aria-label") in EXIT_LABELS:
             a["aria-label"] = "(나가기)"
         for k, v in list(a.items()):
