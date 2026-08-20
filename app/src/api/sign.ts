@@ -9,10 +9,17 @@ export async function checkSign() {
     const response = await api.post<GuestToken>("/user/sign/guest", guestLogin);
 
     if (!response.result || !response.data) return false;
+
     const token = response.data.token;
     const guestId = response.data.guestId;
+
+    // 토큰이 없으면 실패다. 예전에는 그래도 true 를 냈고, setAccessToken(undefined)
+    // 가 문자열 "undefined" 를 저장해서 게스트가 들어온 것처럼 보였다 —
+    // 그 뒤로 모든 요청이 Bearer undefined 로 나가 조용히 다 실패한다.
+    if (!token) return false;
+
     setAccessToken(token);
-    setGuestId(guestId);
+    if (guestId) setGuestId(guestId);
     return true;
   } catch (error) {
     console.error(error);

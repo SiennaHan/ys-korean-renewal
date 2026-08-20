@@ -23,7 +23,7 @@ package-lock.json 1.170.29    ← 섞여 들어온 것. node_modules 는 이쪽�
 | | |
 |---|---|
 | `package.json` | 라우터 셋을 <b>정확히 `1.136.8`</b> 로 고정(캐럿 제거) |
-| `package-lock.json` | 지웠다 — `README`·`.claude/launch.json` 둘 다 pnpm 을 쓴다 |
+| `package-lock.json` | 지웠다. 루트 `.claude/launch.json` 이 `npm --prefix app run dev` 였던 것도 pnpm 으로 바꿨다 — 설치 명령이 아니라 빌드가 깨지진 않았지만, 남겨 두면 누군가 `npm install` 을 치게 만든다 |
 | `pnpm-lock.yaml` | specifier 를 새 값으로 갱신 |
 
 ```
@@ -156,6 +156,13 @@ git log --format='%h %s%n%b' --since='2026-08-20'
 
 `api_schema_v1.html` §6 의 네 물음은 **아직 답이 없다** — 해설 문자열 포함 여부 ·
 `DELETE /review-queue` 유지 여부 · 진행 저장 주기 · 게스트 허용 범위.
+
+이 중 **게스트 허용 범위가 이제 급하다.** 로그인 화면에 "로그인하지 않고 둘러보기" 를
+붙이면서 게스트로 들어오는 길이 처음으로 열렸다(그전에는 `guestSign()` 을 부르는 곳이
+아예 없었다). 게스트가 활동을 풀고 진행이 쌓이기 시작하면 로그인 시 그것을 계정으로
+옮기는 `migrateGuestData` 가 실제로 돌게 되는데, **그 경로는 한 번도 실행된 적이 없다.**
+정해야 할 것 — 게스트가 어디까지 하게 할지 · 진행을 서버에 남길지 아니면 기기에만 둘지 ·
+옮길 때 계정에 이미 있는 기록과 충돌하면 무엇을 남길지.
 
 MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영돼 있다 →
 `phase1/my_learning_summary_v1.html` (별도 전달)

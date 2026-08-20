@@ -13,11 +13,10 @@
     },
     {
       "name": "korean-app",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": [
-        "--prefix",
+        "--dir",
         "app",
-        "run",
         "dev"
       ],
       "port": 3000

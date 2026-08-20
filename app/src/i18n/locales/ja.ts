@@ -7,7 +7,10 @@ const ja = {
 		passwordPlaceholder: "パスワードを入力してください",
 		resetPassword: "パスワードを再設定",
 		loginButton: "ログイン",
-		guestButton: "ゲストとして続ける",
+		guestButton: "ログインせずに見てみる",
+		guestFailed:
+			"見てみるを開始できませんでした。しばらくしてからもう一度お試しください。",
+		guestEntering: "入っています...",
 		or: "または",
 		loginFailed: "ログインに失敗しました。",
 		loggingIn: "ログイン中...",

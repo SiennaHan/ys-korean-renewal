@@ -74,6 +74,17 @@ class H(BaseHTTPRequestHandler):
                 f.write(raw)
             return self._send({'result':True,'code':200,'message':None,
                                'data':{'saved':name,'bytes':len(raw)}})
+        # 게스트 로그인 — 토큰 없이 {} 만 주면 앱이 "undefined" 를 토큰으로 저장하고
+        # 들어온 것처럼 보이다가 모든 요청이 조용히 실패한다. 실서버처럼 토큰을 낸다.
+        if self.path.rstrip('/') == '/user/sign/guest':
+            n = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(n) or b'{}')
+            gid = body.get('guestId')
+            if not gid or gid == 'undefined':
+                gid = 'local-guest'
+            return self._send({'result':True,'code':200,'message':None,
+                               'data':{'status':'new','token':'local-dev-mock','guestId':gid}})
+
         self._send({'result':True,'code':200,'message':None,'data':{}})
     def do_GET(self):
         path=self.path.split('?')[0]
