@@ -251,7 +251,11 @@ export default function ListenAnswer({
 				lesson={chapterLabel}
 				onExit={() => router.history.back()}
 			/>
-			<ActivityProgress current={currentIndex} total={totalSteps} />
+			<ActivityProgress
+				current={currentIndex}
+				total={totalSteps}
+				onJump={setCurrentIndex}
+			/>
 
 			<ActivityBody
 				feedback={

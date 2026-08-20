@@ -213,6 +213,7 @@ const ja = {
 		a11yStateCorrect: "正解",
 		a11yStateWrong: "不正解",
 		a11yStateUnanswered: "未回答",
+		goToQuestion: "{{index}}番目の問題へ",
 		// S1~S3 확정 반영 (2026-08-14)
 		lessonTitle: "{{level}}級 {{lesson}}課",
 		showResult: "結果を見る",

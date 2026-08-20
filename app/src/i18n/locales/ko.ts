@@ -213,6 +213,7 @@ const ko = {
 		a11yStateCorrect: "정답",
 		a11yStateWrong: "오답",
 		a11yStateUnanswered: "안 푼 문항",
+		goToQuestion: "{{index}}번 문항으로",
 		// S1~S3 확정 반영 (2026-08-14)
 		lessonTitle: "{{level}}급 {{lesson}}과",
 		showResult: "결과 보기",

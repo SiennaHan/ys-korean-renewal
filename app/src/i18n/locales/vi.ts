@@ -213,6 +213,7 @@ const vi = {
 		a11yStateCorrect: "đúng",
 		a11yStateWrong: "sai",
 		a11yStateUnanswered: "chưa trả lời",
+		goToQuestion: "Đến câu {{index}}",
 		// S1~S3 확정 반영 (2026-08-14)
 		lessonTitle: "Cấp {{level}} Bài {{lesson}}",
 		showResult: "Xem kết quả",

@@ -210,6 +210,7 @@ const zh = {
 		a11yStateCorrect: "答对",
 		a11yStateWrong: "答错",
 		a11yStateUnanswered: "未作答",
+		goToQuestion: "跳到第 {{index}} 题",
 		// S1~S3 확정 반영 (2026-08-14)
 		lessonTitle: "{{level}}级 第{{lesson}}课",
 		showResult: "查看结果",

@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { IconClose, IconNext, IconPrev } from "./icons";
@@ -82,9 +83,16 @@ export function ActivityAppBar({
 export function ActivityProgress({
 	current,
 	total,
+	onJump,
 }: {
 	current: number;
 	total: number;
+	/**
+	 * 칸을 눌러 그 문항으로 간다. 넘기지 않으면 목업 그대로 장식이다.
+	 * 하단에 이전 버튼을 두면 주 버튼이 좁아져 목업과 달라지므로,
+	 * 뒤로 가는 길을 여기로 옮겼다.
+	 */
+	onJump?: (index: number) => void;
 }) {
 	const { t } = useTranslation();
 	const continuous = total >= 16;
@@ -92,13 +100,26 @@ export function ActivityProgress({
 	return (
 		<div className={`progress-wrap ${continuous ? "continuous" : "segmented"}`}>
 			<div className="progress">
-				{Array.from({ length: total }, (_, i) => (
-					<i
-						// biome-ignore lint/suspicious/noArrayIndexKey: 칸은 위치가 곧 정체성이다
-						key={i}
-						className={i < current ? "done" : i === current ? "now" : ""}
-					/>
-				))}
+				{Array.from({ length: total }, (_, i) => {
+					const bar = (
+						<i className={i < current ? "done" : i === current ? "now" : ""} />
+					);
+					// biome-ignore lint/suspicious/noArrayIndexKey: 칸은 위치가 곧 정체성이다
+					return onJump ? (
+						<button
+							key={i}
+							type="button"
+							className="seg"
+							aria-label={t("player.goToQuestion", { index: i + 1 })}
+							aria-current={i === current || undefined}
+							onClick={() => onJump(i)}
+						>
+							{bar}
+						</button>
+					) : (
+						<Fragment key={i}>{bar}</Fragment>
+					);
+				})}
 			</div>
 			{continuous && (
 				<div className="progress-meta">

@@ -214,6 +214,7 @@ const en = {
 		a11yStateCorrect: "correct",
 		a11yStateWrong: "incorrect",
 		a11yStateUnanswered: "not answered",
+		goToQuestion: "Go to question {{index}}",
 		// S1~S3 확정 반영 (2026-08-14)
 		lessonTitle: "Level {{level}} Lesson {{lesson}}",
 		showResult: "See results",
