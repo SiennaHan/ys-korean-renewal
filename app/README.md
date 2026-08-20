@@ -115,8 +115,3 @@ src/
 ## 배포
 
 Vercel. Output Directory 를 `dist` 로.
-
-## 잔재
-
-벤더에서 같이 들어온 파일 둘이 추적되고 있다. 아무것도 import 하지 않는다 —
-`src/routes/main.tsx.bak` · `src/shared/data/clip.ts.old`.
