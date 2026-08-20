@@ -75,6 +75,9 @@ export function ActivityAppBar({
 /**
  * 진행 막대. 16칸부터는 칸이 너무 얇아져 눈금을 포기하고
  * 연속 막대 + "n / total" 로 바뀐다 (목업 progressMarkup 의 기준).
+ *
+ * 한 칸짜리는 아예 그리지 않는다 — 늘 꽉 찬 줄이라 어디쯤인지를 말해 주지 못한다.
+ * 어휘 미리보기처럼 문항이 하나뿐인 화면이 그렇다.
  */
 export function ActivityProgress({
 	current,
@@ -85,6 +88,7 @@ export function ActivityProgress({
 }) {
 	const { t } = useTranslation();
 	const continuous = total >= 16;
+	if (total <= 1) return null;
 	return (
 		<div className={`progress-wrap ${continuous ? "continuous" : "segmented"}`}>
 			<div className="progress">

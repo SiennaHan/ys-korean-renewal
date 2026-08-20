@@ -12,6 +12,8 @@ IGNORED = {
     "disabled": "꺼진 버튼에 붙였다 — 목업은 data-action 을 빼는 것으로 같은 뜻을 냈다",
     'aria-hidden="true"': "장식 svg 를 읽지 않게 한다",
     'role="img"': "라벨 붙은 svg 를 그림으로 읽게 한다",
+    "한 칸 진행막대": "칸이 하나뿐이면 늘 꽉 찬 줄이라 어디쯤인지를 말해 주지 못한다."
+    " 그려도 자리만 먹으므로 뺐다 (wordPreview · write3 · write3_canvas)",
     "레이더 viewBox": "목업은 220 폭. 축 이름을 번역하면 좌우로 넘쳐 잘려서"
     " -30 0 280 210 으로 넓혔다. 그려지는 크기는 max-width 를 같이 키워 그대로다",
     'aria-label 닫기': "목업이 스스로 갈렸다 — shell() 은 닫기, gapAppbar() 는 나가기."
@@ -78,6 +80,26 @@ def flat(html):
     return p.rows
 
 
+def drop_single_progress(rows):
+    """칸이 하나뿐인 진행막대 블록을 통째로 지운다"""
+    out, i = [], 0
+    while i < len(rows):
+        line = rows[i]
+        if line.strip().startswith('<div class="progress-wrap'):
+            block = [line]
+            j = i + 1
+            indent = len(line) - len(line.lstrip())
+            while j < len(rows) and (len(rows[j]) - len(rows[j].lstrip())) > indent:
+                block.append(rows[j])
+                j += 1
+            if sum(1 for b in block if b.strip().startswith("<i")) <= 1:
+                i = j
+                continue
+        out.append(line)
+        i += 1
+    return out
+
+
 here = os.path.dirname(os.path.abspath(__file__))
 out = os.path.join(here, "..", ".parity-out")
 mock = os.path.join(here, "..", "src", "mockups")
@@ -97,8 +119,8 @@ for f in sorted(glob.glob(os.path.join(out, "*.html"))):
         print(f"✗ {name}: 목업 캡처가 없다")
         bad += 1
         continue
-    a = flat(open(ref, encoding="utf-8").read())
-    b = flat(open(f, encoding="utf-8").read())
+    a = drop_single_progress(flat(open(ref, encoding="utf-8").read()))
+    b = drop_single_progress(flat(open(f, encoding="utf-8").read()))
     if a == b:
         print(f"✓ {name}")
         continue
