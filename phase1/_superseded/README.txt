@@ -7,7 +7,8 @@ shell_mockup_v1.html
 activity_mockups_gaps.html
   확정 목업에 빠져 있던 11화면을 채운 것. 그 내용이 확정 파일에 흡수됐다.
 
-둘 다 참고용으로만 남긴다. 규격의 근거는 build_spec_v1.html 을 본다.
+둘 다 참고용으로만 남긴다. 규격의 근거는 ../build_spec_uiux.html 을 본다
+(build_spec_v1 도 여기로 옮겼다 — 아래 08-20 항목).
 
 ── 게임 목업 넷 (2026-08-18 대체)
 game_mockups_v1 · card_sort_mockup_v1 · seoul_puzzle_mockup_v1 · spring_picnic_mockup_v1
@@ -25,3 +26,22 @@ vocashot_mockup_uiux.html  (08-18 15:58)
   둘이 같은 셀렉터 31개에서 값이 달랐다 — .g-go 가 여기서는 height 56/radius 14,
   정본에서는 padding 14/radius 16. 앱에는 정본 값만 들어갔다.
 
+── 문서·목업 옛 판 일곱 (2026-08-20 대체)
+
+이 저장소는 _v1 → _uiux 로 판을 올린다. 이름만 보고는 알 수 없어서 여기 적어 둔다.
+
+Shell_component_spec_v1.html  ·  build_spec_v1.html
+  각각 ../Shell_component_spec_uiux.html · ../build_spec_uiux.html 로 대체.
+  절 구조가 10개·14개 그대로 같다 — 같은 문서를 확정 UI/UX 로 다시 쓴 것이다.
+
+nav_mockup_v1.html      → ../nav_mockup_uiux.html
+game_screens_v1.html    → ../game_screens_uiux.html
+home_mockup_v1.html     → ../nav_mockup_uiux.html 이 홈을 흡수했다
+
+activity_mockups_uiux_modular.html  ·  activity_mockups_uiux_unified.html
+  ../activity_mockups_uiux.html 로 가는 길에 만든 시안 둘.
+
+옮기지 않은 옛 판이 다섯 있다 — 다른 문서가 아직 가리키고 있어서다.
+  vocashot_play_v1 · vocashot_mockup_v1 · gamelist_mockup_v1 ·
+  activity_mockups_uiux_editorial · activity_mockups_uiux_extended_compare
+shell_mockup_uiux 는 세 곳에서 참조하므로 남겨 두었다.

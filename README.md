@@ -19,15 +19,20 @@
 
 ## 읽는 순서
 
-1. **`phase1/handoff_v1.html`** — 전체 인계. §03 이 "구현이 목업과 다르면 목업이 기준"을 못박는다
+1. **`phase1/handoff_v2.html`** — 인계. 어디까지 됐고 무엇이 남았는지, 목업을 일부러 벗어난 여섯 곳
 2. **`phase1/Phase1_dev_spec_v1.html`** — 개발 요구사항. DB 신설 2종 · API · 라우트 · 셸 컴포넌트
 3. **`phase1/api_schema_v1.html`** — API 필드 스키마
 4. **`phase1/activity_mockups_uiux.html`** — 활동 화면 목업 **(시각 정본)**
 5. **`phase1/nav_mockup_uiux.html`** — 홈·교재학습·자모 목업
 6. **`phase1/games_asis_v1.html`** — 게임·표현클립·MY 실측과 판단
 
-목업이 여럿 있는데 **`_uiux` 가 붙은 것이 확정본**이다. 같은 이름의 다른 판
-(`_modular` · `_editorial` · `_unified`)은 검토 과정이고 기준이 아니다.
+목업이 여럿 있는데 **`_uiux` 가 붙은 것이 확정본**이다. 옛 판은
+`phase1/_superseded/` 로 옮겼고 그 폴더의 `README.txt` 가 무엇이 무엇을 대체했는지 적는다.
+
+"기획서"라 부를 문서가 넷이라 헷갈리는데 이렇게 나뉜다 —
+`renewal_masterplan_v1`(순서) · `renewal_plan_v0.2`(제품 초안) ·
+`phase1/renewal_plan_v1`(Phase 1 작업 목록) · `phase1/handoff_v2`(현재 상태).
+**개발 착수는 `Phase1_dev_spec_v1` 과 `handoff_v2` 만 보면 된다.**
 
 ## 돌리려면 받아야 하는 것
 

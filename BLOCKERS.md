@@ -110,8 +110,8 @@ grep -rn dictation app/src --include='*.tsx' --include='*.ts' | grep -v shared/d
 `.grammar-note` · `.catalog-empty` · `.preview-extra` · `.canvas-host` ·
 `.record-card .heard .miss` · 진행막대 `.seg`. 각 규칙 위에 왜 만들었는지 적어 두었다.
 
-**하루치 결정 28건이 아직 문서에 없다.** 이것을 반영하지 않으면 다음 사람이
-"목업대로" 되돌린다.
+**하루치 결정은 `phase1/handoff_v2.html` §03 · §04 에 반영했다.**
+아래 명령으로 근거를 볼 수 있다.
 
 ```bash
 git log --format='%h %s%n%b' --since='2026-08-20'

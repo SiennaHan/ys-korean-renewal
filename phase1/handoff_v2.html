@@ -1,0 +1,295 @@
+<title>Phase 1 인계 — 어디까지 됐고 무엇이 남았나</title>
+<style>
+  :root {
+    --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f7;
+    --ink:#181c24; --ink-2:#4e5666; --ink-3:#89909f;
+    --line:#e2e6ed; --accent:#1f5fd6; --accent-soft:#e8f0ff;
+    --bad:#b3261e; --bad-soft:#fdecea; --good:#1c6b42; --good-soft:#e8f5ee;
+    --warn:#8a5a00; --warn-soft:#fdf4e3;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 10px 26px rgba(16,24,40,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+      --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+      --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+      --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+      --warn:#e0ab52; --warn-soft:#2c2417;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+    --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+    --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+    --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+    --warn:#e0ab52; --warn-soft:#2c2417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    font-size:15.5px; line-height:1.74; }
+  main { max-width:860px; margin:0 auto; padding:52px 22px 100px; }
+
+  header.doc { padding-bottom:26px; border-bottom:2px solid var(--ink); margin-bottom:34px; }
+  .eyebrow { font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent); font-weight:800; margin-bottom:10px; }
+  h1 { font-size:30px; line-height:1.28; margin:0 0 12px; font-weight:800;
+    letter-spacing:-.015em; text-wrap:balance; }
+  .lead { color:var(--ink-2); font-size:15.5px; max-width:64ch; margin:0; }
+  .lead b { color:var(--ink); }
+
+  h2 { font-size:20px; font-weight:800; margin:56px 0 4px; letter-spacing:-.01em;
+    display:flex; align-items:baseline; gap:10px; }
+  h2 .n { font-size:13px; font-weight:800; color:var(--accent);
+    font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+  h3 { font-size:15.5px; font-weight:700; margin:26px 0 4px; }
+  p { margin:10px 0; }
+  .qa { color:var(--ink-3); font-size:13.5px; }
+
+  code { font-family:ui-monospace,Menlo,monospace; font-size:.85em;
+    background:var(--surface-2); padding:1.5px 6px; border-radius:5px; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin:14px 0 6px; font-size:13.5px; }
+  th { text-align:left; font-size:11.5px; letter-spacing:.05em; color:var(--ink-3);
+    font-weight:700; padding:8px 10px 6px; border-bottom:2px solid var(--line); white-space:nowrap; }
+  td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td code { white-space:nowrap; }
+
+  .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:12px; padding:16px 20px; margin:18px 0;
+    box-shadow:var(--shadow); }
+  .callout.bad { border-left-color:var(--bad); }
+  .callout.good { border-left-color:var(--good); }
+  .callout.warn { border-left-color:var(--warn); }
+  .callout .t { font-weight:800; font-size:14px; margin-bottom:6px; }
+  .callout.bad .t { color:var(--bad); }
+  .callout.good .t { color:var(--good); }
+  .callout.warn .t { color:var(--warn); }
+  .callout p { font-size:14.5px; margin:7px 0; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px; margin:16px 0 6px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:5px; }
+  .card .k { font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:800; color:var(--ink-3); }
+  .card .nm { font-size:15px; font-weight:700; line-height:1.4; }
+  .card .nm a { text-decoration:none; }
+  .card .nm a:hover { text-decoration:underline; }
+  .card .d { font-size:13px; color:var(--ink-2); line-height:1.6; }
+
+  ol.path { list-style:none; counter-reset:step; padding:0; margin:16px 0 6px;
+    display:flex; flex-direction:column; gap:10px; }
+  ol.path li { counter-increment:step; display:grid; grid-template-columns:30px 1fr;
+    gap:12px; align-items:start; }
+  ol.path li::before { content:counter(step); grid-column:1;
+    width:30px; height:30px; border-radius:50%; background:var(--accent-soft);
+    color:var(--accent); font-size:13px; font-weight:800; display:grid; place-items:center;
+    font-variant-numeric:tabular-nums; }
+  ol.path .h { font-weight:700; }
+  ol.path .d { color:var(--ink-2); font-size:14px; }
+
+  ul { padding-left:22px; margin:10px 0; }
+  li { margin:6px 0; }
+  li::marker { color:var(--ink-3); }
+
+  .pill { display:inline-block; font-size:11px; font-weight:800; border-radius:99px;
+    padding:1.5px 9px; white-space:nowrap; }
+  .pill.done { background:var(--good-soft); color:var(--good); }
+  .pill.open { background:var(--warn-soft); color:var(--warn); }
+  .pill.stop { background:var(--bad-soft); color:var(--bad); }
+  .pill.file { background:var(--accent-soft); color:var(--accent); }
+</style>
+<main>
+<header class="doc">
+  <div class="eyebrow">Phase 1 · 인계 · 2026-08-20</div>
+  <h1>플레이어 공통 셸 — 어디까지 됐고 무엇이 남았나</h1>
+  <p class="lead"><b>handoff_v1 을 대체한다.</b> v1 은 착수 전에 쓴 것이고, 이 문서는
+  화면 작업을 마친 뒤의 상태다. 화면 <b>34개가 목업대로 들어갔고</b> 서버 작업은
+  시작되지 않았다. 막힌 것은 저장소 루트의 <span class="file">BLOCKERS.md</span> 에 있다 —
+  <b>거기부터 읽어라.</b></p>
+</header>
+
+<h2><span class="n">01</span>무엇이 정본인가</h2>
+<p>이 저장소는 <span class="file">_v1</span> → <span class="file">_uiux</span> 로 판을 올린다.
+이름만으로는 알 수 없어서 여기 적는다. 옛 판은
+<span class="file">phase1/_superseded/</span> 에 있고 그 폴더의
+<span class="file">README.txt</span> 가 무엇이 무엇을 대체했는지 적어 둔다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇의 정본</th><th>파일</th></tr></thead>
+  <tbody>
+    <tr><td><b>활동 화면 (시각 정본)</b></td><td><span class="file">activity_mockups_uiux.html</span> — 22화면</td></tr>
+    <tr><td>홈 · 교재학습 · 자모 목록</td><td><span class="file">nav_mockup_uiux.html</span></td></tr>
+    <tr><td>게임 다섯</td><td><span class="file">game_screens_uiux.html</span></td></tr>
+    <tr><td>VocaShot 혼자 하기</td><td><span class="file">vocashot_play_uiux.html</span></td></tr>
+    <tr><td>셸 컴포넌트 명세</td><td><span class="file">Shell_component_spec_uiux.html</span></td></tr>
+    <tr><td>구현 사양(수치)</td><td><span class="file">build_spec_uiux.html</span></td></tr>
+    <tr><td>개발 요구사항 · DB · 라우트</td><td><span class="file">Phase1_dev_spec_v1.html</span></td></tr>
+    <tr><td>API 필드</td><td><span class="file">api_schema_v1.html</span></td></tr>
+    <tr><td>MY 누적 학습 기록</td><td><span class="file">my_learning_summary_v1.html</span> (별도 전달)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout warn">
+  <p><b>"기획서" 라 부를 문서가 넷이라 헷갈린다.</b> 정리하면 —
+  <span class="file">renewal_masterplan_v1</span> 이 <b>순서</b>(무엇부터),
+  <span class="file">renewal_plan_v0.2</span> 이 <b>제품 초안</b>(무엇을),
+  <span class="file">phase1/renewal_plan_v1</span> 이 <b>Phase 1 작업 목록</b>,
+  그리고 <b>이 문서</b>가 Phase 1 의 현재 상태다. 개발 착수는
+  <span class="file">Phase1_dev_spec_v1</span> 과 이 문서만 보면 된다.</p>
+</div>
+
+<h2><span class="n">02</span>화면 — 다 됐다</h2>
+<p>목업이 있는 화면은 전부 이식했다. 사람 눈이 아니라 스크립트가 판정한다 —
+<span class="file">app</span> 에서 <b>npm run parity:activity</b> 를 돌리면 컴포넌트를
+정적 HTML 로 그려 캡처한 목업과 구조를 비교하고, <b>22개가 일치</b>한다.
+봐주는 차이는 실행할 때마다 같이 찍힌다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>수</th><th>상태</th></tr></thead>
+  <tbody>
+    <tr><td>활동 컴포넌트</td><td>22</td><td><span class="pill done">목업 일치</span></td></tr>
+    <tr><td><span class="file">/learn/*</span> 학습 화면</td><td>6</td><td><span class="pill done">이식</span> 읽기·듣기·빈칸·단어학습·어휘문제·롤플레잉</td></tr>
+    <tr><td><span class="file">/learn/jamo/*</span> 자모</td><td>6</td><td><span class="pill done">이식</span> 경로도 옮겼다 — §04</td></tr>
+    <tr><td>게임 + 목록</td><td>6</td><td><span class="pill done">반영</span></td></tr>
+    <tr><td>홈 · 교재학습 · 자모 목록 · 탭 바</td><td>4</td><td><span class="pill done">반영</span></td></tr>
+    <tr><td>표현클립 · MY</td><td>2</td><td><span class="pill done">다국어·게스트 처리</span> 목업 없음</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">03</span>목업을 일부러 벗어난 여섯 곳</h2>
+<p>v1 §03 이 <b>"구현이 목업과 다르면 목업이 기준"</b> 이라고 못박았다. 아래 여섯은
+그 기준을 <b>알고 벗어난 것</b>이다. 이유가 없으면 다음 사람이 목업대로 되돌린다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>목업</th><th>구현</th><th>왜</th></tr></thead>
+  <tbody>
+    <tr><td>O/X 라벨</td><td>들은 문장</td><td><b>제시 문장</b></td>
+      <td>들은 것은 오디오뿐이고 그 글자는 맞는지 가릴 대상이다. <b>목업 문구가 틀렸다</b></td></tr>
+    <tr><td>문항 사이 이동</td><td>없음</td><td><b>진행 막대를 누른다</b></td>
+      <td>도크에 이전을 넣으면 주 버튼이 좁아져 목업과 달라진다. 막대는 5px 이라 누를 자리를 23px 로 넓혔다(생김새는 그대로)</td></tr>
+    <tr><td>지시문 출처</td><td>—</td><td><b>원장(xlsx)이 정본</b></td>
+      <td>같은 읽기 활동에서 객관식과 O/X 지시문이 다르다. 실제로 <b>O/X 177문항이 객관식 지시문</b>을 달고 있었다. i18n 의 activity.instr* 는 대비책</td></tr>
+    <tr><td>녹음 시작·종료</td><td>누르면 바로</td><td><b>2초 준비 · 1초 마무리</b></td>
+      <td>마이크보다 사람이 빨라 첫 음절이 잘린다. <b>녹음 자체는 누르는 즉시 시작</b>하므로 안내를 무시하고 말해도 잃는 것이 없다</td></tr>
+    <tr><td>마이크 거부</td><td>전체 화면</td><td><b>화면 위 알림 + 다시 시도</b></td>
+      <td>설정에서 켜고 돌아왔을 때 있던 자리를 잃지 않아야 한다. 전체 화면짜리는 <b>활동 진입 전부터 막힌 경우</b>로 남겼다</td></tr>
+    <tr><td>선택지 채점</td><td>고른 것 하나만</td><td><b>틀린 것이 여럿 남는다</b></td>
+      <td>맞을 때까지 다시 고르는 기존 동작을 살렸다. 자모 <b>듣고 고르기는 두 번 누르던 것을 한 번으로</b> 바꿨다(다른 활동과 같게)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">목업에 없어서 새로 만든 CSS 여덟 — <span class="file">.instruction p</span> ·
+<span class="file">.image-choices</span> · <span class="file">.grammar-note</span> ·
+<span class="file">.catalog-empty</span> · <span class="file">.preview-extra</span> ·
+<span class="file">.canvas-host</span> · <span class="file">.record-card .heard .miss</span> ·
+진행막대 <span class="file">.seg</span>. 각 규칙 위에 왜 만들었는지 적어 두었다.</p>
+
+<h2><span class="n">04</span>그 밖에 오늘 바뀐 것</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>내용</th></tr></thead>
+  <tbody>
+    <tr><td><b>콘텐츠 v23 반영</b></td>
+      <td>앱은 8/6 이식본에 머물러 있었다. 원장(xlsx)과 앱 JSON 을 잇는 것이 없어서다.
+        <span class="file">app/scripts/build-content.py</span> 가 그 일을 한다 —
+        <b>원장이 정본이고 JSON 은 산출물</b>이다. 들어온 것: 듣기 <b>375문항의 빈 지시문</b>(5개 언어) ·
+        신판 대사 · n4 가 8열→27열 · 플래시카드 12세트 327장 · 문법 234개</td></tr>
+    <tr><td><b>자모 경로 이동</b></td>
+      <td><span class="file">/book/chapter/unit/{scene}/{code}</span> →
+        <span class="file">/learn/jamo/*</span>. 이름도 바꿨다 — <span class="file">listen-repeat2</span> 는
+        2판이 아니라 다른 활동이고 <span class="file">read-write</span> 는 단어 쓰기다.
+        <b>명세 §4 와 다르다 — BLOCKERS §2</b></td></tr>
+    <tr><td><b>koreanapi 편입</b></td>
+      <td><span class="file">api/</span> 로 그대로 들여왔다. 자격증명은 전부 환경변수다.
+        <span class="file">api/IMPORT.md</span></td></tr>
+    <tr><td><b>MY — 게스트 차단</b></td>
+      <td>계정 화면이라 게스트는 로그인해야 들어온다. 이걸 넣다가 <b>죽은 경로를 찾았다</b> —
+        로그인 화면이 게스트까지 돌려보내서, 로그인 시 게스트 기록을 계정으로 옮기는
+        <span class="file">migrateGuestData</span> 가 <b>한 번도 쓰이지 않았다</b></td></tr>
+    <tr><td><b>표현클립 다국어</b></td>
+      <td>한국어 화면에 영어 안내문이 있었고 신고 사유는 한국어로 박혀 있었다. 12문구를 5개 언어로.
+        급·과 태그로 클립을 추천하는 안은 <b>접었다</b> — 10단어 과 하나에 329개 중 221개가 걸려 고르는 데 도움이 안 된다</td></tr>
+    <tr><td><b>진행 막대 한 칸</b></td>
+      <td>칸이 하나면 늘 꽉 찬 줄이라 어디쯤인지를 말해 주지 못한다. 그리지 않는다</td></tr>
+    <tr><td><b>리포트 축 이름</b></td>
+      <td>레이더는 번역되는데 바로 아래 칩은 한국어였다. 같은 축을 가리키므로 <b>이름은 앱이 쥔다</b>.
+        축 이름을 번역하니 <b>레이더가 잘려서</b> viewBox 를 넓혔다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">결정마다 왜 그렇게 했는지 커밋 메시지에 있다 —
+<b>git log --format='%h %s%n%b' --since='2026-08-20'</b>. 하루 29건이다.</p>
+
+<h2><span class="n">05</span>남은 일 — 순서대로</h2>
+<div class="cards">
+  <div class="card"><div class="k">1</div><div class="nm">프로덕션 빌드 고치기</div>
+    <div class="d">React 18 · react-router 가 19 의 use 를 쓴다. <b>지금 배포가 안 된다</b>.
+      dev 와 typecheck 는 통과하므로 놓치기 쉽다 — BLOCKERS §1</div></div>
+  <div class="card"><div class="k">2</div><div class="nm">자모 라우트 — 명세와 코드 중 하나로</div>
+    <div class="d">명세는 1개 라우트 + sub, 구현은 6개 + code. 문서와 코드가 정면으로 다르다 — BLOCKERS §2</div></div>
+  <div class="card"><div class="k">3</div><div class="nm">DB 2종 · API 6종</div>
+    <div class="d">ko_activity_state · ko_review_queue 신설, /activity/* 와 /review-queue.
+      <b>api_schema §6 의 네 물음이 아직 답이 없다</b></div></div>
+  <div class="card"><div class="k">4</div><div class="nm">ActivityShell 상태 배선</div>
+    <div class="d">화면 22종은 다 있다. 3번이 끝나면 상태만 붙인다</div></div>
+  <div class="card"><div class="k">5</div><div class="nm">flashcard · mission-chat 이관</div>
+    <div class="d">교재학습 목록이 실제로 여는 길인데 아직 구 경로다</div></div>
+  <div class="card"><div class="k">6</div><div class="nm">받아쓰기 12개 — 만들까 버릴까</div>
+    <div class="d">콘텐츠만 있고 화면·경로가 없다. 목업에도 없다</div></div>
+</div>
+
+<h2><span class="n">06</span>건드리면 깨지는 것</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>대상</th><th>왜</th></tr></thead>
+  <tbody>
+    <tr><td><span class="file">app/src/mockups/</span></td>
+      <td>목업에서 캡처한 마크업이다. 목업 대조의 <b>기준</b>이므로 손으로 고치면 검사가 의미를 잃는다.
+        <span class="file">screens.ts</span> 가 스토리가 읽는 쪽이고 <span class="file">*.html</span> 은 사본이다 — <b>둘을 같이</b> 고쳐야 한다</td></tr>
+    <tr><td><span class="file">app/src/shared/data/n*.json</span></td>
+      <td>원장에서 만들어진 산출물이다. 손으로 고치면 다음 생성에서 지워진다</td></tr>
+    <tr><td>이관한 CSS 넷</td>
+      <td><span class="file">activity · game · nav · vocashot .css</span> 는 목업의 한 줄 한 규칙 형태를
+        일부러 지킨다. 포맷터를 돌리면 <span class="file">activity.css</span> 가 1,800줄 부풀어
+        줄 단위 대조가 불가능해진다 — 그래서 <b>biome 대상에서 빼 두었다</b></td></tr>
+    <tr><td><span class="file">menu_type</span> 값</td>
+      <td><span class="file">fill-blank</span> · <span class="file">listen-answer</span> ·
+        <span class="file">read-answer</span> 는 <b>DB 값이라 바꾸지 않는다</b>(명세 §2.2).
+        라우트 이름만 바뀌었다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">07</span>회신 부탁드릴 것</h2>
+<ol>
+  <li><b>빌드</b> — React 19 로 올릴지, react-router 를 내릴지</li>
+  <li><b>자모 라우트</b> — 명세를 고칠지, API 가 생길 때 구현을 옮길지</li>
+  <li><b>api_schema §6 네 물음</b> — 해설 문자열 포함 · DELETE /review-queue 유지 ·
+    진행 저장 주기 · 게스트 허용 범위</li>
+  <li><b>받아쓰기</b> — 만들까 버릴까</li>
+</ol>
+
+<hr>
+<footer class="qa">
+  대체: <span class="file">handoff_v1.html</span>.
+  같이 볼 것: 저장소 루트 <span class="file">README.md</span> ·
+  <span class="file">BLOCKERS.md</span> · <span class="file">api/IMPORT.md</span> ·
+  <span class="file">app/src/shared/data/README.md</span>.
+</footer>
+</main>
