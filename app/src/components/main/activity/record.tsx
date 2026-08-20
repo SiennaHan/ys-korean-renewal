@@ -4,11 +4,19 @@ import { IconCheck, IconMic, IconStop, IconVolume } from "./icons";
 /**
  * 녹음 버튼의 모습. 한 버튼을 눌러 idle → recording → done 으로 돈다.
  *
- * sending 은 목업에 없다. 목업은 녹음이 끝나면 바로 판정이 나오는 것으로 그렸는데
- * 실제로는 서버가 발음을 들어 보는 사이가 있고, 그동안 버튼을 눌러도 아무 일이
- * 없으면 학생이 다시 누르게 된다.
+ * 목업에 없는 세 가지가 있다. 목업은 누르는 순간과 결과 사이를 그리지 않았는데,
+ * 실제로는 그 사이마다 기다리는 시간이 있고 비워 두면 학생이 버튼을 또 누른다.
+ *  · preparing — 마이크가 자리를 잡을 때까지. 이때 말하면 첫 음절이 잘린다
+ *  · finishing — 다 눌렀지만 끝말을 담는 동안
+ *  · sending   — 서버가 발음을 들어 보는 동안
  */
-export type RecordMode = "idle" | "recording" | "done" | "sending";
+export type RecordMode =
+	| "idle"
+	| "preparing"
+	| "recording"
+	| "finishing"
+	| "done"
+	| "sending";
 
 function Wave() {
 	return (
@@ -44,22 +52,17 @@ export function RecordControl({
 	doneHint?: string;
 }) {
 	const { t } = useTranslation();
-	const title =
-		mode === "recording"
-			? t("activity.recordingTitle")
-			: mode === "sending"
-				? t("activity.sendingTitle")
-				: mode === "done"
-					? t("activity.recordDoneTitle")
-					: t("player.recordHint");
-	const sub =
-		mode === "recording"
-			? t("activity.recordingSub")
-			: mode === "sending"
-				? t("activity.sendingSub")
-				: mode === "done"
-					? (doneHint ?? t("activity.recordDoneSub"))
-					: t("activity.recordIdleSub");
+	const COPY: Record<RecordMode, [string, string]> = {
+		idle: ["player.recordHint", "activity.recordIdleSub"],
+		preparing: ["activity.preparingTitle", "activity.preparingSub"],
+		recording: ["activity.recordingTitle", "activity.recordingSub"],
+		finishing: ["activity.finishingTitle", "activity.finishingSub"],
+		done: ["activity.recordDoneTitle", "activity.recordDoneSub"],
+		sending: ["activity.sendingTitle", "activity.sendingSub"],
+	};
+	const [titleKey, subKey] = COPY[mode];
+	const title = t(titleKey);
+	const sub = mode === "done" ? (doneHint ?? t(subKey)) : t(subKey);
 	return (
 		<div className="record-core">
 			<button
@@ -67,10 +70,12 @@ export function RecordControl({
 				className={`record-button ${mode}`}
 				data-action={action}
 				aria-label={title}
-				disabled={mode === "sending"}
+				disabled={
+					mode === "preparing" || mode === "finishing" || mode === "sending"
+				}
 				onClick={onPress}
 			>
-				{mode === "recording" ? (
+				{mode === "recording" || mode === "finishing" ? (
 					<IconStop />
 				) : mode === "done" || mode === "sending" ? (
 					<IconCheck />
@@ -81,7 +86,7 @@ export function RecordControl({
 			<span className="record-copy">
 				<b>{title}</b>
 				<span>{sub}</span>
-				{mode === "recording" && <Wave />}
+				{(mode === "recording" || mode === "finishing") && <Wave />}
 			</span>
 		</div>
 	);

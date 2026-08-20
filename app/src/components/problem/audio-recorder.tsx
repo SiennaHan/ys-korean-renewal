@@ -21,7 +21,22 @@ interface Props {
 	 */
 	dock?: boolean;
 }
-type RecorderStatus = "idle" | "recording" | "recorded" | "uploading";
+type RecorderStatus =
+	| "idle"
+	| "preparing"
+	| "recording"
+	| "finishing"
+	| "recorded"
+	| "uploading";
+
+/**
+ * 누르자마자 말하면 첫 음절이 잘린다 — 마이크보다 사람이 빠르다.
+ * "준비 중"을 2초 보여 주어 그동안 말하지 않게 한다.
+ * 녹음 자체는 누르는 즉시 시작한다. 그래야 그 사이에 말해도 잃는 것이 없다.
+ */
+const PREPARE_MS = 2000;
+/** 끝났다고 누른 뒤에도 1초 더 담는다 — 마지막 말이 잘리지 않게 */
+const TAIL_MS = 1000;
 
 const baseButtonClasses =
 	"flex justify-center items-center rounded-full text-[#fff] transition-all duration-200 ease-in-out cursor-pointer \
@@ -59,18 +74,33 @@ const AudioRecorder = (props: Props) => {
 		}
 	}, [recordingBlob]);
 
+	/** 준비·마무리 타이머. 화면을 떠나면 걷어 낸다 */
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	useEffect(() => {
+		return () => {
+			if (timerRef.current) clearTimeout(timerRef.current);
+		};
+	}, []);
+
 	const handlePrimaryAction = () => {
 		if (recorderStatus === "idle") {
+			// 녹음은 지금 시작하고 화면만 준비 중으로 둔다
 			startRecording();
-			setRecorderStatus("recording");
+			setRecorderStatus("preparing");
+			timerRef.current = setTimeout(
+				() => setRecorderStatus("recording"),
+				PREPARE_MS,
+			);
 		} else if (recorderStatus === "recording") {
-			stopRecording();
+			setRecorderStatus("finishing");
+			timerRef.current = setTimeout(() => stopRecording(), TAIL_MS);
 		} else if (recorderStatus === "recorded") {
 			handleUpload();
 		}
 	};
 
 	const handleCancelOrDelete = () => {
+		if (timerRef.current) clearTimeout(timerRef.current);
 		if (isRecording) stopRecording();
 
 		setIsPlaying(false);
@@ -122,14 +152,14 @@ const AudioRecorder = (props: Props) => {
 	if (props.dock) {
 		// recorded 는 목업의 done 과 자리는 같지만 하는 일이 다르다 —
 		// 다시 녹음이 아니라 발음을 확인하러 보낸다. 그래서 글을 갈아 끼운다.
+		// recorded 는 목업의 done 과 자리는 같지만 하는 일이 다르다 —
+		// 다시 녹음이 아니라 발음을 확인하러 보낸다. 그래서 글을 갈아 끼운다.
 		const mode: RecordMode =
-			recorderStatus === "recording"
-				? "recording"
-				: recorderStatus === "uploading"
-					? "sending"
-					: recorderStatus === "recorded"
-						? "done"
-						: "idle";
+			recorderStatus === "uploading"
+				? "sending"
+				: recorderStatus === "recorded"
+					? "done"
+					: recorderStatus;
 		return (
 			<>
 				<RecordControl
@@ -162,12 +192,19 @@ const AudioRecorder = (props: Props) => {
 					<div className="">
 						<CircularProgress
 							sqSize={66}
-							isStart={recorderStatus === "recording"}
+							isStart={
+								recorderStatus === "recording" || recorderStatus === "finishing"
+							}
 						/>
 					</div>
 					<button
 						onClick={handlePrimaryAction}
-						disabled={props.disabled || recorderStatus === "uploading"}
+						disabled={
+							props.disabled ||
+							recorderStatus === "preparing" ||
+							recorderStatus === "finishing" ||
+							recorderStatus === "uploading"
+						}
 						className={clsx(
 							baseButtonClasses,
 							"absolute top-[3px] left-[3px] z-10 h-[60px] w-[60px]", // 48px 크기 적용
@@ -175,8 +212,12 @@ const AudioRecorder = (props: Props) => {
 						aria-label="Primary action"
 					>
 						{recorderStatus === "idle" && <MicIcon color={"#fff"} />}
-						{recorderStatus === "recording" && (
+						{(recorderStatus === "recording" ||
+							recorderStatus === "finishing") && (
 							<div className="size-[16px] rounded-[3px] bg-[#fff]" />
+						)}
+						{recorderStatus === "preparing" && (
+							<div className="h-6 w-6 animate-spin rounded-full border-[#fff] border-b-2" />
 						)}
 						{recorderStatus === "recorded" && <Upload size={24} />}
 						{recorderStatus === "uploading" && (
