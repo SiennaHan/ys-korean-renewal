@@ -562,6 +562,7 @@ export default function AiRoleplay({
 					<span className="slot" aria-hidden="true" />
 					<div className="main">
 						<AudioRecorder
+							dock
 							setResult={handleRecordResult}
 							disabled={playState !== "practice-turn" || evaluating}
 						/>

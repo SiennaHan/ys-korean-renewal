@@ -1,8 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { IconCheck, IconMic, IconStop, IconVolume } from "./icons";
 
-/** 녹음 버튼의 세 모습. 한 버튼을 눌러 idle → recording → done 으로 돈다 */
-export type RecordMode = "idle" | "recording" | "done";
+/**
+ * 녹음 버튼의 모습. 한 버튼을 눌러 idle → recording → done 으로 돈다.
+ *
+ * sending 은 목업에 없다. 목업은 녹음이 끝나면 바로 판정이 나오는 것으로 그렸는데
+ * 실제로는 서버가 발음을 들어 보는 사이가 있고, 그동안 버튼을 눌러도 아무 일이
+ * 없으면 학생이 다시 누르게 된다.
+ */
+export type RecordMode = "idle" | "recording" | "done" | "sending";
 
 function Wave() {
 	return (
@@ -25,25 +31,35 @@ export function RecordControl({
 	mode,
 	action,
 	onPress,
+	doneHint,
 }: {
 	mode: RecordMode;
 	/** 목업이 화면마다 다르게 붙여 둔 값 (srec · chatRecord · roleRecord) */
 	action: string;
 	onPress?: () => void;
+	/**
+	 * 녹음을 마친 뒤 그 버튼이 무엇을 하는지. 목업은 다시 녹음이지만
+	 * 화면에 따라 확인을 보내는 자리이기도 하다 — 하는 일과 글이 어긋나면 안 된다.
+	 */
+	doneHint?: string;
 }) {
 	const { t } = useTranslation();
 	const title =
 		mode === "recording"
 			? t("activity.recordingTitle")
-			: mode === "done"
-				? t("activity.recordDoneTitle")
-				: t("player.recordHint");
+			: mode === "sending"
+				? t("activity.sendingTitle")
+				: mode === "done"
+					? t("activity.recordDoneTitle")
+					: t("player.recordHint");
 	const sub =
 		mode === "recording"
 			? t("activity.recordingSub")
-			: mode === "done"
-				? t("activity.recordDoneSub")
-				: t("activity.recordIdleSub");
+			: mode === "sending"
+				? t("activity.sendingSub")
+				: mode === "done"
+					? (doneHint ?? t("activity.recordDoneSub"))
+					: t("activity.recordIdleSub");
 	return (
 		<div className="record-core">
 			<button
@@ -51,11 +67,12 @@ export function RecordControl({
 				className={`record-button ${mode}`}
 				data-action={action}
 				aria-label={title}
+				disabled={mode === "sending"}
 				onClick={onPress}
 			>
 				{mode === "recording" ? (
 					<IconStop />
-				) : mode === "done" ? (
+				) : mode === "done" || mode === "sending" ? (
 					<IconCheck />
 				) : (
 					<IconMic />
