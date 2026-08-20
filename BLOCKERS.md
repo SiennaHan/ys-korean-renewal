@@ -35,39 +35,53 @@ npm run parity:activity  22개 화면 일치
 ⚠️ **npm 으로 설치하지 마라.** `package-lock.json` 이 다시 생기면 같은 일이 반복된다.
 `pnpm install` 을 쓴다.
 
-한 가지 남는다 — `app/README.md` 가 아직 **"React 19"** 라고 적고 있고(실제 18.3.1),
-`koreanapi` 포트도 8000 으로 적혀 있다(앱 `.env` 는 8799). 그 파일은 다른 저장소
-설명이라 통째로 갱신 대상이다.
+`app/README.md` 은 갈아 썼다. 벤더에서 온 영어 글이 사실과 어긋난 곳이 넷이었다 —
+React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.example` ·
+`/jamolist` 를 자모 화면이라 적은 것(빈 스텁이다).
 
-## 2. 자모 라우트가 명세와 다르다 · 판단 필요
+## 2. 자모 라우트 — 명세가 옳았고 전제가 늦게 왔다 · 진행 중
 
 `Phase1_dev_spec_v1.html` §4 는 이렇게 못박는다.
 
 > `/learn/jamo?level=1&lesson=&sub=1~6` ← 5개 라우트 · **6→1 통합**
 > **콘텐츠 ID를 URL에서 제거한다** — `$code`(YK0041)·`$id`(C4) 노출 폐지.
-> 급·과만 쿼리로 받고 문항 목록은 서버가 결정.
 
-구현은 **6개 라우트에 `?code=` 를 남겼다.**
+구현은 아직 **6개 라우트에 `?code=` 를 남기고 있다.**
 
 ```
-/learn/jamo/pronounce?code=YK0001      ← listen-repeat
-/learn/jamo/word-repeat?code=YK0003    ← listen-repeat2
-/learn/jamo/combine?code=YK0002        ← write
-/learn/jamo/combine3?code=YK0032       ← write3
-/learn/jamo/word-write?code=YK0004     ← read-write
-/learn/jamo/choose?code=YK0005         ← listen
+/learn/jamo/pronounce?code=YK0001      ← listen-repeat   (sub 1)
+/learn/jamo/combine?code=YK0002        ← write           (sub 2)
+/learn/jamo/word-repeat?code=YK0003    ← listen-repeat2  (sub 3)
+/learn/jamo/word-write?code=YK0004     ← read-write      (sub 4)
+/learn/jamo/choose?code=YK0005         ← listen          (sub 5)
+/learn/jamo/combine3?code=YK0032       ← write3          (sub 6)
 ```
 
-**왜 이렇게 갔나.** 자모 활동은 급·과가 아니라 묶음(모듈)에 달려 있다 — 1과 안에
-`모음1` 과 `자음1` 이 각각 자기 활동을 갖는다. 명세의 `sub=1~6` 은 **문항 목록을
-서버가 정한다**는 전제 위에 서 있고 그 서버(API 6종)가 아직 없다.
+**어긴 것이 아니다.** 명세의 주소 방식은 자모 콘텐츠가 `(과, sub, 묶음)` 으로
+주소를 잡을 때 성립하는데, 그 콘텐츠가 원장에 없었다. 구 콘텐츠는 **묶음이 모듈
+경계**여서(모음1·자음1·자음2가 각각 별개 모듈) `과+sub` 하나로는 3개를 가리켰다.
+그래서 코드로 주소를 잡고 있었다.
 
-**정해야 할 것** — 명세를 구현에 맞게 고칠지, API 가 생길 때 구현을 명세대로 옮길지.
-둘 다 되지만 **문서와 코드가 정면으로 다른 상태를 두면 안 된다.**
+**2026-08-20 에 그 전제를 채웠다.** 구 앱 자모 529문항을 원장으로 포팅했다 —
+`글로벌_교재기반_콘텐츠_v24.xlsx` 의 `n8_jamo`, 컬럼 12→31.
+묶음이 `jamo_group` · `letter` 라는 **데이터 칸**이 되었으므로 이제
+`?level&lesson&sub` 로 주소가 잡힌다.
 
-구 경로(`/book/chapter/unit/{scene}/{code}`)는 리다이렉트로 살아 있다.
+**남은 것은 순서뿐이다.**
 
----
+| | | |
+|---|---|---|
+| 3 | **포팅 검수** | 529행 전부 `review_status=draft`. 기계적으로 옮긴 것이라 원본 대조가 필요하다 — `legacy_id`(`Y3W35`)·`legacy_module`(`YK0001`) 열로 한 행씩 맞춰 본다 |
+| 4 | 생성기 + 화면 | `build-content.py` 에 `n8_jamo` 추가, 6화면의 데이터 층을 `problem.ts` → JSON 으로 |
+| 5 | 라우트 통합 | 6개 → `/learn/jamo?level&lesson&sub` 하나. `?code=` 제거 |
+
+**검수(3)가 끝나기 전에는 4·5 를 하지 않는다.** 검수 안 된 콘텐츠가 화면에 올라가고,
+틀리면 셋을 다시 해야 한다. 그때까지 앱은 `problem.ts` 를 그대로 쓴다 —
+지금 아무것도 깨져 있지 않다.
+
+포팅하면서 명세 오류 넷을 찾았다. `jamo_authoring_spec_v1.html` 맨 위에 적어 두었다 —
+영상 컬럼 누락(288문항) · 자모 격자가 `selection1~3` 에 안 들어감 · 답이 셋 필요 ·
+`answer_index` 가 0 부터(§4 는 1 부터라고 적었으나 원장의 다른 시트가 전부 0 부터다).
 
 ## 3. 라우트 통합이 절반이다 · 남은 작업
 
@@ -155,9 +169,9 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 | 시트 | 상태 |
 |---|---|
 | `n7_mission_chat` | 예시 1행. 시나리오·프롬프트 신규 저작 필요 (1~8급 전체) |
-| `n8_jamo` | 예시 1행. 구 앱(`pulley_korean_exercise`)에 1권 한정 콘텐츠가 있어 **포팅 여부 결정** 필요 |
+| `n8_jamo` | **포팅 완료**(v24 · 529행). 다만 전부 `draft` — 검수 대기. §2 |
 
-생성기가 이 둘을 건너뛰고 매번 그 사실을 찍는다.
+생성기는 아직 둘 다 건너뛴다 — `n8_jamo` 는 검수 뒤에 붙인다(§2).
 
 ---
 

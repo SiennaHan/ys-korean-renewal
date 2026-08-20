@@ -152,6 +152,8 @@
     <tr><td><span class="file">api_schema_v1</span></td><td>API 요청·응답 필드. <b>§6 의 네 물음이 아직 답이 없다</b></td></tr>
     <tr><td><span class="file">../G2_shell_and_state_spec_v1</span></td><td><b>활동 상태 머신</b>과 정상 흐름 밖의 화면 · 접근성 결함 · 용어. dev spec 이 인용하는 근거다</td></tr>
     <tr><td><span class="file">my_learning_summary_v1</span></td><td>MY 누적 학습 기록에 필요한 데이터. 네 결정이 반영돼 있다</td></tr>
+    <tr><td><span class="file">../jamo_authoring_spec_v1</span></td><td>자모 콘텐츠 저작. <b>맨 위의 실측 정정을 먼저 읽어라</b> — §4 스키마가 기존 콘텐츠를 담지 못했다</td></tr>
+    <tr><td><b>콘텐츠 원장</b></td><td><span class="file">글로벌_교재기반_콘텐츠_v24.xlsx</span>(저장소 밖). <b>앱에 반영된 것은 v23</b> 이다</td></tr>
   </tbody>
 </table>
 </div>
@@ -263,7 +265,13 @@
       <td><span class="file">/book/chapter/unit/{scene}/{code}</span> →
         <span class="file">/learn/jamo/*</span>. 이름도 바꿨다 — <span class="file">listen-repeat2</span> 는
         2판이 아니라 다른 활동이고 <span class="file">read-write</span> 는 단어 쓰기다.
-        <b>명세 §4 와 다르다 — BLOCKERS §2</b></td></tr>
+        <b>아직 명세 §4 의 한 라우트 + sub 꼴이 아니다 — 자모 검수 뒤에 합친다. BLOCKERS §2</b></td></tr>
+    <tr><td><b>자모 콘텐츠를 원장으로</b></td>
+      <td>자모는 원장 밖(<span class="file">problem.ts</span>)에만 있어 <b>검수 이력이 없고</b>
+        한국어·영어뿐이었다 — 다른 활동은 5개 언어다. 529문항을
+        <span class="file">v24</span> 의 <span class="file">n8_jamo</span> 로 옮겼다(컬럼 12→31).
+        <b>전부 draft — 검수 대기이고 앱은 아직 problem.ts 를 쓴다.</b>
+        <span class="file">jamo_authoring_spec_v1</span> §4 스키마로는 담기지 않아 실측으로 넓혔다</td></tr>
     <tr><td><b>koreanapi 편입</b></td>
       <td><span class="file">api/</span> 로 그대로 들여왔다. 자격증명은 전부 환경변수다.
         <span class="file">api/IMPORT.md</span></td></tr>
@@ -274,6 +282,11 @@
     <tr><td><b>표현클립 다국어</b></td>
       <td>한국어 화면에 영어 안내문이 있었고 신고 사유는 한국어로 박혀 있었다. 12문구를 5개 언어로.
         급·과 태그로 클립을 추천하는 안은 <b>접었다</b> — 10단어 과 하나에 329개 중 221개가 걸려 고르는 데 도움이 안 된다</td></tr>
+    <tr><td><b>프로덕션 빌드 수리</b></td>
+      <td>배포가 안 되고 있었다. React 19 문제로 보였지만 <b>락파일이 둘</b>이어서
+        react-router 가 1.170 으로 떠오른 것이었다. 1.136.8 로 고정하고
+        <span class="file">package-lock.json</span> 을 지웠다.
+        <b>npm 으로 설치하지 마라</b> — 다시 깨진다. BLOCKERS §1</td></tr>
     <tr><td><b>진행 막대 한 칸</b></td>
       <td>칸이 하나면 늘 꽉 찬 줄이라 어디쯤인지를 말해 주지 못한다. 그리지 않는다</td></tr>
     <tr><td><b>리포트 축 이름</b></td>
@@ -288,19 +301,18 @@
 
 <h2><span class="n">05</span>남은 일 — 순서대로</h2>
 <div class="cards">
-  <div class="card"><div class="k">1</div><div class="nm">프로덕션 빌드 고치기</div>
-    <div class="d">React 18 · react-router 가 19 의 use 를 쓴다. <b>지금 배포가 안 된다</b>.
-      dev 와 typecheck 는 통과하므로 놓치기 쉽다 — BLOCKERS §1</div></div>
-  <div class="card"><div class="k">2</div><div class="nm">자모 라우트 — 명세와 코드 중 하나로</div>
-    <div class="d">명세는 1개 라우트 + sub, 구현은 6개 + code. 문서와 코드가 정면으로 다르다 — BLOCKERS §2</div></div>
+  <div class="card"><div class="k">1</div><div class="nm">flashcard · mission-chat 이관</div>
+    <div class="d">교재학습 목록이 실제로 여는 길인데 아직 구 경로다. 명세 §4 는 결과 화면도
+      셸 공통으로 합치라고 한다</div></div>
+  <div class="card"><div class="k">2</div><div class="nm">자모 포팅 검수 → 라우트 통합</div>
+    <div class="d">명세가 옳았고 전제(원장의 자모 콘텐츠)가 늦게 왔다. 529행을 v24 에 채웠으니
+      <b>검수</b> 뒤에 생성기·화면·라우트를 잇는다. 검수 전에는 손대지 않는다 — BLOCKERS §2</div></div>
   <div class="card"><div class="k">3</div><div class="nm">DB 2종 · API 6종</div>
     <div class="d">ko_activity_state · ko_review_queue 신설, /activity/* 와 /review-queue.
       <b>api_schema §6 의 네 물음이 아직 답이 없다</b></div></div>
   <div class="card"><div class="k">4</div><div class="nm">ActivityShell 상태 배선</div>
     <div class="d">화면 22종은 다 있다. 3번이 끝나면 상태만 붙인다</div></div>
-  <div class="card"><div class="k">5</div><div class="nm">flashcard · mission-chat 이관</div>
-    <div class="d">교재학습 목록이 실제로 여는 길인데 아직 구 경로다</div></div>
-  <div class="card"><div class="k">6</div><div class="nm">받아쓰기 12개 — 만들까 버릴까</div>
+  <div class="card"><div class="k">5</div><div class="nm">받아쓰기 12개 — 만들까 버릴까</div>
     <div class="d">콘텐츠만 있고 화면·경로가 없다. 목업에도 없다</div></div>
 </div>
 
