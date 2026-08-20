@@ -11,6 +11,7 @@ import {
 	IconClose,
 	IconNext,
 	IconVolume,
+	MicDeniedScreen,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { type RoleplayTurn, getScenarios } from "@/shared/data/roleplay";
@@ -310,6 +311,8 @@ export default function AiRoleplay({
 	}, [activeTab, scenario?.scenarioId, completedScenarios]);
 
 	const [evaluating, setEvaluating] = useState(false);
+	/** 마이크가 막혀 더 갈 수 없는 상태 */
+	const [micBlocked, setMicBlocked] = useState(false);
 
 	/** 사용자 녹음 완료 → OpenAI API로 발화 판정 */
 	const handleRecordResult = useCallback(
@@ -465,6 +468,16 @@ export default function AiRoleplay({
 		);
 	}
 
+	if (micBlocked) {
+		return (
+			<MicDeniedScreen
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+				onSkipActivity={handleSkip}
+			/>
+		);
+	}
+
 	return (
 		<ActivityFrame>
 			<ActivityAppBar
@@ -564,6 +577,7 @@ export default function AiRoleplay({
 						<AudioRecorder
 							dock
 							setResult={handleRecordResult}
+							onMicBlocked={() => setMicBlocked(true)}
 							disabled={playState !== "practice-turn" || evaluating}
 						/>
 					</div>

@@ -20,6 +20,11 @@ interface Props {
 	 * 켜지 않으면 예전 모습 그대로다(아직 안 옮긴 화면들이 쓴다).
 	 */
 	dock?: boolean;
+	/**
+	 * 마이크가 막혔을 때. 권한을 안 줬거나 거부했거나 장치가 없는 경우다.
+	 * 이 자리에서 알릴 수 없으므로(도크 한 칸이다) 화면이 받아 처리한다.
+	 */
+	onMicBlocked?: () => void;
 }
 type RecorderStatus =
 	| "idle"
@@ -82,11 +87,35 @@ const AudioRecorder = (props: Props) => {
 		};
 	}, []);
 
-	const handlePrimaryAction = () => {
+	/**
+	 * 마이크가 열리는지 먼저 확인한다.
+	 *
+	 * 라이브러리의 startRecording 은 실패해도 조용하다 — 그래서 권한을 안 준
+	 * 학생에게도 "녹음 중"이라고 말하고 있었다. 말하고, 완료를 누르고, 아무것도
+	 * 담기지 않은 것을 나중에 알게 된다.
+	 */
+	const micReady = async () => {
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+			// 확인만 하고 놓아 준다. 실제 녹음은 라이브러리가 다시 연다
+			for (const track of stream.getTracks()) track.stop();
+			return true;
+		} catch {
+			return false;
+		}
+	};
+
+	const handlePrimaryAction = async () => {
 		if (recorderStatus === "idle") {
-			// 녹음은 지금 시작하고 화면만 준비 중으로 둔다
-			startRecording();
+			// 마이크를 묻는 동안에도 준비 중을 보여 준다. 권한 창이 떠 있으면
+			// 그 사이가 길어질 수 있는데, 비워 두면 누른 것이 먹었는지 알 수 없다
 			setRecorderStatus("preparing");
+			if (!(await micReady())) {
+				setRecorderStatus("idle");
+				props.onMicBlocked?.();
+				return;
+			}
+			startRecording();
 			timerRef.current = setTimeout(
 				() => setRecorderStatus("recording"),
 				PREPARE_MS,
