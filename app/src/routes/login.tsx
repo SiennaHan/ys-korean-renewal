@@ -13,19 +13,23 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const { isSignedIn, login } = useAuth();
+	const { isLoggedInUser, login } = useAuth();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	// 로그인 상태가 커밋된 후 네비게이션 (setState 반영 후 실행)
+	/*
+	 * 로그인이 끝나면 홈으로. 게스트는 여기서 돌려보내지 않는다 —
+	 * isSignedIn 은 게스트도 참이라, 그걸로 막으면 게스트가 로그인 화면에
+	 * 닿을 수 없고 로그인 시 게스트 기록을 계정으로 옮기는 길도 함께 막힌다.
+	 */
 	useEffect(() => {
-		if (isSignedIn) {
+		if (isLoggedInUser) {
 			navigate({ to: "/main" });
 		}
-	}, [isSignedIn, navigate]);
+	}, [isLoggedInUser, navigate]);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -139,8 +143,7 @@ function LoginPage() {
 							{isLoading ? t("login.loggingIn") : t("login.loginButton")}
 						</Button>
 					</form>
-
-					</div>
+				</div>
 			</div>
 		</div>
 	);

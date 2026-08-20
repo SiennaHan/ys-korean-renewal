@@ -56,11 +56,9 @@ const vi = {
 	},
 	mypage: {
 		title: "Trang cá nhân",
-		guest: "Khách",
 		language: "Ngôn ngữ",
 		languageSetting: "Cài đặt ngôn ngữ",
 		signOut: "Đăng xuất",
-		signIn: "Đăng nhập",
 		changePhoto: "Đổi ảnh đại diện",
 		email: "Email",
 		editProfile: "Chỉnh sửa hồ sơ",

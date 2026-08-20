@@ -54,11 +54,9 @@ const zh = {
 	},
 	mypage: {
 		title: "我的页面",
-		guest: "游客",
 		language: "语言",
 		languageSetting: "语言设置",
 		signOut: "退出登录",
-		signIn: "登录",
 		changePhoto: "更换头像",
 		email: "邮箱",
 		editProfile: "修改个人信息",

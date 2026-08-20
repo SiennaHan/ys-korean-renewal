@@ -56,11 +56,9 @@ const ko = {
 	},
 	mypage: {
 		title: "마이 페이지",
-		guest: "게스트",
 		language: "언어",
 		languageSetting: "언어 설정하기",
 		signOut: "로그아웃",
-		signIn: "로그인",
 		changePhoto: "프로필 사진 변경",
 		email: "이메일",
 		editProfile: "프로필 정보 변경하기",

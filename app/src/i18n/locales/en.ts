@@ -56,11 +56,9 @@ const en = {
 	},
 	mypage: {
 		title: "My Page",
-		guest: "Guest",
 		language: "Language",
 		languageSetting: "Language Settings",
 		signOut: "Sign Out",
-		signIn: "Sign in",
 		changePhoto: "Change profile photo",
 		email: "Email",
 		editProfile: "Edit Profile",

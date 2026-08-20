@@ -56,11 +56,9 @@ const ja = {
 	},
 	mypage: {
 		title: "マイページ",
-		guest: "ゲスト",
 		language: "言語",
 		languageSetting: "言語設定",
 		signOut: "ログアウト",
-		signIn: "ログイン",
 		changePhoto: "プロフィール写真の変更",
 		email: "メール",
 		editProfile: "プロフィール変更",
