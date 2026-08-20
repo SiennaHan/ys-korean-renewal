@@ -213,6 +213,27 @@ const zh = {
 		kAnswered: "已完成",
 		kAccuracy: "正确率",
 		allAnswered: "{{total}}题全部完成",
+		answered: "{{total}}题中已作答{{answered}}题",
+	},
+	/** AI 대화 리포트 — 제목은 한국어·영어 짝이라 5개 로케일이 같다(목업 그대로) */
+	report: {
+		title: "AI 대화 리포트",
+		subtitle: "AI Chat Report",
+		keywordsDone: "完成的关键词",
+		score: "分数",
+		tabEvaluation: "评价",
+		tabSentences: "我的句子反馈",
+		axisPronunciation: "发音",
+		axisGrammar: "语法",
+		axisContent: "内容",
+		axisVocabulary: "词汇",
+		chartLabel: "发音、语法、内容、词汇评价",
+	},
+	/** 미션 브리핑 — 구역 제목은 목업이 영어로 고정해 두었다 */
+	briefing: {
+		scenario: "Conversation Scenario",
+		keyword: "Mission Keyword",
+		start: "开始对话",
 	},
 	review: {
 		homeCardTitle: "再练习",
@@ -226,7 +247,7 @@ const zh = {
 		loadFailed: "无法加载该活动。",
 		retry: "重试",
 		audioPreparing: "正在准备语音。",
-		micDenied: "麦克风未开启。可在浏览器设置中开启。",
+		micDenied: "麦克风未开启。\n可在浏览器设置中开启。",
 		micDeniedSkip: "跳过此活动",
 		recordAgain: "请再说一次。",
 		exitConfirmChat: "对话将从头开始。要退出吗？",

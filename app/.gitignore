@@ -21,3 +21,7 @@ dist/
 
 sample
 spec
+
+# 목업 대조 산출물
+.parity-out/
+

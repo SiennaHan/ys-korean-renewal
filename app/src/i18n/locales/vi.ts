@@ -216,6 +216,27 @@ const vi = {
 		kAnswered: "Đã làm",
 		kAccuracy: "Tỉ lệ đúng",
 		allAnswered: "Đã làm cả {{total}} câu",
+		answered: "Bạn đã trả lời {{answered}}/{{total}} câu",
+	},
+	/** AI 대화 리포트 — 제목은 한국어·영어 짝이라 5개 로케일이 같다(목업 그대로) */
+	report: {
+		title: "AI 대화 리포트",
+		subtitle: "AI Chat Report",
+		keywordsDone: "Từ khóa đã đạt",
+		score: "Điểm",
+		tabEvaluation: "Đánh giá",
+		tabSentences: "Phản hồi câu của tôi",
+		axisPronunciation: "Phát âm",
+		axisGrammar: "Ngữ pháp",
+		axisContent: "Nội dung",
+		axisVocabulary: "Từ vựng",
+		chartLabel: "Đánh giá phát âm, ngữ pháp, nội dung, từ vựng",
+	},
+	/** 미션 브리핑 — 구역 제목은 목업이 영어로 고정해 두었다 */
+	briefing: {
+		scenario: "Conversation Scenario",
+		keyword: "Mission Keyword",
+		start: "Bắt đầu hội thoại",
 	},
 	review: {
 		homeCardTitle: "Luyện lại",
@@ -229,7 +250,7 @@ const vi = {
 		loadFailed: "Không tải được hoạt động này.",
 		retry: "Thử lại",
 		audioPreparing: "Đang chuẩn bị âm thanh.",
-		micDenied: "Micro đang tắt. Bạn có thể bật trong cài đặt trình duyệt.",
+		micDenied: "Micro đang tắt.\nBạn có thể bật trong cài đặt trình duyệt.",
 		micDeniedSkip: "Bỏ qua hoạt động này",
 		recordAgain: "Vui lòng nói lại.",
 		exitConfirmChat: "Cuộc hội thoại sẽ bắt đầu lại từ đầu. Bạn muốn thoát?",

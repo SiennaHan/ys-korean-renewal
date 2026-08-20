@@ -17,7 +17,11 @@
   font-family: var(--font-sans);
 
   /* 목업 .screen 이 하던 일 — 화면 프레임이다.
-     높이는 host 가 준다(앱은 dvh, 스토리는 720 고정으로 목업과 맞춘다). */
+     높이는 host 가 준다(앱은 dvh, 스토리는 720 고정으로 목업과 맞춘다).
+     game.css 의 .game-frame 과 같게 부모를 채운다 — 부모가 높이를 안 주면
+     100% 는 auto 로 풀리므로 인라인 높이를 주는 쪽도 그대로 동작한다. */
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -29,6 +33,15 @@
   --blue-gray-200: #d7dbe3;
   --blue-gray-400: #adb3be;
   --blue-gray-800: #4b505a;
+
+  /* 대응이 있는데도 이름을 남겨 둔 것들.
+     목업은 이 색들을 SVG 속성과 인라인 style 에 직접 적어 두는데(리포트 레이더,
+     결과 해설), CSS 이관은 스타일시트만 옮기므로 그 마크업이 갈 곳을 잃는다.
+     캡처한 목업을 그대로 띄우는 "목업 대조" 스토리를 위해 남긴다 —
+     컴포넌트는 오른쪽 토큰을 직접 쓴다. */
+  --blue-500: var(--color-fill-primary);
+  --blue-gray-100: var(--color-line-normal);
+  --blue-gray-600: var(--color-text-sub);
 }
 
 .activity-frame .appbar { flex:0 0 58px; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:0 9px; background:var(--color-background-surface); }

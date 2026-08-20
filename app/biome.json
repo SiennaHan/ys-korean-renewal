@@ -7,7 +7,14 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["routeTree.gen.ts"]
+		"ignore": [
+			"routeTree.gen.ts",
+			"src/styles/activity.css",
+			"src/styles/game.css",
+			"src/styles/nav.css",
+			"src/styles/vocashot.css",
+			"src/mockups/screens.ts"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -25,13 +32,16 @@
 					"level": "warn",
 					"fix": "safe",
 					"options": {
-						"functions": ["clsx", "cva", "cn"]
+						"functions": [
+							"clsx",
+							"cva",
+							"cn"
+						]
 					}
 				}
 			}
 		}
 	},
-
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double"

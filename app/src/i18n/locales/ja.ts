@@ -216,6 +216,27 @@ const ja = {
 		kAnswered: "解いた問題",
 		kAccuracy: "正答率",
 		allAnswered: "{{total}}問すべて解きました",
+		answered: "{{total}}問中{{answered}}問に答えました",
+	},
+	/** AI 대화 리포트 — 제목은 한국어·영어 짝이라 5개 로케일이 같다(목업 그대로) */
+	report: {
+		title: "AI 대화 리포트",
+		subtitle: "AI Chat Report",
+		keywordsDone: "達成キーワード",
+		score: "スコア",
+		tabEvaluation: "評価",
+		tabSentences: "私の文へのフィードバック",
+		axisPronunciation: "発音",
+		axisGrammar: "文法",
+		axisContent: "内容",
+		axisVocabulary: "語彙",
+		chartLabel: "発音・文法・内容・語彙の評価",
+	},
+	/** 미션 브리핑 — 구역 제목은 목업이 영어로 고정해 두었다 */
+	briefing: {
+		scenario: "Conversation Scenario",
+		keyword: "Mission Keyword",
+		start: "会話を始める",
 	},
 	review: {
 		homeCardTitle: "もう一度",
@@ -229,7 +250,7 @@ const ja = {
 		loadFailed: "活動を読み込めませんでした。",
 		retry: "再試行",
 		audioPreparing: "音声を準備しています。",
-		micDenied: "マイクがオフになっています。ブラウザの設定でオンにできます。",
+		micDenied: "マイクがオフになっています。\nブラウザの設定でオンにできます。",
 		micDeniedSkip: "この活動をスキップ",
 		recordAgain: "もう一度話してください。",
 		exitConfirmChat: "会話は最初から始まります。終了しますか？",

@@ -15,7 +15,8 @@
 		"format:check": "biome format",
 		"typecheck": "tsc --noEmit",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"parity:activity": "npx tsx scripts/activity-parity.tsx && python3 scripts/activity-parity-diff.py"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

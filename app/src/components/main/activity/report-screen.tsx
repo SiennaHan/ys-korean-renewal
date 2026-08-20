@@ -1,0 +1,196 @@
+import { useTranslation } from "react-i18next";
+import {
+	ActivityAppBar,
+	ActivityFooter,
+	ActivityFrame,
+	Dock,
+	PrimaryButton,
+} from "./shell";
+
+/** 네 축의 점수 (0~100) — 발음 · 문법 · 내용 · 어휘 순서 */
+export type RadarValues = [number, number, number, number];
+
+const CX = 110;
+const CY = 104;
+const R = 74;
+/** 12시에서 시작해 시계 방향 */
+const angle = (i: number) => (Math.PI / 2) * i - Math.PI / 2;
+const point = (i: number, r: number): [number, number] => [
+	CX + Math.cos(angle(i)) * R * r,
+	CY + Math.sin(angle(i)) * R * r,
+];
+const ring = (r: number) =>
+	[0, 1, 2, 3].map((i) => point(i, r).map(Math.round).join(",")).join(" ");
+
+/**
+ * 네 축 레이더. 목업의 radar() 를 그대로 옮겼다 —
+ * 차트 라이브러리를 쓰면 격자 색·글자 크기·라벨 위치가 다 달라진다.
+ *
+ * 색만 semantic 토큰으로 바꿨다. 목업은 SVG 속성에 --blue-500 처럼 원색을
+ * 직접 적어 두는데, CSS 이관은 스타일시트만 옮기므로 이 이름들은 앱에 없다.
+ */
+function Radar({ values }: { values: RadarValues }) {
+	const { t } = useTranslation();
+	const shape = values
+		.map((v, i) =>
+			point(i, v / 100)
+				.map((n) => n.toFixed(1))
+				.join(","),
+		)
+		.join(" ");
+	const labels = [
+		t("report.axisPronunciation"),
+		t("report.axisGrammar"),
+		t("report.axisContent"),
+		t("report.axisVocabulary"),
+	];
+	return (
+		<svg
+			viewBox="0 0 220 210"
+			style={{
+				width: "100%",
+				maxWidth: 220,
+				height: "auto",
+				display: "block",
+				margin: "0 auto",
+			}}
+			aria-label={t("report.chartLabel")}
+			role="img"
+		>
+			{[0.25, 0.5, 0.75, 1].map((r) => (
+				<polygon
+					key={r}
+					points={ring(r)}
+					fill="none"
+					stroke="var(--color-line-normal)"
+				/>
+			))}
+			{[0, 1, 2, 3].map((i) => {
+				const [x, y] = point(i, 1);
+				return (
+					<line
+						key={i}
+						x1={CX}
+						y1={CY}
+						x2={x.toFixed(0)}
+						y2={y.toFixed(0)}
+						stroke="var(--color-line-normal)"
+					/>
+				);
+			})}
+			<polygon
+				points={shape}
+				fill="var(--color-fill-primary)"
+				fillOpacity=".22"
+				stroke="var(--color-fill-primary)"
+				strokeWidth="2"
+			/>
+			{labels.map((label, i) => {
+				const [x, y] = point(i, 1.32);
+				return (
+					<text
+						key={label}
+						x={x.toFixed(0)}
+						y={(y + 4).toFixed(0)}
+						textAnchor="middle"
+						fontSize="12"
+						fontWeight="600"
+						fill="var(--color-text-sub)"
+					>
+						{label}
+					</text>
+				);
+			})}
+		</svg>
+	);
+}
+
+/**
+ * AI 대화 리포트.
+ *
+ * 결과 화면과 같은 자리(머리말 고정 + 스크롤 본문 + 버튼 둘)를 쓰되
+ * 탭 줄이 하나 더 있다. 탭은 아직 화면을 바꾸지 않는다 —
+ * "나의 문장 피드백"은 문장별 채점이 붙는 다음 단계다.
+ */
+export function ReportScreen({
+	lesson,
+	hits,
+	missions,
+	values,
+	rows,
+	onExit,
+	onRetry,
+	onNext,
+}: {
+	lesson: string;
+	/** 달성한 미션 키워드 수 */
+	hits: number;
+	missions: number;
+	values: RadarValues;
+	/** 축마다 한 줄 총평 — [축 이름, 문장] */
+	rows: [string, string][];
+	onExit?: () => void;
+	onRetry?: () => void;
+	onNext?: () => void;
+}) {
+	const { t } = useTranslation();
+	const percent = Math.floor((hits / missions) * 100);
+
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} />
+			<main className="activity-content" style={{ padding: 0 }}>
+				<div className="rep-head">
+					<h2>{t("report.title")}</h2>
+					<p>{t("report.subtitle")}</p>
+					<div className="stat-row" style={{ marginTop: 12 }}>
+						<div>
+							<span>{t("report.keywordsDone")}</span>
+							<strong>
+								{hits} / {missions}
+							</strong>
+						</div>
+						<div>
+							<span>{t("report.score")}</span>
+							<strong>{percent}%</strong>
+						</div>
+					</div>
+				</div>
+				<div className="rep-tabs">
+					<div className="on">{t("report.tabEvaluation")}</div>
+					<div>{t("report.tabSentences")}</div>
+				</div>
+				<div className="scroll-area" style={{ padding: 12 }}>
+					<div style={{ background: "#fff", borderRadius: 10, padding: 10 }}>
+						<Radar values={values} />
+						<div
+							style={{
+								marginTop: 20,
+								display: "flex",
+								flexDirection: "column",
+								gap: 12,
+							}}
+						>
+							{rows.map(([key, text]) => (
+								<div className="as-row" key={key}>
+									<span className="k">{key}</span>
+									<p>{text}</p>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</main>
+			<ActivityFooter>
+				<Dock mainStyle={{ gap: 12 }}>
+					<PrimaryButton
+						label={t("result.practiceAgain")}
+						on
+						onClick={onRetry}
+					/>
+					<PrimaryButton label={t("result.nextActivity")} on onClick={onNext} />
+				</Dock>
+			</ActivityFooter>
+		</ActivityFrame>
+	);
+}

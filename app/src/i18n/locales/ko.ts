@@ -216,6 +216,27 @@ const ko = {
 		kAnswered: "푼 문항",
 		kAccuracy: "정답률",
 		allAnswered: "{{total}}개 다 풀었어요",
+		answered: "{{total}}개 중 {{answered}}개 풀었어요",
+	},
+	/** AI 대화 리포트 — 제목은 한국어·영어 짝이라 5개 로케일이 같다(목업 그대로) */
+	report: {
+		title: "AI 대화 리포트",
+		subtitle: "AI Chat Report",
+		keywordsDone: "완료한 키워드",
+		score: "점수",
+		tabEvaluation: "평가",
+		tabSentences: "나의 문장 피드백",
+		axisPronunciation: "발음",
+		axisGrammar: "문법",
+		axisContent: "내용",
+		axisVocabulary: "어휘",
+		chartLabel: "발음 문법 내용 어휘 평가",
+	},
+	/** 미션 브리핑 — 구역 제목은 목업이 영어로 고정해 두었다 */
+	briefing: {
+		scenario: "Conversation Scenario",
+		keyword: "Mission Keyword",
+		start: "대화 시작하기",
 	},
 	review: {
 		homeCardTitle: "다시 풀기",
@@ -229,7 +250,7 @@ const ko = {
 		loadFailed: "활동을 불러오지 못했어요.",
 		retry: "다시 시도",
 		audioPreparing: "소리를 준비 중이에요.",
-		micDenied: "마이크가 꺼져 있어요. 브라우저 설정에서 켤 수 있어요.",
+		micDenied: "마이크가 꺼져 있어요.\n브라우저 설정에서 켤 수 있어요.",
 		micDeniedSkip: "이 활동 건너뛰기",
 		recordAgain: "다시 말해 주세요.",
 		exitConfirmChat: "대화가 처음부터 시작돼요. 나갈까요?",

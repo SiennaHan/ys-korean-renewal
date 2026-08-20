@@ -217,6 +217,27 @@ const en = {
 		kAnswered: "Answered",
 		kAccuracy: "Accuracy",
 		allAnswered: "All {{total}} answered",
+		answered: "You answered {{answered}} of {{total}}",
+	},
+	/** AI 대화 리포트 — 제목은 한국어·영어 짝이라 5개 로케일이 같다(목업 그대로) */
+	report: {
+		title: "AI 대화 리포트",
+		subtitle: "AI Chat Report",
+		keywordsDone: "Keywords done",
+		score: "Score",
+		tabEvaluation: "Evaluation",
+		tabSentences: "My sentence feedback",
+		axisPronunciation: "Pronunciation",
+		axisGrammar: "Grammar",
+		axisContent: "Content",
+		axisVocabulary: "Vocabulary",
+		chartLabel: "Pronunciation, grammar, content and vocabulary",
+	},
+	/** 미션 브리핑 — 구역 제목은 목업이 영어로 고정해 두었다 */
+	briefing: {
+		scenario: "Conversation Scenario",
+		keyword: "Mission Keyword",
+		start: "Start the conversation",
 	},
 	review: {
 		homeCardTitle: "Practice again",
@@ -231,7 +252,8 @@ const en = {
 		loadFailed: "Couldn't load this activity.",
 		retry: "Try again",
 		audioPreparing: "Audio is being prepared.",
-		micDenied: "Microphone access is off. You can turn it on in your browser settings.",
+		micDenied:
+			"Microphone access is off.\nYou can turn it on in your browser settings.",
 		micDeniedSkip: "Skip this activity",
 		recordAgain: "Please say that again.",
 		exitConfirmChat: "Your conversation will start over. Leave anyway?",
