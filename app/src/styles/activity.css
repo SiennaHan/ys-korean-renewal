@@ -60,6 +60,10 @@
 .activity-frame .problem-card { padding:18px; border:1px solid var(--color-line-control); border-radius:16px; background:var(--color-background-surface); }
 .activity-frame .instruction { display:block; }
 .activity-frame .instruction h2 { margin:0; color:var(--color-text-heading); font-size:18px; line-height:26px; font-weight:600; letter-spacing:-.01em; }
+/* 목업에 없는 줄 — 목업은 한국어 지시문 하나만 그렸다. 원장이 문항마다
+   5개 언어 지시문을 들고 오므로 한국어를 배우는 사람이 읽을 줄을 아래 둔다.
+   브리핑·리포트 제목이 쓰는 병기와 같은 방식이다. 한국어 화면에서는 나오지 않는다 */
+.activity-frame .instruction p { margin:4px 0 0; color:var(--color-text-sub); font-size:14px; line-height:20px; font-weight:500; }
 .activity-frame .stimulus { margin-top:16px; padding-top:16px; border-top:1px solid var(--color-line-control); display:flex; flex-direction:column; }
 .activity-frame .word-focus { display:flex; align-items:center; gap:8px; min-height:50px; }
 .activity-frame .word-focus strong { color:var(--color-text-strong); font-size:32px; line-height:48px; font-weight:600; letter-spacing:-.02em; }

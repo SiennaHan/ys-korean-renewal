@@ -27,6 +27,14 @@ export function IconNext() {
 	);
 }
 
+export function IconPrev() {
+	return (
+		<svg viewBox="0 0 24 24" {...line} aria-hidden="true">
+			<path d="M15 6l-6 6 6 6" />
+		</svg>
+	);
+}
+
 export function IconVolume() {
 	return (
 		<svg viewBox="0 0 24 24" {...line} aria-hidden="true">

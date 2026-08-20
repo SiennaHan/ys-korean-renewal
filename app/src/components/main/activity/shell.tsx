@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { IconClose, IconNext } from "./icons";
+import { IconClose, IconNext, IconPrev } from "./icons";
 
 /**
  * 활동 화면의 공통 골격 — activity_mockups_uiux.html 의 gapFrame·gapAppbar·
@@ -153,16 +153,30 @@ export function ActivityFooter({ children }: { children: ReactNode }) {
  */
 export function Dock({
 	children,
+	left,
 	right,
 	mainStyle,
 }: {
 	children: ReactNode;
+	/** 왼쪽 칸. 목업 롤플레잉이 쓰는 자리다 — 오른쪽과 폭을 맞춰 주 조작을 가운데 세운다 */
+	left?: { enabled: boolean; onClick?: () => void };
 	right?: { enabled: boolean; onClick?: () => void };
 	mainStyle?: CSSProperties;
 }) {
 	const { t } = useTranslation();
 	return (
 		<div className="dock">
+			{left && (
+				<button
+					type="button"
+					className="slot"
+					aria-label={t("player.prev")}
+					disabled={!left.enabled}
+					onClick={left.onClick}
+				>
+					<IconPrev />
+				</button>
+			)}
 			<div className="main" style={mainStyle}>
 				{children}
 			</div>

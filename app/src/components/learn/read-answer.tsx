@@ -1,13 +1,27 @@
 import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import {
+	ActivityAppBar,
+	ActivityBody,
+	ActivityFooter,
+	ActivityFrame,
+	ActivityProgress,
+	Choice,
+	ChoiceList,
+	Dock,
+	FeedbackMessage,
+	Passage,
+	PrimaryButton,
+	ProblemCard,
+	QuestionText,
+} from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import readQuestions from "@/shared/data/n5_read_answer_questions.json";
 import readTexts from "@/shared/data/n5_read_answer_text.json";
 import { useRouter } from "@tanstack/react-router";
-import clsx from "clsx";
-import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ReadText {
 	id: number;
@@ -45,6 +59,7 @@ export default function ReadAnswer({
 	chapterLabel,
 }: ReadAnswerProps) {
 	const router = useRouter();
+	const { t } = useTranslation();
 	const sound = useSoundEffects();
 	const { addToast } = useToast();
 
@@ -183,191 +198,100 @@ export default function ReadAnswer({
 
 	if (!question || !passage) {
 		return (
-			<div className="flex h-full flex-col items-center justify-center bg-white">
-				<p className="text-[#888] text-[14px]">데이터가 없습니다</p>
-			</div>
+			<ActivityFrame>
+				<ActivityAppBar
+					lesson={chapterLabel}
+					onExit={() => router.history.back()}
+				/>
+				<ActivityBody>
+					<div className="state-view">
+						<p>{t("state.loadFailed")}</p>
+					</div>
+				</ActivityBody>
+			</ActivityFrame>
 		);
 	}
 
+	const allSolved =
+		questions.length > 0 &&
+		questions.every((q) => savedAnswers[q.id] !== undefined);
+
 	return (
-		<div className="flex h-full flex-col bg-white">
-			{/* Header */}
-			<div className="sticky top-0 z-10 bg-white">
-				<div className="flex h-[48px] items-center px-[4px]">
-					<button
-						type="button"
-						onClick={() => router.history.back()}
-						className="flex size-[44px] cursor-pointer items-center justify-center"
+		<ActivityFrame>
+			<ActivityAppBar
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+			/>
+			<ActivityProgress current={currentIndex} total={totalSteps} />
+
+			<ActivityBody
+				feedback={
+					isSolved ? (
+						<FeedbackMessage kind="correct" />
+					) : currentWrongSet.size > 0 ? (
+						<FeedbackMessage kind="wrong" />
+					) : null
+				}
+			>
+				<ProblemCard
+					instruction={
+						<>
+							{instruction.ko}
+							{instruction.translated && <p>{instruction.translated}</p>}
+						</>
+					}
+				>
+					<Passage>{passage.text}</Passage>
+				</ProblemCard>
+
+				<div className="response-area">
+					<QuestionText>{question.question}</QuestionText>
+					{/* O/X 는 2열로 크게, 객관식은 세로 목록 */}
+					<ChoiceList
+						variant={question.type === "ox" ? "binary" : "list"}
+						inResponseArea={false}
 					>
-						<X className="size-[20px] text-[#383A3F]" />
-					</button>
-					<div className="flex-1 pr-[44px] text-center">
-						<p className="text-[#979DA8] text-[14px]">{chapterLabel}</p>
-					</div>
-				</div>
-			</div>
-
-			{/* Content */}
-			<div className="scrollbar-hide flex-1 overflow-y-auto px-[20px] pt-[8px] pb-[100px]">
-				{/* O/X 문항은 지시문이 다르다. 원장이 문항마다 들고 온다 */}
-				<h1 className="font-bold text-[#383A3F] text-[20px] leading-tight">
-					{instruction.ko}
-				</h1>
-				{instruction.translated && (
-					<p className="mt-[4px] text-[#979DA8] text-[14px]">
-						{instruction.translated}
-					</p>
-				)}
-
-				{/* Passage */}
-				<div className="mt-[20px] rounded-[12px] bg-[#F9FAFC] p-[16px]">
-					<p className="whitespace-pre-line text-[#383A3F] text-[15px] leading-relaxed">
-						{passage.text}
-					</p>
-				</div>
-
-				{/* Question */}
-				<div className="mt-[20px] mb-[16px]">
-					<p className="font-semibold text-[#383A3F] text-[16px]">
-						{question.question}
-					</p>
-				</div>
-
-				{/* OX Buttons */}
-				{question.type === "ox" && (
-					<div className="flex gap-[12px] pb-[20px]">
-						{options.map((opt, idx) => {
-							const isAnswer = question.answer_index === idx;
-							const isWrong = currentWrongSet.has(idx);
-							const isSolvedCorrect = isSolved && isAnswer;
-
-							return (
-								<button
-									key={opt}
-									type="button"
-									onClick={() => handleSelect(idx)}
-									disabled={isSolved || isWrong}
-									className={clsx(
-										"flex h-[80px] flex-1 cursor-pointer items-center justify-center rounded-[16px] border-2 font-bold text-[32px] transition-all",
-										isSolvedCorrect
-											? "border-[#359AFF] border-[3px] bg-[#359AFF] text-white"
-											: isWrong
-												? "border-[#E5E8EC] bg-gray-100 text-[#bbb] opacity-70"
-												: "border-[#E5E8EC] bg-[#F9FAFC] text-[#7F848D]",
-										(isSolved || isWrong) && "cursor-not-allowed",
-									)}
-								>
-									{opt}
-								</button>
-							);
-						})}
-					</div>
-				)}
-
-				{/* Multiple choice */}
-				{question.type === "choice" && (
-					<div className="flex flex-col gap-[10px] pb-[20px]">
-						{options.map((opt, idx) => {
-							const isAnswer = question.answer_index === idx;
-							const isWrong = currentWrongSet.has(idx);
-							const isSolvedCorrect = isSolved && isAnswer;
-
-							return (
-								<button
-									key={opt}
-									type="button"
-									onClick={() => handleSelect(idx)}
-									disabled={isSolved || isWrong}
-									className={clsx(
-										"w-full cursor-pointer rounded-[12px] border-2 px-[16px] py-[14px] text-left transition-all",
-										isSolvedCorrect
-											? "border-[#359AFF] border-[3px] bg-[#E9F2FC]"
-											: isWrong
-												? "border-[#E5E8EC] bg-gray-100 opacity-70"
-												: "border-[#E5E8EC] bg-[#F9FAFC]",
-										(isSolved || isWrong) && "cursor-not-allowed",
-									)}
-								>
-									<span
-										className={clsx(
-											"text-[15px]",
-											isSolvedCorrect
-												? "font-semibold text-[#359AFF]"
-												: isWrong
-													? "text-[#bbb]"
-													: "text-[#383A3F]",
-										)}
-									>
-										{opt}
-									</span>
-								</button>
-							);
-						})}
-					</div>
-				)}
-			</div>
-
-			{/* Footer */}
-			<div className="sticky bottom-0 border-[#F6F7F8] border-t bg-white px-[16px] py-[12px]">
-				<div className="flex items-center justify-between">
-					<button
-						type="button"
-						onClick={handlePrev}
-						disabled={!hasPrev}
-						className={clsx(
-							"flex size-[36px] items-center justify-center",
-							hasPrev
-								? "cursor-pointer text-[#0180FF]"
-								: "cursor-default text-[#E5E8EC]",
-						)}
-					>
-						<ChevronLeft className="size-[24px]" />
-					</button>
-
-					<div className="flex items-center gap-[4px]">
-						{Array.from({ length: totalSteps }, (_, i) => (
-							<div
-								key={questions[i].id}
-								className={clsx(
-									"rounded-full",
-									i === currentIndex
-										? "h-[5px] w-[16px] bg-[#0180FF]"
-										: "size-[5px] bg-[#E5E8EC]",
-								)}
-							/>
+						{options.map((opt, idx) => (
+							<Choice
+								key={opt}
+								index={idx}
+								action="rpick"
+								// 맞을 때까지 다시 고를 수 있는 화면이라 틀린 것이 여럿 남는다
+								state={
+									isSolved && idx === question.answer_index
+										? "correct"
+										: currentWrongSet.has(idx)
+											? "wrong"
+											: ""
+								}
+								sub={
+									question.type === "ox"
+										? t(
+												opt === "O"
+													? "activity.oxSame"
+													: "activity.oxDifferent",
+											)
+										: undefined
+								}
+								onClick={() => handleSelect(idx)}
+							>
+								{opt}
+							</Choice>
 						))}
-					</div>
-
-					{!hasNext ? (
-						<button
-							type="button"
-							onClick={() => router.history.back()}
-							disabled={
-								questions.length === 0 ||
-								!questions.every((q) => savedAnswers[q.id] !== undefined)
-							}
-							className={clsx(
-								"flex h-[36px] items-center justify-center gap-[4px] rounded-full px-[14px] font-semibold text-[14px]",
-								questions.length > 0 &&
-									questions.every((q) => savedAnswers[q.id] !== undefined)
-									? "cursor-pointer bg-[#0180FF] text-white"
-									: "bg-[#E5E8EC] text-[#ADB3BE]",
-							)}
-						>
-							<Check className="size-[16px]" />
-							완료
-						</button>
-					) : (
-						<button
-							type="button"
-							onClick={handleNext}
-							className="flex size-[36px] cursor-pointer items-center justify-center text-[#0180FF]"
-						>
-							<ChevronRight className="size-[24px]" />
-						</button>
-					)}
+					</ChoiceList>
 				</div>
-			</div>
-		</div>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock left={{ enabled: hasPrev, onClick: handlePrev }}>
+					<PrimaryButton
+						label={hasNext ? t("player.next") : t("player.showResult")}
+						on={hasNext ? isSolved : allSolved}
+						action="next"
+						onClick={hasNext ? handleNext : () => router.history.back()}
+					/>
+				</Dock>
+			</ActivityFooter>
+		</ActivityFrame>
 	);
 }
