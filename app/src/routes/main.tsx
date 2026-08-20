@@ -1,4 +1,4 @@
-import BottomTabBar from "@/components/main/home/bottom-tab-bar";
+import TabBar from "@/components/main/nav/tab-bar";
 import { useAuth } from "@/components/sign/sign-provider";
 import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
@@ -26,13 +26,13 @@ function MainLayout() {
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 			transition={{ duration: 0.5 }}
-			className="h-full bg-white"
+			className="h-full"
 		>
-			<div className="flex h-full flex-col">
-				<div className="scrollbar-hide h-full w-full flex-1 overflow-y-auto">
-					<Outlet />
-				</div>
-				<BottomTabBar />
+			{/* nav.css 가 전부 이 클래스 아래에 있다. 스크롤은 각 화면의
+			    .scroll 이 지고 탭 바는 그 아래 고정으로 앉는다 */}
+			<div className="nav-frame h-full">
+				<Outlet />
+				<TabBar />
 			</div>
 		</motion.div>
 	);

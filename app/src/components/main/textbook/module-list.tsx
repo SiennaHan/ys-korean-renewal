@@ -1,97 +1,105 @@
-import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
-interface ModuleItem {
+/**
+ * 활동 한 줄의 오른쪽 자리는 하나다 — 상태에 따라 갈아 낀다.
+ *  · done   완료
+ *  · review 완료 + 복습 N   (다 했지만 다시 볼 것이 남았다)
+ *  · doing  진행 중
+ *  · none   비운다 — 아직 손대지 않은 것을 굳이 "미완료"라 부르지 않는다
+ *  · off    잠김. 누를 수 없다
+ */
+export type ModuleState = "done" | "review" | "doing" | "none" | "off";
+
+export interface ModuleItem {
 	id: string;
 	title: string;
-	isCompleted: boolean;
-	disabled?: boolean;
+	state: ModuleState;
+	/** review 일 때 다시 볼 문항 수 */
+	reviewCount?: number;
 }
 
-interface ModuleSection {
+export interface ModuleSection {
 	label: string;
 	modules: ModuleItem[];
 }
 
-interface ModuleListProps {
-	chapterTitle: string;
-	sections: ModuleSection[];
-	onModuleClick: (id: string) => void;
+function StateSlot({ item }: { item: ModuleItem }) {
+	const { t } = useTranslation();
+	if (item.state === "doing")
+		return (
+			<span className="st">
+				<span className="pr">{t("catalog.doing")}</span>
+			</span>
+		);
+	if (item.state === "done")
+		return (
+			<span className="st">
+				<span className="bdg">{t("catalog.done")}</span>
+			</span>
+		);
+	if (item.state === "review")
+		return (
+			<span className="st">
+				<span className="bdg">{t("catalog.done")}</span>
+				<span className="rv">
+					{t("catalog.review", { count: item.reviewCount ?? 0 })}
+				</span>
+			</span>
+		);
+	return <span className="st" />;
 }
 
-function CompletionBadge({ isCompleted }: { isCompleted: boolean }) {
+export function ActRow({
+	item,
+	onClick,
+}: {
+	item: ModuleItem;
+	onClick: (id: string) => void;
+}) {
+	const off = item.state === "off";
 	return (
-		<div
-			className={clsx(
-				"shrink-0 px-[6px] py-[2px] rounded-[4px] text-[12px] font-semibold",
-				isCompleted
-					? "bg-[#E7FBCE] text-[#11C378]"
-					: "bg-[#E5E8EC] text-[#ADB3BE]",
-			)}
+		<button
+			type="button"
+			className={`act ${item.state}`}
+			disabled={off}
+			aria-disabled={off || undefined}
+			onClick={() => onClick(item.id)}
 		>
-			{isCompleted ? "완료" : "미완료"}
+			<span className="nm">{item.title}</span>
+			<StateSlot item={item} />
+		</button>
+	);
+}
+
+export function ChapterHead({ seq, title }: { seq: number; title: string }) {
+	const { t } = useTranslation();
+	return (
+		<div className="chapter-head">
+			<span className="seq">{t("catalog.chapterSeq", { seq })}</span>
+			<strong>{title}</strong>
 		</div>
 	);
 }
 
 export default function ModuleList({
-	chapterTitle,
 	sections,
 	onModuleClick,
-}: ModuleListProps) {
+}: {
+	sections: ModuleSection[];
+	onModuleClick: (id: string) => void;
+}) {
 	return (
-		<div className="px-[16px]">
-			<div className="bg-white rounded-[12px] overflow-hidden">
-				{/* Chapter title */}
-				<div className="px-[12px] py-[12px] border-b border-[#F6F7F8]">
-					<p className="text-[14px] font-bold text-[#0180FF]">
-						{chapterTitle}
-					</p>
-				</div>
-
-				{/* Module sections */}
-				<div className="px-[12px] py-[10px]">
-					{sections.map((section, sIdx) => (
-						<div key={section.label}>
-							{sIdx > 0 && <div className="h-[16px]" />}
-							<p className="text-[10px] font-semibold text-[#666B73] mb-[8px]">
-								{section.label}
-							</p>
-							<div className="flex flex-col gap-[8px]">
-								{section.modules.map((mod) => (
-									<button
-										key={mod.id}
-										type="button"
-										disabled={mod.disabled}
-										onClick={() => onModuleClick(mod.id)}
-										className={clsx(
-											"flex items-center justify-between rounded-[6px] h-[46px] px-[16px] transition-colors w-full text-left",
-											mod.disabled
-												? "bg-[#F2F3F5] cursor-not-allowed opacity-40"
-												: "bg-[#F9FAFC] cursor-pointer hover:bg-[#F0F2F5]",
-										)}
-									>
-										<p
-											className={clsx(
-												"text-[14px] font-semibold",
-												mod.disabled
-													? "text-[#ADB3BE]"
-													: "text-[#24425F]",
-											)}
-										>
-											{mod.title}
-										</p>
-										{!mod.disabled && (
-											<CompletionBadge
-												isCompleted={mod.isCompleted}
-											/>
-										)}
-									</button>
-								))}
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
+		<div className="learning-sections">
+			{sections.map((section) => (
+				<section className="learning-section" key={section.label}>
+					<div className="seclabel">{section.label}</div>
+					<div className="acts">
+						{section.modules.map((item) => (
+							<ActRow key={item.id} item={item} onClick={onModuleClick} />
+						))}
+					</div>
+				</section>
+			))}
 		</div>
 	);
 }

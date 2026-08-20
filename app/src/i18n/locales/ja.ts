@@ -165,6 +165,42 @@ const ja = {
 			leave: "退出",
 		},
 	},
+	/** 하단 탭 바 */
+	/** 홈 화면 */
+	/** 교재학습 · 자모 목록 */
+	catalog: {
+		done: "完了",
+		doing: "進行中",
+		review: "復習 {{count}}",
+		chapterSeq: "第{{seq}}課",
+		chapterChip: "{{seq}}課",
+		jamoTab: "ハングル",
+		noModules: "学習する活動がありません",
+	},
+	home: {
+		greeting: "こんにちは、",
+		userName: "{{name}} さん",
+		streakDays: "{{count}}日",
+		streakTail: "連続で学習中",
+		taskResume: "続きから学習する",
+		taskReview: "解き直す問題 {{count}}問",
+		taskReviewBody: "昨日間違えた問題から始めます",
+		taskNone: "学習を始める",
+		taskNoneBody: "教材学習メニューから始めましょう",
+		statusTitle: "学習状況",
+		chartTitle: "週間の学習",
+		todayActivities: "今日の活動数",
+		weeklyActivities: "週間の活動数",
+		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
+		days: ["月", "火", "水", "木", "金", "土", "日"],
+	},
+	nav: {
+		home: "ホーム",
+		textbook: "教材学習",
+		game: "ゲーム",
+		clip: "表現クリップ",
+		my: "MY",
+	},
 	player: {
 		exit: "終了",
 		skip: "スキップ",

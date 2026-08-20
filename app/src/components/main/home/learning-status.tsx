@@ -1,102 +1,71 @@
-interface LearningStatusProps {
-	chapterCompleted: number;
-	chapterTotal: number;
-	chapterLabel: string;
-	todayActivities: number;
-	weeklyActivities: number;
-}
+import { useTranslation } from "react-i18next";
 
-function CircularProgress({
-	completed,
-	total,
-}: { completed: number; total: number }) {
-	const radius = 45;
-	const stroke = 8;
-	const normalizedRadius = radius - stroke / 2;
-	const circumference = normalizedRadius * 2 * Math.PI;
-	const percent = total > 0 ? (completed / total) * 100 : 0;
-	const strokeDashoffset = circumference - (percent / 100) * circumference;
+/** 게이지 반지름 40 — 목업 SVG 가 90 뷰박스에 8 굵기로 그린 값이다 */
+const R = 40;
+const CIRCUMFERENCE = 2 * Math.PI * R;
 
-	return (
-		<div className="relative size-[110px]">
-			<svg className="size-full -rotate-90" viewBox="0 0 90 90">
-				<circle
-					cx="45"
-					cy="45"
-					r={normalizedRadius}
-					fill="none"
-					stroke="#E5E8EC"
-					strokeWidth={stroke}
-				/>
-				<circle
-					cx="45"
-					cy="45"
-					r={normalizedRadius}
-					fill="none"
-					stroke="#0180FF"
-					strokeWidth={stroke}
-					strokeLinecap="round"
-					strokeDasharray={circumference}
-					strokeDashoffset={strokeDashoffset}
-					className="transition-all duration-700"
-				/>
-			</svg>
-			<div className="absolute inset-0 flex items-center justify-center">
-				<span className="text-[22px] font-bold text-[#0180FF]">
-					{completed}
-					<span className="text-[14px] font-normal text-[#9BA5B0]">
-						/{total}
-					</span>
-				</span>
-			</div>
-		</div>
-	);
-}
-
-function StatCard({ value, label }: { value: number; label: string }) {
-	return (
-		<div className="flex items-center gap-[12px] rounded-[12px] bg-white p-[14px]">
-			<div className="flex size-[44px] shrink-0 items-center justify-center rounded-[10px] bg-[#0180FF] text-[20px] font-bold text-white">
-				{value}
-			</div>
-			<p className="text-[13px] font-semibold text-[#24425F]">{label}</p>
-		</div>
-	);
-}
-
+/**
+ * 학습 현황 — 왼쪽에 지금 급의 진행, 오른쪽에 활동 수 둘.
+ *
+ * 게이지는 과 단위다. 활동 단위로 잡으면 숫자가 커져 하루치 변화가 안 보인다.
+ */
 export default function LearningStatus({
 	chapterCompleted,
 	chapterTotal,
 	chapterLabel,
 	todayActivities,
 	weeklyActivities,
-}: LearningStatusProps) {
-	return (
-		<div>
-			<h2 className="mb-[12px] text-[16px] font-bold text-[#24425F]">
-				나의 학습 현황
-			</h2>
-			<div className="rounded-[16px] bg-[#F6F7F8] p-[16px]">
-				<div className="flex gap-[12px]">
-					{/* Left: circular progress */}
-					<div className="flex flex-1 flex-col items-center justify-center rounded-[12px] bg-white py-[20px]">
-						<CircularProgress
-							completed={chapterCompleted}
-							total={chapterTotal}
-						/>
-						<p className="mt-[8px] text-[13px] font-semibold text-[#24425F]">
-							현재 과 진행
-						</p>
-						<p className="mt-[2px] text-[11px] text-[#9BA5B0]">
-							{chapterLabel}
-						</p>
-					</div>
+}: {
+	chapterCompleted: number;
+	chapterTotal: number;
+	/** "1급 학습 중" 처럼 지금 어디인지 */
+	chapterLabel: string;
+	todayActivities: number;
+	weeklyActivities: number;
+}) {
+	const { t } = useTranslation();
+	const ratio = chapterTotal > 0 ? chapterCompleted / chapterTotal : 0;
 
-					{/* Right: stat cards */}
-					<div className="flex flex-1 flex-col gap-[8px]">
-						<StatCard value={todayActivities} label="오늘 활동 수" />
-						<StatCard value={weeklyActivities} label="주간 활동 수" />
+	return (
+		<div className="status">
+			<div className="gauge">
+				<svg viewBox="0 0 90 90" aria-hidden="true">
+					<circle
+						cx="45"
+						cy="45"
+						r={R}
+						fill="none"
+						stroke="var(--color-line-normal)"
+						strokeWidth="8"
+					/>
+					<circle
+						cx="45"
+						cy="45"
+						r={R}
+						fill="none"
+						stroke="var(--color-fill-primary)"
+						strokeWidth="8"
+						strokeLinecap="round"
+						strokeDasharray={CIRCUMFERENCE}
+						strokeDashoffset={CIRCUMFERENCE * (1 - ratio)}
+					/>
+				</svg>
+				<div className="mid">
+					<div className="v">
+						{chapterCompleted}
+						<small>/{chapterTotal}</small>
 					</div>
+					<div className="lb">{chapterLabel}</div>
+				</div>
+			</div>
+			<div className="stats">
+				<div className="stat2">
+					<span className="n">{todayActivities}</span>
+					<span className="l">{t("home.todayActivities")}</span>
+				</div>
+				<div className="stat2">
+					<span className="n">{weeklyActivities}</span>
+					<span className="l">{t("home.weeklyActivities")}</span>
 				</div>
 			</div>
 		</div>

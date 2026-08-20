@@ -4,7 +4,9 @@ import { listUserFlashcardWord } from "@/api/flashcard";
 import { getLearningProgress } from "@/api/learning-record";
 import { books } from "@/shared/data/book";
 import { chapters } from "@/shared/data/chapter";
+import { dialogs } from "@/shared/data/dialog";
 import { flashcards } from "@/shared/data/flashcard";
+import { flashcard_words } from "@/shared/data/flashcard_word";
 import {
 	getBlankQuestionCount,
 	getListenQuestionCount,
@@ -17,19 +19,23 @@ import {
 	hasRoleplayData,
 	hasWordData,
 } from "@/shared/data/learn-data-check";
-import { dialogs } from "@/shared/data/dialog";
-import { flashcard_words } from "@/shared/data/flashcard_word";
 import { modules } from "@/shared/data/module";
 import { units } from "@/shared/data/unit";
 import { useTextbookSelectionStore } from "@/shared/store/menu-store";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import BookTabs from "./book-tabs";
 import ChapterChips from "./chapter-chips";
-import ModuleList from "./module-list";
+import ModuleList, {
+	type ModuleSection,
+	type ModuleState,
+	ChapterHead,
+} from "./module-list";
 
 export default function TextbookContent() {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	// --- State (persisted in Zustand) ---
 	const {
@@ -62,13 +68,6 @@ export default function TextbookContent() {
 		return chapters.filter(
 			(ch) => ch.book_id === activeBookTab && ch.type !== "jamo",
 		);
-	}, [activeBookTab]);
-
-	// Current book title
-	const bookTitle = useMemo(() => {
-		if (activeBookTab === "jamo") return "한글 자모 익히기";
-		const book = books.find((b) => b.id === activeBookTab);
-		return book ? `3주 완성 연세 한국어 ${book.title}` : "";
 	}, [activeBookTab]);
 
 	// Chapter chips
@@ -172,9 +171,7 @@ export default function TextbookContent() {
 		);
 		if (chapterDialogs.length > 0) {
 			getChatListByBookId(bookId).then((chats) => {
-				const dialogIds = chapterDialogs.map(
-					(d: { id: string }) => d.id,
-				);
+				const dialogIds = chapterDialogs.map((d: { id: string }) => d.id);
 				const allCompleted = dialogIds.every((dialogId: string) => {
 					const chat = chats.find((c) => c.dialog_id === dialogId);
 					return chat?.status === "completed";
@@ -187,12 +184,17 @@ export default function TextbookContent() {
 	}, [activeBookTab, selectedChapter?.id]);
 
 	/** 메뉴의 완료 여부: 학습한 문항 수 >= 총 문제 수이면 완료 */
-	const isMenuCompleted = useCallback(
-		(menuType: string, totalQuestions: number): boolean => {
-			if (totalQuestions === 0) return false;
-			const p = progress[menuType];
-			if (!p) return false;
-			return p.total >= totalQuestions;
+	/**
+	 * 활동 한 줄의 상태. 완료·미완료 둘로 접지 않는다 —
+	 * 손댔지만 아직 안 끝난 것을 미완료로 묶으면 어디까지 왔는지가 사라진다.
+	 * 잠김(off)은 데이터 유무라 부르는 쪽에서 정한다.
+	 */
+	const menuState = useCallback(
+		(menuType: string, totalQuestions: number): ModuleState => {
+			if (totalQuestions === 0) return "none";
+			const done = progress[menuType]?.total ?? 0;
+			if (done >= totalQuestions) return "done";
+			return done > 0 ? "doing" : "none";
 		},
 		[progress],
 	);
@@ -202,23 +204,39 @@ export default function TextbookContent() {
 		if (!selectedChapterId || !selectedChapter) return [];
 		const bookId = activeBookTab as number;
 		const seq = selectedChapter.seq;
-		return [
+		const fold = (
+			raw: {
+				label: string;
+				modules: {
+					id: string;
+					title: string;
+					progress: ModuleState;
+					disabled: boolean;
+				}[];
+			}[],
+		): ModuleSection[] =>
+			raw.map((sec) => ({
+				label: sec.label,
+				modules: sec.modules.map(({ id, title, progress: st, disabled }) => ({
+					id,
+					title,
+					state: disabled ? ("off" as const) : st,
+				})),
+			}));
+		return fold([
 			{
 				label: "기초학습",
 				modules: [
 					{
 						id: "word",
 						title: "단어 학습하기",
-						isCompleted: isMenuCompleted(
-							"word",
-							getWordQuizCount(bookId, seq),
-						),
+						progress: menuState("word", getWordQuizCount(bookId, seq)),
 						disabled: !hasWordData(bookId, seq),
 					},
 					{
 						id: "roleplay",
 						title: "AI 롤플레잉",
-						isCompleted: isMenuCompleted(
+						progress: menuState(
 							"roleplay",
 							getRoleplayScenarioCount(bookId, seq),
 						),
@@ -227,7 +245,7 @@ export default function TextbookContent() {
 					{
 						id: "listen-answer",
 						title: "듣고 질문에 답하기",
-						isCompleted: isMenuCompleted(
+						progress: menuState(
 							"listen-answer",
 							getListenQuestionCount(bookId, seq),
 						),
@@ -236,7 +254,7 @@ export default function TextbookContent() {
 					{
 						id: "fill-blank",
 						title: "빈칸 채워 말하기",
-						isCompleted: isMenuCompleted(
+						progress: menuState(
 							"fill-blank",
 							getBlankQuestionCount(bookId, seq),
 						),
@@ -245,7 +263,7 @@ export default function TextbookContent() {
 					{
 						id: "read-answer",
 						title: "읽고 질문에 답하기",
-						isCompleted: isMenuCompleted(
+						progress: menuState(
 							"read-answer",
 							getReadQuestionCount(bookId, seq),
 						),
@@ -259,33 +277,28 @@ export default function TextbookContent() {
 					{
 						id: "mission-chat",
 						title: "AI 미션 대화",
-						isCompleted: missionChatCompleted,
+						progress: missionChatCompleted ? "done" : "none",
 						disabled: !hasMissionChat,
 					},
 					{
 						id: "flashcard",
 						title: "단어 플래시카드",
-						isCompleted: flashcardCompleted,
+						progress: flashcardCompleted ? "done" : "none",
 						disabled: !currentFlashcard,
 					},
 				],
 			},
-		];
+		]);
 	}, [
 		selectedChapterId,
 		selectedChapter,
 		activeBookTab,
 		currentFlashcard,
 		hasMissionChat,
-		isMenuCompleted,
+		menuState,
 		flashcardCompleted,
 		missionChatCompleted,
 	]);
-
-	// Chapter display title
-	const chapterTitle = selectedChapter
-		? `${selectedChapter.seq}과. ${selectedChapter.title}`
-		: "";
 
 	// --- Handlers ---
 	const handleBookSelect = (id: number | "jamo") => {
@@ -342,49 +355,40 @@ export default function TextbookContent() {
 	};
 
 	return (
-		<div className="flex h-full flex-col bg-[#F9FAFC]">
-			{/* Header */}
-			<div className="flex items-center justify-center px-[16px] py-[16px]">
-				<p className="font-semibold text-[#383A3F] text-[17px]">{bookTitle}</p>
-			</div>
-
-			{/* Book tabs */}
-			<BookTabs
-				tabs={bookTabs}
-				activeId={activeBookTab}
-				onSelect={handleBookSelect}
-			/>
-
-			{/* Book title */}
-			<div className="px-[16px] pt-[16px] pb-[12px]">
-				<p className="font-bold text-[#359AFF] text-[14px]">{bookTitle}</p>
-			</div>
-
-			{/* Chapter chips */}
-			{chapterChips.length > 0 && selectedChapterId && (
-				<ChapterChips
-					chips={chapterChips}
-					activeId={selectedChapterId}
-					onSelect={handleChapterSelect}
+		<>
+			{/* 앱바가 없다. 탭이 최상단에 온다 — 어느 급 어느 과인지가 곧 제목이다 */}
+			<div className="catalog-nav">
+				<BookTabs
+					tabs={bookTabs}
+					activeId={activeBookTab}
+					onSelect={handleBookSelect}
 				/>
-			)}
+				{chapterChips.length > 0 && selectedChapterId && (
+					<ChapterChips
+						chips={chapterChips}
+						activeId={selectedChapterId}
+						onSelect={handleChapterSelect}
+					/>
+				)}
+			</div>
 
-			{/* Module list */}
-			<div className="scrollbar-hide flex-1 overflow-y-auto pt-[20px] pb-[80px]">
+			<div className="scroll catalog-scroll">
+				{selectedChapter && (
+					<ChapterHead
+						seq={selectedChapter.seq}
+						title={selectedChapter.title}
+					/>
+				)}
 				{selectedChapter && moduleSections.length > 0 && (
 					<ModuleList
-						chapterTitle={chapterTitle}
 						sections={moduleSections}
 						onModuleClick={handleModuleClick}
 					/>
 				)}
-
-				{moduleSections.length === 0 && selectedChapter && (
-					<div className="flex h-[100px] items-center justify-center text-[#C8CCD3] text-[14px]">
-						학습 모듈이 없습니다
-					</div>
+				{selectedChapter && moduleSections.length === 0 && (
+					<div className="catalog-empty">{t("catalog.noModules")}</div>
 				)}
 			</div>
-		</div>
+		</>
 	);
 }

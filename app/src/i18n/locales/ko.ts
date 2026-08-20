@@ -165,6 +165,42 @@ const ko = {
 			leave: "나가기",
 		},
 	},
+	/** 하단 탭 바 */
+	/** 홈 화면 */
+	/** 교재학습 · 자모 목록 */
+	catalog: {
+		done: "완료",
+		doing: "진행 중",
+		review: "복습 {{count}}",
+		chapterSeq: "제{{seq}}과",
+		chapterChip: "{{seq}}과",
+		jamoTab: "한글",
+		noModules: "학습할 활동이 없어요",
+	},
+	home: {
+		greeting: "안녕하세요,",
+		userName: "{{name}} 님",
+		streakDays: "{{count}}일",
+		streakTail: "연속 학습 중",
+		taskResume: "이어서 학습하기",
+		taskReview: "다시 풀 문항 {{count}}개",
+		taskReviewBody: "어제 틀린 문항부터 만나요",
+		taskNone: "학습 시작하기",
+		taskNoneBody: "교재학습 메뉴에서 시작해보세요",
+		statusTitle: "학습 현황",
+		chartTitle: "주간 활동",
+		todayActivities: "오늘 활동 수",
+		weeklyActivities: "주간 활동 수",
+		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
+		days: ["월", "화", "수", "목", "금", "토", "일"],
+	},
+	nav: {
+		home: "홈",
+		textbook: "교재학습",
+		game: "게임",
+		clip: "표현클립",
+		my: "MY",
+	},
 	player: {
 		exit: "나가기",
 		skip: "건너뛰기",

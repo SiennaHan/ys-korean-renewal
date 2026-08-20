@@ -115,6 +115,9 @@
     font-weight:600; background:var(--color-background-surface); color:var(--color-text-sub); }
 .nav-frame .chip3.on { border-color:var(--color-text-heading); background:var(--color-text-heading); color:var(--color-background-surface); }
 .nav-frame .catalog-scroll { padding-bottom:var(--space-6); scroll-padding-bottom:var(--space-6); }
+/* 목업에 없는 상태 — 그 과에 붙은 활동이 하나도 없을 때.
+   과 머리와 같은 여백에 맞춰 한 줄만 둔다 */
+.nav-frame .catalog-empty { padding:28px var(--gutter); text-align:center; color:var(--color-text-sub); font-size:14px; }
 .nav-frame .chapter-head { min-height:42px; display:flex; align-items:center; gap:var(--space-2); margin:var(--space-4) var(--gutter) 0;
     padding:0; }
 .nav-frame .chapter-head .seq { flex:none; color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:700; }

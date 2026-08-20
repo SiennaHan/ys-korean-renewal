@@ -165,6 +165,42 @@ const en = {
 			leave: "Leave",
 		},
 	},
+	/** 하단 탭 바 */
+	/** 홈 화면 */
+	/** 교재학습 · 자모 목록 */
+	catalog: {
+		done: "Done",
+		doing: "In progress",
+		review: "{{count}} to review",
+		chapterSeq: "Lesson {{seq}}",
+		chapterChip: "L{{seq}}",
+		jamoTab: "Hangul",
+		noModules: "No activities here yet",
+	},
+	home: {
+		greeting: "Hello,",
+		userName: "{{name}}",
+		streakDays: "{{count}} days",
+		streakTail: "in a row",
+		taskResume: "Continue learning",
+		taskReview: "{{count}} to practice again",
+		taskReviewBody: "Start with yesterday's misses",
+		taskNone: "Start learning",
+		taskNoneBody: "Begin from the Textbook tab",
+		statusTitle: "Progress",
+		chartTitle: "This week",
+		todayActivities: "Today",
+		weeklyActivities: "This week",
+		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
+		days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+	},
+	nav: {
+		home: "Home",
+		textbook: "Textbook",
+		game: "Games",
+		clip: "Clips",
+		my: "My",
+	},
 	player: {
 		exit: "Exit",
 		skip: "Skip",

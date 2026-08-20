@@ -1,61 +1,48 @@
-import { Check } from "lucide-react";
+import { IconCheck } from "@/components/main/nav/icons";
+import { useTranslation } from "react-i18next";
+import { useWeekDays } from "./week-days";
 
-const DAYS = ["월", "화", "수", "목", "금", "토", "일"];
-
-interface WeeklyAttendanceProps {
-	/** 0-indexed: 0=월, 1=화, ... 6=일 */
-	todayIndex: number;
-	/** Which days are completed (0-indexed) */
-	completedDays: number[];
-	streak: number;
-}
-
+/**
+ * 주간 출석 — 원 일곱 개.
+ *
+ * 오늘은 채우지 않고 테두리만 둔다. 아직 안 한 날이지 못 한 날이 아니라서다.
+ */
 export default function WeeklyAttendance({
 	todayIndex,
 	completedDays,
 	streak,
-}: WeeklyAttendanceProps) {
-	return (
-		<div className="flex flex-col items-center gap-[12px]">
-			<div className="flex gap-[12px]">
-				{DAYS.map((day, i) => {
-					const isCompleted = completedDays.includes(i);
-					const isToday = i === todayIndex;
-					const isPast = i < todayIndex;
-					const isFuture = i > todayIndex;
+}: {
+	/** 0=월 … 6=일 */
+	todayIndex: number;
+	completedDays: number[];
+	streak: number;
+}) {
+	const { t } = useTranslation();
+	const days = useWeekDays();
 
+	return (
+		<div className="week">
+			<div className="days">
+				{days.map((day, i) => {
+					const done = completedDays.includes(i);
+					const today = i === todayIndex;
 					return (
-						<div key={day} className="flex flex-col items-center gap-[4px]">
-							<div
-								className={`flex items-center justify-center size-[40px] rounded-full ${
-									isCompleted
-										? "bg-[#0180FF]"
-										: isToday
-											? "border-[2.5px] border-[#0180FF] bg-white"
-											: "bg-[#E5E8EC]"
-								}`}
-							>
-								{isCompleted && <Check className="size-[20px] text-white" strokeWidth={3} />}
+						<div className="d" key={day}>
+							<div className={`c ${done ? "done" : today ? "today" : ""}`}>
+								{done && <IconCheck />}
 							</div>
-							<span
-								className={`text-[12px] font-medium ${
-									isToday
-										? "text-[#0180FF] font-bold"
-										: isCompleted
-											? "text-[#24425F]"
-											: "text-[#C8CCD3]"
-								}`}
+							<div
+								className={`lb ${today ? "today" : i > todayIndex ? "future" : ""}`}
 							>
-								{isToday ? "오늘" : day}
-							</span>
+								{day}
+							</div>
 						</div>
 					);
 				})}
 			</div>
-			<p className="text-[14px] text-[#6B7B8D]">
-				<span className="font-bold text-[#24425F]">{streak}일 연속 학습 중</span>{" "}
-				오늘도 해볼까요?
-			</p>
+			<div className="streak">
+				<b>{t("home.streakDays", { count: streak })}</b> {t("home.streakTail")}
+			</div>
 		</div>
 	);
 }

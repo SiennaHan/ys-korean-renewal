@@ -165,6 +165,42 @@ const vi = {
 			leave: "Rời",
 		},
 	},
+	/** 하단 탭 바 */
+	/** 홈 화면 */
+	/** 교재학습 · 자모 목록 */
+	catalog: {
+		done: "Hoàn thành",
+		doing: "Đang học",
+		review: "Ôn {{count}}",
+		chapterSeq: "Bài {{seq}}",
+		chapterChip: "Bài {{seq}}",
+		jamoTab: "Hangeul",
+		noModules: "Chưa có hoạt động nào",
+	},
+	home: {
+		greeting: "Xin chào,",
+		userName: "{{name}}",
+		streakDays: "{{count}} ngày",
+		streakTail: "học liên tục",
+		taskResume: "Học tiếp",
+		taskReview: "{{count}} câu cần làm lại",
+		taskReviewBody: "Bắt đầu từ câu sai hôm qua",
+		taskNone: "Bắt đầu học",
+		taskNoneBody: "Hãy bắt đầu từ mục Học giáo trình",
+		statusTitle: "Tiến độ học",
+		chartTitle: "Hoạt động tuần",
+		todayActivities: "Hôm nay",
+		weeklyActivities: "Trong tuần",
+		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
+		days: ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
+	},
+	nav: {
+		home: "Trang chủ",
+		textbook: "Học giáo trình",
+		game: "Trò chơi",
+		clip: "Clip biểu đạt",
+		my: "Của tôi",
+	},
 	player: {
 		exit: "Thoát",
 		skip: "Bỏ qua",

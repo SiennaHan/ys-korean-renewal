@@ -1,34 +1,49 @@
-import { ChevronRight, Play } from "lucide-react";
+import {
+	IconBook,
+	IconPlay,
+	IconRedo,
+	IconRight,
+} from "@/components/main/nav/icons";
+import type { ReactNode } from "react";
 
-interface ContinueLearningProps {
-	bookLabel: string;
-	chapterLabel: string;
-	moduleLabel: string;
-	onClick: () => void;
-}
+/**
+ * 오늘 할 일 — 홈에서 가장 먼저 눌리는 한 자리.
+ *
+ * 세 갈래가 같은 자리를 나눠 쓴다. 여러 개를 늘어놓지 않는 것이 요점이다 —
+ * 지금 무엇을 하면 되는지가 하나로 정해져야 학생이 고르지 않는다.
+ */
+export type TaskKind = "resume" | "review" | "none";
 
-export default function ContinueLearning({
-	bookLabel,
-	chapterLabel,
-	moduleLabel,
+const ICON: Record<TaskKind, () => ReactNode> = {
+	resume: IconPlay,
+	review: IconRedo,
+	none: IconBook,
+};
+
+export default function TaskCard({
+	kind,
+	title,
+	body,
 	onClick,
-}: ContinueLearningProps) {
+}: {
+	kind: TaskKind;
+	title: ReactNode;
+	body: ReactNode;
+	onClick: () => void;
+}) {
+	const Icon = ICON[kind];
 	return (
-		<button
-			type="button"
-			onClick={onClick}
-			className="w-full rounded-[16px] bg-[#DBEDFF] p-[16px] flex items-center gap-[14px] cursor-pointer active:bg-[#C5DEFF] transition-colors"
-		>
-			<div className="flex items-center justify-center size-[48px] rounded-[12px] bg-[#0180FF] shrink-0">
-				<Play className="size-[22px] text-white fill-white ml-[2px]" />
-			</div>
-			<div className="flex-1 text-left">
-				<p className="text-[16px] font-bold text-[#24425F]">이어서 학습하기</p>
-				<p className="text-[13px] text-[#0180FF] mt-[2px]">
-					{bookLabel} {chapterLabel} - {moduleLabel}
-				</p>
-			</div>
-			<ChevronRight className="size-[22px] text-[#0180FF] shrink-0" />
+		<button type="button" className="task" onClick={onClick}>
+			<span className="ic">
+				<Icon />
+			</span>
+			<span className="tx">
+				<span className="t1">{title}</span>
+				<span className="t2">{body}</span>
+			</span>
+			<span className="go">
+				<IconRight />
+			</span>
 		</button>
 	);
 }

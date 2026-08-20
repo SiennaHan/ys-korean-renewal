@@ -1,22 +1,20 @@
-import { useRef, useEffect } from "react";
-import clsx from "clsx";
+import { useEffect, useRef } from "react";
 
-interface ChapterChip {
+export interface ChapterChip {
 	id: number;
 	label: string;
 }
 
-interface ChapterChipsProps {
-	chips: ChapterChip[];
-	activeId: number;
-	onSelect: (id: number) => void;
-}
-
+/** 과 칩. 교재 탭과 같은 줄 구조를 쓰고 고른 것을 가운데로 끌어온다 */
 export default function ChapterChips({
 	chips,
 	activeId,
 	onSelect,
-}: ChapterChipsProps) {
+}: {
+	chips: ChapterChip[];
+	activeId: number;
+	onSelect: (id: number) => void;
+}) {
 	const activeRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
@@ -28,21 +26,17 @@ export default function ChapterChips({
 	}, [activeId]);
 
 	return (
-		<div className="flex gap-[6px] px-[16px] overflow-x-auto scrollbar-hide">
+		<div className="strip chips">
 			{chips.map((chip) => {
-				const isActive = chip.id === activeId;
+				const on = chip.id === activeId;
 				return (
 					<button
 						key={chip.id}
-						ref={isActive ? activeRef : null}
+						ref={on ? activeRef : null}
 						type="button"
+						className={`chip3 ${on ? "on" : ""}`}
+						aria-pressed={on}
 						onClick={() => onSelect(chip.id)}
-						className={clsx(
-							"shrink-0 px-[12px] py-[6px] rounded-[8px] text-[14px] font-semibold cursor-pointer transition-colors",
-							isActive
-								? "bg-[#DBEDFF] border border-[#59ACFF] text-[#0A6ACB] font-bold"
-								: "bg-white text-[#C8CCD3]",
-						)}
 					>
 						{chip.label}
 					</button>

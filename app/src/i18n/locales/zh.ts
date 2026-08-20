@@ -162,6 +162,42 @@ const zh = {
 			leave: "退出",
 		},
 	},
+	/** 하단 탭 바 */
+	/** 홈 화면 */
+	/** 교재학습 · 자모 목록 */
+	catalog: {
+		done: "完成",
+		doing: "进行中",
+		review: "复习 {{count}}",
+		chapterSeq: "第{{seq}}课",
+		chapterChip: "第{{seq}}课",
+		jamoTab: "韩文字母",
+		noModules: "这里还没有学习活动",
+	},
+	home: {
+		greeting: "您好，",
+		userName: "{{name}}",
+		streakDays: "{{count}}天",
+		streakTail: "连续学习中",
+		taskResume: "继续学习",
+		taskReview: "待重做 {{count}} 题",
+		taskReviewBody: "从昨天做错的题开始",
+		taskNone: "开始学习",
+		taskNoneBody: "请从教材学习菜单开始",
+		statusTitle: "学习情况",
+		chartTitle: "本周活动",
+		todayActivities: "今日活动数",
+		weeklyActivities: "本周活动数",
+		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
+		days: ["一", "二", "三", "四", "五", "六", "日"],
+	},
+	nav: {
+		home: "首页",
+		textbook: "教材学习",
+		game: "游戏",
+		clip: "表达短片",
+		my: "我的",
+	},
 	player: {
 		exit: "退出",
 		skip: "跳过",

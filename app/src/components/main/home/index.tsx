@@ -3,13 +3,15 @@ import { useAuth } from "@/components/sign/sign-provider";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import ContinueLearning from "./continue-learning";
+import { useTranslation } from "react-i18next";
+import TaskCard from "./continue-learning";
 import LearningStatus from "./learning-status";
 import WeeklyAttendance from "./weekly-attendance";
 import WeeklyChart from "./weekly-chart";
 
 export default function HomeContent() {
 	const { user } = useAuth();
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [data, setData] = useState<DashboardData | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -26,7 +28,7 @@ export default function HomeContent() {
 		return (
 			<div className="flex flex-col items-center justify-center gap-[12px] px-[20px] pt-[80px]">
 				<Loader2 className="size-[28px] animate-spin text-[#0180FF]" />
-				<p className="text-[#9BA5B0] text-[14px]">로딩 중...</p>
+				<p className="text-[#9BA5B0] text-[14px]">{t("state.loading")}</p>
 			</div>
 		);
 	}
@@ -73,67 +75,54 @@ export default function HomeContent() {
 	};
 
 	return (
-		<div className="flex flex-col gap-[24px] px-[20px] pt-[24px] pb-[20px]">
-			{/* Handle bar */}
-			<div className="flex justify-center">
-				<div className="h-[4px] w-[40px] rounded-full bg-[#24425F]" />
+		<div className="scroll">
+			<div className="greet">
+				<div className="hi">{t("home.greeting")}</div>
+				<div className="name">{t("home.userName", { name: userName })}</div>
 			</div>
 
-			{/* Greeting */}
-			<div>
-				<p className="text-[#6B7B8D] text-[14px]">안녕하세요,</p>
-				<p className="font-bold text-[#24425F] text-[24px]">{userName} 님</p>
-			</div>
-
-			{/* Weekly attendance */}
 			<WeeklyAttendance
 				todayIndex={attendance.todayIndex}
 				completedDays={completedDays}
 				streak={attendance.streak}
 			/>
 
-			{/* Continue learning */}
-			{continueLearning ? (
-				<ContinueLearning
-					bookLabel={continueLearning.bookLabel}
-					chapterLabel={continueLearning.chapterLabel}
-					moduleLabel={continueLearning.moduleLabel}
-					onClick={handleContinue}
+			<div className="pad">
+				{/* 오늘 할 일은 한 자리다. 세 갈래가 그 자리를 나눠 쓴다 */}
+				{continueLearning ? (
+					<TaskCard
+						kind="resume"
+						title={t("home.taskResume")}
+						body={`${continueLearning.bookLabel} ${continueLearning.chapterLabel} · ${continueLearning.moduleLabel}`}
+						onClick={handleContinue}
+					/>
+				) : (
+					<TaskCard
+						kind="none"
+						title={t("home.taskNone")}
+						body={t("home.taskNoneBody")}
+						onClick={() => navigate({ to: "/main/textbook" })}
+					/>
+				)}
+
+				<div className="sec-title">{t("home.statusTitle")}</div>
+				<LearningStatus
+					chapterCompleted={learningStatus.chapterCompleted}
+					chapterTotal={learningStatus.chapterTotal}
+					chapterLabel={learningStatus.chapterLabel}
+					todayActivities={learningStatus.todayActivities}
+					weeklyActivities={learningStatus.weeklyActivities}
 				/>
-			) : (
-				<button
-					type="button"
-					onClick={() => navigate({ to: "/main/textbook" })}
-					className="flex w-full cursor-pointer items-center gap-[14px] rounded-[16px] bg-[#DBEDFF] p-[16px] transition-colors active:bg-[#C5DEFF]"
-				>
-					<div className="flex size-[48px] shrink-0 items-center justify-center rounded-[12px] bg-[#0180FF]">
-						<span className="text-[20px] text-white">📖</span>
-					</div>
-					<div className="flex-1 text-left">
-						<p className="font-bold text-[#24425F] text-[16px]">
-							학습 시작하기
-						</p>
-						<p className="mt-[2px] text-[#0180FF] text-[13px]">
-							교재학습 메뉴에서 시작해보세요
-						</p>
-					</div>
-				</button>
-			)}
 
-			{/* Learning status */}
-			<LearningStatus
-				chapterCompleted={learningStatus.chapterCompleted}
-				chapterTotal={learningStatus.chapterTotal}
-				chapterLabel={learningStatus.chapterLabel}
-				todayActivities={learningStatus.todayActivities}
-				weeklyActivities={learningStatus.weeklyActivities}
-			/>
+				<div className="sec-title">{t("home.chartTitle")}</div>
+				<WeeklyChart
+					data={weeklyChart.data}
+					todayIndex={attendance.todayIndex}
+				/>
 
-			{/* Weekly chart */}
-			<WeeklyChart
-				data={weeklyChart.data}
-				todayIndex={attendance.todayIndex}
-			/>
+				{/* 탭 바에 바짝 붙지 않게 하는 바닥 여백 */}
+				<div style={{ height: 20 }} />
+			</div>
 		</div>
 	);
 }
