@@ -4,7 +4,22 @@
  * 구 경로 /book/chapter/unit/listen/$code 에서 옮겨 왔다.
  * 그쪽은 리다이렉트만 남는다.
  */
+import {
+	ActivityAppBar,
+	ActivityBody,
+	ActivityFooter,
+	ActivityFrame,
+	ActivityProgress,
+	AudioRow,
+	Choice,
+	ChoiceList,
+	Dock,
+	FeedbackMessage,
+	PrimaryButton,
+	ProblemCard,
+} from "@/components/main/activity";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { type JamoSearch, parseJamoSearch } from "../-jamo-search";
 
 import { SpeakerIcon } from "@/assets/icons";
@@ -42,6 +57,7 @@ function RouteComponent() {
 	const { code } = Route.useSearch();
 	const { addToast } = useToast();
 	const router = useRouter();
+	const { t } = useTranslation();
 
 	const sound = useSoundEffects();
 
@@ -78,16 +94,6 @@ function RouteComponent() {
 		router.history.back();
 	};
 
-	const checkAnswer = () => {
-		if (word === problem?.answer_1) {
-			sound.playCorrect();
-			next();
-		} else {
-			sound.playIncorrect();
-			setIncorrect();
-		}
-	};
-
 	const next = () => {
 		// 맞았습니다 출력 후 1초 딜레이 후
 
@@ -103,10 +109,10 @@ function RouteComponent() {
 		}, 1000);
 	};
 
-	const setIncorrect = () => {
+	const setIncorrect = (picked: string) => {
 		addToast("Incorrect", "error");
 
-		const wordIndex = wordList?.indexOf(word ?? "") ?? -1;
+		const wordIndex = wordList?.indexOf(picked) ?? -1;
 
 		setIncorrectSlots((prevSlots) => {
 			const newSlots = [...prevSlots];
@@ -122,10 +128,20 @@ function RouteComponent() {
 		setIncorrectSlots([false, false, false, false]);
 	};
 
-	const selectWord = (word: string) => {
+	/*
+	 * 고르면 바로 채점한다. 예전에는 고른 뒤 "정답 확인"을 한 번 더 눌러야 했는데,
+	 * 목업과 다른 활동 전부가 한 번 누르면 결과가 나오는 방식이라 여기도 맞췄다.
+	 */
+	const selectWord = (picked: string) => {
 		sound.playClick();
-		setWord(word);
-		setIsDisabled(false);
+		setWord(picked);
+		if (picked === problem?.answer_1) {
+			sound.playCorrect();
+			next();
+		} else {
+			sound.playIncorrect();
+			setIncorrect(picked);
+		}
 	};
 
 	const play = () => {
@@ -154,70 +170,65 @@ function RouteComponent() {
 		if (problemIndex === problemList.length - 1) setIsLastPage(true);
 	}, [problemIndex]);
 
+	// 묶음 이름만 — unit.title 은 "모음 1:ㅏ,ㅓ,ㅗ" 처럼 음절이 붙어 있다
+	const groupName = (unit?.title ?? "").split(":")[0].trim();
+	const lesson = [
+		t("catalog.chapterSeq", { seq: chapter?.seq ?? 1 }),
+		groupName,
+	]
+		.filter(Boolean)
+		.join(" · ");
+
 	return (
-		<div className="flex h-full flex-col justify-between">
-			<ProblemHeader chapterSeq={chapter?.seq} unitTitle={unit?.title} />
-			<div className="bg-white px-[16px] pb-[8px]">
-				<ModuleTitle title={module?.title} subtitle={module?.eng} />
-			</div>
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={exit} />
+			<ActivityProgress
+				current={problemIndex}
+				total={problemList.length}
+				onJump={setProblemIndex}
+			/>
 
-			<div className="flex flex-col items-center px-[16px]">
-				<div className="w-full">
-					<button
-						onClick={play}
-						className="flex h-[40px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-[8px] bg-[#DBEDFF] text-[#0180FF] hover:opacity-[0.8] active:opacity-[0.9]"
-					>
-						<SpeakerIcon color={"#0180FF"} />
-						<div className="font-semibold text-[#0180FF] text-[16px]">
-							발음듣기
-						</div>
-					</button>
-				</div>
-				<div className="mt-[40px] grid w-full grid-cols-2 gap-x-[12px] gap-y-[16px]">
-					{wordList.map((item, idx) => {
-						return (
-							<button
-								key={idx}
-								onClick={(e) => selectWord(item)}
-								className={clsx(
-									baseCardButton,
-									word === item && selectedCardButton,
-								)}
-								disabled={incorrectSlots[idx]}
-							>
-								{item}
-							</button>
-						);
-					})}
-				</div>
-			</div>
+			<ActivityBody
+				feedback={
+					incorrectSlots.some(Boolean) ? <FeedbackMessage kind="wrong" /> : null
+				}
+			>
+				<ProblemCard instruction={t("activity.instrJamoListen")}>
+					<AudioRow
+						label={t("player.playAudio")}
+						sub={t("activity.audioSub")}
+						onPlay={play}
+					/>
+				</ProblemCard>
 
-			<div className="flex-1"></div>
-
-			<div className="sticky bottom-0 items-center bg-white">
-				<div className="flex justify-center p-[16px] ">
-					<audio className="hidden" src={audioSrc} ref={audioRef}>
-						Your device does not support the audio.
-					</audio>
-
-					{isExit ? (
-						<button
-							onClick={exit}
-							className={clsx(baseButton, "!bg-green-500")}
+				<ChoiceList variant="jamo">
+					{wordList.map((item, idx) => (
+						<Choice
+							key={item}
+							index={idx}
+							// 맞을 때까지 다시 고르는 화면이라 틀린 것이 여럿 남는다
+							state={incorrectSlots[idx] ? "wrong" : ""}
+							onClick={() => selectWord(item)}
 						>
-							완료 done
-						</button>
-					) : (
-						<button
-							onClick={checkAnswer}
-							className={clsx(baseButton)}
-							disabled={isDisabled}
-						>
-							{"정답 확인 check answer"}
-						</button>
-					)}
-				</div>
-			</div>
-		</div>
+							{item}
+						</Choice>
+					))}
+				</ChoiceList>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={isExit ? t("player.showResult") : t("player.next")}
+						on={isExit}
+						action="next"
+						onClick={exit}
+					/>
+				</Dock>
+			</ActivityFooter>
+
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+			<audio className="hidden" src={audioSrc} ref={audioRef} />
+		</ActivityFrame>
 	);
 }
