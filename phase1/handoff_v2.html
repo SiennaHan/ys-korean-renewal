@@ -116,36 +116,86 @@
   <b>거기부터 읽어라.</b></p>
 </header>
 
-<h2><span class="n">01</span>무엇이 정본인가</h2>
-<p>이 저장소는 <span class="file">_v1</span> → <span class="file">_uiux</span> 로 판을 올린다.
-이름만으로는 알 수 없어서 여기 적는다. 옛 판은
-<span class="file">phase1/_superseded/</span> 에 있고 그 폴더의
-<span class="file">README.txt</span> 가 무엇이 무엇을 대체했는지 적어 둔다.</p>
+<h2><span class="n">01</span>문서 지도 — 어느 것이 무엇에 답하나</h2>
+<p>문서가 28개다. <b>합칠 수 있는 것은 없다</b> — 재 보니 겹치는 것은 <b>어휘뿐이고
+답하는 질문이 다르다</b>. 예를 들어 <span class="file">Phase1_dev_spec_v1</span> 은
+<span class="file">G2_shell_and_state_spec_v1</span> 과 특징 토큰의 86%를 공유하지만
+<b>G2 를 절 번호로 여덟 번 인용한다</b>(§1 상태머신 · §3.1 · §3.4 · §6 · §8 접근성 · §9).
+합치면 그 인용이 갈 곳을 잃는다. 그래서 합치는 대신 <b>어느 것이 무엇에 답하는지</b>를 적는다.</p>
 
+<p class="qa">옛 판은 <span class="file">phase1/_superseded/</span> 로 옮겼다(일곱 개).
+그 폴더의 <span class="file">README.txt</span> 가 무엇이 무엇을 대체했는지 적는다.
+이 저장소는 <span class="file">_v1</span> → <span class="file">_uiux</span> 로 판을 올린다.</p>
+
+<h3>착수에 필요한 것 — 이 둘만 보면 된다</h3>
 <div class="tablewrap">
 <table>
-  <thead><tr><th>무엇의 정본</th><th>파일</th></tr></thead>
+  <thead><tr><th>파일</th><th>답하는 질문</th></tr></thead>
   <tbody>
-    <tr><td><b>활동 화면 (시각 정본)</b></td><td><span class="file">activity_mockups_uiux.html</span> — 22화면</td></tr>
-    <tr><td>홈 · 교재학습 · 자모 목록</td><td><span class="file">nav_mockup_uiux.html</span></td></tr>
-    <tr><td>게임 다섯</td><td><span class="file">game_screens_uiux.html</span></td></tr>
-    <tr><td>VocaShot 혼자 하기</td><td><span class="file">vocashot_play_uiux.html</span></td></tr>
-    <tr><td>셸 컴포넌트 명세</td><td><span class="file">Shell_component_spec_uiux.html</span></td></tr>
-    <tr><td>구현 사양(수치)</td><td><span class="file">build_spec_uiux.html</span></td></tr>
-    <tr><td>개발 요구사항 · DB · 라우트</td><td><span class="file">Phase1_dev_spec_v1.html</span></td></tr>
-    <tr><td>API 필드</td><td><span class="file">api_schema_v1.html</span></td></tr>
-    <tr><td>MY 누적 학습 기록</td><td><span class="file">my_learning_summary_v1.html</span></td></tr>
+    <tr><td><b>이 문서</b></td><td>어디까지 됐고 무엇이 남았나. 목업을 벗어난 곳은 어디이고 왜인가</td></tr>
+    <tr><td><span class="file">Phase1_dev_spec_v1</span></td><td><b>무엇을 만들라</b> — DB 신설 2종 · API · 라우트 · 셸 · 검증 기준</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>만들 때 펼쳐 놓을 것</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>파일</th><th>답하는 질문</th></tr></thead>
+  <tbody>
+    <tr><td><span class="file">activity_mockups_uiux</span></td><td><b>활동 화면이 어떻게 보이나 — 시각 정본</b> 22화면</td></tr>
+    <tr><td><span class="file">nav_mockup_uiux</span></td><td>홈 · 교재학습 · 자모 목록의 시각 정본</td></tr>
+    <tr><td><span class="file">game_screens_uiux</span></td><td>게임 다섯의 시각 정본 (앱 DOM 캡처라 앱 CSS 에 의존한다)</td></tr>
+    <tr><td><span class="file">vocashot_play_uiux</span></td><td>VocaShot 혼자 하기의 시각 정본</td></tr>
+    <tr><td><span class="file">build_spec_uiux</span></td><td>그 화면들의 <b>수치</b> — 토큰 · 골격 · 선택지 · 채점 · 접근성</td></tr>
+    <tr><td><span class="file">Shell_component_spec_uiux</span></td><td>셸 <b>컴포넌트</b>의 상태와 슬롯. 활동 8종이 어느 슬롯에 무엇을 넣나</td></tr>
+    <tr><td><span class="file">api_schema_v1</span></td><td>API 요청·응답 필드. <b>§6 의 네 물음이 아직 답이 없다</b></td></tr>
+    <tr><td><span class="file">../G2_shell_and_state_spec_v1</span></td><td><b>활동 상태 머신</b>과 정상 흐름 밖의 화면 · 접근성 결함 · 용어. dev spec 이 인용하는 근거다</td></tr>
+    <tr><td><span class="file">my_learning_summary_v1</span></td><td>MY 누적 학습 기록에 필요한 데이터. 네 결정이 반영돼 있다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>왜 그렇게 정했나 — 근거와 기록</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>파일</th><th>답하는 질문</th></tr></thead>
+  <tbody>
+    <tr><td><span class="file">home_asis_v1</span></td><td>리뉴얼 전 <b>홈 · 교재학습</b>이 어땠나 (실측)</td></tr>
+    <tr><td><span class="file">games_asis_v1</span></td><td>리뉴얼 전 <b>게임 · 표현클립 · MY</b> 가 어땠나. §4 가 세 탭의 판단을 담는다</td></tr>
+    <tr><td><span class="file">mockup_read_v1</span></td><td>목업을 소스에서 읽은 <b>실측 데이터</b> — CSS 337규칙. 이관한 CSS 의 출처다</td></tr>
+    <tr><td><span class="file">games_polish_v1</span></td><td>게임 넷에서 손볼 것. 서울 퍼즐 38단계 문장 검수를 담고 있다</td></tr>
+    <tr><td><span class="file">vocashot_solo_spec_v1</span></td><td>VocaShot 을 교실용에서 혼자 하기로 바꾼 설계</td></tr>
+    <tr><td><span class="file">jamo_authoring_spec_v1</span></td><td>자모 콘텐츠를 어떻게 저작하나. <span class="file">n8_jamo</span> 스키마</td></tr>
+    <tr><td><span class="file">renewal_plan_v1</span></td><td>셸 컴포넌트를 되돌린 뒤 다시 세운 <b>작업 기록</b>. 목업 대조가 왜 생겼는지가 여기 있다</td></tr>
+    <tr><td><span class="file">../G1_activity_lineup_v2</span></td><td>활동 8종을 어떻게 확정했나 · 저작 물량</td></tr>
+    <tr><td><span class="file">../G1_item_schema_proposal_v1</span></td><td>문항 스키마 공통 컬럼 규약</td></tr>
+    <tr><td><span class="file">handoff_v1</span></td><td>착수 전 인계. <b>이 문서가 대체했다</b></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>저장소 루트 — 리뉴얼 전체</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>파일</th><th>답하는 질문</th></tr></thead>
+  <tbody>
+    <tr><td><span class="file">README.md</span></td><td>저장소에 무엇이 있고 무엇을 받아야 돌아가나</td></tr>
+    <tr><td><span class="file">BLOCKERS.md</span></td><td><b>지금 막힌 것과 정해지지 않은 것</b> — 먼저 읽어라</td></tr>
+    <tr><td><span class="file">renewal_masterplan_v1</span></td><td><b>순서</b> — 무엇부터 어떤 순서로</td></tr>
+    <tr><td><span class="file">renewal_plan_v0.2</span></td><td><b>제품 초안</b> — 무엇을 만드나. 선결 결정 D1~D7</td></tr>
+    <tr><td><span class="file">app_asis_mockup_v1</span> · <span class="file">core_loop_mockup_v1</span></td>
+      <td>초기 목업 둘 — 현행 재현과 코어 루프 첫 안</td></tr>
   </tbody>
 </table>
 </div>
 
 <div class="callout warn">
-  <p><b>"기획서" 라 부를 문서가 넷이라 헷갈린다.</b> 정리하면 —
-  <span class="file">renewal_masterplan_v1</span> 이 <b>순서</b>(무엇부터),
-  <span class="file">renewal_plan_v0.2</span> 이 <b>제품 초안</b>(무엇을),
-  <span class="file">phase1/renewal_plan_v1</span> 이 <b>Phase 1 작업 목록</b>,
-  그리고 <b>이 문서</b>가 Phase 1 의 현재 상태다. 개발 착수는
-  <span class="file">Phase1_dev_spec_v1</span> 과 이 문서만 보면 된다.</p>
+  <p><b>"기획서" 라 부를 문서가 넷이라 헷갈린다.</b> 질문이 다르다 —
+  <span class="file">renewal_masterplan_v1</span> 은 순서,
+  <span class="file">renewal_plan_v0.2</span> 은 제품 초안,
+  <span class="file">renewal_plan_v1</span> 은 Phase 1 작업 기록,
+  <b>이 문서</b>가 현재 상태다. <b>착수에는 이 문서와 dev spec 둘이면 된다.</b></p>
 </div>
 
 <h2><span class="n">02</span>화면 — 다 됐다</h2>
