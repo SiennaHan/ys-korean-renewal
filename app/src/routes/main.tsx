@@ -8,15 +8,20 @@ export const Route = createFileRoute("/main")({
 });
 
 function MainLayout() {
-	const { isSignedIn, isLoading } = useAuth();
+	const { isLoggedInUser, isLoading } = useAuth();
 
 	// 로딩 중에는 빈 화면
 	if (isLoading) {
 		return <div className="h-full bg-white" />;
 	}
 
-	// 미인증 시 로그인 페이지로 리다이렉트
-	if (!isSignedIn) {
+	/*
+	 * 로그인은 무조건이다 — 게스트로 쓰는 길은 없다.
+	 * isSignedIn 으로 막으면 안 된다. 그건 "토큰이 있다" 는 뜻일 뿐이어서
+	 * 계정 없는 세션까지 들여보내고, 홈이 "Guest 님" 으로 맞이하다가
+	 * MY 에서 로그인 화면으로 튕겨 나가는 반쪽 상태가 된다.
+	 */
+	if (!isLoggedInUser) {
 		return <Navigate to="/login" />;
 	}
 

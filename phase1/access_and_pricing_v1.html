@@ -1,0 +1,387 @@
+<meta charset="utf-8">
+<title>접근 권한과 유료 경계 — 누가 무엇까지 볼 수 있나</title>
+<style>
+  :root {
+    --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f7;
+    --ink:#181c24; --ink-2:#4e5666; --ink-3:#89909f;
+    --line:#e2e6ed; --accent:#1f5fd6; --accent-soft:#e8f0ff;
+    --bad:#b3261e; --bad-soft:#fdecea; --good:#1c6b42; --good-soft:#e8f5ee;
+    --warn:#8a5a00; --warn-soft:#fdf4e3;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 10px 26px rgba(16,24,40,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+      --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+      --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+      --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+      --warn:#e0ab52; --warn-soft:#2c2417;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+    --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+    --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+    --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+    --warn:#e0ab52; --warn-soft:#2c2417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    font-size:15.5px; line-height:1.74; }
+  main { max-width:860px; margin:0 auto; padding:52px 22px 100px; }
+
+  header.doc { padding-bottom:26px; border-bottom:2px solid var(--ink); margin-bottom:34px; }
+  .eyebrow { font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent); font-weight:800; margin-bottom:10px; }
+  h1 { font-size:30px; line-height:1.28; margin:0 0 12px; font-weight:800;
+    letter-spacing:-.015em; text-wrap:balance; }
+  .lead { color:var(--ink-2); font-size:15.5px; max-width:64ch; margin:0; }
+  .lead b { color:var(--ink); }
+
+  h2 { font-size:20px; font-weight:800; margin:56px 0 4px; letter-spacing:-.01em;
+    display:flex; align-items:baseline; gap:10px; }
+  h2 .n { font-size:13px; font-weight:800; color:var(--accent);
+    font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+  h3 { font-size:15.5px; font-weight:700; margin:26px 0 4px; }
+  p { margin:10px 0; }
+  .qa { color:var(--ink-3); font-size:13.5px; }
+
+  code { font-family:ui-monospace,Menlo,monospace; font-size:.85em;
+    background:var(--surface-2); padding:1.5px 6px; border-radius:5px; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin:14px 0 6px; font-size:13.5px; }
+  th { text-align:left; font-size:11.5px; letter-spacing:.05em; color:var(--ink-3);
+    font-weight:700; padding:8px 10px 6px; border-bottom:2px solid var(--line); white-space:nowrap; }
+  td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td code { white-space:nowrap; }
+
+  .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:12px; padding:16px 20px; margin:18px 0;
+    box-shadow:var(--shadow); }
+  .callout.bad { border-left-color:var(--bad); }
+  .callout.good { border-left-color:var(--good); }
+  .callout.warn { border-left-color:var(--warn); }
+  .callout .t { font-weight:800; font-size:14px; margin-bottom:6px; }
+  .callout.bad .t { color:var(--bad); }
+  .callout.good .t { color:var(--good); }
+  .callout.warn .t { color:var(--warn); }
+  .callout p { font-size:14.5px; margin:7px 0; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px; margin:16px 0 6px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:5px; }
+  .card .k { font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:800; color:var(--ink-3); }
+  .card .nm { font-size:15px; font-weight:700; line-height:1.4; }
+  .card .nm a { text-decoration:none; }
+  .card .nm a:hover { text-decoration:underline; }
+  .card .d { font-size:13px; color:var(--ink-2); line-height:1.6; }
+
+  ol.path { list-style:none; counter-reset:step; padding:0; margin:16px 0 6px;
+    display:flex; flex-direction:column; gap:10px; }
+  ol.path li { counter-increment:step; display:grid; grid-template-columns:30px 1fr;
+    gap:12px; align-items:start; }
+  ol.path li::before { content:counter(step); grid-column:1;
+    width:30px; height:30px; border-radius:50%; background:var(--accent-soft);
+    color:var(--accent); font-size:13px; font-weight:800; display:grid; place-items:center;
+    font-variant-numeric:tabular-nums; }
+  ol.path .h { font-weight:700; }
+  ol.path .d { color:var(--ink-2); font-size:14px; }
+
+  ul { padding-left:22px; margin:10px 0; }
+  li { margin:6px 0; }
+  li::marker { color:var(--ink-3); }
+
+  .pill { display:inline-block; font-size:11px; font-weight:800; border-radius:99px;
+    padding:1.5px 9px; white-space:nowrap; }
+  .pill.done { background:var(--good-soft); color:var(--good); }
+  .pill.open { background:var(--warn-soft); color:var(--warn); }
+  .pill.stop { background:var(--bad-soft); color:var(--bad); }
+  .pill.file { background:var(--accent-soft); color:var(--accent); }
+</style>
+<main>
+<header class="doc">
+  <div class="eyebrow">Phase 1 · 기획 · 2026-08-20</div>
+  <h1>접근 권한과 유료 경계 — 누가 무엇까지 볼 수 있나</h1>
+  <p class="lead">게스트가 어디까지 보고, 무엇이 무료이고, 유료분을 어떻게 여는지를 정한다.
+  <b>코드에는 권한 개념이 아직 하나도 없다</b> — 무료·유료·구매·잠금 어느 것도 없는 백지에서 시작한다.
+  숫자는 전부 <span class="file">app/src/shared/data/</span> 와 원장 <span class="file">v24</span> 를
+  실제로 센 것이다.</p>
+</header>
+
+<h2><span class="n">01</span>정한 것 세 줄</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>물음</th><th>결정</th></tr></thead>
+  <tbody>
+    <tr><td><b>무료 경계</b></td>
+      <td>과 단위 맛보기. 표현클립은 전부 무료, 게임은 <b>VocaShot · 봄소풍만</b> 무료,
+        자모는 <b>첫 과만</b> 무료, 교재는 <b>각 권 한 과만</b> 무료</td></tr>
+    <tr><td><b>유료분 여는 법</b></td>
+      <td><b>앱 내 결제.</b> 책값과 앱 사용료는 별도다 — 책을 샀다는 사실이 앱을 열어 주지 않는다</td></tr>
+    <tr><td><b>권한 출처</b></td>
+      <td><b>둘.</b> 학교가 등록한 학생은 학교 계약으로, 개인은 결제로 열린다.
+        <span class="file">ko_user.school_code</span> 가 이미 nullable 이라
+        값이 있으면 기관 소속, 없으면 개인이다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout warn">
+  <div class="t">책값과 앱 사용료가 별도라는 결정의 무게</div>
+  <p>이 한 줄이 설계를 크게 바꾼다. <b>책 코드로 여는 방식이 전부 빠진다</b> —
+  <span class="file">ko_book_code</span> 도, 시리얼 발급도, 연세 쪽 인쇄 협의도 필요 없다.
+  대신 <b>앱스토어 수수료 15~30% 와 심사 규정이 들어온다.</b> §08 을 보라.</p>
+  <p>그리고 <b>"사용료" 가 구독인지 한 번 사는 것인지가 아직 정해지지 않았다.</b>
+  이것이 남은 물음 중 가장 큰 것이다 — §07 의 1번.</p>
+</div>
+
+<h2><span class="n">02</span>무료로 여는 것</h2>
+<p>계정 없이, 로그인 없이 바로 볼 수 있는 범위다. 앞서 만든
+<b>"로그인하지 않고 둘러보기"</b> 로 들어온 사람이 보는 것이 이것이다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>범위</th><th>실측</th></tr></thead>
+  <tbody>
+    <tr><td><b>표현클립</b></td><td>전부</td>
+      <td><b>329편</b> — 가두지 않는다. 유튜브 임베드라 앱이 쥔 자산이 아니고,
+        유입 장치로서 값이 더 크다</td></tr>
+    <tr><td><b>게임 — VocaShot</b></td><td>전부</td>
+      <td>어휘 사격. 교재에 묶이지 않아 아무 급이나 즐길 수 있다</td></tr>
+    <tr><td><b>게임 — 봄소풍</b></td><td>전부</td>
+      <td>친구 12 · 문항 세트. 역시 교재 비연동</td></tr>
+    <tr><td><b>자모</b></td><td><b>첫 과만</b></td>
+      <td>원장 <span class="file">n8_jamo</span> 의 <span class="file">chapter 1</span> =
+        <b>190문항</b> (전체 529 중 <b>36%</b>). §07 의 4번을 보라 — 맛보기치고 크다</td></tr>
+    <tr><td><b>교재</b></td><td><b>각 권 한 과만</b></td>
+      <td>8권 × 1과 = <b>8과</b> / 전체 120과. 문항으로는 <b>472 / 7,305 = 6.5%</b></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>맛보기 과의 실측 — 권마다 무엇이 몇 개 열리나</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>권</th><th>맛보기 과</th><th>어휘</th><th>어휘퀴즈</th><th>역할극</th><th>듣고답</th><th>듣기지문</th><th>빈칸</th><th>읽고답</th></tr></thead>
+  <tbody>
+    <tr><td>1권</td><td><b>4과</b> 제 이름은 유리예요</td><td>15</td><td>9</td><td>9</td><td>3</td><td>4</td><td>6</td><td>5</td></tr>
+    <tr><td>2권</td><td>1과 저는 회사원입니다</td><td>17</td><td>10</td><td>9</td><td>5</td><td>3</td><td>9</td><td>4</td></tr>
+    <tr><td>3권</td><td>1과 한국에 오기 전에…</td><td>19</td><td>8</td><td>6</td><td>5</td><td>3</td><td>7</td><td>4</td></tr>
+    <tr><td>4권</td><td>1과 한국말을 배운 지 6개월…</td><td>22</td><td>7</td><td>6</td><td>9</td><td>4</td><td>7</td><td>3</td></tr>
+    <tr><td>5권</td><td>1과 한국 대학교에서…</td><td>16</td><td>10</td><td>16</td><td>6</td><td>3</td><td>7</td><td>3</td></tr>
+    <tr><td>6권</td><td>1과 전망은 이 방만 못하지만…</td><td>14</td><td>9</td><td>6</td><td>4</td><td>4</td><td>7</td><td>3</td></tr>
+    <tr><td>7권</td><td>1과 유학생활</td><td>21</td><td>10</td><td>8</td><td>8</td><td>3</td><td>7</td><td>3</td></tr>
+    <tr><td>8권</td><td>1과 남성과 여성</td><td>51</td><td>9</td><td>8</td><td>5</td><td>3</td><td>7</td><td>3</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout bad">
+  <div class="t">1권만 4과다 — "각 권 1과" 를 그대로 쓰면 맛보기가 빈 화면이 된다</div>
+  <p><b>1권의 1·2·3과는 한글(1)(2)(3) 즉 자모 과다.</b> 일반 활동 콘텐츠가
+  <b>하나도 없다</b> — 어휘 0 · 어휘퀴즈 0 · 역할극 0 · 듣고답하기 0 · 빈칸 0 · 읽고답하기 0
+  (듣기지문 1개만 있고 그것도 자모 음성이다). 일반 활동은 <b>4과부터</b> 시작한다.</p>
+  <p>그래서 무료 과를 <b>"seq == 1" 같은 계산식으로 정하면 안 된다.</b>
+  1권만 4과로 예외를 두어야 하고, 예외는 코드가 아니라 <b>데이터로</b> 들어가야 한다 —
+  <span class="file">ko_chapter.is_free</span> 플래그 한 칸. 그러면 나중에 마케팅이
+  "이번 달은 5권 3과도 열자" 고 할 때 배포 없이 바꾼다.</p>
+</div>
+
+<h2><span class="n">03</span>유료로 닫는 것</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>실측</th></tr></thead>
+  <tbody>
+    <tr><td><b>교재 112과</b></td><td>어휘 2,715 · 어휘퀴즈 1,074 · 역할극 925턴 ·
+      듣고답하기 634 · 듣기지문 351 · 빈칸 779 · 읽고답하기 355 = <b>6,833문항 (93.5%)</b></td></tr>
+    <tr><td><b>자모 2·3과</b></td><td>339문항 (272 + 67)</td></tr>
+    <tr><td><b>게임 3종</b></td><td>조사 저격 · 카드 분류 · 서울 퍼즐</td></tr>
+    <tr><td><b>플래시카드</b></td><td>12세트 327장 — <b>전부 1권 것이다.</b> §07 의 5번</td></tr>
+    <tr><td><b>미션챗</b></td><td>117모듈. 8권 전체에 15과씩 고르게 있다</td></tr>
+    <tr><td><b>발음 리포트 · 복습 큐 · 누적 학습기록</b></td>
+      <td>결과물이 쌓이는 것들. 계정이 있어야 의미가 있으니 자연히 유료 쪽이다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">04</span>권한 판정은 한 곳에서만</h2>
+<p>권한 출처가 둘이고 앞으로 늘 수도 있다(체험판 · 쿠폰 · 학교 계약 갱신).
+그래서 <b>앱이 권한을 계산하지 않는다.</b> 서버가 "열린 범위" 를 내고 앱은 그것만 믿는다.</p>
+
+<div class="callout">
+  <div class="t">GET /entitlement — 이 응답 하나가 앱의 모든 잠금을 결정한다</div>
+  <p>출처가 무엇이든(무료 · 학교 계약 · 개인 결제) 앱이 받는 모양은 같다.
+  출처가 늘어도 앱은 고치지 않는다.</p>
+</div>
+
+<pre style="background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.6"><code>{
+  "source": "purchase",        // guest | school | purchase
+  "books":  [1, 2],            // 열린 권
+  "chapters": {                // 권 안에서 예외로 열린 과 (무료 맛보기)
+    "3": [1], "4": [1], "5": [1], "6": [1], "7": [1], "8": [1]
+  },
+  "jamo_chapters": [1],
+  "games": ["vocashot", "spring-picnic", "particle-sniper"],
+  "clips": true,
+  "expires_at": null           // 구독이면 만료 시각
+}</code></pre>
+
+<p>게스트는 로그인 없이도 이 호출을 한다 — 게스트 토큰으로. 무료 범위가
+서버에서 오므로 <b>무료 경계를 바꿀 때 앱을 다시 내보내지 않는다.</b></p>
+
+<h2><span class="n">05</span>신설이 필요한 것</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>구분</th><th>무엇</th><th>왜</th></tr></thead>
+  <tbody>
+    <tr><td>DB</td><td><span class="file">ko_entitlement</span></td>
+      <td>user_id · source · book_id · expires_at · created_at.
+        판정 결과가 아니라 <b>권한 사실</b>을 쌓는다. 학교 계약도 여기 한 줄로 들어온다</td></tr>
+    <tr><td>DB</td><td><span class="file">ko_purchase</span></td>
+      <td>영수증 원본 · 스토어(ios/android/web) · 상품 id · 상태(정상/환불) ·
+        검증 시각. 환불 추적에 필요하다</td></tr>
+    <tr><td>DB</td><td><span class="file">ko_chapter.is_free</span></td>
+      <td>무료 과를 데이터로. §02 의 1권 예외가 이 칸에 들어간다</td></tr>
+    <tr><td>API</td><td><span class="file">GET /entitlement</span></td>
+      <td>§04. 게스트 토큰도 받는다</td></tr>
+    <tr><td>API</td><td><span class="file">POST /purchase/verify</span></td>
+      <td>스토어 영수증을 서버에서 검증하고 <span class="file">ko_entitlement</span> 를 채운다.
+        <b>앱이 "샀다" 고 말하는 것을 믿으면 안 된다</b></td></tr>
+    <tr><td>API</td><td><span class="file">POST /user/sign/up</span></td>
+      <td><b>학생 자체 회원가입이 지금 없다.</b> §08 의 1번</td></tr>
+    <tr><td>API</td><td>게임 콘텐츠 6개 라우트에 인증·권한</td>
+      <td>§08 의 3번 — 지금 전부 무인증이다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">06</span>앱이 잠긴 것을 어떻게 보이나</h2>
+<p><b>숨기지 않고 보이되 잠근다.</b> 목록에서 지워 버리면 무엇을 사는지 모르고,
+자기가 어디까지 왔는지도 가늠하지 못한다. 잠긴 과도 제목과 자물쇠를 보여 준다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>누구</th><th>보는 것</th><th>누르면</th></tr></thead>
+  <tbody>
+    <tr><td><b>게스트</b></td><td>무료 범위 전부 + 잠긴 것의 제목</td>
+      <td>잠긴 과 → <b>로그인 먼저</b>. 계정 없이 결제하면 기기를 바꿀 때 잃는다</td></tr>
+    <tr><td><b>로그인만</b></td><td>같음 + 누적 학습기록</td>
+      <td>잠긴 과 → <b>결제 화면</b></td></tr>
+    <tr><td><b>기관 학생</b></td><td>학교 계약 범위</td>
+      <td>계약 밖 → <b>"학교에 문의" 문구.</b> 결제 화면을 띄우면 안 된다 —
+        이미 학교가 낸 돈이다</td></tr>
+    <tr><td><b>개인 결제</b></td><td>산 권 전부</td><td>—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">문구는 다섯 언어로 들어간다. 잠금 안내 · 결제 유도 · 학교 문의 ·
+복원("이미 샀어요") 넷은 처음부터 5개 로케일에 넣는다 — 나중에 채우면
+한국어만 고쳐 놓고 넘어가는 일이 반복된다.</p>
+
+<h2><span class="n">07</span>아직 정해야 할 것</h2>
+<ol class="path">
+  <li><div><div class="h">구독인가, 권별로 한 번 사는 것인가 <span class="pill stop">가장 큰 것</span></div>
+    <div class="d"><b>"앱 사용료" 라는 말은 구독처럼 읽힌다.</b> 하지만 책이 8권으로 나뉘어 팔리니
+    권별 구매도 자연스럽다. 이건 §04 의 <span class="file">expires_at</span> 이 쓰이는지 여부,
+    §05 의 <span class="file">ko_entitlement</span> 가 권 단위인지 기간 단위인지,
+    그리고 환불·복원 규칙 전부를 바꾼다.
+    <b>내 권고 — 권별 구매.</b> 책 한 권을 떼는 사람의 리듬과 맞고, 구독은
+    한 권 끝내고 쉬는 사람에게 벌을 준다. 다만 8권을 다 사면 비싸 보이므로
+    <b>전권 묶음</b>을 같이 둔다.</div></div></li>
+  <li><div><div class="h">게스트 진행을 서버에 남기나</div>
+    <div class="d">남기면 로그인할 때 <span class="file">migrateGuestData</span> 가 실제로 돌아야 한다 —
+    <b>그 경로는 한 번도 실행된 적이 없다.</b> 기기에만 두면 옮길 것이 없어 간단하지만
+    게스트가 앱을 지우면 사라진다.
+    <b>내 권고 — 서버에 남긴다.</b> 무료 범위가 좁으니 양이 적고,
+    "지운 게 아까워서" 가 결제 이유가 된다.</div></div></li>
+  <li><div><div class="h">기관 학생의 범위는 전 권인가, 계약한 권인가</div>
+    <div class="d">지금 <span class="file">ko_school</span> 에는 계약 범위를 담는 칸이 없다.
+    전 권으로 하면 단순하지만 1급 수업만 하는 학교에도 8권을 주는 것이다.
+    <b>내 권고 — 계약한 권.</b> <span class="file">ko_school.books</span> 한 칸을 더한다.</div></div></li>
+  <li><div><div class="h">자모 "첫 과" 를 chapter 1 로 볼지</div>
+    <div class="d"><span class="file">n8_jamo</span> 의 <span class="file">chapter 1</span> 은
+    <b>190문항 = 전체의 36%</b> 다. 맛보기라는 말보다 크다. 더 좁히려면
+    <span class="file">jamo_group</span> 단위가 있다 — <b>모음1 만 열면 34문항(6.4%)</b> 로
+    다른 무료 비율과 나란해진다.
+    <b>내 권고 — 자모는 chapter 1 그대로 넉넉히 둔다.</b> 한글을 처음 배우는 사람은
+    아직 이 앱을 살 이유를 모르는 사람이고, 여기서 막으면 그 사람을 잃는다.</div></div></li>
+  <li><div><div class="h">플래시카드가 1권에만 있다</div>
+    <div class="d">12세트 327장이 <b>전부 1권 것</b>이다. 2~8권을 산 사람은 플래시카드가 없다.
+    권마다 값이 달라지는데 값을 같게 받을지, 아니면 2~8권 플래시카드를 만들지 정해야 한다.
+    <b>기획 쪽 물음이다 — 콘텐츠 제작 여부가 걸린다.</b></div></div></li>
+</ol>
+
+<h2><span class="n">08</span>지금 코드가 이 결정을 못 받는 곳</h2>
+<ol class="path">
+  <li><div><div class="h">학생 자체 회원가입이 없다 <span class="pill stop">막힘</span></div>
+    <div class="d"><span class="file">/auth/signup</span> 은 <b>관리자용</b>이고
+    학생은 학교가 엑셀로 일괄 생성한다(<span class="file">createStudentBatch</span>).
+    게다가 <span class="file">ko_user.is_approved</span> 의 기본값이 <b>False</b> 다 —
+    개인 구매자가 스스로 가입해도 <b>승인 대기로 앉는다.</b>
+    B2C 를 하려면 이 둘을 같이 고쳐야 한다: 학생 가입 경로 신설 +
+    개인 가입은 승인 없이 활성.</div></div></li>
+  <li><div><div class="h">/qr 은 권한 장치가 아니다</div>
+    <div class="d">스캔을 기록하고 리다이렉트만 한다(<span class="file">ko_qr_scan</span> ·
+    <span class="file">ko_qr_visitor</span>). 책에 QR 을 넣어 권한을 주는 구조로 보이지만
+    실제로는 <b>유입 분석용</b>이고 책 신원이 없다.
+    책값과 앱값을 나눈 이번 결정에서는 그대로 두면 된다 — 다만 <b>"QR 이 있으니 되겠지" 라고
+    오해하지 말라는 뜻으로 적는다.</b></div></div></li>
+  <li><div><div class="h">게임 콘텐츠 라우트가 전부 무인증이다</div>
+    <div class="d">조사 저격 · 카드 분류 · 서울 퍼즐을 유료로 하기로 했는데
+    콘텐츠를 내주는 <b>여섯 라우트에 인증이 없다</b> —
+    <span class="file">card-sort/categories · vocab · rare</span> ·
+    <span class="file">particle-sniper/levels · sentences</span> ·
+    <span class="file">seoul-puzzle</span>. 주소만 알면 누구나 받는다.
+    권한을 붙이지 않으면 잠금이 화면에만 있는 잠금이 된다.</div></div></li>
+  <li><div><div class="h">읽고답하기는 과 키가 없다</div>
+    <div class="d"><span class="file">n5_read_answer_questions</span> 에는
+    <span class="file">chapter</span> 가 없고 <span class="file">text_id</span> 만 있다.
+    과 단위로 가두려면 <span class="file">n5_read_answer_text</span>(117행)를 거쳐
+    <span class="file">text_id → chapter</span> 로 조인해야 한다.
+    <b>다른 여섯 세트는 (book_id, chapter) 를 직접 들고 있다</b> —
+    이것만 예외이므로 게이팅 코드에서 빠뜨리기 쉽다.</div></div></li>
+  <li><div><div class="h">앱스토어 심사 — 웹 결제로 빼돌리면 반려된다</div>
+    <div class="d">앱 내에서 파는 디지털 콘텐츠는 스토어 결제를 써야 하고
+    <b>외부 결제 링크를 앱에서 안내하면 심사에서 걸린다.</b> 수수료 15~30% 를
+    가격에 미리 넣어야 하고, <b>"이미 샀어요" 복원 기능은 심사 필수 항목</b>이다.
+    한국은 인앱결제 강제 금지법이 있어 웹 결제를 병행할 여지가 있지만
+    글로벌 배포에서는 스토어 규정이 이긴다 — <b>이건 확인이 필요한 대목이고
+    내가 단정할 수 있는 부분이 아니다.</b></div></div></li>
+  <li><div><div class="h">표현클립을 무료로 여는 것의 라이선스</div>
+    <div class="d">329편이 유튜브 임베드다. 임베드 자체는 원저작자가 허용한 범위이지만
+    <b>스크립트를 우리가 붙여 놓았다</b>(<span class="file">script</span> ·
+    <span class="file">script_org</span>). 무료라서 문제가 줄어드는 것이 아니라
+    <b>공개 범위가 넓어져 눈에 더 띈다.</b> 유료·무료와 별개로 짚어 둘 일이다.</div></div></li>
+</ol>
+
+<h2><span class="n">09</span>만드는 순서</h2>
+<div class="cards">
+  <div class="card"><div class="k">1</div><div class="nm">경계를 데이터로</div>
+    <div class="d"><span class="file">ko_chapter.is_free</span> 를 더하고 8과(1권은 4과)를 표시.
+      아직 잠그지 않는다 — 값만 채운다</div></div>
+  <div class="card"><div class="k">2</div><div class="nm">GET /entitlement</div>
+    <div class="d">게스트·로그인 둘 다 받는다. 이 단계에서는 늘 무료 범위만 낸다</div></div>
+  <div class="card"><div class="k">3</div><div class="nm">앱에 잠금 붙이기</div>
+    <div class="d">보이되 잠근다. 문구 넷을 5개 언어로. 결제 없이도 여기까지가 온전한 제품이다</div></div>
+  <div class="card"><div class="k">4</div><div class="nm">학생 자체 회원가입</div>
+    <div class="d">§08 의 1번. 결제보다 먼저다 — 계정 없이 결제하면 기기를 바꿀 때 잃는다</div></div>
+  <div class="card"><div class="k">5</div><div class="nm">결제와 영수증 검증</div>
+    <div class="d">§07 의 1번(구독/권별)이 정해진 뒤에 시작한다. 복원 기능을 같이 만든다</div></div>
+  <div class="card"><div class="k">6</div><div class="nm">서버 쪽 실제 차단</div>
+    <div class="d">게임 6라우트 + 교재 콘텐츠 API 에 권한. 화면 잠금만으로는 잠금이 아니다</div></div>
+</div>
+
+<p class="qa">1~3 은 §07 의 물음이 답을 기다리지 않아도 된다 — 무료 경계가 이미 정해졌으니
+지금 시작할 수 있다. <b>4~6 은 구독/권별이 정해져야 시작한다.</b></p>
+
+</main>

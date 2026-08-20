@@ -6,13 +6,14 @@ import { useEffect } from "react";
 
 const IntroSection: React.FC = () => {
 	const navigate = useNavigate();
-	const { isSignedIn, isLoading } = useAuth();
+	const { isLoggedInUser, isLoading } = useAuth();
 
 	useEffect(() => {
 		if (isLoading) return;
 
 		const timer = setTimeout(() => {
-			if (isSignedIn) {
+			// 로그인한 계정만 홈으로. 토큰만 있는 세션은 로그인부터 — /main 과 같은 기준이다
+			if (isLoggedInUser) {
 				navigate({ to: "/main" });
 			} else {
 				navigate({ to: "/login" });
@@ -20,7 +21,7 @@ const IntroSection: React.FC = () => {
 		}, 2000);
 
 		return () => clearTimeout(timer);
-	}, [isLoading, isSignedIn, navigate]);
+	}, [isLoading, isLoggedInUser, navigate]);
 
 	return (
 		<div className="flex h-full items-center justify-center bg-[#0180FF]">

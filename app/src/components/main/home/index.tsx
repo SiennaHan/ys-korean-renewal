@@ -22,7 +22,9 @@ export default function HomeContent() {
 			.finally(() => setLoading(false));
 	}, []);
 
-	const userName = user?.name ?? "Guest";
+	// 로그인 없이는 이 화면에 닿지 않는다(/main 이 막는다). 이름이 비는 건
+	// 계정에 name 이 없을 때뿐이므로 "Guest" 가 아니라 빈 문자열이 맞다.
+	const userName = user?.name ?? "";
 
 	if (loading) {
 		return (
