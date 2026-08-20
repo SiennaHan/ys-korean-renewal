@@ -4,7 +4,11 @@ import { useAudioRecorder } from "react-audio-voice-recorder";
 
 import { postSpeaking } from "@/api/analyzeApi";
 import { MicIcon } from "@/assets/icons";
-import { RecordControl, type RecordMode } from "@/components/main/activity";
+import {
+	MicBlockedDialog,
+	RecordControl,
+	type RecordMode,
+} from "@/components/main/activity";
 import { env } from "@/config/env";
 import { Mic, Trash2, Upload, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -21,10 +25,11 @@ interface Props {
 	 */
 	dock?: boolean;
 	/**
-	 * 마이크가 막혔을 때. 권한을 안 줬거나 거부했거나 장치가 없는 경우다.
-	 * 이 자리에서 알릴 수 없으므로(도크 한 칸이다) 화면이 받아 처리한다.
+	 * 마이크가 막혀 학생이 이 활동을 건너뛰기로 했을 때.
+	 * 막혔다는 사실 자체는 이 컴포넌트가 알림으로 알린다 — 쓰는 화면마다
+	 * 같은 처리를 되풀이하지 않도록.
 	 */
-	onMicBlocked?: () => void;
+	onSkipActivity?: () => void;
 }
 type RecorderStatus =
 	| "idle"
@@ -55,6 +60,8 @@ const AudioRecorder = (props: Props) => {
 	const { addToast } = useToast();
 	const { t } = useTranslation();
 	const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>("idle");
+	/** 마이크가 막혀 알림을 띄운 상태 */
+	const [micBlocked, setMicBlocked] = useState(false);
 	const [audioUrl, setAudioUrl] = useState<string | null>(null);
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -112,7 +119,7 @@ const AudioRecorder = (props: Props) => {
 			setRecorderStatus("preparing");
 			if (!(await micReady())) {
 				setRecorderStatus("idle");
-				props.onMicBlocked?.();
+				setMicBlocked(true);
 				return;
 			}
 			startRecording();
@@ -191,6 +198,19 @@ const AudioRecorder = (props: Props) => {
 					: recorderStatus;
 		return (
 			<>
+				{micBlocked && (
+					<MicBlockedDialog
+						onRetry={() => {
+							setMicBlocked(false);
+							// 설정에서 켜고 돌아온 길 — 있던 자리 그대로 다시 시작한다
+							void handlePrimaryAction();
+						}}
+						onSkip={() => {
+							setMicBlocked(false);
+							props.onSkipActivity?.();
+						}}
+					/>
+				)}
 				<RecordControl
 					mode={mode}
 					action="srec"

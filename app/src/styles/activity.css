@@ -26,6 +26,8 @@
   flex-direction: column;
   overflow: hidden;
   background: var(--color-background-base);
+  /* .modal 이 화면이 아니라 이 프레임을 덮게 한다 */
+  position: relative;
 
   /* 토큰에 대응이 없어 리터럴로 남긴 목업 색 */
   --blue-100: #a2d1ff;
@@ -308,6 +310,16 @@
 .activity-frame .syl path { fill:none; stroke:var(--color-text-strong); stroke-linecap:round; stroke-linejoin:round; opacity:.85; }
 .activity-frame .modal { position:absolute; inset:0; z-index:20; background:rgba(24,26,32,.5); display:flex; align-items:center; justify-content:center; padding:16px; }
 .activity-frame .modal-box { width:100%; background:#fff; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; }
+/* 목업에 없는 것 — 마이크가 막혔다고 알리는 알림. 목업의 modal 자리를 그대로 쓰되
+   글자만 있던 전체 화면과 달리 무슨 일인지·어떻게 하는지·무엇을 할 수 있는지를 담는다 */
+.activity-frame .modal-box.notice { align-items:center; text-align:center; padding:24px 16px 16px; gap:8px; }
+.activity-frame .notice-icon { width:56px; height:56px; border-radius:50%; background:var(--color-background-wrong); color:var(--color-fill-wrong); display:grid; place-items:center; margin-bottom:4px; }
+.activity-frame .notice-icon svg { width:28px; height:28px; }
+.activity-frame .modal-box.notice strong { font-size:17px; line-height:24px; font-weight:600; color:var(--color-text-heading); }
+.activity-frame .modal-box.notice p { margin:0; font-size:14px; line-height:20px; color:var(--color-text-sub); }
+.activity-frame .modal-box.notice .modal-tools { width:100%; margin-top:8px; }
+.activity-frame .modal-box.notice .modal-tools button { height:44px; font-size:14px; font-weight:600; }
+.activity-frame .modal-box.notice .modal-tools .go { background:var(--color-fill-primary); color:var(--color-background-surface); }
 .activity-frame .modal-canvas { aspect-ratio:1; border-radius:12px; background:#f6f8fb; border:0; position:relative; display:grid; place-items:center; }
 .activity-frame .modal-canvas span { font-size:150px; font-weight:400; color:var(--color-background-disable); line-height:1; }
 .activity-frame .modal-tools { display:flex; gap:12px; }

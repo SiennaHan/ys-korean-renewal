@@ -18,6 +18,7 @@ export {
 	IconStop,
 	IconVolume,
 } from "./icons";
+export { MicBlockedDialog } from "./mic-blocked";
 export { ProblemCard } from "./problem-card";
 export {
 	REPORT_AXES,
