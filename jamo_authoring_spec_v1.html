@@ -84,6 +84,24 @@
 </style>
 
 <main>
+<div style="border:1px solid #d0d5dd;border-left:3px solid #b3261e;border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 22px;background:#fff">
+  <p style="margin:0 0 8px"><b>2026-08-20 실측 정정 — §4 스키마로는 기존 콘텐츠가 담기지 않는다.</b>
+  구 앱 자모 콘텐츠 <b>529문항</b>을 §4 제안(<code>prompt · selection1~3 · answer_index ·
+  answer_text · image · audio_ref · meaning_*</code>)에 맞춰 보니 세 곳이 비었다.</p>
+  <p style="margin:0 0 8px">① <b>영상 컬럼이 없다</b> — 입모양 영상을 288문항이 쓴다(sub1 211 · sub3 76 · sub5 1).
+  목업 <code>speak</code> 화면의 <code>mouth-video</code> 가 이것이다.
+  ② <b><code>selection1~3</code> 으로 자모 격자를 못 담는다</b> — 조합 화면(sub2·6)의 선택지는
+  1·4·5·6·10·11개로 달라진다. sub5 만 2~4개라 제안에 맞는다.
+  ③ <b>답이 하나뿐이다</b> — 조합은 초성·중성·종성 세 답이 필요하고 103문항이 답을 둘 이상 갖는다.</p>
+  <p style="margin:0 0 8px">그리고 <b><code>answer_index</code> 는 0 부터다.</b> §4 는 "1부터" 라고 적었는데
+  원장의 다른 시트가 전부 0 부터이고(<code>n5_read_answer_questions</code> ·
+  <code>n3_listen_repeat</code> · <code>n1_word_quiz</code>) 앱도 0 으로 비교한다.</p>
+  <p style="margin:0"><b>보강한 스키마로 포팅을 마쳤다</b> — 컬럼 12→31, 529행,
+  <span style="font-family:ui-monospace">글로벌_교재기반_콘텐츠_v24.xlsx</span> 의 <code>n8_jamo</code>.
+  전부 <code>review_status=draft</code> 이고 <b>원본 대조 검수는 하지 않았다</b>.
+  앱은 아직 <code>problem.ts</code> 를 쓴다 — 검수 뒤에 옮긴다. 자세한 내역은 그 파일의
+  <code>99_변경내역_v24</code> 시트.</p>
+</div>
 <header class="doc">
   <div class="eyebrow">콘텐츠 저작 · 1급 자모</div>
   <h1>한글(1)~(3) 저작 사양</h1>
