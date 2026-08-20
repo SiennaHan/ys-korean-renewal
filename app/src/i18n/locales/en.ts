@@ -219,7 +219,7 @@ const en = {
 		allAnswered: "All {{total}} answered",
 		answered: "You answered {{answered}} of {{total}}",
 	},
-	/** AI 대화 리포트 — 제목은 한국어·영어 짝이라 5개 로케일이 같다(목업 그대로) */
+	/** AI 대화 리포트 — 첫 줄은 배울 한국어라 고정, 둘째 줄이 이해를 돕는 번역이다 */
 	report: {
 		title: "AI 대화 리포트",
 		subtitle: "AI Chat Report",
