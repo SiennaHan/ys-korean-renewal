@@ -7,8 +7,36 @@ import {
 	PrimaryButton,
 } from "./shell";
 
-/** 네 축의 점수 (0~100) — 발음 · 문법 · 내용 · 어휘 순서 */
+/**
+ * 평가 축 넷. 레이더와 그 아래 총평이 같은 축을 가리키므로
+ * 이름은 데이터가 아니라 여기서 나온다 — 서버가 "발음"이라는 글자를 보내면
+ * 레이더는 번역되고 총평만 한국어로 남는다.
+ */
+export const REPORT_AXES = [
+	"pronunciation",
+	"grammar",
+	"content",
+	"vocabulary",
+] as const;
+export type ReportAxis = (typeof REPORT_AXES)[number];
+
+/** 축 이름의 i18n 키. REPORT_AXES 순서를 따른다 */
+const AXIS_KEY: Record<ReportAxis, string> = {
+	pronunciation: "report.axisPronunciation",
+	grammar: "report.axisGrammar",
+	content: "report.axisContent",
+	vocabulary: "report.axisVocabulary",
+};
+
+/** 네 축의 점수 (0~100). REPORT_AXES 순서다 */
 export type RadarValues = [number, number, number, number];
+
+/** 축마다 한 줄 총평. 문장은 서버가 만들고, 축 이름은 앱이 붙인다 */
+export interface ReportRow {
+	axis: ReportAxis;
+	/** 학생에게 보일 문장. 이미 학생 언어로 온 것이어야 한다 */
+	text: string;
+}
 
 const CX = 110;
 const CY = 104;
@@ -38,12 +66,7 @@ function Radar({ values }: { values: RadarValues }) {
 				.join(","),
 		)
 		.join(" ");
-	const labels = [
-		t("report.axisPronunciation"),
-		t("report.axisGrammar"),
-		t("report.axisContent"),
-		t("report.axisVocabulary"),
-	];
+	const labels = REPORT_AXES.map((axis) => t(AXIS_KEY[axis]));
 	return (
 		<svg
 			// 목업은 220 폭이면 됐다 — 축 이름이 "발음" 두 글자였기 때문이다.
@@ -131,8 +154,7 @@ export function ReportScreen({
 	hits: number;
 	missions: number;
 	values: RadarValues;
-	/** 축마다 한 줄 총평 — [축 이름, 문장] */
-	rows: [string, string][];
+	rows: ReportRow[];
 	onExit?: () => void;
 	onRetry?: () => void;
 	onNext?: () => void;
@@ -175,10 +197,10 @@ export function ReportScreen({
 								gap: 12,
 							}}
 						>
-							{rows.map(([key, text]) => (
-								<div className="as-row" key={key}>
-									<span className="k">{key}</span>
-									<p>{text}</p>
+							{rows.map((row) => (
+								<div className="as-row" key={row.axis}>
+									<span className="k">{t(AXIS_KEY[row.axis])}</span>
+									<p>{row.text}</p>
 								</div>
 							))}
 						</div>

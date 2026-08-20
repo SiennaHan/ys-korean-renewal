@@ -19,7 +19,13 @@ export {
 	IconVolume,
 } from "./icons";
 export { ProblemCard } from "./problem-card";
-export { type RadarValues, ReportScreen } from "./report-screen";
+export {
+	REPORT_AXES,
+	type RadarValues,
+	type ReportAxis,
+	type ReportRow,
+	ReportScreen,
+} from "./report-screen";
 export { ResultScreen, type WrongItem } from "./result-screen";
 export {
 	ActivityAppBar,
