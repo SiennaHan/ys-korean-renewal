@@ -242,6 +242,7 @@ const vi = {
 		instrListen: "Chọn O nếu giống nội dung đã nghe, X nếu khác.",
 		oxSame: "Giống nội dung",
 		oxDifferent: "Khác nội dung",
+		audioSub: "Âm thanh",
 		instrJamoListen: "Nghe và chọn đáp án đúng.",
 		instrGrammar: "Hãy chọn từ phù hợp với chỗ trống.",
 		instrReading: "Đọc và trả lời câu hỏi.",

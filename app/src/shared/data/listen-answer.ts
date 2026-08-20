@@ -1,3 +1,4 @@
+import type { InstructedItem } from "./instruction";
 import listenData from "./n3_listen_repeat.json";
 import scriptData from "./n3_listen_script.json";
 import lineData from "./n3_listen_script_line.json";
@@ -24,7 +25,7 @@ export interface ListenScriptLine {
 	voice: string;
 }
 
-export interface ListenQuestion {
+export interface ListenQuestion extends InstructedItem {
 	id: number;
 	book_id: number;
 	chapter: number;

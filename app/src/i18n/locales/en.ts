@@ -243,6 +243,7 @@ const en = {
 		instrListen: "Choose O if it matches what you heard, X if not.",
 		oxSame: "Matches",
 		oxDifferent: "Does not match",
+		audioSub: "Audio",
 		instrJamoListen: "Listen and choose the right one.",
 		instrGrammar: "Choose what fits the blank.",
 		instrReading: "Read and answer the question.",

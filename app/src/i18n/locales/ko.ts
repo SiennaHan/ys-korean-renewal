@@ -242,6 +242,7 @@ const ko = {
 		instrListen: "들은 내용과 같으면 O, 다르면 X를 고르세요.",
 		oxSame: "내용이 같아요",
 		oxDifferent: "내용이 달라요",
+		audioSub: "오디오",
 		instrJamoListen: "듣고 맞는 것을 고르세요.",
 		instrGrammar: "빈칸에 알맞은 것을 고르세요.",
 		instrReading: "읽고 질문에 답하세요.",

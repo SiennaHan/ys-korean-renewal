@@ -239,6 +239,7 @@ const zh = {
 		instrListen: "与听到的内容相同选O，不同选X。",
 		oxSame: "内容相同",
 		oxDifferent: "内容不同",
+		audioSub: "音频",
 		instrJamoListen: "听后选择正确的一项。",
 		instrGrammar: "请选择适合填入空格的选项。",
 		instrReading: "阅读后回答问题。",

@@ -62,7 +62,7 @@ export function ChoiceList({
 	inResponseArea = true,
 	children,
 }: {
-	variant?: "list" | "binary" | "jamo";
+	variant?: "list" | "binary" | "jamo" | "image";
 	/**
 	 * 보통은 응답 영역이 곧 선택지 목록이다. 읽기처럼 목록 위에 질문이 한 줄
 	 * 더 붙는 화면만 false 로 두고 호출한 쪽이 응답 영역을 잡는다.
@@ -75,7 +75,9 @@ export function ChoiceList({
 			? "binary-grid listen-choices"
 			: variant === "jamo"
 				? "jamo-choices"
-				: "choice-list";
+				: variant === "image"
+					? "image-choices"
+					: "choice-list";
 	return (
 		<div className={inResponseArea ? `response-area ${inner}` : inner}>
 			{children}
