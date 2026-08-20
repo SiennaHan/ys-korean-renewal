@@ -1,7 +1,7 @@
 import { useAuth } from "@/components/sign/sign-provider";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronRight, LogOut, Pencil, User } from "lucide-react";
+import { ChevronRight, LogIn, LogOut, Pencil, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export default function Content5() {
@@ -30,7 +30,7 @@ export default function Content5() {
 					{isLoggedInUser && (
 						<button
 							type="button"
-							aria-label="프로필 사진 변경"
+							aria-label={t("mypage.changePhoto")}
 							className="absolute right-0 bottom-0 flex size-[24px] items-center justify-center rounded-full bg-[#383A3F]"
 						>
 							<Pencil className="size-[10px] text-white" />
@@ -74,7 +74,7 @@ export default function Content5() {
 				<div className="mb-[12px] overflow-hidden rounded-[12px] bg-white">
 					<div className="flex h-[52px] items-center gap-[20px] px-[16px]">
 						<span className="shrink-0 font-medium text-[#7F848D] text-[14px] leading-[20px]">
-							Email
+							{t("mypage.email")}
 						</span>
 						<span className="truncate font-medium text-[#383A3F] text-[14px] leading-[20px]">
 							{user.email}
@@ -93,15 +93,28 @@ export default function Content5() {
 				</div>
 			</div>
 
-			{/* 로그아웃 */}
+			{/*
+			 * 게스트에게는 끝낼 로그인이 없다. 같은 자리에 로그인하러 가는 길을 둔다 —
+			 * 게스트로 한 학습이 계정에 남지 않는다는 것을 알 수 있는 유일한 곳이다.
+			 */}
 			<button
 				type="button"
-				onClick={handleSignOut}
+				onClick={
+					isLoggedInUser ? handleSignOut : () => navigate({ to: "/login" })
+				}
 				className="flex h-[52px] w-full items-center justify-center gap-[8px] rounded-[12px] bg-white active:bg-[#F6F7F8]"
 			>
-				<LogOut className="size-[18px] text-[#7F848D]" />
-				<span className="font-semibold text-[#7F848D] text-[14px] leading-[20px]">
-					{t("mypage.signOut")}
+				{isLoggedInUser ? (
+					<LogOut className="size-[18px] text-[#7F848D]" />
+				) : (
+					<LogIn className="size-[18px] text-[#0180FF]" />
+				)}
+				<span
+					className={`font-semibold text-[14px] leading-[20px] ${
+						isLoggedInUser ? "text-[#7F848D]" : "text-[#0180FF]"
+					}`}
+				>
+					{t(isLoggedInUser ? "mypage.signOut" : "mypage.signIn")}
 				</span>
 			</button>
 		</div>

@@ -60,6 +60,9 @@ const ko = {
 		language: "언어",
 		languageSetting: "언어 설정하기",
 		signOut: "로그아웃",
+		signIn: "로그인",
+		changePhoto: "프로필 사진 변경",
+		email: "이메일",
 		editProfile: "프로필 정보 변경하기",
 		changePassword: "비밀번호 변경하기",
 		profileInfo: {

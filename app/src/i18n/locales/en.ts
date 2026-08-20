@@ -60,6 +60,9 @@ const en = {
 		language: "Language",
 		languageSetting: "Language Settings",
 		signOut: "Sign Out",
+		signIn: "Sign in",
+		changePhoto: "Change profile photo",
+		email: "Email",
 		editProfile: "Edit Profile",
 		changePassword: "Change Password",
 		profileInfo: {

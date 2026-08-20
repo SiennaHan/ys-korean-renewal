@@ -60,6 +60,9 @@ const vi = {
 		language: "Ngôn ngữ",
 		languageSetting: "Cài đặt ngôn ngữ",
 		signOut: "Đăng xuất",
+		signIn: "Đăng nhập",
+		changePhoto: "Đổi ảnh đại diện",
+		email: "Email",
 		editProfile: "Chỉnh sửa hồ sơ",
 		changePassword: "Đổi mật khẩu",
 		profileInfo: {

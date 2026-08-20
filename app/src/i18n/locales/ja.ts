@@ -60,6 +60,9 @@ const ja = {
 		language: "言語",
 		languageSetting: "言語設定",
 		signOut: "ログアウト",
+		signIn: "ログイン",
+		changePhoto: "プロフィール写真の変更",
+		email: "メール",
 		editProfile: "プロフィール変更",
 		changePassword: "パスワード変更",
 		profileInfo: {

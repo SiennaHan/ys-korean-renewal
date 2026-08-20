@@ -58,6 +58,9 @@ const zh = {
 		language: "语言",
 		languageSetting: "语言设置",
 		signOut: "退出登录",
+		signIn: "登录",
+		changePhoto: "更换头像",
+		email: "邮箱",
 		editProfile: "修改个人信息",
 		changePassword: "修改密码",
 		profileInfo: {
