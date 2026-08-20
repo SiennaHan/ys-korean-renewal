@@ -6,6 +6,18 @@
  */
 import { CardCheckIcon, SpeakerIcon } from "@/assets/icons";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import {
+	ActivityAppBar,
+	ActivityBody,
+	ActivityFooter,
+	ActivityFrame,
+	AudioPair,
+	Dock,
+	PracticeBrowser,
+	ProblemCard,
+	ThumbWordCards,
+	WordPicture,
+} from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { JamoHeader, ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
@@ -17,10 +29,11 @@ import { wordgroup } from "@/shared/data/problem_wordgroup";
 import { wordgroup_choice } from "@/shared/data/problem_wordgroup_choice";
 import { units } from "@/shared/data/unit";
 import type { ProblemType } from "@/types/book.types";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Volume2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { type JamoSearch, parseJamoSearch } from "../-jamo-search";
 
 export const Route = createFileRoute("/learn/jamo/word-repeat")({
@@ -34,6 +47,8 @@ const baseButtonClasses =
 
 export default function RouteComponent() {
 	const { code } = Route.useSearch();
+	const router = useRouter();
+	const { t } = useTranslation();
 
 	console.log("code=>", code);
 	const sound = useSoundEffects();
@@ -181,125 +196,74 @@ export default function RouteComponent() {
 		selectWord(problemIndex);
 	}, [problemIndex]);
 
+	const groupName = (unit?.title ?? "").split(":")[0].trim();
+	const lesson = [
+		t("catalog.chapterSeq", { seq: chapter?.seq ?? 1 }),
+		groupName,
+	]
+		.filter(Boolean)
+		.join(" · ");
+	const shown =
+		tabList && selectedTabItems.length > 0
+			? problemList.filter((x) =>
+					selectedTabItems.map((i) => i.problem_id).includes(x.id),
+				)
+			: problemList;
+
 	return (
-		<div className="flex h-full flex-col justify-between bg-[#F6F7F8]">
-			<JamoHeader chapterSeq={chapter?.seq} unitTitle={unit?.title} />
-			<div>
-				<div className="flex h-full flex-col items-center bg-white px-[16px] pb-[40px]">
-					<ModuleTitle title={module?.title} subtitle={module?.eng} />
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={() => router.history.back()} />
 
-					<div className="w-full">
-						<div className="flex justify-center rounded-[5px] bg-white">
-							<img
-								className="max-h-[150px]"
-								src={env.RES_URL_ROOT + "/" + selectedWord?.content_img}
-							/>
-						</div>
+			<ActivityBody>
+				<ProblemCard
+					instruction={t("activity.instrWordRep")}
+					stimulusStyle={{ gap: 20 }}
+				>
+					<WordPicture
+						word={selectedWord?.content ?? ""}
+						image={`${env.RES_URL_ROOT}/${selectedWord?.content_img}`}
+					/>
+					<AudioPair
+						source={selectedWord?.content ?? ""}
+						mine={resultWord ? (isSucceed ? "ok" : "no") : ""}
+						onPlaySource={playAudio}
+						onPlayMine={playMyAudio}
+					/>
+				</ProblemCard>
 
-						<div className="mt-[20px] grid grid-cols-2 gap-[8px]">
-							<div
-								onClick={playAudio}
-								className="flex h-[40px] cursor-pointer items-center justify-between rounded-[8px] bg-[#DBEDFF] px-[2px]"
-							>
-								<div className="flex size-[36px] items-center justify-center">
-									<div className="flex size-[24px] items-center justify-center">
-										<SpeakerIcon color={"#0180FF"} />
-									</div>
-								</div>
-								<div className="font-semibold text-[#0180FF] text-[16px]">
-									{selectedWord && selectedWord.content}
-								</div>
-								<div className="size-[36px]"></div>
-							</div>
+				<PracticeBrowser
+					tabs={(tabList ?? []).map((x) => x.tab_name)}
+					current={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
+					onTab={(name) => {
+						const at = tabList?.findIndex((x) => x.tab_name === name) ?? -1;
+						if (at >= 0) onTabClick(tabList[at].id, at);
+					}}
+				>
+					<ThumbWordCards
+						cards={shown.map((x) => ({
+							word: x.content,
+							image: `${env.RES_URL_ROOT}/${x.content_img}`,
+							done: false,
+						}))}
+						current={selectedWord?.content ?? ""}
+						onPick={(word) => {
+							const idx = problemList.findIndex((x) => x.content === word);
+							if (idx >= 0) setProblemIndex(idx);
+						}}
+					/>
+				</PracticeBrowser>
+			</ActivityBody>
 
-							<div
-								onClick={playMyAudio}
-								className="flex h-[40px] cursor-pointer items-center justify-between rounded-[8px] bg-[#F6F7F8] px-[2px]"
-							>
-								<div className="flex size-[36px] items-center justify-center">
-									<div className="flex size-[24px] items-center justify-center">
-										<SpeakerIcon color={resultColor} />
-									</div>
-								</div>
-								<div
-									className={`text-[16px] text-[${resultColor}] font-semibold`}
-								>
-									{"내 녹음"}
-								</div>
-								<div className="size-[36px]"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			<ActivityFooter>
+				<Dock>
+					<AudioRecorder dock setResult={setResult} />
+				</Dock>
+			</ActivityFooter>
 
-			<div className="flex flex-col flex-col items-center items-center">
-				{tabList && selectedTabItems.length > 0 ? (
-					<div className="min-h-[150px] w-full">
-						<div className="flex gap-[6px] rounded-t-[12px] bg-[#E5E8EC] p-[16px]">
-							{tabList.map((item, index) => (
-								<div
-									key={item.id}
-									onClick={(e) => onTabClick(item.id, index)}
-									className={clsx(
-										"flex size-[32px] cursor-pointer items-center justify-center rounded-[8px] border-1 font-medium text-[13px]",
-										item.id === selectedTab
-											? "border-[#59ACFF] bg-[#DBEDFF] text-[#0180FF]"
-											: "border-[#F6F7F8] bg-[#F6F7F8] text-[#C8CCD3]",
-									)}
-								>
-									{item.tab_name}
-								</div>
-							))}
-						</div>
-						<div className="grid grid-cols-3 gap-x-[8px] gap-y-[12px] p-[16px]">
-							{problemList
-								.filter((problem) =>
-									selectedTabItems
-										.map((item) => item.problem_id)
-										.includes(problem.id),
-								)
-								.map((item, idx) => {
-									return (
-										<WordCard
-											key={item.id}
-											item={item}
-											index={idx}
-											isChecked={false}
-										/>
-									);
-								})}
-						</div>
-					</div>
-				) : (
-					<div className="grid grid-cols-3 gap-x-[8px] gap-y-[12px] p-[16px]">
-						{problemList.map((item, idx) => {
-							return (
-								<WordCard
-									key={item.id}
-									item={item}
-									index={idx}
-									isChecked={false}
-								/>
-							);
-						})}
-					</div>
-				)}
-			</div>
-
-			<div className="flex-1">{/** 여백 */}</div>
-
-			<div className="sticky bottom-0 items-center">
-				<div className="mr-[10px] mb-[10px] ml-[10px] flex items-end justify-center gap-[10px]">
-					<AudioRecorder setResult={setResult} />
-					<audio className="hidden" ref={audioRef} src={audioSrc}>
-						Your device does not support the audio.
-					</audio>
-					<audio className="hidden" ref={myAudioRef} src={myAudioSrc}>
-						Your device does not support the audio.
-					</audio>
-				</div>
-			</div>
-		</div>
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+			<audio className="hidden" ref={audioRef} src={audioSrc} />
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+			<audio className="hidden" ref={myAudioRef} src={myAudioSrc} />
+		</ActivityFrame>
 	);
 }
