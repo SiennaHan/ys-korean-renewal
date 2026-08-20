@@ -4,7 +4,19 @@
  * 구 경로 /book/chapter/unit/write3/$code 에서 옮겨 왔다.
  * 그쪽은 리다이렉트만 남는다.
  */
+import {
+	ActivityAppBar,
+	ActivityBody,
+	ActivityFooter,
+	ActivityFrame,
+	ComboResult,
+	Dock,
+	JamoSection,
+	PrimaryButton,
+	ProblemCard,
+} from "@/components/main/activity";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { type JamoSearch, parseJamoSearch } from "../-jamo-search";
 
 import { SpeakerIcon } from "@/assets/icons";
@@ -46,6 +58,7 @@ const baseControlButton =
 
 function RouteComponent() {
 	const { code } = Route.useSearch();
+	const { t } = useTranslation();
 	const router = useRouter();
 	const sound = useSoundEffects();
 
@@ -148,206 +161,109 @@ function RouteComponent() {
 		setIsSucceed(combined !== undefined && combined === problem?.content);
 	}, [consonant, vowel, finalConsonant]);
 
+	const groupName = (unit?.title ?? "").split(":")[0].trim();
+	const lesson = [
+		t("catalog.chapterSeq", { seq: chapter?.seq ?? 1 }),
+		groupName,
+	]
+		.filter(Boolean)
+		.join(" · ");
+
 	return (
-		<div className="flex h-full flex-col bg-[#F6F7F8]">
-			<JamoHeader chapterSeq={chapter?.seq} unitTitle={unit?.title} />
-			<div className="bg-white px-[16px] pb-[8px]">
-				<ModuleTitle title={module?.title} subtitle={module?.eng} />
-			</div>
-			<div>
-				{stage === "select" ? (
-					<div className="w-full">
-						<div className="w-full bg-white px-[16px] pb-[16px]">
-							<div className="relative h-[100px] w-full rounded-[10px] bg-[#f6f7f8] pt-[10px]">
-								<div className="mt-[12px] flex items-center justify-center rounded-[15px] font-bold text-[#003477]">
-									<div>
-										<div className={"text-[36px] leading-[48px]"}>
-											{combined ? combined : "?"}
-										</div>
-										<div className={"text-[#7F848D] text-[12px]"}>
-											{consonant &&
-												vowel &&
-												finalConsonant &&
-												consonant + " + " + vowel + " + " + finalConsonant}
-										</div>
-									</div>
-								</div>
-								<div
-									onClick={playAudio}
-									className="absolute top-2 left-2 flex h-[32px] cursor-pointer items-center rounded-[6px] bg-[#fff] pr-[12px] pl-[8px] text-[#24425F] text-[16px]"
-								>
-									<div className="flex size-[20px] items-center justify-center rounded-full bg-white">
-										<SpeakerIcon color={"#24425F"} size={10} />
-									</div>
-									<div className="ml-[2px] text-[12px]">{problem?.content}</div>
-								</div>
-							</div>
-						</div>
-						<div className="w-full px-[16px]">
-							<div className="mt-[24px] flex w-full items-center gap-[5px] text-[14px]">
-								<div className="flex size-[16px] items-center justify-center rounded-[4px] bg-[#0180FF] font-semibold text-[12px] text-white">
-									1
-								</div>
-								<div className="font-bold text-[#0180FF]">
-									맨 앞에 오는 소리
-								</div>
-								<div className="ml-[2px] text-[#ADB3BE] text-[14px]">
-									initial consonant
-								</div>
-							</div>
-							<div className="mt-[12px] w-full">
-								<div className="grid grid-cols-6 gap-[5px]">
-									{consonantList.map((item, idx) => {
-										return (
-											<div
-												key={idx}
-												onClick={(e) => setConsonant(item)}
-												className={clsx(
-													baseCardButton,
-													item === consonant && selectedCardButton,
-												)}
-											>
-												{item}
-											</div>
-										);
-									})}
-								</div>
-							</div>
-							<div className="mt-[40px] flex w-full items-center gap-[5px] text-[14px]">
-								<div className="flex size-[16px] items-center justify-center rounded-[4px] bg-[#0180FF] font-semibold text-[12px] text-white">
-									2
-								</div>
-								<div className="font-bold text-[#0180FF]">가운데 오는 소리</div>
-								<div className="ml-[2px] text-[#ADB3BE] text-[14px]">
-									medial vowel
-								</div>
-							</div>
-							<div className="mt-[12px] w-full">
-								<div className="grid grid-cols-6 gap-[5px]">
-									{vowelList.map((item, idx) => {
-										return (
-											<div
-												key={idx}
-												onClick={(e) => setVowel(item)}
-												className={clsx(
-													baseCardButton,
-													item === vowel && selectedCardButton,
-												)}
-											>
-												{item}
-											</div>
-										);
-									})}
-								</div>
-							</div>
-							<div className="mt-[40px] flex w-full items-center gap-[5px] text-[14px]">
-								<div className="flex size-[16px] items-center justify-center rounded-[4px] bg-[#0180FF] font-semibold text-[12px] text-white">
-									2
-								</div>
-								<div className="font-bold text-[#0180FF]">
-									맨 뒤에 오는 소리
-								</div>
-								<div className="ml-[2px] text-[#ADB3BE] text-[14px]">
-									final vowel
-								</div>
-							</div>
-							<div className="mt-[12px] w-full">
-								<div className="grid grid-cols-6 gap-[5px]">
-									{finalConsonantList.map((item, idx) => {
-										return (
-											<div
-												key={idx}
-												onClick={(e) => setFinalConsonant(item)}
-												className={clsx(
-													baseCardButton,
-													item === finalConsonant && selectedCardButton,
-												)}
-											>
-												{item}
-											</div>
-										);
-									})}
-								</div>
-							</div>
-						</div>
-					</div>
-				) : (
-					<div className="bg-white px-[16px]">
-						<div className="relative h-[72px] rounded-[12px] bg-[#F6F7F8] pt-[16px]">
-							<div className="text-center font-bold text-[#0180FF] text-[16px]">
-								손가락으로 따라 쓰세요.
-							</div>
-							<div className="text-center text-[#7FBFFF] text-[12px]">
-								Draw the character with your finger.
-							</div>
-							<div
-								onClick={playAudio}
-								className="absolute top-2 left-2 flex h-[32px] cursor-pointer items-center rounded-[6px] bg-[#fff] pr-[12px] pl-[8px] text-[#24425F] text-[16px]"
-							>
-								<div className="flex size-[20px] items-center justify-center rounded-full bg-white">
-									<SpeakerIcon color={"#24425F"} size={10} />
-								</div>
-							</div>
-						</div>
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={exit} />
 
-						<div className="mt-[16px] flex justify-center gap-[8px]">
-							<button
-								onClick={eraseDrawing}
-								className={clsx(
-									baseControlButton,
-									"bg-[#FFE8E8] text-[#F15F49]",
-								)}
-								disabled={isSucceed}
-							>
-								Erase all
-							</button>
-							<button
-								onClick={undoDrawing}
-								className={clsx(
-									baseControlButton,
-									"bg-[#F6F7F8] text-[#383A3F]",
-								)}
-								disabled={isSucceed}
-							>
-								Undo
-							</button>
-						</div>
-						<HangulTracingCanvas
-							ref={tracingRef}
-							char={problem?.content ?? ""}
-							isWriteDone={isWriteDone}
+			{stage === "select" ? (
+				<ActivityBody>
+					<ProblemCard instruction={t("activity.instrWriteSelect")}>
+						<ComboResult
+							syllable={combined || "?"}
+							parts={
+								consonant && vowel
+									? [consonant, vowel, finalConsonant]
+											.filter(Boolean)
+											.join(" + ")
+									: ""
+							}
+							word={problem?.content ?? ""}
+							onPlay={playAudio}
 						/>
+					</ProblemCard>
+					<JamoSection
+						step={1}
+						slot="consonant"
+						options={consonantList}
+						picked={consonant ?? ""}
+						onPick={setConsonant}
+					/>
+					<JamoSection
+						step={2}
+						slot="vowel"
+						options={vowelList}
+						picked={vowel ?? ""}
+						onPick={setVowel}
+					/>
+					<JamoSection
+						step={3}
+						slot="final"
+						options={finalConsonantList}
+						picked={finalConsonant ?? ""}
+						onPick={setFinalConsonant}
+					/>
+				</ActivityBody>
+			) : (
+				<ActivityBody>
+					<ProblemCard instruction={t("activity.instrWriteTrace")} />
+					<div className="response-area">
+						{/* 획을 받는 판은 기존 컴포넌트를 그대로 쓴다 — 목업의 canvas 자리다 */}
+						<div className="canvas-host">
+							<HangulTracingCanvas
+								ref={tracingRef}
+								char={problem?.content ?? ""}
+								isWriteDone={isWriteDone}
+							/>
+						</div>
+						<div className="tools">
+							<button
+								type="button"
+								className="tool"
+								onClick={undoDrawing}
+								disabled={isSucceed}
+							>
+								{t("player.undo")}
+							</button>
+							<button
+								type="button"
+								className="tool"
+								onClick={eraseDrawing}
+								disabled={isSucceed}
+							>
+								{t("player.eraseAll")}
+							</button>
+						</div>
 					</div>
-				)}
-			</div>
+				</ActivityBody>
+			)}
 
-			<div
-				className={`flex-1 bg-[${stage === "select" ? "#F6F7F8" : "#fff"}]`}
-			></div>
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={
+							isExit
+								? t("player.showResult")
+								: stage === "select"
+									? t("player.confirm")
+									: t("player.next")
+						}
+						on={isExit || isSucceed}
+						action="next"
+						onClick={isExit ? exit : next}
+					/>
+				</Dock>
+			</ActivityFooter>
 
-			<div className="sticky bottom-0 items-center bg-white">
-				<div className="flex w-full items-end justify-center p-[10px]">
-					<audio className="hidden" src={audioSrc} ref={audioRef}>
-						Your device does not support the audio.
-					</audio>
-					{isExit ? (
-						<button
-							onClick={exit}
-							className={clsx(baseButton, "!bg-green-500")}
-						>
-							완료 done
-						</button>
-					) : (
-						<button
-							onClick={next}
-							className={clsx(baseButton)}
-							disabled={!isSucceed}
-						>
-							{stage === "select" ? "확인 check" : "다음 next"}
-						</button>
-					)}
-				</div>
-			</div>
-		</div>
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+			<audio className="hidden" src={audioSrc} ref={audioRef} />
+		</ActivityFrame>
 	);
 }

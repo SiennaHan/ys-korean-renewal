@@ -139,6 +139,9 @@
 .activity-frame .ink path { fill:none; stroke:var(--color-fill-primary); stroke-width:34; stroke-linecap:round; stroke-linejoin:round; }
 .activity-frame .canvas.wrong .ink path { stroke:var(--color-fill-wrong); }
 .activity-frame .canvas.correct .ink path { stroke:var(--color-fill-correct); }
+/* 목업에 없는 것 — 획을 받는 판은 기존 컴포넌트(HangulTracingCanvas)를 그대로 쓴다.
+   목업 canvas 와 같은 자리·모양만 맞춰 준다 */
+.activity-frame .canvas-host { border-radius:16px; overflow:hidden; background:var(--color-background-surface); border:1px solid var(--color-line-control); }
 .activity-frame .tools { width:min(100%,286px); margin:9px auto 0; display:flex; justify-content:flex-end; gap:16px; }
 .activity-frame .tool { min-height:30px; padding:4px 0; border:0; background:transparent; color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
 /* 목업에 없는 유형 — 듣기 679문항 중 4개가 보기를 그림으로 준다.

@@ -4,7 +4,21 @@
  * 구 경로 /book/chapter/unit/read-write/$code 에서 옮겨 왔다.
  * 그쪽은 리다이렉트만 남는다.
  */
+import {
+	ActivityAppBar,
+	ActivityBody,
+	ActivityFooter,
+	ActivityFrame,
+	AudioBar,
+	Dock,
+	PracticeBrowser,
+	PrimaryButton,
+	ProblemCard,
+	ThumbWordCards,
+	WordPicture,
+} from "@/components/main/activity";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { type JamoSearch, parseJamoSearch } from "../-jamo-search";
 
 import { CardCheckIcon, SpeakerIcon } from "@/assets/icons";
@@ -39,6 +53,7 @@ const baseButtonClasses =
 
 function RouteComponent() {
 	const { code } = Route.useSearch();
+	const { t } = useTranslation();
 	const router = useRouter();
 
 	const module: ModuleType | undefined = modules.find(
@@ -260,147 +275,100 @@ function RouteComponent() {
 		}
 	}, []);
 
+	const groupName = (unit?.title ?? "").split(":")[0].trim();
+	const lesson = [
+		t("catalog.chapterSeq", { seq: chapter?.seq ?? 1 }),
+		groupName,
+	]
+		.filter(Boolean)
+		.join(" · ");
+	const shown =
+		tabList && selectedTabItems.length > 0
+			? problemList.filter((x) =>
+					selectedTabItems.map((i) => i.problem_id).includes(x.id),
+				)
+			: problemList;
+
 	return (
-		<div className="flex h-full flex-col justify-between bg-[#F6F7F8]">
-			<ProblemHeader chapterSeq={chapter?.seq} unitTitle={unit?.title} />
-			<div className="bg-white px-[16px] pb-[8px]">
-				<ModuleTitle title={module?.title} subtitle={module?.eng} />
-			</div>
-			<div className="bg-white px-[16px] pb-[20px]">
-				<div className="flex justify-center">
-					<img
-						className="h-[130px]"
-						src={env.RES_URL_ROOT + "/" + selectedWord?.content_img}
-					/>
-				</div>
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={exit} />
 
-				<div
-					onClick={playAudio}
-					className="mt-[20px] flex h-[40px] cursor-pointer items-center justify-between rounded-[5px] bg-[#DBEDFF]"
+			<ActivityBody>
+				<ProblemCard
+					instruction={t("activity.instrReadWrite")}
+					stimulusStyle={{ gap: 20 }}
 				>
-					<div className="flex size-[38px] items-center justify-center">
-						<button className="flex size-[20px] items-center justify-center">
-							<SpeakerIcon color={"#0180FF"} />
-						</button>
-					</div>
-					<div className="font-semibold text-[#0180FF] text-[16px]">
-						{selectedWord && selectedWord.content}
-					</div>
-					<div className="size-[38px]"></div>
-				</div>
-
-				<div className="mt-[20px] flex justify-center rounded-[5px] bg-white">
-					<div className="flex w-full flex-col-2 justify-center gap-[10px]">
-						{selectedWord?.content.split("").map((item, idx) => {
-							return (
-								<div
-									key={idx}
-									onClick={(e) => openCanvas(idx, item)}
-									className="relative box-border h-[96px] flex-basis-0 flex-grow cursor-pointer rounded-[8px] bg-[#F9FAFC] text-center only:w-1/2 only:flex-grow-0 hover:bg-gray-100 active:bg-gray-200"
-								>
-									<div className="flex h-full w-full items-center justify-center font-bold text-[#ddd] text-[60px]">
-										{item}
-									</div>
-									<div className="absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center">
-										{imageSlots[idx] && (
-											<img src={imageSlots[idx]} height="100" />
-										)}
-									</div>
-								</div>
-							);
-						})}
-					</div>
-				</div>
-			</div>
-
-			<div className="flex w-full justify-center">
-				{tabList && selectedTabItems.length > 0 ? (
-					<div className="w-full">
-						<div className="flex gap-[6px] rounded-t-[12px] bg-[#E5E8EC] p-[16px]">
-							{tabList.map((item) => (
-								<div
-									key={item.id}
-									onClick={(e) => onTabClick(item.id)}
-									className={clsx(
-										"flex size-[32px] cursor-pointer items-center justify-center rounded-[8px] border-1 font-medium text-[13px]",
-										item.id === selectedTab
-											? "border-[#59ACFF] bg-[#DBEDFF] text-[#0180FF]"
-											: "border-[#F6F7F8] bg-[#F6F7F8] text-[#C8CCD3]",
-									)}
-								>
-									{item.tab_name}
-								</div>
-							))}
-						</div>
-						<div className="grid grid-cols-3 gap-x-[8px] gap-y-[12px] p-[16px]">
-							{problemList
-								.filter((problem) =>
-									selectedTabItems
-										.map((item) => item.problem_id)
-										.includes(problem.id),
-								)
-								.map((item, idx) => {
-									return (
-										<WordCard
-											key={item.id}
-											item={item}
-											index={idx}
-											isChecked={false}
-										/>
-									);
-								})}
-						</div>
-					</div>
-				) : (
-					<div className="grid grid-cols-3 gap-x-[8px] gap-y-[12px] p-[16px]">
-						{problemList.map((item, idx) => {
-							return (
-								<WordCard
-									key={item.id}
-									item={item}
-									index={idx}
-									isChecked={false}
-								/>
-							);
-						})}
-					</div>
-				)}
-			</div>
-
-			<div className="flex-1">{/** 여백 */}</div>
-
-			<div className="sticky bottom-0 items-center bg-white">
-				<div className="m-[16px] flex justify-center gap-[10px]">
-					<audio className="hidden" src={audioSrc} ref={audioRef}>
-						Your device does not support the audio.
-					</audio>
-
-					{isExit ? (
-						<button
-							onClick={exit}
-							className={clsx(baseButton, "!bg-green-500")}
-						>
-							완료 done
-						</button>
-					) : (
-						<button
-							onClick={next}
-							className={clsx(baseButton)}
-							disabled={!isSucceed}
-						>
-							{"한 글자씩 쓰기 Try writing"}
-						</button>
-					)}
-				</div>
-
-				<Dialog isOpen={isOpenCanvas} onClose={() => setIsOpenCanvas(false)}>
-					<HangulCanvas
-						text={canvasText}
-						returnImage={returnImage}
-						onClose={() => setIsOpenCanvas(false)}
+					<WordPicture
+						word={selectedWord?.content ?? ""}
+						image={`${env.RES_URL_ROOT}/${selectedWord?.content_img}`}
+						small
 					/>
-				</Dialog>
-			</div>
-		</div>
+					<AudioBar label={selectedWord?.content ?? ""} onPlay={playAudio} />
+					{/* 음절을 눌러 쓰기 판을 연다 — 낱말 전체를 한 판에 쓰면 획이 뭉갠다 */}
+					<div className="syl-row">
+						{(selectedWord?.content ?? "").split("").map((ch, idx) => (
+							<button
+								type="button"
+								key={`${ch}-${idx}`}
+								className="syl"
+								data-action="openCanvas"
+								data-index={idx}
+								onClick={() => openCanvas(idx, ch)}
+							>
+								<span>{ch}</span>
+								{imageSlots[idx] && <img src={imageSlots[idx] ?? ""} alt="" />}
+							</button>
+						))}
+					</div>
+				</ProblemCard>
+
+				<PracticeBrowser
+					tabs={(tabList ?? []).map((x) => x.tab_name)}
+					current={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
+					onTab={(name) => {
+						const hit = tabList?.find((x) => x.tab_name === name);
+						if (hit) onTabClick(hit.id);
+					}}
+				>
+					<ThumbWordCards
+						cards={shown.map((x) => ({
+							word: x.content,
+							image: `${env.RES_URL_ROOT}/${x.content_img}`,
+							done: false,
+						}))}
+						current={selectedWord?.content ?? ""}
+						onPick={(word) => {
+							const hit = problemList.find((x) => x.content === word);
+							if (hit) {
+								setProblemId(hit.id);
+								selectWord(hit);
+							}
+						}}
+					/>
+				</PracticeBrowser>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={isExit ? t("player.showResult") : t("player.next")}
+						on={isExit || isSucceed}
+						action="next"
+						onClick={isExit ? exit : next}
+					/>
+				</Dock>
+			</ActivityFooter>
+
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+			<audio className="hidden" src={audioSrc} ref={audioRef} />
+
+			<Dialog isOpen={isOpenCanvas} onClose={() => setIsOpenCanvas(false)}>
+				<HangulCanvas
+					text={canvasText}
+					returnImage={returnImage}
+					onClose={() => setIsOpenCanvas(false)}
+				/>
+			</Dialog>
+		</ActivityFrame>
 	);
 }
