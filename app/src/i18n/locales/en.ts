@@ -218,6 +218,8 @@ const en = {
 		taskNone: "Start learning",
 		taskNoneBody: "Begin from the Textbook tab",
 		statusTitle: "Progress",
+		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
+		statusFallback: "Studying",
 		chartTitle: "This week",
 		todayActivities: "Today",
 		weeklyActivities: "This week",

@@ -62,7 +62,9 @@ import {
 	WordFocus,
 	WordPicture,
 } from "@/components/main/activity/stimulus";
+import { WordPreviewList } from "@/components/main/activity/word-preview";
 import Jamo from "@/components/main/course-list/jamo";
+import HomeView from "@/components/main/home/view";
 import BookTabs from "@/components/main/textbook/book-tabs";
 import ChapterChips from "@/components/main/textbook/chapter-chips";
 import {
@@ -75,9 +77,8 @@ import ModuleList, {
 	ChapterHead,
 	type ModuleState,
 } from "@/components/main/textbook/module-list";
-import { WordPreviewList } from "@/components/main/activity/word-preview";
-import { chapters } from "@/shared/data/chapter";
 import i18n from "@/i18n";
+import { chapters } from "@/shared/data/chapter";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
@@ -662,6 +663,55 @@ SCREENS.nav__book__resume = <NavBookScreen />;
  * 활동 이름이 "자모 듣고 따라하기 · 자모 쓰기" 이고 묶음명이 "모음 1" 이었다.
  */
 SCREENS.nav__jamo__resume = <Jamo />;
+
+/*
+ * 홈 셋 — 목업 nav__home__{none,resume,review} 과 대조한다.
+ *
+ * 표시만 하는 HomeView 를 쓴다(index.tsx 는 받아 오는 쪽이라 정적으로 그리면
+ * 스피너만 나온다). 값은 목업의 표본을 그대로 넘긴다 — 서버가 주는 것이라
+ * 앱이 만들어 낼 수 있는 값이 아니다.
+ *
+ * 오늘 할 일 자리는 세 갈래가 나눠 쓴다. review 는 아직 index.tsx 가 넘기지
+ * 않지만(GET /review-queue 가 없다) 목업과 i18n 이 이미 정해 둔 갈래라
+ * 표시 쪽은 여기서 대조해 둔다.
+ */
+const HOME_BASE = {
+	userName: "수현",
+	attendance: {
+		weekDays: [true, true, true, false, false, false, false],
+		todayIndex: 3,
+		streak: 3,
+	},
+	learningStatus: {
+		chapterCompleted: 4,
+		chapterTotal: 12,
+		chapterLabel: "1급 학습 중",
+		todayActivities: 4,
+		weeklyActivities: 14,
+	},
+	weeklyChart: { data: [3, 5, 2, 4, 0, 0, 0] },
+	onContinue: () => {},
+	onStartLearning: () => {},
+};
+
+const HOME_RESUME = {
+	bookId: 1,
+	bookLabel: "1급",
+	chapterSeq: 6,
+	chapterLabel: "6과",
+	menuType: "listen-answer",
+	moduleLabel: "듣고 질문에 답하기 3/5",
+	route: "/learn/listen",
+	routeParams: {},
+};
+
+SCREENS.nav__home__none = <HomeView {...HOME_BASE} continueLearning={null} />;
+SCREENS.nav__home__resume = (
+	<HomeView {...HOME_BASE} continueLearning={HOME_RESUME} />
+);
+SCREENS.nav__home__review = (
+	<HomeView {...HOME_BASE} continueLearning={HOME_RESUME} reviewCount={7} />
+);
 
 const outDir = join(
 	dirname(fileURLToPath(import.meta.url)),

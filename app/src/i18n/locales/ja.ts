@@ -219,6 +219,8 @@ const ja = {
 		taskNone: "学習を始める",
 		taskNoneBody: "教材学習メニューから始めましょう",
 		statusTitle: "学習状況",
+		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
+		statusFallback: "学習中",
 		chartTitle: "週間の学習",
 		todayActivities: "今日の活動数",
 		weeklyActivities: "週間の活動数",

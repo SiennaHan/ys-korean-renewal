@@ -33,6 +33,9 @@ COLOR_ALIAS = {
     "var(--blue-500)": ("var(--color-fill-primary)", "#0180FF"),
     "var(--blue-gray-100)": ("var(--color-line-normal)", "#E5E8EC"),
     "var(--blue-gray-600)": ("var(--color-text-sub)", "#7F848D"),
+    # 홈 목업은 게이지 svg 에 원색을 hex 로 직접 적었다. 값은 위 두 줄과 같다
+    "#E5E8EC": ("var(--color-line-normal)", "#E5E8EC"),
+    "#0180FF": ("var(--color-fill-primary)", "#0180FF"),
 }
 DROP_ATTRS = {"type", "disabled", "aria-hidden", "role"}
 VOID = {"img", "input", "br", "hr", "rect", "path", "circle", "line", "polygon", "use"}

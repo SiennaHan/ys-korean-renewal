@@ -215,6 +215,8 @@ const zh = {
 		taskNone: "开始学习",
 		taskNoneBody: "请从教材学习菜单开始",
 		statusTitle: "学习情况",
+		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
+		statusFallback: "学习中",
 		chartTitle: "本周活动",
 		todayActivities: "今日活动数",
 		weeklyActivities: "本周活动数",

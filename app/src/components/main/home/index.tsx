@@ -4,11 +4,22 @@ import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import TaskCard from "./continue-learning";
-import LearningStatus from "./learning-status";
-import WeeklyAttendance from "./weekly-attendance";
-import WeeklyChart from "./weekly-chart";
+import HomeView from "./view";
 
+/** 데이터가 없을 때 쓰는 값 — 화면이 비어 보이지 않게 한다 */
+function fallbackAttendance() {
+	const day = new Date().getDay();
+	return {
+		weekDays: [false, false, false, false, false, false, false],
+		todayIndex: day === 0 ? 6 : day - 1,
+		streak: 0,
+	};
+}
+
+/**
+ * 홈 — 받아 오고 배선한다. 그리는 일은 view.tsx 가 한다.
+ * 왜 갈랐는지는 그 파일 머리에 있다.
+ */
 export default function HomeContent() {
 	const { user } = useAuth();
 	const { t } = useTranslation();
@@ -22,14 +33,6 @@ export default function HomeContent() {
 			.finally(() => setLoading(false));
 	}, []);
 
-	/*
-	 * 게스트도 이 화면에 온다. 이름 자리에 "Guest" 를 넣으면 "Guest 님" 이 되어
-	 * 계정이 있는 것처럼 읽히고, 빈 문자열이면 " 님" 만 남는다. 그래서 게스트는
-	 * 이름 틀(home.userName)을 쓰지 않고 인사말 하나로 대신한다.
-	 * 목업에는 게스트 홈이 없어서 이 경우는 새로 정한 것이다.
-	 */
-	const userName = user?.name ?? "";
-
 	if (loading) {
 		return (
 			<div className="flex flex-col items-center justify-center gap-[12px] px-[20px] pt-[80px]">
@@ -39,26 +42,7 @@ export default function HomeContent() {
 		);
 	}
 
-	// 데이터가 없으면 초기값 사용
-	const attendance = data?.attendance ?? {
-		weekDays: [false, false, false, false, false, false, false],
-		todayIndex: new Date().getDay() === 0 ? 6 : new Date().getDay() - 1,
-		streak: 0,
-	};
 	const continueLearning = data?.continueLearning ?? null;
-	const learningStatus = data?.learningStatus ?? {
-		chapterCompleted: 0,
-		chapterTotal: 7,
-		chapterLabel: "학습 중",
-		todayActivities: 0,
-		weeklyActivities: 0,
-	};
-	const weeklyChart = data?.weeklyChart ?? { data: [0, 0, 0, 0, 0, 0, 0] };
-
-	// weekDays (boolean[]) → completedDays (number[] of indices)
-	const completedDays = attendance.weekDays
-		.map((done, i) => (done ? i : -1))
-		.filter((i) => i >= 0);
 
 	// 서버는 아직 구 경로를 준다. 구 경로도 리다이렉트로 살아 있지만,
 	// 우리 쪽 이동은 신규 경로로 곧장 보낸다 (§4).
@@ -81,58 +65,31 @@ export default function HomeContent() {
 	};
 
 	return (
-		<div className="scroll">
-			<div className="greet">
-				<div className="hi">{t("home.greeting")}</div>
-				<div className="name">
-					{userName
-						? t("home.userName", { name: userName })
-						: t("home.guestName")}
-				</div>
-			</div>
-
-			<WeeklyAttendance
-				todayIndex={attendance.todayIndex}
-				completedDays={completedDays}
-				streak={attendance.streak}
-			/>
-
-			<div className="pad">
-				{/* 오늘 할 일은 한 자리다. 세 갈래가 그 자리를 나눠 쓴다 */}
-				{continueLearning ? (
-					<TaskCard
-						kind="resume"
-						title={t("home.taskResume")}
-						body={`${continueLearning.bookLabel} ${continueLearning.chapterLabel} · ${continueLearning.moduleLabel}`}
-						onClick={handleContinue}
-					/>
-				) : (
-					<TaskCard
-						kind="none"
-						title={t("home.taskNone")}
-						body={t("home.taskNoneBody")}
-						onClick={() => navigate({ to: "/main/textbook" })}
-					/>
-				)}
-
-				<div className="sec-title">{t("home.statusTitle")}</div>
-				<LearningStatus
-					chapterCompleted={learningStatus.chapterCompleted}
-					chapterTotal={learningStatus.chapterTotal}
-					chapterLabel={learningStatus.chapterLabel}
-					todayActivities={learningStatus.todayActivities}
-					weeklyActivities={learningStatus.weeklyActivities}
-				/>
-
-				<div className="sec-title">{t("home.chartTitle")}</div>
-				<WeeklyChart
-					data={weeklyChart.data}
-					todayIndex={attendance.todayIndex}
-				/>
-
-				{/* 탭 바에 바짝 붙지 않게 하는 바닥 여백 */}
-				<div style={{ height: 20 }} />
-			</div>
-		</div>
+		<HomeView
+			/*
+			 * 게스트도 이 화면에 온다. 이름 자리에 "Guest" 를 넣으면 "Guest 님" 이 되어
+			 * 계정이 있는 것처럼 읽히고, 빈 문자열이면 " 님" 만 남는다. 그래서 게스트는
+			 * 이름 틀을 쓰지 않고 인사말 하나로 대신한다 — view.tsx 가 처리한다.
+			 */
+			userName={user?.name ?? ""}
+			attendance={data?.attendance ?? fallbackAttendance()}
+			continueLearning={continueLearning}
+			/*
+			 * reviewCount 는 아직 넘기지 않는다 — 원천이 GET /review-queue 이고
+			 * 그 API 가 없다(BLOCKERS §6). 생기면 여기 한 줄이 붙는다.
+			 */
+			learningStatus={
+				data?.learningStatus ?? {
+					chapterCompleted: 0,
+					chapterTotal: 7,
+					chapterLabel: t("home.statusFallback"),
+					todayActivities: 0,
+					weeklyActivities: 0,
+				}
+			}
+			weeklyChart={data?.weeklyChart ?? { data: [0, 0, 0, 0, 0, 0, 0] }}
+			onContinue={handleContinue}
+			onStartLearning={() => navigate({ to: "/main/textbook" })}
+		/>
 	);
 }

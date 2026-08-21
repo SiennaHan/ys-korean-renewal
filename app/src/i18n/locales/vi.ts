@@ -218,6 +218,8 @@ const vi = {
 		taskNone: "Bắt đầu học",
 		taskNoneBody: "Hãy bắt đầu từ mục Học giáo trình",
 		statusTitle: "Tiến độ học",
+		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
+		statusFallback: "Đang học",
 		chartTitle: "Hoạt động tuần",
 		todayActivities: "Hôm nay",
 		weeklyActivities: "Trong tuần",

@@ -218,6 +218,8 @@ const ko = {
 		taskNone: "학습 시작하기",
 		taskNoneBody: "교재학습 메뉴에서 시작해보세요",
 		statusTitle: "학습 현황",
+		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
+		statusFallback: "학습 중",
 		chartTitle: "주간 활동",
 		todayActivities: "오늘 활동 수",
 		weeklyActivities: "주간 활동 수",
