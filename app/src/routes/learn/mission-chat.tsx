@@ -15,6 +15,8 @@ import { units } from "@/shared/data/unit";
 import type { ModuleType } from "@/types/book.types";
 import { X } from "lucide-react";
 import { useState } from "react";
+import MissionDialog from "@/components/learn/mission-dialog";
+import MissionReport from "@/components/learn/mission-report";
 import { type LearnSearch, parseLearnSearch } from "./-search";
 
 export const Route = createFileRoute("/learn/mission-chat")({
@@ -49,6 +51,13 @@ function RouteComponent() {
 		})?.code ?? "";
 	const navigate = useNavigate();
 	const router = useRouter();
+	/*
+	 * 브리핑 → 대화 → 리포트. 명세 §4 의 "내부 단계는 컴포넌트 상태로" 다.
+	 * 전에는 세 라우트였고 URL 에 dialog id 가 실렸다.
+	 */
+	const [phase, setPhase] = useState<"briefing" | "chat" | "report">(
+		"briefing",
+	);
 	const { unlock } = useSharedAudio();
 
 	const [isShowMore, setIsShowMore] = useState(false);
@@ -77,11 +86,32 @@ function RouteComponent() {
 
 	const goChat = async () => {
 		await unlock();
-		navigate({ to: "/book/chapter/unit/dialog/" + dialog?.id });
+		setPhase("chat");
 	}
 
 	const goBack = () => {
 		router.history.back();
+	}
+
+	// 대화·리포트 단계 — 라우트가 아니라 이 화면이 띄운다 (명세 §4)
+	if (phase === "chat" && dialog) {
+		return (
+			<MissionDialog
+				dialogId={dialog.id}
+				onClose={() => navigate({ to: "/main/textbook" })}
+				onReport={() => setPhase("report")}
+			/>
+		)
+	}
+
+	if (phase === "report" && dialog) {
+		return (
+			<MissionReport
+				dialogId={dialog.id}
+				onRetry={() => setPhase("chat")}
+				onExit={() => navigate({ to: "/main/textbook" })}
+			/>
+		)
 	}
 
 	return (

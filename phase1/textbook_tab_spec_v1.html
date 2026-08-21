@@ -213,10 +213,10 @@
     <tr><td>듣고 질문에 답하기</td><td><span class="file">listen-answer</span></td><td><span class="file">/learn/listen</span></td><td><span class="pill done">신 경로</span></td></tr>
     <tr><td>빈칸 채워 말하기</td><td><span class="file">fill-blank</span></td><td><span class="file">/learn/grammar</span></td><td><span class="pill done">신 경로</span></td></tr>
     <tr><td>읽고 질문에 답하기</td><td><span class="file">read-answer</span></td><td><span class="file">/learn/read</span></td><td><span class="pill done">신 경로</span></td></tr>
-    <tr><td>AI 미션 대화</td><td>—</td><td><span class="file">/book/chapter/unit/mission_chat/$code</span></td>
-      <td><span class="pill stop">구 경로</span> 콘텐츠 ID 가 URL 에 노출된다</td></tr>
-    <tr><td>단어 플래시카드</td><td>—</td><td><span class="file">/book/chapter/unit/flashcard/$id</span></td>
-      <td><span class="pill stop">구 경로</span> 같은 문제</td></tr>
+    <tr><td>AI 미션 대화</td><td>—</td><td><span class="file">/learn/mission-chat?level=&amp;lesson=</span></td>
+      <td><span class="pill done">신 경로</span> 브리핑·대화·리포트를 한 라우트가 상태로 오간다</td></tr>
+    <tr><td>단어 플래시카드</td><td>—</td><td><span class="file">/learn/flashcard?level=&amp;lesson=</span></td>
+      <td><span class="pill done">신 경로</span> 결과도 같은 라우트의 한 단계다</td></tr>
     <tr><td>한글 탭</td><td>—</td><td><span class="file">/main/textbook/jamo</span> → 자모 6종</td><td><span class="pill open">라우트 통합 대기</span></td></tr>
   </tbody>
 </table>
@@ -292,7 +292,7 @@
     <b>값을 주는 쪽이 없다</b>. 판정 함수는 <span class="file">done·doing·none</span> 만 낸다.
     <span class="file">ko_review_queue</span> 와 <span class="file">GET /review-queue</span> 가
     생기면 살아난다 — <b>화면 작업이 아니라 서버 작업이다.</b> BLOCKERS §6</div></div></li>
-  <li><div><div class="h">심화 2종만 구 경로다</div>
+  <li><div><div class="h">심화 2종만 구 경로다 <span class="pill done">2026-08-21 이관 완료</span></div>
     <div class="d">기초 5종은 <span class="file">/learn/*</span> 로 옮겼는데 플래시카드·미션 대화는
     <span class="file">/book/chapter/unit/…/$id</span> 에 남아 <b>콘텐츠 ID 를 URL 에 노출한다.</b>
     명세가 없애라고 한 바로 그것이다. <b>이 화면이 실제로 여는 길</b>이므로
@@ -363,8 +363,9 @@
       받아 오는 부분을 갈라야 한다.
       <b>자모 하나는 넣었다</b> — 목업을 새 책 기준으로 갱신하고 다시 캡처했다.
       <span class="file">BLOCKERS.md</span> §2</div></div>
-  <div class="card"><div class="k">3</div><div class="nm">flashcard · mission-chat 이관</div>
-    <div class="d">§05 의 구 경로 둘. 이 화면이 실제로 여는 길이다</div></div>
+  <div class="card"><div class="k">3</div><div class="nm">flashcard · mission-chat 이관 <span class="pill done">했다</span></div>
+    <div class="d">라우트 다섯을 접었다 — 결과·대화·리포트가 컴포넌트 상태가 됐고
+      구 경로 열은 리다이렉트만 남는다. URL 에서 콘텐츠 ID 가 사라졌다</div></div>
   <div class="card"><div class="k">4</div><div class="nm">요청 셋 → 하나</div>
     <div class="d">§09 의 2번이 정해진 뒤. 과 칩을 훑을 때의 부담을 없앤다</div></div>
   <div class="card"><div class="k">5</div><div class="nm">복습 N 살리기</div>
