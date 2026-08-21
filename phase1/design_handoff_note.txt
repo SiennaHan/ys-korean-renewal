@@ -1,3 +1,11 @@
+■ 먼저 — 이 메모는 시점 기록이다 (2026-08-18 작성 · 2026-08-21 확인)
+
+당시 상태를 그대로 남긴다. 아래 파일들은 그 뒤 옮겨졌으니 본문을 읽을 때 이 표로
+바꿔 읽어라. 본문은 고치지 않는다 — 고치면 기록이 아니게 된다.
+
+    activity_mockups_gaps.html → _superseded/   activity_mockups_uiux.html 로 흡수됐다
+    build_spec_v1.html         → _superseded/   build_spec_uiux.html 로 대체됐다
+
 [연세 글로벌 앱 리뉴얼 — 목업 작업 인계]
 
 ■ 파일 상태

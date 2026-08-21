@@ -241,6 +241,33 @@
 
 <h2 id="s3"><span class="no">3</span>컴포넌트별 상태 (Figma variant 목록)</h2>
 
+<div class="callout" style="border-left:4px solid #c0392b;background:#fdf2f0;padding:14px 18px;margin:16px 0">
+<p><b>먼저 — 이 절의 이름은 기획 이름이고, 코드의 이름은 다르다 (2026-08-21 실측)</b></p>
+<p>아래 다섯 중 넷은 <b>이미 구현돼 있다.</b> 다만 코드에서 이 이름으로 찾으면 하나도
+안 나온다 — 만들면서 더 작은 조각으로 쪼개졌기 때문이다. 규격은 이 문서가 맞고,
+<b>파일을 찾을 때는 오른쪽 이름으로 찾아라.</b> 전부
+<code>app/src/components/main/activity/</code> 에 있고
+<code>index.ts</code> 하나로 내보낸다.</p>
+<div class="tablewrap"><table>
+  <tr><th>이 문서의 이름</th><th>코드의 이름</th><th>어디</th></tr>
+  <tr><td><code>ProgressBar</code> (§3.1)</td><td><code>ActivityProgress</code></td>
+      <td><code>shell.tsx</code> — 연속형·분절형 경계 <b>16</b> 을 그대로 구현했다</td></tr>
+  <tr><td><code>ChoiceList</code> (§3.2)</td><td><code>ChoiceList</code> · <code>Choice</code> · <code>ChipOption</code></td>
+      <td><code>choice.tsx</code> — <b>이름이 같은 유일한 것</b></td></tr>
+  <tr><td><code>FeedbackLayer</code> (§3.3)</td><td><code>FeedbackMessage</code></td>
+      <td><code>feedback.tsx</code> — pill 형태로 구현</td></tr>
+  <tr><td><code>ResultScreen</code> (§3.4)</td><td><code>ResultScreen</code></td>
+      <td><code>result-screen.tsx</code></td></tr>
+  <tr><td><code>StateView</code> (§3.5)</td><td><code>LoadingScreen</code> · <code>FailedScreen</code> · <code>MicDeniedScreen</code></td>
+      <td><code>state-screens.tsx</code> — <b>상태마다 따로</b> 쪼갰다</td></tr>
+</table></div>
+<p><b><code>ActivityShell</code> 은 아직 없는 이름이다.</b> 셸은
+<code>ActivityFrame</code> · <code>ActivityAppBar</code> · <code>ActivityProgress</code> ·
+<code>ActivityBody</code> · <code>ActivityFooter</code> · <code>Dock</code> 여섯으로
+쪼개져 있고, 화면들이 이것을 직접 조립한다(20곳). 상태를 전담하는 껍데기는
+<b>서버 API 가 생긴 뒤에</b> 세운다 — <code>BLOCKERS.md</code> §6.</p>
+</div>
+
 <h3>3.1 ProgressBar <span class="pill fix">연속형은 기존에 있음 · 분절형만 신규</span></h3>
 <div class="callout good">
   <div class="t">연속형 진행바가 이미 그려져 있다</div>

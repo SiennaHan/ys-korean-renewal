@@ -148,16 +148,66 @@ grep -rn 'to: "/book/chapter/unit/' app/src --include='*.tsx' | grep -v routeTre
 
 ---
 
-## 4. 받아쓰기(dictation) 12개가 고아다 · 판단 필요
+## 3-b. 빈 스텁 라우트 넷이 프로덕션에 나간다 (2026-08-21 발견)
 
-`ko_module` 에 `scene_type = "dictation"` 12개가 있고 **화면도 라우트도 없다.**
-아무 목록도 가리키지 않고 목업에도 없다. 만들 것인지 버릴 것인지 정해진 적이 없다.
+`Phase1_dev_spec_v1.html` §4 는 **"테스트 라우트 9종과 빈 스텁 4종 제외"** 를 요구한다.
+**절반만 됐다.**
+
+```
+app/rsbuild.config.ts
+  routeFileIgnorePattern: NODE_ENV === "production" ? "routes/test/" : undefined
+                                                      ↑ 테스트만 빠진다
+```
+
+스텁 넷은 그대로 등록되어 주소를 치면 닿는다. 내용은 `Hello "/…"` 한 줄이다.
+
+| 라우트 | 파일 | 줄 수 |
+|---|---|---|
+| `/flashcard` | `app/src/routes/flashcard.tsx` | 9 |
+| `/missionchat` | `app/src/routes/missionchat.tsx` | 9 |
+| `/jamolist` | `app/src/routes/jamolist.tsx` | 9 |
+| `/about` | `app/src/routes/about.tsx` | 9 |
+
+앞의 셋은 **이름이 실제 기능과 겹쳐서 더 나쁘다** — 진짜는 `/learn/flashcard` ·
+`/learn/mission-chat` 이고 자모 목록은 `/main/textbook/jamo` 다. 사람이든 AI든
+`flashcard` 를 찾다가 이 스텁을 먼저 집는다. (`README` 가 `/jamolist` 를 자모 화면이라
+적어 두었던 것도 이것 때문이다 — §1 에서 고쳤다.)
+
+**고치는 법 둘.** 지우는 것이 낫다 — 아무것도 가리키지 않는다.
 
 ```bash
-# 확인
-grep -rn dictation app/src --include='*.tsx' --include='*.ts' | grep -v shared/data
-# → 없음
+# 확인: 이 넷으로 navigate 하는 코드가 있나
+grep -rn 'to: "/\(flashcard\|missionchat\|jamolist\|about\)"' app/src --include='*.tsx'
 ```
+
+지우기 싫으면 ignore 패턴을 늘린다 — 다만 그러면 **개발에서는 계속 잡힌다.**
+
+---
+
+## 4. 받아쓰기(dictation) 12개는 잔재다 · 판단 불필요 (2026-08-21)
+
+한때 "만들 것인지 버릴 것인지 정해진 적이 없다" 고 적어 두고 여러 문서에서
+결정 대기 항목으로 끌고 다녔다. **정할 것이 아니었다** — 예전에 넣었다가
+없앤 기능의 잔재다. 실제로 확인한 것 여섯 —
+
+| 확인 | 결과 |
+|---|---|
+| `module.ts` 의 dictation 12개 | **전부 `is_disabled: true`** |
+| 12개의 `code` | **모두 `YK0042` 하나** — 과마다 다른 콘텐츠가 아니라 같은 껍데기를 12번 붙인 것 |
+| 그 코드의 문항 | `problem.ts` 에 **0개** |
+| 앱의 화면·라우트 | **없다** |
+| **배포본**(`korean-master`) | 데이터에만 있고 화면·라우트 **없다** — 지금 서비스에도 없다 |
+| **원장 v24** | 받아쓰기 시트도, 그 말이 든 행도 **0** |
+
+붙어 있는 자리는 1급 4~15과 열둘이다. 교재학습 화면은 활동 목록을 코드에 고정된
+일곱 줄로 그리므로 `scene_type` 을 보지 않는다 — **애초에 목록에 뜨지도 않는다.**
+
+즉 지금 아무것도 깨져 있지 않고, 새 교재(연세 글로벌 한국어)의 활동 라인업에도
+받아쓰기는 없다(`G1_activity_lineup_v2`). **결정할 것이 없으므로 이 항목을 닫는다.**
+
+정리할 일이 하나 남는데 급하지 않다 — `module.ts` 의 죽은 행 12개다.
+그 파일은 생성기가 만들지 않는 손 관리 데이터라(`build-content.py` 는 `n*.json` 만
+만든다) 지우려면 직접 손대야 한다. **콘텐츠 이관을 할 때 같이 치우는 편이 싸다.**
 
 ---
 

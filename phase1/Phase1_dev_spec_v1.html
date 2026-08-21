@@ -82,7 +82,7 @@
   <tr><th>#</th><th>작업</th><th>영역</th><th>선행</th></tr>
   <tr><td>0</td><td><b>디자인 토큰 적용</b> — 동봉 <code>tokens.css</code></td><td>korean(FE)</td><td>—</td></tr>
   <tr><td>1</td><td>DB 2종 신설 — 활동 상태 · 다시 풀기 목록</td><td>koreanapi</td><td>—</td></tr>
-  <tr><td>2</td><td>API 6종 신설·확장</td><td>koreanapi</td><td>1</td></tr>
+  <tr><td>2</td><td>API 7종 신설·확장</td><td>koreanapi</td><td>1</td></tr>
   <tr><td>3</td><td>라우트 통일 + 구 라우트 리다이렉트</td><td>korean(FE)</td><td>—</td></tr>
   <tr><td>4</td><td><b>Storybook 셋업</b> — 목업 대조 · 수정 요청 통로</td><td>korean(FE)</td><td>0</td></tr>
   <tr><td>5</td><td>플레이어 공통 셸 컴포넌트 <span class="qa">+ 컴포넌트별 스토리</span></td><td>korean(FE)</td><td>0·2·3·4</td></tr>
@@ -267,7 +267,8 @@
 </ul>
 
 <h2 id="s5"><span class="no">5</span>공통 셸 컴포넌트</h2>
-<h3>5.0 토큰 — <code>tokens.css</code> <span class="pill new">신설</span></h3>
+<h3>5.0 토큰 — <code>tokens.css</code> <span class="pill fix">했다 (2026-08-21 확인)</span></h3>
+<p><b>이미 들어가 있다</b> — <code>app/src/styles/tokens.css</code> 이고 4곳에서 쓴다. 아래는 그때 정한 규격이고, 지금은 <b>지시가 아니라 기록</b>이다.</p>
 <p><code>src/styles/globals.css</code>의 <code>@import "tailwindcss";</code> 아래에 <code>@import</code>한다. <b>2단 구조</b>다.</p>
 <pre>--color-primitive-blue-500: #0180FF;                     /* 무슨 색인가 — 51개 */
 --color-fill-primary: var(--color-primitive-blue-500);   /* 어디에 쓰나 — 30개 */</pre>
@@ -287,7 +288,8 @@
   <p><code>tokens.css</code>는 접두어(<code>primitive-</code>)가 있어 <b>충돌 없이 병존</b>한다. 위 셋의 이관과 <code>initial</code> 활성화는 Phase 2~3이다.</p>
 </div>
 
-<h3>5.1 Storybook <span class="pill new">신설</span></h3>
+<h3>5.1 Storybook <span class="pill fix">했다 (2026-08-21 확인)</span></h3>
+<p><b>이미 들어가 있다</b> — <code>app/.storybook/</code>(<code>main.ts</code> · <code>preview.tsx</code>) 과 <code>pnpm storybook</code>(6006). 스토리는 둘이다 — <b>"목업 대조"</b>(캡처한 목업)와 <b>"활동 컴포넌트"</b>(우리 것)를 나란히 놓고 본다. 아래 9종 목록은 그때의 계획이다.</p>
 <p><b>목업을 대체하는 것이 아니라 구현 결과를 목업과 대조하는 도구</b>다. <b>셸 컴포넌트 9종만</b> 올린다. 나머지 화면은 이미 있으므로 대상이 아니다. <b>셸 명세 §3의 상태표가 그대로 스토리 목록</b>이라 새로 설계할 것이 없다.</p>
 <div class="tablewrap"><table>
   <tr><th>컴포넌트</th><th>스토리</th></tr>

@@ -54,6 +54,21 @@
 <header class="doc">
   <div class="eyebrow">설계 · VocaShot 개인 플레이</div>
   <h1>VocaShot 혼자 하기 — 무슨 게임이고, 방 없이 어떻게 돌리나</h1>
+  <div style="border-left:4px solid #1a7f4b;background:#eff7f1;padding:14px 18px;margin:14px 0">
+  <p style="margin:0 0 8px"><b>이 명세는 구현됐다 (2026-08-21 확인)</b></p>
+  <p style="margin:0 0 8px">아래는 <b>지시가 아니라 근거</b>다. 실물이 여기 있다 —
+     라우트 <code>/main/game/vocashot-solo</code>
+     (<code>app/src/routes/main/game/vocashot-solo.tsx</code>), 화면은
+     <code>app/src/components/main/game/vocashot-solo.tsx</code>(540줄)이고
+     <b>게임 목록이 링크한다</b>(<code>routes/main/game/index.tsx</code>).
+     시작 · 플레이 · 결과 셋이 다 있고 <b><code>appsync</code> 참조가 0</b>이다 —
+     방 없이 돈다는 것이 이 문서의 핵심이었다.</p>
+  <p style="margin:0"><b>§2 와 §5 가 "정해야 한다" 던 값은 <code>TUNING</code> 상수로 들어갔다</b> —
+     <code>hearts: 5</code>(명세대로 고정) · <code>difficultySpeed</code> 없음(명세대로 버렸다) ·
+     낙하가 <code>fallStepPoints</code> 마다 <code>fallStepSec</code> 씩 줄어드는 자동 가속 ·
+     오답을 <code>retryAfterN: 3</code> 문항 뒤에 다시 낸다 · <code>maxQuestions: 30</code>.
+     값을 바꿀 일이 있으면 <b>그 상수 하나만</b> 고치면 된다.</p>
+  </div>
   <p class="lead"><b>§0이 이 게임이 무엇인지</b>부터 설명한다. 그 뒤가 본론이다 —
      게임 화면은 <b>이미 다 있고</b>(797줄), 없는 것은 <b>무엇이 유성을 만들고 누가 판정하느냐</b>다.
      지금은 그 둘이 <b>교사 앱과 AppSync</b>에 있다. 이 문서는 그것을 <b>클라이언트로 내리는 데</b>
