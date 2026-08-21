@@ -41,7 +41,28 @@ home_mockup_v1.html     → ../nav_mockup_uiux.html 이 홈을 흡수했다
 activity_mockups_uiux_modular.html  ·  activity_mockups_uiux_unified.html
   ../activity_mockups_uiux.html 로 가는 길에 만든 시안 둘.
 
-옮기지 않은 옛 판이 다섯 있다 — 다른 문서가 아직 가리키고 있어서다.
-  vocashot_play_v1 · vocashot_mockup_v1 · gamelist_mockup_v1 ·
+옮기지 않은 옛 판이 넷 있다 — 다른 문서가 아직 가리키고 있어서다.
+  vocashot_mockup_v1 · gamelist_mockup_v1 ·
   activity_mockups_uiux_editorial · activity_mockups_uiux_extended_compare
 shell_mockup_uiux 는 세 곳에서 참조하므로 남겨 두었다.
+vocashot_play_v1 은 옛 판이 아니다 — 문항 1149개로 실제로 도는 시제품이라 남긴다.
+
+── handoff_v1 (2026-08-21)
+
+handoff_v2 가 대체했다고 v2 자신이 적어 두었는데도 여기로 못 오고 있었다.
+네 곳이 v1 §03 의 "구현이 목업과 다르면 목업이 기준" 을 인용하고 있어서다.
+그 규칙을 handoff_v2 §03 이 직접 말하도록 옮기고, 인용 셋(BLOCKERS.md ·
+renewal_plan_v1 · mockup_read_v1)을 고친 뒤에 옮겼다.
+
+교훈 — 문서를 이름으로 인용하면 그 문서를 옮길 수 없게 된다.
+인용되는 내용은 정본에 두고, 옛 판은 근거가 아니라 이력으로만 남긴다.
+
+── 루트 정리 (2026-08-21)
+
+저장소 루트에 흩어져 있던 문서 여덟을 phase1/ 로 모았다.
+  G1_activity_lineup_v2 · G1_item_schema_proposal_v1 · G2_shell_and_state_spec_v1
+  app_asis_mockup_v1 · core_loop_mockup_v1 · jamo_authoring_spec_v1
+  renewal_masterplan_v1 · renewal_plan_v0.2
+이제 루트에는 README.md 와 BLOCKERS.md 만 있다 — 개발자가 저장소를 열었을 때
+읽을 것이 둘로 보이게 하려는 것이다. 본문 언급은 파일명만 쓰고 있어서
+옮겨도 깨지지 않았고, ../ 접두를 쓴 넷만 고쳤다.

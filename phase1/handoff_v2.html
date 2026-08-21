@@ -118,7 +118,7 @@
 </header>
 
 <h2><span class="n">01</span>문서 지도 — 어느 것이 무엇에 답하나</h2>
-<p>문서가 28개다. <b>합칠 수 있는 것은 없다</b> — 재 보니 겹치는 것은 <b>어휘뿐이고
+<p>문서가 31개다. <b>합칠 수 있는 것은 없다</b> — 재 보니 겹치는 것은 <b>어휘뿐이고
 답하는 질문이 다르다</b>. 예를 들어 <span class="file">Phase1_dev_spec_v1</span> 은
 <span class="file">G2_shell_and_state_spec_v1</span> 과 특징 토큰의 86%를 공유하지만
 <b>G2 를 절 번호로 여덟 번 인용한다</b>(§1 상태머신 · §3.1 · §3.4 · §6 · §8 접근성 · §9).
@@ -151,10 +151,10 @@
     <tr><td><span class="file">build_spec_uiux</span></td><td>그 화면들의 <b>수치</b> — 토큰 · 골격 · 선택지 · 채점 · 접근성</td></tr>
     <tr><td><span class="file">Shell_component_spec_uiux</span></td><td>셸 <b>컴포넌트</b>의 상태와 슬롯. 활동 8종이 어느 슬롯에 무엇을 넣나</td></tr>
     <tr><td><span class="file">api_schema_v1</span></td><td>API 요청·응답 필드. <b>§6 의 네 물음이 아직 답이 없다</b></td></tr>
-    <tr><td><span class="file">../G2_shell_and_state_spec_v1</span></td><td><b>활동 상태 머신</b>과 정상 흐름 밖의 화면 · 접근성 결함 · 용어. dev spec 이 인용하는 근거다</td></tr>
+    <tr><td><span class="file">G2_shell_and_state_spec_v1</span></td><td><b>활동 상태 머신</b>과 정상 흐름 밖의 화면 · 접근성 결함 · 용어. dev spec 이 인용하는 근거다</td></tr>
     <tr><td><span class="file">my_learning_summary_v1</span></td><td>MY 누적 학습 기록에 필요한 데이터. 네 결정이 반영돼 있다</td></tr>
     <tr><td><span class="file">access_and_pricing_v1</span></td><td><b>누가 무엇까지 볼 수 있나</b> — 무료/유료 경계 · 권한 판정 · 신설이 필요한 DB·API. B2C 를 하려면 여기부터 읽어라</td></tr>
-    <tr><td><span class="file">../jamo_authoring_spec_v1</span></td><td>자모 콘텐츠 저작. <b>맨 위의 실측 정정을 먼저 읽어라</b> — §4 스키마가 기존 콘텐츠를 담지 못했다</td></tr>
+    <tr><td><span class="file">jamo_authoring_spec_v1</span></td><td>자모 콘텐츠 저작. <b>맨 위의 실측 정정을 먼저 읽어라</b> — §4 스키마가 기존 콘텐츠를 담지 못했다</td></tr>
     <tr><td><b>콘텐츠 원장</b></td><td><span class="file">글로벌_교재기반_콘텐츠_v24.xlsx</span>(저장소 밖). <b>앱에 반영된 것은 v23</b> 이다</td></tr>
   </tbody>
 </table>
@@ -172,9 +172,9 @@
     <tr><td><span class="file">vocashot_solo_spec_v1</span></td><td>VocaShot 을 교실용에서 혼자 하기로 바꾼 설계</td></tr>
     <tr><td><span class="file">jamo_authoring_spec_v1</span></td><td>자모 콘텐츠를 어떻게 저작하나. <span class="file">n8_jamo</span> 스키마</td></tr>
     <tr><td><span class="file">renewal_plan_v1</span></td><td>셸 컴포넌트를 되돌린 뒤 다시 세운 <b>작업 기록</b>. 목업 대조가 왜 생겼는지가 여기 있다</td></tr>
-    <tr><td><span class="file">../G1_activity_lineup_v2</span></td><td>활동 8종을 어떻게 확정했나 · 저작 물량</td></tr>
-    <tr><td><span class="file">../G1_item_schema_proposal_v1</span></td><td>문항 스키마 공통 컬럼 규약</td></tr>
-    <tr><td><span class="file">handoff_v1</span></td><td>착수 전 인계. <b>이 문서가 대체했다</b></td></tr>
+    <tr><td><span class="file">G1_activity_lineup_v2</span></td><td>활동 8종을 어떻게 확정했나 · 저작 물량</td></tr>
+    <tr><td><span class="file">G1_item_schema_proposal_v1</span></td><td>문항 스키마 공통 컬럼 규약</td></tr>
+    <tr><td><span class="file">_superseded/handoff_v1</span></td><td>착수 전 인계. <b>이 문서가 대체했다</b> — 08-21 에 옮겼다</td></tr>
   </tbody>
 </table>
 </div>
@@ -223,7 +223,15 @@
 </div>
 
 <h2><span class="n">03</span>목업을 일부러 벗어난 여섯 곳</h2>
-<p>v1 §03 이 <b>"구현이 목업과 다르면 목업이 기준"</b> 이라고 못박았다. 아래 여섯은
+<div class="callout"><div class="t">시각 정본은 목업이다</div>
+  <p><b>구현이 목업과 다르면 목업이 기준이다.</b> 이 규칙이 이 저장소의 시각 판단을
+  전부 지배한다 — 판단이 갈릴 때 코드가 아니라 <span class="file">app/src/mockups/</span> 를 본다.
+  <span class="file">npm run parity:activity</span> 가 22개 화면을 자동으로 대조한다.</p>
+  <p class="qa">원래 <span class="file">_superseded/handoff_v1</span> §03 에 있던 규칙을
+  여기로 옮겼다. 다른 문서가 그 옛 판을 인용하고 있어서 옮길 수 없던 것을 끊었다.</p>
+</div>
+
+<p>아래 여섯은
 그 기준을 <b>알고 벗어난 것</b>이다. 이유가 없으면 다음 사람이 목업대로 되돌린다.</p>
 
 <div class="tablewrap">
@@ -274,6 +282,13 @@
         <span class="file">v24</span> 의 <span class="file">n8_jamo</span> 로 옮겼다(컬럼 12→31).
         <b>전부 draft — 검수 대기이고 앱은 아직 problem.ts 를 쓴다.</b>
         <span class="file">jamo_authoring_spec_v1</span> §4 스키마로는 담기지 않아 실측으로 넓혔다</td></tr>
+    <tr><td><b>문서 정리 — 문을 하나로</b></td>
+      <td>루트에 문서 여덟이 흩어져 있어서 저장소를 열면 읽을 것이 열 개로 보였다.
+        <span class="file">phase1/</span> 로 모아 <b>루트에 README.md 와 BLOCKERS.md 만</b> 남겼다.
+        README 를 <b>"처음 30분에 볼 셋"</b> 과 <b>"무엇을 알고 싶으면 어느 문서"</b> 로 다시 썼다 —
+        31개를 나열하는 대신 물음으로 찾게 했다.
+        <span class="file">handoff_v1</span> 은 네 곳이 §03 을 인용해서 옮길 수 없었다.
+        그 규칙을 이 문서 §03 이 직접 말하게 하고 인용을 고친 뒤 <span class="file">_superseded/</span> 로 옮겼다</td></tr>
     <tr><td><b>koreanapi 편입</b></td>
       <td><span class="file">api/</span> 로 그대로 들여왔다. 자격증명은 전부 환경변수다.
         <span class="file">api/IMPORT.md</span></td></tr>
@@ -363,7 +378,7 @@
 
 <hr>
 <footer class="qa">
-  대체: <span class="file">handoff_v1.html</span>.
+  대체: <span class="file">_superseded/handoff_v1.html</span>.
   같이 볼 것: 저장소 루트 <span class="file">README.md</span> ·
   <span class="file">BLOCKERS.md</span> · <span class="file">api/IMPORT.md</span> ·
   <span class="file">app/src/shared/data/README.md</span>.

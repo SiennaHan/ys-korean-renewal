@@ -1,38 +1,56 @@
 # 연세 글로벌 한국어 — 리뉴얼
 
-학생용 앱을 리뉴얼하는 작업 저장소다. **먼저 [BLOCKERS.md](BLOCKERS.md) 를 읽어라** —
-지금 막혀 있는 것과 정해지지 않은 것이 거기 있다. 특히 `app` 은 지금
-**프로덕션 빌드가 되지 않는다**.
+학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 31개인데 **처음에 볼 것은 셋뿐이다.**
+
+## 처음 30분 — 이 셋만 순서대로
+
+| | 무엇 | 왜 먼저 |
+|---|---|---|
+| 1 | **[BLOCKERS.md](BLOCKERS.md)** | 지금 막혀 있는 것과 **정해지지 않은 것**. 여기 없는 것은 대체로 정해져 있다는 뜻이다 |
+| 2 | **`phase1/handoff_v2.html`** | 어디까지 됐고 무엇이 남았나. 문서 지도(§01)와 **목업을 일부러 벗어난 여섯 곳**(§03) |
+| 3 | **`phase1/Phase1_dev_spec_v1.html`** | 무엇을 만들라 — DB 신설 2종 · API · 라우트 · 셸 |
+
+나머지 28개는 **필요할 때 찾아 보는 참고서다.** 아래 표에서 물음으로 찾아라.
+
+## 무엇을 알고 싶으면 어느 문서
+
+| 알고 싶은 것 | 문서 (`phase1/`) |
+|---|---|
+| 화면이 어떻게 생겨야 하나 — **시각 정본** | `activity_mockups_uiux` · `nav_mockup_uiux` · `game_screens_uiux` · `shell_mockup_uiux` |
+| 활동 셸의 상태 전이 · 정상 흐름 밖의 화면 · 접근성 | `G2_shell_and_state_spec_v1` |
+| 셸을 어떤 컴포넌트로 쪼개나 | `Shell_component_spec_uiux` |
+| CSS 규격 · 토큰 · 간격 | `build_spec_uiux` |
+| API 요청·응답 필드 | `api_schema_v1` |
+| **누가 무엇까지 볼 수 있나 — 무료/유료 경계 · 결제** | `access_and_pricing_v1` |
+| MY 누적 학습기록에 필요한 데이터 | `my_learning_summary_v1` |
+| 활동 12종이 각각 무엇이고 문항 스키마는 | `G1_activity_lineup_v2` · `G1_item_schema_proposal_v1` |
+| 자모 콘텐츠를 어떻게 저작하나 | `jamo_authoring_spec_v1` — **맨 위의 실측 정정을 먼저 읽어라** |
+| 게임·표현클립·MY 의 실측과 판단 | `games_asis_v1` · `games_polish_v1` · `home_asis_v1` |
+| VocaShot | `vocashot_solo_spec_v1`(명세) · `vocashot_play_uiux`(목업) · `vocashot_play_v1`(**도는 시제품**, 문항 1149개) |
+| 목업을 어떻게 읽나 | `mockup_read_v1` |
+
+**"기획서" 라 부를 문서가 넷이라 헷갈린다.** 이렇게 나뉜다 —
+`renewal_masterplan_v1`(작업 순서) · `renewal_plan_v0.2`(제품 초안, **D7 은 대체됐다**) ·
+`renewal_plan_v1`(Phase 1 작업 목록) · `handoff_v2`(현재 상태).
+**개발 착수에는 `Phase1_dev_spec_v1` 과 `handoff_v2` 만 있으면 된다.**
+
+목업이 여럿인데 **`_uiux` 가 붙은 것이 확정본이다.** 옛 판 15개는
+`phase1/_superseded/` 로 옮겼고, 그 폴더의 `README.txt` 가 무엇이 무엇을 대체했는지 적는다.
+
+> 목업을 열면 **삽화가 깨져 보인다.** `illust/`(1.4GB) 와 `handwriting/` 은 교재 파생이라
+> `.gitignore` 가 막는다 — 고장이 아니다. 실제 앱은 `PUBLIC_RES_URL_ROOT` 에서 받는다.
 
 ## 무엇이 어디 있나
 
 | | |
 |---|---|
-| `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) |
+| `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
 | `admin/` | 어드민. 이번 리뉴얼 범위 밖이다 |
-| `phase1/` | 기획·명세·목업. 아래 "읽는 순서" 참조 |
-| 루트의 `*.html` | 리뉴얼 전체 계획과 초기 검토 문서 |
+| `phase1/` | 기획·명세·목업 HTML 31개 + `_superseded/` 15개.<br>그 밖에 인계 메모 넷(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
 **지금 배포돼 있는 버전의 참고본**이다. 저장소에 없고(`.gitignore`) 대조용으로만 쓴다.
-
-## 읽는 순서
-
-1. **`phase1/handoff_v2.html`** — 인계. 어디까지 됐고 무엇이 남았는지, 목업을 일부러 벗어난 여섯 곳
-2. **`phase1/Phase1_dev_spec_v1.html`** — 개발 요구사항. DB 신설 2종 · API · 라우트 · 셸 컴포넌트
-3. **`phase1/api_schema_v1.html`** — API 필드 스키마
-4. **`phase1/activity_mockups_uiux.html`** — 활동 화면 목업 **(시각 정본)**
-5. **`phase1/nav_mockup_uiux.html`** — 홈·교재학습·자모 목업
-6. **`phase1/games_asis_v1.html`** — 게임·표현클립·MY 실측과 판단
-
-목업이 여럿 있는데 **`_uiux` 가 붙은 것이 확정본**이다. 옛 판은
-`phase1/_superseded/` 로 옮겼고 그 폴더의 `README.txt` 가 무엇이 무엇을 대체했는지 적는다.
-
-"기획서"라 부를 문서가 넷이라 헷갈리는데 이렇게 나뉜다 —
-`renewal_masterplan_v1`(순서) · `renewal_plan_v0.2`(제품 초안) ·
-`phase1/renewal_plan_v1`(Phase 1 작업 목록) · `phase1/handoff_v2`(현재 상태).
-**개발 착수는 `Phase1_dev_spec_v1` 과 `handoff_v2` 만 보면 된다.**
 
 ## 돌리려면 받아야 하는 것
 
@@ -40,9 +58,9 @@
 
 | 받을 것 | 왜 저장소에 없나 |
 |---|---|
-| `app/.env` 의 값 8개 | API 주소 · 리소스 호스트 · AppSync 키 |
+| `app/.env` 의 값 8개 | API 주소 · 리소스 호스트 · AppSync 키. **`.env.example` 이 없으니 값을 직접 받아야 한다** |
 | `api/.env` 의 값 | DB 접속 · OpenAI · Gemini · Tutorus · JWT |
-| `글로벌_교재기반_콘텐츠_v24.xlsx` | 콘텐츠 원장. 교재 파생이라 `.gitignore` 가 막는다. 콘텐츠를 다시 만들 때 필요하다.<br>앱에 반영된 것은 **v23** 이다 — v24 는 자모 포팅분(검수 대기)이 더 들어 있다 |
+| `글로벌_교재기반_콘텐츠_v24.xlsx` | 콘텐츠 원장. 교재 파생이라 `.gitignore` 가 막는다.<br>앱에 반영된 것은 **v23** 이다 — v24 는 자모 포팅분(검수 대기)이 더 들어 있다 |
 
 `PUBLIC_RES_URL_ROOT` 가 비어 있으면 **교재 삽화·음성이 전부 404** 가 된다.
 로컬에서 그림이 깨져 보이면 대개 이것이다.
@@ -50,37 +68,39 @@
 ## 실행
 
 ```bash
-# 앱 — 3000
 cd app && pnpm install && pnpm dev
+```
 
-# 목업 대조 (Storybook) — 6006
-cd app && pnpm storybook
+⚠️ **`npm install` 을 하지 마라.** `package-lock.json` 이 다시 생기면
+프로덕션 빌드가 깨진다 — 한 번 겪었다. [BLOCKERS.md](BLOCKERS.md) §1.
 
-# 서버 — 8000
+```bash
 cd api && pip install -r requirements.txt && ./start.sh
 ```
 
-앱의 `.env` 는 서버를 `127.0.0.1:8799` 로 가리키고 있다. `start.sh` 는 8000 에
-띄우므로 **둘 중 하나를 맞춰야** 한다.
+앱의 `.env` 는 서버를 `127.0.0.1:8799` 로 가리키고 `start.sh` 는 8000 에 띄운다.
+**둘 중 하나를 맞춰야 한다.**
 
 ## 이 저장소가 쓰는 두 장치
 
 리뉴얼 작업에서 만든 것이고, 둘 다 사람 눈 대신 스크립트가 판정한다.
 
-### 목업 대조
+### 목업 대조 — 시각 정본은 목업이다
+
+**구현이 목업과 다르면 목업이 기준이다.**
 
 ```bash
-cd app && npm run parity:activity
+cd app && pnpm parity:activity
 ```
 
 활동 컴포넌트를 정적 HTML 로 그려 `app/src/mockups/activity__*.html`(목업에서 캡처한
 마크업)과 구조를 비교한다. **22개 화면이 일치한다.** 봐주는 차이는 실행할 때마다
 같이 찍히므로 무엇을 눈감아 주는지 숨지 않는다.
 
-눈으로 볼 것은 Storybook 의 두 스토리다 — "목업 대조"(캡처한 목업)와
-"활동 컴포넌트"(우리 컴포넌트). 나란히 놓고 본다.
+눈으로 볼 것은 Storybook(`pnpm storybook`, 6006)의 두 스토리다 —
+"목업 대조"(캡처한 목업)와 "활동 컴포넌트"(우리 것). 나란히 놓고 본다.
 
-### 콘텐츠 생성
+### 콘텐츠 생성 — 원장이 정본이다
 
 ```bash
 cd app && python3 scripts/build-content.py          # 최신 원장으로 다시 만든다
@@ -99,9 +119,7 @@ cd app && python3 scripts/build-content.py --check  # 쓰지 않고 차이만 �
 git log --format='%h %s%n%b' -- app/src/components/main/activity
 ```
 
-⚠️ 2026-08-20 하루 동안의 결정 28건이 **아직 기획 문서에 반영되지 않았다.**
-목업과 다르게 간 곳이 여섯 있는데 문서는 목업 쪽을 말한다 —
-[BLOCKERS.md](BLOCKERS.md) §5 에 목록이 있다.
+목업을 일부러 벗어난 여섯 곳은 `phase1/handoff_v2.html` §03 에 이유까지 적혀 있다.
 
 ## 라이선스 — 공개 금지
 
