@@ -3,7 +3,7 @@ export const units = [
     "id": 1,
     "chapter_id": 1,
     "seq": 1,
-    "title": "모음1: ㅏ,ㅓ,ㅗ,ㅜ,ㅡ,ㅣ,ㅚ,ㅟ"
+    "title": "모음1: ㅏ,ㅓ,ㅗ,ㅜ,ㅡ,ㅣ,ㅐ,ㅔ,ㅚ,ㅟ"
   },
   {
     "id": 2,

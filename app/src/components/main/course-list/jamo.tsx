@@ -142,8 +142,12 @@ export default function Jamo() {
 						{chapterUnits.map((unit) => {
 							const moduleList = modules.filter((m) => m.unit_id === unit.id);
 							// unit.title 은 "모음 1:ㅏ,ㅓ,ㅗ" 처럼 묶음 이름과 음절이 콜론으로 붙어 있다
-							const [groupName, syllables] = unit.title.split(":");
-							const syls = syllables ? syllables.split(",") : [];
+							// "모음1: ㅏ,ㅓ,…" 를 쪼개면 첫 낱자에 공백이 붙는다
+							const [rawName, syllables] = unit.title.split(":");
+							const groupName = rawName.trim();
+							const syls = syllables
+								? syllables.split(",").map((x) => x.trim())
+								: [];
 
 							return (
 								<div className="unit" key={unit.id}>
