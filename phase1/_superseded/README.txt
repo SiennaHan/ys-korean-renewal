@@ -1,4 +1,11 @@
-이 폴더의 목업은 activity_mockups_uiux.html 로 대체되었다.
+이 폴더는 "정본이 아닌 문서" 를 모은다. 개발하면서 읽을 필요가 없는 것들이다.
+두 종류가 섞여 있으니 항목마다 어느 쪽인지 적는다.
+
+  [대체됨]  더 새 판이 있다. 그 새 판을 봐라.
+  [근거]    대체된 게 아니다. 다른 문서의 주장을 받치는 산출물이라
+            결론은 이미 그 문서에 있다. 근거를 직접 확인할 때만 열면 된다.
+
+아래 첫 묶음의 목업은 activity_mockups_uiux.html 로 대체되었다.
 
 shell_mockup_v1.html
   내가 처음 만든 셸 목업. 활동 7종 + 결과 + 예외 3종.
@@ -66,3 +73,22 @@ renewal_plan_v1 · mockup_read_v1)을 고친 뒤에 옮겼다.
 이제 루트에는 README.md 와 BLOCKERS.md 만 있다 — 개발자가 저장소를 열었을 때
 읽을 것이 둘로 보이게 하려는 것이다. 본문 언급은 파일명만 쓰고 있어서
 옮겨도 깨지지 않았고, ../ 접두를 쓴 넷만 고쳤다.
+
+── 활동 UI/UX 시안 둘 (2026-08-21)  [대체됨]
+
+activity_mockups_uiux_editorial      시안 1 · 에디토리얼
+activity_mockups_uiux_extended_compare  확장 활동 시안 비교
+
+build_spec_uiux 가 "비교 이력으로만 보관하며 구현 기준으로 사용하지 않는다" 고
+직접 적어 두었다. 확정은 시안 2(Functional Clarity) 이고 시각 정본은
+activity_mockups_uiux.html 이다.
+
+── 검증 산출물 둘 (2026-08-21)  [근거]
+
+vocashot_mockup_v1   VocaShot 시작·결과. vocashot_solo_spec_v1 §8b 의
+                     "화면 2 × 폭 3 × 갈래 5 = 15조합에서 넘침 0" 을 받친다.
+gamelist_mockup_v1   게임 목록 구조. games_asis_v1 §1d 의
+                     "진행 3갈래 × 폭 3 = 9조합에서 넘침 0" 을 받친다.
+
+둘 다 대체된 것이 아니다 — 넘침을 실제로 그려서 확인한 결과물이고 그 결론은
+이미 부모 문서에 적혀 있다. 레이아웃을 다시 의심할 때만 열면 된다.

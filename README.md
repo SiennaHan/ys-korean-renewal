@@ -1,6 +1,6 @@
 # 연세 글로벌 한국어 — 리뉴얼
 
-학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 31개인데 **처음에 볼 것은 셋뿐이다.**
+학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 27개인데 **처음에 볼 것은 셋뿐이다.**
 
 ## 처음 30분 — 이 셋만 순서대로
 
@@ -10,7 +10,7 @@
 | 2 | **`phase1/handoff_v2.html`** | 어디까지 됐고 무엇이 남았나. 문서 지도(§01)와 **목업을 일부러 벗어난 여섯 곳**(§03) |
 | 3 | **`phase1/Phase1_dev_spec_v1.html`** | 무엇을 만들라 — DB 신설 2종 · API · 라우트 · 셸 |
 
-나머지 28개는 **필요할 때 찾아 보는 참고서다.** 아래 표에서 물음으로 찾아라.
+나머지 24개는 **필요할 때 찾아 보는 참고서다.** 아래 표에서 물음으로 찾아라.
 
 ## 무엇을 알고 싶으면 어느 문서
 
@@ -28,14 +28,17 @@
 | 게임·표현클립·MY 의 실측과 판단 | `games_asis_v1` · `games_polish_v1` · `home_asis_v1` |
 | VocaShot | `vocashot_solo_spec_v1`(명세) · `vocashot_play_uiux`(목업) · `vocashot_play_v1`(**도는 시제품**, 문항 1149개) |
 | 목업을 어떻게 읽나 | `mockup_read_v1` |
+| 리뉴얼 **전** 앱이 어땠나 (현행 as-is) | `app_asis_mockup_v1` — 인터랙티브 목업 |
+| 학습 한 바퀴가 어떻게 돌아야 하나 | `core_loop_mockup_v1` — "오답은 기록이 아니라 예약" 원칙이 여기서 나왔다 |
 
 **"기획서" 라 부를 문서가 넷이라 헷갈린다.** 이렇게 나뉜다 —
 `renewal_masterplan_v1`(작업 순서) · `renewal_plan_v0.2`(제품 초안, **D7 은 대체됐다**) ·
 `renewal_plan_v1`(Phase 1 작업 목록) · `handoff_v2`(현재 상태).
 **개발 착수에는 `Phase1_dev_spec_v1` 과 `handoff_v2` 만 있으면 된다.**
 
-목업이 여럿인데 **`_uiux` 가 붙은 것이 확정본이다.** 옛 판 15개는
-`phase1/_superseded/` 로 옮겼고, 그 폴더의 `README.txt` 가 무엇이 무엇을 대체했는지 적는다.
+목업이 여럿인데 **`_uiux` 가 붙은 것이 확정본이다.** 정본이 아닌 19개는
+`phase1/_superseded/` 로 옮겼다. 그 폴더의 `README.txt` 가 항목마다 **[대체됨]**(더 새 판이 있다)
+인지 **[근거]**(대체된 게 아니라 다른 문서의 주장을 받치는 산출물)인지 적는다.
 
 > 목업을 열면 **삽화가 깨져 보인다.** `illust/`(1.4GB) 와 `handwriting/` 은 교재 파생이라
 > `.gitignore` 가 막는다 — 고장이 아니다. 실제 앱은 `PUBLIC_RES_URL_ROOT` 에서 받는다.
@@ -47,7 +50,7 @@
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
 | `admin/` | 어드민. 이번 리뉴얼 범위 밖이다 |
-| `phase1/` | 기획·명세·목업 HTML 31개 + `_superseded/` 15개.<br>그 밖에 인계 메모 넷(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
+| `phase1/` | 기획·명세·목업 HTML 27개 + `_superseded/` 19개.<br>그 밖에 인계 메모 넷(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
 **지금 배포돼 있는 버전의 참고본**이다. 저장소에 없고(`.gitignore`) 대조용으로만 쓴다.
