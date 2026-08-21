@@ -62,6 +62,7 @@ import {
 	WordFocus,
 	WordPicture,
 } from "@/components/main/activity/stimulus";
+import Jamo from "@/components/main/course-list/jamo";
 import BookTabs from "@/components/main/textbook/book-tabs";
 import ChapterChips from "@/components/main/textbook/chapter-chips";
 import {
@@ -596,10 +597,10 @@ function IconVolumeInline() {
 /*
  * 교재학습 목록 — 목업 nav__book__resume 과 대조한다.
  *
- * 목업은 표본이라 탭 4개·과 7개만 담고 과 제목도 "가족" 이다(실제 1급 6과는
- * 다른 제목이다). 그래서 목업이 담은 만큼만 그려 놓고 대조한다 — 확인하는 것은
- * 목록의 개수가 아니라 마크업 모양과 라벨이다. 라벨은 labels.ts 의 같은 함수로
- * 만들므로, 급/권 처럼 어긋나면 여기서 잡힌다.
+ * 2026-08-21 에 목업을 실제 데이터에 맞췄다 — 급 탭 9개, 1급 과 12개.
+ * 남은 표본은 과 제목뿐이다("가족" · 실제 1급 6과는 다른 제목이다). 상태는
+ * 서버가 주는 것이라 목업이 정한 것을 그대로 쓴다.
+ * 라벨은 labels.ts 의 같은 함수로 만들므로, 급/권 처럼 어긋나면 여기서 잡힌다.
  *
  * 탭 바는 이 컴포넌트가 그리지 않는다(레이아웃이 그린다). 목업 캡처에는 들어
  * 있으므로 대조 쪽에서 뺀다 — activity-parity-diff.py 의 drop_tabbar.
@@ -618,18 +619,14 @@ function NavBookScreen() {
 	// i18n.t 는 옵션을 받으면 상세 결과 타입도 낼 수 있어 문자열로 좁힌다
 	const t = (key: string, opts?: Record<string, unknown>) =>
 		String(i18n.t(key, opts as never));
+	// 1급의 비-자모 과 전체(4~15과). 1~3과는 한글 탭으로 간다
 	const book1 = chapters
 		.filter((ch) => ch.book_id === 1 && ch.type !== "jamo")
-		.sort((a, b) => a.seq - b.seq)
-		.slice(0, 6); // 목업이 담은 4과~9과
+		.sort((a, b) => a.seq - b.seq);
 	return (
 		<>
 			<div className="catalog-nav">
-				<BookTabs
-					tabs={buildBookTabs(t).slice(0, 4)}
-					activeId={1}
-					onSelect={() => {}}
-				/>
+				<BookTabs tabs={buildBookTabs(t)} activeId={1} onSelect={() => {}} />
 				<ChapterChips
 					chips={buildChapterChips(book1, t)}
 					activeId={book1[2].id}
@@ -658,16 +655,13 @@ function NavBookScreen() {
 SCREENS.nav__book__resume = <NavBookScreen />;
 
 /*
- * 자모 목록은 아직 넣지 않는다 — 컴포넌트는 그려진다(받아 오는 데이터가 없고
- * useEffect 도 없어서 라우터 훅이 경고만 내고 지나간다). 막는 것은 코드가 아니라
- * 목업 쪽이 낡은 것이다. nav_mockup_uiux 의 자모 화면이 아직 구 교재 기준이다 —
- * 활동 이름이 "자모 듣고 따라하기 · 자모 쓰기" 이고 묶음명이 "모음 1" 이다.
- * 지금 앱은 새 책 기준으로 "발음 듣고 따라하기 · 자음-모음 조합하고 쓰기",
- * 묶음명은 원장과 같은 "모음1" 이다. 목업을 새 책으로 갱신하고 다시 캡처하면
- * 아래 한 줄로 들어간다 — BLOCKERS §2.
+ * 자모 목록 — 컴포넌트를 그대로 그린다. 받아 오는 데이터가 없고 useEffect 도
+ * 없어서 라우터 훅이 경고만 내고 지나간다.
  *
- *   SCREENS.nav__jamo__resume = <Jamo />;
+ * 목업은 2026-08-21 에 새 책 기준으로 갱신하고 다시 캡처했다 — 그전에는
+ * 활동 이름이 "자모 듣고 따라하기 · 자모 쓰기" 이고 묶음명이 "모음 1" 이었다.
  */
+SCREENS.nav__jamo__resume = <Jamo />;
 
 const outDir = join(
 	dirname(fileURLToPath(import.meta.url)),

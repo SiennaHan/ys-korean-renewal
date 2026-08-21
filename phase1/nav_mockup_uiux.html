@@ -257,7 +257,8 @@ const icons={
 const state={ screen:"home", width:"390", task:"resume" };
 
 const DAYS=["월","화","수","목","금","토","일"];
-const TEXTBOOK_TABS=["한글","1급","2급","3급"];
+// 새 책은 1급~8급. 가로 스크롤이라 다 담아도 된다 — 앱이 그리는 것과 같게 둔다
+const TEXTBOOK_TABS=["한글","1급","2급","3급","4급","5급","6급","7급","8급"];
 const D={
   today:3, done:[0,1,2], streak:3,
   chart:[3,5,2,4,0,0,0],
@@ -275,15 +276,31 @@ const D={
       { n:"단어 플래시카드",    st:"doing", a:12, t:45 },
     ]},
   ],
+  // 새 책(연세 글로벌 한국어) 기준. 묶음 이름과 활동 이름은 원장·module.ts 와 같게 쓴다 —
+  // 옛 판은 "모음 1"(띄어쓰기) · "자모 듣고 따라하기" · "자모 쓰기" · "단어 읽고 쓰기" 였다.
+  // 묶음마다 활동 다섯이 고르게 있다(listen-repeat · write · listen-repeat2 · read-write · listen).
+  // 진행 상태는 자모가 아직 기록을 읽지 않으므로 전부 빈 자리로 둔다.
   jamo:[
-    { t:"모음 1", syl:["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ"], items:[
-      { n:"자모 듣고 따라하기", st:"done" },
-      { n:"자모 쓰기",          st:"doing", a:12, t:19 },
-      { n:"듣고 맞는 것 고르기", st:"none" },
+    { t:"모음1", syl:["ㅏ","ㅓ","ㅗ","ㅜ","ㅡ","ㅣ","ㅐ","ㅔ","ㅚ","ㅟ"], items:[
+      { n:"발음 듣고 따라하기",      st:"none" },
+      { n:"자음-모음 조합하고 쓰기", st:"none" },
+      { n:"단어 듣고 따라하기",      st:"none" },
+      { n:"단어 쓰기",               st:"none" },
+      { n:"듣고 맞는 것 고르기",     st:"none" },
     ]},
-    { t:"자음 1", syl:["ㄱ","ㄴ","ㄷ","ㄹ"], items:[
-      { n:"자모 듣고 따라하기", st:"none" },
-      { n:"단어 읽고 쓰기",     st:"none" },
+    { t:"자음1", syl:["ㄱ","ㄴ","ㄷ","ㄹ"], items:[
+      { n:"발음 듣고 따라하기",      st:"none" },
+      { n:"자음-모음 조합하고 쓰기", st:"none" },
+      { n:"단어 듣고 따라하기",      st:"none" },
+      { n:"단어 쓰기",               st:"none" },
+      { n:"듣고 맞는 것 고르기",     st:"none" },
+    ]},
+    { t:"자음2", syl:["ㅁ","ㅂ","ㅅ","ㅇ","ㅈ"], items:[
+      { n:"발음 듣고 따라하기",      st:"none" },
+      { n:"자음-모음 조합하고 쓰기", st:"none" },
+      { n:"단어 듣고 따라하기",      st:"none" },
+      { n:"단어 쓰기",               st:"none" },
+      { n:"듣고 맞는 것 고르기",     st:"none" },
     ]},
   ],
 };
@@ -372,7 +389,7 @@ function homeView(){
 
 /* ── 교재학습 ── */
 function bookView(){
-  return `${catalogNav("1급",[4,5,6,7,8,9],6)}
+  return `${catalogNav("1급",[4,5,6,7,8,9,10,11,12,13,14,15],6)}
     <div class="scroll catalog-scroll">
       ${chapterHead(6,"가족")}
       <div class="learning-sections">${D.acts.map(sec=>
