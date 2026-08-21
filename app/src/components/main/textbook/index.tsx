@@ -52,13 +52,21 @@ export default function TextbookContent() {
 		const hasJamo = chapters.some((ch) => ch.type === "jamo");
 		const tabs: { id: number | "jamo"; label: string }[] = [];
 		if (hasJamo) {
-			tabs.push({ id: "jamo", label: "한글" });
+			tabs.push({ id: "jamo", label: t("catalog.jamoTab") });
 		}
 		for (const book of books) {
-			tabs.push({ id: book.id, label: book.title });
+			/*
+			 * book.title 은 "1권" 이다. 화면에는 급으로 쓴다 — 목업이 급이고
+			 * 앱의 다른 곳도 급으로 부른다(i18n 의 "{{level}}급 {{lesson}}과").
+			 * book_id 는 DB 값이라 그대로 두고 표시만 바꾼다.
+			 */
+			tabs.push({
+				id: book.id,
+				label: t("catalog.bookTab", { level: book.seq }),
+			});
 		}
 		return tabs;
-	}, []);
+	}, [t]);
 
 	// Filter chapters by selected book tab
 	const filteredChapters = useMemo(() => {
@@ -74,9 +82,9 @@ export default function TextbookContent() {
 	const chapterChips = useMemo(() => {
 		return filteredChapters.map((ch) => ({
 			id: ch.id,
-			label: `${ch.seq}과`,
+			label: t("catalog.chapterChip", { seq: ch.seq }),
 		}));
-	}, [filteredChapters]);
+	}, [filteredChapters, t]);
 
 	// Auto-select first chapter when book changes
 	const selectedChapterId = useMemo(() => {
@@ -225,17 +233,17 @@ export default function TextbookContent() {
 			}));
 		return fold([
 			{
-				label: "기초학습",
+				label: t("catalog.sectionBasic"),
 				modules: [
 					{
 						id: "word",
-						title: "단어 학습하기",
+						title: t("catalog.act.word"),
 						progress: menuState("word", getWordQuizCount(bookId, seq)),
 						disabled: !hasWordData(bookId, seq),
 					},
 					{
 						id: "roleplay",
-						title: "AI 롤플레잉",
+						title: t("catalog.act.roleplay"),
 						progress: menuState(
 							"roleplay",
 							getRoleplayScenarioCount(bookId, seq),
@@ -244,7 +252,7 @@ export default function TextbookContent() {
 					},
 					{
 						id: "listen-answer",
-						title: "듣고 질문에 답하기",
+						title: t("catalog.act.listen-answer"),
 						progress: menuState(
 							"listen-answer",
 							getListenQuestionCount(bookId, seq),
@@ -253,7 +261,7 @@ export default function TextbookContent() {
 					},
 					{
 						id: "fill-blank",
-						title: "빈칸 채워 말하기",
+						title: t("catalog.act.fill-blank"),
 						progress: menuState(
 							"fill-blank",
 							getBlankQuestionCount(bookId, seq),
@@ -262,7 +270,7 @@ export default function TextbookContent() {
 					},
 					{
 						id: "read-answer",
-						title: "읽고 질문에 답하기",
+						title: t("catalog.act.read-answer"),
 						progress: menuState(
 							"read-answer",
 							getReadQuestionCount(bookId, seq),
@@ -272,17 +280,17 @@ export default function TextbookContent() {
 				],
 			},
 			{
-				label: "심화학습",
+				label: t("catalog.sectionAdvanced"),
 				modules: [
 					{
 						id: "mission-chat",
-						title: "AI 미션 대화",
+						title: t("catalog.act.mission-chat"),
 						progress: missionChatCompleted ? "done" : "none",
 						disabled: !hasMissionChat,
 					},
 					{
 						id: "flashcard",
-						title: "단어 플래시카드",
+						title: t("catalog.act.flashcard"),
 						progress: flashcardCompleted ? "done" : "none",
 						disabled: !currentFlashcard,
 					},
@@ -298,6 +306,7 @@ export default function TextbookContent() {
 		menuState,
 		flashcardCompleted,
 		missionChatCompleted,
+		t,
 	]);
 
 	// --- Handlers ---

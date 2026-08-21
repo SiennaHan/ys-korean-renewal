@@ -11,12 +11,42 @@ export interface LoginCredentials {
 const ACCESS_TOKEN_KEY = "koreanAccessToken";
 const KOREAN_GUEST_ID = "koreanGuestId";
 
+/*
+ * localStorage 는 무엇을 넣어도 문자열로 바꿔 넣는다. 그래서 값이 없을 때
+ * 넣으면 문자열 "undefined" 가 저장되고, 그 뒤로는 있는 것처럼 보이면서
+ * 전부 실패한다. 실제로 두 번 났다 — 토큰이 "undefined" 라서 모든 요청이
+ * Bearer undefined 로 나갔고, koreanUser 가 "undefined" 라서
+ * JSON.parse 가 던져 앱이 부팅마다 죽었다.
+ *
+ * 읽을 때도 걸러 낸다. 이미 그 값이 들어 있는 기기가 있고, 그 기기는
+ * 저장소를 직접 비우지 않으면 앱을 쓸 수 없기 때문이다.
+ */
+const BAD = new Set(["", "undefined", "null", "NaN"]);
+
+function readClean(key: string): string | null {
+	const v = localStorage.getItem(key);
+	if (v === null) return null;
+	if (BAD.has(v)) {
+		localStorage.removeItem(key);
+		return null;
+	}
+	return v;
+}
+
+function writeClean(key: string, value: string | null | undefined): void {
+	if (typeof value !== "string" || BAD.has(value)) {
+		localStorage.removeItem(key);
+		return;
+	}
+	localStorage.setItem(key, value);
+}
+
 export function getAccessToken(): string | null {
-	return localStorage.getItem(ACCESS_TOKEN_KEY);
+	return readClean(ACCESS_TOKEN_KEY);
 }
 
 export function setAccessToken(token: string): void {
-	localStorage.setItem(ACCESS_TOKEN_KEY, token);
+	writeClean(ACCESS_TOKEN_KEY, token);
 }
 
 export function removeAccessToken(): void {
@@ -24,11 +54,11 @@ export function removeAccessToken(): void {
 }
 
 export function getGuestId(): string | null {
-	return localStorage.getItem(KOREAN_GUEST_ID);
+	return readClean(KOREAN_GUEST_ID);
 }
 
 export function setGuestId(guestId: string): void {
-	localStorage.setItem(KOREAN_GUEST_ID, guestId);
+	writeClean(KOREAN_GUEST_ID, guestId);
 }
 
 export function removeGuestId(): void {

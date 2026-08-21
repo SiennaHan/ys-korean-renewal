@@ -22,8 +22,12 @@ export default function HomeContent() {
 			.finally(() => setLoading(false));
 	}, []);
 
-	// 로그인 없이는 이 화면에 닿지 않는다(/main 이 막는다). 이름이 비는 건
-	// 계정에 name 이 없을 때뿐이므로 "Guest" 가 아니라 빈 문자열이 맞다.
+	/*
+	 * 게스트도 이 화면에 온다. 이름 자리에 "Guest" 를 넣으면 "Guest 님" 이 되어
+	 * 계정이 있는 것처럼 읽히고, 빈 문자열이면 " 님" 만 남는다. 그래서 게스트는
+	 * 이름 틀(home.userName)을 쓰지 않고 인사말 하나로 대신한다.
+	 * 목업에는 게스트 홈이 없어서 이 경우는 새로 정한 것이다.
+	 */
 	const userName = user?.name ?? "";
 
 	if (loading) {
@@ -80,7 +84,11 @@ export default function HomeContent() {
 		<div className="scroll">
 			<div className="greet">
 				<div className="hi">{t("home.greeting")}</div>
-				<div className="name">{t("home.userName", { name: userName })}</div>
+				<div className="name">
+					{userName
+						? t("home.userName", { name: userName })
+						: t("home.guestName")}
+				</div>
 			</div>
 
 			<WeeklyAttendance

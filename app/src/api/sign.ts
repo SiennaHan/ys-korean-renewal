@@ -41,6 +41,13 @@ export async function loginAsStudent(email: string, password: string): Promise<{
     }
 
     const data = response.data as LoginToken;
+
+    // 토큰이나 사용자가 없으면 성공이 아니다. 넣으면 localStorage 에
+    // 문자열 "undefined" 가 남아 앱이 부팅에서 죽는다.
+    if (!data.token || !data.user) {
+      return { success: false, error: "로그인 응답이 올바르지 않습니다." };
+    }
+
     setAccessToken(data.token);
     localStorage.setItem('koreanUser', JSON.stringify(data.user));
     return { success: true, user: data.user };

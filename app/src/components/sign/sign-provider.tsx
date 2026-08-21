@@ -46,14 +46,31 @@ interface AuthProviderProps {
 	children: ReactNode;
 }
 
+/*
+ * 이 값이 깨져 있으면 앱이 부팅에서 죽는다 — 최상위 Provider 의 초기 상태라
+ * 던지면 화면이 아무것도 안 뜬다. 실제로 문자열 "undefined" 가 저장돼서
+ * JSON.parse 가 던졌고, 저장소를 직접 비우지 않으면 되돌릴 길이 없었다.
+ * 그래서 못 읽으면 지우고 게스트로 떨어뜨린다.
+ */
+function readStoredUser(): UserInfo | null {
+	const raw = localStorage.getItem("koreanUser");
+	if (!raw || raw === "undefined" || raw === "null") {
+		if (raw !== null) localStorage.removeItem("koreanUser");
+		return null;
+	}
+	try {
+		return JSON.parse(raw) as UserInfo;
+	} catch {
+		localStorage.removeItem("koreanUser");
+		return null;
+	}
+}
+
 export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const initialSignedIn = !!getAccessToken();
 	const [isSignedIn, setIsSignedIn] = useState<boolean>(initialSignedIn);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [user, setUser] = useState<UserInfo | null>(() => {
-		const stored = localStorage.getItem("koreanUser");
-		return stored ? JSON.parse(stored) : null;
-	});
+	const [user, setUser] = useState<UserInfo | null>(() => readStoredUser());
 
 	const isLoggedInUser = user !== null;
 
