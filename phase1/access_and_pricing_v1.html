@@ -270,6 +270,13 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
       <td>PG 가 결제 완료를 서버로 알린다. 그때 <span class="file">ko_entitlement</span> 를 채운다.
         <b>앱이 "샀다" 고 말하는 것을 믿으면 안 된다</b> — 판정은 웹훅과 서버 조회로만 한다.
         웹훅 서명 검증은 필수다</td></tr>
+    <tr><td>인프라</td><td><b>메일 발송</b>(SES 등)</td>
+      <td>지금 <b>메일을 보낼 수단이 아예 없다</b> — <span class="file">boto3</span> 는 S3 전용이다.
+        보낼 것은 넷뿐이다: 비밀번호 재설정 · 결제 완료·영수증 · 결제 실패·환불 ·
+        구독 만료(구독일 때만). <b>마케팅·리텐션 메일은 만들지 않는다.</b>
+        <b>웹 푸시와 PWA 도 만들지 않는다</b> — iOS 는 홈 화면에 추가한 PWA 에서만 푸시가 되고
+        그 유도 UX 가 비싸다. 재방문 유도는 앱 안의 연속 학습일로 한다.
+        5개 언어 템플릿이 필요하다 — <span class="file">BLOCKERS.md</span> §7</td></tr>
     <tr><td>API</td><td><span class="file">POST /user/sign/up</span></td>
       <td><b>학생 자체 회원가입이 지금 없다.</b> §08 의 1번</td></tr>
     <tr><td>API</td><td>게임 콘텐츠 6개 라우트에 인증·권한</td>
@@ -396,10 +403,13 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
     <div class="d">보이되 잠근다. 문구 넷을 5개 언어로. 결제 없이도 여기까지가 온전한 제품이다</div></div>
   <div class="card"><div class="k">4</div><div class="nm">학생 자체 회원가입</div>
     <div class="d">§08 의 1번. 결제보다 먼저다 — 계정 없이 결제하면 기기를 바꿀 때 잃는다</div></div>
-  <div class="card"><div class="k">5</div><div class="nm">PG 연동과 웹훅</div>
+  <div class="card"><div class="k">5</div><div class="nm">메일 발송</div>
+    <div class="d">비밀번호 재설정이 <b>지금 껍데기다</b> — 결제와 무관하게 이미 필요하다.
+      결제 영수증도 이 위에 얹힌다. BLOCKERS §7</div></div>
+  <div class="card"><div class="k">6</div><div class="nm">PG 연동과 웹훅</div>
     <div class="d">§07 의 1번(구독/급별)이 정해진 뒤에 시작한다. 웹훅 서명 검증 ·
       해외 결제 세금 · 기기를 바꿔도 되는 복원을 같이 만든다</div></div>
-  <div class="card"><div class="k">6</div><div class="nm">서버 쪽 실제 차단</div>
+  <div class="card"><div class="k">7</div><div class="nm">서버 쪽 실제 차단</div>
     <div class="d">게임 6라우트 + 교재 콘텐츠 API 에 권한. 화면 잠금만으로는 잠금이 아니다</div></div>
 </div>
 
