@@ -139,7 +139,7 @@ function speakQuestion(question: Question, delayMs = 0) {
 ══════════════════════════ */
 
 /**
- * 확정 목업(game_screens_uiux)이 봄소풍 장면마다 넣던 장식이다.
+ * 확정 목업(screens_uiux 의 게임 절)이 봄소풍 장면마다 넣던 장식이다.
  * 목업은 캡처한 DOM 에 런타임으로 append 했지만 앱에서는 마크업에 둔다.
  * 해와 꽃잎은 모든 장면에, 바구니는 t-illo 장면에만 들어간다.
  */
