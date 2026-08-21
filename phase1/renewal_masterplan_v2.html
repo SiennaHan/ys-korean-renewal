@@ -130,7 +130,7 @@
   <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
   <tbody>
     <tr><td><b>활동 셸</b></td><td>G2 §1·3</td><td>Shell_component_spec_uiux · build_spec_uiux</td><td>shell_mockup_uiux</td><td>Phase1_dev_spec §2·5</td></tr>
-    <tr><td><b>활동 12종</b></td><td>G1_activity_lineup_v2</td><td>mockup_read_v1</td><td>activity_mockups_uiux</td><td>api_schema_v1 §1</td></tr>
+    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>mockup_read_v1</td><td>activity_mockups_uiux</td><td>api_schema_v1 §1</td></tr>
     <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>같은 문서 §3·4</td><td>activity_mockups_uiux</td><td><span class="pill open">라우트 통합 대기</span></td></tr>
     <tr><td><b>홈·내비</b></td><td>home_asis_v1</td><td><span class="pill open">없음</span></td><td>nav_mockup_uiux</td><td>api_schema_v1 §4</td></tr>
     <tr><td><b>교재학습</b></td><td>home_asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>nav_mockup_uiux</td><td>같은 문서 §06</td></tr>
@@ -139,7 +139,7 @@
     <tr><td><b>표현클립</b></td><td>games_asis_v1 §2</td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td><td><span class="pill open">없음</span></td></tr>
     <tr><td><b>MY</b></td><td>my_learning_summary_v1</td><td>같은 문서 §4</td><td><span class="pill stop">없음</span></td><td>같은 문서 §4</td></tr>
     <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>같은 문서 §04·05</td><td><span class="pill stop">없음</span></td><td>같은 문서 §05</td></tr>
-    <tr><td><b>콘텐츠 파이프</b></td><td>G1_item_schema_proposal_v1</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
+    <tr><td><b>콘텐츠 파이프</b></td><td>G1_content_gate_v1 §6~11</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
     <tr><td><b>다국어</b></td><td><span class="pill open">없음</span></td><td>G2 §4 · Phase1_dev_spec §6</td><td>—</td><td>—</td></tr>
     <tr><td><b>접근성</b></td><td>—</td><td>G2 §7 · build_spec_uiux</td><td>—</td><td>—</td></tr>
     <tr><td><b>오프라인·오류</b></td><td>—</td><td>G2 §6</td><td>build_spec §9</td><td>api_schema §5</td></tr>
@@ -269,7 +269,7 @@
     <tr><td>D3</td><td>콘텐츠 단일 원본</td>
       <td><span class="pill done">확정</span> 원장(xlsx)이 정본, <span class="file">n*.json</span> 은 산출물.
         <span class="file">review_status</span> 가 <span class="file">reviewed</span> 인 것만 노출</td>
-      <td><span class="file">G1_item_schema_proposal_v1</span> · <span class="file">app/src/shared/data/README.md</span></td></tr>
+      <td><span class="file">G1_content_gate_v1</span> §6~11 · <span class="file">app/src/shared/data/README.md</span></td></tr>
     <tr><td>D4</td><td>다국어 원칙</td>
       <td><span class="pill done">확정</span> 지시문은 한국어 + UI 언어, <b>학습 텍스트는 한국어 고정</b></td>
       <td><span class="file">G2_shell_and_state_spec_v1</span> §4</td></tr>
@@ -289,7 +289,7 @@
 셸 결정이고 그 문서가 정의처다.</p>
 
 <div class="gate">
-  <div class="gh"><span class="gid">G1</span><span class="gt">콘텐츠 착수 게이트</span><span class="gw"><span class="pill done">닫혔다</span> 2026-08 · G1_activity_lineup_v2 · G1_item_schema_proposal_v1 로</span></div>
+  <div class="gh"><span class="gid">G1</span><span class="gt">콘텐츠 착수 게이트</span><span class="gw"><span class="pill done">닫혔다</span> 2026-08 · G1_content_gate_v1 로</span></div>
   <ul>
     <li><b>활동 라인업 확정</b> — 현행 학습활동 8종 + 게임 5종 중 유지 / 폐기 / 신설. (예: 받아쓰기 폐기, 자모 유지, 롤플레잉 유지…)</li>
     <li><b>활동별 문항 스키마</b> — 각 활동 1문항이 가진 필드. 예: 어휘 문항 = 표제어 + 뜻(4개 언어) + 정답 + 오답 3개 + 예문 + 음성 여부.</li>

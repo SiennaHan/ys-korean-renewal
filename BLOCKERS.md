@@ -203,7 +203,7 @@ grep -rn 'to: "/\(flashcard\|missionchat\|jamolist\|about\)"' app/src --include=
 일곱 줄로 그리므로 `scene_type` 을 보지 않는다 — **애초에 목록에 뜨지도 않는다.**
 
 즉 지금 아무것도 깨져 있지 않고, 새 교재(연세 글로벌 한국어)의 활동 라인업에도
-받아쓰기는 없다(`G1_activity_lineup_v2`). **결정할 것이 없으므로 이 항목을 닫는다.**
+받아쓰기는 없다(`phase1/G1_content_gate_v1.html` §4). **결정할 것이 없으므로 이 항목을 닫는다.**
 
 정리할 일이 하나 남는데 급하지 않다 — `module.ts` 의 죽은 행 12개다.
 그 파일은 생성기가 만들지 않는 손 관리 데이터라(`build-content.py` 는 `n*.json` 만
@@ -345,4 +345,4 @@ npx biome check src      # 통과
 npm run build            # 통과 — §1 에서 고쳤다
 ```
 
-i18n 은 5개 로케일 287키가 일치한다.
+i18n 은 5개 로케일 **300키**가 일치한다(en·ja·ko·vi·zh 전부 300).
