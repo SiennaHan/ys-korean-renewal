@@ -16,13 +16,17 @@
 | **라우터 버전을 올리지 마라** | `@tanstack/react-router` 셋은 캐럿 없이 **정확히 `1.136.8`** 로 고정돼 있다. 1.15x 부터 React 19 의 `use` 를 쓰기 때문에 React 18 인 이 앱에서 빌드가 죽는다 |
 | **`src/shared/data/` 는 공개 금지** | 교재에서 파생한 문장·어휘·듣기 지문 20MB 다. 저장소를 **비공개로 유지**해야 하는 이유다 |
 
+> **미사용 의존성 하나** — `dexie`(IndexedDB)가 `package.json` 에 있지만 쓰는 코드가
+> 없다. 유일하게 쓰던 `src/shared/db/` 가 도달 불가 코드였고 2026-08-21 에 지웠다.
+> 오프라인 저장이 필요해지면 그때 다시 넣는다.
+
 ## 스택
 
 - **React 18.3.1** + TypeScript (선언은 `^18.2.0`)
 - **RSBuild** — 빌드
 - **TanStack Router** — 파일 기반 라우팅(`src/routes/`, `routeTree.gen.ts` 자동 생성)
 - **Tailwind CSS v4** + ShadCN/UI (New York)
-- **Zustand** — 전역 상태 · **Dexie** — IndexedDB
+- **Zustand** — 전역 상태
 - **i18next** — 5개 언어(en · ko · ja · zh · vi), 기본값 `en`
 - **Chart.js** · **Framer Motion** · **Lottie** · **canvas-confetti**
 - **react-audio-voice-recorder** / **react-speech-recognition** — 마이크·STT

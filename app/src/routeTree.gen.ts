@@ -9,131 +9,81 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as CheckEmailRouteImport } from './routes/check-email'
-import { Route as FlashcardRouteImport } from './routes/flashcard'
-import { Route as JamolistRouteImport } from './routes/jamolist'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as MainRouteImport } from './routes/main'
-import { Route as MissionchatRouteImport } from './routes/missionchat'
-import { Route as MyPasswordRouteImport } from './routes/my-password'
-import { Route as MyProfileRouteImport } from './routes/my-profile'
-import { Route as NewPasswordRouteImport } from './routes/new-password'
-import { Route as QrRouteImport } from './routes/qr'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as BookIndexRouteImport } from './routes/book/index'
-import { Route as BookIdRouteImport } from './routes/book/$id'
-import { Route as BookListRouteImport } from './routes/book/list'
-import { Route as LearnFillBlankRouteImport } from './routes/learn/fill-blank'
-import { Route as LearnGrammarRouteImport } from './routes/learn/grammar'
-import { Route as LearnListenRouteImport } from './routes/learn/listen'
-import { Route as LearnListenAnswerRouteImport } from './routes/learn/listen-answer'
-import { Route as LearnReadRouteImport } from './routes/learn/read'
-import { Route as LearnReadAnswerRouteImport } from './routes/learn/read-answer'
-import { Route as LearnRoleplayRouteImport } from './routes/learn/roleplay'
-import { Route as LearnWordRouteImport } from './routes/learn/word'
-import { Route as MainIndexRouteImport } from './routes/main/index'
-import { Route as MainClipRouteImport } from './routes/main/clip'
-import { Route as MainGameRouteImport } from './routes/main/game'
-import { Route as MainMyRouteImport } from './routes/main/my'
-import { Route as MainTextbookRouteImport } from './routes/main/textbook'
+import { Route as QrRouteImport } from './routes/qr'
+import { Route as NewPasswordRouteImport } from './routes/new-password'
+import { Route as MyProfileRouteImport } from './routes/my-profile'
+import { Route as MyPasswordRouteImport } from './routes/my-password'
+import { Route as MissionchatRouteImport } from './routes/missionchat'
+import { Route as MainRouteImport } from './routes/main'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as JamolistRouteImport } from './routes/jamolist'
+import { Route as FlashcardRouteImport } from './routes/flashcard'
+import { Route as CheckEmailRouteImport } from './routes/check-email'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestIndexRouteImport } from './routes/test/index'
-import { Route as TestIdRouteImport } from './routes/test/$id'
-import { Route as TestAudioRouteImport } from './routes/test/audio'
-import { Route as TestBoomRouteImport } from './routes/test/boom'
-import { Route as TestDebugRouteImport } from './routes/test/debug'
-import { Route as TestFlashcardRouteImport } from './routes/test/flashcard'
-import { Route as TestRealtimeRouteImport } from './routes/test/realtime'
-import { Route as TestTtsRegenRouteImport } from './routes/test/tts-regen'
+import { Route as MainIndexRouteImport } from './routes/main/index'
+import { Route as BookIndexRouteImport } from './routes/book/index'
 import { Route as TestVideosRouteImport } from './routes/test/videos'
-import { Route as BookChapterIdRouteImport } from './routes/book/chapter/$id'
-import { Route as LearnJamoChooseRouteImport } from './routes/learn/jamo/choose'
-import { Route as LearnJamoCombineRouteImport } from './routes/learn/jamo/combine'
-import { Route as LearnJamoCombine3RouteImport } from './routes/learn/jamo/combine3'
-import { Route as LearnJamoPronounceRouteImport } from './routes/learn/jamo/pronounce'
-import { Route as LearnJamoWordRepeatRouteImport } from './routes/learn/jamo/word-repeat'
-import { Route as LearnJamoWordWriteRouteImport } from './routes/learn/jamo/word-write'
-import { Route as MainGameIndexRouteImport } from './routes/main/game/index'
-import { Route as MainGameCardSortRouteImport } from './routes/main/game/card-sort'
-import { Route as MainGameMissionchatRouteImport } from './routes/main/game/missionchat'
-import { Route as MainGameParticleSniperRouteImport } from './routes/main/game/particle-sniper'
-import { Route as MainGameSeoulPuzzleRouteImport } from './routes/main/game/seoul-puzzle'
-import { Route as MainGameSpringPicnicRouteImport } from './routes/main/game/spring-picnic'
-import { Route as MainGameVocashotRouteImport } from './routes/main/game/vocashot'
-import { Route as MainGameVocashotSoloRouteImport } from './routes/main/game/vocashot-solo'
+import { Route as TestTtsRegenRouteImport } from './routes/test/tts-regen'
+import { Route as TestRealtimeRouteImport } from './routes/test/realtime'
+import { Route as TestFlashcardRouteImport } from './routes/test/flashcard'
+import { Route as TestDebugRouteImport } from './routes/test/debug'
+import { Route as TestBoomRouteImport } from './routes/test/boom'
+import { Route as TestAudioRouteImport } from './routes/test/audio'
+import { Route as TestIdRouteImport } from './routes/test/$id'
+import { Route as MainTextbookRouteImport } from './routes/main/textbook'
+import { Route as MainMyRouteImport } from './routes/main/my'
+import { Route as MainGameRouteImport } from './routes/main/game'
+import { Route as MainClipRouteImport } from './routes/main/clip'
+import { Route as LearnWordRouteImport } from './routes/learn/word'
+import { Route as LearnRoleplayRouteImport } from './routes/learn/roleplay'
+import { Route as LearnReadAnswerRouteImport } from './routes/learn/read-answer'
+import { Route as LearnReadRouteImport } from './routes/learn/read'
+import { Route as LearnListenAnswerRouteImport } from './routes/learn/listen-answer'
+import { Route as LearnListenRouteImport } from './routes/learn/listen'
+import { Route as LearnGrammarRouteImport } from './routes/learn/grammar'
+import { Route as LearnFillBlankRouteImport } from './routes/learn/fill-blank'
+import { Route as BookListRouteImport } from './routes/book/list'
+import { Route as BookIdRouteImport } from './routes/book/$id'
 import { Route as MainTextbookIndexRouteImport } from './routes/main/textbook/index'
+import { Route as MainGameIndexRouteImport } from './routes/main/game/index'
 import { Route as MainTextbookJamoRouteImport } from './routes/main/textbook/jamo'
-import { Route as BookChapterUnitIdRouteImport } from './routes/book/chapter/unit/$id'
+import { Route as MainGameVocashotSoloRouteImport } from './routes/main/game/vocashot-solo'
+import { Route as MainGameVocashotRouteImport } from './routes/main/game/vocashot'
+import { Route as MainGameSpringPicnicRouteImport } from './routes/main/game/spring-picnic'
+import { Route as MainGameSeoulPuzzleRouteImport } from './routes/main/game/seoul-puzzle'
+import { Route as MainGameParticleSniperRouteImport } from './routes/main/game/particle-sniper'
+import { Route as MainGameMissionchatRouteImport } from './routes/main/game/missionchat'
+import { Route as MainGameCardSortRouteImport } from './routes/main/game/card-sort'
+import { Route as LearnJamoWordWriteRouteImport } from './routes/learn/jamo/word-write'
+import { Route as LearnJamoWordRepeatRouteImport } from './routes/learn/jamo/word-repeat'
+import { Route as LearnJamoPronounceRouteImport } from './routes/learn/jamo/pronounce'
+import { Route as LearnJamoCombine3RouteImport } from './routes/learn/jamo/combine3'
+import { Route as LearnJamoCombineRouteImport } from './routes/learn/jamo/combine'
+import { Route as LearnJamoChooseRouteImport } from './routes/learn/jamo/choose'
+import { Route as BookChapterIdRouteImport } from './routes/book/chapter/$id'
 import { Route as MainGameVocashotPinRouteImport } from './routes/main/game/vocashot_.$pin'
-import { Route as BookChapterUnitDialogIdRouteImport } from './routes/book/chapter/unit/dialog/$id'
-import { Route as BookChapterUnitFlashcardIdRouteImport } from './routes/book/chapter/unit/flashcard/$id'
-import { Route as BookChapterUnitInput_wordCodeRouteImport } from './routes/book/chapter/unit/input_word/$code'
-import { Route as BookChapterUnitListenRepeatCodeRouteImport } from './routes/book/chapter/unit/listen-repeat/$code'
-import { Route as BookChapterUnitListenRepeat2CodeRouteImport } from './routes/book/chapter/unit/listen-repeat2/$code'
-import { Route as BookChapterUnitListenCodeRouteImport } from './routes/book/chapter/unit/listen/$code'
-import { Route as BookChapterUnitMake_sentenceCodeRouteImport } from './routes/book/chapter/unit/make_sentence/$code'
-import { Route as BookChapterUnitMission_chatCodeRouteImport } from './routes/book/chapter/unit/mission_chat/$code'
-import { Route as BookChapterUnitReadWriteCodeRouteImport } from './routes/book/chapter/unit/read-write/$code'
-import { Route as BookChapterUnitWriteCodeRouteImport } from './routes/book/chapter/unit/write/$code'
-import { Route as BookChapterUnitWrite2CodeRouteImport } from './routes/book/chapter/unit/write2/$code'
+import { Route as BookChapterUnitIdRouteImport } from './routes/book/chapter/unit/$id'
 import { Route as BookChapterUnitWrite3CodeRouteImport } from './routes/book/chapter/unit/write3/$code'
-import { Route as BookChapterUnitDialogReportIdRouteImport } from './routes/book/chapter/unit/dialog/report/$id'
+import { Route as BookChapterUnitWrite2CodeRouteImport } from './routes/book/chapter/unit/write2/$code'
+import { Route as BookChapterUnitWriteCodeRouteImport } from './routes/book/chapter/unit/write/$code'
+import { Route as BookChapterUnitReadWriteCodeRouteImport } from './routes/book/chapter/unit/read-write/$code'
+import { Route as BookChapterUnitMission_chatCodeRouteImport } from './routes/book/chapter/unit/mission_chat/$code'
+import { Route as BookChapterUnitMake_sentenceCodeRouteImport } from './routes/book/chapter/unit/make_sentence/$code'
+import { Route as BookChapterUnitListenCodeRouteImport } from './routes/book/chapter/unit/listen/$code'
+import { Route as BookChapterUnitListenRepeat2CodeRouteImport } from './routes/book/chapter/unit/listen-repeat2/$code'
+import { Route as BookChapterUnitListenRepeatCodeRouteImport } from './routes/book/chapter/unit/listen-repeat/$code'
+import { Route as BookChapterUnitInput_wordCodeRouteImport } from './routes/book/chapter/unit/input_word/$code'
+import { Route as BookChapterUnitFlashcardIdRouteImport } from './routes/book/chapter/unit/flashcard/$id'
+import { Route as BookChapterUnitDialogIdRouteImport } from './routes/book/chapter/unit/dialog/$id'
 import { Route as BookChapterUnitFlashcardResultIdRouteImport } from './routes/book/chapter/unit/flashcard/result/$id'
+import { Route as BookChapterUnitDialogReportIdRouteImport } from './routes/book/chapter/unit/dialog/report/$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckEmailRoute = CheckEmailRouteImport.update({
-  id: '/check-email',
-  path: '/check-email',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FlashcardRoute = FlashcardRouteImport.update({
-  id: '/flashcard',
-  path: '/flashcard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JamolistRoute = JamolistRouteImport.update({
-  id: '/jamolist',
-  path: '/jamolist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MainRoute = MainRouteImport.update({
-  id: '/main',
-  path: '/main',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MissionchatRoute = MissionchatRouteImport.update({
-  id: '/missionchat',
-  path: '/missionchat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyPasswordRoute = MyPasswordRouteImport.update({
-  id: '/my-password',
-  path: '/my-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyProfileRoute = MyProfileRouteImport.update({
-  id: '/my-profile',
-  path: '/my-profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewPasswordRoute = NewPasswordRouteImport.update({
-  id: '/new-password',
-  path: '/new-password',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QrRoute = QrRouteImport.update({
@@ -141,64 +91,64 @@ const QrRoute = QrRouteImport.update({
   path: '/qr',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+const NewPasswordRoute = NewPasswordRouteImport.update({
+  id: '/new-password',
+  path: '/new-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookIndexRoute = BookIndexRouteImport.update({
-  id: '/book/',
-  path: '/book/',
+const MyProfileRoute = MyProfileRouteImport.update({
+  id: '/my-profile',
+  path: '/my-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookIdRoute = BookIdRouteImport.update({
-  id: '/book/$id',
-  path: '/book/$id',
+const MyPasswordRoute = MyPasswordRouteImport.update({
+  id: '/my-password',
+  path: '/my-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookListRoute = BookListRouteImport.update({
-  id: '/book/list',
-  path: '/book/list',
+const MissionchatRoute = MissionchatRouteImport.update({
+  id: '/missionchat',
+  path: '/missionchat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnFillBlankRoute = LearnFillBlankRouteImport.update({
-  id: '/learn/fill-blank',
-  path: '/learn/fill-blank',
+const MainRoute = MainRouteImport.update({
+  id: '/main',
+  path: '/main',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnGrammarRoute = LearnGrammarRouteImport.update({
-  id: '/learn/grammar',
-  path: '/learn/grammar',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnListenRoute = LearnListenRouteImport.update({
-  id: '/learn/listen',
-  path: '/learn/listen',
+const JamolistRoute = JamolistRouteImport.update({
+  id: '/jamolist',
+  path: '/jamolist',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnListenAnswerRoute = LearnListenAnswerRouteImport.update({
-  id: '/learn/listen-answer',
-  path: '/learn/listen-answer',
+const FlashcardRoute = FlashcardRouteImport.update({
+  id: '/flashcard',
+  path: '/flashcard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnReadRoute = LearnReadRouteImport.update({
-  id: '/learn/read',
-  path: '/learn/read',
+const CheckEmailRoute = CheckEmailRouteImport.update({
+  id: '/check-email',
+  path: '/check-email',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnReadAnswerRoute = LearnReadAnswerRouteImport.update({
-  id: '/learn/read-answer',
-  path: '/learn/read-answer',
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnRoleplayRoute = LearnRoleplayRouteImport.update({
-  id: '/learn/roleplay',
-  path: '/learn/roleplay',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnWordRoute = LearnWordRouteImport.update({
-  id: '/learn/word',
-  path: '/learn/word',
+const TestIndexRoute = TestIndexRouteImport.update({
+  id: '/test/',
+  path: '/test/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MainIndexRoute = MainIndexRouteImport.update({
@@ -206,64 +156,9 @@ const MainIndexRoute = MainIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MainRoute,
 } as any)
-const MainClipRoute = MainClipRouteImport.update({
-  id: '/clip',
-  path: '/clip',
-  getParentRoute: () => MainRoute,
-} as any)
-const MainGameRoute = MainGameRouteImport.update({
-  id: '/game',
-  path: '/game',
-  getParentRoute: () => MainRoute,
-} as any)
-const MainMyRoute = MainMyRouteImport.update({
-  id: '/my',
-  path: '/my',
-  getParentRoute: () => MainRoute,
-} as any)
-const MainTextbookRoute = MainTextbookRouteImport.update({
-  id: '/textbook',
-  path: '/textbook',
-  getParentRoute: () => MainRoute,
-} as any)
-const TestIndexRoute = TestIndexRouteImport.update({
-  id: '/test/',
-  path: '/test/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestIdRoute = TestIdRouteImport.update({
-  id: '/test/$id',
-  path: '/test/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestAudioRoute = TestAudioRouteImport.update({
-  id: '/test/audio',
-  path: '/test/audio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestBoomRoute = TestBoomRouteImport.update({
-  id: '/test/boom',
-  path: '/test/boom',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestDebugRoute = TestDebugRouteImport.update({
-  id: '/test/debug',
-  path: '/test/debug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestFlashcardRoute = TestFlashcardRouteImport.update({
-  id: '/test/flashcard',
-  path: '/test/flashcard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestRealtimeRoute = TestRealtimeRouteImport.update({
-  id: '/test/realtime',
-  path: '/test/realtime',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestTtsRegenRoute = TestTtsRegenRouteImport.update({
-  id: '/test/tts-regen',
-  path: '/test/tts-regen',
+const BookIndexRoute = BookIndexRouteImport.update({
+  id: '/book/',
+  path: '/book/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestVideosRoute = TestVideosRouteImport.update({
@@ -271,69 +166,129 @@ const TestVideosRoute = TestVideosRouteImport.update({
   path: '/test/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookChapterIdRoute = BookChapterIdRouteImport.update({
-  id: '/book/chapter/$id',
-  path: '/book/chapter/$id',
+const TestTtsRegenRoute = TestTtsRegenRouteImport.update({
+  id: '/test/tts-regen',
+  path: '/test/tts-regen',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnJamoChooseRoute = LearnJamoChooseRouteImport.update({
-  id: '/learn/jamo/choose',
-  path: '/learn/jamo/choose',
+const TestRealtimeRoute = TestRealtimeRouteImport.update({
+  id: '/test/realtime',
+  path: '/test/realtime',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnJamoCombineRoute = LearnJamoCombineRouteImport.update({
-  id: '/learn/jamo/combine',
-  path: '/learn/jamo/combine',
+const TestFlashcardRoute = TestFlashcardRouteImport.update({
+  id: '/test/flashcard',
+  path: '/test/flashcard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnJamoCombine3Route = LearnJamoCombine3RouteImport.update({
-  id: '/learn/jamo/combine3',
-  path: '/learn/jamo/combine3',
+const TestDebugRoute = TestDebugRouteImport.update({
+  id: '/test/debug',
+  path: '/test/debug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnJamoPronounceRoute = LearnJamoPronounceRouteImport.update({
-  id: '/learn/jamo/pronounce',
-  path: '/learn/jamo/pronounce',
+const TestBoomRoute = TestBoomRouteImport.update({
+  id: '/test/boom',
+  path: '/test/boom',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnJamoWordRepeatRoute = LearnJamoWordRepeatRouteImport.update({
-  id: '/learn/jamo/word-repeat',
-  path: '/learn/jamo/word-repeat',
+const TestAudioRoute = TestAudioRouteImport.update({
+  id: '/test/audio',
+  path: '/test/audio',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnJamoWordWriteRoute = LearnJamoWordWriteRouteImport.update({
-  id: '/learn/jamo/word-write',
-  path: '/learn/jamo/word-write',
+const TestIdRoute = TestIdRouteImport.update({
+  id: '/test/$id',
+  path: '/test/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MainTextbookRoute = MainTextbookRouteImport.update({
+  id: '/textbook',
+  path: '/textbook',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainMyRoute = MainMyRouteImport.update({
+  id: '/my',
+  path: '/my',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainGameRoute = MainGameRouteImport.update({
+  id: '/game',
+  path: '/game',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainClipRoute = MainClipRouteImport.update({
+  id: '/clip',
+  path: '/clip',
+  getParentRoute: () => MainRoute,
+} as any)
+const LearnWordRoute = LearnWordRouteImport.update({
+  id: '/learn/word',
+  path: '/learn/word',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoleplayRoute = LearnRoleplayRouteImport.update({
+  id: '/learn/roleplay',
+  path: '/learn/roleplay',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnReadAnswerRoute = LearnReadAnswerRouteImport.update({
+  id: '/learn/read-answer',
+  path: '/learn/read-answer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnReadRoute = LearnReadRouteImport.update({
+  id: '/learn/read',
+  path: '/learn/read',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnListenAnswerRoute = LearnListenAnswerRouteImport.update({
+  id: '/learn/listen-answer',
+  path: '/learn/listen-answer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnListenRoute = LearnListenRouteImport.update({
+  id: '/learn/listen',
+  path: '/learn/listen',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnGrammarRoute = LearnGrammarRouteImport.update({
+  id: '/learn/grammar',
+  path: '/learn/grammar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnFillBlankRoute = LearnFillBlankRouteImport.update({
+  id: '/learn/fill-blank',
+  path: '/learn/fill-blank',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookListRoute = BookListRouteImport.update({
+  id: '/book/list',
+  path: '/book/list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookIdRoute = BookIdRouteImport.update({
+  id: '/book/$id',
+  path: '/book/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MainTextbookIndexRoute = MainTextbookIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MainTextbookRoute,
 } as any)
 const MainGameIndexRoute = MainGameIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MainGameRoute,
 } as any)
-const MainGameCardSortRoute = MainGameCardSortRouteImport.update({
-  id: '/card-sort',
-  path: '/card-sort',
-  getParentRoute: () => MainGameRoute,
+const MainTextbookJamoRoute = MainTextbookJamoRouteImport.update({
+  id: '/jamo',
+  path: '/jamo',
+  getParentRoute: () => MainTextbookRoute,
 } as any)
-const MainGameMissionchatRoute = MainGameMissionchatRouteImport.update({
-  id: '/missionchat',
-  path: '/missionchat',
-  getParentRoute: () => MainGameRoute,
-} as any)
-const MainGameParticleSniperRoute = MainGameParticleSniperRouteImport.update({
-  id: '/particle-sniper',
-  path: '/particle-sniper',
-  getParentRoute: () => MainGameRoute,
-} as any)
-const MainGameSeoulPuzzleRoute = MainGameSeoulPuzzleRouteImport.update({
-  id: '/seoul-puzzle',
-  path: '/seoul-puzzle',
-  getParentRoute: () => MainGameRoute,
-} as any)
-const MainGameSpringPicnicRoute = MainGameSpringPicnicRouteImport.update({
-  id: '/spring-picnic',
-  path: '/spring-picnic',
+const MainGameVocashotSoloRoute = MainGameVocashotSoloRouteImport.update({
+  id: '/vocashot-solo',
+  path: '/vocashot-solo',
   getParentRoute: () => MainGameRoute,
 } as any)
 const MainGameVocashotRoute = MainGameVocashotRouteImport.update({
@@ -341,24 +296,64 @@ const MainGameVocashotRoute = MainGameVocashotRouteImport.update({
   path: '/vocashot',
   getParentRoute: () => MainGameRoute,
 } as any)
-const MainGameVocashotSoloRoute = MainGameVocashotSoloRouteImport.update({
-  id: '/vocashot-solo',
-  path: '/vocashot-solo',
+const MainGameSpringPicnicRoute = MainGameSpringPicnicRouteImport.update({
+  id: '/spring-picnic',
+  path: '/spring-picnic',
   getParentRoute: () => MainGameRoute,
 } as any)
-const MainTextbookIndexRoute = MainTextbookIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => MainTextbookRoute,
+const MainGameSeoulPuzzleRoute = MainGameSeoulPuzzleRouteImport.update({
+  id: '/seoul-puzzle',
+  path: '/seoul-puzzle',
+  getParentRoute: () => MainGameRoute,
 } as any)
-const MainTextbookJamoRoute = MainTextbookJamoRouteImport.update({
-  id: '/jamo',
-  path: '/jamo',
-  getParentRoute: () => MainTextbookRoute,
+const MainGameParticleSniperRoute = MainGameParticleSniperRouteImport.update({
+  id: '/particle-sniper',
+  path: '/particle-sniper',
+  getParentRoute: () => MainGameRoute,
 } as any)
-const BookChapterUnitIdRoute = BookChapterUnitIdRouteImport.update({
-  id: '/book/chapter/unit/$id',
-  path: '/book/chapter/unit/$id',
+const MainGameMissionchatRoute = MainGameMissionchatRouteImport.update({
+  id: '/missionchat',
+  path: '/missionchat',
+  getParentRoute: () => MainGameRoute,
+} as any)
+const MainGameCardSortRoute = MainGameCardSortRouteImport.update({
+  id: '/card-sort',
+  path: '/card-sort',
+  getParentRoute: () => MainGameRoute,
+} as any)
+const LearnJamoWordWriteRoute = LearnJamoWordWriteRouteImport.update({
+  id: '/learn/jamo/word-write',
+  path: '/learn/jamo/word-write',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnJamoWordRepeatRoute = LearnJamoWordRepeatRouteImport.update({
+  id: '/learn/jamo/word-repeat',
+  path: '/learn/jamo/word-repeat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnJamoPronounceRoute = LearnJamoPronounceRouteImport.update({
+  id: '/learn/jamo/pronounce',
+  path: '/learn/jamo/pronounce',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnJamoCombine3Route = LearnJamoCombine3RouteImport.update({
+  id: '/learn/jamo/combine3',
+  path: '/learn/jamo/combine3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnJamoCombineRoute = LearnJamoCombineRouteImport.update({
+  id: '/learn/jamo/combine',
+  path: '/learn/jamo/combine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnJamoChooseRoute = LearnJamoChooseRouteImport.update({
+  id: '/learn/jamo/choose',
+  path: '/learn/jamo/choose',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookChapterIdRoute = BookChapterIdRouteImport.update({
+  id: '/book/chapter/$id',
+  path: '/book/chapter/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MainGameVocashotPinRoute = MainGameVocashotPinRouteImport.update({
@@ -366,63 +361,15 @@ const MainGameVocashotPinRoute = MainGameVocashotPinRouteImport.update({
   path: '/vocashot/$pin',
   getParentRoute: () => MainGameRoute,
 } as any)
-const BookChapterUnitDialogIdRoute = BookChapterUnitDialogIdRouteImport.update({
-  id: '/book/chapter/unit/dialog/$id',
-  path: '/book/chapter/unit/dialog/$id',
+const BookChapterUnitIdRoute = BookChapterUnitIdRouteImport.update({
+  id: '/book/chapter/unit/$id',
+  path: '/book/chapter/unit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookChapterUnitFlashcardIdRoute =
-  BookChapterUnitFlashcardIdRouteImport.update({
-    id: '/book/chapter/unit/flashcard/$id',
-    path: '/book/chapter/unit/flashcard/$id',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitInput_wordCodeRoute =
-  BookChapterUnitInput_wordCodeRouteImport.update({
-    id: '/book/chapter/unit/input_word/$code',
-    path: '/book/chapter/unit/input_word/$code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitListenRepeatCodeRoute =
-  BookChapterUnitListenRepeatCodeRouteImport.update({
-    id: '/book/chapter/unit/listen-repeat/$code',
-    path: '/book/chapter/unit/listen-repeat/$code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitListenRepeat2CodeRoute =
-  BookChapterUnitListenRepeat2CodeRouteImport.update({
-    id: '/book/chapter/unit/listen-repeat2/$code',
-    path: '/book/chapter/unit/listen-repeat2/$code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitListenCodeRoute =
-  BookChapterUnitListenCodeRouteImport.update({
-    id: '/book/chapter/unit/listen/$code',
-    path: '/book/chapter/unit/listen/$code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitMake_sentenceCodeRoute =
-  BookChapterUnitMake_sentenceCodeRouteImport.update({
-    id: '/book/chapter/unit/make_sentence/$code',
-    path: '/book/chapter/unit/make_sentence/$code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitMission_chatCodeRoute =
-  BookChapterUnitMission_chatCodeRouteImport.update({
-    id: '/book/chapter/unit/mission_chat/$code',
-    path: '/book/chapter/unit/mission_chat/$code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitReadWriteCodeRoute =
-  BookChapterUnitReadWriteCodeRouteImport.update({
-    id: '/book/chapter/unit/read-write/$code',
-    path: '/book/chapter/unit/read-write/$code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitWriteCodeRoute =
-  BookChapterUnitWriteCodeRouteImport.update({
-    id: '/book/chapter/unit/write/$code',
-    path: '/book/chapter/unit/write/$code',
+const BookChapterUnitWrite3CodeRoute =
+  BookChapterUnitWrite3CodeRouteImport.update({
+    id: '/book/chapter/unit/write3/$code',
+    path: '/book/chapter/unit/write3/$code',
     getParentRoute: () => rootRouteImport,
   } as any)
 const BookChapterUnitWrite2CodeRoute =
@@ -431,22 +378,75 @@ const BookChapterUnitWrite2CodeRoute =
     path: '/book/chapter/unit/write2/$code',
     getParentRoute: () => rootRouteImport,
   } as any)
-const BookChapterUnitWrite3CodeRoute =
-  BookChapterUnitWrite3CodeRouteImport.update({
-    id: '/book/chapter/unit/write3/$code',
-    path: '/book/chapter/unit/write3/$code',
+const BookChapterUnitWriteCodeRoute =
+  BookChapterUnitWriteCodeRouteImport.update({
+    id: '/book/chapter/unit/write/$code',
+    path: '/book/chapter/unit/write/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitReadWriteCodeRoute =
+  BookChapterUnitReadWriteCodeRouteImport.update({
+    id: '/book/chapter/unit/read-write/$code',
+    path: '/book/chapter/unit/read-write/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitMission_chatCodeRoute =
+  BookChapterUnitMission_chatCodeRouteImport.update({
+    id: '/book/chapter/unit/mission_chat/$code',
+    path: '/book/chapter/unit/mission_chat/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitMake_sentenceCodeRoute =
+  BookChapterUnitMake_sentenceCodeRouteImport.update({
+    id: '/book/chapter/unit/make_sentence/$code',
+    path: '/book/chapter/unit/make_sentence/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitListenCodeRoute =
+  BookChapterUnitListenCodeRouteImport.update({
+    id: '/book/chapter/unit/listen/$code',
+    path: '/book/chapter/unit/listen/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitListenRepeat2CodeRoute =
+  BookChapterUnitListenRepeat2CodeRouteImport.update({
+    id: '/book/chapter/unit/listen-repeat2/$code',
+    path: '/book/chapter/unit/listen-repeat2/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitListenRepeatCodeRoute =
+  BookChapterUnitListenRepeatCodeRouteImport.update({
+    id: '/book/chapter/unit/listen-repeat/$code',
+    path: '/book/chapter/unit/listen-repeat/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitInput_wordCodeRoute =
+  BookChapterUnitInput_wordCodeRouteImport.update({
+    id: '/book/chapter/unit/input_word/$code',
+    path: '/book/chapter/unit/input_word/$code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitFlashcardIdRoute =
+  BookChapterUnitFlashcardIdRouteImport.update({
+    id: '/book/chapter/unit/flashcard/$id',
+    path: '/book/chapter/unit/flashcard/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BookChapterUnitDialogIdRoute = BookChapterUnitDialogIdRouteImport.update({
+  id: '/book/chapter/unit/dialog/$id',
+  path: '/book/chapter/unit/dialog/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookChapterUnitFlashcardResultIdRoute =
+  BookChapterUnitFlashcardResultIdRouteImport.update({
+    id: '/book/chapter/unit/flashcard/result/$id',
+    path: '/book/chapter/unit/flashcard/result/$id',
     getParentRoute: () => rootRouteImport,
   } as any)
 const BookChapterUnitDialogReportIdRoute =
   BookChapterUnitDialogReportIdRouteImport.update({
     id: '/book/chapter/unit/dialog/report/$id',
     path: '/book/chapter/unit/dialog/report/$id',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BookChapterUnitFlashcardResultIdRoute =
-  BookChapterUnitFlashcardResultIdRouteImport.update({
-    id: '/book/chapter/unit/flashcard/result/$id',
-    path: '/book/chapter/unit/flashcard/result/$id',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -486,9 +486,9 @@ export interface FileRoutesByFullPath {
   '/test/realtime': typeof TestRealtimeRoute
   '/test/tts-regen': typeof TestTtsRegenRoute
   '/test/videos': typeof TestVideosRoute
-  '/book/': typeof BookIndexRoute
+  '/book': typeof BookIndexRoute
   '/main/': typeof MainIndexRoute
-  '/test/': typeof TestIndexRoute
+  '/test': typeof TestIndexRoute
   '/book/chapter/$id': typeof BookChapterIdRoute
   '/learn/jamo/choose': typeof LearnJamoChooseRoute
   '/learn/jamo/combine': typeof LearnJamoCombineRoute
@@ -705,9 +705,9 @@ export interface FileRouteTypes {
     | '/test/realtime'
     | '/test/tts-regen'
     | '/test/videos'
-    | '/book/'
+    | '/book'
     | '/main/'
-    | '/test/'
+    | '/test'
     | '/book/chapter/$id'
     | '/learn/jamo/choose'
     | '/learn/jamo/combine'
@@ -946,81 +946,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/check-email': {
-      id: '/check-email'
-      path: '/check-email'
-      fullPath: '/check-email'
-      preLoaderRoute: typeof CheckEmailRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/flashcard': {
-      id: '/flashcard'
-      path: '/flashcard'
-      fullPath: '/flashcard'
-      preLoaderRoute: typeof FlashcardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jamolist': {
-      id: '/jamolist'
-      path: '/jamolist'
-      fullPath: '/jamolist'
-      preLoaderRoute: typeof JamolistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/main': {
-      id: '/main'
-      path: '/main'
-      fullPath: '/main'
-      preLoaderRoute: typeof MainRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/missionchat': {
-      id: '/missionchat'
-      path: '/missionchat'
-      fullPath: '/missionchat'
-      preLoaderRoute: typeof MissionchatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-password': {
-      id: '/my-password'
-      path: '/my-password'
-      fullPath: '/my-password'
-      preLoaderRoute: typeof MyPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-profile': {
-      id: '/my-profile'
-      path: '/my-profile'
-      fullPath: '/my-profile'
-      preLoaderRoute: typeof MyProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/new-password': {
-      id: '/new-password'
-      path: '/new-password'
-      fullPath: '/new-password'
-      preLoaderRoute: typeof NewPasswordRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/qr': {
@@ -1030,88 +960,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QrRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
+    '/new-password': {
+      id: '/new-password'
+      path: '/new-password'
+      fullPath: '/new-password'
+      preLoaderRoute: typeof NewPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/book/': {
-      id: '/book/'
-      path: '/book'
-      fullPath: '/book/'
-      preLoaderRoute: typeof BookIndexRouteImport
+    '/my-profile': {
+      id: '/my-profile'
+      path: '/my-profile'
+      fullPath: '/my-profile'
+      preLoaderRoute: typeof MyProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/book/$id': {
-      id: '/book/$id'
-      path: '/book/$id'
-      fullPath: '/book/$id'
-      preLoaderRoute: typeof BookIdRouteImport
+    '/my-password': {
+      id: '/my-password'
+      path: '/my-password'
+      fullPath: '/my-password'
+      preLoaderRoute: typeof MyPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/book/list': {
-      id: '/book/list'
-      path: '/book/list'
-      fullPath: '/book/list'
-      preLoaderRoute: typeof BookListRouteImport
+    '/missionchat': {
+      id: '/missionchat'
+      path: '/missionchat'
+      fullPath: '/missionchat'
+      preLoaderRoute: typeof MissionchatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/fill-blank': {
-      id: '/learn/fill-blank'
-      path: '/learn/fill-blank'
-      fullPath: '/learn/fill-blank'
-      preLoaderRoute: typeof LearnFillBlankRouteImport
+    '/main': {
+      id: '/main'
+      path: '/main'
+      fullPath: '/main'
+      preLoaderRoute: typeof MainRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/grammar': {
-      id: '/learn/grammar'
-      path: '/learn/grammar'
-      fullPath: '/learn/grammar'
-      preLoaderRoute: typeof LearnGrammarRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/listen': {
-      id: '/learn/listen'
-      path: '/learn/listen'
-      fullPath: '/learn/listen'
-      preLoaderRoute: typeof LearnListenRouteImport
+    '/jamolist': {
+      id: '/jamolist'
+      path: '/jamolist'
+      fullPath: '/jamolist'
+      preLoaderRoute: typeof JamolistRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/listen-answer': {
-      id: '/learn/listen-answer'
-      path: '/learn/listen-answer'
-      fullPath: '/learn/listen-answer'
-      preLoaderRoute: typeof LearnListenAnswerRouteImport
+    '/flashcard': {
+      id: '/flashcard'
+      path: '/flashcard'
+      fullPath: '/flashcard'
+      preLoaderRoute: typeof FlashcardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/read': {
-      id: '/learn/read'
-      path: '/learn/read'
-      fullPath: '/learn/read'
-      preLoaderRoute: typeof LearnReadRouteImport
+    '/check-email': {
+      id: '/check-email'
+      path: '/check-email'
+      fullPath: '/check-email'
+      preLoaderRoute: typeof CheckEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/read-answer': {
-      id: '/learn/read-answer'
-      path: '/learn/read-answer'
-      fullPath: '/learn/read-answer'
-      preLoaderRoute: typeof LearnReadAnswerRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/roleplay': {
-      id: '/learn/roleplay'
-      path: '/learn/roleplay'
-      fullPath: '/learn/roleplay'
-      preLoaderRoute: typeof LearnRoleplayRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/word': {
-      id: '/learn/word'
-      path: '/learn/word'
-      fullPath: '/learn/word'
-      preLoaderRoute: typeof LearnWordRouteImport
+    '/test/': {
+      id: '/test/'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/main/': {
@@ -1121,88 +1051,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainIndexRouteImport
       parentRoute: typeof MainRoute
     }
-    '/main/clip': {
-      id: '/main/clip'
-      path: '/clip'
-      fullPath: '/main/clip'
-      preLoaderRoute: typeof MainClipRouteImport
-      parentRoute: typeof MainRoute
-    }
-    '/main/game': {
-      id: '/main/game'
-      path: '/game'
-      fullPath: '/main/game'
-      preLoaderRoute: typeof MainGameRouteImport
-      parentRoute: typeof MainRoute
-    }
-    '/main/my': {
-      id: '/main/my'
-      path: '/my'
-      fullPath: '/main/my'
-      preLoaderRoute: typeof MainMyRouteImport
-      parentRoute: typeof MainRoute
-    }
-    '/main/textbook': {
-      id: '/main/textbook'
-      path: '/textbook'
-      fullPath: '/main/textbook'
-      preLoaderRoute: typeof MainTextbookRouteImport
-      parentRoute: typeof MainRoute
-    }
-    '/test/': {
-      id: '/test/'
-      path: '/test'
-      fullPath: '/test/'
-      preLoaderRoute: typeof TestIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/$id': {
-      id: '/test/$id'
-      path: '/test/$id'
-      fullPath: '/test/$id'
-      preLoaderRoute: typeof TestIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/audio': {
-      id: '/test/audio'
-      path: '/test/audio'
-      fullPath: '/test/audio'
-      preLoaderRoute: typeof TestAudioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/boom': {
-      id: '/test/boom'
-      path: '/test/boom'
-      fullPath: '/test/boom'
-      preLoaderRoute: typeof TestBoomRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/debug': {
-      id: '/test/debug'
-      path: '/test/debug'
-      fullPath: '/test/debug'
-      preLoaderRoute: typeof TestDebugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/flashcard': {
-      id: '/test/flashcard'
-      path: '/test/flashcard'
-      fullPath: '/test/flashcard'
-      preLoaderRoute: typeof TestFlashcardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/realtime': {
-      id: '/test/realtime'
-      path: '/test/realtime'
-      fullPath: '/test/realtime'
-      preLoaderRoute: typeof TestRealtimeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/tts-regen': {
-      id: '/test/tts-regen'
-      path: '/test/tts-regen'
-      fullPath: '/test/tts-regen'
-      preLoaderRoute: typeof TestTtsRegenRouteImport
+    '/book/': {
+      id: '/book/'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof BookIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/test/videos': {
@@ -1212,54 +1065,159 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestVideosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/book/chapter/$id': {
-      id: '/book/chapter/$id'
-      path: '/book/chapter/$id'
-      fullPath: '/book/chapter/$id'
-      preLoaderRoute: typeof BookChapterIdRouteImport
+    '/test/tts-regen': {
+      id: '/test/tts-regen'
+      path: '/test/tts-regen'
+      fullPath: '/test/tts-regen'
+      preLoaderRoute: typeof TestTtsRegenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/jamo/choose': {
-      id: '/learn/jamo/choose'
-      path: '/learn/jamo/choose'
-      fullPath: '/learn/jamo/choose'
-      preLoaderRoute: typeof LearnJamoChooseRouteImport
+    '/test/realtime': {
+      id: '/test/realtime'
+      path: '/test/realtime'
+      fullPath: '/test/realtime'
+      preLoaderRoute: typeof TestRealtimeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/jamo/combine': {
-      id: '/learn/jamo/combine'
-      path: '/learn/jamo/combine'
-      fullPath: '/learn/jamo/combine'
-      preLoaderRoute: typeof LearnJamoCombineRouteImport
+    '/test/flashcard': {
+      id: '/test/flashcard'
+      path: '/test/flashcard'
+      fullPath: '/test/flashcard'
+      preLoaderRoute: typeof TestFlashcardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/jamo/combine3': {
-      id: '/learn/jamo/combine3'
-      path: '/learn/jamo/combine3'
-      fullPath: '/learn/jamo/combine3'
-      preLoaderRoute: typeof LearnJamoCombine3RouteImport
+    '/test/debug': {
+      id: '/test/debug'
+      path: '/test/debug'
+      fullPath: '/test/debug'
+      preLoaderRoute: typeof TestDebugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/jamo/pronounce': {
-      id: '/learn/jamo/pronounce'
-      path: '/learn/jamo/pronounce'
-      fullPath: '/learn/jamo/pronounce'
-      preLoaderRoute: typeof LearnJamoPronounceRouteImport
+    '/test/boom': {
+      id: '/test/boom'
+      path: '/test/boom'
+      fullPath: '/test/boom'
+      preLoaderRoute: typeof TestBoomRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/jamo/word-repeat': {
-      id: '/learn/jamo/word-repeat'
-      path: '/learn/jamo/word-repeat'
-      fullPath: '/learn/jamo/word-repeat'
-      preLoaderRoute: typeof LearnJamoWordRepeatRouteImport
+    '/test/audio': {
+      id: '/test/audio'
+      path: '/test/audio'
+      fullPath: '/test/audio'
+      preLoaderRoute: typeof TestAudioRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/jamo/word-write': {
-      id: '/learn/jamo/word-write'
-      path: '/learn/jamo/word-write'
-      fullPath: '/learn/jamo/word-write'
-      preLoaderRoute: typeof LearnJamoWordWriteRouteImport
+    '/test/$id': {
+      id: '/test/$id'
+      path: '/test/$id'
+      fullPath: '/test/$id'
+      preLoaderRoute: typeof TestIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/main/textbook': {
+      id: '/main/textbook'
+      path: '/textbook'
+      fullPath: '/main/textbook'
+      preLoaderRoute: typeof MainTextbookRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/my': {
+      id: '/main/my'
+      path: '/my'
+      fullPath: '/main/my'
+      preLoaderRoute: typeof MainMyRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/game': {
+      id: '/main/game'
+      path: '/game'
+      fullPath: '/main/game'
+      preLoaderRoute: typeof MainGameRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/clip': {
+      id: '/main/clip'
+      path: '/clip'
+      fullPath: '/main/clip'
+      preLoaderRoute: typeof MainClipRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/learn/word': {
+      id: '/learn/word'
+      path: '/learn/word'
+      fullPath: '/learn/word'
+      preLoaderRoute: typeof LearnWordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/roleplay': {
+      id: '/learn/roleplay'
+      path: '/learn/roleplay'
+      fullPath: '/learn/roleplay'
+      preLoaderRoute: typeof LearnRoleplayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/read-answer': {
+      id: '/learn/read-answer'
+      path: '/learn/read-answer'
+      fullPath: '/learn/read-answer'
+      preLoaderRoute: typeof LearnReadAnswerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/read': {
+      id: '/learn/read'
+      path: '/learn/read'
+      fullPath: '/learn/read'
+      preLoaderRoute: typeof LearnReadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/listen-answer': {
+      id: '/learn/listen-answer'
+      path: '/learn/listen-answer'
+      fullPath: '/learn/listen-answer'
+      preLoaderRoute: typeof LearnListenAnswerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/listen': {
+      id: '/learn/listen'
+      path: '/learn/listen'
+      fullPath: '/learn/listen'
+      preLoaderRoute: typeof LearnListenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/grammar': {
+      id: '/learn/grammar'
+      path: '/learn/grammar'
+      fullPath: '/learn/grammar'
+      preLoaderRoute: typeof LearnGrammarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/fill-blank': {
+      id: '/learn/fill-blank'
+      path: '/learn/fill-blank'
+      fullPath: '/learn/fill-blank'
+      preLoaderRoute: typeof LearnFillBlankRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/list': {
+      id: '/book/list'
+      path: '/book/list'
+      fullPath: '/book/list'
+      preLoaderRoute: typeof BookListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/$id': {
+      id: '/book/$id'
+      path: '/book/$id'
+      fullPath: '/book/$id'
+      preLoaderRoute: typeof BookIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/main/textbook/': {
+      id: '/main/textbook/'
+      path: '/'
+      fullPath: '/main/textbook/'
+      preLoaderRoute: typeof MainTextbookIndexRouteImport
+      parentRoute: typeof MainTextbookRoute
     }
     '/main/game/': {
       id: '/main/game/'
@@ -1268,39 +1226,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainGameIndexRouteImport
       parentRoute: typeof MainGameRoute
     }
-    '/main/game/card-sort': {
-      id: '/main/game/card-sort'
-      path: '/card-sort'
-      fullPath: '/main/game/card-sort'
-      preLoaderRoute: typeof MainGameCardSortRouteImport
-      parentRoute: typeof MainGameRoute
+    '/main/textbook/jamo': {
+      id: '/main/textbook/jamo'
+      path: '/jamo'
+      fullPath: '/main/textbook/jamo'
+      preLoaderRoute: typeof MainTextbookJamoRouteImport
+      parentRoute: typeof MainTextbookRoute
     }
-    '/main/game/missionchat': {
-      id: '/main/game/missionchat'
-      path: '/missionchat'
-      fullPath: '/main/game/missionchat'
-      preLoaderRoute: typeof MainGameMissionchatRouteImport
-      parentRoute: typeof MainGameRoute
-    }
-    '/main/game/particle-sniper': {
-      id: '/main/game/particle-sniper'
-      path: '/particle-sniper'
-      fullPath: '/main/game/particle-sniper'
-      preLoaderRoute: typeof MainGameParticleSniperRouteImport
-      parentRoute: typeof MainGameRoute
-    }
-    '/main/game/seoul-puzzle': {
-      id: '/main/game/seoul-puzzle'
-      path: '/seoul-puzzle'
-      fullPath: '/main/game/seoul-puzzle'
-      preLoaderRoute: typeof MainGameSeoulPuzzleRouteImport
-      parentRoute: typeof MainGameRoute
-    }
-    '/main/game/spring-picnic': {
-      id: '/main/game/spring-picnic'
-      path: '/spring-picnic'
-      fullPath: '/main/game/spring-picnic'
-      preLoaderRoute: typeof MainGameSpringPicnicRouteImport
+    '/main/game/vocashot-solo': {
+      id: '/main/game/vocashot-solo'
+      path: '/vocashot-solo'
+      fullPath: '/main/game/vocashot-solo'
+      preLoaderRoute: typeof MainGameVocashotSoloRouteImport
       parentRoute: typeof MainGameRoute
     }
     '/main/game/vocashot': {
@@ -1310,32 +1247,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainGameVocashotRouteImport
       parentRoute: typeof MainGameRoute
     }
-    '/main/game/vocashot-solo': {
-      id: '/main/game/vocashot-solo'
-      path: '/vocashot-solo'
-      fullPath: '/main/game/vocashot-solo'
-      preLoaderRoute: typeof MainGameVocashotSoloRouteImport
+    '/main/game/spring-picnic': {
+      id: '/main/game/spring-picnic'
+      path: '/spring-picnic'
+      fullPath: '/main/game/spring-picnic'
+      preLoaderRoute: typeof MainGameSpringPicnicRouteImport
       parentRoute: typeof MainGameRoute
     }
-    '/main/textbook/': {
-      id: '/main/textbook/'
-      path: '/'
-      fullPath: '/main/textbook/'
-      preLoaderRoute: typeof MainTextbookIndexRouteImport
-      parentRoute: typeof MainTextbookRoute
+    '/main/game/seoul-puzzle': {
+      id: '/main/game/seoul-puzzle'
+      path: '/seoul-puzzle'
+      fullPath: '/main/game/seoul-puzzle'
+      preLoaderRoute: typeof MainGameSeoulPuzzleRouteImport
+      parentRoute: typeof MainGameRoute
     }
-    '/main/textbook/jamo': {
-      id: '/main/textbook/jamo'
-      path: '/jamo'
-      fullPath: '/main/textbook/jamo'
-      preLoaderRoute: typeof MainTextbookJamoRouteImport
-      parentRoute: typeof MainTextbookRoute
+    '/main/game/particle-sniper': {
+      id: '/main/game/particle-sniper'
+      path: '/particle-sniper'
+      fullPath: '/main/game/particle-sniper'
+      preLoaderRoute: typeof MainGameParticleSniperRouteImport
+      parentRoute: typeof MainGameRoute
     }
-    '/book/chapter/unit/$id': {
-      id: '/book/chapter/unit/$id'
-      path: '/book/chapter/unit/$id'
-      fullPath: '/book/chapter/unit/$id'
-      preLoaderRoute: typeof BookChapterUnitIdRouteImport
+    '/main/game/missionchat': {
+      id: '/main/game/missionchat'
+      path: '/missionchat'
+      fullPath: '/main/game/missionchat'
+      preLoaderRoute: typeof MainGameMissionchatRouteImport
+      parentRoute: typeof MainGameRoute
+    }
+    '/main/game/card-sort': {
+      id: '/main/game/card-sort'
+      path: '/card-sort'
+      fullPath: '/main/game/card-sort'
+      preLoaderRoute: typeof MainGameCardSortRouteImport
+      parentRoute: typeof MainGameRoute
+    }
+    '/learn/jamo/word-write': {
+      id: '/learn/jamo/word-write'
+      path: '/learn/jamo/word-write'
+      fullPath: '/learn/jamo/word-write'
+      preLoaderRoute: typeof LearnJamoWordWriteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/jamo/word-repeat': {
+      id: '/learn/jamo/word-repeat'
+      path: '/learn/jamo/word-repeat'
+      fullPath: '/learn/jamo/word-repeat'
+      preLoaderRoute: typeof LearnJamoWordRepeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/jamo/pronounce': {
+      id: '/learn/jamo/pronounce'
+      path: '/learn/jamo/pronounce'
+      fullPath: '/learn/jamo/pronounce'
+      preLoaderRoute: typeof LearnJamoPronounceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/jamo/combine3': {
+      id: '/learn/jamo/combine3'
+      path: '/learn/jamo/combine3'
+      fullPath: '/learn/jamo/combine3'
+      preLoaderRoute: typeof LearnJamoCombine3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/jamo/combine': {
+      id: '/learn/jamo/combine'
+      path: '/learn/jamo/combine'
+      fullPath: '/learn/jamo/combine'
+      preLoaderRoute: typeof LearnJamoCombineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/jamo/choose': {
+      id: '/learn/jamo/choose'
+      path: '/learn/jamo/choose'
+      fullPath: '/learn/jamo/choose'
+      preLoaderRoute: typeof LearnJamoChooseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/$id': {
+      id: '/book/chapter/$id'
+      path: '/book/chapter/$id'
+      fullPath: '/book/chapter/$id'
+      preLoaderRoute: typeof BookChapterIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/main/game/vocashot_/$pin': {
@@ -1345,81 +1338,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainGameVocashotPinRouteImport
       parentRoute: typeof MainGameRoute
     }
-    '/book/chapter/unit/dialog/$id': {
-      id: '/book/chapter/unit/dialog/$id'
-      path: '/book/chapter/unit/dialog/$id'
-      fullPath: '/book/chapter/unit/dialog/$id'
-      preLoaderRoute: typeof BookChapterUnitDialogIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/flashcard/$id': {
-      id: '/book/chapter/unit/flashcard/$id'
-      path: '/book/chapter/unit/flashcard/$id'
-      fullPath: '/book/chapter/unit/flashcard/$id'
-      preLoaderRoute: typeof BookChapterUnitFlashcardIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/input_word/$code': {
-      id: '/book/chapter/unit/input_word/$code'
-      path: '/book/chapter/unit/input_word/$code'
-      fullPath: '/book/chapter/unit/input_word/$code'
-      preLoaderRoute: typeof BookChapterUnitInput_wordCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/listen-repeat/$code': {
-      id: '/book/chapter/unit/listen-repeat/$code'
-      path: '/book/chapter/unit/listen-repeat/$code'
-      fullPath: '/book/chapter/unit/listen-repeat/$code'
-      preLoaderRoute: typeof BookChapterUnitListenRepeatCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/listen-repeat2/$code': {
-      id: '/book/chapter/unit/listen-repeat2/$code'
-      path: '/book/chapter/unit/listen-repeat2/$code'
-      fullPath: '/book/chapter/unit/listen-repeat2/$code'
-      preLoaderRoute: typeof BookChapterUnitListenRepeat2CodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/listen/$code': {
-      id: '/book/chapter/unit/listen/$code'
-      path: '/book/chapter/unit/listen/$code'
-      fullPath: '/book/chapter/unit/listen/$code'
-      preLoaderRoute: typeof BookChapterUnitListenCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/make_sentence/$code': {
-      id: '/book/chapter/unit/make_sentence/$code'
-      path: '/book/chapter/unit/make_sentence/$code'
-      fullPath: '/book/chapter/unit/make_sentence/$code'
-      preLoaderRoute: typeof BookChapterUnitMake_sentenceCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/mission_chat/$code': {
-      id: '/book/chapter/unit/mission_chat/$code'
-      path: '/book/chapter/unit/mission_chat/$code'
-      fullPath: '/book/chapter/unit/mission_chat/$code'
-      preLoaderRoute: typeof BookChapterUnitMission_chatCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/read-write/$code': {
-      id: '/book/chapter/unit/read-write/$code'
-      path: '/book/chapter/unit/read-write/$code'
-      fullPath: '/book/chapter/unit/read-write/$code'
-      preLoaderRoute: typeof BookChapterUnitReadWriteCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/write/$code': {
-      id: '/book/chapter/unit/write/$code'
-      path: '/book/chapter/unit/write/$code'
-      fullPath: '/book/chapter/unit/write/$code'
-      preLoaderRoute: typeof BookChapterUnitWriteCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book/chapter/unit/write2/$code': {
-      id: '/book/chapter/unit/write2/$code'
-      path: '/book/chapter/unit/write2/$code'
-      fullPath: '/book/chapter/unit/write2/$code'
-      preLoaderRoute: typeof BookChapterUnitWrite2CodeRouteImport
+    '/book/chapter/unit/$id': {
+      id: '/book/chapter/unit/$id'
+      path: '/book/chapter/unit/$id'
+      fullPath: '/book/chapter/unit/$id'
+      preLoaderRoute: typeof BookChapterUnitIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/book/chapter/unit/write3/$code': {
@@ -1429,11 +1352,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookChapterUnitWrite3CodeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/book/chapter/unit/dialog/report/$id': {
-      id: '/book/chapter/unit/dialog/report/$id'
-      path: '/book/chapter/unit/dialog/report/$id'
-      fullPath: '/book/chapter/unit/dialog/report/$id'
-      preLoaderRoute: typeof BookChapterUnitDialogReportIdRouteImport
+    '/book/chapter/unit/write2/$code': {
+      id: '/book/chapter/unit/write2/$code'
+      path: '/book/chapter/unit/write2/$code'
+      fullPath: '/book/chapter/unit/write2/$code'
+      preLoaderRoute: typeof BookChapterUnitWrite2CodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/write/$code': {
+      id: '/book/chapter/unit/write/$code'
+      path: '/book/chapter/unit/write/$code'
+      fullPath: '/book/chapter/unit/write/$code'
+      preLoaderRoute: typeof BookChapterUnitWriteCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/read-write/$code': {
+      id: '/book/chapter/unit/read-write/$code'
+      path: '/book/chapter/unit/read-write/$code'
+      fullPath: '/book/chapter/unit/read-write/$code'
+      preLoaderRoute: typeof BookChapterUnitReadWriteCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/mission_chat/$code': {
+      id: '/book/chapter/unit/mission_chat/$code'
+      path: '/book/chapter/unit/mission_chat/$code'
+      fullPath: '/book/chapter/unit/mission_chat/$code'
+      preLoaderRoute: typeof BookChapterUnitMission_chatCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/make_sentence/$code': {
+      id: '/book/chapter/unit/make_sentence/$code'
+      path: '/book/chapter/unit/make_sentence/$code'
+      fullPath: '/book/chapter/unit/make_sentence/$code'
+      preLoaderRoute: typeof BookChapterUnitMake_sentenceCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/listen/$code': {
+      id: '/book/chapter/unit/listen/$code'
+      path: '/book/chapter/unit/listen/$code'
+      fullPath: '/book/chapter/unit/listen/$code'
+      preLoaderRoute: typeof BookChapterUnitListenCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/listen-repeat2/$code': {
+      id: '/book/chapter/unit/listen-repeat2/$code'
+      path: '/book/chapter/unit/listen-repeat2/$code'
+      fullPath: '/book/chapter/unit/listen-repeat2/$code'
+      preLoaderRoute: typeof BookChapterUnitListenRepeat2CodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/listen-repeat/$code': {
+      id: '/book/chapter/unit/listen-repeat/$code'
+      path: '/book/chapter/unit/listen-repeat/$code'
+      fullPath: '/book/chapter/unit/listen-repeat/$code'
+      preLoaderRoute: typeof BookChapterUnitListenRepeatCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/input_word/$code': {
+      id: '/book/chapter/unit/input_word/$code'
+      path: '/book/chapter/unit/input_word/$code'
+      fullPath: '/book/chapter/unit/input_word/$code'
+      preLoaderRoute: typeof BookChapterUnitInput_wordCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/flashcard/$id': {
+      id: '/book/chapter/unit/flashcard/$id'
+      path: '/book/chapter/unit/flashcard/$id'
+      fullPath: '/book/chapter/unit/flashcard/$id'
+      preLoaderRoute: typeof BookChapterUnitFlashcardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/dialog/$id': {
+      id: '/book/chapter/unit/dialog/$id'
+      path: '/book/chapter/unit/dialog/$id'
+      fullPath: '/book/chapter/unit/dialog/$id'
+      preLoaderRoute: typeof BookChapterUnitDialogIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/book/chapter/unit/flashcard/result/$id': {
@@ -1441,6 +1434,13 @@ declare module '@tanstack/react-router' {
       path: '/book/chapter/unit/flashcard/result/$id'
       fullPath: '/book/chapter/unit/flashcard/result/$id'
       preLoaderRoute: typeof BookChapterUnitFlashcardResultIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/chapter/unit/dialog/report/$id': {
+      id: '/book/chapter/unit/dialog/report/$id'
+      path: '/book/chapter/unit/dialog/report/$id'
+      fullPath: '/book/chapter/unit/dialog/report/$id'
+      preLoaderRoute: typeof BookChapterUnitDialogReportIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
