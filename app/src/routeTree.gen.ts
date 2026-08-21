@@ -41,9 +41,11 @@ import { Route as LearnWordRouteImport } from './routes/learn/word'
 import { Route as LearnRoleplayRouteImport } from './routes/learn/roleplay'
 import { Route as LearnReadAnswerRouteImport } from './routes/learn/read-answer'
 import { Route as LearnReadRouteImport } from './routes/learn/read'
+import { Route as LearnMissionChatRouteImport } from './routes/learn/mission-chat'
 import { Route as LearnListenAnswerRouteImport } from './routes/learn/listen-answer'
 import { Route as LearnListenRouteImport } from './routes/learn/listen'
 import { Route as LearnGrammarRouteImport } from './routes/learn/grammar'
+import { Route as LearnFlashcardRouteImport } from './routes/learn/flashcard'
 import { Route as LearnFillBlankRouteImport } from './routes/learn/fill-blank'
 import { Route as BookListRouteImport } from './routes/book/list'
 import { Route as BookIdRouteImport } from './routes/book/$id'
@@ -241,6 +243,11 @@ const LearnReadRoute = LearnReadRouteImport.update({
   path: '/learn/read',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearnMissionChatRoute = LearnMissionChatRouteImport.update({
+  id: '/learn/mission-chat',
+  path: '/learn/mission-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LearnListenAnswerRoute = LearnListenAnswerRouteImport.update({
   id: '/learn/listen-answer',
   path: '/learn/listen-answer',
@@ -254,6 +261,11 @@ const LearnListenRoute = LearnListenRouteImport.update({
 const LearnGrammarRoute = LearnGrammarRouteImport.update({
   id: '/learn/grammar',
   path: '/learn/grammar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnFlashcardRoute = LearnFlashcardRouteImport.update({
+  id: '/learn/flashcard',
+  path: '/learn/flashcard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnFillBlankRoute = LearnFillBlankRouteImport.update({
@@ -467,9 +479,11 @@ export interface FileRoutesByFullPath {
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
+  '/learn/flashcard': typeof LearnFlashcardRoute
   '/learn/grammar': typeof LearnGrammarRoute
   '/learn/listen': typeof LearnListenRoute
   '/learn/listen-answer': typeof LearnListenAnswerRoute
+  '/learn/mission-chat': typeof LearnMissionChatRoute
   '/learn/read': typeof LearnReadRoute
   '/learn/read-answer': typeof LearnReadAnswerRoute
   '/learn/roleplay': typeof LearnRoleplayRoute
@@ -539,9 +553,11 @@ export interface FileRoutesByTo {
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
+  '/learn/flashcard': typeof LearnFlashcardRoute
   '/learn/grammar': typeof LearnGrammarRoute
   '/learn/listen': typeof LearnListenRoute
   '/learn/listen-answer': typeof LearnListenAnswerRoute
+  '/learn/mission-chat': typeof LearnMissionChatRoute
   '/learn/read': typeof LearnReadRoute
   '/learn/read-answer': typeof LearnReadAnswerRoute
   '/learn/roleplay': typeof LearnRoleplayRoute
@@ -611,9 +627,11 @@ export interface FileRoutesById {
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
+  '/learn/flashcard': typeof LearnFlashcardRoute
   '/learn/grammar': typeof LearnGrammarRoute
   '/learn/listen': typeof LearnListenRoute
   '/learn/listen-answer': typeof LearnListenAnswerRoute
+  '/learn/mission-chat': typeof LearnMissionChatRoute
   '/learn/read': typeof LearnReadRoute
   '/learn/read-answer': typeof LearnReadAnswerRoute
   '/learn/roleplay': typeof LearnRoleplayRoute
@@ -686,9 +704,11 @@ export interface FileRouteTypes {
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
+    | '/learn/flashcard'
     | '/learn/grammar'
     | '/learn/listen'
     | '/learn/listen-answer'
+    | '/learn/mission-chat'
     | '/learn/read'
     | '/learn/read-answer'
     | '/learn/roleplay'
@@ -758,9 +778,11 @@ export interface FileRouteTypes {
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
+    | '/learn/flashcard'
     | '/learn/grammar'
     | '/learn/listen'
     | '/learn/listen-answer'
+    | '/learn/mission-chat'
     | '/learn/read'
     | '/learn/read-answer'
     | '/learn/roleplay'
@@ -829,9 +851,11 @@ export interface FileRouteTypes {
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
+    | '/learn/flashcard'
     | '/learn/grammar'
     | '/learn/listen'
     | '/learn/listen-answer'
+    | '/learn/mission-chat'
     | '/learn/read'
     | '/learn/read-answer'
     | '/learn/roleplay'
@@ -903,9 +927,11 @@ export interface RootRouteChildren {
   BookIdRoute: typeof BookIdRoute
   BookListRoute: typeof BookListRoute
   LearnFillBlankRoute: typeof LearnFillBlankRoute
+  LearnFlashcardRoute: typeof LearnFlashcardRoute
   LearnGrammarRoute: typeof LearnGrammarRoute
   LearnListenRoute: typeof LearnListenRoute
   LearnListenAnswerRoute: typeof LearnListenAnswerRoute
+  LearnMissionChatRoute: typeof LearnMissionChatRoute
   LearnReadRoute: typeof LearnReadRoute
   LearnReadAnswerRoute: typeof LearnReadAnswerRoute
   LearnRoleplayRoute: typeof LearnRoleplayRoute
@@ -1170,6 +1196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnReadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn/mission-chat': {
+      id: '/learn/mission-chat'
+      path: '/learn/mission-chat'
+      fullPath: '/learn/mission-chat'
+      preLoaderRoute: typeof LearnMissionChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/learn/listen-answer': {
       id: '/learn/listen-answer'
       path: '/learn/listen-answer'
@@ -1189,6 +1222,13 @@ declare module '@tanstack/react-router' {
       path: '/learn/grammar'
       fullPath: '/learn/grammar'
       preLoaderRoute: typeof LearnGrammarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/flashcard': {
+      id: '/learn/flashcard'
+      path: '/learn/flashcard'
+      fullPath: '/learn/flashcard'
+      preLoaderRoute: typeof LearnFlashcardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn/fill-blank': {
@@ -1523,9 +1563,11 @@ const rootRouteChildren: RootRouteChildren = {
   BookIdRoute: BookIdRoute,
   BookListRoute: BookListRoute,
   LearnFillBlankRoute: LearnFillBlankRoute,
+  LearnFlashcardRoute: LearnFlashcardRoute,
   LearnGrammarRoute: LearnGrammarRoute,
   LearnListenRoute: LearnListenRoute,
   LearnListenAnswerRoute: LearnListenAnswerRoute,
+  LearnMissionChatRoute: LearnMissionChatRoute,
   LearnReadRoute: LearnReadRoute,
   LearnReadAnswerRoute: LearnReadAnswerRoute,
   LearnRoleplayRoute: LearnRoleplayRoute,

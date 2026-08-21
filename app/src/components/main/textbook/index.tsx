@@ -305,18 +305,29 @@ export default function TextbookContent() {
 
 	const handleModuleClick = (id: string) => {
 		if (id === "flashcard") {
+			// 신 경로는 급·과만 받는다 — 세트는 그쪽에서 찾는다 (명세 §4)
 			if (currentFlashcard) {
 				navigate({
-					to: `/book/chapter/unit/flashcard/${currentFlashcard.id}`,
+					to: "/learn/flashcard",
+					search: {
+						level: activeBookTab as number,
+						lesson: selectedChapter?.seq,
+					},
 				});
 			}
 			return;
 		}
 
 		if (id === "mission-chat") {
-			const code = findModuleCode("mission_chat");
-			if (code) {
-				navigate({ to: `/book/chapter/unit/mission_chat/${code}` });
+			// 신 경로는 급·과만 받는다 — 모듈은 그쪽에서 찾는다 (명세 §4)
+			if (findModuleCode("mission_chat")) {
+				navigate({
+					to: "/learn/mission-chat",
+					search: {
+						level: activeBookTab as number,
+						lesson: selectedChapter?.seq,
+					},
+				});
 			}
 			return;
 		}
