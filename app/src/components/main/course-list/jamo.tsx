@@ -1,5 +1,6 @@
 import BookTabs from "@/components/main/textbook/book-tabs";
 import ChapterChips from "@/components/main/textbook/chapter-chips";
+import { buildBookTabs } from "@/components/main/textbook/labels";
 import { ActRow, ChapterHead } from "@/components/main/textbook/module-list";
 import { books } from "@/shared/data/book";
 import { chapters } from "@/shared/data/chapter";
@@ -23,18 +24,9 @@ export default function Jamo() {
 
 	// --- Derived data ---
 
-	// Same book tabs as textbook: "한글" + all books
-	const bookTabs = useMemo(() => {
-		const hasJamo = chapters.some((ch) => ch.type === "jamo");
-		const tabs: { id: number | "jamo"; label: string }[] = [];
-		if (hasJamo) {
-			tabs.push({ id: "jamo", label: "한글" });
-		}
-		for (const book of books) {
-			tabs.push({ id: book.id, label: book.title });
-		}
-		return tabs;
-	}, []);
+	// 급 탭 — 교재학습과 같은 것을 쓴다 (labels.ts).
+	// 여기가 각자 만들고 있어서 "1권" 이 남아 있었다.
+	const bookTabs = useMemo(() => buildBookTabs(t), [t]);
 
 	// Jamo uses book 1 for now (first book with jamo chapters)
 	const effectiveBookId = useMemo(() => {
@@ -53,9 +45,9 @@ export default function Jamo() {
 	const chapterChips = useMemo(() => {
 		return filteredChapters.map((ch) => ({
 			id: ch.seq,
-			label: `${ch.seq}과`,
+			label: t("catalog.chapterChip", { seq: ch.seq }),
 		}));
-	}, [filteredChapters]);
+	}, [filteredChapters, t]);
 
 	// Effective chapter seq
 	const effectiveChapterSeq = useMemo(() => {

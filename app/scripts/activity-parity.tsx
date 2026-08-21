@@ -62,7 +62,20 @@ import {
 	WordFocus,
 	WordPicture,
 } from "@/components/main/activity/stimulus";
+import BookTabs from "@/components/main/textbook/book-tabs";
+import ChapterChips from "@/components/main/textbook/chapter-chips";
+import {
+	ACT_SECTIONS,
+	actLabel,
+	buildBookTabs,
+	buildChapterChips,
+} from "@/components/main/textbook/labels";
+import ModuleList, {
+	ChapterHead,
+	type ModuleState,
+} from "@/components/main/textbook/module-list";
 import { WordPreviewList } from "@/components/main/activity/word-preview";
+import { chapters } from "@/shared/data/chapter";
 import i18n from "@/i18n";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -579,6 +592,70 @@ function IconVolumeInline() {
 		</svg>
 	);
 }
+
+/*
+ * 교재학습 목록 — 목업 nav__book__resume 과 대조한다.
+ *
+ * 목업은 표본이라 탭 4개·과 7개만 담고 과 제목도 "가족" 이다(실제 1급 6과는
+ * 다른 제목이다). 그래서 목업이 담은 만큼만 그려 놓고 대조한다 — 확인하는 것은
+ * 목록의 개수가 아니라 마크업 모양과 라벨이다. 라벨은 labels.ts 의 같은 함수로
+ * 만들므로, 급/권 처럼 어긋나면 여기서 잡힌다.
+ *
+ * 탭 바는 이 컴포넌트가 그리지 않는다(레이아웃이 그린다). 목업 캡처에는 들어
+ * 있으므로 대조 쪽에서 뺀다 — activity-parity-diff.py 의 drop_tabbar.
+ */
+const NAV_ACT_STATE: Record<string, ModuleState> = {
+	word: "done",
+	roleplay: "review",
+	"listen-answer": "doing",
+	"fill-blank": "none",
+	"read-answer": "off",
+	"mission-chat": "doing",
+	flashcard: "doing",
+};
+
+function NavBookScreen() {
+	// i18n.t 는 옵션을 받으면 상세 결과 타입도 낼 수 있어 문자열로 좁힌다
+	const t = (key: string, opts?: Record<string, unknown>) =>
+		String(i18n.t(key, opts as never));
+	const book1 = chapters
+		.filter((ch) => ch.book_id === 1 && ch.type !== "jamo")
+		.sort((a, b) => a.seq - b.seq)
+		.slice(0, 6); // 목업이 담은 4과~9과
+	return (
+		<>
+			<div className="catalog-nav">
+				<BookTabs
+					tabs={buildBookTabs(t).slice(0, 4)}
+					activeId={1}
+					onSelect={() => {}}
+				/>
+				<ChapterChips
+					chips={buildChapterChips(book1, t)}
+					activeId={book1[2].id}
+					onSelect={() => {}}
+				/>
+			</div>
+			<div className="scroll catalog-scroll">
+				<ChapterHead seq={6} title="가족" />
+				<ModuleList
+					sections={ACT_SECTIONS.map((sec) => ({
+						label: t(sec.labelKey),
+						modules: sec.actIds.map((id) => ({
+							id,
+							title: actLabel(t, id),
+							state: NAV_ACT_STATE[id],
+							...(id === "roleplay" ? { reviewCount: 2 } : {}),
+						})),
+					}))}
+					onModuleClick={() => {}}
+				/>
+			</div>
+		</>
+	);
+}
+
+SCREENS.nav__book__resume = <NavBookScreen />;
 
 const outDir = join(
 	dirname(fileURLToPath(import.meta.url)),

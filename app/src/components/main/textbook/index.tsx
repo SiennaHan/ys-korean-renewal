@@ -27,6 +27,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BookTabs from "./book-tabs";
 import ChapterChips from "./chapter-chips";
+import { buildBookTabs, buildChapterChips } from "./labels";
 import ModuleList, {
 	type ModuleSection,
 	type ModuleState,
@@ -47,26 +48,8 @@ export default function TextbookContent() {
 
 	// --- Derived data ---
 
-	// Build book tabs: "한글" + all books
-	const bookTabs = useMemo(() => {
-		const hasJamo = chapters.some((ch) => ch.type === "jamo");
-		const tabs: { id: number | "jamo"; label: string }[] = [];
-		if (hasJamo) {
-			tabs.push({ id: "jamo", label: t("catalog.jamoTab") });
-		}
-		for (const book of books) {
-			/*
-			 * book.title 은 "1권" 이다. 화면에는 급으로 쓴다 — 목업이 급이고
-			 * 앱의 다른 곳도 급으로 부른다(i18n 의 "{{level}}급 {{lesson}}과").
-			 * book_id 는 DB 값이라 그대로 두고 표시만 바꾼다.
-			 */
-			tabs.push({
-				id: book.id,
-				label: t("catalog.bookTab", { level: book.seq }),
-			});
-		}
-		return tabs;
-	}, [t]);
+	// 급 탭 — 자모 목록과 같은 것을 쓴다 (labels.ts)
+	const bookTabs = useMemo(() => buildBookTabs(t), [t]);
 
 	// Filter chapters by selected book tab
 	const filteredChapters = useMemo(() => {
@@ -78,13 +61,11 @@ export default function TextbookContent() {
 		);
 	}, [activeBookTab]);
 
-	// Chapter chips
-	const chapterChips = useMemo(() => {
-		return filteredChapters.map((ch) => ({
-			id: ch.id,
-			label: t("catalog.chapterChip", { seq: ch.seq }),
-		}));
-	}, [filteredChapters, t]);
+	// 과 칩 — 자모 목록과 같은 것을 쓴다
+	const chapterChips = useMemo(
+		() => buildChapterChips(filteredChapters, t),
+		[filteredChapters, t],
+	);
 
 	// Auto-select first chapter when book changes
 	const selectedChapterId = useMemo(() => {

@@ -258,6 +258,17 @@
 </div>
 
 <h2><span class="n">07</span>어긋난 것 — 목업이 기준이다</h2>
+<div class="callout good">
+  <div class="t">1 · 2 · 3 은 고쳤다 (2026-08-21)</div>
+  <p>급 라벨과 문구 아홉을 <span class="file">i18n</span> 으로 옮겼고 이미 있던 키 둘을 쓰게 했다.
+  <b>고치다 보니 같은 버그가 두 곳이었다</b> — 자모 목록(<span class="file">course-list/jamo.tsx</span>)이
+  급 탭을 따로 만들고 있어서 거기는 <span class="file">"1권"</span> 이 그대로 남아 있었다.
+  두 화면이 쓰는 라벨을 <span class="file">textbook/labels.ts</span> 한 곳으로 모아
+  다시 갈라지지 않게 했다.</p>
+  <p><b>그리고 §10 의 2번을 해서 이 화면이 목업 대조에 들어갔다</b>(23화면).
+  같은 어긋남이 다시 나면 <span class="file">pnpm parity:activity</span> 가 잡는다 —
+  실제로 급을 권으로 되돌려 보니 <span class="file">-'1급' +'1권'</span> 으로 잡혔다.</p>
+</div>
 <ol class="path">
   <li><div><div class="h">앱은 "1권", 목업은 "1급" <span class="pill stop">고쳐야 한다</span></div>
     <div class="d">탭 라벨을 <span class="file">book.title</span> 에서 그대로 가져오는데
@@ -342,10 +353,14 @@
 
 <h2><span class="n">10</span>만드는 순서</h2>
 <div class="cards">
-  <div class="card"><div class="k">1</div><div class="nm">문구 — 급 라벨과 아홉 문장</div>
-    <div class="d">§07 의 1·2·3. 서버를 기다리지 않고 지금 할 수 있다. 이미 있는 키 둘은 한 줄씩</div></div>
-  <div class="card"><div class="k">2</div><div class="nm">목업 대조에 nav 다섯 추가</div>
-    <div class="d">같은 실수를 다시 잡히게 만든다. 1번을 검증하는 수단이기도 하다</div></div>
+  <div class="card"><div class="k">1</div><div class="nm">문구 — 급 라벨과 아홉 문장 <span class="pill done">했다</span></div>
+    <div class="d">§07 의 1·2·3. 라벨을 <span class="file">labels.ts</span> 한 곳으로 모았다 —
+      자모 목록에 같은 버그가 남아 있던 것도 이때 잡혔다</div></div>
+  <div class="card"><div class="k">2</div><div class="nm">목업 대조에 이 화면 추가 <span class="pill done">했다</span></div>
+    <div class="d">22 → 23화면. <b>나머지 nav 넷은 아직</b> — 홈·자모 화면은 페이지 컴포넌트가
+      데이터를 스스로 받고 라우터 훅을 쓴다. 홈은 <span class="file">loading</span> 이 참으로 시작해
+      정적으로 그리면 스피너만 나온다. 활동 화면들처럼 <b>보여 주는 부분과 받아 오는 부분을
+      갈라야</b> 대조에 넣을 수 있다</div></div>
   <div class="card"><div class="k">3</div><div class="nm">flashcard · mission-chat 이관</div>
     <div class="d">§05 의 구 경로 둘. 이 화면이 실제로 여는 길이다</div></div>
   <div class="card"><div class="k">4</div><div class="nm">요청 셋 → 하나</div>

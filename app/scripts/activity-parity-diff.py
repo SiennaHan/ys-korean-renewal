@@ -18,6 +18,11 @@ IGNORED = {
     " -30 0 280 210 으로 넓혔다. 그려지는 크기는 max-width 를 같이 키워 그대로다",
     'aria-label 닫기': "목업이 스스로 갈렸다 — shell() 은 닫기, gapAppbar() 는 나가기."
     " 눈에 보이지 않는 글자라 i18n 이 정한 player.exit(나가기) 하나로 모았다",
+    "탭 바": "nav 화면의 목업 캡처에는 탭 바가 들어 있는데, 그 화면의 컴포넌트는"
+    " 탭 바를 그리지 않는다 — 레이아웃(routes/main.tsx)이 그린다. 그래서 뺀다",
+    "nav 목록 개수": "nav__book__resume 목업은 표본이라 탭 4개·과 6개만 담았고 과 제목도"
+    " 표본이다. 목업이 담은 만큼만 그려 대조한다 — 확인하는 것은 개수가 아니라"
+    " 마크업 모양과 라벨이다(라벨은 labels.ts 의 같은 함수로 만든다)",
 }
 # 위 aria-label 만 봐준다. 다른 aria-label 이 다르면 그대로 드러난다
 EXIT_LABELS = {"닫기", "나가기"}
@@ -80,6 +85,23 @@ def flat(html):
     return p.rows
 
 
+def drop_tabbar(rows):
+    """<nav class="tabbar"> 블록을 통째로 지운다 — 컴포넌트가 그리지 않는 부분이다"""
+    out, i = [], 0
+    while i < len(rows):
+        line = rows[i]
+        if line.strip().startswith('<nav class="tabbar"'):
+            indent = len(line) - len(line.lstrip())
+            j = i + 1
+            while j < len(rows) and (len(rows[j]) - len(rows[j].lstrip())) > indent:
+                j += 1
+            i = j
+            continue
+        out.append(line)
+        i += 1
+    return out
+
+
 def drop_single_progress(rows):
     """칸이 하나뿐인 진행막대 블록을 통째로 지운다"""
     out, i = [], 0
@@ -114,13 +136,20 @@ print()
 bad = 0
 for f in sorted(glob.glob(os.path.join(out, "*.html"))):
     name = os.path.basename(f)[:-5]
-    ref = os.path.join(mock, f"activity__{name}.html")
+    # 이름이 곧 캡처 이름인 것(nav__*)과 activity__ 가 붙는 것 둘 다 받는다
+    ref = os.path.join(mock, f"{name}.html")
+    if not os.path.exists(ref):
+        ref = os.path.join(mock, f"activity__{name}.html")
     if not os.path.exists(ref):
         print(f"✗ {name}: 목업 캡처가 없다")
         bad += 1
         continue
-    a = drop_single_progress(flat(open(ref, encoding="utf-8").read()))
-    b = drop_single_progress(flat(open(f, encoding="utf-8").read()))
+
+    def prep(html):
+        return drop_single_progress(drop_tabbar(flat(html)))
+
+    a = prep(open(ref, encoding="utf-8").read())
+    b = prep(open(f, encoding="utf-8").read())
     if a == b:
         print(f"✓ {name}")
         continue
