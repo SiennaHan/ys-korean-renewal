@@ -1,6 +1,9 @@
 # 연세 글로벌 한국어 — 리뉴얼
 
-학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 27개인데 **처음에 볼 것은 셋뿐이다.**
+학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 26개인데 **처음에 볼 것은 셋뿐이다.**
+
+무엇이 갖춰졌고 **무엇이 빠졌는지**는 `phase1/handoff_v2.html` **§01 덮개 지도**에 있다 —
+영역 × 산출물 표이고 **빈 칸이 곧 빠진 기획이다.**
 
 ## 처음 30분 — 이 셋만 순서대로
 
@@ -10,7 +13,7 @@
 | 2 | **`phase1/handoff_v2.html`** | 어디까지 됐고 무엇이 남았나. 문서 지도(§01)와 **목업을 일부러 벗어난 여섯 곳**(§03) |
 | 3 | **`phase1/Phase1_dev_spec_v1.html`** | 무엇을 만들라 — DB 신설 2종 · API · 라우트 · 셸 |
 
-나머지 24개는 **필요할 때 찾아 보는 참고서다.** 아래 표에서 물음으로 찾아라.
+나머지 23개는 **필요할 때 찾아 보는 참고서다.** 아래 표에서 물음으로 찾아라.
 
 ## 무엇을 알고 싶으면 어느 문서
 
@@ -26,7 +29,7 @@
 | 활동 12종이 각각 무엇이고 문항 스키마는 | `G1_activity_lineup_v2` · `G1_item_schema_proposal_v1` |
 | 자모 콘텐츠를 어떻게 저작하나 | `jamo_authoring_spec_v1` — **맨 위의 실측 정정을 먼저 읽어라** |
 | 게임·표현클립·MY 의 실측과 판단 | `games_asis_v1` · `games_polish_v1` · `home_asis_v1` |
-| VocaShot | `vocashot_solo_spec_v1`(명세) · `vocashot_play_uiux`(목업) · `vocashot_play_v1`(**도는 시제품**, 문항 1149개) |
+| VocaShot | `vocashot_solo_spec_v1`(명세) · `vocashot_play_uiux`(**문항 1149개로 도는 시제품**) |
 | 목업을 어떻게 읽나 | `mockup_read_v1` |
 | 리뉴얼 **전** 앱이 어땠나 (현행 as-is) | `app_asis_mockup_v1` — 인터랙티브 목업 |
 | 학습 한 바퀴가 어떻게 돌아야 하나 | `core_loop_mockup_v1` — "오답은 기록이 아니라 예약" 원칙이 여기서 나왔다 |
@@ -36,7 +39,7 @@
 `renewal_plan_v1`(Phase 1 작업 목록) · `handoff_v2`(현재 상태).
 **개발 착수에는 `Phase1_dev_spec_v1` 과 `handoff_v2` 만 있으면 된다.**
 
-목업이 여럿인데 **`_uiux` 가 붙은 것이 확정본이다.** 정본이 아닌 19개는
+목업이 여럿인데 **`_uiux` 가 붙은 것이 확정본이다.** 정본이 아닌 20개는
 `phase1/_superseded/` 로 옮겼다. 그 폴더의 `README.txt` 가 항목마다 **[대체됨]**(더 새 판이 있다)
 인지 **[근거]**(대체된 게 아니라 다른 문서의 주장을 받치는 산출물)인지 적는다.
 
@@ -50,7 +53,7 @@
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
 | `admin/` | 어드민. 이번 리뉴얼 범위 밖이다 |
-| `phase1/` | 기획·명세·목업 HTML 27개 + `_superseded/` 19개.<br>그 밖에 인계 메모 넷(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
+| `phase1/` | 기획·명세·목업 HTML 26개 + `_superseded/` 20개.<br>그 밖에 인계 메모 넷(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
 **지금 배포돼 있는 버전의 참고본**이다. 저장소에 없고(`.gitignore`) 대조용으로만 쓴다.
@@ -112,6 +115,19 @@ cd app && python3 scripts/build-content.py --check  # 쓰지 않고 차이만 �
 
 `app/src/shared/data/n*.json` 은 **산출물이다. 손으로 고치지 마라** — 다음 생성에서
 지워진다. 고칠 것은 원장(xlsx)이다. 자세한 것은 `app/src/shared/data/README.md`.
+
+### 문서 참조 검사
+
+```bash
+python3 phase1/check_docs.py
+```
+
+문서를 옮기거나 합치거나 절 번호를 바꿨을 때 **"다 고쳤다" 고 믿는 대신 이것을 돌린다.**
+문서 참조 · 절 인용 · 고아 · 옛 경로 넷을 검사하고 하나라도 끊어지면 **1 을 낸다.**
+
+이 저장소는 문서를 **이름과 절 번호로** 인용한다(절 인용이 358개다). 그래서 한 곳을
+옮기면 조용히 끊어지는 곳이 생긴다 — 실제로 문서를 못 치우고 쌓아 온 이유가 이거였다.
+만들자마자 끊어진 참조 둘을 잡았다.
 
 ## 결정이 사는 곳
 

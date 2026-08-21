@@ -118,11 +118,70 @@
 </header>
 
 <h2><span class="n">01</span>문서 지도 — 어느 것이 무엇에 답하나</h2>
-<p>문서가 27개다. <b>합칠 수 있는 것은 없다</b> — 재 보니 겹치는 것은 <b>어휘뿐이고
-답하는 질문이 다르다</b>. 예를 들어 <span class="file">Phase1_dev_spec_v1</span> 은
-<span class="file">G2_shell_and_state_spec_v1</span> 과 특징 토큰의 86%를 공유하지만
-<b>G2 를 절 번호로 여덟 번 인용한다</b>(§1 상태머신 · §3.1 · §3.4 · §6 · §8 접근성 · §9).
-합치면 그 인용이 갈 곳을 잃는다. 그래서 합치는 대신 <b>어느 것이 무엇에 답하는지</b>를 적는다.</p>
+<p>문서가 26개다. 아래 <b>덮개 지도</b>가 먼저다 —
+<b>빈 칸이 곧 빠진 기획이다.</b> 그 다음에 역할별 목록이 온다.</p>
+
+<h3>덮개 지도 — 어느 영역이 무엇을 갖췄나</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
+  <tbody>
+    <tr><td><b>활동 셸</b></td><td>G2 §1·3</td><td>Shell_component_spec_uiux · build_spec_uiux</td><td>shell_mockup_uiux</td><td>Phase1_dev_spec §2·5</td></tr>
+    <tr><td><b>활동 12종</b></td><td>G1_activity_lineup_v2</td><td>mockup_read_v1</td><td>activity_mockups_uiux</td><td>api_schema_v1 §1</td></tr>
+    <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>같은 문서 §3·4</td><td>activity_mockups_uiux</td><td><span class="pill open">라우트 통합 대기</span></td></tr>
+    <tr><td><b>홈·내비</b></td><td>home_asis_v1</td><td><span class="pill open">없음</span></td><td>nav_mockup_uiux</td><td>api_schema_v1 §4</td></tr>
+    <tr><td><b>교재학습</b></td><td>home_asis_v1 §3</td><td><span class="pill open">없음</span></td><td>nav_mockup_uiux</td><td><span class="pill open">없음</span></td></tr>
+    <tr><td><b>게임 5종</b></td><td>games_asis_v1 §1</td><td>games_polish_v1</td><td>game_screens_uiux</td><td>기존 API 로 충분</td></tr>
+    <tr><td><b>VocaShot</b></td><td>vocashot_solo_spec_v1</td><td>같은 문서 §5</td><td>vocashot_play_uiux</td><td>기존 API 로 충분</td></tr>
+    <tr><td><b>표현클립</b></td><td>games_asis_v1 §2</td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td><td><span class="pill open">없음</span></td></tr>
+    <tr><td><b>MY</b></td><td>my_learning_summary_v1</td><td>같은 문서 §4</td><td><span class="pill stop">없음</span></td><td>같은 문서 §4</td></tr>
+    <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>같은 문서 §04·05</td><td><span class="pill stop">없음</span></td><td>같은 문서 §05</td></tr>
+    <tr><td><b>콘텐츠 파이프</b></td><td>G1_item_schema_proposal_v1</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
+    <tr><td><b>다국어</b></td><td><span class="pill open">없음</span></td><td>G2 §4 · Phase1_dev_spec §6</td><td>—</td><td>—</td></tr>
+    <tr><td><b>접근성</b></td><td>—</td><td>G2 §7 · build_spec_uiux</td><td>—</td><td>—</td></tr>
+    <tr><td><b>오프라인·오류</b></td><td>—</td><td>G2 §6</td><td>build_spec §9</td><td>api_schema §5</td></tr>
+    <tr><td><b>알림·리텐션</b></td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td></tr>
+    <tr><td><b>어드민</b></td><td>renewal_plan_v0.2 §7</td><td colspan="3">이번 리뉴얼 <b>범위 밖</b>으로 선언됐다 — 의도된 공백이다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout warn">
+  <div class="t">빈 칸을 읽는 법 — 셋은 의도된 공백이고 넷은 아니다</div>
+  <p><b>의도된 것</b> — 어드민(범위 밖) · 자모 API(검수 뒤에 정함) ·
+  게임·VocaShot 의 API(기존 것으로 충분하다고 판정했다).</p>
+  <p><b>의도되지 않은 것 넷.</b>
+  ① <b>알림·리텐션이 한 줄도 없다.</b> 매일 오는 학습 앱인데 다시 오게 하는 장치를
+  아무 문서도 다루지 않는다. ② <b>표현클립</b>은 실측(games_asis §2)만 있고 명세도 목업도 없다 —
+  329편을 무료로 열기로 한 지금 유입의 첫 화면인데 그렇다.
+  ③ <b>MY·결제 화면의 목업이 없다.</b> 설계는 있고 그림이 없다.
+  ④ <b>교재학습 탭의 명세와 API 가 없다.</b> 활동으로 들어가는 유일한 길인데
+  실측 한 절(home_asis §3)에 얹혀 있다.</p>
+</div>
+
+<h3>합치는 것은 왜 안 하나 — 재 본 결과</h3>
+<p>"26개는 너무 많으니 합치자" 는 자연스러운 생각이라 실제로 재 봤다.
+<b>전체 1.5MB · 문서끼리의 절 인용 358개</b>다. 합치면 그 인용을 다시 매겨야 하고,
+그것이 이 저장소가 지금까지 문서를 못 치운 이유였다 —
+<span class="file">_superseded/README.txt</span> 가 "다른 문서가 아직 가리켜서 못 옮겼다" 고
+다섯 개를 적어 두고 있었다.</p>
+<p>덩치도 합치기에 맞지 않는다. <span class="file">game_screens_uiux</span> 혼자
+<b>432KB — 전체의 29%</b>이고 절 인용이 0 이다(화면 덤프라서 그렇다).
+어디에 합쳐도 그 문서를 읽을 수 없게 만든다.
+<span class="file">Shell_component_spec_uiux</span>(70) ·
+<span class="file">G2</span>(54) 는 둘이서 절 인용 124개를 지고 있어 위험이 가장 크다.</p>
+<div class="callout good">
+  <div class="t">그래서 합치는 대신 검사기를 만들었다</div>
+  <p><span class="file">python3 phase1/check_docs.py</span> — 문서 참조·절 인용·고아·옛 경로를
+  검사하고 하나라도 끊어지면 <b>1 을 낸다.</b> 문서를 옮기거나 합치거나 절 번호를 바꿀 때
+  "다 고쳤다" 고 믿는 대신 이것을 돌린다.</p>
+  <p>만들자마자 <b>실제로 끊어진 것 둘을 잡았다</b> — README 가 이미 옮긴
+  <span class="file">vocashot_play_v1</span> 을 아직 정본처럼 소개하고 있었고,
+  <span class="file">renewal_plan_v1</span> 이 <span class="file">vocashot_mockup_uiux</span> 를
+  옛 경로로 부르고 있었다. 사람 눈으로는 넘어갔던 것들이다.</p>
+  <p class="qa">앞으로 합칠 때도 이 순서다 — 합친다 → 검사기를 돌린다 → 0 이 나올 때까지 고친다.
+  검사기가 통과하면 인용이 갈 곳을 잃지 않았다는 뜻이다.</p>
+</div>
 
 <p class="qa">옛 판은 <span class="file">phase1/_superseded/</span> 로 옮겼다(일곱 개).
 그 폴더의 <span class="file">README.txt</span> 가 무엇이 무엇을 대체했는지 적는다.

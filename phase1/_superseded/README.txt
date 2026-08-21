@@ -52,7 +52,8 @@ activity_mockups_uiux_modular.html  ·  activity_mockups_uiux_unified.html
   vocashot_mockup_v1 · gamelist_mockup_v1 ·
   activity_mockups_uiux_editorial · activity_mockups_uiux_extended_compare
 shell_mockup_uiux 는 세 곳에서 참조하므로 남겨 두었다.
-vocashot_play_v1 은 옛 판이 아니다 — 문항 1149개로 실제로 도는 시제품이라 남긴다.
+vocashot_play_v1 은 처음에 "도는 시제품이니 남긴다" 고 적었는데 틀렸다.
+아래 08-21 항목을 봐라 — vocashot_play_uiux 도 도는 시제품이고 그쪽이 새 판이다.
 
 ── handoff_v1 (2026-08-21)
 
@@ -92,3 +93,13 @@ gamelist_mockup_v1   게임 목록 구조. games_asis_v1 §1d 의
 
 둘 다 대체된 것이 아니다 — 넘침을 실제로 그려서 확인한 결과물이고 그 결론은
 이미 부모 문서에 적혀 있다. 레이아웃을 다시 의심할 때만 열면 된다.
+
+── vocashot_play_v1 (2026-08-21)  [대체됨]
+
+vocashot_play_uiux 로 대체. 둘을 실제로 대조했다 — 86.8% 가 같고,
+_uiux 에만 있는 것은 레이저·타격 효과(defense-emitter · laser-beam ·
+impact-burst · playHitEffect)이며 v1 에만 있는 것은 없다. 즉 순수 추가분이다.
+문항 수는 둘 다 1149 개로 같다.
+
+처음에는 "도는 시제품이라 옛 판이 아니다" 고 판단했는데, _uiux 도 똑같이 도는
+시제품이라는 것을 절 제목이 완전히 같은 것을 보고 알았다. 짐작하지 말고 대조할 일이다.
