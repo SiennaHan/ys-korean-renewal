@@ -56,7 +56,7 @@
 <header class="doc">
   <div class="eyebrow">손볼 것 · 게임 넷</div>
   <h1>VocaShot 말고 나머지 — 무슨 게임이고, 무엇이 어긋나 있나</h1>
-  <p class="lead">as-is(<code>games_asis_v1.html</code>)는 <b>목록에서 보이는 것</b>만 옮겼다.
+  <p class="lead">as-is(<code>asis_v1.html</code>)는 <b>목록에서 보이는 것</b>만 옮겼다.
      이 문서는 게임 <b>안으로 들어가서</b> 규칙을 읽고, <b>고쳐야 할 것</b>을 적는다.
      한 게임씩 채워 나간다. 값은 전부 컴포넌트와 서버 모델 실측이다.</p>
 </header>
@@ -335,7 +335,7 @@ complete 그 장소 완료</pre>
   <div class="t">정한 것 ① — <b>저장을 붙인다</b>. 지금은 아무것도 남지 않는다</div>
   <p><code>game-progress</code>도, <code>localStorage</code>도 <b>쓰지 않는다</b>.
      점수 · 최고 콤보 · 등급이 <b>판이 끝나면 사라진다</b>.
-     그래서 목록 카드에도 <b>보여 줄 것이 없다</b>(<code>games_asis_v1.html</code> §1d).</p>
+     그래서 목록 카드에도 <b>보여 줄 것이 없다</b>(<code>asis_v1.html</code> §4d).</p>
   <p><b>붙이면 된다.</b> 저장 단위는 이미 화면에 있다 —
      <code>stage_id = "{급}_{과}"</code>, <code>score</code> = 그 판 점수.
      서버가 <code>max()</code>로 최고 점수를 유지하므로 <b>그냥 보내면 된다</b>.</p>
@@ -1029,7 +1029,7 @@ VocaShot   lv{급}           ← <b>새로 붙인다</b></pre>
 </div>
 <div class="callout stop">
   <div class="t">그러면 목록 카드 다섯이 <b>다 채워진다</b></div>
-  <p><code>games_asis_v1.html</code> §1d 에서 <b>둘은 설명이 남는다</b>고 했는데,
+  <p><code>asis_v1.html</code> §4d 에서 <b>둘은 설명이 남는다</b>고 했는데,
      카드 마스터·조사 스나이퍼에 저장을 붙이면 <b>다섯 다 진행을 쓸 수 있다</b>.</p>
   <p class="qa">그 목업의 "저장 안 하는 게임" 갈래는 <b>없어진다</b> —
      다만 <b>한 번도 안 한 게임</b>은 여전히 설명이 남는다. 갈래 자체는 유지된다.</p>

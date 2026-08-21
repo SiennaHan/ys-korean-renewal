@@ -1,0 +1,792 @@
+<meta charset="utf-8">
+<title>리뉴얼 전 앱 — 탭 다섯의 as-is 실측</title>
+<style>
+  :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
+    --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
+    --stop:#9a3f31; --stop-soft:#fbece9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb; --ink-3:#6f7887;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; } }
+  :root[data-theme="dark"] { --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb;
+    --ink-3:#6f7887; --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif}
+  main{max-width:900px;margin:0 auto;padding:46px 22px 96px}
+  header.doc{padding-bottom:22px;border-bottom:2px solid var(--accent);margin-bottom:10px}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    font-weight:800;margin-bottom:9px}
+  h1{font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:800;letter-spacing:-.015em}
+  .lead{color:var(--ink-2);margin:0;max-width:66ch}
+  .lead b{color:var(--ink)}
+  h2{font-size:19px;font-weight:800;margin:48px 0 4px}
+  h2 .n{color:var(--accent);margin-right:9px;font-variant-numeric:tabular-nums}
+  h3{font-size:15px;font-weight:700;margin:26px 0 3px}
+  p{margin:9px 0}
+  .qa{color:var(--ink-3);font-size:13px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+    background:var(--bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;overflow-x:auto;margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;margin:10px 0 5px;font-size:13px}
+  th{text-align:left;font-size:11px;letter-spacing:.05em;color:var(--ink-3);font-weight:800;
+    padding:7px 9px 5px;border-bottom:2px solid var(--line);white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  td code{white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .callout.stop{border-left-color:var(--stop)}
+  .callout .t{font-weight:800;font-size:13.5px;margin-bottom:4px}
+  .callout.stop .t{color:var(--stop)}
+  .callout p{font-size:14px;margin:6px 0}
+  ul,ol{padding-left:21px;margin:9px 0} li{margin:5px 0;font-size:14.5px}
+  li::marker{color:var(--ink-3)}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
+    border:1px solid rgba(0,0,0,.14);vertical-align:-1px;margin-right:5px}
+</style>
+
+<main>
+<header class="doc">
+  <div class="eyebrow">as-is 실측 · 리뉴얼 전</div>
+  <h1>리뉴얼 전 앱 — 탭 다섯</h1>
+  <div class="meta">2026-08-21 · <b>두 문서를 합친 것이다</b> —
+    <span class="file">_superseded/home_asis_v1</span>(홈 · 교재학습)와
+    <span class="file">_superseded/games_asis_v1</span>(게임 · 표현클립 · MY).
+    같은 질문("리뉴얼 전이 어땠나")에 답하면서 탭만 나눠 갖고 있었다.
+    <b>탭 바 순서대로 걷는다</b> — 홈(§2) · 교재학습(§3) · 게임(§4) · 표현클립(§5) · MY(§6).
+    <br>옛 절 번호를 인용하던 곳은 함께 고쳤다:
+    게임 §1→<b>§4</b> · §1b→<b>§4b</b> · §1d→<b>§4d</b> · 표현클립 §2→<b>§5</b> ·
+    판단할 것 §4→<b>§8</b>. 교재학습 §3 은 번호가 그대로다.</div>
+</header>
+
+<h2 id="s0"><span class="n">0</span>이 앱이 무엇인가 — 탭 다섯</h2>
+<p class="lead"><b>연세대 어학당 교재로 한국어를 배우는 외국인 학습자용 앱</b>이다.
+   종이 교재의 <b>과마다</b> 단어 · 듣기 · 말하기 · 읽기 활동이 붙어 있고,
+   학습자는 <b>과를 고르고 활동을 하나씩</b> 해 나간다.
+   이 문서는 그 <b>고르는 화면</b>(홈 · 교재학습 · 자모 목록)을 다룬다.</p>
+
+<figure style="margin:18px 0">
+<svg viewBox="0 0 700 210" role="img" style="max-width:100%;height:auto"
+     aria-label="학습자는 홈에서 이어할 것을 누르거나 교재학습에서 교재와 과를 골라 활동으로 들어간다">
+  <defs>
+    <marker id="hb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <polygon points="0,0 10,5 0,10" fill="currentColor"/>
+    </marker>
+  </defs>
+  <rect x="14" y="20" width="120" height="42" rx="10" fill="none" stroke="#0180FF"/>
+  <text x="74" y="46" font-size="13" text-anchor="middle" fill="#0180FF">홈</text>
+  <rect x="14" y="120" width="120" height="42" rx="10" fill="none" stroke="currentColor"/>
+  <text x="74" y="146" font-size="13" text-anchor="middle" fill="currentColor">교재학습</text>
+
+  <g stroke="currentColor" fill="none" marker-end="url(#hb)" opacity=".8">
+    <path d="M134 41 L 470 41"/>
+    <path d="M134 141 L 212 141"/>
+    <path d="M330 141 L 400 141"/>
+    <path d="M470 141 L 470 62"/>
+  </g>
+  <text x="290" y="33" font-size="11" text-anchor="middle" fill="#0180FF">오늘 할 일 한 자리 — 바로 이어서</text>
+  <text x="173" y="133" font-size="11" text-anchor="middle" fill="currentColor" opacity=".8">고른다</text>
+  <text x="365" y="133" font-size="11" text-anchor="middle" fill="currentColor" opacity=".8">고른다</text>
+
+  <rect x="216" y="120" width="110" height="42" rx="10" fill="none" stroke="currentColor"/>
+  <text x="271" y="139" font-size="12" text-anchor="middle" fill="currentColor">교재 · 과</text>
+  <text x="271" y="154" font-size="10" text-anchor="middle" fill="currentColor" opacity=".6">한글 · 1~8급</text>
+  <rect x="404" y="120" width="132" height="42" rx="10" fill="none" stroke="currentColor"/>
+  <text x="470" y="139" font-size="12" text-anchor="middle" fill="currentColor">활동 목록</text>
+  <text x="470" y="154" font-size="10" text-anchor="middle" fill="currentColor" opacity=".6">기초 5 · 심화 2</text>
+
+  <rect x="556" y="20" width="128" height="42" rx="10" fill="none" stroke="#0180FF"/>
+  <text x="620" y="46" font-size="13" text-anchor="middle" fill="#0180FF">활동 하나</text>
+  <path d="M536 41 L 552 41" stroke="currentColor" fill="none" marker-end="url(#hb)" opacity=".8"/>
+  <path d="M620 62 L 620 186 L 74 186 L 74 66" stroke="currentColor" fill="none"
+        marker-end="url(#hb)" stroke-dasharray="4 3" opacity=".7"/>
+  <text x="350" y="200" font-size="11" text-anchor="middle" fill="currentColor" opacity=".75">
+    끝내면 진행률·연속 학습일이 홈에 쌓인다</text>
+</svg>
+<figcaption class="qa" style="margin-top:6px">문 두 개가 <b>같은 곳</b>으로 간다 —
+  홈은 <b>이어할 것 하나</b>를 대신 골라 주고, 교재학습은 <b>직접 고르게</b> 한다.
+  이 문서가 정하는 것은 그 두 문의 생김새다.</figcaption>
+</figure>
+
+<div class="tablewrap"><table>
+  <tr><th>탭</th><th>무엇을 하나</th><th>이 문서에서</th></tr>
+  <tr><td><b>홈</b></td><td>오늘 할 일 하나 · 이번 주 출석 · 진행 현황</td><td><b>§2 · 다룬다</b></td></tr>
+  <tr><td><b>교재학습</b></td><td>교재 → 과 → 활동을 골라 들어간다</td><td><b>§3 · 다룬다</b></td></tr>
+  <tr><td>게임</td><td>어휘 게임 5종. 교재와 잇지 않는다</td><td><b>§4 · 다룬다</b></td></tr>
+  <tr><td>표현클립</td><td>표현을 검색해 짧은 영상으로 본다</td><td>같은 문서</td></tr>
+  <tr><td>MY</td><td>계정 · 언어 설정</td><td>같은 문서</td></tr>
+</table></div>
+
+<div class="callout">
+  <div class="t">활동 일곱 종이 <b>과마다 똑같이</b> 있다</div>
+  <div class="tablewrap"><table>
+    <tr><th>기초학습</th><th>심화학습</th></tr>
+    <tr><td>단어 학습하기 · AI 롤플레잉 · 듣고 질문에 답하기 ·<br>
+            빈칸 채워 말하기 · 읽고 질문에 답하기</td>
+        <td>AI 미션 대화 ·<br>단어 플래시카드</td></tr>
+  </table></div>
+  <p><b>한글(자모)만 다르다.</b> 과 → <b>unit</b> → 활동으로 한 겹 더 깊고,
+     활동 종류도 다르다(자모 듣고 따라하기 · 자모 쓰기 등). 그래서 <b>목록을 따로 둔다</b> — §4 결정 2.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">이 문서를 왜 썼나</div>
+  <p>새 셸(학습 활동 화면 19종)은 <b>확정됐는데</b>, 그 <b>바깥의 두 화면</b>이 비어 있었다.
+     디자인을 그리기 전에 <b>지금 무엇이 있는지</b>부터 코드에서 읽어 옮겼다.</p>
+  <p class="qa">읽는 순서 — <b>§0 앱 소개</b> → §1~3 지금 규격 → <b>§4 정한 것</b> →
+     §5 따라오는 것 → §6 원래 어긋났던 여섯 지점.</p>
+</div>
+
+<h3 id="s0">게임 · 표현클립 · MY 는 무엇인가</h3>
+<p class="lead">앱 하단 탭 다섯 중 <b>학습 동선이 아닌 셋</b>이다.
+   홈과 교재학습은 <b>교재를 따라가는</b> 길이고(이 문서 <b>§2 · §3</b>),
+   이 셋은 <b>그 바깥</b>에 있다 — 놀이 · 곁들여 보는 것 · 계정.
+   지금까지 <b>아무도 열어 보지 않은 화면들</b>이라 as-is 부터 옮겼다.</p>
+
+<div class="tablewrap"><table>
+  <tr><th>탭</th><th>무엇을 하나</th><th>교재와의 관계</th></tr>
+  <tr><td><b>게임</b></td>
+      <td>어휘·문장 게임 <b>5종</b>. 목록에서 골라 들어간다</td>
+      <td><b>교재와는 없다.</b> 다만 <b>다섯 다 서버에서 콘텐츠를 받는다</b> — §1c</td></tr>
+  <tr><td><b>표현클립</b></td>
+      <td>표현을 <b>검색</b>해 짧은 영상으로 본다. 클립 <b>329건</b></td>
+      <td><b>없다</b> — 급·과 태그가 클립에 붙어 있지 않다. §2</td></tr>
+  <tr><td><b>MY</b></td>
+      <td>계정 · 언어 설정 · 로그아웃</td>
+      <td><b>학습 기록이 없다</b> — 계정 설정만 있다. §3</td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">셋 다 <b>학습과 끊겨 있다</b> — 그게 이 문서의 발견이다</div>
+  <p>탭 다섯 중 <b>둘(40%)</b>이 학습 밖인데, 그 둘이 <b>배운 것과 아무 연결이 없다</b>.
+     게임은 자기 콘텐츠를 쓰고, 표현클립은 검색해야만 쓸 수 있고,
+     MY 에는 누적 학습량을 볼 곳이 없다.</p>
+  <p>연결할지 말지를 <b>§4에서 판단</b>했다. 결론부터 말하면
+     <b>게임은 잇지 않기로</b> 했다 — 게임마다 콘텐츠를 급·과로 다시 나누는 비용이
+     얻는 것보다 크다. 대신 <b>VocaShot 을 혼자 할 수 있게</b> 바꾸는 것이
+     게임 쪽의 유일한 실제 작업이 됐다(§1b · <code>vocashot_solo_spec_v1.html</code>).
+     <b>그 작업은 끝났다 (2026-08-21 확인)</b> — <code>/main/game/vocashot-solo</code> 로 돌고
+     게임 목록이 링크한다. 아래 §1b 는 근거로 남긴다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">게임 다섯이 <b>다 다른 사람이 만든 것처럼</b> 생겼다</div>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th>배경</th><th class="n">인라인 style</th><th class="n">className</th></tr>
+    <tr><td>VocaShot</td><td>어둡다 <code>#020617</code></td><td class="n">5</td><td class="n">거의 전부</td></tr>
+    <tr><td>조사 스나이퍼</td><td>어둡다 <code>#060612</code></td><td class="n">42</td><td class="n">71</td></tr>
+    <tr><td>어휘 카드 마스터</td><td>어둡다 <code>#060612</code></td><td class="n">67</td><td class="n"><b>0</b></td></tr>
+    <tr><td>서울 여행 퍼즐</td><td>밝다 <code>#f2f4f7</code></td><td class="n"><b>140</b></td><td class="n">4</td></tr>
+    <tr><td>봄소풍 숫자미션</td><td>밝다 <code>#F4C0D1</code></td><td class="n">48</td><td class="n">160</td></tr>
+  </table></div>
+  <p><b>셋이 어둡고 둘이 밝다.</b> 그리고 <b>카드 마스터와 서울 퍼즐은 Tailwind 를 거의 안 쓴다</b> —
+     인라인 스타일 객체로만 쓰여 있어서, 디자인을 바꾸려면 <b>다른 방식으로 손대야 한다</b>.</p>
+  <p class="qa">이 문서는 <b>그 상태를 그대로 기록</b>한다. 통일 여부는 별도 판단이다.
+     다만 손대는 비용이 게임마다 <b>같지 않다</b>는 것은 알고 시작해야 한다.</p>
+</div>
+
+<p class="qa">읽는 순서 — <b>§0 소개</b> → §1 게임 · <b>§1b VocaShot 전환</b> →
+   §2 표현클립 → §3 MY → <b>§4 판단할 것</b>.</p>
+
+<h2 id="s1"><span class="n">1</span>탭 바 — 다섯 개</h2>
+<p><code>components/main/home/bottom-tab-bar.tsx</code> · <b>높이 60</b>, 흰 배경 + 위 테두리 <code>#F0F1F3</code>,
+   <code>sticky bottom-0</code>. 아이콘 22 + 라벨 10, 세로로 쌓고 간격 2.</p>
+<div class="tablewrap"><table>
+  <tr><th>라벨</th><th>경로</th><th>아이콘</th></tr>
+  <tr><td><b>홈</b></td><td><code>/main</code></td><td>House</td></tr>
+  <tr><td>교재학습</td><td><code>/main/textbook</code></td><td>BookOpen</td></tr>
+  <tr><td>게임</td><td><code>/main/game</code></td><td>Gamepad2</td></tr>
+  <tr><td>표현클립</td><td><code>/main/clip</code></td><td>Clapperboard</td></tr>
+  <tr><td>MY</td><td><code>/main/my</code></td><td>UserRound</td></tr>
+</table></div>
+
+<h2 id="s2"><span class="n">2</span>홈 — 위에서 아래로 다섯 덩어리</h2>
+<pre>① 인사        "안녕하세요," 14 · <b>{이름} 님</b> 24 bold
+② 주간 출석    원형 40 × 7개 · 간격 12 · 아래 "N일 연속 학습 중"
+③ 이어서 학습하기  카드 · 없으면 "학습 시작하기"로 바뀐다
+④ 학습 현황     원형 게이지 110 + 통계 카드 2개
+⑤ 주간 활동 차트  막대 7개 · 높이 120</pre>
+
+<h3>② 주간 출석</h3>
+<p>월~일 <b>원 40</b>. 상태가 셋이다.</p>
+<div class="tablewrap"><table>
+  <tr><th>상태</th><th>원</th><th>요일 글자 12</th></tr>
+  <tr><td>완료</td><td><span class="sw" style="background:#0180FF"></span><code>#0180FF</code> 채움 + 흰 ✓ 20</td><td><code>#24425F</code></td></tr>
+  <tr><td>오늘</td><td>흰 배경 + <b>2.5px 테두리</b> <code>#0180FF</code></td><td><code>#0180FF</code> bold</td></tr>
+  <tr><td>지나감 · 안 옴</td><td><span class="sw" style="background:#E5E8EC"></span><code>#E5E8EC</code></td><td>지나감 <code>#24425F</code> · 안 옴 <code>#C8CCD3</code></td></tr>
+</table></div>
+<p class="qa">아래에 <b>"{N}일 연속 학습 중"</b> 14 — 숫자만 <code>#24425F</code> bold, 나머지 <code>#6B7B8D</code>.</p>
+
+<h3>③ 이어서 학습하기</h3>
+<p>radius 16 · 배경 <code>#DBEDFF</code> · padding 16 · 누르면 <code>#C5DEFF</code>.
+   왼쪽에 <b>48 정사각</b>(radius 12, <code>#0180FF</code> 채움) 안에 ▶ 22 흰색,
+   가운데 <b>"이어서 학습하기"</b> 16 bold <code>#24425F</code> + 아래 진행 위치 13 <code>#0180FF</code>,
+   오른쪽 <b>›</b> 22.</p>
+<div class="callout stop">
+  <div class="t">이어할 것이 없으면 <b>다른 카드로 바뀐다</b></div>
+  <p>같은 자리에 <b>"학습 시작하기 / 교재학습 메뉴에서 시작해보세요"</b>가 들어가고,
+     아이콘이 ▶ 대신 <b>📖 이모지</b>다. 누르면 <code>/main/textbook</code>으로 간다.</p>
+  <p class="qa">두 카드가 <b>크기·색·자리가 같고 내용만 다르다</b>. 새 디자인에서도 한 자리로 두면 된다.</p>
+</div>
+
+<h3>④ 학습 현황</h3>
+<p>제목 <b>16 bold</b> <code>#24425F</code>. 그 아래 radius 16 · <code>#F6F7F8</code> 상자 안에 가로 두 덩어리.</p>
+<ul>
+  <li><b>원형 게이지 110</b> — SVG <code>viewBox 0 0 90 90</code>, <code>-rotate-90</code>.
+      가운데 <b>완료 과 수 22 bold</b> <code>#0180FF</code> + <b>/전체 14</b> <code>#9BA5B0</code>,
+      아래 <code>chapterLabel</code>(예: "학습 중").</li>
+  <li><b>통계 카드 2개</b> — 흰 배경 radius 12, 세로 padding 20.
+      <b>"오늘 활동 수"</b>와 <b>"주간 활동 수"</b>. 값 위, 라벨 13 아래.</li>
+</ul>
+
+<h3>⑤ 주간 활동 차트</h3>
+<p>제목 16 bold. 막대 영역 <b>높이 120</b>(막대 자체는 80), 막대 최대 폭 36 · radius 6 · 간격 8.
+   값이 <b>0인 날은 점선 테두리</b> <code>#C8CCD3</code>로 빈 막대를 그린다.
+   요일 글자 12 — 오늘 <code>#0180FF</code> bold, 안 온 날 <code>#C8CCD3</code>, 나머지 <code>#6B7B8D</code>.</p>
+
+<h2 id="s3"><span class="n">3</span>교재학습 — 과 목록</h2>
+<pre>① 교재 탭      가로 스크롤 · 간격 11 · "한글" + 급별
+② 과 칩        가로 스크롤 · 간격 6 · "N과"
+③ 활동 목록     흰 카드 radius 12</pre>
+<div class="tablewrap"><table>
+  <tr><th>요소</th><th>규격</th></tr>
+  <tr><td>교재 탭</td><td>가로 스크롤, 좌우 16 · 위아래 8 · 간격 <b>11</b>.
+      자모 과가 있으면 맨 앞에 <b>"한글"</b> 탭이 붙는다</td></tr>
+  <tr><td>과 칩</td><td>가로 스크롤, 좌우 16 · 간격 <b>6</b>. 라벨은 <code>{seq}과</code></td></tr>
+  <tr><td>과 제목 줄</td><td>카드 맨 위, padding 12 · 아래 테두리 <code>#F6F7F8</code>.
+      <b>14 bold <code>#0180FF</code></b></td></tr>
+  <tr><td>섹션 라벨</td><td><b>10 semibold</b> <code>#666B73</code> · 아래 간격 8 ·
+      섹션 사이 간격 16</td></tr>
+  <tr><td>활동 항목</td><td><b>높이 46</b> · radius 6 · 좌우 16 · 배경 <code>#F9FAFC</code> ·
+      제목 14 semibold. <b>항목 간 간격 8</b></td></tr>
+  <tr><td>완료 배지</td><td>radius 4 · padding 2/6 · 12 semibold.<br>
+      완료 <code>#E7FBCE</code> 배경 + <code>#11C378</code> 글자 · 미완료 <code>#E5E8EC</code> + <code>#ADB3BE</code></td></tr>
+  <tr><td>콘텐츠 없는 활동</td><td>배경 <code>#F2F3F5</code> + <b><code>opacity 40</code></b> + <code>cursor-not-allowed</code></td></tr>
+</table></div>
+
+<h3>섹션이 둘로 고정돼 있다</h3>
+<div class="tablewrap"><table>
+  <tr><th>섹션</th><th>활동</th><th><code>menuType</code></th></tr>
+  <tr><td rowspan="5"><b>기초학습</b></td><td>단어 학습하기</td><td><code>word</code></td></tr>
+  <tr><td>AI 롤플레잉</td><td><code>roleplay</code></td></tr>
+  <tr><td>듣고 질문에 답하기</td><td><code>listen-answer</code></td></tr>
+  <tr><td>빈칸 채워 말하기</td><td><code>fill-blank</code></td></tr>
+  <tr><td>읽고 질문에 답하기</td><td><code>read-answer</code></td></tr>
+  <tr><td rowspan="2"><b>심화학습</b></td><td>AI 미션 대화</td><td><code>mission-chat</code></td></tr>
+  <tr><td>단어 플래시카드</td><td><code>flashcard</code></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">활동 목록이 <b>하드코딩</b>이다</div>
+  <p>일곱 활동이 코드에 고정으로 박혀 있고, 콘텐츠가 없으면 <b>비활성으로 흐리게</b> 표시된다.
+     콘텐츠 유무로 목록을 만드는 게 아니다.</p>
+  <p><b>자모는 이 목록에 없다.</b> "한글" 교재 탭을 고르면 과 목록 자체가 자모 과로 바뀌고
+     활동 목록은 <code>null</code>이 된다 — 자모 6종은 <b>다른 경로</b>로 들어간다.</p>
+</div>
+
+<h2 id="s1"><span class="n">4</span>게임 — 목록 하나 + 게임 5종</h2>
+<p>제목 <b>"게임"</b> 17 semibold 가운데. 그 아래 카드 5장, radius 16 · 흰 배경 ·
+   padding 16 · 간격 12 · 그림자 <code>0 1px 4px rgba(0,0,0,.06)</code>.
+   왼쪽 <b>48 정사각</b>(radius 12) 안에 아이콘 24, 가운데 이름 16 bold + 설명 13,
+   오른쪽 <b>›</b> 20.</p>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th>설명</th><th>아이콘 배경 · 색</th></tr>
+  <tr><td><b>낱말맞추기</b> <span class="qa">en 은 이미 VocaShot</span></td><td>선생님이 만든 게임에 참여하세요</td>
+      <td><span class="sw" style="background:#FFF3E0"></span><code>#FFF3E0</code> · <code>#FF6D00</code></td></tr>
+  <tr><td>봄소풍 숫자미션</td><td>친구들과 한국어 숫자를 연습해요</td>
+      <td><span class="sw" style="background:#FFF0F5"></span><code>#FFF0F5</code> · <code>#D4537E</code></td></tr>
+  <tr><td>서울 여행 퍼즐</td><td>서울을 여행하며 문장을 완성해요</td>
+      <td><span class="sw" style="background:#E8F5E9"></span><code>#E8F5E9</code> · <code>#2E7D32</code></td></tr>
+  <tr><td>어휘 카드 마스터</td><td>카드를 분류하며 어휘를 익혀요</td>
+      <td><span class="sw" style="background:#FFF8E1"></span><code>#FFF8E1</code> · <code>#F9A825</code></td></tr>
+  <tr><td>조사 스나이퍼</td><td>빠르게 조사를 맞혀보세요</td>
+      <td><span class="sw" style="background:#E8EAF6"></span><code>#E8EAF6</code> · <code>#5C6BC0</code></td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">게임 넷이 <b>교재 데이터를 전혀 쓰지 않는다</b></div>
+  <p>봄소풍·서울퍼즐·카드마스터·조사스나이퍼 네 개를 전수로 확인했다.
+     <code>book_id</code> · <code>chapter</code> · <code>menuType</code> · <code>learning-record</code>
+     <b>어느 것도 참조하지 않는다</b>. 각자 <code>game/data/</code> 아래 자기 JSON만 읽는다
+     (<code>sentences_lv1~6.json</code> · <code>seoul_puzzles.json</code> ·
+      <code>card_sort_categories.json</code> · <code>particle_sniper_levels.json</code> · <code>vocab.json</code>).</p>
+  <p>즉 <b>학습자가 어느 급·과를 배우고 있든 게임 내용이 바뀌지 않는다.</b>
+     레벨은 게임 자체의 <code>lv1~lv6</code>이지 교재의 급이 아니다.</p>
+  <p class="qa">스트릭에 게임이 안 들어가기로 한 결정(G2 §5-7)과 일관된다 —
+     학습 회피 경로가 생긴다는 이유였는데, <b>애초에 학습과 연결이 없다</b>.</p>
+</div>
+<div class="callout">
+  <div class="t">VocaShot 만 성격이 다르다 — <b>교실용</b>이다</div>
+  <p><b>PIN 번호 + 닉네임</b>을 넣어 방에 참가한다(<code>joinRoom</code>, AWS AppSync).
+     "선생님이 만든 게임에 참여하세요"이고, 결과 화면에 <b>"전체 랭킹은 전광판을 확인하세요"</b>가 있다.</p>
+  <p>혼자 하는 게임이 아니라 <b>교사가 화면에 띄우고 학생들이 붙는 구조</b>다.
+     나머지 넷은 혼자 하는 게임이다.</p>
+</div>
+
+<h2 id="s1b"><span class="n">4b</span>VocaShot 개인 플레이 전환 — 무엇이 필요한가</h2>
+<p class="lead">게임을 학습 진도와 연결하지 않기로 했으므로, 게임 쪽에서 <b>실제로 할 일은 이것 하나</b>다.
+   코드를 열어 무엇이 걸려 있는지 정리했다.</p>
+
+<h3>지금 구조 — 협동 방어 게임이다</h3>
+<p>유성(<code>Meteor</code>)이 위에서 떨어지고, 문항을 맞히면 파괴된다.
+   놓치면 <b>방 전체의 하트가 깎인다</b>. 하트가 0이 되면 미션 실패,
+   제한 시간을 버티면 "방어 성공"이다. 여러 명이 <b>같은 방에서 같은 유성을</b> 막는다.</p>
+<div class="callout">
+  <div class="t">학생 화면에 <b>문제가 직접 보인다</b> — 전광판만 보는 구조가 아니다</div>
+  <p><code>FallingMeteor</code> 컴포넌트가 학생 화면에 유성을 그리고,
+     그 안에 이미지와 영어 뜻이 들어간다. CSS 애니메이션
+     <code>vocashot-meteor-fall</code>이 <code>spawnedAt</code>~<code>expiresAt</code> 동안 떨어뜨린다.</p>
+  <p>i18n의 "전광판을 보고 맞혀 보세요"는 <b>전체 랭킹</b>을 전광판에서 본다는 뜻이지,
+     문제를 거기서만 본다는 뜻이 아니다. <b>게임 화면 자체는 이미 자족적</b>이다.</p>
+</div>
+
+<h3>걸려 있는 것 — 방 밖에서는 아무것도 시작되지 않는다</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>지금</th><th>개인 플레이에 필요한 것</th></tr>
+  <tr><td><b>방 생성</b></td>
+      <td><code>createRoom</code> <b>호출부가 이 저장소에 없다</b> — 교사 앱이 만든다</td>
+      <td><b>방을 만들지 않는다.</b> 혼자면 방이 존재할 이유가 없다 —
+          바로 게임 루프로 들어간다</td></tr>
+  <tr><td><b>문항</b></td>
+      <td><code>RoomConfig.questions</code>에 <b>교사가 담아 준다</b>
+          (<code>presetLabel</code> · <code>customCount</code>)</td>
+      <td>혼자 할 때 <b>무엇을 낼지</b>. <code>game/data/vocab.json</code>이 이미 있다</td></tr>
+  <tr><td><b>유성 스폰</b></td>
+      <td><code>spawnMeteor</code> <b>호출부도 이 저장소에 없다</b> — 교사 화면이 흘린다</td>
+      <td>클라이언트가 <b>스스로 스폰</b>. 난이도(<code>difficultySpeed</code>)는 이미 설정값에 있다</td></tr>
+  <tr><td><b>정답 판정</b></td>
+      <td><code>submitAnswer</code>가 서버에서 <b>FIRST / GRACE / WRONG</b>을 준다.
+          GRACE는 <b>남이 먼저 맞힌 직후</b>를 봐주는 값이다</td>
+      <td>혼자면 GRACE가 <b>의미를 잃는다</b>. 판정을 클라이언트로 옮기거나 단순화</td></tr>
+  <tr><td><b>실시간 구독</b></td>
+      <td>플레이 화면이 구독 <b>4종</b>을 건다 —
+          <code>MeteorSpawned</code> · <code>MeteorUpdate</code> ·
+          <code>PlayerUpdate</code> · <code>RoomUpdate</code></td>
+      <td>혼자면 <b>전부 불필요</b>. AppSync 의존이 사라진다</td></tr>
+  <tr><td><b>하트</b></td>
+      <td><code>RoomRuntime.remainingHearts</code> — <b>방 공유</b></td>
+      <td>개인 하트로. 값 자체는 그대로 쓸 수 있다</td></tr>
+  <tr><td><b>결과</b></td>
+      <td>방 안 순위 + "전광판에서 전체 랭킹"</td>
+      <td>자기 최고 점수. <b>비교 대상이 없어진다</b></td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">일의 크기 — <b>게임 화면이 아니라 그 앞뒤가 문제다</b></div>
+  <p>떨어지는 유성, 입력, 하트, 점수 표시는 <b>이미 학생 앱 안에 다 있다</b>(797줄).
+     바꿔야 하는 건 <b>무엇이 유성을 만들고 누가 판정하느냐</b>다.</p>
+  <p>지금은 그 둘이 <b>교사 앱과 AppSync에 있다</b>. 개인 플레이는 그것을
+     <b>클라이언트로 내리는</b> 일이고, 그러면 <code>lib/vocashot/appsync.ts</code>(452줄)를
+     쓰지 않는 <b>두 번째 실행 경로</b>가 생긴다.</p>
+  <p class="qa"><b>교실용 경로는 버리기로 했다</b>(설계 문서 §7). 나란히 둘 필요가 없으므로
+     분리가 아니라 <b>방 상태를 들어내고 그 자리에 로컬 상태를 넣는</b> 일이 된다 —
+     오히려 일이 줄어든다.</p>
+</div>
+
+<h3>혼자 하는 방식 — <b>방어형으로 간다</b> <span class="qa">확정</span></h3>
+<p>두 갈래를 놓고 봤다. <b>혼자 방어</b>냐, <b>가상 플레이어(봇)와 경쟁</b>이냐.</p>
+<div class="callout stop">
+  <div class="t">봇을 넣으면 <b>학습 기회를 뺏는다</b></div>
+  <p>이 게임의 학습 목적은 <b>어휘 인출 속도</b>다 — 유성이 떨어지는 동안 단어를 떠올려 입력하는 것.
+     그런데 <b>봇이 먼저 맞히면 그 단어를 인출할 기회가 사라진다.</b></p>
+  <p>교실에서는 다른 학생이 맞히는 것을 보는 것도 학습이 되지만, <b>봇은 그렇지 않다</b> —
+     그냥 문제가 없어질 뿐이다.</p>
+  <p><code>GRACE</code>(남이 먼저 맞힌 직후를 봐주는 판정)가 존재하는 이유가 바로 그 손실을 보상하려는 것인데,
+     봇을 만들면 <b>없어도 될 손실을 만들어 놓고 다시 보상하는</b> 구조가 된다.</p>
+</div>
+<div class="callout">
+  <div class="t">규칙은 <b>혼자서도 그대로 성립한다</b></div>
+  <p>제한 시간은 <b>유성 낙하 시간</b>이고 실패 조건은 <b>하트 0</b>이다.
+     떨어지는 속도보다 빠르게 입력하면 되는 게임이라 <b>방이 없어도 규칙이 돌아간다</b>.</p>
+  <p>긴장은 봇이 아니라 <b>이미 있는 설정값</b>으로 만든다 —
+     <code>difficultySpeed</code>(진행하며 빨라지게) · <code>initialHearts</code> ·
+     <code>wrongPenaltyEnabled</code> · <code>goldenMeteorEnabled</code>.
+     전부 <code>RoomConfig</code>에 있고 지금은 교사가 정하는 값이다.</p>
+</div>
+<div class="callout">
+  <div class="t">점수는 <b>붙일 데가 이미 있다</b></div>
+  <p><code>ko_game_progress</code> 테이블과 <code>POST /game-progress</code> ·
+     <code>GET /game-progress/{gameName}</code>가 이미 있고,
+     <b>서울 여행 퍼즐과 봄소풍이 이미 쓰고 있다</b>(<code>api/game-progress.ts</code>).
+     <b>VocaShot만 안 쓴다.</b> 자기 최고 점수는 연결만 하면 된다.</p>
+</div>
+
+<h3>순서</h3>
+<pre>① 게임 루프를 방 상태에서 분리        ← 가장 크다
+② 로컬 스폰 · 로컬 판정
+③ 진입 화면에 "혼자 하기"
+④ game-progress 연결 (최고 점수)</pre>
+<p class="qa"><b>봇은 지금 정하지 않는다.</b> ①②가 끝난 뒤 스폰 루프에
+   <b>가짜 answer를 끼워넣는</b> 일이라 그 위에 얹힌다.
+   먼저 만들어 보고 <b>실제로 밋밋한지 확인한 다음</b> 판단하는 편이 낫다.</p>
+
+<h2 id="s1c"><span class="n">4c</span>정정 — 게임은 서버에서 콘텐츠를 받는다</h2>
+<div class="callout stop">
+  <div class="t">앞서 <b>"게임이 자기 데이터를 쓴다"</b>고 적은 것이 부정확했다</div>
+  <p>게임 컴포넌트가 <code>@/shared/data</code>를 하나도 안 쓰길래 콘텐츠가 코드에 박혀 있는 줄 알았다.
+     <b>아니다.</b> 다섯 게임 전부 <code>/game-content/{게임}</code>에서 받는다.
+     처음 확인할 때 <b>큰따옴표 import 만 세어서</b> 작은따옴표를 쓰는 두 게임을 놓쳤다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th>부르는 것</th><th>서버</th></tr>
+    <tr><td>봄소풍</td><td><code>getSpringPicnicFriends</code> · <code>...Questions</code></td>
+        <td><code>spring_picnic_accepter</code></td></tr>
+    <tr><td>서울 퍼즐</td><td><code>getSeoulPuzzleContent</code></td>
+        <td><code>seoul_puzzle_accepter</code></td></tr>
+    <tr><td>카드 마스터</td><td><code>getCardSortCategories</code> · <code>...Vocab</code> · <code>...Rare</code></td>
+        <td><code>card_sort_accepter</code></td></tr>
+    <tr><td>조사 스나이퍼</td><td><code>getParticleSniperLevels</code> · <code>...Sentences</code></td>
+        <td><code>particle_sniper_accepter</code></td></tr>
+    <tr><td><b>VocaShot</b></td><td><b>학생 앱은 안 부른다</b></td>
+        <td><code>vocashot_accepter</code> — 아래</td></tr>
+  </table></div>
+  <p><b>교재와 잇지 않았다는 것은 그대로 사실이다</b> — 어느 게임도
+     <code>book_id</code> · <code>chapter</code> · <code>menuType</code> · <code>learning-record</code>를 안 쓴다.
+     다만 콘텐츠가 <b>서버에 있고 관리자가 고칠 수 있다</b>는 점이 다르다.</p>
+</div>
+<div class="callout">
+  <div class="t">VocaShot 에도 <b>프리셋 테이블이 있다</b> — 교사 앱 전용이다</div>
+  <p><code>ko_vocashot_preset</code> = <code>{ id, label, vocab[], sort_order }</code>이고
+     <code>vocab</code> 한 항목이 <code>{ id, category?, image?, english?, answer, wrong[] }</code>다 —
+     <b><code>VocabQuestion</code>과 같은 모양</b>이다.</p>
+  <p>조회(<code>GET /game-content/vocashot/presets</code>)는 <b>인증 없이 열려 있고</b>,
+     쓰기는 <code>MasterAdminRequired</code>다. 그런데
+     <b>학생 앱은 이 엔드포인트를 한 번도 부르지 않는다</b> — 교사가 방을 만들 때 쓰던 것이다.</p>
+  <p class="qa">혼자 하기는 <b>급별로 고르게 나뉜 문항</b>이 필요한데
+     프리셋은 <b>교사가 수업용으로 묶은 것</b>이라 급과 대응하지 않는다.
+     그래서 <code>n1_word_quiz.json</code>을 쓰기로 한 판단은 <b>그대로 유효하다</b>
+     (<code>vocashot_solo_spec_v1.html</code> §3).
+     교실용을 버려도 <b>이 테이블은 교사 앱 몫으로 남는다</b>.</p>
+</div>
+
+<h2 id="s1d"><span class="n">4d</span>게임 목록 화면 — 그려 봤다</h2>
+<p><code>_superseded/gamelist_mockup_v1.html</code>. <b>진행 3갈래 × 폭 3 = 9조합</b>에서 넘침 <b>0</b>.</p>
+<div class="callout stop">
+  <div class="t">지금 목록은 <b>아무것도 기억하지 않는다</b></div>
+  <p>카드 다섯이 <b>통째로 복사·붙여넣기</b>돼 있고(<code>index.tsx</code> 134줄이 거의 전부 그것),
+     <b>한 번도 안 한 게임과 어제 하던 게임이 똑같이 보인다</b>.
+     그런데 <b>점수를 저장하는 게임이 이미 둘</b>이다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th><code>game-progress</code></th><th>저장 단위</th></tr>
+    <tr><td>봄소풍</td><td><b>쓴다</b></td><td>친구 × 단계 + <code>_meta</code></td></tr>
+    <tr><td>서울 퍼즐</td><td><b>쓴다</b></td><td>장소별 완료 + XP</td></tr>
+    <tr><td><b>VocaShot</b></td><td>지금은 안 쓴다 → <b>붙인다</b></td><td>급별 최고 점수</td></tr>
+    <tr><td>카드 마스터</td><td>안 쓴다</td><td>—</td></tr>
+    <tr><td>조사 스나이퍼</td><td>안 쓴다</td><td>—</td></tr>
+  </table></div>
+</div>
+<div class="callout">
+  <div class="t">진행 단위가 <b>게임마다 달라서 공통 숫자를 못 만든다</b></div>
+  <p>급 · 장소 · 친구×단계 · 레벨. <b>"3/8"처럼 통일하면 거짓말이 된다</b> —
+     서울 퍼즐의 12곳과 VocaShot 의 8급은 같은 것이 아니다.</p>
+  <p><b>각자의 말로 한 줄씩 쓴다.</b> 그리고 그 한 줄을 <b>설명 줄 자리에</b> 넣는다 —
+     활동 목록·홈 카드와 같은 <b>"한 자리, 내용만 교체"</b>다. 카드 높이 <b>80</b>이 그대로 유지된다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th>진행이 있으면</th><th>없으면</th></tr>
+    <tr><td>VocaShot</td><td>2급 최고 210점</td><td rowspan="3">지금 설명 그대로</td></tr>
+    <tr><td>봄소풍</td><td>민수 · 2단계까지 했어요</td></tr>
+    <tr><td>서울 퍼즐</td><td>12곳 중 5곳 다녀왔어요</td></tr>
+    <tr><td>카드 마스터 · 조사 스나이퍼</td><td colspan="2"><b>설명이 그대로 남는다</b> —
+        저장을 안 하므로 쓸 말이 없다</td></tr>
+  </table></div>
+  <p class="qa">저장 안 하는 둘을 <b>빈칸으로 두면 "고장난 것"처럼 보인다</b>.
+     설명이 남는 것이 맞다.</p>
+  <p class="qa"><b>그 뒤에 정해진 것</b> — 카드 마스터·조사 스나이퍼에도
+     <b>저장을 붙이기로</b> 했다(<code>games_polish_v1.html</code> §3·§4).
+     그러면 다섯 다 진행을 쓸 수 있다. 다만 <b>한 번도 안 한 게임</b>은
+     여전히 설명이 남으므로 <b>갈래는 그대로 필요하다</b>.</p>
+</div>
+<div class="callout">
+  <div class="t">그려 보니 나온 것 — <b>이름도 잘려야 한다</b></div>
+  <p>설명 줄에만 말줄임을 걸어 뒀더니 <b>320에서 "어휘 카드 마스터"가 칸을 밀어냈다</b>.
+     이름에도 걸어야 한다.</p>
+  <p class="qa">설명은 320에서 <b>7px</b>(반 글자쯤) 잘린다 — 구 앱 문구 그대로이고 말줄임이 먹는다.
+     문구를 줄일 필요는 없다.</p>
+</div>
+
+<h2 id="s2"><span class="n">5</span>표현 클립 — 유튜브 검색</h2>
+<p>제목 <b>"표현 클립"</b> 20 bold(높이 48, 위 여백 20). 아래 <b>검색창 48</b>(radius 10, 흰 배경,
+   오른쪽에 지우기 24 + 파랑 원형 검색 24).</p>
+<div class="tablewrap"><table>
+  <tr><th>요소</th><th>규격 · 동작</th></tr>
+  <tr><td>카테고리 칩</td><td><b>검색어가 있을 때만</b> 나온다. radius 8 · padding 6/12 · 14.<br>
+      All · Entertainment · Film &amp; Drama · News · Lifestyle</td></tr>
+  <tr><td>결과 헤더</td><td>왼쪽 <b>'검색어'</b> 17 bold <code>#0180ff</code> ·
+      오른쪽 <b>검색 결과 N개</b> 12 <code>#7f848d</code></td></tr>
+  <tr><td>영상 카드</td><td><b>높이 185</b> · radius 12. 유튜브 <code>hqdefault.jpg</code> 썸네일 위에
+      좌상단 배지(<code>#383a3f</code> radius 6), 우상단 24 아이콘.<br>
+      아래 제목 14 + 오른쪽 <b>⋮</b> 24</td></tr>
+  <tr><td>재생</td><td>카드 자리에서 <b>인라인 재생</b>으로 바뀐다(<code>react-youtube</code>).
+      구간 <code>start</code>~<code>end</code>만 재생</td></tr>
+  <tr><td>빈 상태</td><td><code>/images/search_empty_img.svg</code> <b>64</b> + 안내</td></tr>
+  <tr><td>결과 상한</td><td><code>results.slice(0, 10)</code> — <b>10개까지만</b> 보여준다</td></tr>
+</table></div>
+<p class="qa">데이터는 <code>shared/data/clip.ts</code>에 <b>329건</b>이 번들로 들어 있다.
+   각 항목이 <code>youtube_id</code> · <code>title</code> · <code>script</code> · <code>category</code>를 갖는다.</p>
+<div class="callout stop">
+  <div class="t">여기도 <b>교재와 연결이 없다</b></div>
+  <p>검색은 <b>클립 스크립트 전문</b>을 훑는다. 학습자가 배운 단어·문법을 알지 못하고,
+     급·과 정보를 받지도 않는다.</p>
+  <p>신고 기능(<code>listReport</code>·<code>createReport</code>)이 붙어 있는 것이
+     이 화면이 <b>외부 콘텐츠를 다룬다</b>는 성격을 보여준다.</p>
+</div>
+
+<h2 id="s3"><span class="n">6</span>MY — 계정 화면</h2>
+<p>제목 <b>"마이 페이지"</b> 20 bold. 배경 <code>#f6f7f8</code>, 좌우 16.
+   카드는 전부 radius 12 · 흰 배경 · 행 높이 <b>52</b> · 카드 간 간격 12.</p>
+<pre>프로필      아바타 64 원형 + 이름 16 semibold
+            (로그인 시 우하단에 24 원형 연필 버튼)
+계정 메뉴    프로필 정보 변경하기 / 비밀번호 변경하기   ← 로그인 시에만
+정보         Email                                  ← 로그인 시에만
+언어 설정    언어 설정하기 + LanguageSelector
+로그아웃     아이콘 18 + 글자, 가운데 정렬</pre>
+<div class="tablewrap"><table>
+  <tr><th>상태</th><th>보이는 것</th></tr>
+  <tr><td>로그인</td><td>다섯 덩어리 전부</td></tr>
+  <tr><td><b>게스트</b></td><td>이름이 <b>"게스트"</b>, 아바타 편집 버튼 없음,
+      <b>계정 메뉴와 Email 카드가 통째로 사라진다</b>. 언어 설정과 로그아웃만 남는다</td></tr>
+</table></div>
+<p class="qa">하위 화면 둘이 따로 있다 — <code>/my-profile</code>(국적·급/반 변경, <b>월 1회 제한</b>,
+   이메일 변경 불가) · <code>/my-password</code>(8~32자 · 영문 · 숫자 · 특수문자 조건 4개).</p>
+
+<h2 id="s4"><span class="n">7</span>정한 것 — 홈 · 교재학습</h2>
+<p class="lead">as-is와 새 셸이 어긋나는 여섯 지점 중 셋을 정했다. 나머지 셋은 그 결과로 따라온다.
+   확정 디자인을 입히면서 갈린 둘은 <b>결정 4</b>에 적었다.</p>
+
+<h3>결정 1 — 활동 항목에 <b>상태</b>를 넣는다. <b>높이 46은 유지</b>한다</h3>
+<p>지금 항목은 <code>[제목 ········ 완료 배지]</code>다. 상태가 넷으로 늘어야 하는데
+   <b>넷이 동시에 나타나지 않는다</b>. 오른쪽 한 자리를 상태에 따라 바꿔 쓰면 46에 들어간다.</p>
+<div class="tablewrap"><table>
+  <tr><th>상태</th><th>오른쪽 자리</th><th>근거</th></tr>
+  <tr><td><b>미학습</b></td><td><b>비운다</b></td><td>표기하지 않는 것이 곧 미학습이다(G2 §9).
+      <code>0/9</code>는 정보가 아니다</td></tr>
+  <tr><td><b>진행 중</b></td><td><b>진행 중</b> <span class="qa">파랑</span></td>
+      <td><b>숫자를 쓰지 않는다</b> — 아래 콜아웃</td></tr>
+  <tr><td><b>완료</b></td><td><b>완료</b> 배지 <span class="qa">초록</span></td><td>지금과 같다</td></tr>
+  <tr><td><b>복습 권장</b></td><td><b>완료</b> 배지 + <b>복습 N</b></td>
+      <td>완료의 하위 표시다 — 별도 상태가 아니라 완료에 덧붙는다(G2 §1)</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">확정 — 목록에는 <b>숫자를 쓰지 않는다</b></div>
+  <p>처음에는 진행 중 자리에 <code>3 / 9</code>를 넣으려 했다. 그리고 보니
+     <b>분모가 활동마다 다르다</b> — <code>3/5</code>와 <code>12/45</code>가 한 줄에 늘어서면
+     비교가 되지 않고 <b>중구난방으로 읽힌다</b>.
+     둘 다 결국 "진행 중"이라는 같은 상태다.</p>
+  <p>목록은 <b>무엇을 할지 고르는 자리</b>다. 상태 넷만 있으면 그 판단이 선다.
+     숫자는 <b>버리는 게 아니라 데이터로 갖고</b>,
+     <b>홈 이어하기 카드</b>와 <b>활동 안 진행바</b>에서만 쓴다 —
+     둘 다 <b>한 화면에 하나만</b> 나오는 자리라 비교 문제가 없다.</p>
+  <p class="qa">덤으로 <code>TOTAL_QUESTIONS</code>에 미션 대화·플래시카드가 없는 문제도
+     목록에서는 사라진다. 진행바가 필요한 값은 <code>enter</code>가 <code>totalItems</code>를 넘겨
+     <code>ko_activity_state</code>에 넣으므로 그 시점에 서버가 안다.
+     <b><code>content_counts</code>는 고치지 않는다.</b></p>
+</div>
+<div class="callout">
+  <div class="t">먼저 나왔던 <b>분모 1 문제</b>는 여기에 흡수됐다</div>
+  <p>미션 대화는 분모가 1이라 진행 중일 때 <b>항상 <code>0 / 1</code></b>이었고,
+     그건 <b>미학습(빈칸)과 구별되지 않았다</b>. 그래서 "분모가 1이면 글자를 쓴다"는
+     예외를 뒀는데, <b>목록 전체가 글자가 되면서 예외 자체가 없어졌다</b>.</p>
+  <p class="qa">예외가 사라졌다는 것이 이 결정의 부수 이득이다 — 활동이 늘어도 규칙이 하나다.</p>
+</div>
+<div class="callout">
+  <div class="t">미션 대화는 <code>1 / 1</code>이다</div>
+  <p>대화 하나가 곧 문항 하나다 — 진행률 분모를 <b>대화 1개</b>로 이미 정했다(구현 사양 §8).
+     달성 미션 수는 진행률이 아니라 <b>정답률</b> 쪽으로 간다.</p>
+  <p><b>플래시카드는 다르다.</b> 세트당 <b>10~45장</b>이고 한 장씩 넘긴다.
+     45장을 한 번에 끝내지 못하는 것이 이어하기를 붙인 근거였으므로(G2),
+     <code>1/1</code>로 뭉개면 <b>어디까지 봤는지 보여줄 자리가 사라진다</b>. 실제 카드 수를 쓴다.</p>
+  <p class="qa">이 분모는 <b>활동 안 진행바와 홈 카드용</b>이다. 목록에는 나오지 않는다.</p>
+</div>
+
+<h3>결정 2 — 자모는 <b>지금처럼 따로 둔다</b></h3>
+<p>"한글" 교재 탭을 고르면 과 목록이 자모 과로 바뀌고 활동 목록은 <code>null</code>이 되는 구조를 유지한다.</p>
+<h4 style="font-size:14px;margin:18px 0 2px;color:var(--ink-2)">자모 목록 화면은 이미 있다</h4>
+<p><code>components/main/course-list/jamo.tsx</code>(184줄 — 실측 당시 217)다.
+   <code>routes/jamolist.tsx</code>는 <b>9줄짜리 빈 스텁</b>이라 헷갈리기 쉽다.</p>
+<div class="tablewrap"><table>
+  <tr><th>요소</th><th>규격</th></tr>
+  <tr><td>제목</td><td>가운데 <b>"한글 자모 익히기"</b> 17 semibold · 좌우·위아래 16</td></tr>
+  <tr><td>교재 탭 · 과 칩</td><td>교재학습과 <b>같은 컴포넌트</b>를 쓴다</td></tr>
+  <tr><td>과 헤더</td><td><code>#f7f7f7</code> radius 10 · <b>"제N과 {제목}"</b> 14 <code>#7F848D</code></td></tr>
+  <tr><td><b>unit 카드</b></td><td>흰 배경 radius 10 · 세로 padding 12 · 카드 간 간격 12.<br>
+      제목 14 bold <code>#0180FF</code>, 그 아래 <b>음절 칩 28 정사각</b>(<code>#DBEDFF</code>, 가로 스크롤)</td></tr>
+  <tr><td>활동 항목</td><td>구분선 아래, 간격 10. <code>scene_type</code>으로 라우팅</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">따라오는 것 — 자모에도 <b>진행 표시가 필요하다</b></div>
+  <p>목록을 따로 두더라도 <b>이어하기와 진행률은 자모에도 붙는다</b>.
+     지금 자모 화면에는 진행 표시가 아무것도 없어서(셸 명세 §6.1),
+     학습자가 몇 문항 중 몇 번째인지 알 수 없다.</p>
+  <p>구조가 <b>과 → unit → 활동</b> 3층이라 교재학습(<b>과 → 활동</b> 2층)보다 한 겹 깊다.
+     결정 1의 상태 표기를 <b>활동 항목에</b> 붙이면 되고, unit 카드에는 굳이 넣지 않는다 —
+     unit은 학습 단위가 아니라 묶음이다.</p>
+</div>
+
+<h3>결정 3 — 홈 카드는 <b>한 자리, 내용만 바뀐다</b></h3>
+<p>지금 "이어할 것이 없으면 학습 시작하기로 바뀌는" 방식을 그대로 쓰고, 갈래만 셋으로 늘린다.</p>
+<div class="tablewrap"><table>
+  <tr><th><code>todayTask.type</code></th><th>카드</th><th>아이콘</th></tr>
+  <tr><td><code>resume</code></td><td><b>이어서 학습하기</b> + 진행 위치</td><td>▶</td></tr>
+  <tr><td><code>review</code></td><td><b>다시 풀 문항 N개</b></td><td>↻</td></tr>
+  <tr><td><code>none</code></td><td><b>학습 시작하기</b></td><td>📖</td></tr>
+</table></div>
+<p class="qa">크기·색·자리가 같으므로 <b>카드 하나에 내용만 갈아 끼우면 된다</b>.
+   오늘 할 일이 하나로 보이는 것이 이 카드의 목적이다.</p>
+
+<h3>결정 4 — 확정 디자인을 입히며 <b>갈린 둘</b>을 정했다</h3>
+<p>확정 UI/UX(<code>nav_mockup_uiux.html</code>)를 목업에 그대로 입혔다. 시각 마감은 그대로 받고,
+   <b>정보 구조가 달라지는 두 지점</b>만 구 앱 코드로 되짚었다.
+   <b>둘 다 정했다</b> — 목록은 상태만, 앱바는 두지 않는다.</p>
+
+<div class="callout stop">
+  <div class="t">진행 표기 — <b>확정 디자인 쪽이 맞았다</b></div>
+  <p>숫자를 낼 데이터는 있다 — <code>getLearningProgress</code>가 활동별
+     <code>p.total</code>(학습한 문항 수)을 주고, 구 앱의 완료 판정이 바로
+     <code>p.total &gt;= totalQuestions</code>다
+     (<code>textbook/index.tsx</code> <code>isMenuCompleted</code>).
+     그래서 <b>n / N 을 넣고 그려 봤다</b>.</p>
+  <p><b>보기가 나빴다.</b> <code>3 / 5</code>와 <code>12 / 45</code>가 한 줄씩 늘어서면
+     <b>분모가 서로 달라 비교가 되지 않는데</b> 눈에는 자꾸 걸린다.
+     게다가 둘은 <b>결국 같은 상태(진행 중)</b>다 — 같은 것을 다르게 보여주고 있었다.</p>
+  <p><b>목록에 보이는 것은 "진행 중" 하나로 맞춘다.</b> 숫자는 버리지 않고
+     <b>데이터로 갖고</b>, <b>홈 이어하기 카드</b>와 <b>활동 안 진행바</b>에서만 쓴다 —
+     둘 다 <b>한 화면에 하나만</b> 나오는 자리라 나란히 놓이는 문제가 없다.</p>
+  <p class="qa">API는 그대로 숫자를 내려준다. <b>목록 UI만 상태로 렌더</b>한다.
+     결정 1의 <b>분모 1 예외</b>도 이걸로 없어졌다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">앱바 — <b>두지 않는다</b></div>
+  <p>구 앱은 이 자리에 <b>교재명</b>을 쓴다 — <code>bookTitle</code>이
+     <b>17 semibold 중앙</b>이고, 교재 탭 아래에 <b>파랑 14 bold로 한 번 더</b> 나온다(중복이었다).
+     자모 탭에서는 <b>"한글 자모 익히기"</b>가 된다.</p>
+  <p>확정 디자인은 <b>"교재학습" 16 고정</b>이었다. 중복을 지운 건 맞지만
+     <b>탭바 라벨과 같은 낱말</b>이 위아래로 겹친다.</p>
+  <p><b>둘 다 지우고 앱바를 없앤다.</b> 근거가 셋이다 —
+     탭 최상단이라 <b>뒤로 갈 곳이 없고</b>, 어느 탭인지는 <b>탭바가 말하고</b>,
+     <b>홈이 이미 앱바 없이</b> 인사로 시작한다. 교재 탭 스트립이 화면 최상단으로 온다.</p>
+  <p class="qa">앱바가 없어도 상단이 비지 않는다. 근거는 <b>홈이 같은 셸에서
+     앱바 없이 이미 정상 동작한다</b>는 것이다 — <code>pt</code> 18~20 만으로 시작한다.
+     <code>env(safe-area-inset-top)</code>을 쓰는 곳이 저장소에 없다는 것은
+     <b>그것을 뒷받침하는 정황</b>일 뿐 그 자체가 근거는 아니다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">따라오는 것 — <b>탭 루트 다섯의 제목 규칙이 제각각</b>이다</div>
+  <p>앱바를 없애면 교재학습·자모는 홈과 맞는다. 그런데 <b>나머지 셋이 또 다르다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>탭</th><th>지금 최상단</th></tr>
+    <tr><td><b>홈</b></td><td>앱바 없음 — "안녕하세요, {이름} 님"으로 시작</td></tr>
+    <tr><td><b>교재학습</b></td><td>교재명 <b>17 semibold 가운데</b> → <b>없앤다</b></td></tr>
+    <tr><td>게임</td><td>"게임" <b>17 semibold 가운데</b></td></tr>
+    <tr><td>표현클립</td><td>"표현 클립" <b>20 bold 왼쪽</b></td></tr>
+    <tr><td>MY</td><td>"마이 페이지" <b>20 bold 왼쪽</b></td></tr>
+  </table></div>
+  <p><b>세 가지 패턴이 섞여 있다.</b> 교재학습만 고치면 넷이 되므로,
+     <b>다섯을 한 규칙으로</b> 정해야 한다. 이 문서 범위 밖이라 여기 적어만 둔다.</p>
+</div>
+<div class="callout">
+  <div class="t">재 보니 나온 것 — 최상단 여백은 <b>이미 맞아 있다. 손대면 어긋난다</b></div>
+  <p>앱바를 빼면 교재 탭 스트립이 <b>11</b>에서, 홈 인사가 <b>18</b>에서 시작한다.
+     7px 차이로 보여 맞춰야 한다고 적었는데, <b>재 보니 아니었다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th></th><th class="n">요소 상단</th><th class="n">콘텐츠 상단</th>
+        <th class="n">글자 상자 상단</th><th class="n">잉크 상단</th></tr>
+    <tr><td><b>교재 탭</b> <span class="qa">14 / lh 20</span></td>
+        <td class="n">11</td><td class="n">16</td><td class="n"><b>18</b></td><td class="n">19.95</td></tr>
+    <tr><td><b>홈 인사</b> <span class="qa">14 / lh normal</span></td>
+        <td class="n">18</td><td class="n">18</td><td class="n"><b>18</b></td><td class="n">19.95</td></tr>
+  </table></div>
+  <p><code>.tab2</code>가 <b><code>line-height:20</code></b>을 갖고 있어서
+     반쪽 여백 <code>(20−16)/2 = 2</code>가 <b>그 차이를 정확히 먹는다</b>.
+     글자 상자와 잉크 상단이 <b>둘 다 같은 자리</b>다.</p>
+  <p><b>확인:</b> 홈 인사에 <code>line-height:20</code>을 강제로 주면 글자 상자가
+     <b>18 → 20으로 내려간다</b>. 지금 둘이 18에서 만나는 것이 그 반쪽 여백 덕이라는 뜻이다.
+     그러므로 스트립을 <b>11 → 13으로 올리면 탭이 20이 되어 홈보다 2px 내려간다</b>.</p>
+  <p class="qa"><b>11을 그대로 둔다.</b> 요소 상단(11 vs 18)이나 콘텐츠 상단(16 vs 18)만 보면
+     어긋난 것처럼 보이는데, <b>눈이 보는 것은 글자 상자</b>다.
+     여백을 손볼 때 <code>line-height</code>가 먹는 몫을 빼고 재면 이렇게 틀린다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">구 앱과 <b>맞은</b> 것 둘</div>
+  <p><b>미학습을 비우는 것:</b> 구 앱은 회색 <b>"미완료"</b> 배지를 그렸다(<code>CompletionBadge</code>).
+     그걸 지우고 비우기로 한 결정 1이 확정 디자인에 그대로 들어와 있다.</p>
+  <p><b>못 하는 활동은 배지를 안 그리는 것:</b> 구 앱도 <code>disabled</code>면
+     배지를 빼고 이름만 남긴다. 확정 디자인의 <code>.act.off</code>가 같다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">그려 보니 나온 것 — <b>벤치가 320을 검증하지 못하고 있었다</b></div>
+  <p>좁은 폭 보정이 <code>@media (max-width:350px)</code>로 걸려 있었다. 그런데 벤치는
+     <b>뷰포트가 아니라 기기 박스의 폭</b>을 바꾼다 — 미디어쿼리가 <b>한 번도 발화하지 않았다</b>.
+     주간 출석 일곱 원이 <code>40 × 7 + 12 × 6 = 352</code>로 <b>320에서 넘치고 있었다</b>.</p>
+  <p>그리고 기기 박스가 <code>border-box</code>라 <code>폭 + 2</code>로는 테두리·패딩을 다 물지 못해
+     <b>화면 안쪽이 늘 2px 좁았다</b>. 320을 고른 화면이 실제로는 318이었다.</p>
+  <p class="qa">둘을 고친 뒤 <b>화면 3 × 폭 3 × 갈래 3 = 27조합</b>에서 가로 넘침·글자 잘림 <b>0</b>.
+     실제 기기에서는 미디어쿼리가 발화하므로 원래 문제가 없었지만,
+     <b>벤치가 그걸 보여주지 못했다</b>는 것이 문제였다.</p>
+</div>
+
+<h2 id="s4"><span class="n">8</span>판단할 것 — 게임 · 표현클립 · MY</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>지금</th><th>생각해 볼 것</th></tr>
+  <tr><td>1</td><td>게임 5종이 <b>교재와 무관</b>하다</td>
+      <td><b>연결하지 않는다</b> <span class="qa">확정</span> — 부가 콘텐츠로 둔다.
+          게임마다 콘텐츠를 급·과로 다시 나누는 비용이 얻는 것보다 크다</td></tr>
+  <tr><td>2</td><td>VocaShot 은 <b>교실용</b>인데 개인 앱 탭에 있다</td>
+      <td><b>개인 플레이 전환이 게임 쪽의 유일한 실제 작업</b>이다 <span class="qa">했다</span> —
+          <b>구현됨</b>(<code>components/main/game/vocashot-solo.tsx</code>) —
+          §1b 참조</td></tr>
+  <tr><td>3</td><td>표현 클립이 <b>검색해야만</b> 쓸 수 있다</td>
+      <td>검색어를 넣기 전에는 빈 화면이다. <b>배운 표현을 추천</b>하면 학습과 이어지는데,
+          지금은 클립에 급·과 태그가 없다</td></tr>
+  <tr><td>4</td><td>MY에 <b>학습 기록이 없다</b></td>
+      <td>계정 설정만 있다. 누적 학습량·복습 큐 전체 같은 것을 볼 곳이 앱에 없다 —
+          홈의 주간 단위가 전부다</td></tr>
+  <tr><td>5</td><td>탭 다섯 중 <b>둘이 학습 밖</b>이다</td>
+      <td>게임·표현클립이 하단 탭의 40%를 쓴다. 학습 동선(홈·교재학습)과 비중이 맞는지</td></tr>
+</table></div>
+<p class="qa">근거: <code>routes/main/game/index.tsx</code> · <code>components/main/game/*.tsx</code> ·
+   <code>components/main/content4.tsx</code>(669줄) · <code>content5.tsx</code>(109줄) ·
+   <code>src/i18n/locales/ko.ts</code> 실측.</p>
+<h2 id="s5"><span class="n">9</span>따라오는 나머지 셋</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>지금</th><th>어떻게 되나</th></tr>
+  <tr><td>4</td><td>홈에 다시 풀기 카드가 없다</td>
+      <td><b>결정 3으로 해소</b> — <code>review</code> 갈래가 그 자리를 쓴다</td></tr>
+  <tr><td>5</td><td>이어하기만 다룬다</td><td><b>결정 3으로 해소</b></td></tr>
+  <tr><td>6</td><td>스트릭이 문항 하나만 풀어도 오른다</td>
+      <td><b>활동 1개 완료</b>로 바뀐다(G2 확정). 주간 출석 원이 채워지는 조건이 <b>엄격해진다</b> —
+          디자인은 그대로고 의미만 바뀐다.<br>
+          <span class="qa">구 학습 기록을 폐기하기로 했으므로(G1) 기존 사용자의 원이 사라지는 문제는 없다</span></td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">자모 목록 화면은 <b>이미 있다</b> — 새로 그릴 필요 없다</div>
+  <p><code>course-list/jamo.tsx</code>가 과 → unit → 활동 3층으로 이미 그려져 있다(§4 결정 2).
+     확정 디자인 언어로 <b>다시 칠하고</b> 상태 표기만 얹으면 된다.</p>
+</div>
+
+<h2 id="s6"><span class="n">10</span>참고 — 원래 어긋났던 여섯 지점</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>지금</th><th>새 셸에서 정한 것</th></tr>
+  <tr><td>1</td><td>완료 배지가 <b>완료 / 미완료</b> 둘뿐</td>
+      <td>상태가 <b>넷</b>이다 — 미학습(표기 없음) · 진행 중 · 완료 · 복습 권장.
+          <b>진행 중과 복습 권장을 보여줄 자리가 없다</b></td></tr>
+  <tr><td>2</td><td>활동 목록에 <b>진행률이 없다</b></td>
+      <td>진행률이 주 지표다. 다만 <b>목록에는 상태만</b> 내고 숫자는 홈 카드·진행바에서 쓴다(결정 1·4)</td></tr>
+  <tr><td>3</td><td>자모가 활동 목록 밖에 있다</td>
+      <td><code>menuType='jamo'</code> + <code>sub 1~6</code>으로 <b>다른 활동과 같은 층</b>이다</td></tr>
+  <tr><td>4</td><td>홈에 <b>다시 풀기 카드가 없다</b></td>
+      <td>복습 큐가 핵심 동선이다. 홈에 <b>"다시 풀 문항 N개"</b> 카드가 필요하다</td></tr>
+  <tr><td>5</td><td>"이어서 학습하기"가 <b>이어하기만</b> 다룬다</td>
+      <td><code>todayTask</code>가 <b>resume · review · none</b> 셋이다.
+          복습이 오늘 할 일일 때 보여줄 자리가 없다</td></tr>
+  <tr><td>6</td><td>스트릭이 <b>문항 하나만 풀어도</b> 오른다</td>
+      <td><b>활동 1개 완료</b> 기준으로 바뀐다. 주간 출석 원의 의미가 달라진다</td></tr>
+</table></div>
+<p class="qa">근거: <code>components/main/home/*.tsx</code> ·
+   <code>components/main/textbook/*.tsx</code> · <code>api/dashboard.ts</code> 실측.</p>
+</main>

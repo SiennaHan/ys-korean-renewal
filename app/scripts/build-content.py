@@ -211,12 +211,25 @@ def main():
         if len(warnings) > 10:
             print(f"    … 그 밖에 {len(warnings) - 10}개")
 
+    # 왜 건너뛰는지가 시트마다 다르다. 뭉뚱그리면 "예시뿐" 이라고
+    # 거짓을 찍는다 — n8_jamo 는 529행이 실제로 들어와 있고 검수만 남았다.
+    SKIP_WHY = {
+        "n7_mission_chat": "원장에 예시 1행뿐 — 시나리오·프롬프트를 새로 저작해야 한다",
+        "n8_jamo": "포팅은 끝났고 검수 대기다 — 전부 draft. BLOCKERS §2",
+    }
     print("\n앱이 아직 쓰지 않는 것:")
     for s in ["n7_mission_chat", "n8_jamo"]:
         ws = wb[s]
         n = sum(1 for r in ws.iter_rows(min_row=2, values_only=True)
                 if any(x is not None and str(x).strip() for x in r))
-        print(f"  {s:<26}{n:>5}행 — 원장에도 예시뿐이라 만들 것이 없다")
+        drafts = 0
+        hdr = [c.value for c in next(ws.iter_rows(min_row=1, max_row=1))]
+        if "review_status" in hdr:
+            i = hdr.index("review_status")
+            drafts = sum(1 for r in ws.iter_rows(min_row=2, values_only=True)
+                         if r[i] == "draft")
+        tail = f" (draft {drafts})" if drafts else ""
+        print(f"  {s:<26}{n:>5}행{tail} — {SKIP_WHY[s]}")
 
 
 if __name__ == "__main__":

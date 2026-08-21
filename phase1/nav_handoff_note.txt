@@ -4,6 +4,8 @@
 바꿔 읽어라. 본문은 고치지 않는다 — 고치면 기록이 아니게 된다.
 
     nav_mockup_v1.html → _superseded/   nav_mockup_uiux.html 로 대체됐다
+    home_asis_v1.html → _superseded/    asis_v1.html 로 합쳤다 (탭 다섯을 한 문서로)
+    games_asis_v1.html → _superseded/   asis_v1.html 로 합쳤다 · 게임은 §4, 표현클립 §5, MY §6
                                         (home_mockup_v1 도 여기로 흡수됐다)
 
 [연세 글로벌 앱 리뉴얼 — 홈·교재학습·자모 목록 인계]

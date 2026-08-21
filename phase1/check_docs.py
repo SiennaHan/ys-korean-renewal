@@ -318,6 +318,19 @@ def index_covers(live: set[str]) -> list[str]:
     for m in re.finditer(r"`([A-Za-z0-9_.가-힣-]+)\.html`", body):
         if m.group(1) not in live:
             out.append(f"[색인] INDEX.md 가 없는 문서 {m.group(1)} 을 가리킨다")
+
+    # 표의 같은 칸에 같은 문서가 두 줄. 문서를 합치면 두 줄이 남는다 —
+    # "빠짐없이 있나" 만 보면 통과하므로 따로 본다.
+    rows: dict[str, int] = {}
+    for line in body.splitlines():
+        m = re.match(r"\s*\|\s*`([A-Za-z0-9_.가-힣-]+)\.html`\s*\|", line)
+        if m:
+            rows[m.group(1)] = rows.get(m.group(1), 0) + 1
+    for n, c in sorted(rows.items()):
+        if c > 1:
+            out.append(
+                f"[색인] {n} 이 표에 {c}줄 있다 — 문서를 합쳤으면 줄도 합쳐라"
+            )
     return out
 
 
