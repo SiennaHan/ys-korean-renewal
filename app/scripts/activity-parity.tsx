@@ -9,7 +9,7 @@
  */
 import "./parity-shim";
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { AudioRow } from "@/components/main/activity/audio";
@@ -657,11 +657,24 @@ function NavBookScreen() {
 
 SCREENS.nav__book__resume = <NavBookScreen />;
 
+/*
+ * 자모 목록은 아직 넣지 않는다 — 컴포넌트는 그려진다(데이터를 받아 오지 않고
+ * useEffect 도 없어서 라우터 훅이 경고만 내고 지나간다). 넣어 보니 목업과
+ * 내용이 달랐다: 목업의 모음1 은 10자(ㅐ·ㅔ 포함)이고 원장 v24 도 10자인데
+ * 앱의 unit.title 은 8자다. 자모 콘텐츠는 검수 대기라 지금 건드리지 않는다.
+ * BLOCKERS §2 에 검수 항목으로 적어 두었고, 그 뒤에 이 한 줄로 넣으면 된다.
+ */
+
 const outDir = join(
 	dirname(fileURLToPath(import.meta.url)),
 	"..",
 	".parity-out",
 );
+/*
+ * 매번 비우고 다시 쓴다. 화면을 목록에서 빼면 옛 출력이 남아, 대조 쪽은
+ * 그 파일을 보고 계속 검사한다 — 실제로 한 번 겪었다.
+ */
+rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 
 await i18n.changeLanguage("ko");
