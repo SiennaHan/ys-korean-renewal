@@ -1,0 +1,399 @@
+import { postSpeaking } from "@/api/analyzeApi";
+import type { CheckMission, FeedbackItem } from "@/api/apiType";
+import {
+	getChatDialog,
+	getMsgList,
+	postCheckMission,
+	postCompleteDialog,
+} from "@/api/chat";
+import { useSharedAudio } from "@/components/audio/audio-provider";
+import { useMicPermission } from "@/components/audio/mic-permission-provider";
+import { ChatHeader } from "@/components/chat/chat-header";
+import ChatMessage, {
+	type ChatMsgProps,
+	type MessageType,
+} from "@/components/chat/chat-message";
+import { DialogInput } from "@/components/dialog/dialog-input";
+import { DialogScenario } from "@/components/dialog/dialog-scenario";
+import { DialogSkipModal } from "@/components/dialog/dialog-skip-modal";
+import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import { useToast } from "@/components/toast/toast-context";
+import { env } from "@/config/env";
+import { useRecording } from "@/hooks/useRecording";
+import { chapters } from "@/shared/data/chapter";
+import { dialogs } from "@/shared/data/dialog";
+import { dialog_keywords } from "@/shared/data/dialog_keyword";
+import { modules } from "@/shared/data/module";
+import { units } from "@/shared/data/unit";
+import { getTTSAudio } from "@/shared/tts-cache";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+export const Route = createFileRoute("/book/chapter/unit/dialog/$id")({
+	component: DialogPage,
+});
+
+function DialogPage() {
+	const navigate = useNavigate();
+	const sound = useSoundEffects();
+	const { playUrl, unlock } = useSharedAudio();
+	const { addToast } = useToast();
+	const { id: dialogId } = Route.useParams();
+
+	// --- Data lookups ---
+	const dialog = dialogs.find((item) => item.id === dialogId);
+	if (!dialog) return <>Loading dialog</>;
+
+	const gender = dialog.ai_gender;
+	const missionList = dialog_keywords.filter(
+		(item) => item.dialog_id === dialogId,
+	);
+	const module = modules.find((item) => item.code === dialog.module_code);
+	const unit = units.find((item) => item.id === module?.unit_id);
+	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
+	const scenarioImgUrl = `${env.RES_URL_ROOT}/${dialog.content_img}`;
+
+	// --- State ---
+	const [chatId, setChatId] = useState(0);
+	const [isCompleted, setIsCompleted] = useState(false);
+	const [isResponding, setResponding] = useState(false);
+	const [completedList, setCompletedList] = useState<string[]>([]);
+	const [msgList, setMsgList] = useState<ChatMsgProps[]>([]);
+	const [isSkip, setIsSkip] = useState(false);
+	const [isShowInputBox, setIsShowInputBox] = useState(false);
+	const [textareaValue, setTextareaValue] = useState("");
+
+	const scrollEndRef = useRef<HTMLDivElement>(null);
+	const firstMsgPlayedRef = useRef(false);
+
+	// --- Recording hook ---
+	const recording = useRecording();
+
+	// --- Helpers ---
+	const scrollToBottom = useCallback(() => {
+		setTimeout(() => {
+			scrollEndRef.current?.scrollIntoView({ behavior: "smooth" });
+		}, 100);
+	}, []);
+
+	const createMsg = useCallback(
+		(
+			idx: string,
+			msgType: MessageType,
+			_dialogId: string,
+			_chatId: number,
+			msg: string,
+			voice: string,
+			feedback: string | null,
+		): ChatMsgProps => ({
+			idx,
+			msgType,
+			dialogId: _dialogId,
+			chatId: _chatId,
+			setChatId,
+			setResponding,
+			scrollToBottom,
+			closeDialog: () => navigate({ to: `/book/chapter/${chapter?.id}` }),
+			goReport: () =>
+				navigate({
+					to: `/book/chapter/unit/dialog/report/${dialogId}`,
+				}),
+			msg,
+			voice,
+			feedback,
+		}),
+		[chapter?.id, dialogId, navigate, scrollToBottom],
+	);
+
+	const addSttMsg = useCallback(
+		(msg: string, msgType: MessageType, feedback: string | null) => {
+			const newId = `${Date.now()}_${msgType}`;
+			const newMsg = createMsg(
+				newId,
+				msgType,
+				dialogId,
+				chatId,
+				msg,
+				gender,
+				feedback,
+			);
+			setMsgList((prev) => [...prev, newMsg]);
+		},
+		[chatId, createMsg, dialogId, gender],
+	);
+
+	const checkMission = useCallback(
+		async (msg: string): Promise<CheckMission | null> => {
+			const res = await postCheckMission({ dialogId, chatId, msg });
+			if (!res) return null;
+			if (res.completed_missions.length > 0) {
+				setCompletedList((prev) => [...prev, ...res.completed_missions]);
+			}
+			return res;
+		},
+		[chatId, dialogId],
+	);
+
+	const uploadMsg = useCallback(
+		async (rawMsg: string) => {
+			const msg = rawMsg.trim();
+			if (msg.length < 2) {
+				addToast("메시지를 2자 이상 입력해 주세요.");
+				return;
+			}
+
+			recording.setRecordState("uploading");
+			const mission = await checkMission(msg);
+
+			if (mission && ["perfect", "tip"].includes(mission.status)) {
+				sound.playMissionChecked();
+				if (mission.status === "perfect") {
+					addSttMsg(msg, "user", null);
+				} else {
+					addSttMsg(msg, "tip", mission.feedback ?? "");
+				}
+			} else {
+				addSttMsg(msg, "alert", mission?.feedback ?? "");
+			}
+
+			setTimeout(() => {
+				addSttMsg(msg, "request", null);
+			}, 400);
+
+			recording.terminate();
+		},
+		[addSttMsg, addToast, checkMission, recording, sound],
+	);
+
+	// --- Event handlers ---
+	const handleRecord = useCallback(async () => {
+		if (recording.recordState === "ready") {
+			await recording.startRecording();
+			return;
+		}
+		if (recording.recordState === "recording") {
+			recording.stopRecording();
+			return;
+		}
+		if (recording.recordState === "recorded") {
+			if (!recording.recordedMsg) {
+				addToast("녹음된 내용이 없습니다.");
+				recording.terminate();
+				return;
+			}
+			await uploadMsg(recording.recordedMsg);
+		}
+	}, [addToast, recording, uploadMsg]);
+
+	const handleSendText = useCallback(async () => {
+		await unlock();
+		const msg = textareaValue.trim();
+		if (msg.length < 2) return;
+
+		setIsShowInputBox(false);
+		setTextareaValue("");
+		await uploadMsg(msg);
+	}, [textareaValue, unlock, uploadMsg]);
+
+	const goReport = useCallback(() => {
+		navigate({ to: `/book/chapter/unit/dialog/report/${dialogId}` });
+	}, [dialogId, navigate]);
+
+	// --- Effects ---
+
+	// Load initial data
+	useEffect(() => {
+		let isMounted = true;
+
+		const fetchInitialData = async () => {
+			const res = await getChatDialog(dialogId);
+			if (!res || !isMounted) return;
+
+			const currentChatId = res.chat?.id ?? 0;
+			if (res.chat) setChatId(res.chat.id);
+
+			const msgResponse = await getMsgList(dialogId);
+			if (!msgResponse || !isMounted) return;
+
+			const { msgs: serverChats, feedbacks } = msgResponse;
+
+			const convertedFeedback: FeedbackItem[] = feedbacks.map((item) => ({
+				...item,
+				question:
+					typeof item.question === "string"
+						? JSON.parse(item.question)
+						: item.question,
+				answer:
+					typeof item.answer === "string"
+						? JSON.parse(item.answer)
+						: item.answer,
+			}));
+
+			const tempMsgList: ChatMsgProps[] = [
+				createMsg(
+					"0_bot",
+					"bot",
+					dialogId,
+					currentChatId,
+					res.first_msg,
+					gender,
+					null,
+				),
+			];
+
+			for (const item of serverChats) {
+				if (!item.is_bot) {
+					const feedback = convertedFeedback.find(
+						(f) => f.question.content[0].text === item.msg,
+					);
+					if (feedback) {
+						const status: "user" | "tip" | "alert" =
+							feedback.answer.status === "tip"
+								? "tip"
+								: feedback.answer.status === "error"
+									? "alert"
+									: "user";
+						tempMsgList.push(
+							createMsg(
+								`${item.id}_${item.is_bot}`,
+								status,
+								dialogId,
+								currentChatId,
+								item.msg,
+								gender,
+								feedback.answer.feedback,
+							),
+						);
+					}
+				} else {
+					tempMsgList.push(
+						createMsg(
+							`${item.id}_${item.is_bot}`,
+							"bot",
+							dialogId,
+							currentChatId,
+							item.msg,
+							gender,
+							null,
+						),
+					);
+				}
+			}
+
+			setCompletedList(res.chat?.completed_missions ?? []);
+			setMsgList(tempMsgList);
+
+			// Play first message audio if no history.
+			// first_msg 는 다이얼로그별 고정 문장 → 서버 공통 캐시(/tts/generate, hash→S3)를
+			// 재사용해 재생성 비용 없이 재생. 엔진/목소리는 스트리밍과 동일(Gemini·resolveVoice).
+			if (serverChats.length === 0 && !firstMsgPlayedRef.current) {
+				firstMsgPlayedRef.current = true;
+				void unlock();
+				const audioUrl = await getTTSAudio(res.first_msg, gender);
+				if (audioUrl && isMounted) {
+					void playUrl(audioUrl);
+				}
+			}
+		};
+
+		void fetchInitialData();
+		return () => {
+			isMounted = false;
+		};
+	}, [createMsg, dialogId, gender, playUrl, unlock]);
+
+	// Check mission completion
+	useEffect(() => {
+		if (isCompleted) return;
+		const missions = missionList.map((item) => item.keyword);
+		const allCompleted = missions.every((word) => completedList.includes(word));
+
+		if (allCompleted) {
+			addSttMsg("", "completed", null);
+			void postCompleteDialog(dialogId, chatId);
+			setIsCompleted(true);
+		}
+	}, [addSttMsg, chatId, completedList, dialogId, isCompleted, missionList]);
+
+	// Cleanup recording on unmount
+	useEffect(() => {
+		return () => recording.cleanup();
+	}, [recording.cleanup]);
+
+	// Handle virtual keyboard resize
+	useEffect(() => {
+		const visualViewport = window.visualViewport;
+
+		const handleResize = () => {
+			const root = document.getElementById("main-chat-container");
+			if (root && visualViewport) {
+				root.style.height = `${visualViewport.height}px`;
+				root.style.transform = `translateY(${visualViewport.offsetTop}px)`;
+			}
+		};
+
+		visualViewport?.addEventListener("resize", handleResize);
+		visualViewport?.addEventListener("scroll", handleResize);
+
+		return () => {
+			visualViewport?.removeEventListener("resize", handleResize);
+			visualViewport?.removeEventListener("scroll", handleResize);
+		};
+	}, []);
+
+	return (
+		<div id="main-chat-container" className="flex h-full flex-col">
+			{/* Header & Scenario */}
+			<div>
+				<ChatHeader
+					chapterSeq={dialog.chapter}
+					unitTitle={dialog.scenario}
+					skip={() => setIsSkip(true)}
+					isCompleted={isCompleted}
+					goResult={goReport}
+				/>
+				<DialogScenario
+					scenario={dialog.scenario}
+					scenarioEng={dialog.scenario_eng}
+					scenarioImgUrl={scenarioImgUrl}
+					missionList={missionList}
+					completedList={completedList}
+				/>
+			</div>
+
+			{/* Chat Messages */}
+			<div className="scrollbar-hide relative flex-1 overflow-y-auto">
+				{msgList.map((item) => (
+					<ChatMessage key={item.idx} {...item} />
+				))}
+				<div className="h-[90px] w-full" ref={scrollEndRef} />
+			</div>
+
+			{/* Input Area */}
+			<DialogInput
+				recordState={recording.recordState}
+				recordedMsg={recording.recordedMsg}
+				isRecording={recording.isRecording}
+				mediaRecorder={recording.mediaRecorder}
+				textareaValue={textareaValue}
+				setTextareaValue={setTextareaValue}
+				isShowInputBox={isShowInputBox}
+				setIsShowInputBox={setIsShowInputBox}
+				onRecord={() => void handleRecord()}
+				onTerminate={recording.terminate}
+				onSendText={() => void handleSendText()}
+				onRecordedMsgChange={(v) => recording.setRecordedMsg(v)}
+				stopRecording={recording.stopRecording}
+				unlock={unlock}
+			/>
+
+			{/* Skip Confirmation Modal */}
+			{isSkip && (
+				<DialogSkipModal
+					onClose={() => setIsSkip(false)}
+					onGoReport={goReport}
+				/>
+			)}
+		</div>
+	);
+}
