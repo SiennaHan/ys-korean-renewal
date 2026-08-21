@@ -132,6 +132,39 @@ def parity_screens() -> tuple[int, int]:
     return (activity, nav)
 
 
+def data_counts() -> dict[str, int]:
+    """앱 데이터에서 직접 세는 값.
+
+    문서가 콘텐츠 수를 자주 인용하는데(문항·키·행) 원장이 갱신되면
+    조용히 낡는다 — 실제로 i18n 287→300, VocaShot 원천 1149→1146 이
+    그렇게 어긋나 있었다. 파일이 없으면 그 항목은 검사하지 않는다.
+    """
+    import json
+
+    out: dict[str, int] = {}
+    d = APP / "src" / "shared" / "data"
+    for key, rel in [
+        ("n4 빈칸 문항", "n4_blank_question.json"),
+        ("n1 어휘퀴즈 문항", "n1_word_quiz.json"),
+        ("읽기 지문", "n5_read_answer_text.json"),
+    ]:
+        f = d / rel
+        if f.exists():
+            try:
+                out[key] = len(json.loads(f.read_text(encoding="utf-8")))
+            except Exception:
+                pass
+    bank = d / "vocashot-bank.ts"
+    if bank.exists():
+        n = len(re.findall(r'"w"\s*:', bank.read_text(encoding="utf-8", errors="replace")))
+        if n:
+            out["VocaShot 문항 은행"] = n
+    loc = APP / "src" / "i18n" / "locales"
+    if loc.is_dir():
+        out["i18n 로케일 수"] = len(list(loc.glob("*.ts")))
+    return out
+
+
 def claims(live: set[str], text: dict[str, str]) -> list[str]:
     """문서가 적어 놓은 수와 실제로 센 수를 맞춰 본다.
 
@@ -168,6 +201,18 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             r"인계\s*메모\s*(\d+)개",
         ]),
     ]
+
+    # 콘텐츠 실측 — 원장이 갱신되면 문서의 수가 낡는다
+    dc = data_counts()
+    if "i18n 로케일 수" in dc:
+        specs.append(("i18n 로케일 수", dc["i18n 로케일 수"],
+                      [r"i18n\s*은?\s*(\d+)개\s*로케일"]))
+    if "VocaShot 문항 은행" in dc:
+        specs.append(("VocaShot 문항 은행", dc["VocaShot 문항 은행"],
+                      [r"문항\s*은행\s*(\d+)", r"은행은\s*(?:\*\*)?(\d+)"]))
+    if "n1 어휘퀴즈 문항" in dc:
+        specs.append(("n1_word_quiz 행", dc["n1 어휘퀴즈 문항"],
+                      [r"n1_word_quiz\.json.{0,14}?(\d{3,5})\s*(?:행|문항|건)"]))
 
     out: list[str] = []
 

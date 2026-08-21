@@ -251,7 +251,7 @@
 
 <h2 id="s3"><span class="n">3</span>문항 원천 — <b>이미 있다</b></h2>
 <div class="callout stop">
-  <div class="t"><code>n1_word_quiz.json</code> — <b>1149문항, 검수된 4지선다</b></div>
+  <div class="t"><code>n1_word_quiz.json</code> — <b>1146문항, 검수된 4지선다</b></div>
   <p><code>VocabQuestion</code>이 요구하는 <code>{ image?, english?, answer, wrong[] }</code>에
      <b>그대로 매핑된다</b>. 오답을 새로 만들 필요가 없다 — <b>사람이 만든 선택지</b>가 이미 들어 있다.</p>
 </div>
@@ -301,6 +301,12 @@
      그림이 곧 문제이므로 <b>낼 수 없는 문항</b>이다 — <b>그냥 버린다</b>.
      그림을 새로 구해 채우지 않는다. 급마다 <b>144~150문항</b>이 남으므로
      여섯을 빼도 <b>아쉬울 것이 없다</b>.</p>
+  <p style="background:#fdf6e3;padding:8px 12px;border-left:3px solid #b58900;margin:8px 0">
+  <b>실측 정정 (2026-08-21)</b> — 아래 산수의 출발점이 바뀌었다.
+  <code>n1_word_quiz.json</code> 은 지금 <b>1146행</b>이다(문서가 쓰인 때는 1149).
+  은행은 <b>1143</b> 이 맞으니 실제로 걸러지는 것은 <b>여섯이 아니라 셋</b>이다 —
+  아래 여섯 중 셋은 그 뒤 원장에서 정리된 것으로 보인다.
+  <b>어느 셋이 남았는지는 확인해야 한다.</b></p>
   <p><b>1149 → 1143</b>, 그림 <b>199 → 193</b>. 급별로는 3급 148→146 · 4급 145→144 ·
      5급 150→148 · 6급 149→148 이고 나머지는 그대로다.</p>
   <div class="callout" style="margin:10px 0 0">
@@ -819,7 +825,7 @@ POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
 </table></div>
 <p class="qa">근거: <code>routes/main/game/vocashot_.$pin.tsx</code>(797줄) ·
    <code>lib/vocashot/{types,appsync}.ts</code> ·
-   <code>shared/data/n1_word_quiz.json</code>(1149건) ·
+   <code>shared/data/n1_word_quiz.json</code>(1146건) ·
    <code>components/learn/word-quiz-card.tsx</code> ·
    <code>api/game-progress.ts</code> · <code>business/game_progress.py</code> ·
    <code>components/main/game/spring-picnic.tsx</code> 실측.</p>

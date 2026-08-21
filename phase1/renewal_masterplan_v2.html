@@ -94,7 +94,7 @@
     <span class="file">_superseded/renewal_plan_v1</span>(2026-08-19 Phase 1 상태)을 합쳤다 —
     지도와 상태가 갈라져 있으면 어느 쪽이 지금인지 알 수 없었다.
     <b>어느 영역이 무엇을 갖췄고 무엇이 비었는지는 §2 덮개 지도</b>에 있다.
-    "무엇을 만들까" 는 <span class="file">renewal_plan_v0.2</span>,
+    "무엇을 만들까" 는 이 문서 §5 의 D1~D7 표와 각 정의처,
     지금 막힌 것은 <span class="file">BLOCKERS.md</span> 다.</div>
 </header>
 
@@ -144,7 +144,7 @@
     <tr><td><b>접근성</b></td><td>—</td><td>G2 §7 · build_spec_uiux</td><td>—</td><td>—</td></tr>
     <tr><td><b>오프라인·오류</b></td><td>—</td><td>G2 §6</td><td>build_spec §9</td><td>api_schema §5</td></tr>
     <tr><td><b>알림·리텐션</b></td><td><span class="pill done">정했다</span> <b>푸시·PWA 를 만들지 않는다</b></td><td colspan="3">밖으로 나가는 것은 <b>메일 넷만</b>(재설정 · 영수증 · 환불 · 구독 만료). 재방문 유도는 앱 안의 연속 학습일로 한다 — <span class="file">BLOCKERS.md</span> §7</td></tr>
-    <tr><td><b>어드민</b></td><td>renewal_plan_v0.2 §7</td><td colspan="3">이번 리뉴얼 <b>범위 밖</b>으로 선언됐다 — 의도된 공백이다</td></tr>
+    <tr><td><b>어드민</b></td><td><span class="file">_superseded/renewal_plan_v0.2</span> §7</td><td colspan="3">이번 리뉴얼 <b>범위 밖</b>으로 선언됐다 — 의도된 공백이다</td></tr>
   </tbody>
 </table>
 </div>
@@ -244,7 +244,49 @@
 </ol>
 
 <h2 id="s5"><span class="no">5</span>의사결정 게이트 — 무엇이 닫혔고 무엇이 남았나</h2>
-<p class="lead">기획서 v0.2.1의 D1~D7을 <b>주제별이 아니라 "무엇을 막고 있는가" 기준으로 재배열</b>했다. 아래 순서대로 닫으면 된다.</p>
+<p class="lead">아래 게이트는 <b>"무엇을 막고 있는가"</b> 기준이다. 그 재료가 된
+주제별 선결 결정 <b>D1~D7</b> 은 원래 <span class="file">renewal_plan_v0.2</span> 에 있었는데,
+<b>그 문서를 여기로 흡수하고 폐기본으로 내렸다</b>(2026-08-21) — 여덟 중 일곱이 이미 다른
+문서에서 확정으로 다시 쓰여 있어서 같은 결정이 두 곳에 살고 있었다.</p>
+
+<h3>선결 결정 D1~D7 — 어떻게 결말났고 지금 어디에 있나</h3>
+<p class="qa">다섯 문서가 <span class="file">D1</span>~<span class="file">D7</span> 로 인용한다.
+그 이름의 뜻은 이 표가 쥔다. <b>결정의 자세한 내용은 "지금 정의처" 열의 문서에 있고,
+이 표는 그것을 다시 쓰지 않는다.</b></p>
+<div class="tablewrap"><table>
+  <thead><tr><th>D</th><th>주제</th><th>결말</th><th>지금 정의처</th></tr></thead>
+  <tbody>
+    <tr><td>D1</td><td>포지셔닝 · 계정 모델</td>
+      <td><span class="pill done">확정</span> B2B(학교 계약)와 B2C(개인) 공존. 게스트는 무료 범위를 본다</td>
+      <td><span class="file">access_and_pricing_v1</span></td></tr>
+    <tr><td>D1-b</td><td>교재 소스 전환</td>
+      <td><span class="pill done">끝났다</span> 『연세 글로벌 한국어』로 교체 완료. 급·과 구조가 같아 앱 재설계는 없었다.
+        <b>화면 라벨은 "급", 스키마는 <span class="file">book_id</span></b> 유지 — 그 원칙은 지금도 유효하다</td>
+      <td><span class="file">access_and_pricing_v1</span> §01 용어 · <span class="file">app/src/components/main/textbook/labels.ts</span></td></tr>
+    <tr><td>D2</td><td>학습 단위 · 상태 모델</td>
+      <td><span class="pill done">확정</span> 4단계 + 복습 큐. <b>기록은 전부 첫 시도 기준</b></td>
+      <td><span class="file">G2_shell_and_state_spec_v1</span> §1</td></tr>
+    <tr><td>D3</td><td>콘텐츠 단일 원본</td>
+      <td><span class="pill done">확정</span> 원장(xlsx)이 정본, <span class="file">n*.json</span> 은 산출물.
+        <span class="file">review_status</span> 가 <span class="file">reviewed</span> 인 것만 노출</td>
+      <td><span class="file">G1_item_schema_proposal_v1</span> · <span class="file">app/src/shared/data/README.md</span></td></tr>
+    <tr><td>D4</td><td>다국어 원칙</td>
+      <td><span class="pill done">확정</span> 지시문은 한국어 + UI 언어, <b>학습 텍스트는 한국어 고정</b></td>
+      <td><span class="file">G2_shell_and_state_spec_v1</span> §4</td></tr>
+    <tr><td>D5</td><td>디자인 시스템과 게임의 위치</td>
+      <td><span class="pill done">확정</span> 목업이 시각 정본, 토큰 2단(primitive → semantic). 게임은 존치</td>
+      <td><span class="file">Shell_component_spec_uiux</span> · <span class="file">build_spec_uiux</span></td></tr>
+    <tr><td>D6</td><td>음성 · AI 전략</td>
+      <td><span class="pill risk">미정</span> STT 엔진 · 발음 평가 정식 채택 · Tutorus 계약. <b>G4 에 남아 있다</b></td>
+      <td>아래 G4</td></tr>
+    <tr><td>D7</td><td>프리미엄 경계와 인타이틀먼트</td>
+      <td><span class="pill done">대체됨</span> 옛 안(한글+1급 전체 무료 · QR 라이선스 키)은 폐기.
+        확정은 <b>과 단위 맛보기 · 앱 내 결제 · QR 은 결제와 무관</b></td>
+      <td><span class="file">access_and_pricing_v1</span></td></tr>
+  </tbody>
+</table></div>
+<p class="qa"><span class="file">Shell_component_spec_uiux</span> 의 <b>S1~S3 은 이것과 다른 것</b>이다 —
+셸 결정이고 그 문서가 정의처다.</p>
 
 <div class="gate">
   <div class="gh"><span class="gid">G1</span><span class="gt">콘텐츠 착수 게이트</span><span class="gw"><span class="pill done">닫혔다</span> 2026-08 · G1_activity_lineup_v2 · G1_item_schema_proposal_v1 로</span></div>

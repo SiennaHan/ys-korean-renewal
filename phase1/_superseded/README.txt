@@ -127,3 +127,26 @@ renewal_plan_v1        (08-19) 목업 실측 · 문서 어긋남 · Phase 1 작�
 CSS 는 plan_v1 의 .card / td.n / .pill.ok / .pill.stop 을 masterplan 스타일시트로
 이식하면서 --ok/--stop 을 --good/--bad 로 사상했다. 브라우저에서 실제로 값이
 먹는지 확인했다.
+
+── renewal_plan_v0.2 (2026-08-21)  [흡수됨]
+
+제품 초안(8월 13일). 선결 결정 D1~D7 을 담고 있었는데, 여덟 중 일곱이 이미 다른
+문서에서 "확정" 으로 다시 쓰여 있었다 — 같은 결정이 두 곳에 살면서 갈라지는
+출처였다. 실제로 D7(무료/유료)은 옛 안이 여기, 확정안이 access_and_pricing_v1 에
+따로 있었다.
+
+  D1  포지셔닝·계정      → access_and_pricing_v1
+  D1-b 교재 소스 전환     → 끝난 일(교재 교체 완료 · 권→급 코드 반영)
+  D2  상태 모델         → G2_shell_and_state_spec_v1 §1
+  D3  콘텐츠 단일 원본    → G1_item_schema_proposal_v1 · app/src/shared/data/README.md
+  D4  다국어 원칙        → G2_shell_and_state_spec_v1 §4
+  D5  디자인 시스템       → Shell_component_spec_uiux · build_spec_uiux
+  D6  음성·AI          → 미정. 게이트 G4 에 남았다
+  D7  프리미엄 경계       → access_and_pricing_v1 (옛 안은 폐기)
+
+다섯 문서가 D1~D7 이라는 이름으로 인용하므로, 그 이름의 뜻은
+../renewal_masterplan_v2.html §5 의 표가 쥔다. 그 표는 결말과 "지금 정의처" 만
+적고 내용을 다시 쓰지 않는다 — 다시 쓰면 또 갈라진다.
+
+교훈 — "권고" 문서를 남겨 두면 뒤에서 "확정" 이 나와도 옛 권고가 계속 인용된다.
+확정이 나오는 순간 권고 문서는 내려야 한다.
