@@ -123,6 +123,10 @@ cd app && python3 scripts/build-content.py --check  # 쓰지 않고 차이만 �
 `app/src/shared/data/n*.json` 은 **산출물이다. 손으로 고치지 마라** — 다음 생성에서
 지워진다. 고칠 것은 원장(xlsx)이다. 자세한 것은 `app/src/shared/data/README.md`.
 
+생성기는 **따옴표가 홀수인 한글 칸**도 같이 경고한다. 엑셀이 셀 맨 앞의 `'` 를
+서식 지시로 읽고 값에서 지우기 때문이다 — 실제로 해설 61개가 그 상태였다
+([BLOCKERS.md](BLOCKERS.md) §8).
+
 ### 문서 참조 검사
 
 ```bash

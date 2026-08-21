@@ -137,6 +137,29 @@ def carry(sheet, rows, prev):
     return derived
 
 
+def odd_quotes(sheet, rows):
+    """따옴표가 홀수인 한글 칸을 찾는다.
+
+    엑셀은 셀 맨 앞의 ' 를 "이건 텍스트다" 라는 서식 지시로 읽고 값에서 지운다.
+    그래서 저작자가 '연필'은 … 이라고 써도 연필'은 … 으로 저장된다.
+    실제로 n4_blank_question 의 해설 61개가 그 상태였다(2026-08-21 복원).
+
+    엑셀에서 그 칸을 다시 타이핑하면 또 먹히므로 생성할 때마다 본다.
+    영어 아포스트로피(I'm · o'clock · one's)는 정상이라, 한글이 절반을 넘는
+    칸만 센다.
+    """
+    out = []
+    for i, row in enumerate(rows, start=2):
+        for key, val in row.items():
+            if not isinstance(val, str) or val.count("'") % 2 == 0:
+                continue
+            hangul = sum(1 for ch in val if "가" <= ch <= "힣")
+            letters = sum(1 for ch in val if ch.isalpha())
+            if letters and hangul / letters > 0.5:
+                out.append((i, key, val))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", type=Path, default=None)
@@ -148,6 +171,7 @@ def main():
     print(f"대상  {OUT_DIR.relative_to(ROOT)}\n")
     wb = openpyxl.load_workbook(ledger, read_only=True, data_only=True)
 
+    warnings: list[tuple[str, int, str, str]] = []
     plan = [(s, f"{s}.json") for s in CONTENT_SHEETS] + list(EXTRA_SHEETS.items())
     for sheet, filename in plan:
         if sheet not in wb.sheetnames:
@@ -174,6 +198,18 @@ def main():
         if not args.check and not same:
             path.write_text(text, encoding="utf-8")
         print(f"  {sheet:<26}{delta:>14}행  {mark}{note}")
+
+        # 엑셀이 여는 따옴표를 먹었을 수 있다 — 위 odd_quotes 주석 참조
+        for line, key, val in odd_quotes(sheet, rows):
+            warnings.append((sheet, line, key, val))
+
+    if warnings:
+        print(f"\n⚠️  따옴표가 홀수인 한글 칸 {len(warnings)}개 — 엑셀이 여는 \' 를 먹었을 수 있다")
+        print("    셀 맨 앞의 \' 는 서식 지시로 읽혀 값에서 사라진다. 원장에서 되돌려라.")
+        for sheet, line, key, val in warnings[:10]:
+            print(f"    {sheet} {line}행 {key}: {val[:56]}")
+        if len(warnings) > 10:
+            print(f"    … 그 밖에 {len(warnings) - 10}개")
 
     print("\n앱이 아직 쓰지 않는 것:")
     for s in ["n7_mission_chat", "n8_jamo"]:
