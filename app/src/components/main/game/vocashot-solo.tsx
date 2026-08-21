@@ -1,7 +1,7 @@
 /**
  * VocaShot 혼자 하기
  *
- * 확정 목업(vocashot_play_uiux.html)의 화면과 규칙을 그대로 옮긴 것이다.
+ * 확정 목업(screens_uiux.html 의 VocaShot 절)의 화면과 규칙을 그대로 옮긴 것이다.
  * 기존 VocaShot 은 선생님이 방을 열고 여럿이 붙는 형태였고, 이건 혼자 하는 판이다.
  *
  * 규칙 — 목업 TUNING 그대로

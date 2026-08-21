@@ -130,12 +130,12 @@
   <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
   <tbody>
     <tr><td><b>활동 셸</b></td><td>G2 §1·3</td><td>Shell_component_spec_uiux · build_spec_uiux</td><td>shell_mockup_uiux</td><td>Phase1_dev_spec §2·5</td></tr>
-    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>mockup_read_v1</td><td>activity_mockups_uiux</td><td>api_schema_v1 §1</td></tr>
-    <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>같은 문서 §3·4</td><td>activity_mockups_uiux</td><td><span class="pill open">라우트 통합 대기</span></td></tr>
-    <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>nav_mockup_uiux</td><td>api_schema_v1 §4</td></tr>
-    <tr><td><b>교재학습</b></td><td>asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>nav_mockup_uiux</td><td>같은 문서 §06</td></tr>
+    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>mockup_read_v1</td><td>screens_uiux(활동)</td><td>api_schema_v1 §1</td></tr>
+    <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>같은 문서 §3·4</td><td>screens_uiux(활동)</td><td><span class="pill open">라우트 통합 대기</span></td></tr>
+    <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>screens_uiux(홈·목록)</td><td>api_schema_v1 §4</td></tr>
+    <tr><td><b>교재학습</b></td><td>asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>screens_uiux(홈·목록)</td><td>textbook_tab_spec_v1 §06</td></tr>
     <tr><td><b>게임 5종</b></td><td>asis_v1 §4</td><td>games_polish_v1</td><td>game_screens_uiux</td><td>기존 API 로 충분</td></tr>
-    <tr><td><b>VocaShot</b></td><td>vocashot_solo_spec_v1</td><td>같은 문서 §5</td><td>vocashot_play_uiux</td><td>기존 API 로 충분</td></tr>
+    <tr><td><b>VocaShot</b></td><td>vocashot_solo_spec_v1</td><td>같은 문서 §5</td><td>screens_uiux(VocaShot)</td><td>기존 API 로 충분</td></tr>
     <tr><td><b>표현클립</b></td><td>asis_v1 §5</td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td><td><span class="pill open">없음</span></td></tr>
     <tr><td><b>MY</b></td><td>my_learning_summary_v1</td><td>같은 문서 §4</td><td><span class="pill stop">없음</span></td><td>같은 문서 §4</td></tr>
     <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>같은 문서 §04·05</td><td><span class="pill stop">없음</span></td><td>같은 문서 §05</td></tr>
@@ -413,21 +413,29 @@
 <h2 id="s9"><span class="no">9</span>확정 디자인이 앱에 얼마나 들어갔나</h2>
 <div class="tablewrap"><table>
   <tr><th>목업</th><th>담당 범위</th><th class="n">CSS 규칙</th><th class="n">클래스</th><th>앱 반영</th></tr>
-  <tr><td><code>activity_mockups_uiux</code></td><td>활동 20화면 — 기본 8 · 자모 6 · 문항 밖 3 · 예외 3</td>
-      <td class="n">342</td><td class="n">168</td><td><span class="pill stop">0</span></td></tr>
+  <tr><td><code>screens_uiux</code> <b>활동 절</b></td><td>활동 20화면 — 기본 8 · 자모 6 · 문항 밖 3 · 예외 3</td>
+      <td class="n">342</td><td class="n">168</td><td><span class="pill ok">대조 22</span></td></tr>
   <tr><td><code>game_screens_uiux</code></td><td>게임 17화면</td>
-      <td class="n">315</td><td class="n">98</td><td><span class="pill stop">0</span></td></tr>
+      <td class="n">315</td><td class="n">98</td><td>구현됨 · 대조 밖</td></tr>
   <tr><td><code>shell_mockup_uiux</code></td><td>공통 셸</td>
       <td class="n">169</td><td class="n">84</td><td><span class="pill stop">0</span></td></tr>
-  <tr><td><code>vocashot_play_uiux</code></td><td>VocaShot 플레이</td>
-      <td class="n">156</td><td class="n">71</td><td><span class="pill stop">0</span></td></tr>
-  <tr><td><code>nav_mockup_uiux</code></td><td>하단 내비 · 홈 · 교재학습 · 자모</td>
-      <td class="n">139</td><td class="n">67</td><td><span class="pill stop">0</span></td></tr>
+  <tr><td>같은 문서 <b>VocaShot 절</b></td><td>VocaShot 플레이</td>
+      <td class="n">156</td><td class="n">71</td><td>구현됨 · 대조 밖</td></tr>
+  <tr><td>같은 문서 <b>홈·목록 절</b></td><td>하단 내비 · 홈 · 교재학습 · 자모</td>
+      <td class="n">139</td><td class="n">67</td><td><span class="pill ok">대조 5</span></td></tr>
   <tr><td><code>_superseded/vocashot_mockup_uiux</code></td><td>VocaShot 시작·결과</td>
       <td class="n">108</td><td class="n">57</td><td><span class="pill stop">0</span></td></tr>
 </table></div>
-<p><b>합쳐서 CSS 규칙 1,229개 · 클래스 545개.</b> 앱 소스에 이 클래스가 하나도 없다.
-   리뉴얼의 본체가 이것인데 <b>착수조차 안 된 상태</b>다.</p>
+<p><b>합쳐서 CSS 규칙 1,229개 · 클래스 545개.</b>
+   <b>이 절은 2026-08-19 실측이었고 그 뒤 뒤집혔다</b> — 그때는 앱 소스에 이 클래스가
+   하나도 없었다. 2026-08-21 다시 세면 <code>screens_uiux</code> 의 클래스 283개 중
+   <b>224개(79%)</b>가 앱 소스에 있다.
+   기계가 판정하는 것은 <code>pnpm parity:activity</code> 뿐이고 <b>27화면이 일치한다</b>
+   — 활동 22 + 내비 5.</p>
+<p><b>대조 밖에 캡처 20개가 서 있다</b> — <code>app/src/mockups/</code> 에 게임 17 ·
+   VocaShot 3 이 있는데 대조가 이 스무 개를 보지 않는다. 게임 5종과 VocaShot 은
+   앱에 구현돼 있으므로(<code>app/src/components/main/game/</code>) 남은 일은
+   <b>구현이 아니라 대조에 넣는 일</b>이다. 셸은 클래스 86개 중 25개(29%)만 앱에 있다.</p>
 
 <div class="card stop">
   <div class="t">이게 두 번째다</div>
@@ -481,7 +489,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <h3>0단계 — 읽기 <span class="pill">코드 쓰기 전</span></h3>
 <ol>
   <li><b>활동 20화면</b>을 화면별로 DOM 구조·실측 수치로 정리한다. 소스 빌더 함수를 읽는다(브라우저 순회는 느리다).</li>
-  <li><b>나머지 목업 다섯</b>(nav · shell · vocashot 둘 · game)도 같은 방식으로 훑는다.</li>
+  <li><b>나머지 목업</b>(screens_uiux 의 홈·목록·VocaShot 절 · shell · game)도 같은 방식으로 훑는다.</li>
   <li>정리 결과를 <b>먼저 보여 드린다</b> — 구조를 제대로 이해했는지 확인받고 나서 코드를 쓴다.</li>
   <li>§3 의 <b>어긋남 목록</b>을 확정한다. 특히 진행바 정오답 표시 여부.</li>
 </ol>

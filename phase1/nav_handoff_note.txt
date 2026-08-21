@@ -6,6 +6,8 @@
     nav_mockup_v1.html → _superseded/   nav_mockup_uiux.html 로 대체됐다
     home_asis_v1.html → _superseded/    asis_v1.html 로 합쳤다 (탭 다섯을 한 문서로)
     games_asis_v1.html → _superseded/   asis_v1.html 로 합쳤다 · 게임은 §4, 표현클립 §5, MY §6
+    activity_mockups_uiux.html → _superseded/   screens_uiux.html 의 활동 절로 합쳤다
+    nav_mockup_uiux.html → _superseded/         screens_uiux.html 의 홈·목록 절로 합쳤다
                                         (home_mockup_v1 도 여기로 흡수됐다)
 
 [연세 글로벌 앱 리뉴얼 — 홈·교재학습·자모 목록 인계]

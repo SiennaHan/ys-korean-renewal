@@ -191,3 +191,33 @@ renewal_masterplan_v2 · INDEX.md · nav_mockup_uiux(첫 줄 주석).
 
 app_asis_mockup_v1 은 여기 넣지 않았다 — 같은 주제(리뉴얼 전)지만 h2 가 없는
 인터랙티브 목업이라 합치는 기술이 다르다. 목업 묶음과 함께 다룬다.
+
+────────────────────────────────────────────────────────────
+2026-08-21 · 확정 목업 셋 → screens_uiux.html
+
+activity_mockups_uiux.html   → ../screens_uiux.html 의 활동 절 (#act)
+nav_mockup_uiux.html         → ../screens_uiux.html 의 홈·목록 절 (#nav)
+vocashot_play_uiux.html      → ../screens_uiux.html 의 VocaShot 절 (#voca)
+
+합칠 수 있다고 판단한 근거를 먼저 쟀다 — 셋이 같은 하네스를 쓰고(main.workbench >
+nav.controls > .device-wrap > #screen + aside.notes), :root 공유 변수 31~39개가
+값이 하나도 다르지 않고, 한쪽만 정의한 클래스가 다른 쪽 마크업에 새는 곳이
+여섯 방향 모두 0개였다. @keyframes 이름 충돌도 0.
+
+원본 스크립트는 한 글자도 고치지 않았다. 절마다 지역 document 를 씌워
+질의와 사건을 그 절 안으로 가뒀다 — 원본이 document.querySelectorAll('.option')
+처럼 문서 전체를 뒤지기 때문이다. 실제로 이걸 넣기 전에는 한 절에서 폭을 320 으로
+누르면 세 절의 폭이 함께 움직였다.
+
+고친 것은 하네스 id 넷뿐이다(device·screen·caption·spec → -act/-nav/-voca).
+화면 안쪽 id 는 건드리지 않았고, 그래서 아래 대조가 성립한다.
+
+검증: 조작 버튼을 하나씩 눌러 #screen 의 innerHTML 을 원본과 합친 것에서 각각
+떠서 길이·해시·캡션·spec 해시를 비교했다. 37개 상태(활동 25 · 홈·목록 9 ·
+VocaShot 3) 전부 같다. 한눈에 보기 모드(45KB)와 VocaShot 실제 플레이(운석·선택지
+4개·하트 5)도 따로 확인했다.
+
+주의 — 대조는 탭이 앞에 있어야 맞는다. bindScrollCues 가 requestAnimationFrame
+안에서 돌고 배경 탭에서는 rAF 가 늦어서, 스트립의 data-more-* 속성이 빠진 채로
+찍힌다. 배경 탭에서 재면 있지도 않은 차이가 보인다.
+vocashot_bank.js(문항 1149개)는 그대로 phase1/ 에 있다. screens_uiux 가 부른다.

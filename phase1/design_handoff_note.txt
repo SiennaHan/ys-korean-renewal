@@ -5,6 +5,7 @@
 
     activity_mockups_gaps.html → _superseded/   activity_mockups_uiux.html 로 흡수됐다
     build_spec_v1.html         → _superseded/   build_spec_uiux.html 로 대체됐다
+    activity_mockups_uiux.html → _superseded/   screens_uiux.html 의 활동 절로 합쳤다
 
 [연세 글로벌 앱 리뉴얼 — 목업 작업 인계]
 

@@ -1,5 +1,5 @@
 /**
- * 활동 화면 아이콘 — activity_mockups_uiux.html 의 icons 객체 그대로다.
+ * 활동 화면 아이콘 — screens_uiux.html(활동 절) 의 icons 객체 그대로다.
  *
  * lucide 로 바꾸지 않는다. viewBox·획 두께·끝 처리가 달라지면
  * .icon-control svg { width:24px; height:24px } 안에서 눈에 띄게 다르게 보인다.
