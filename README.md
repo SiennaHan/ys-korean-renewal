@@ -1,6 +1,6 @@
 # 연세 글로벌 한국어 — 리뉴얼
 
-학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 25개인데 **처음에 볼 것은 셋뿐이다.**
+학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 26개인데 **처음에 볼 것은 셋뿐이다.**
 
 무엇이 갖춰졌고 **무엇이 빠졌는지**는 정본 기획서 `phase1/renewal_masterplan_v2.html`
 **§2 덮개 지도**에 있다 — 영역 × 산출물 표이고 **빈 칸이 곧 빠진 기획이다.**
@@ -16,7 +16,7 @@
 전체 그림이 필요하면 **`phase1/renewal_masterplan_v2.html`**(정본 기획서) —
 덮개 지도(§2) · 게이트 현황(§5) · Phase 1 상태(§8) · 리스크(§13).
 
-나머지 22개는 **필요할 때 찾아 보는 참고서다.** 아래 표에서 물음으로 찾아라.
+나머지 23개는 **필요할 때 찾아 보는 참고서다.** 아래 표에서 물음으로 찾아라.
 
 ## 무엇을 알고 싶으면 어느 문서
 
@@ -28,6 +28,7 @@
 | CSS 규격 · 토큰 · 간격 | `build_spec_uiux` |
 | API 요청·응답 필드 | `api_schema_v1` |
 | **누가 무엇까지 볼 수 있나 — 무료/유료 경계 · 결제** | `access_and_pricing_v1` |
+| **교재학습 탭** — 활동으로 들어가는 유일한 길 | `textbook_tab_spec_v1` |
 | MY 누적 학습기록에 필요한 데이터 | `my_learning_summary_v1` |
 | 활동 12종이 각각 무엇이고 문항 스키마는 | `G1_activity_lineup_v2` · `G1_item_schema_proposal_v1` |
 | 자모 콘텐츠를 어떻게 저작하나 | `jamo_authoring_spec_v1` — **맨 위의 실측 정정을 먼저 읽어라** |
@@ -56,7 +57,7 @@
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
 | `admin/` | 어드민. 이번 리뉴얼 범위 밖이다 |
-| `phase1/` | 기획·명세·목업 HTML 25개 + `_superseded/` 22개.<br>그 밖에 인계 메모 넷(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
+| `phase1/` | 기획·명세·목업 HTML 26개 + `_superseded/` 22개.<br>그 밖에 인계 메모 넷(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
 **지금 배포돼 있는 버전의 참고본**이다. 저장소에 없고(`.gitignore`) 대조용으로만 쓴다.
