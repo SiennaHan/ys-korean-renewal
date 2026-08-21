@@ -7,6 +7,7 @@ import {
 import { SpeakerIcon } from "@/assets/icons";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import FlashcardResult from "@/components/learn/flashcard-result";
 import { env } from "@/config/env";
 import { flashcards } from "@/shared/data/flashcard";
 import { flashcard_words } from "@/shared/data/flashcard_word";
@@ -179,6 +180,8 @@ function RouteComponent() {
 	);
 
 	const navigate = useNavigate();
+	const [phase, setPhase] = useState<"cards" | "result">("cards");
+	const [runKey, setRunKey] = useState(0);
 	const router = useRouter();
 
 	const { bookId } = useFlashcardBookIdStore();
@@ -224,12 +227,12 @@ function RouteComponent() {
 		})
 	}
 
-	const goResult = () => {
-		navigate({
-			// 결과는 아직 구 경로다 — 명세 §4 는 셸 공통으로 접으라고 한다(이관 2단계)
-			to: `/book/chapter/unit/flashcard/result/${flashcardId}`,
-		})
-	}
+	/*
+	 * 결과는 라우트가 아니라 이 화면의 한 단계다 (명세 §4 — "결과는 셸 공통이라
+	 * 별도 라우트 폐지"). runKey 를 올리면 카드 화면이 서버 상태를 다시 읽는다 —
+	 * "모르는 단어만 다시" 가 repeat 를 심고 되돌아오기 때문이다.
+	 */
+	const goResult = () => setPhase("result")
 
 	/** dir: 1 = 알아요(오른쪽), -1 = 몰라요(왼쪽) */
 	const swipe = (dir: 1 | -1) => {
@@ -315,6 +318,7 @@ function RouteComponent() {
 		return () => sharedAudio.stop();
 	}, [sharedAudio]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 처음 한 번과 runKey 가 바뀔 때만 읽는다 — 나머지가 바뀌는 경우는 라우트 재마운트라 넣으면 같은 요청을 두 번 낸다
 	useEffect(() => {
 		const fetchData = async () => {
 			const _cardData =
@@ -364,7 +368,21 @@ function RouteComponent() {
 			}
 		}
 		fetchData();
-	}, []);
+		// runKey 가 바뀌면 다시 읽는다 — 결과에서 "다시" 로 돌아온 경우다
+	}, [runKey]);
+
+	if (phase === "result") {
+		return (
+			<FlashcardResult
+				flashcardId={flashcardId}
+				onClose={() => navigate({ to: "/main/textbook" })}
+				onRetry={() => {
+					setPhase("cards")
+					setRunKey((n) => n + 1)
+				}}
+			/>
+		)
+	}
 
 	return (
 		<div className="flex h-full flex-col bg-[#efefef]">
