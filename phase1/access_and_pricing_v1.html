@@ -117,6 +117,11 @@
   실제로 센 것이다.</p>
 </header>
 
+<p class="qa"><b>용어</b> — 앱 안에서는 <b>급</b>으로 쓴다(앱 i18n 이 이미
+<span class="file">{{level}}급 {{lesson}}과</span> 다). <b>권</b>은 실물 책을 가리킬 때만 쓴다.
+1급 = 1권으로 일대일이다. 데이터 필드명은 <span class="file">book_id</span> 그대로다 —
+DB 값이라 바꾸지 않는다.</p>
+
 <h2><span class="n">01</span>정한 것 세 줄</h2>
 <div class="tablewrap">
 <table>
@@ -124,7 +129,7 @@
   <tbody>
     <tr><td><b>무료 경계</b></td>
       <td>과 단위 맛보기. 표현클립은 전부 무료, 게임은 <b>VocaShot · 봄소풍만</b> 무료,
-        자모는 <b>첫 과만</b> 무료, 교재는 <b>각 권 한 과만</b> 무료</td></tr>
+        자모는 <b>첫 과만</b> 무료, 교재는 <b>각 급 한 과만</b> 무료</td></tr>
     <tr><td><b>유료분 여는 법</b></td>
       <td><b>앱 내 결제.</b> 책값과 앱 사용료는 별도다 — 책을 샀다는 사실이 앱을 열어 주지 않는다</td></tr>
     <tr><td><b>권한 출처</b></td>
@@ -138,11 +143,19 @@
 <div class="callout warn">
   <div class="t">책값과 앱 사용료가 별도라는 결정의 무게</div>
   <p>이 한 줄이 설계를 크게 바꾼다. <b>책 코드로 여는 방식이 전부 빠진다</b> —
-  <span class="file">ko_book_code</span> 도, 시리얼 발급도, 연세 쪽 인쇄 협의도 필요 없다.
-  대신 <b>앱스토어 수수료 15~30% 와 심사 규정이 들어온다.</b> §08 을 보라.</p>
+  <span class="file">ko_book_code</span> 도, 시리얼 발급도, 연세 쪽 인쇄 협의도 필요 없다.</p>
+  <p><b>이 앱은 웹앱이라 앱스토어가 개입하지 않는다.</b> Capacitor·Cordova·React Native
+  어느 것도 없고 <span class="file">ios/</span>·<span class="file">android/</span> 도 없다 —
+  Vercel 에 웹으로 배포한다. 그래서 <b>스토어 수수료 15~30% 도, 심사 규정도 없다.</b>
+  PG 를 직접 붙이면 되고 수수료는 3% 안쪽이다. §08 의 5번.</p>
   <p>그리고 <b>"사용료" 가 구독인지 한 번 사는 것인지가 아직 정해지지 않았다.</b>
   이것이 남은 물음 중 가장 큰 것이다 — §07 의 1번.</p>
 </div>
+
+<p class="qa"><b>예전 제안을 대체한다</b> — <span class="file">renewal_plan_v0.2.html</span> 의
+D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 제안했고 QR 을 라이선스 키로
+쓰는 안을 담고 있었다. 확정된 것은 <b>무료가 훨씬 좁고</b>(각 급 한 과) <b>QR 은 결제와 무관하다.</b>
+그쪽 D7 절 머리에 대체 표시를 붙여 두었다.</p>
 
 <h2><span class="n">02</span>무료로 여는 것</h2>
 <p>계정 없이, 로그인 없이 바로 볼 수 있는 범위다. 앞서 만든
@@ -162,38 +175,38 @@
     <tr><td><b>자모</b></td><td><b>첫 과만</b></td>
       <td>원장 <span class="file">n8_jamo</span> 의 <span class="file">chapter 1</span> =
         <b>190문항</b> (전체 529 중 <b>36%</b>). §07 의 4번을 보라 — 맛보기치고 크다</td></tr>
-    <tr><td><b>교재</b></td><td><b>각 권 한 과만</b></td>
-      <td>8권 × 1과 = <b>8과</b> / 전체 120과. 문항으로는 <b>472 / 7,305 = 6.5%</b></td></tr>
+    <tr><td><b>교재</b></td><td><b>각 급 한 과만</b></td>
+      <td>8급 × 1과 = <b>8과</b> / 전체 120과. 문항으로는 <b>472 / 7,305 = 6.5%</b></td></tr>
   </tbody>
 </table>
 </div>
 
-<h3>맛보기 과의 실측 — 권마다 무엇이 몇 개 열리나</h3>
+<h3>맛보기 과의 실측 — 급마다 무엇이 몇 개 열리나</h3>
 <div class="tablewrap">
 <table>
-  <thead><tr><th>권</th><th>맛보기 과</th><th>어휘</th><th>어휘퀴즈</th><th>역할극</th><th>듣고답</th><th>듣기지문</th><th>빈칸</th><th>읽고답</th></tr></thead>
+  <thead><tr><th>급</th><th>맛보기 과</th><th>어휘</th><th>어휘퀴즈</th><th>역할극</th><th>듣고답</th><th>듣기지문</th><th>빈칸</th><th>읽고답</th></tr></thead>
   <tbody>
-    <tr><td>1권</td><td><b>4과</b> 제 이름은 유리예요</td><td>15</td><td>9</td><td>9</td><td>3</td><td>4</td><td>6</td><td>5</td></tr>
-    <tr><td>2권</td><td>1과 저는 회사원입니다</td><td>17</td><td>10</td><td>9</td><td>5</td><td>3</td><td>9</td><td>4</td></tr>
-    <tr><td>3권</td><td>1과 한국에 오기 전에…</td><td>19</td><td>8</td><td>6</td><td>5</td><td>3</td><td>7</td><td>4</td></tr>
-    <tr><td>4권</td><td>1과 한국말을 배운 지 6개월…</td><td>22</td><td>7</td><td>6</td><td>9</td><td>4</td><td>7</td><td>3</td></tr>
-    <tr><td>5권</td><td>1과 한국 대학교에서…</td><td>16</td><td>10</td><td>16</td><td>6</td><td>3</td><td>7</td><td>3</td></tr>
-    <tr><td>6권</td><td>1과 전망은 이 방만 못하지만…</td><td>14</td><td>9</td><td>6</td><td>4</td><td>4</td><td>7</td><td>3</td></tr>
-    <tr><td>7권</td><td>1과 유학생활</td><td>21</td><td>10</td><td>8</td><td>8</td><td>3</td><td>7</td><td>3</td></tr>
-    <tr><td>8권</td><td>1과 남성과 여성</td><td>51</td><td>9</td><td>8</td><td>5</td><td>3</td><td>7</td><td>3</td></tr>
+    <tr><td>1급</td><td><b>4과</b> 제 이름은 유리예요</td><td>15</td><td>9</td><td>9</td><td>3</td><td>4</td><td>6</td><td>5</td></tr>
+    <tr><td>2급</td><td>1과 저는 회사원입니다</td><td>17</td><td>10</td><td>9</td><td>5</td><td>3</td><td>9</td><td>4</td></tr>
+    <tr><td>3급</td><td>1과 한국에 오기 전에…</td><td>19</td><td>8</td><td>6</td><td>5</td><td>3</td><td>7</td><td>4</td></tr>
+    <tr><td>4급</td><td>1과 한국말을 배운 지 6개월…</td><td>22</td><td>7</td><td>6</td><td>9</td><td>4</td><td>7</td><td>3</td></tr>
+    <tr><td>5급</td><td>1과 한국 대학교에서…</td><td>16</td><td>10</td><td>16</td><td>6</td><td>3</td><td>7</td><td>3</td></tr>
+    <tr><td>6급</td><td>1과 전망은 이 방만 못하지만…</td><td>14</td><td>9</td><td>6</td><td>4</td><td>4</td><td>7</td><td>3</td></tr>
+    <tr><td>7급</td><td>1과 유학생활</td><td>21</td><td>10</td><td>8</td><td>8</td><td>3</td><td>7</td><td>3</td></tr>
+    <tr><td>8급</td><td>1과 남성과 여성</td><td>51</td><td>9</td><td>8</td><td>5</td><td>3</td><td>7</td><td>3</td></tr>
   </tbody>
 </table>
 </div>
 
 <div class="callout bad">
-  <div class="t">1권만 4과다 — "각 권 1과" 를 그대로 쓰면 맛보기가 빈 화면이 된다</div>
-  <p><b>1권의 1·2·3과는 한글(1)(2)(3) 즉 자모 과다.</b> 일반 활동 콘텐츠가
+  <div class="t">1급만 4과다 — "각 급 1과" 를 그대로 쓰면 맛보기가 빈 화면이 된다</div>
+  <p><b>1급의 1·2·3과는 한글(1)(2)(3) 즉 자모 과다.</b> 일반 활동 콘텐츠가
   <b>하나도 없다</b> — 어휘 0 · 어휘퀴즈 0 · 역할극 0 · 듣고답하기 0 · 빈칸 0 · 읽고답하기 0
   (듣기지문 1개만 있고 그것도 자모 음성이다). 일반 활동은 <b>4과부터</b> 시작한다.</p>
   <p>그래서 무료 과를 <b>"seq == 1" 같은 계산식으로 정하면 안 된다.</b>
-  1권만 4과로 예외를 두어야 하고, 예외는 코드가 아니라 <b>데이터로</b> 들어가야 한다 —
+  1급만 4과로 예외를 두어야 하고, 예외는 코드가 아니라 <b>데이터로</b> 들어가야 한다 —
   <span class="file">ko_chapter.is_free</span> 플래그 한 칸. 그러면 나중에 마케팅이
-  "이번 달은 5권 3과도 열자" 고 할 때 배포 없이 바꾼다.</p>
+  "이번 달은 5급 3과도 열자" 고 할 때 배포 없이 바꾼다.</p>
 </div>
 
 <h2><span class="n">03</span>유료로 닫는 것</h2>
@@ -205,8 +218,8 @@
       듣고답하기 634 · 듣기지문 351 · 빈칸 779 · 읽고답하기 355 = <b>6,833문항 (93.5%)</b></td></tr>
     <tr><td><b>자모 2·3과</b></td><td>339문항 (272 + 67)</td></tr>
     <tr><td><b>게임 3종</b></td><td>조사 저격 · 카드 분류 · 서울 퍼즐</td></tr>
-    <tr><td><b>플래시카드</b></td><td>12세트 327장 — <b>전부 1권 것이다.</b> §07 의 5번</td></tr>
-    <tr><td><b>미션챗</b></td><td>117모듈. 8권 전체에 15과씩 고르게 있다</td></tr>
+    <tr><td><b>플래시카드</b></td><td>12세트 327장 — <b>전부 1급 것이다.</b> §07 의 5번</td></tr>
+    <tr><td><b>미션챗</b></td><td>117모듈. 8급 전체에 15과씩 고르게 있다</td></tr>
     <tr><td><b>발음 리포트 · 복습 큐 · 누적 학습기록</b></td>
       <td>결과물이 쌓이는 것들. 계정이 있어야 의미가 있으니 자연히 유료 쪽이다</td></tr>
   </tbody>
@@ -225,8 +238,8 @@
 
 <pre style="background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.6"><code>{
   "source": "purchase",        // guest | school | purchase
-  "books":  [1, 2],            // 열린 권
-  "chapters": {                // 권 안에서 예외로 열린 과 (무료 맛보기)
+  "books":  [1, 2],            // 열린 급
+  "chapters": {                // 급 안에서 예외로 열린 과 (무료 맛보기)
     "3": [1], "4": [1], "5": [1], "6": [1], "7": [1], "8": [1]
   },
   "jamo_chapters": [1],
@@ -247,15 +260,16 @@
       <td>user_id · source · book_id · expires_at · created_at.
         판정 결과가 아니라 <b>권한 사실</b>을 쌓는다. 학교 계약도 여기 한 줄로 들어온다</td></tr>
     <tr><td>DB</td><td><span class="file">ko_purchase</span></td>
-      <td>영수증 원본 · 스토어(ios/android/web) · 상품 id · 상태(정상/환불) ·
-        검증 시각. 환불 추적에 필요하다</td></tr>
+      <td>PG 거래 id · 결제수단 · 상품 id · 금액·통화 · 상태(정상/환불) · 웹훅 원본.
+        환불 추적과 대조에 필요하다</td></tr>
     <tr><td>DB</td><td><span class="file">ko_chapter.is_free</span></td>
-      <td>무료 과를 데이터로. §02 의 1권 예외가 이 칸에 들어간다</td></tr>
+      <td>무료 과를 데이터로. §02 의 1급 예외가 이 칸에 들어간다</td></tr>
     <tr><td>API</td><td><span class="file">GET /entitlement</span></td>
       <td>§04. 게스트 토큰도 받는다</td></tr>
-    <tr><td>API</td><td><span class="file">POST /purchase/verify</span></td>
-      <td>스토어 영수증을 서버에서 검증하고 <span class="file">ko_entitlement</span> 를 채운다.
-        <b>앱이 "샀다" 고 말하는 것을 믿으면 안 된다</b></td></tr>
+    <tr><td>API</td><td><span class="file">POST /purchase/webhook</span></td>
+      <td>PG 가 결제 완료를 서버로 알린다. 그때 <span class="file">ko_entitlement</span> 를 채운다.
+        <b>앱이 "샀다" 고 말하는 것을 믿으면 안 된다</b> — 판정은 웹훅과 서버 조회로만 한다.
+        웹훅 서명 검증은 필수다</td></tr>
     <tr><td>API</td><td><span class="file">POST /user/sign/up</span></td>
       <td><b>학생 자체 회원가입이 지금 없다.</b> §08 의 1번</td></tr>
     <tr><td>API</td><td>게임 콘텐츠 6개 라우트에 인증·권한</td>
@@ -279,7 +293,7 @@
     <tr><td><b>기관 학생</b></td><td>학교 계약 범위</td>
       <td>계약 밖 → <b>"학교에 문의" 문구.</b> 결제 화면을 띄우면 안 된다 —
         이미 학교가 낸 돈이다</td></tr>
-    <tr><td><b>개인 결제</b></td><td>산 권 전부</td><td>—</td></tr>
+    <tr><td><b>개인 결제</b></td><td>산 급 전부</td><td>—</td></tr>
   </tbody>
 </table>
 </div>
@@ -290,24 +304,24 @@
 
 <h2><span class="n">07</span>아직 정해야 할 것</h2>
 <ol class="path">
-  <li><div><div class="h">구독인가, 권별로 한 번 사는 것인가 <span class="pill stop">가장 큰 것</span></div>
+  <li><div><div class="h">구독인가, 급별로 한 번 사는 것인가 <span class="pill stop">가장 큰 것</span></div>
     <div class="d"><b>"앱 사용료" 라는 말은 구독처럼 읽힌다.</b> 하지만 책이 8권으로 나뉘어 팔리니
-    권별 구매도 자연스럽다. 이건 §04 의 <span class="file">expires_at</span> 이 쓰이는지 여부,
-    §05 의 <span class="file">ko_entitlement</span> 가 권 단위인지 기간 단위인지,
+    급별 구매도 자연스럽다. 이건 §04 의 <span class="file">expires_at</span> 이 쓰이는지 여부,
+    §05 의 <span class="file">ko_entitlement</span> 가 급 단위인지 기간 단위인지,
     그리고 환불·복원 규칙 전부를 바꾼다.
-    <b>내 권고 — 권별 구매.</b> 책 한 권을 떼는 사람의 리듬과 맞고, 구독은
-    한 권 끝내고 쉬는 사람에게 벌을 준다. 다만 8권을 다 사면 비싸 보이므로
-    <b>전권 묶음</b>을 같이 둔다.</div></div></li>
+    <b>내 권고 — 급별 구매.</b> 책 한 권을 떼는 사람의 리듬과 맞고, 구독은
+    한 권 끝내고 쉬는 사람에게 벌을 준다. 다만 8급을 다 사면 비싸 보이므로
+    <b>전 급 묶음</b>을 같이 둔다.</div></div></li>
   <li><div><div class="h">게스트 진행을 서버에 남기나</div>
     <div class="d">남기면 로그인할 때 <span class="file">migrateGuestData</span> 가 실제로 돌아야 한다 —
     <b>그 경로는 한 번도 실행된 적이 없다.</b> 기기에만 두면 옮길 것이 없어 간단하지만
     게스트가 앱을 지우면 사라진다.
     <b>내 권고 — 서버에 남긴다.</b> 무료 범위가 좁으니 양이 적고,
     "지운 게 아까워서" 가 결제 이유가 된다.</div></div></li>
-  <li><div><div class="h">기관 학생의 범위는 전 권인가, 계약한 권인가</div>
+  <li><div><div class="h">기관 학생의 범위는 전 급인가, 계약한 급인가</div>
     <div class="d">지금 <span class="file">ko_school</span> 에는 계약 범위를 담는 칸이 없다.
-    전 권으로 하면 단순하지만 1급 수업만 하는 학교에도 8권을 주는 것이다.
-    <b>내 권고 — 계약한 권.</b> <span class="file">ko_school.books</span> 한 칸을 더한다.</div></div></li>
+    전 권으로 하면 단순하지만 1급 수업만 하는 학교에도 8급을 주는 것이다.
+    <b>내 권고 — 계약한 급.</b> <span class="file">ko_school.books</span> 한 칸을 더한다.</div></div></li>
   <li><div><div class="h">자모 "첫 과" 를 chapter 1 로 볼지</div>
     <div class="d"><span class="file">n8_jamo</span> 의 <span class="file">chapter 1</span> 은
     <b>190문항 = 전체의 36%</b> 다. 맛보기라는 말보다 크다. 더 좁히려면
@@ -315,9 +329,9 @@
     다른 무료 비율과 나란해진다.
     <b>내 권고 — 자모는 chapter 1 그대로 넉넉히 둔다.</b> 한글을 처음 배우는 사람은
     아직 이 앱을 살 이유를 모르는 사람이고, 여기서 막으면 그 사람을 잃는다.</div></div></li>
-  <li><div><div class="h">플래시카드가 1권에만 있다</div>
-    <div class="d">12세트 327장이 <b>전부 1권 것</b>이다. 2~8권을 산 사람은 플래시카드가 없다.
-    권마다 값이 달라지는데 값을 같게 받을지, 아니면 2~8권 플래시카드를 만들지 정해야 한다.
+  <li><div><div class="h">플래시카드가 1급에만 있다</div>
+    <div class="d">12세트 327장이 <b>전부 1급 것</b>이다. 2~8급을 산 사람은 플래시카드가 없다.
+    급마다 값이 달라지는데 값을 같게 받을지, 아니면 2~8급 플래시카드를 만들지 정해야 한다.
     <b>기획 쪽 물음이다 — 콘텐츠 제작 여부가 걸린다.</b></div></div></li>
 </ol>
 
@@ -350,13 +364,20 @@
     <span class="file">text_id → chapter</span> 로 조인해야 한다.
     <b>다른 여섯 세트는 (book_id, chapter) 를 직접 들고 있다</b> —
     이것만 예외이므로 게이팅 코드에서 빠뜨리기 쉽다.</div></div></li>
-  <li><div><div class="h">앱스토어 심사 — 웹 결제로 빼돌리면 반려된다</div>
-    <div class="d">앱 내에서 파는 디지털 콘텐츠는 스토어 결제를 써야 하고
-    <b>외부 결제 링크를 앱에서 안내하면 심사에서 걸린다.</b> 수수료 15~30% 를
-    가격에 미리 넣어야 하고, <b>"이미 샀어요" 복원 기능은 심사 필수 항목</b>이다.
-    한국은 인앱결제 강제 금지법이 있어 웹 결제를 병행할 여지가 있지만
-    글로벌 배포에서는 스토어 규정이 이긴다 — <b>이건 확인이 필요한 대목이고
-    내가 단정할 수 있는 부분이 아니다.</b></div></div></li>
+  <li><div><div class="h">결제는 PG 직접 연동 — 스토어가 개입하지 않는다</div>
+    <div class="d"><b>이 앱은 웹앱이다.</b> 네이티브 래퍼가 없으므로(확인함)
+    스토어 수수료도 심사도 없다. PG 를 직접 붙인다 — <b>결제 통화가 갈린다</b>:
+    글로벌 학습자(영·일·중·베 5개 언어를 쓰는 앱이다)에게는
+    <span class="file">Stripe</span> 가 통화·카드 범위가 넓고,
+    국내 결제는 <span class="file">토스페이먼츠</span>·<span class="file">포트원</span> 쪽이
+    간편결제를 덮는다. <b>둘 다 붙이거나 포트원처럼 여러 PG 를 묶는 것을 쓰는 것이
+    현실적이다.</b>
+    <br><br>스토어가 빠져도 남는 것 셋 — ① <b>복원("이미 샀어요")</b> 은 스토어 규정 때문이
+    아니라 사용자가 기기를 바꾸기 때문에 필요하다. 계정에 권한을 붙이면 자연히 해결된다.
+    ② <b>해외 결제 세금</b>(EU VAT · 각국 디지털 서비스세)은 웹 결제일 때 <b>우리가</b> 진다 —
+    스토어가 대신 처리해 주던 부분이다. Stripe Tax 같은 것을 켜야 한다.
+    ③ 나중에 스토어에 앱으로 감싸 올릴 계획이 생기면 <b>그때 규정이 들어온다</b> —
+    지금 웹 결제로 지어 두고 그때 다시 판단하면 된다.</div></div></li>
   <li><div><div class="h">표현클립을 무료로 여는 것의 라이선스</div>
     <div class="d">329편이 유튜브 임베드다. 임베드 자체는 원저작자가 허용한 범위이지만
     <b>스크립트를 우리가 붙여 놓았다</b>(<span class="file">script</span> ·
@@ -367,7 +388,7 @@
 <h2><span class="n">09</span>만드는 순서</h2>
 <div class="cards">
   <div class="card"><div class="k">1</div><div class="nm">경계를 데이터로</div>
-    <div class="d"><span class="file">ko_chapter.is_free</span> 를 더하고 8과(1권은 4과)를 표시.
+    <div class="d"><span class="file">ko_chapter.is_free</span> 를 더하고 8과(1급은 4과)를 표시.
       아직 잠그지 않는다 — 값만 채운다</div></div>
   <div class="card"><div class="k">2</div><div class="nm">GET /entitlement</div>
     <div class="d">게스트·로그인 둘 다 받는다. 이 단계에서는 늘 무료 범위만 낸다</div></div>
@@ -375,13 +396,14 @@
     <div class="d">보이되 잠근다. 문구 넷을 5개 언어로. 결제 없이도 여기까지가 온전한 제품이다</div></div>
   <div class="card"><div class="k">4</div><div class="nm">학생 자체 회원가입</div>
     <div class="d">§08 의 1번. 결제보다 먼저다 — 계정 없이 결제하면 기기를 바꿀 때 잃는다</div></div>
-  <div class="card"><div class="k">5</div><div class="nm">결제와 영수증 검증</div>
-    <div class="d">§07 의 1번(구독/권별)이 정해진 뒤에 시작한다. 복원 기능을 같이 만든다</div></div>
+  <div class="card"><div class="k">5</div><div class="nm">PG 연동과 웹훅</div>
+    <div class="d">§07 의 1번(구독/급별)이 정해진 뒤에 시작한다. 웹훅 서명 검증 ·
+      해외 결제 세금 · 기기를 바꿔도 되는 복원을 같이 만든다</div></div>
   <div class="card"><div class="k">6</div><div class="nm">서버 쪽 실제 차단</div>
     <div class="d">게임 6라우트 + 교재 콘텐츠 API 에 권한. 화면 잠금만으로는 잠금이 아니다</div></div>
 </div>
 
 <p class="qa">1~3 은 §07 의 물음이 답을 기다리지 않아도 된다 — 무료 경계가 이미 정해졌으니
-지금 시작할 수 있다. <b>4~6 은 구독/권별이 정해져야 시작한다.</b></p>
+지금 시작할 수 있다. <b>4~6 은 구독/급별이 정해져야 시작한다.</b></p>
 
 </main>
