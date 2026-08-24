@@ -469,6 +469,31 @@ def main() -> int:
                     f'id="{mid.group(1)}" 인데 라벨은 {want[1:]} 다'
                 )
 
+    # ── 2d. 링크 대상이 실제로 있나.
+    # 이 검사기는 본문을 태그 제거해서 읽는다 — 그래서 href 안의 파일 이름을
+    # 한 번도 본 적이 없었다. 실제로 shell_spec_v1 이 옮겨간 문서를 두 곳
+    # 링크하고 있었고 검사 여덟 개가 다 통과했다. 링크는 사람이 바로 부딪히는 곳이다.
+    for f in sorted(HERE.glob("*.html")):
+        # <style>·<script> 안의 문자열은 링크가 아니다 (CSS 선택자 a[href=…] ·
+        # JS 템플릿 src="${…}"). 먼저 떼어낸다.
+        raw_html = re.sub(r"<(script|style)\b.*?</\1>", " ",
+                          f.read_text(encoding="utf-8", errors="replace"), flags=re.S | re.I)
+        for attr in ("href", "src"):
+            for m in re.finditer(rf'{attr}="([^"]+)"', raw_html):
+                t = m.group(1).strip()
+                if "${" in t or t.startswith("/"):
+                    continue
+                if not t or t.startswith(("http://", "https://", "#", "mailto:", "data:", "//", "javascript:")):
+                    continue
+                target = t.split("#")[0].split("?")[0]
+                if not target:
+                    continue
+                if not (f.parent / target).exists():
+                    ctx = re.sub(r"\s+", " ", strip_tags(raw_html[max(0, m.start() - 70):m.end() + 30])).strip()
+                    problems.append(
+                        f"[죽은 링크] {f.stem} 의 {attr}=\"{t}\" — 그 파일이 없다\n           …{ctx}…"
+                    )
+
     # ── 3. 고아
     # 메모는 문이 아니다 — 메모만 가리키는 문서는 여전히 고아로 본다
     for n in sorted(live):

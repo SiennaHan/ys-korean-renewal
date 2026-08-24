@@ -554,7 +554,7 @@
 <header class="doc">
   <div class="eyebrow">Phase 1 · UI/UX 대안 확정</div>
   <h1>플레이어 공통 셸 — UI/UX 컴포넌트 명세</h1>
-  <div class="meta">2026-08-17 · <b>기존 v1과 별도로 관리하는 구조 변경안</b> · 구현 기준은 <a href="build_spec_uiux.html">Phase 1 구현 사양 UI/UX</a>, 셸은 <a href="shell_mockup_uiux.html">셸 목업 UI/UX</a>, 활동 예시는 <a href="activity_mockups_uiux.html">활동 8종 확정 목업</a></div>
+  <div class="meta">2026-08-17 · <b>기존 v1과 별도로 관리하는 구조 변경안</b> · 구현 기준은 <b>이 문서 값 §21~§34</b>, 셸 화면은 <a href="shell_mockup_uiux.html">셸 목업 UI/UX</a>, 활동 예시는 <a href="screens_uiux.html#act">활동 확정 목업</a></div>
 </header>
 
 <div class="callout good">
@@ -1478,7 +1478,7 @@ y=648  마이크 영역                  360×92
   <div class="eyebrow">UI/UX 구현 사양 · 별도안</div>
   <h1>플레이어 공통 셸 — UI/UX</h1>
   <p class="lead">학습 활동 8종이 공유하는 화면 껍데기. <b>확정된 값만 담았다</b> —
-     판단 근거와 검토 이력은 <a href="Shell_component_spec_uiux.html">UI/UX 컴포넌트 명세</a>와
+     판단 근거와 검토 이력은 <b>이 문서 구조 §11~§20</b> 과
      <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2</a>에 있다.
      <b>이 문서에 적힌 숫자와 규칙이 최종</b>이며, 다른 문서와 어긋나면 이 문서를 따른다.</p>
 </header>
@@ -1868,7 +1868,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
        재진입하면 <b>이전 대화가 남아 있어</b> 새로 말할 수가 없다.
        클라이언트 상태를 비우는 것으로는 해결되지 않는다.</p>
     <p><b>지우는 API는 이미 있다</b> — <code>POST /dialog/{dialogId}/reset</code>
-       (<code>api/chat.ts</code>의 <code>resetDialog()</code>).
+       (<code>app/src/api/chat.ts</code>의 <code>resetDialog()</code>).
        <b>다만 이걸 부르는 화면이 현재 하나도 없어</b> 죽어 있는 함수다.
        결과 화면의 [다시 풀기]에 연결하면 된다 — <b>신규 API 불필요</b>.</p>
     <div class="tablewrap"><table>
