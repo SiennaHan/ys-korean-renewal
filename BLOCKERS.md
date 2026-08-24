@@ -213,7 +213,7 @@ grep -rn 'to: "/\(flashcard\|missionchat\|jamolist\|about\)"' app/src --include=
 
 ## 5. 목업과 다르게 간 여섯 곳 · 문서 미반영
 
-`phase1/handoff_v2.html` §03 이 **"구현이 목업과 다르면 목업이 기준"** 이라고 못박았다.
+`phase1/masterplan_v3.html` §16 이 **"구현이 목업과 다르면 목업이 기준"** 이라고 못박았다.
 아래 여섯은 그 기준을 **의도적으로 벗어났고**, 지금 문서는 목업 쪽을 말한다.
 근거는 커밋 메시지에 있다.
 
@@ -230,7 +230,7 @@ grep -rn 'to: "/\(flashcard\|missionchat\|jamolist\|about\)"' app/src --include=
 `.grammar-note` · `.catalog-empty` · `.preview-extra` · `.canvas-host` ·
 `.record-card .heard .miss` · 진행막대 `.seg`. 각 규칙 위에 왜 만들었는지 적어 두었다.
 
-**하루치 결정은 `phase1/handoff_v2.html` §03 · §04 에 반영했다.**
+**하루치 결정은 `phase1/masterplan_v3.html` §16 · §04 에 반영했다.**
 아래 명령으로 근거를 볼 수 있다.
 
 ```bash
