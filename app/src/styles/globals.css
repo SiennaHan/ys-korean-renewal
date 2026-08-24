@@ -1,12 +1,30 @@
+/*
+ * @import 는 전부 이 위쪽에 붙여 둔다 — CSS 명세가 @import 를 다른 규칙보다
+ * 앞에 두라고 요구하고, 뒤에 있으면 **조용히 무시된다.**
+ *
+ * biome 의 noInvalidPositionAtImportRule 6건이 이 순서를 가리키고 있었다
+ * (2026-08-24). 다섯은 Tailwind 가 인라인해 주고 있어 결과가 같았지만, 여섯째는
+ * 진짜였다 — 아래 "폰트는 여기서 못 불러온다" 참고.
+ *
+ * 폰트는 여기서 못 불러온다 — Pretendard 는 index.html 의 <link> 다
+ *   전에 이 파일 맨 끝에 @import url("…jsdelivr…/pretendard.css") 가 있었다.
+ *   빌드 CSS 에 @font-face 가 0개였고 <link> 도 폰트 파일도 없어서
+ *   **프로덕션에서 Pretendard 가 아예 로드되지 않았다** — 목업이 지정한 폰트인데
+ *   시스템 sans-serif 로 그려지고 있었다.
+ *   맨 위로 올려도 그대로였다. Tailwind v4 의 import 해석기가 **원격 @import 를
+ *   위치와 무관하게 버린다**(옮긴 뒤 빌드 산출물이 바이트까지 같았다).
+ *   그래서 index.html 의 <link> 로 옮겼다. 목업 캡처들도 Exo 2 를 그렇게 부른다.
+ */
 @import "tailwindcss";
-/* 캡처한 목업 마크업의 임의값 클래스(bg-[#060612] 등)를 Tailwind 가 보게 한다.
-   .ts 안의 JSON 문자열은 추출기가 못 읽어서 .html 원본을 스캔 대상으로 둔다. */
-@source "../mockups/*.html";
 @import "./tokens.css";
 @import "./activity.css";
 @import "./nav.css";
 @import "./game.css";
 @import "./vocashot.css";
+
+/* 캡처한 목업 마크업의 임의값 클래스(bg-[#060612] 등)를 Tailwind 가 보게 한다.
+   .ts 안의 JSON 문자열은 추출기가 못 읽어서 .html 원본을 스캔 대상으로 둔다. */
+@source "../mockups/*.html";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,8 +32,6 @@
 @plugin 'tailwindcss-animate';
 
 @custom-variant dark (&:is(.dark *));
-
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
 
 :root {
 	--background: oklch(1 0 0);

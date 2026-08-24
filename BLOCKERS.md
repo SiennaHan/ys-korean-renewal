@@ -896,7 +896,36 @@ pnpm build            # 통과 — §1 에서 고쳤다
 
 `noUnsafeFinally` 2건과 `noInvalidPositionAtImportRule` 6건은 **취향이 아니라 버그
 종류다** — `finally` 안의 `return` 이 예외를 삼키고, CSS `@import` 가 규칙 뒤에 있으면
-무시된다. 여기부터 보는 것이 값이 크다.
+무시된다. 여기부터 봤고, **@import 쪽에서 진짜 버그가 나왔다.**
+
+### @import 6건을 봤더니 폰트가 안 실려 있었다 (2026-08-24)
+
+`globals.css` 의 `@import` 여섯이 다른 규칙 뒤에 있었다. 다섯(`tokens`·`activity`·
+`nav`·`game`·`vocashot`)은 **Tailwind 가 인라인해 줘서 결과가 맞았다** — 빌드 CSS 에
+`.pc-wrong-play` 같은 규칙이 실제로 들어 있는 것으로 확인했다.
+
+**여섯째가 진짜였다.** 파일 맨 끝에 Pretendard 를 부르는
+`@import url("…jsdelivr…/pretendard.css")` 가 있었는데,
+
+* 빌드 CSS 의 `@font-face` 가 **0개**였다
+* `index.html` 에 폰트 `<link>` 가 없었다
+* 저장소에 폰트 파일(`.woff*`)이 하나도 없었다
+
+즉 **프로덕션에서 Pretendard 가 아예 로드되지 않았다.** 목업이 지정한 폰트이고
+`tokens.css` 의 `--font-sans` 첫 항목인데, 실제로는 그다음 폴백
+(`Apple SD Gothic Neo` → 시스템 sans)으로 그려지고 있었다. macOS 에서는 한글이
+멀쩡해 보여서 눈에 안 띄었다.
+
+**맨 위로 올리는 것으로는 안 고쳐졌다.** 옮긴 뒤 빌드 산출물이 **바이트까지 같았다**
+(파일 해시 동일) — Tailwind v4 의 import 해석기가 **원격 `@import` 를 위치와 무관하게
+버린다.** 그래서 `index.html` 의 `<link>` 로 옮겼다(+`preconnect`). 목업 캡처들도
+Exo 2 를 `<link>` 로 부른다.
+
+확인한 것 — CDN 이 `@font-face` 9개를 200 으로 주고, 브라우저에서
+`document.fonts.size` 가 **0 → 9**, 실제로 쓰는 400·500·700 이 `loaded`,
+`document.fonts.check("700 16px Pretendard")` 가 `true`, 캔버스 글자폭이 폴백과 다르다.
+
+`biome check` 는 220 → **214건**이 됐다. `noInvalidPositionAtImportRule` 0.
 
 
 i18n 은 5개 로케일 **300키**가 일치한다(en·ja·ko·vi·zh 전부 300).
