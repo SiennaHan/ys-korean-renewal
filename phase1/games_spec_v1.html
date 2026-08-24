@@ -671,7 +671,7 @@ complete 그 장소 완료</pre>
 <div class="callout">
   <div class="t">띄우는 데 걸린 것 셋 — <b>다음에 또 띄울 때를 위해</b></div>
   <ol>
-    <li><code>npm install</code> 이 필요하다(<code>node_modules</code> 가 없다). 266개 · 39초.</li>
+    <li><code>pnpm install</code> 이 필요하다(<code>node_modules</code> 가 없다). 266개 · 39초. <b><code>npm install</code> 로 하지 마라</b> — <code>package-lock.json</code> 이 생기면 프로덕션 빌드가 깨진다(<code>../BLOCKERS.md</code> §1).</li>
     <li><b><code>.env</code> 에 <code>PUBLIC_*</code> 여덟 개를 다 채워야 한다.</b>
         rsbuild 는 <b>정의된 것만</b> 치환해서, 하나라도 빠지면
         <code>process is not defined</code> 로 <b>흰 화면</b>이 된다.</li>

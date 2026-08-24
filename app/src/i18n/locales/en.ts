@@ -9,6 +9,8 @@ const en = {
 		loginButton: "Login",
 		guestButton: "Browse without signing in",
 		guestFailed: "Couldn't start browsing. Please try again in a moment.",
+		/** 로그인과 둘러보기 사이 구분선 문구 */
+		or: "or",
 		guestEntering: "Entering...",
 		loginFailed: "Login failed.",
 		loggingIn: "Logging in...",

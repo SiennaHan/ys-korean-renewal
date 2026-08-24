@@ -9,6 +9,8 @@ const ko = {
 		loginButton: "로그인",
 		guestButton: "로그인하지 않고 둘러보기",
 		guestFailed: "둘러보기를 시작하지 못했습니다. 잠시 뒤 다시 시도해 주세요.",
+		/** 로그인과 둘러보기 사이 구분선 문구 */
+		or: "또는",
 		guestEntering: "들어가는 중...",
 		loginFailed: "로그인에 실패했습니다.",
 		loggingIn: "로그인 중...",

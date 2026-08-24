@@ -9,6 +9,8 @@ const vi = {
 		loginButton: "Đăng nhập",
 		guestButton: "Xem trước mà không đăng nhập",
 		guestFailed: "Không thể bắt đầu xem. Vui lòng thử lại sau.",
+		/** 로그인과 둘러보기 사이 구분선 문구 */
+		or: "hoặc",
 		guestEntering: "Đang vào...",
 		loginFailed: "Đăng nhập thất bại.",
 		loggingIn: "Đang đăng nhập...",

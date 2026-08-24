@@ -10,6 +10,8 @@ const ja = {
 		guestButton: "ログインせずに見てみる",
 		guestFailed:
 			"見てみるを開始できませんでした。しばらくしてからもう一度お試しください。",
+		/** 로그인과 둘러보기 사이 구분선 문구 */
+		or: "または",
 		guestEntering: "入っています...",
 		loginFailed: "ログインに失敗しました。",
 		loggingIn: "ログイン中...",

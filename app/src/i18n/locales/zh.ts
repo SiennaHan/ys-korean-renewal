@@ -9,6 +9,8 @@ const zh = {
 		loginButton: "登录",
 		guestButton: "不登录先浏览",
 		guestFailed: "无法开始浏览。请稍后再试。",
+		/** 로그인과 둘러보기 사이 구분선 문구 */
+		or: "或",
 		guestEntering: "正在进入...",
 		loginFailed: "登录失败。",
 		loggingIn: "登录中...",

@@ -29,10 +29,10 @@ package-lock.json 1.170.29    ← 섞여 들어온 것. node_modules 는 이쪽�
 | `package-lock.json` | 지웠다. 루트 `.claude/launch.json` 이 `npm --prefix app run dev` 였던 것도 pnpm 으로 바꿨다 — 설치 명령이 아니라 빌드가 깨지진 않았지만, 남겨 두면 누군가 `npm install` 을 치게 만든다 |
 | `pnpm-lock.yaml` | specifier 를 새 값으로 갱신 |
 
-```
-npm run build            통과 · 총 21.2MB (gzip 4.7MB)
-npm run typecheck        통과
-npm run parity:activity  27개 화면 일치
+```bash
+pnpm build            # 통과 · 총 21.2MB (gzip 4.7MB)
+pnpm typecheck        # 통과
+pnpm parity:activity  # 27개 화면 일치
 ```
 
 ⚠️ **npm 으로 설치하지 마라.** `package-lock.json` 이 다시 생기면 같은 일이 반복된다.
@@ -521,10 +521,10 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ```bash
 cd app
-npm run typecheck        # 통과
-npm run parity:activity  # 27개 화면 일치
+pnpm typecheck        # 통과
+pnpm parity:activity  # 27개 화면 일치
 npx biome check src      # 통과
-npm run build            # 통과 — §1 에서 고쳤다
+pnpm build            # 통과 — §1 에서 고쳤다
 ```
 
 i18n 은 5개 로케일 **300키**가 일치한다(en·ja·ko·vi·zh 전부 300).
