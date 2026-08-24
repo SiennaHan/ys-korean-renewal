@@ -95,15 +95,28 @@ export default function ListenAnswer({
 	const instruction = useInstruction(question, "activity.instrListen");
 
 	/** Restore saved answer when navigating to a question — 정답만 복원 */
+	/*
+	 * 의존성을 건드리지 않는다. 원래 적혀 있던 [currentIndex, question?.id,
+	 * savedAnswers] 그대로다.
+	 *
+	 * 한때 [question, savedAnswers] 로 좁혔다가 되돌렸다. "question 이 useMemo
+	 * 배열의 원소라 currentIndex 가 바뀌면 question 도 바뀐다" 는 논리였는데,
+	 * 그것이 참이려면 배열에 같은 객체가 두 번 들어가지 않는다는 보장이 필요하다.
+	 * 그 보장을 코드로 확인할 방법이 없고, 틀리면 **문항을 넘겨도 저장한 답이
+	 * 복원되지 않는다.** 답 복원은 학습자가 바로 알아차리는 동작이다.
+	 *
+	 * 이 저장소의 게이트(typecheck · parity · build)는 훅이 언제 다시 도는지를
+	 * 검사하지 못한다. 검사로 잡히지 않는 동작 변경은 하지 않는 것이 맞다 —
+	 * 린트를 맞추는 것보다 지금 도는 동작이 중요하다.
+	 */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 지금 배열이 맞다 — 위 주석 참고
 	useEffect(() => {
 		if (question && savedAnswers[question.id] !== undefined) {
 			setSelectedIndex(savedAnswers[question.id]);
 		} else {
 			setSelectedIndex(null);
 		}
-		// question 은 useMemo 배열의 원소라 렌더 사이에 같은 객체다. currentIndex 가
-		// 바뀌면 question 도 바뀌므로 문항 이동 방아쇠는 그대로 남는다.
-	}, [question, savedAnswers]);
+	}, [currentIndex, question?.id, savedAnswers]);
 
 	/** 현재 문제의 틀린 시도 목록 */
 	const currentWrongSet = question

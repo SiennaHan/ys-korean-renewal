@@ -1075,6 +1075,25 @@ SVG `<g>` 라 초점을 못 받는다 — 즉 장소로 들어갈 방법이 마�
 않는다. 지금은 `contentLoading` 이 퍼즐 화면을 막아 눈에 안 보이지만 화면 전이가 한 줄만
 바뀌면 드러나는 자리다. 의존성에 넣어 닫았다.
 
+#### 되돌린 것 하나 — 의존성을 좁혔다가 원복했다
+
+세 화면(`fill-blank` · `read-answer` · `listen-answer`)의 **답 복원 효과**에서
+`[currentIndex, question?.id, savedAnswers]` 를 `[question, savedAnswers]` 로 좁혔다.
+근거는 "`question` 이 `useMemo` 배열의 원소라 `currentIndex` 가 바뀌면 `question` 도
+바뀐다" 였다. 그런데 그것이 참이려면 **배열에 같은 객체가 두 번 들어가지 않는다**는
+보장이 필요하고, 그 보장을 코드로 확인할 방법이 없었다. 틀리면 **문항을 넘겨도 저장한
+답이 복원되지 않는다** — 학습자가 바로 알아차리는 동작이다.
+
+**원래 배열로 되돌리고 재웠다.** 린트 결과는 같고(진단 0) 동작 변경은 사라졌다.
+얻는 것이 없으면 바꾸지 않는 것이 맞다. 규칙은 `CLAUDE.md` 에 적었다 —
+**의존성은 더하기만 하고, 뺄 일이면 재운다.**
+
+남은 "더하기" 다섯은 근거를 직접 확인했다: `bookId?: number` · `chapterSeq?: number` ·
+`dialogId: string` · `missions?.length` 는 원시값이라 값 비교이고,
+`handleCheckSign` · `getCoordinates` 는 `useCallback(…, [])` 로 안정하며,
+`puzzlesMap` 은 **`resolvedPuzzle` 을 의존성으로 쓰는 훅이 하나도 없어**(핸들러 4곳 ·
+렌더 2곳뿐) 연쇄가 불가능하다.
+
 #### "불필요한 의존성" 은 대부분 지우면 안 되는 것이었다
 
 biome 은 **"몸통에서 읽지 않는다"** 만 본다. 그런데 이 저장소에서 걸린 것은 거의 다

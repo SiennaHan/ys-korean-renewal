@@ -74,6 +74,49 @@ cd app && python3 scripts/build-content.py --check   # 콘텐츠 — 원장과 J
 `check_docs.py` 의 `TWIN_ALLOW`, 시점 기록의 옛 이름은 문서 안에
 `옛이름.html → _superseded/` 줄.
 
+## 린트를 맞추려고 동작을 바꾸지 마라 — 훅 의존성 배열
+
+**`useEffect`·`useCallback`·`useMemo` 의 의존성 배열에서 무언가를 빼는 것은
+동작 변경이다.** 그리고 이 저장소의 게이트 셋(`pnpm typecheck` ·
+`pnpm parity:activity` · `pnpm build`)은 **훅이 언제 다시 도는지를 검사하지 못한다** —
+목업 대조는 `react-dom/server` 로 그려서 `useEffect` 가 아예 실행되지 않는다.
+즉 여기서 생긴 회귀는 **아무 검사도 안 잡고 사람이 화면을 열어야 발견된다.**
+
+그래서 규칙은 하나다.
+
+| | |
+|---|---|
+| **더하기** | 값이 **원시값**이거나 `useRef` 객체이거나 `useCallback/useMemo(…, [])` 로 안정한 것임을 확인했을 때만. 그리고 그 값을 의존성으로 쓰는 훅이 연쇄로 다시 도는지 직접 확인해라 |
+| **빼기** | **하지 마라.** 대신 `biome-ignore` 에 왜 지금이 맞는지 적어라 |
+
+`biome` 의 `useExhaustiveDependencies` 는 **"몸통에서 읽는지" 만 본다.** 이 저장소에서
+걸린 "불필요한 의존성" 은 거의 다 **일부러 넣은 재실행 방아쇠**였다 — 지웠다면
+입력칸이 안 늘어나고(`dialog-input` 의 `textareaValue`), 탭을 바꿔도 안 따라오고
+(`book-tabs` 의 `activeId`), 카드를 넘겨도 앞 소리가 계속 났다. 실제 목록은
+`BLOCKERS.md` §3-b 에 있다.
+
+**2026-08-24 에 한 번 어겼다.** 세 화면(`fill-blank` · `read-answer` ·
+`listen-answer`)의 답 복원 효과에서 `[currentIndex, question?.id, savedAnswers]` 를
+`[question, savedAnswers]` 로 좁혔다. "`question` 이 `useMemo` 배열의 원소라
+`currentIndex` 가 바뀌면 `question` 도 바뀐다" 는 논리였는데, 그것이 참이려면 배열에
+같은 객체가 두 번 없어야 하고 그 보장을 코드로 확인할 방법이 없었다. **되돌리고
+재웠다** — 같은 린트 결과를 동작 변경 없이 얻었다. 얻는 것이 없으면 바꾸지 않는다.
+
+## 남이 한 작업은 보고가 아니라 diff 로 확인해라
+
+작업을 나눠서 하면(다른 세션·서브에이전트) 보고서가 온다. **보고서는 근거가 아니다.**
+위의 의존성 축소도 "의존성 배열만 고쳤고 동작은 안 건드렸다" 는 보고와 함께 왔다.
+그 말은 사실이었지만 **의존성 배열을 고치는 것이 곧 동작 변경**이라는 점이 빠져 있었다.
+
+받은 뒤에 이렇게 봐라.
+
+```bash
+git show <커밋> --unified=0 -- 'app/src/**/*.tsx' | grep -E '^[-+].*\}, \['
+```
+
+줄바꿈 재포맷 때문에 짝이 없어 보이는 `-` 줄이 나올 수 있다 — 그때는 그 파일만
+전체 diff 로 다시 봐라(실제로 그런 경우가 있었고, 알고 보니 값이 **추가**된 것이었다).
+
 ## 손대면 깨지는 것
 
 - **`npm install` 을 하지 마라.** 이 프로젝트는 `pnpm` 이다. `package-lock.json` 이
