@@ -1,6 +1,6 @@
 # 연세 글로벌 한국어 — 리뉴얼
 
-학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 14개인데 **처음에 볼 것은 셋뿐이다.**
+학생용 앱을 리뉴얼하는 작업 저장소다. 문서가 12개인데 **처음에 볼 것은 셋뿐이다.**
 
 무엇이 갖춰졌고 **무엇이 빠졌는지**는 정본 기획서 `phase1/masterplan_v3.html`
 **§2 덮개 지도**에 있다 — 영역 × 산출물 표이고 **빈 칸이 곧 빠진 기획이다.**
@@ -13,14 +13,14 @@
 | 2 | **`phase1/masterplan_v3.html`** | 정본 기획서. **무엇이 비었나**(§2 덮개 지도) · 게이트(§5) · Phase 1 상태(§8) ·<br>리스크(§13) · 문서 지도(§14) · **목업을 일부러 벗어난 여섯 곳**(§16) |
 | 3 | **`phase1/dev_spec_v1.html`** | 무엇을 만들라 — DB 신설 2종 · API · 라우트 · 셸 · 필드 계약 |
 
-나머지 11개는 **필요할 때 찾아 보는 참고서다.**
+나머지 9개는 **필요할 때 찾아 보는 참고서다.**
 
 ## 어느 문서가 무엇에 답하나 → **[phase1/INDEX.md](phase1/INDEX.md)**
 
 **문서 목록은 그 파일 하나에만 있다.** 여기에 표를 다시 두지 마라 —
 전에는 README 와 `masterplan_v3` §14 두 곳에 같은 목록이 있었고, 한쪽만 고쳐져서
 문서 수가 25 와 26 으로, 목업 대조 화면 수가 22·24·27 로 갈렸다.
-`check_docs.py` 가 **정본 14개가 모두 색인에 있는지** 검사한다.
+`check_docs.py` 가 **정본 12개가 모두 색인에 있는지** 검사한다.
 
 색인에는 이런 것이 있다 — 계획·결정 셋("기획서" 라 부를 것들이 어떻게 다른가) ·
 시각 정본 목업 둘 · **셸 명세 넷이 어느 층인가**(행동·구조·값·순서) ·
@@ -36,7 +36,7 @@
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
 | `admin/` | 어드민. 이번 리뉴얼 범위 밖이다 |
-| `phase1/` | 기획·명세·목업 HTML 14개 + `_superseded/` 41개.<br>그 밖에 인계 메모 셋(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
+| `phase1/` | 기획·명세·목업 HTML 12개 + `_superseded/` 43개.<br>그 밖에 인계 메모 셋(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
 **지금 배포돼 있는 버전의 참고본**이다. 저장소에 없고(`.gitignore`) 대조용으로만 쓴다.

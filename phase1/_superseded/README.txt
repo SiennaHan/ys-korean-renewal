@@ -246,3 +246,47 @@ vocashot_bank.js(문항 1149개)는 그대로 phase1/ 에 있다. screens_uiux �
 서울 퍼즐 4 · 폭 3). 벤치는 계산된 스타일 45개 속성을 원본과 대조해 전부 같다 —
 지문은 마크업만 보므로 CSS 를 감싼 것은 지문이 못 잡는다.
 앞선 셋(활동 25 · 홈·목록 9 · VocaShot 3)도 다시 돌려 그대로다. 합쳐서 57개 상태.
+
+════════════════════════════════════════════════════════════
+2026-08-21 · 합치기 넷 + 폐기 셋 (정본 26 → 12)
+
+합친 것 — 어느 절로 갔는지가 중요하다.
+
+  games_polish_v1.html        → ../games_spec_v1.html §1~§10 (번호 그대로)
+  vocashot_solo_spec_v1.html  → ../games_spec_v1.html §11~§20
+    같은 게임을 두 문서에서 찾아야 했다. 네 게임 손볼 것 + VocaShot 설계.
+
+  Phase1_dev_spec_v1.html     → ../dev_spec_v1.html §1~§9 (번호 그대로)
+  api_schema_v1.html          → ../dev_spec_v1.html §10~§16
+    경로만 있고 필드가 없거나 반대인 채로 읽히곤 했다.
+
+  G2_shell_and_state_spec_v1.html → ../shell_spec_v1.html §0~§10 (번호 그대로)
+  Shell_component_spec_uiux.html  → ../shell_spec_v1.html §11~§20  (+11)
+  build_spec_uiux.html            → ../shell_spec_v1.html §21~§34  (+20)
+    "넷인데 층이다" 를 파일 셋으로 표현하고 있었다. 이제 한 문서의 세 층이다.
+    남의 문서가 "구현 사양 §8" 처럼 부르던 것도 §28 로 옮겼다.
+
+  renewal_masterplan_v2.html  → ../masterplan_v3.html §1~§13 (번호 그대로)
+  handoff_v2.html             → ../masterplan_v3.html §14~§20
+    문서 지도가 인계 쪽에 있었다 — 인계가 끝나면 지도도 같이 낡는 자리였다.
+
+폐기한 것 — 대신 볼 곳이 있어서 뺐다.
+
+  mockup_read_v1.html      목업을 처음 읽은 0단계 실측. 그때 잡은 규격은 구현과
+                           pnpm parity:activity 가 지킨다. 머리에 §N→§(N+20) 환산표.
+  app_asis_mockup_v1.html  리뉴얼 전 앱 19화면 목업. 글로 정리한 것은 ../asis_v1.html.
+  core_loop_mockup_v1.html 학습 한 바퀴 첫 안. "오답은 기록이 아니라 예약" 원칙은
+                           ../dev_spec_v1 §2.3 과 ../shell_spec_v1 §1 이 쥐고 있다.
+
+합치면서 배운 것 (도구를 네 번 고쳤다)
+
+  1. 본문은 파일 이름이 아니라 사람 말로 남의 문서를 부른다 — "개발 명세 §3" ·
+     "G2 §5-1" · "구현 사양 §8". 파일 이름만 보다가 아홉 개를 잘못 옮겼고 되돌렸다.
+  2. "(§4·§7)" 처럼 § 가 이어지면 뒤쪽이 판정을 못 받는다. 앞의 사슬을 걷어내고
+     그 앞을 다시 봐야 한다.
+  3. 귀속은 "가장 가까운 것이 이긴다" 여야 한다(check_docs 와 같은 규칙).
+     "handoff_v1 은 … §03 을 인용해서 … 그 규칙을 이 문서 §03 이" 에서 뒤쪽은 자기 절이다.
+  4. 별칭에 "목업"·"기획서" 같은 흔한 낱말을 넣으면 자기 절을 남의 것으로 본다.
+
+  그리고: check_docs 는 "파일이름 §N" 만 검사한다. 사람 말로 부르는 인용과
+  자기 절 인용은 검사기가 못 본다 — 그건 눈으로 찍어 확인했다.
