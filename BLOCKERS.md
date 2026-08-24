@@ -32,7 +32,7 @@ package-lock.json 1.170.29    ← 섞여 들어온 것. node_modules 는 이쪽�
 ```bash
 pnpm build            # 통과 · 총 21.2MB (gzip 4.7MB)
 pnpm typecheck        # 통과
-pnpm parity:activity  # 27개 화면 일치
+pnpm parity:activity  # 28개 화면 일치
 ```
 
 ⚠️ **npm 으로 설치하지 마라.** `package-lock.json` 이 다시 생기면 같은 일이 반복된다.
@@ -112,7 +112,7 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 | 1급 과 칩 | 4~9과 | **4~15과** — 1~3과는 한글 탭으로 간다 |
 
 캡처를 다시 떠서(`phase1/captured/` → `app/src/mockups/`) **자모 목록이 목업 대조에
-들어갔다 — 27화면**. 렌더 뒤에 붙는 스크롤 표시 속성(`data-cue-bound` 등)은
+들어갔다** — 그때 스물일곱, 지금은 스물여덟이다(VocaShot 시작이 더 들어왔다). 렌더 뒤에 붙는 스크롤 표시 속성(`data-cue-bound` 등)은
 디자인이 아니라 걷어냈다.
 
 이 저장소는 **구현이 목업과 다르면 목업이 기준**이다. 이번엔 드물게 목업이 낡은
@@ -387,6 +387,37 @@ app/rsbuild.config.ts
 관리하는 레거시)를 읽어 옛 동선을 그대로 그린다. 리프 셋(`input_word` · `make_sentence` ·
 `write2`)도 화면이다 — `jamo_authoring_spec_v1` 이 "화면만 있고 콘텐츠가 0" 이라 적은 그것들이다.
 
+### 게임 캡처를 목업 대조에 넣어 봤다 (2026-08-24)
+
+`masterplan_v3` §9 가 "대조 밖에 캡처 20개가 서 있다" 고 적어 두었는데, 파 보니
+**스무 개가 다 들어올 수 있는 것이 아니었다.** 캡처가 두 종류다.
+
+| 종류 | 몇 개 | 어느 것 | 들어올 수 있나 |
+|---|---|---|---|
+| **손으로 짠 목업** | 6 | `vocashot__{start,play,result}` · `game__{pc_result,ps_result,sp_complete}` | **된다** |
+| **앱 DOM 덤프** | 14 | `game__*` 나머지 — `<div id="app">` 로 시작하고 tailwind·lucide 클래스가 그대로 | **안 된다** |
+
+덤프는 앱을 **앱의 옛 스냅샷**과 비교하는 것이라 "디자인이 같다" 를 증명하지 못한다.
+`/main` 레이아웃 껍데기까지 담고 있어 컴포넌트 하나로 맞출 수도 없다 —
+`game__list` 를 실제로 넣어 봤고 그래서 뺐다.
+
+**`vocashot__start` 를 넣었다 — 대조가 27 → 28화면.** 넣자마자 하나 잡았다:
+시작 화면의 뒤로가기가 목업은 svg 화살표인데 앱은 글자 `←` 였다. 목업이 기준이므로
+앱을 고쳤다(`components/main/game/vocashot-solo.tsx`).
+
+**나머지 다섯이 들어오는 조건.** 게임 다섯은 `export` 가 하나뿐인 통짜이고
+`useState` 가 8~27개다. 정적으로 그리면 **첫 화면밖에 안 나온다** — 실측하면
+`card-sort` 184자 · `particle-sniper` 190자 · `seoul-puzzle` 249자로 전부 로딩
+화면이다(콘텐츠를 받아야 레벨 선택이 나온다). `spring-picnic` 은 `.css` 를 import 해서
+`tsx` 가 로드조차 못 한다. VocaShot 만 첫 화면이 곧 시작 화면이라 들어왔다.
+
+들어오게 하려면 활동 화면처럼 **표시와 상태를 가르면 된다**(`home/view.tsx` ·
+`game/list-view.tsx` 가 그 꼴이다). 가장 싼 것은 `vocashot-solo`(540줄, 가장 작다) —
+가르면 `play` · `result` 둘이 바로 들어와 30화면이 된다.
+
+이번에 `game/list-view.tsx` 를 갈라 두었다(라우트 192 → 38줄). 캡처가 덤프라서
+지금은 대조에 못 넣지만, **그 캡처를 목업에서 다시 뜨면 한 줄로 들어온다.**
+
 ### 서버에 막히지 않았는데 아직 없는 것
 
 | 무엇 | 실측 | 문서 |
@@ -578,7 +609,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 ```bash
 cd app
 pnpm typecheck        # 통과
-pnpm parity:activity  # 27개 화면 일치
+pnpm parity:activity  # 28개 화면 일치
 npx biome check src      # 통과
 pnpm build            # 통과 — §1 에서 고쳤다
 ```

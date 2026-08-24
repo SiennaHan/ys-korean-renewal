@@ -64,6 +64,7 @@ import {
 } from "@/components/main/activity/stimulus";
 import { WordPreviewList } from "@/components/main/activity/word-preview";
 import Jamo from "@/components/main/course-list/jamo";
+import VocashotSolo from "@/components/main/game/vocashot-solo";
 import HomeView from "@/components/main/home/view";
 import BookTabs from "@/components/main/textbook/book-tabs";
 import ChapterChips from "@/components/main/textbook/chapter-chips";
@@ -713,6 +714,33 @@ SCREENS.nav__home__review = (
 	<HomeView {...HOME_BASE} continueLearning={HOME_RESUME} reviewCount={7} />
 );
 
+/*
+ * 게임 — 시작 화면만 들어간다.
+ *
+ * 게임 다섯은 export 가 하나뿐인 통짜이고 useState 가 8~27개다. 활동 화면처럼
+ * 표시와 상태가 갈라져 있지 않아서, 정적으로 그리면 **첫 화면밖에 나오지 않는다.**
+ * VocaShot 은 첫 화면이 곧 시작 화면이라 대조에 들어갈 수 있다.
+ * 나머지 19개 캡처(플레이·결과·레벨 선택 …)는 그 게임을 HomeView 처럼
+ * 표시/상태로 가른 뒤에야 들어온다 — ../BLOCKERS.md §3-b.
+ */
+SCREENS.vocashot__start = <VocashotSolo />;
+
+/*
+ * 게임 캡처 20개 중 이 대조에 들어올 수 있는 것은 셋뿐이다 —
+ * vocashot__{start,play,result}. 나머지는 종류가 다르다.
+ *
+ *   손으로 짠 목업  vocashot 셋 · game__{pc_result,ps_result,sp_complete}
+ *   앱 DOM 덤프     game__* 나머지 열넷 (<div id="app"> + tailwind 클래스)
+ *
+ * 덤프는 앱을 **앱의 옛 스냅샷**과 비교하는 것이라 "디자인이 같다" 를 증명하지
+ * 못하고, /main 레이아웃 껍데기까지 담고 있어 컴포넌트 하나로 맞출 수도 없다.
+ * game__list 를 넣어 봤고 그래서 뺐다 — GameListView 는 갈라 두었으니
+ * 그 캡처를 목업에서 다시 뜨면 한 줄로 들어온다.
+ *
+ * play·result 는 VocaShot 의 내부 상태라 vocashot-solo(540줄)를 표시/상태로
+ * 가른 뒤에 들어온다. 자세한 것은 ../BLOCKERS.md §3-b.
+ */
+
 const outDir = join(
 	dirname(fileURLToPath(import.meta.url)),
 	"..",
@@ -730,9 +758,13 @@ for (const [name, element] of Object.entries(SCREENS)) {
 	const html = renderToStaticMarkup(
 		<I18nextProvider i18n={i18n}>{element}</I18nextProvider>,
 	);
-	// 프레임은 목업 캡처에 없다 — 캡처는 프레임 안쪽만 담았다
+	/*
+	 * 프레임은 목업 캡처에 없다 — 캡처는 프레임 안쪽만 담았다.
+	 * activity-frame 은 활동 화면, vocashot-frame 은 VocaShot 이 쓴다.
+	 * data-screen 처럼 프레임에 붙는 속성도 같이 벗긴다.
+	 */
 	const inner = html
-		.replace(/^<div class="activity-frame">/, "")
+		.replace(/^<div class="(?:activity|vocashot)-frame"[^>]*>/, "")
 		.replace(/<\/div>$/, "");
 	writeFileSync(join(outDir, `${name}.html`), inner);
 }
