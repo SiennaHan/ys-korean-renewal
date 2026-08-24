@@ -14,6 +14,13 @@
  */
 import { getGameProgress, saveGameProgress } from "@/api/game-progress";
 import { VOCA_BANK, type VocaItem } from "@/shared/data/vocashot-bank";
+import {
+	type Missed,
+	type Mode,
+	VocashotPlayView,
+	VocashotResultView,
+	VocashotStartView,
+} from "@/components/main/game/vocashot-view";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -37,14 +44,6 @@ const TUNING = {
 /** 정답·오답을 보여 주는 시간 */
 const FEEDBACK_MS = 900;
 
-const LANGS = [
-	{ code: "en", label: "English" },
-	{ code: "ja", label: "日本語" },
-	{ code: "zh", label: "中文" },
-	{ code: "vi", label: "Tiếng Việt" },
-] as const;
-
-type Mode = "easy" | "hard";
 type View = "start" | "play" | "result";
 
 interface Served {
@@ -57,12 +56,6 @@ interface Current extends Served {
 	dur: number;
 	start: number;
 	choices: string[];
-}
-
-interface Missed {
-	w: string;
-	m: string;
-	got: boolean;
 }
 
 const shuffle = <T,>(xs: T[]): T[] => {
@@ -275,280 +268,58 @@ export default function VocashotSolo() {
 	// ── 시작 ────────────────────────────────────────────────────────
 	if (view === "start") {
 		return (
-			<div className="vocashot-frame" data-screen="vs_start">
-				<div
-					className="g-dark"
-					style={{ display: "flex", flexDirection: "column", height: "100%" }}
-				>
-					<div className="g-head">
-						<div className="nm">
-							<button
-								type="button"
-								className="back"
-								onClick={() => nav({ to: "/main/game" })}
-							>
-								<i>
-									{/* 목업이 기준이다 — 글자 화살표가 아니라 svg 다
-									    (src/mockups/vocashot__start.html) */}
-									<svg
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										aria-hidden="true"
-									>
-										<path d="M19 12H5M12 19l-7-7 7-7" />
-									</svg>
-								</i>
-							</button>
-							<div>
-								<h1>VocaShot</h1>
-								<div className="sub">혼자 하기</div>
-							</div>
-						</div>
-					</div>
-
-					<div className="g-body">
-						<span className="g-lb">급</span>
-						<div className="lv">
-							{[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-								<button
-									key={n}
-									type="button"
-									className={n === level ? "on" : ""}
-									onClick={() => setLevel(n)}
-								>
-									{n}급
-								</button>
-							))}
-						</div>
-
-						<span className="g-lb">뜻 언어</span>
-						<div
-							className="lv"
-							style={{ gridTemplateColumns: "repeat(4,1fr)" }}
-						>
-							{LANGS.map((l) => (
-								<button
-									key={l.code}
-									type="button"
-									className={l.code === lang ? "on" : ""}
-									style={{ fontSize: 12 }}
-									onClick={() => setLang(l.code)}
-								>
-									{l.label}
-								</button>
-							))}
-						</div>
-
-						<span className="g-lb">입력 방식</span>
-						<div className="seg">
-							<button
-								type="button"
-								className={mode === "easy" ? "on" : ""}
-								onClick={() => setMode("easy")}
-							>
-								4개 중 고르기
-							</button>
-							<button
-								type="button"
-								className={mode === "hard" ? "on" : ""}
-								onClick={() => setMode("hard")}
-							>
-								직접 입력
-							</button>
-						</div>
-
-						<div className={`best${best === null ? " none" : ""}`}>
-							<span className="k">{level}급 최고 점수</span>
-							<span className="v">
-								{best === null
-									? "아직 없음"
-									: `${best.toLocaleString("ko-KR")}점`}
-							</span>
-						</div>
-					</div>
-
-					<div className="g-dock">
-						<button type="button" className="g-go" onClick={startRun}>
-							시작하기
-						</button>
-					</div>
-				</div>
-			</div>
+			<VocashotStartView
+				level={level}
+				lang={lang}
+				mode={mode}
+				best={best}
+				onLevel={setLevel}
+				onLang={setLang}
+				onMode={setMode}
+				onStart={startRun}
+				onBack={() => nav({ to: "/main/game" })}
+			/>
 		);
 	}
 
-	// ── 결과 ────────────────────────────────────────────────────────
 	if (view === "result") {
-		const missedList = [...missed.values()];
-		const cleared = hearts > 0;
 		return (
-			<div className="vocashot-frame" data-screen="vs_result">
-				<div
-					className="g-dark"
-					style={{ display: "flex", flexDirection: "column", height: "100%" }}
-				>
-					<div className="r-head">
-						<div className="nm">
-							<div>
-								<h1>VocaShot</h1>
-								<div className="sub">
-									{level}급 · {mode === "easy" ? "4개 중 고르기" : "직접 입력"}
-								</div>
-							</div>
-						</div>
-						<div>
-							<div className="r-k">BEST</div>
-							<div className="r-v">{(best ?? 0).toLocaleString("ko-KR")}</div>
-						</div>
-					</div>
-
-					<div className="r-body">
-						<h2 className={`r-ttl${cleared ? " ok" : ""}`}>
-							{cleared ? "완주" : "게임 오버"}
-						</h2>
-						<p className="r-desc">
-							{asked}문항을 하트 {hearts}개 남기고 끝냈습니다.
-						</p>
-
-						<div className="r-score">
-							<div className="r-k">내 점수</div>
-							<p className="big">{score.toLocaleString("ko-KR")}</p>
-							<p className="r-prev">
-								최고 점수 {(best ?? 0).toLocaleString("ko-KR")}
-							</p>
-						</div>
-
-						<div className="r-stats">
-							<div className="r-stat">
-								<div className="r-k">맞힘</div>
-								<div className="v">{correct}</div>
-							</div>
-							<div className="r-stat">
-								<div className="r-k">낸 문항</div>
-								<div className="v">{asked}</div>
-							</div>
-							<div className="r-stat">
-								<div className="r-k">남은 하트</div>
-								<div className="v">{hearts}</div>
-							</div>
-						</div>
-
-						{missedList.length > 0 && (
-							<div className="r-missed">
-								<div className="r-k">놓친 단어</div>
-								{missedList.map((m) => (
-									<div key={m.w} className={`r-miss${m.got ? " got" : ""}`}>
-										<b>{m.w}</b>
-										<span>{m.m}</span>
-									</div>
-								))}
-							</div>
-						)}
-					</div>
-
-					<div className="g-dock">
-						<button type="button" className="g-go" onClick={startRun}>
-							다시 하기
-						</button>
-						<button
-							type="button"
-							className="g-sub"
-							onClick={() => setView("start")}
-						>
-							설정 바꾸기
-						</button>
-					</div>
-				</div>
-			</div>
+			<VocashotResultView
+				level={level}
+				mode={mode}
+				best={best}
+				score={score}
+				correct={correct}
+				asked={asked}
+				hearts={hearts}
+				missed={[...missed.values()]}
+				onAgain={startRun}
+				onExit={() => setView("start")}
+			/>
 		);
 	}
 
-	// ── 플레이 ──────────────────────────────────────────────────────
-	const meaning = cur ? (cur.q.m?.[lang] ?? cur.q.m?.en ?? "") : "";
 	return (
-		<div className="vocashot-frame" data-screen="vs_play">
-			<div
-				className="g-dark"
-				style={{ display: "flex", flexDirection: "column", height: "100%" }}
-			>
-				<div className="p-head">
-					<div>
-						<h1>VocaShot</h1>
-						<div className="sub">
-							{level}급 · {mode === "easy" ? "4개 중 고르기" : "직접 입력"} ·{" "}
-							{lang} · {asked}
-						</div>
-					</div>
-					<div>
-						<div className="hearts">
-							{Array.from({ length: TUNING.hearts }, (_, i) => (
-								<i key={i} className={i < hearts ? "" : "off"} />
-							))}
-						</div>
-					</div>
-				</div>
-
-				<div className="r-k">SCORE</div>
-				<div className="r-v">{score.toLocaleString("ko-KR")}</div>
-
-				<div className="sky">
-					{cur && (
-						<div
-							className="meteor"
-							// 낙하 시간은 점수에 따라 달라진다 — 목업의 fallSec 그대로
-							style={{ animationDuration: `${cur.dur}s` }}
-						>
-							<div className="meteor-shell">
-								<div className="meteor-question">{meaning}</div>
-							</div>
-						</div>
-					)}
-					{feedback && (
-						<div className={`fb${feedback.ok ? " ok" : ""}`}>
-							{feedback.text}
-						</div>
-					)}
-				</div>
-
-				<div className="g-dock">
-					{mode === "easy" ? (
-						<div className="choices">
-							{cur?.choices.map((c) => (
-								<button
-									key={c}
-									type="button"
-									className="choice"
-									onClick={() => resolve(c)}
-								>
-									{c}
-								</button>
-							))}
-						</div>
-					) : (
-						<form
-							className="typed"
-							onSubmit={(e) => {
-								e.preventDefault();
-								resolve(typed);
-							}}
-						>
-							<input
-								value={typed}
-								onChange={(e) => setTyped(e.target.value)}
-								placeholder="한국어로 입력"
-								autoComplete="off"
-							/>
-							<button type="submit" className="g-go">
-								쏘기
-							</button>
-						</form>
-					)}
-				</div>
-			</div>
-		</div>
+		<VocashotPlayView
+			level={level}
+			mode={mode}
+			lang={lang}
+			hearts={hearts}
+			heartsMax={TUNING.hearts}
+			score={score}
+			meteor={
+				cur
+					? {
+							meaning: cur.q.m?.[lang] ?? cur.q.m?.en ?? "",
+							dur: cur.dur,
+							choices: cur.choices,
+						}
+					: null
+			}
+			feedback={feedback}
+			typed={typed}
+			onTyped={setTyped}
+			onResolve={resolve}
+		/>
 	);
 }

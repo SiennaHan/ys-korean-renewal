@@ -64,6 +64,10 @@ import {
 } from "@/components/main/activity/stimulus";
 import { WordPreviewList } from "@/components/main/activity/word-preview";
 import Jamo from "@/components/main/course-list/jamo";
+import {
+	VocashotPlayView,
+	VocashotResultView,
+} from "@/components/main/game/vocashot-view";
 import VocashotSolo from "@/components/main/game/vocashot-solo";
 import HomeView from "@/components/main/home/view";
 import BookTabs from "@/components/main/textbook/book-tabs";
@@ -724,6 +728,44 @@ SCREENS.nav__home__review = (
  * 표시/상태로 가른 뒤에야 들어온다 — ../BLOCKERS.md §3-b.
  */
 SCREENS.vocashot__start = <VocashotSolo />;
+
+/*
+ * 플레이·결과는 VocaShot 의 내부 상태다. vocashot-solo 를 표시/상태로 가르면서
+ * 이 둘이 대조에 들어왔다 — 값은 목업 캡처가 잡아 둔 그 상태 그대로 넘긴다.
+ */
+SCREENS.vocashot__play = (
+	<VocashotPlayView
+		level={2}
+		mode="easy"
+		lang="en"
+		hearts={5}
+		heartsMax={5}
+		score={0}
+		meteor={{
+			meaning: "well",
+			dur: 7.8,
+			choices: ["의사", "잘", "한국말", "운동선수"],
+		}}
+		feedback={null}
+		typed=""
+		onTyped={() => {}}
+		onResolve={() => {}}
+	/>
+);
+SCREENS.vocashot__result = (
+	<VocashotResultView
+		level={2}
+		mode="easy"
+		best={0}
+		score={0}
+		correct={0}
+		asked={1}
+		hearts={5}
+		missed={[]}
+		onAgain={() => {}}
+		onExit={() => {}}
+	/>
+);
 
 /*
  * 게임 캡처 20개 중 이 대조에 들어올 수 있는 것은 셋뿐이다 —

@@ -4,7 +4,7 @@
 아래 IGNORED 는 눈에 보이지 않지만 앱에 필요한 속성이다 — 무엇을 봐주는지
 숨기지 않으려고 여기 적어 두고 실행할 때마다 같이 출력한다.
 """
-import sys, glob, os, difflib
+import sys, glob, os, difflib, re
 from html.parser import HTMLParser
 
 IGNORED = {
@@ -21,8 +21,11 @@ IGNORED = {
     "탭 바": "nav 화면의 목업 캡처에는 탭 바가 들어 있는데, 그 화면의 컴포넌트는"
     " 탭 바를 그리지 않는다 — 레이아웃(routes/main.tsx)이 그린다. 그래서 뺀다",
     "목업 데모 속성": "목업 자체를 돌리기 위한 갈고리다 — data-lv · data-lang ·"
-    " data-mode · id=\"go\" 처럼 목업의 스크립트가 눌린 버튼을 찾는 데 쓴다."
-    " 앱은 React 이벤트로 하므로 필요 없다 (vocashot__start)",
+    " data-mode · data-pick · id=\"go\" 처럼 목업의 스크립트가 눌린 버튼을 찾는 데 쓴다."
+    " 앱은 React 이벤트로 하므로 필요 없다 (vocashot__*)",
+    "운석 낙하 시간": "animation-duration 을 앱은 인라인으로 준다 — 점수에 따라"
+    " 짧아지는 값이라 CSS 에 못 박을 수 없다. 목업은 캡처한 뒤 스크립트가 넣으므로"
+    " 마크업에 없다. 값은 같은 규칙(fallSec)에서 나온다 (vocashot__play)",
     "nav 과 제목": "교재학습 목업의 과 제목은 표본이다(\"가족\" · 실제 1급 6과는 다른 제목)."
     " 목록 개수는 2026-08-21 에 목업을 실제 데이터에 맞췄다 — 급 탭 9 · 1급 과 12 ·"
     " 자모 1과의 묶음 3. 상태는 서버가 주는 것이라 목업이 정한 것을 쓴다",
@@ -42,7 +45,7 @@ COLOR_ALIAS = {
 }
 DROP_ATTRS = {"type", "disabled", "aria-hidden", "role",
               # 위 "목업 데모 속성" 참조 — 목업 스크립트 전용 갈고리
-              "data-lv", "data-lang", "data-mode", "id"}
+              "data-lv", "data-lang", "data-mode", "data-pick", "id"}
 VOID = {"img", "input", "br", "hr", "rect", "path", "circle", "line", "polygon", "use"}
 
 
@@ -58,6 +61,11 @@ class Flat(HTMLParser):
             a["style"] = a.get("style", "").replace("max-width:280px", "max-width:220px")
         if a.get("aria-label") in EXIT_LABELS:
             a["aria-label"] = "(나가기)"
+        # 위 IGNORED "운석 낙하 시간" 참조 — 앱만 인라인으로 준다
+        if "animation-duration" in a.get("style", ""):
+            a["style"] = re.sub(r"animation-duration:[^;]*;?", "", a["style"]).strip()
+            if not a["style"]:
+                del a["style"]
         for k, v in list(a.items()):
             for old, (new, _) in COLOR_ALIAS.items():
                 if old in v:

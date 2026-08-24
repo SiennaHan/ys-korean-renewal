@@ -32,7 +32,7 @@ package-lock.json 1.170.29    ← 섞여 들어온 것. node_modules 는 이쪽�
 ```bash
 pnpm build            # 통과 · 총 21.2MB (gzip 4.7MB)
 pnpm typecheck        # 통과
-pnpm parity:activity  # 28개 화면 일치
+pnpm parity:activity  # 30개 화면 일치
 ```
 
 ⚠️ **npm 으로 설치하지 마라.** `package-lock.json` 이 다시 생기면 같은 일이 반복된다.
@@ -401,11 +401,39 @@ app/rsbuild.config.ts
 `/main` 레이아웃 껍데기까지 담고 있어 컴포넌트 하나로 맞출 수도 없다 —
 `game__list` 를 실제로 넣어 봤고 그래서 뺐다.
 
-**`vocashot__start` 를 넣었다 — 대조가 27 → 28화면.** 넣자마자 하나 잡았다:
+**`vocashot__start` 를 먼저 넣었다 — 대조가 27 → 28화면.** 넣자마자 하나 잡았다:
 시작 화면의 뒤로가기가 목업은 svg 화살표인데 앱은 글자 `←` 였다. 목업이 기준이므로
 앱을 고쳤다(`components/main/game/vocashot-solo.tsx`).
 
-**나머지 다섯이 들어오는 조건.** 게임 다섯은 `export` 가 하나뿐인 통짜이고
+**VocaShot 을 갈라서 셋 다 넣었다 — 대조가 30화면 (2026-08-24).**
+`vocashot-solo.tsx`(540줄)를 표시/상태로 갈랐다 — 컨테이너 325줄 +
+`vocashot-view.tsx` 524줄(`VocashotStartView` · `PlayView` · `ResultView`).
+`home/view.tsx` · `game/list-view.tsx` 와 같은 꼴이다.
+
+**가르면서 드러난 것이 더 크다.** 이관한 `src/styles/vocashot.css` 에는 규칙이
+있는데 **컴포넌트가 그리지 않던 것들**이 있었다 — 플레이 화면에 **운석 그림도
+지구도 발사대도 없었다.**
+
+| 목업에 있고 앱에 없던 것 | CSS | 무엇 |
+|---|---|---|
+| `.meteor-art` | 있다 | 운석 그림(그라디언트 svg) |
+| `.earth-surface` | 있다 | 지구 표면 — 운석이 닿는 곳 |
+| `.defense-emitter` | 있다 | 발사대 |
+| `.p-dock` · `.r-dock` | 있다 | 앱은 둘 다 `.g-dock` 으로 그렸다 |
+| `.r-empty` | 있다 | "놓친 단어가 없습니다" — 앱은 아무것도 안 그렸다 |
+| `.r-again` · `.r-exit` | 있다 | 결과 화면 버튼. 앱은 `.g-go`·`.g-sub` |
+| `.av` | 있다 | 결과 머리의 사람 아이콘 |
+| 부제의 낙하 초 | — | 앱은 그 자리에 문항 수를 넣고 있었다 |
+| 결과 통계 | — | 목업은 둘(맞힘·낸 문항), 앱은 셋(남은 하트가 더) |
+| `.re` "다시 맞힘" | 있다 | 놓친 단어를 다시 맞혔을 때 |
+
+전부 목업에 맞췄다. `나가기` 는 라벨만 달랐고 동작은 같다 — 목업의 `#exit` 도
+`S.view='start'` 다(설정 화면으로 돌아간다).
+
+대조에서 봐주는 것 둘을 새로 적었다 — 목업의 데모 갈고리(`data-pick` 등)와
+운석의 `animation-duration`(점수에 따라 짧아지는 값이라 앱이 인라인으로 준다).
+
+**남은 게임 넷은 그대로다.** `export` 가 하나뿐인 통짜이고
 `useState` 가 8~27개다. 정적으로 그리면 **첫 화면밖에 안 나온다** — 실측하면
 `card-sort` 184자 · `particle-sniper` 190자 · `seoul-puzzle` 249자로 전부 로딩
 화면이다(콘텐츠를 받아야 레벨 선택이 나온다). `spring-picnic` 은 `.css` 를 import 해서
@@ -609,7 +637,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 ```bash
 cd app
 pnpm typecheck        # 통과
-pnpm parity:activity  # 28개 화면 일치
+pnpm parity:activity  # 30개 화면 일치
 npx biome check src      # 통과
 pnpm build            # 통과 — §1 에서 고쳤다
 ```
