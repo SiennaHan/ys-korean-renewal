@@ -836,6 +836,8 @@ for (const [name, element] of Object.entries(SCREENS)) {
 	 */
 	const inner = html
 		.replace(/^<div class="(?:activity|vocashot)-frame"[^>]*>/, "")
+		// 게임은 game-frame 이 프레임이다. 캡처 쪽에서도 같은 층을 벗긴다
+		.replace(/^<div class="game-frame[^"]*"[^>]*>/, "")
 		.replace(/<\/div>$/, "");
 	writeFileSync(join(outDir, `${name}.html`), inner);
 }

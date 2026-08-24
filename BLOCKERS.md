@@ -440,22 +440,48 @@ app/rsbuild.config.ts
 vs `ux-control ps-result-retry`), 게임 캡처의 `<div id="app">` 껍데기를 **파싱 전에**
 벗긴다(파싱 뒤에 하면 `DROP_ATTRS` 가 `id` 를 지워서 껍데기를 못 알아본다).
 
-### 남은 캡처 열셋은 게임을 갈라도 안 들어온다 — 내가 두 번 틀렸다
+### 남은 캡처 열여섯 — 들어올 수 있다. 내가 두 번 틀렸다
 
 **첫 번째로 틀린 것.** "`game__*` 는 앱 DOM 덤프라 대상이 아니다" 고 잘라 말했다.
-클래스 이름을 세 보니 열셋이 앱과 87~100% 겹쳤다 — 지나친 단정이었다.
 
-**두 번째로 틀린 것.** 그래서 "열셋은 게임을 가르면 들어온다" 고 적었다. 그 측정이
-**이름이 앱 어딘가에 있나**만 본 것이라 틀렸다. 구조를 열어 보니 이렇다.
+**두 번째로 틀린 것.** 그 다음엔 클래스 이름이 87~100% 겹친다고 "가르면 들어온다"
+고 했다. 그 측정은 **이름이 앱 어딘가에 있나**만 봤다.
 
-| 캡처 최상위 | 앱 | 왜 못 맞추나 |
+**실제는 이렇다.** 커밋 `d1a7cfb` 가 답을 갖고 있었다 — 캡처 47개는
+**목업의 빌더 함수를 직접 불러서 뜬 것**이다("stop hand-writing markup").
+앱 덤프가 아니라 **목업의 출력**이고, `style="opacity: 0"` 도 그 커밋이 적어 둔 대로
+**목업의 framer-motion 이 페이드 중간에 얼려 둔 값**이다. 47 = 활동 22 + 내비 5 +
+VocaShot 3 + 게임 17 이고, **처음부터 47이 목표였다.**
+
+게임 캡처만 껍데기 다섯 겹을 끼고 있다 — 구 배포판의 라우트 레이아웃이다.
+
+    <div id="app">
+      <div class="h-[100dvh] overflow-y-auto">
+        <div class="h-full bg-white" style="opacity: 0">      ← framer-motion 이 얼린 값
+          <div class="flex h-full flex-col">
+            <div class="scrollbar-hide h-full w-full flex-1 …">
+              <div class="ux-dark-stage" style="…">           ← 앱의 .game-frame 에 대응
+
+**비교기가 이 다섯 겹을 벗게 했다**(`drop_game_wrapper`). 렌더 쪽도 `game-frame` 을
+같이 벗긴다 — 활동의 `activity-frame` 과 같은 처리다. 기존 31화면은 그대로 통과한다.
+
+### 남은 16화면 — 화면마다 뷰를 떼어내면 들어온다
+
+| 게임 | 화면 | 상태 |
 |---|---|---|
-| `<div class="h-[100dvh] overflow-y-auto">` → `bg-white` **`style="opacity: 0"`** → … | `game-frame ux-dark-stage` · `cs-level-shell` … | **구 배포판의 페이지 전환 레이아웃**이 세 겹 끼어 있다. `opacity` 는 전환 중 한순간이라 재현이 불가능하다 |
-| `<style>.hide-scrollbar…</style>` 가 마크업 안에 | 앱에 그 블록이 **아예 없다**(0곳) | 구 앱이 화면 안에 스타일을 심었다 |
+| 조사 스나이퍼 | `ps_result` | ✅ 들어갔다 |
+| | `ps_level` · `ps_lesson` · `ps_play` | 남음 |
+| 어휘 카드 마스터 | `cs_intro` · `cs_level` · `cs_play` · `cs_result` | 남음 (결과 블록만 190줄) |
+| 봄소풍 | `pc_title` · `pc_select` · `pc_game` | 남음 |
+| | `pc_result` | **설계 결정 필요** — 아래 |
+| 서울 퍼즐 | `sp_map` · `sp_entry` · `sp_puzzle` | 남음 |
+| | `sp_complete` | **설계 결정 필요** — 아래 |
+| 게임 목록 | `game__list` | 남음 (`list-view.tsx` 는 이미 갈라 뒀다) |
 
-`game__ps_result` 가 맞았던 이유는 그 캡처만 **껍데기 없이 `.result-screen` 에서 바로
-시작**하기 때문이다. 나머지 열셋은 **컴포넌트를 가르는 문제가 아니라 캡처가 다른
-구현의 것**이다. 이 화면들에 회귀 방패를 두고 싶으면 **지금 앱에서 다시 떠야 한다.**
+한 화면의 값은 이렇게 든다 — 렌더 블록을 뷰 파일로 떼어내고(인라인 스타일이 많은
+게임은 100~200줄), 캡처가 잡아 둔 값을 props 로 넘기고, 어긋나는 곳을 목업에 맞춘다.
+`ps_result` 는 구조가 이미 같아서 값만 넘기면 됐고, VocaShot 은 **그리지 않던 마크업
+여덟 자리**가 드러나 그것까지 채웠다. 게임마다 후자가 더 나올 것으로 본다.
 
 ### 그리고 둘은 CSS 가 죽어 있다
 

@@ -140,6 +140,46 @@ def drop_single_progress(rows):
     return out
 
 
+# 게임 캡처만 끼고 있는 껍데기 — 구 배포판의 라우트 레이아웃이다.
+# 목업의 빌더를 불러 뜬 것이라(커밋 d1a7cfb) 그 앱의 페이지 전환 층이 그대로 들어왔다.
+# opacity 는 framer-motion 이 페이드 중간에 얼려 둔 값이라 재현 대상이 아니다.
+GAME_WRAPPER_CLASSES = (
+    "h-[100dvh] overflow-y-auto",
+    "bg-white h-full",
+    "flex flex-col h-full",
+    "flex-1 h-full overflow-y-auto scrollbar-hide w-full",
+)
+
+
+def drop_game_wrapper(rows):
+    """게임 캡처의 껍데기 다섯 겹을 벗기고 나머지를 그만큼 당긴다.
+
+    #app → h-[100dvh] → bg-white(opacity) → flex flex-col → scrollbar-hide →
+    ux-dark-stage 까지가 껍데기다. 마지막 ux-dark-stage 는 앱의
+    .game-frame 에 대응하고, 렌더 쪽에서도 같이 벗긴다(activity-frame 과 같은 처리).
+    """
+    n = 0
+    for r in rows:
+        t = r.strip()
+        if n == 0 and t == "<div>":
+            n += 1
+            continue
+        if n and any(f'class="{c}"' in t for c in GAME_WRAPPER_CLASSES):
+            n += 1
+            continue
+        if n and 'class="ux-dark-stage"' in t:
+            n += 1
+            break
+        if n:
+            break
+    if n < 2:
+        return rows
+    out = []
+    for r in rows[n:]:
+        out.append(r[2 * n :] if r.startswith(" " * (2 * n)) else r.lstrip())
+    return out
+
+
 def strip_app_wrapper(html):
     """게임 캡처의 <div id="app"> 껍데기를 파싱 전에 벗긴다.
 
@@ -180,7 +220,9 @@ for f in sorted(glob.glob(os.path.join(out, "*.html"))):
         continue
 
     def prep(html):
-        return drop_single_progress(drop_tabbar(flat(strip_app_wrapper(html))))
+        return drop_single_progress(
+            drop_tabbar(drop_game_wrapper(flat(strip_app_wrapper(html))))
+        )
 
     a = prep(open(ref, encoding="utf-8").read())
     b = prep(open(f, encoding="utf-8").read())
