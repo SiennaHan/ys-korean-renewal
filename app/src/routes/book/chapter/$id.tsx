@@ -43,7 +43,7 @@ function RouteComponent() {
 	const goProblem = (module: ModuleType) => {
 		console.log("moduleCode=>", module.code);
 		navigate({
-			to: "/book/chapter/unit/" + module.scene_type + "/" + module.code,
+			to: `/book/chapter/unit/${module.scene_type}/${module.code}`,
 		});
 	};
 
@@ -62,14 +62,14 @@ function RouteComponent() {
 			<div className="h-full bg-[#f8f8f8]">
 				<BookHeader title={book?.title} previousPage={previousPage} />
 				<div className="flex bg-white">
-					<div className="w-[5px] bg-[#037]"></div>
+					<div className="w-[5px] bg-[#037]" />
 					<div className="flex h-[53px] items-center">
 						<div className="flex w-[40px] justify-center pl-[15px] font-extrabold text-[#037] text-[32px]">
-							{chapter!.seq}
+							{chapter?.seq}
 						</div>
 						<div className="flex flex-col pl-[15px]">
-							<div className="text-[14px]">{chapter!.title}</div>
-							<div className="text-[#999] text-[10px]">{chapter!.eng}</div>
+							<div className="text-[14px]">{chapter?.title}</div>
+							<div className="text-[#999] text-[10px]">{chapter?.eng}</div>
 						</div>
 					</div>
 				</div>

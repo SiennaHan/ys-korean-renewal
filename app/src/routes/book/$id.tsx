@@ -19,12 +19,12 @@ function RouteComponent() {
 
 	const goChapter = (id: number, seq: number) => {
 		console.log("id=>", id);
-		if (seq > 3) navigate({ to: "/book/chapter/" + id });
+		if (seq > 3) navigate({ to: `/book/chapter/${id}` });
 	};
 
 	const goUnit = (id: number) => {
 		console.log("unitId=>", id);
-		navigate({ to: "/book/chapter/unit/" + id });
+		navigate({ to: `/book/chapter/unit/${id}` });
 	};
 
 	const book = books.find((item) => item.id === bookId);
@@ -35,7 +35,7 @@ function RouteComponent() {
 
 		return (
 			<div className="flex rounded-[5px] bg-white shadow-[0_0px_6px_0.5px_rgb(94,129,169,0.2)]">
-				<div className="w-[5px] rounded-l-[5px] bg-[#037]"></div>
+				<div className="w-[5px] rounded-l-[5px] bg-[#037]" />
 				<div className="flex w-full flex-col">
 					<div
 						onClick={(e) => goChapter(chapter.id, chapter.seq)}

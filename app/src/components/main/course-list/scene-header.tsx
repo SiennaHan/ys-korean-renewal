@@ -18,15 +18,15 @@ export function SceneHeader(props: SceneHeaderInterface) {
 	};
 
 	return (
-		<div className="sticky top-0 items-center z-10 bg-[#f6f7f8]">
-			<div className="flex justify-between h-[48px]">
+		<div className="sticky top-0 z-10 items-center bg-[#f6f7f8]">
+			<div className="flex h-[48px] justify-between">
 				<div
 					onClick={handleBack}
-					className="w-[48px] h-[48px] flex items-center justify-center cursor-pointer hover:bg-gray-200 active:bg-gray-300"
+					className="flex h-[48px] w-[48px] cursor-pointer items-center justify-center hover:bg-gray-200 active:bg-gray-300"
 				>
 					<ChevronLeft />
 				</div>
-				<div className="flex items-center text-[17px] font-semibold text-[#383A3F]">
+				<div className="flex items-center font-semibold text-[#383A3F] text-[17px]">
 					{props.title}
 				</div>
 				<div className="w-[48px]" />

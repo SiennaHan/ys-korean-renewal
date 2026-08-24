@@ -30,7 +30,7 @@ import {
 } from "framer-motion";
 import { Loader2, X } from "lucide-react";
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react";
 import { type LearnSearch, parseLearnSearch } from "./-search";
 
 /**
@@ -92,7 +92,7 @@ function SpeakerButton({
 				</span>
 			</button>
 		</div>
-	)
+	);
 }
 
 /**
@@ -170,13 +170,14 @@ function FlashcardCard({
 				</div>
 			</div>
 		</div>
-	)
+	);
 }
 
 function RouteComponent() {
 	const { level, lesson } = Route.useSearch();
 	const flashcardId = Number(
-		flashcards.find((f) => f.book_id === level && f.chapter === lesson)?.id ?? 0,
+		flashcards.find((f) => f.book_id === level && f.chapter === lesson)?.id ??
+			0,
 	);
 
 	const navigate = useNavigate();
@@ -193,7 +194,7 @@ function RouteComponent() {
 
 	const goBack = () => {
 		router.history.back();
-	}
+	};
 
 	const [repeatStatus, setRepeatStatus] = useState<
 		"new" | "repeat" | "complete"
@@ -224,15 +225,15 @@ function RouteComponent() {
 			cardType,
 			cardId,
 			status,
-		})
-	}
+		});
+	};
 
 	/*
 	 * 결과는 라우트가 아니라 이 화면의 한 단계다 (명세 §4 — "결과는 셸 공통이라
 	 * 별도 라우트 폐지"). runKey 를 올리면 카드 화면이 서버 상태를 다시 읽는다 —
 	 * "모르는 단어만 다시" 가 repeat 를 심고 되돌아오기 때문이다.
 	 */
-	const goResult = () => setPhase("result")
+	const goResult = () => setPhase("result");
 
 	/** dir: 1 = 알아요(오른쪽), -1 = 몰라요(왼쪽) */
 	const swipe = (dir: 1 | -1) => {
@@ -256,19 +257,19 @@ function RouteComponent() {
 			ease: "easeOut",
 			onComplete: () => {
 				if (isLast) {
-					goResult()
-					return
+					goResult();
+					return;
 				}
 				// 다음 카드로 교체: 뒤에 깔려 있던 다음 카드와 동일한 내용이 중앙에
 				// 그대로 나타나므로 튀지 않는다. x는 즉시 0으로 되돌린다.
 				setIsFlipped(false);
 				setCurrentIndex((i) => i + 1);
-				x.set(0)
+				x.set(0);
 				animatingRef.current = false;
 				setIsSwiping(false);
 			},
-		})
-	}
+		});
+	};
 
 	const handleDragEnd = (_e: unknown, info: PanInfo) => {
 		if (animatingRef.current) return;
@@ -281,12 +282,12 @@ function RouteComponent() {
 			// 기준에 못 미치면 제자리로 튕겨 돌아온다.
 			animate(x, 0, { type: "spring", stiffness: 400, damping: 35 });
 		}
-	}
+	};
 
 	const handleFlip = () => {
 		if (animatingRef.current) return;
 		setIsFlipped((f) => !f);
-	}
+	};
 
 	const playAudio = useCallback(async () => {
 		if (!currentCard || isAudioPlaying) return;
@@ -305,7 +306,7 @@ function RouteComponent() {
 	const onClose = () => {
 		sharedAudio.stop();
 		goBack();
-	}
+	};
 
 	/** 카드 전환 시 재생 중단 */
 	useEffect(() => {
@@ -323,7 +324,7 @@ function RouteComponent() {
 		const fetchData = async () => {
 			const _cardData =
 				flashcard_words.filter((item) => item.flashcard_id === flashcardId) ??
-				[]
+				[];
 			setCardData(_cardData);
 
 			// Ensure UserFlashcard record exists on server
@@ -333,7 +334,7 @@ function RouteComponent() {
 					bookId,
 					flashcardId,
 					cardType,
-				})
+				});
 			}
 			const flashcardStatus = existing?.status ?? "new";
 			setRepeatStatus(flashcardStatus as "new" | "repeat" | "complete");
@@ -342,7 +343,7 @@ function RouteComponent() {
 			const savedList = await listUserFlashcardWordByType(
 				flashcardId,
 				cardType,
-			)
+			);
 
 			const unknowns = savedList
 				.filter((item) => item.status === "unknown")
@@ -354,7 +355,7 @@ function RouteComponent() {
 				setUnknownWords([]);
 				const repeatCards = _cardData.filter((item) =>
 					unknowns.includes(item.id),
-				)
+				);
 				setCardData(repeatCards);
 				setCurrentIndex(0);
 				if (repeatCards.length < 1) goResult();
@@ -366,7 +367,7 @@ function RouteComponent() {
 				if (savedList.length > 0) setCurrentIndex(savedList.length);
 				if (savedList.length >= _cardData.length) goResult();
 			}
-		}
+		};
 		fetchData();
 		// runKey 가 바뀌면 다시 읽는다 — 결과에서 "다시" 로 돌아온 경우다
 	}, [runKey]);
@@ -377,11 +378,11 @@ function RouteComponent() {
 				flashcardId={flashcardId}
 				onClose={() => navigate({ to: "/main/textbook" })}
 				onRetry={() => {
-					setPhase("cards")
-					setRunKey((n) => n + 1)
+					setPhase("cards");
+					setRunKey((n) => n + 1);
 				}}
 			/>
-		)
+		);
 	}
 
 	return (
@@ -435,8 +436,8 @@ function RouteComponent() {
 							isFlipped={isFlipped}
 							isAudioPlaying={isAudioPlaying}
 							onPlay={(e) => {
-								e.stopPropagation()
-								playAudio()
+								e.stopPropagation();
+								playAudio();
 							}}
 						/>
 					</motion.div>
@@ -478,5 +479,5 @@ function RouteComponent() {
 				</button>
 			</div>
 		</div>
-	)
+	);
 }

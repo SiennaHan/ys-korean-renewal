@@ -1,4 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { postChat, streamTts } from "@/api/chat";
+import { useSharedAudio } from "@/components/audio/audio-provider";
+import { getCachedTtsBlob, putCachedTtsPcm } from "@/shared/tts-cache";
+import { useCallback, useEffect, useState } from "react";
 import {
 	AlertUserMsgBox,
 	BotMsgBox,
@@ -7,9 +10,6 @@ import {
 	TipUserMsgBox,
 	UserMsgBox,
 } from "./chat-text";
-import { postChat, streamTts } from "@/api/chat";
-import { useSharedAudio } from "@/components/audio/audio-provider";
-import { getCachedTtsBlob, putCachedTtsPcm } from "@/shared/tts-cache";
 
 export type MessageType =
 	| "alert"
@@ -83,8 +83,7 @@ export default function ChatMessage({
 			} catch (err) {
 				const message = (err as Error)?.message ?? "";
 				const name = (err as DOMException)?.name ?? "";
-				const isAbort =
-					name === "AbortError" || /aborted|abort/i.test(message);
+				const isAbort = name === "AbortError" || /aborted|abort/i.test(message);
 				if (!isAbort) {
 					console.error("TTS failed:", message);
 				}
@@ -133,15 +132,9 @@ export default function ChatMessage({
 
 	return (
 		<div>
-			{msgType === "completed" && (
-				<CompletedMsgBox closeDialog={goReport} />
-			)}
-			{msgType === "alert" && (
-				<AlertUserMsgBox msg={msg} alertMsg={feedback} />
-			)}
-			{msgType === "tip" && (
-				<TipUserMsgBox msg={msg} alertMsg={feedback} />
-			)}
+			{msgType === "completed" && <CompletedMsgBox closeDialog={goReport} />}
+			{msgType === "alert" && <AlertUserMsgBox msg={msg} alertMsg={feedback} />}
+			{msgType === "tip" && <TipUserMsgBox msg={msg} alertMsg={feedback} />}
 			{msgType === "bot" && (
 				<BotMsgBox
 					msg={msg}

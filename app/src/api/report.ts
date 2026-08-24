@@ -1,27 +1,29 @@
-import { api } from './api';
-import { ReportItem } from './apiType';
+import { api } from "./api";
+import type { ReportItem } from "./apiType";
 
 export async function listReport(category: string): Promise<ReportItem[]> {
-	let result: ReportItem[] = []
+	let result: ReportItem[] = [];
 	try {
-		const response = await api.get<ReportItem[]>(`/report/list/${category}`);    
+		const response = await api.get<ReportItem[]>(`/report/list/${category}`);
 		if (!response.result || !response.data) return [];
-		
-		result = response.data ?? []
+
+		result = response.data ?? [];
 	} catch (error) {
 		console.error(error);
 		return [];
 	} finally {
-		return result
+		return result;
 	}
 }
 
-export async function createReport(request: ReportItem): Promise<ReportItem | null> {
-	let result: ReportItem | null = null
+export async function createReport(
+	request: ReportItem,
+): Promise<ReportItem | null> {
+	let result: ReportItem | null = null;
 	try {
-		const response = await api.post<ReportItem>(`/report`, request);    
+		const response = await api.post<ReportItem>("/report", request);
 		if (!response.result || !response.data) return null;
-		
+
 		result = response.data;
 	} catch (error) {
 		console.error(error);

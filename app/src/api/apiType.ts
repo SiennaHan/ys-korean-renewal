@@ -6,7 +6,7 @@ export interface ServerResponse<T> {
 }
 
 export interface GuestToken {
-	status: 'new' | 'exist';
+	status: "new" | "exist";
 	token: string;
 	guestId: string;
 }
@@ -27,10 +27,10 @@ export interface LoginError {
 }
 
 export interface KoChatRequest {
-	dialogId: string
-	chatId: number
-	msg: string
-	lang?: string
+	dialogId: string;
+	chatId: number;
+	msg: string;
+	lang?: string;
 }
 
 export interface KoChatMissionResponse {
@@ -69,7 +69,7 @@ export interface CheckMission {
 	is_vocabulary_natural: boolean;
 	is_grammar_correct: boolean;
 	is_pronunciation_correct: boolean;
-	
+
 	feedback: string;
 	recommend_example: string;
 	// description: string;
@@ -77,8 +77,8 @@ export interface CheckMission {
 }
 
 export interface MsgResponse {
-	msgs: ChatItem[]
-	feedbacks: FeedbackItem[]
+	msgs: ChatItem[];
+	feedbacks: FeedbackItem[];
 }
 
 export interface ChatItem {
@@ -120,7 +120,7 @@ export interface TranslateResponse {
 
 export interface ReportResponse {
 	chat: KoChat;
-	feedbacks: FeedbackItem [];
+	feedbacks: FeedbackItem[];
 }
 
 export interface ReportItem {

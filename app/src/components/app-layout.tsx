@@ -1,9 +1,9 @@
+import { M_WIDTH, T_WIDTH } from "@/shared/constants";
+import { motion } from "framer-motion";
+import { Smartphone } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import { Smartphone } from "lucide-react";
-import { M_WIDTH, T_WIDTH } from "@/shared/constants";
 import { isMobile } from "react-device-detect";
-import { motion } from "framer-motion";
 
 type DeviceType = "mobile" | "tablet";
 
@@ -23,8 +23,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 		return <div className="h-[100dvh] overflow-y-auto">{children}</div>;
 	}
 
-	const currentWidth =
-		device === "mobile" ? M_WIDTH : T_WIDTH;
+	const currentWidth = device === "mobile" ? M_WIDTH : T_WIDTH;
 	const widthStyle =
 		typeof currentWidth === "number" ? `${currentWidth}px` : currentWidth;
 
@@ -35,7 +34,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 				.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 			`}</style>
 
-			<div className="h-dvh w-full bg-gray-100 dark:bg-gray-900 flex justify-center relative overflow-hidden">
+			<div className="relative flex h-dvh w-full justify-center overflow-hidden bg-gray-100 dark:bg-gray-900">
 				<motion.div
 					initial={false}
 					animate={{ maxWidth: widthStyle }}
@@ -44,20 +43,22 @@ export default function AppLayout({ children }: AppLayoutProps) {
 						stiffness: 300,
 						damping: 30,
 					}}
-					className="h-full w-full bg-white dark:bg-black shadow-2xl relative flex flex-col overflow-y-auto hide-scrollbar"
-					style={{
-						"--app-width": widthStyle,
-					} as React.CSSProperties}
+					className="hide-scrollbar relative flex h-full w-full flex-col overflow-y-auto bg-white shadow-2xl dark:bg-black"
+					style={
+						{
+							"--app-width": widthStyle,
+						} as React.CSSProperties
+					}
 				>
 					{children}
 				</motion.div>
 
-				<div className="fixed bottom-15 left-2 flex flex-col gap-2 z-50">
+				<div className="fixed bottom-15 left-2 z-50 flex flex-col gap-2">
 					<button
 						type="button"
-						className={`inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors shadow-md h-12 w-12 cursor-pointer ${
+						className={`inline-flex h-12 w-12 cursor-pointer items-center justify-center rounded-full font-medium text-sm shadow-md transition-colors ${
 							device === "mobile"
-								? "bg-white text-slate-900 border border-slate-200 hover:bg-slate-100"
+								? "border border-slate-200 bg-white text-slate-900 hover:bg-slate-100"
 								: "bg-slate-800 text-white hover:bg-slate-700"
 						}`}
 						onClick={toggleDevice}

@@ -1,9 +1,14 @@
-import { 
-	Chart as ChartJS, RadialLinearScale, PointElement, LineElement,
-	Filler, Tooltip, Legend,
-	ChartOptions,
-} from 'chart.js';
-import { Radar } from 'react-chartjs-2';
+import {
+	Chart as ChartJS,
+	type ChartOptions,
+	Filler,
+	Legend,
+	LineElement,
+	PointElement,
+	RadialLinearScale,
+	Tooltip,
+} from "chart.js";
+import { Radar } from "react-chartjs-2";
 
 interface Props {
 	labels: string[];
@@ -11,37 +16,38 @@ interface Props {
 }
 
 export default function AssessmentChart(props: Props) {
-
 	ChartJS.register(
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Tooltip,
-    Legend
-  );
+		RadialLinearScale,
+		PointElement,
+		LineElement,
+		Filler,
+		Tooltip,
+		Legend,
+	);
 
 	const chartData = {
 		labels: props.labels,
-		datasets: [{
-			label: '팀 점수',
-			data: props.data,
-			fill: true,
-			backgroundColor: 'rgba(185, 218, 255, 0.50)',
-			borderColor: '#377ef8',
-			pointRadius: 0,
-			pointHoverBackgroundColor: '#fff',
-			pointHoverBorderColor: '#377ef8'
-		}],
+		datasets: [
+			{
+				label: "팀 점수",
+				data: props.data,
+				fill: true,
+				backgroundColor: "rgba(185, 218, 255, 0.50)",
+				borderColor: "#377ef8",
+				pointRadius: 0,
+				pointHoverBackgroundColor: "#fff",
+				pointHoverBorderColor: "#377ef8",
+			},
+		],
 	};
 
-	const chartOptions: ChartOptions<'radar'> & ChartOptions = {
+	const chartOptions: ChartOptions<"radar"> & ChartOptions = {
 		responsive: true,
 		elements: {
 			line: {
 				borderWidth: 2,
-				borderColor: '#377ef8',
-			}
+				borderColor: "#377ef8",
+			},
 		},
 		scales: {
 			r: {
@@ -50,15 +56,15 @@ export default function AssessmentChart(props: Props) {
 					display: false,
 				},
 				grid: {
-					color: '#eee',
+					color: "#eee",
 				},
 				pointLabels: {
 					font: {
 						size: 14,
-						weight: 'bold',
-						family: 'Pretendard',
+						weight: "bold",
+						family: "Pretendard",
 					},
-					color: '#0180FF',
+					color: "#0180FF",
 				},
 				angleLines: {
 					display: false,
@@ -77,7 +83,9 @@ export default function AssessmentChart(props: Props) {
 		},
 	};
 
-	return <div className="flex justify-center">
-		<Radar data={chartData} options={chartOptions}/>
-	</div>
+	return (
+		<div className="flex justify-center">
+			<Radar data={chartData} options={chartOptions} />
+		</div>
+	);
 }

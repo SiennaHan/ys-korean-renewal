@@ -4,12 +4,13 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonStyles = cva(
-	"inline-flex items-center justify-center gap-2 rounded-md h-9 px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none [&>svg]:size-4",
+	"inline-flex h-9 select-none items-center justify-center gap-2 rounded-md px-4 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&>svg]:size-4",
 	{
 		variants: {
 			variant: {
 				primary: "bg-[#037] text-white hover:bg-gray-300 active:bg-gray-500",
-				secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray:400",
+				secondary:
+					"active:bg-gray:400 bg-gray-100 text-gray-900 hover:bg-gray-200",
 				outline: "border border-gray-300 text-gray-900 hover:bg-gray-50",
 				ghost: "text-gray-900 hover:bg-gray-100",
 				destructive: "bg-red-600 text-white hover:bg-red-700",
@@ -31,17 +32,24 @@ const buttonStyles = cva(
 			variant: "primary",
 			size: "md",
 		},
-	}
+	},
 );
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonStyles>;
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+	VariantProps<typeof buttonStyles>;
 
-export function Button({ className, variant, size, full, ...props }: ButtonProps) {
+export function Button({
+	className,
+	variant,
+	size,
+	full,
+	...props
+}: ButtonProps) {
 	return (
-	<button
-		type={props.type ?? "button"}
-		className={cn(buttonStyles({ variant, size, full }), className)}
-		{...props}
-	/>
+		<button
+			type={props.type ?? "button"}
+			className={cn(buttonStyles({ variant, size, full }), className)}
+			{...props}
+		/>
 	);
 }

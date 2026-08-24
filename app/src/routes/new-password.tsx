@@ -97,18 +97,14 @@ function NewPasswordPage() {
 									type={showPassword ? "text" : "password"}
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
-									placeholder={t(
-										"newPassword.newPasswordPlaceholder",
-									)}
+									placeholder={t("newPassword.newPasswordPlaceholder")}
 									required
-									className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 pr-10 py-2 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+									className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
 								/>
 								<button
 									type="button"
-									onClick={() =>
-										setShowPassword(!showPassword)
-									}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+									onClick={() => setShowPassword(!showPassword)}
+									className="-translate-y-1/2 absolute top-1/2 right-3 text-gray-400 hover:text-gray-600"
 								>
 									{showPassword ? (
 										<EyeOff className="h-5 w-5" />
@@ -130,29 +126,17 @@ function NewPasswordPage() {
 							<div className="relative">
 								<input
 									id="confirm-password"
-									type={
-										showConfirmPassword
-											? "text"
-											: "password"
-									}
+									type={showConfirmPassword ? "text" : "password"}
 									value={confirmPassword}
-									onChange={(e) =>
-										setConfirmPassword(e.target.value)
-									}
-									placeholder={t(
-										"newPassword.confirmPasswordPlaceholder",
-									)}
+									onChange={(e) => setConfirmPassword(e.target.value)}
+									placeholder={t("newPassword.confirmPasswordPlaceholder")}
 									required
-									className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 pr-10 py-2 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+									className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
 								/>
 								<button
 									type="button"
-									onClick={() =>
-										setShowConfirmPassword(
-											!showConfirmPassword,
-										)
-									}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+									className="-translate-y-1/2 absolute top-1/2 right-3 text-gray-400 hover:text-gray-600"
 								>
 									{showConfirmPassword ? (
 										<EyeOff className="h-5 w-5" />
@@ -170,17 +154,13 @@ function NewPasswordPage() {
 									key={req.key}
 									className={cn(
 										"flex items-center gap-2 text-sm",
-										req.met
-											? "text-green-600"
-											: "text-gray-400",
+										req.met ? "text-green-600" : "text-gray-400",
 									)}
 								>
 									<Check
 										className={cn(
 											"h-4 w-4",
-											req.met
-												? "text-green-600"
-												: "text-gray-300",
+											req.met ? "text-green-600" : "text-gray-300",
 										)}
 									/>
 									{req.label}
@@ -190,9 +170,7 @@ function NewPasswordPage() {
 
 						{/* Error */}
 						{error && (
-							<p className="text-center text-red-500 text-sm">
-								{error}
-							</p>
+							<p className="text-center text-red-500 text-sm">{error}</p>
 						)}
 
 						{/* Submit button */}

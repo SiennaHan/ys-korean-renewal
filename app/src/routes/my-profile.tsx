@@ -92,7 +92,7 @@ function MyProfilePage() {
 				>
 					<ChevronLeft className="size-[24px] stroke-[2] text-[#383A3F]" />
 				</button>
-				<span className="absolute left-1/2 -translate-x-1/2 font-semibold text-[#383A3F] text-[17px] leading-[26px]">
+				<span className="-translate-x-1/2 absolute left-1/2 font-semibold text-[#383A3F] text-[17px] leading-[26px]">
 					{t("mypage.profileInfo.title")}
 				</span>
 			</div>
@@ -184,7 +184,8 @@ function MyProfilePage() {
 								)}
 							>
 								<span className="font-semibold text-[#383A3F] text-[16px] leading-[24px]">
-									{level}{t("mypage.profileInfo.level")}
+									{level}
+									{t("mypage.profileInfo.level")}
 								</span>
 								<ChevronDown
 									className={cn(
@@ -210,7 +211,8 @@ function MyProfilePage() {
 													: "text-[#383A3F] hover:bg-[#f6f7f8]",
 											)}
 										>
-											{item}{t("mypage.profileInfo.level")}
+											{item}
+											{t("mypage.profileInfo.level")}
 										</button>
 									))}
 								</div>
@@ -231,7 +233,8 @@ function MyProfilePage() {
 								)}
 							>
 								<span className="font-semibold text-[#383A3F] text-[16px] leading-[24px]">
-									{classNum}{t("mypage.profileInfo.class")}
+									{classNum}
+									{t("mypage.profileInfo.class")}
 								</span>
 								<ChevronDown
 									className={cn(
@@ -257,7 +260,8 @@ function MyProfilePage() {
 													: "text-[#383A3F] hover:bg-[#f6f7f8]",
 											)}
 										>
-											{item}{t("mypage.profileInfo.class")}
+											{item}
+											{t("mypage.profileInfo.class")}
 										</button>
 									))}
 								</div>

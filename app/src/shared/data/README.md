@@ -52,3 +52,21 @@ python3 scripts/build-content.py --check
 
 곁들여 객관식 네 시트(2,044행)의 기본 정합성도 확인했다 — 정답 번호 범위 밖 0 ·
 선택지 중복 0 · 선택지 부족 0.
+
+## biome 이 이 폴더를 보지 않는다 (2026-08-24)
+
+`biome.json` 의 `files.ignore` 에 이 폴더가 들어 있다. 이유가 둘이다.
+
+* **네 파일은 biome 이 처리하지 못한다.** `clip.ts` 11MB · `dialog.ts` 1.9MB ·
+  `n7_mission_chat.json` 1.5MB · `n1_word_list.json` 1.1MB 가 기본 상한 1MB 를 넘어
+  "크기 초과" 진단만 낸다. 빼지 않으면 `biome check` 가 절대 통과할 수 없었다.
+* **나머지도 코드가 아니라 데이터표다.** 서식을 맞춰도 읽는 사람이 없고,
+  `problem.ts` 하나가 1.8만 줄짜리 diff 를 만든다.
+
+**주의 — 여기 있는 작은 로더 모듈도 같이 빠졌다.** `word-list.ts` ·
+`learn-data-check.ts` · `listen-answer.ts` · `mission-chat.ts` · `roleplay.ts` ·
+`word-quiz.ts` 처럼 JSON 을 읽어 타입을 붙이는 파일들이다. 지금은 셋 다 진단이 0이지만
+**앞으로 이 파일들이 틀리면 린터가 안 잡는다.** 손댈 때 눈으로 봐야 한다.
+
+생성 JSON 자체는 서식이 이미 맞다 — `build-content.py` 가 `json.dumps(indent="\t")` 로
+쓰고 그것이 biome 의 서식과 같다. 즉 빼는 이유는 서식 충돌이 아니라 위의 둘이다.

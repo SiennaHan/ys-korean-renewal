@@ -13,7 +13,6 @@
  *  · 한 판은 30문항까지
  */
 import { getGameProgress, saveGameProgress } from "@/api/game-progress";
-import { VOCA_BANK, type VocaItem } from "@/shared/data/vocashot-bank";
 import {
 	type Missed,
 	type Mode,
@@ -21,6 +20,7 @@ import {
 	VocashotResultView,
 	VocashotStartView,
 } from "@/components/main/game/vocashot-view";
+import { VOCA_BANK, type VocaItem } from "@/shared/data/vocashot-bank";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 

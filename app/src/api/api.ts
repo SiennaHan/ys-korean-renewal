@@ -1,5 +1,5 @@
-import type { ServerResponse } from "./apiType";
 import { env } from "@/config/env";
+import type { ServerResponse } from "./apiType";
 
 const BASE_URL: string = env.KOREAN_API_URL;
 

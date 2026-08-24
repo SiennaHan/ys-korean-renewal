@@ -146,7 +146,7 @@ function RouteComponent() {
 		setProblem(_problem);
 		if (_problem) {
 			setWordList(_problem.choice_1.split(","));
-			const _audioSrc = env.RES_URL_ROOT + "/" + _problem.content_sound;
+			const _audioSrc = `${env.RES_URL_ROOT}/${_problem.content_sound}`;
 			setAudioSrc(_audioSrc);
 		}
 		if (problemIndex === problemList.length - 1) setIsLastPage(true);

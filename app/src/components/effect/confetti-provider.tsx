@@ -1,5 +1,13 @@
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
+import type React from "react";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { createPortal } from "react-dom";
 
 interface ConfettiContextType {
@@ -11,7 +19,9 @@ interface ConfettiContextType {
 	isLibLoaded: boolean;
 }
 
-const ConfettiContext = createContext<ConfettiContextType | undefined>(undefined);
+const ConfettiContext = createContext<ConfettiContextType | undefined>(
+	undefined,
+);
 
 export const useConfetti = () => {
 	const context = useContext(ConfettiContext);
@@ -52,7 +62,8 @@ export function ConfettiProvider({ children }: { children: React.ReactNode }) {
 		}
 	}, []);
 
-	const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+	const randomInRange = (min: number, max: number) =>
+		Math.random() * (max - min) + min;
 
 	const fireBigBang = useCallback(() => {
 		if (!isLibLoaded) return;
@@ -132,10 +143,22 @@ export function ConfettiProvider({ children }: { children: React.ReactNode }) {
 
 	return (
 		<ConfettiContext.Provider
-			value={{ fireBigBang, firePop, startFireworks, stopFireworks, isRunning, isLibLoaded }}
+			value={{
+				fireBigBang,
+				firePop,
+				startFireworks,
+				stopFireworks,
+				isRunning,
+				isLibLoaded,
+			}}
 		>
 			{children}
-			{isMounted ? createPortal(<canvas ref={refCanvas} style={canvasStyles} />, document.body) : null}
+			{isMounted
+				? createPortal(
+						<canvas ref={refCanvas} style={canvasStyles} />,
+						document.body,
+					)
+				: null}
 		</ConfettiContext.Provider>
 	);
 }

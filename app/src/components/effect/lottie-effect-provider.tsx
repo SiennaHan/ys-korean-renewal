@@ -1,5 +1,6 @@
 import completeMissionAni from "@/assets/complete_mission_ani.json";
-import React, {
+import type React from "react";
+import {
 	createContext,
 	useCallback,
 	useContext,
@@ -19,17 +20,23 @@ interface LottieEffectContextType {
 	isLibLoaded: boolean;
 }
 
-const LottieEffectContext = createContext<LottieEffectContextType | undefined>(undefined);
+const LottieEffectContext = createContext<LottieEffectContextType | undefined>(
+	undefined,
+);
 
 export const useLottieEffect = () => {
 	const context = useContext(LottieEffectContext);
 	if (!context) {
-		throw new Error("useLottieEffect must be used within a LottieEffectProvider");
+		throw new Error(
+			"useLottieEffect must be used within a LottieEffectProvider",
+		);
 	}
 	return context;
 };
 
-export function LottieEffectProvider({ children }: { children: React.ReactNode }) {
+export function LottieEffectProvider({
+	children,
+}: { children: React.ReactNode }) {
 	const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const isRunningRef = useRef(false);
 	const [isMounted, setIsMounted] = useState(false);

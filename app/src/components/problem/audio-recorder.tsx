@@ -160,7 +160,7 @@ const AudioRecorder = (props: Props) => {
 				props.setResult(true, resultMsg ?? "", audioUrl ?? "");
 			} catch (error) {
 				console.error("API 호출 중 오류 발생:", error);
-				addToast(`분석에 실패했습니다. 다시시도해 주세요`);
+				addToast("분석에 실패했습니다. 다시시도해 주세요");
 			} finally {
 				handleCancelOrDelete();
 			}
@@ -270,7 +270,7 @@ const AudioRecorder = (props: Props) => {
 						)}
 						{recorderStatus === "recorded" && <Upload size={24} />}
 						{recorderStatus === "uploading" && (
-							<div className="h-6 w-6 animate-spin rounded-full border-[#fff] border-b-2"></div>
+							<div className="h-6 w-6 animate-spin rounded-full border-[#fff] border-b-2" />
 						)}
 					</button>
 				</div>

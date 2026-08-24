@@ -1,6 +1,6 @@
 import { chatBaseTextItem } from "@/components/chat/chat-text";
-import { Check, ChevronUp } from "lucide-react";
 import clsx from "clsx";
+import { Check, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
 interface DialogKeywordItem {
@@ -33,63 +33,46 @@ export function DialogScenario({
 			{/* Scenario Header */}
 			<button
 				type="button"
-				className="w-full py-2 pl-4 pr-4 bg-[#0180FF] cursor-pointer text-left"
+				className="w-full cursor-pointer bg-[#0180FF] py-2 pr-4 pl-4 text-left"
 				onClick={() => setIsShowImage((prev) => !prev)}
 			>
 				<div
-					className={clsx(
-						chatBaseTextItem,
-						"flex items-top justify-between",
-					)}
+					className={clsx(chatBaseTextItem, "items-top flex justify-between")}
 				>
-					<span className="text-base text-white font-semibold">
-						{scenario}
-					</span>
+					<span className="font-semibold text-base text-white">{scenario}</span>
 					<ChevronUp
 						style={{
-							transform: isShowImage
-								? "rotate(180deg)"
-								: "rotate(90deg)",
+							transform: isShowImage ? "rotate(180deg)" : "rotate(90deg)",
 						}}
 						color="#fff"
 						strokeWidth={2}
 						size={20}
 					/>
 				</div>
-				<div className="text-xs text-[#A2D1FF]">{scenarioEng}</div>
+				<div className="text-[#A2D1FF] text-xs">{scenarioEng}</div>
 				{isShowImage && (
-					<div className="flex justify-center mt-[5px] mb-2">
-						<img
-							src={scenarioImgUrl}
-							className="rounded-xl"
-							alt={scenario}
-						/>
+					<div className="mt-[5px] mb-2 flex justify-center">
+						<img src={scenarioImgUrl} className="rounded-xl" alt={scenario} />
 					</div>
 				)}
 			</button>
 
 			{/* Mission List Bar */}
-			<div className="h-[50px] flex justify-between items-center px-4 bg-[#F9FAFC]">
-				<div className="flex flex-row gap-5 items-center overflow-x-auto scrollbar-hide">
+			<div className="flex h-[50px] items-center justify-between bg-[#F9FAFC] px-4">
+				<div className="scrollbar-hide flex flex-row items-center gap-5 overflow-x-auto">
 					{missionList.map((item) => {
-						const isCompleted = completedList.includes(
-							item.keyword,
-						);
+						const isCompleted = completedList.includes(item.keyword);
 						return (
 							<div key={item.id} className="flex items-center">
 								<Check
-									color={
-										isCompleted ? "#11C378" : "#d0d0d0"
-									}
+									color={isCompleted ? "#11C378" : "#d0d0d0"}
 									strokeWidth={3}
 									size={12}
 								/>
 								<span
-									className="ml-[3px] text-sm whitespace-nowrap"
+									className="ml-[3px] whitespace-nowrap text-sm"
 									style={{
-										color: isCompleted
-											? "#11C378"
-											: "#d0d0d0",
+										color: isCompleted ? "#11C378" : "#d0d0d0",
 									}}
 								>
 									{item.keyword}
@@ -102,11 +85,11 @@ export function DialogScenario({
 					type="button"
 					className={clsx(
 						chatBaseTextItem,
-						"p-2 rounded-lg font-bold bg-[#DBEDFF] cursor-pointer active:opacity-90",
+						"cursor-pointer rounded-lg bg-[#DBEDFF] p-2 font-bold active:opacity-90",
 					)}
 					onClick={() => setIsShowMissions((prev) => !prev)}
 				>
-					<div className="text-xs text-[#0073E6] whitespace-nowrap">
+					<div className="whitespace-nowrap text-[#0073E6] text-xs">
 						{isShowMissions ? "미션 숨기기" : "미션 보기"}
 					</div>
 				</button>
@@ -114,14 +97,14 @@ export function DialogScenario({
 
 			{/* Mission Detail Panel */}
 			{isShowMissions && (
-				<div className="w-full flex flex-col gap-1 bg-[#F9FAFC] px-4 pb-4">
-					<div className="bg-[#DBEDFF] p-3 rounded-b-xl rounded-tl-xl grid gap-2">
+				<div className="flex w-full flex-col gap-1 bg-[#F9FAFC] px-4 pb-4">
+					<div className="grid gap-2 rounded-b-xl rounded-tl-xl bg-[#DBEDFF] p-3">
 						{missionList.map((item) => (
 							<div key={item.id} className="flex items-center">
-								<div className="flex whitespace-nowrap justify-center text-sm text-[#0073E6] bg-white font-bold rounded-md px-2 py-1">
+								<div className="flex justify-center whitespace-nowrap rounded-md bg-white px-2 py-1 font-bold text-[#0073E6] text-sm">
 									{item.keyword}
 								</div>
-								<div className="ml-[7px] text-sm text-[#4B505A]">
+								<div className="ml-[7px] text-[#4B505A] text-sm">
 									{item.content}
 								</div>
 							</div>

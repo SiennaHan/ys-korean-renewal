@@ -10,7 +10,7 @@ function RouteComponent() {
 	const navigatge = useNavigate();
 
 	const goBook = (id: number) => {
-		navigatge({ to: "/book/" + id });
+		navigatge({ to: `/book/${id}` });
 	};
 
 	return (

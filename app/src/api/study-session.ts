@@ -1,8 +1,6 @@
 import { api } from "./api";
 
-export async function pingStudySession(
-	context?: string,
-): Promise<void> {
+export async function pingStudySession(context?: string): Promise<void> {
 	try {
 		await api.post("/study-session/ping", { context });
 	} catch (error) {

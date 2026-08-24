@@ -1,3 +1,4 @@
+import { MicIcon } from "@/assets/icons";
 import {
 	chatBaseButton,
 	chatBaseRedButton,
@@ -5,15 +6,8 @@ import {
 } from "@/components/chat/chat-text";
 import CircularProgress from "@/components/ui/circular-progress";
 import type { RecordState } from "@/hooks/useRecording";
-import { MicIcon } from "@/assets/icons";
-import {
-	Keyboard,
-	Square,
-	Trash2,
-	Upload,
-	X,
-} from "lucide-react";
 import clsx from "clsx";
+import { Keyboard, Square, Trash2, Upload, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { LiveAudioVisualizer } from "react-audio-visualize";
 
@@ -86,10 +80,10 @@ export function DialogInput({
 	}, [isShowInputBox]);
 
 	return (
-		<div className="absolute bottom-0 w-full z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0)0%,#FFF_50%)]">
+		<div className="absolute bottom-0 z-10 w-full bg-[linear-gradient(180deg,rgba(255,255,255,0)0%,#FFF_50%)]">
 			{/* Audio visualizer */}
 			{mediaRecorder && (
-				<div className="h-12 flex justify-center items-center w-full max-w-[300px] mx-auto mb-5 rounded-lg bg-[linear-gradient(98deg,_#E3F9F5_-6.59%,_#DBEDFF_80.75%)]">
+				<div className="mx-auto mb-5 flex h-12 w-full max-w-[300px] items-center justify-center rounded-lg bg-[linear-gradient(98deg,_#E3F9F5_-6.59%,_#DBEDFF_80.75%)]">
 					<LiveAudioVisualizer
 						mediaRecorder={mediaRecorder}
 						width={120}
@@ -103,20 +97,20 @@ export function DialogInput({
 
 			{/* Recorded message preview */}
 			{recordedMsg && (
-				<div className="px-[10px] mb-5">
+				<div className="mb-5 px-[10px]">
 					<textarea
 						ref={recordedMsgRef}
 						value={recordedMsg}
 						rows={1}
 						onChange={(e) => onRecordedMsgChange(e.target.value)}
-						className="w-full bg-[#DBEDFF] rounded-[5px] px-[10px] py-[10px] text-sm text-[#383A3F] scrollbar-hide"
+						className="scrollbar-hide w-full rounded-[5px] bg-[#DBEDFF] px-[10px] py-[10px] text-[#383A3F] text-sm"
 					/>
 				</div>
 			)}
 
 			{/* Text input mode */}
 			{isShowInputBox ? (
-				<div className="flex flex-row gap-1 pl-[3px] pr-2 py-[5px] items-end">
+				<div className="flex flex-row items-end gap-1 py-[5px] pr-2 pl-[3px]">
 					<button
 						type="button"
 						onClick={() => setIsShowInputBox(false)}
@@ -130,14 +124,11 @@ export function DialogInput({
 						onChange={(e) => setTextareaValue(e.target.value)}
 						rows={2}
 						placeholder="내용을 입력해주세요"
-						className="flex-1 border border-[#4396f4] bg-white rounded-[5px] px-[10px] py-[5px] text-base text-[#4396f4] scrollbar-hide"
+						className="scrollbar-hide flex-1 rounded-[5px] border border-[#4396f4] bg-white px-[10px] py-[5px] text-[#4396f4] text-base"
 					/>
 					<button
 						type="button"
-						className={clsx(
-							chatBaseButton,
-							"!size-[34px] !rounded-[5px]",
-						)}
+						className={clsx(chatBaseButton, "!size-[34px] !rounded-[5px]")}
 						onPointerDown={() => unlock()}
 						onTouchStart={() => unlock()}
 						onClick={onSendText}
@@ -148,7 +139,7 @@ export function DialogInput({
 				</div>
 			) : (
 				/* Voice recording mode */
-				<div className="flex justify-center items-center gap-2 mb-[10px]">
+				<div className="mb-[10px] flex items-center justify-center gap-2">
 					{recordState === "ready" ? (
 						<button
 							type="button"
@@ -181,24 +172,21 @@ export function DialogInput({
 							type="button"
 							className={clsx(
 								chatBaseButton,
-								"z-10 absolute top-[3px] left-[3px]",
+								"absolute top-[3px] left-[3px] z-10",
 							)}
 							onClick={onRecord}
 							disabled={
-								recordState === "converting" ||
-								recordState === "uploading"
+								recordState === "converting" || recordState === "uploading"
 							}
 						>
-							{recordState === "ready" && (
-								<MicIcon color="#fff" />
-							)}
+							{recordState === "ready" && <MicIcon color="#fff" />}
 							{recordState === "recording" && (
 								<Square fill="#fff" strokeWidth={0} />
 							)}
 							{recordState === "recorded" && <Upload />}
 							{(recordState === "converting" ||
 								recordState === "uploading") && (
-								<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white" />
+								<div className="h-6 w-6 animate-spin rounded-full border-white border-b-2" />
 							)}
 						</button>
 					</div>

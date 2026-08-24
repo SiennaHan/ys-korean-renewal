@@ -149,44 +149,47 @@
 	body {
 		@apply bg-background text-foreground;
 	} */
-	html, body {
-    /* 화면 전체를 박스에 가두어 브라우저의 강제 스크롤 방지 */
-    @apply fixed inset-0 overflow-hidden w-full h-full touch-none; 
-    /* touch-none은 전체의 터치 액션을 막지만, 내부 스크롤 영역에서 다시 살려줄 겁니다. */
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: none;
+	html,
+	body {
+		/* 화면 전체를 박스에 가두어 브라우저의 강제 스크롤 방지 */
+		@apply fixed inset-0 overflow-hidden w-full h-full touch-none;
+		/* touch-none은 전체의 터치 액션을 막지만, 내부 스크롤 영역에서 다시 살려줄 겁니다. */
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior: none;
 		font-family: "Pretendard", sans-serif;
-  }
+	}
 
 	/* iOS Safari 감지하여 폰트 사이즈 강제 16px 적용 */
-  @supports (-webkit-touch-callout: none) {
-    input, textarea, select {
-      font-size: 16px !important;
-    }
-  }
+	@supports (-webkit-touch-callout: none) {
+		input,
+		textarea,
+		select {
+			font-size: 16px !important;
+		}
+	}
 
-  /* React 앱이 그려지는 root 영역도 가득 채우기 */
-  /* #root {
+	/* React 앱이 그려지는 root 영역도 가득 채우기 */
+	/* #root {
     @apply w-full h-full overflow-hidden flex flex-col;
   } */
 }
 
 @layer utilities {
-  /* For Chrome, Safari and Opera */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+	/* For Chrome, Safari and Opera */
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
 
-  /* For IE, Edge and Firefox */
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
+	/* For IE, Edge and Firefox */
+	.scrollbar-hide {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
 
 	.mobile-fixed-height {
-    height: 100vh; /* 폴백 */
-    height: 100dvh;
-  }
+		height: 100vh; /* 폴백 */
+		height: 100dvh;
+	}
 }
 
 /* #app {

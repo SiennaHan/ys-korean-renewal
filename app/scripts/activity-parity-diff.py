@@ -29,6 +29,18 @@ IGNORED = {
     "nav 과 제목": "교재학습 목업의 과 제목은 표본이다(\"가족\" · 실제 1급 6과는 다른 제목)."
     " 목록 개수는 2026-08-21 에 목업을 실제 데이터에 맞췄다 — 급 탭 9 · 1급 과 12 ·"
     " 자모 1과의 묶음 3. 상태는 서버가 주는 것이라 목업이 정한 것을 쓴다",
+    "data-correct": "목업이 정답 선택지에 박아 둔 디자인 시점 힌트다(game__ps_play)."
+    " 앱은 정답을 DOM 에 노출하지 않는다 — 채점은 이벤트 핸들러 안에서 한다",
+    "채움 막대 진행률": "위 '운석 낙하 시간' 과 같은 사정이다 — <i style=\"width:NN%\">"
+    " 는 남은 시간·점수 같은 실시간 값이라 CSS 에 못 박고 앱이 인라인으로 준다."
+    " 목업은 캡처 뒤 스크립트가 넣으므로 마크업엔 없다 (game__ps_play, 나중엔 cs_play도)",
+    "cs-stat-row 인라인 style": "어휘 카드 마스터 결과(game__cs_result)의 다섯 스탯 행 중"
+    " '맞힌 카드' 한 행만 목업 캡처에 인라인 style 이 빠져 있다. 그런데 그 인라인 style"
+    " (display:flex · justify-content:space-between · align-items:center)은"
+    " game.css 226행의 .cs-stat-row 규칙이 이미 똑같이 세 줄 다 주는 값이다 —"
+    " 즉 인라인이 있든 없든 다섯 행은 똑같이 그려진다. 어느 쪽이 목업의 뜻이냐를 가릴 게"
+    " 아니라 아무 차이가 없는 자리다. 앱은 다섯 행을 같은 배열 map 으로 그리므로"
+    " 다섯 행 전부 인라인 style 비교만 건너뛴다(클래스·글자는 그대로 대조한다)",
 }
 # 위 aria-label 만 봐준다. 다른 aria-label 이 다르면 그대로 드러난다
 EXIT_LABELS = {"닫기", "나가기"}
@@ -43,9 +55,167 @@ COLOR_ALIAS = {
     "#E5E8EC": ("var(--color-line-normal)", "#E5E8EC"),
     "#0180FF": ("var(--color-fill-primary)", "#0180FF"),
 }
+# 색을 한 꼴로 모은다. 목업 캡처는 브라우저가 계산한 rgba(74, 222, 128, 0.25) 이고
+# 앱은 소스에 적은 #4ade8040 이다 — 같은 색인데 글자가 달라 대조가 걸린다.
+# 알파는 소수 둘로 끊는다(브라우저가 0.063 · 0.25 처럼 자리를 다르게 쓴다).
+_HEX = re.compile(r"#([0-9a-fA-F]{3,8})\b")
+_RGB = re.compile(r"rgba?\(([^)]*)\)")
+
+
+def _canon(r, g, b, a=1.0):
+    # a 는 부동소수 오차로 .5 경계에서 아래로 굴러떨어질 수 있다
+    # (예: 리터럴 "0.145" 는 실제로 0.144999…996 이라 그냥 :.2f 하면 0.14 가 된다).
+    # hex alpha(예: 0x25/255=0.145098…)로 들어온 값은 이 오차가 없어 0.15 로 반듯이 나오므로,
+    # 같은 뜻의 두 표현이 다르게 보인다 — 아주 작은 보정으로 경계를 밀어서 없앤다.
+    return f"rgba({r}, {g}, {b}, {a + 1e-9:.2f})"
+
+
+def norm_colors(v):
+    def hex_sub(m):
+        h = m.group(1)
+        if len(h) == 3:
+            h = "".join(c * 2 for c in h)
+        if len(h) == 4:
+            h = "".join(c * 2 for c in h)
+        if len(h) == 6:
+            return _canon(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+        if len(h) == 8:
+            return _canon(
+                int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), int(h[6:8], 16) / 255
+            )
+        return m.group(0)
+
+    def rgb_sub(m):
+        parts = [x.strip() for x in m.group(1).replace("/", ",").split(",")]
+        try:
+            nums = [float(x) for x in parts[:3]]
+            a = float(parts[3]) if len(parts) > 3 else 1.0
+        except ValueError:
+            return m.group(0)
+        return _canon(int(nums[0]), int(nums[1]), int(nums[2]), a)
+
+    return _RGB.sub(rgb_sub, _HEX.sub(hex_sub, v))
+
+
+# 인라인 style 을 한 꼴로 모은다. 목업 캡처는 브라우저가 직렬화한 것이고
+# ("width: 32px; …;" · border 를 네 개 longhand 로 펼친다) 앱은 React 가 쓴 것이다
+# ("width:32px;…" · 세미콜론 없음). 뜻이 같으면 같게 본다.
+_BORDER_NONE = {
+    "border-width": "medium",
+    "border-style": "none",
+    "border-color": "currentcolor",
+    "border-image": "initial",
+}
+
+
+_LEADING_ZERO = re.compile(r"(?<![\d.])0(\.\d)")
+
+
+def _tokenize(v):
+    """공백으로 토큰을 가르되 괄호 안(rgba(…) 같은) 공백은 건너뛴다."""
+    toks, buf, depth = [], "", 0
+    for ch in v:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        if ch == " " and depth == 0:
+            if buf:
+                toks.append(buf)
+                buf = ""
+        else:
+            buf += ch
+    if buf:
+        toks.append(buf)
+    return toks
+
+
+# font-family 인용 — 브라우저는 여러 단어(예: "Exo 2")는 겹따옴표로 감싸고
+# 한 단어(예: Pretendard·sans-serif)는 인용을 뗀다. 앱은 소스에 적은 그대로
+# ('Exo 2' 홑따옴표, 'Pretendard' 는 안 떼고) 나오므로 브라우저 규칙으로 맞춘다.
+_FONT_TOKEN = re.compile(r"^[A-Za-z][A-Za-z0-9-]*$")
+
+
+def norm_font_family(v):
+    out = []
+    for name in v.split(","):
+        n = name.strip().strip("'\"")
+        out.append(n if _FONT_TOKEN.match(n) else f'"{n}"')
+    return ", ".join(out)
+
+
+# animation 셔러핸드 — 브라우저는 이름 순서를 맨 뒤로 옮기고 생략된 하위값
+# (delay·iteration-count·direction·fill-mode·play-state)을 초기값으로 채워
+# 늘 8개짜리 꼴로 직렬화한다. 앱은 소스에 적은 대로("이름 시간 이징") 짧게
+# 나오므로 같은 규칙으로 펼친다.
+_TIMING_FN = {"ease", "ease-in", "ease-out", "ease-in-out", "linear", "step-start", "step-end"}
+_DIRECTION = {"normal", "reverse", "alternate", "alternate-reverse"}
+_FILL_MODE = {"none", "forwards", "backwards", "both"}
+_PLAY_STATE = {"running", "paused"}
+_TIME_TOKEN = re.compile(r"^-?[\d.]+s$")
+
+
+def norm_animation(v):
+    duration = timing = delay = iteration = direction = fill = play = name = None
+    for t in _tokenize(v):
+        if t == "auto" or _TIME_TOKEN.match(t):
+            if duration is None:
+                duration = t
+            elif delay is None:
+                delay = t
+        elif t in _TIMING_FN or t.startswith("cubic-bezier(") or t.startswith("steps("):
+            timing = t
+        elif t == "infinite" or re.match(r"^[\d.]+$", t):
+            iteration = t
+        elif t in _DIRECTION:
+            direction = t
+        elif t in _FILL_MODE and fill is None:
+            fill = t
+        elif t in _PLAY_STATE:
+            play = t
+        else:
+            name = t
+    parts = [
+        duration or "auto", timing or "ease", delay or "0s", iteration or "1",
+        direction or "normal", fill or "none", play or "running", name or "none",
+    ]
+    return " ".join(parts)
+
+
+def norm_style(v):
+    decls = {}
+    for part in v.split(";"):
+        if ":" not in part:
+            continue
+        k, _, val = part.partition(":")
+        k = k.strip().lower()
+        val = " ".join(val.split())
+        # 브라우저는 0.18 을 .18 로 줄여 쓴다(예: opacity) — 값은 같다
+        val = _LEADING_ZERO.sub(r"\1", val)
+        if k == "font-family":
+            val = norm_font_family(val)
+        elif k == "animation":
+            val = norm_animation(val)
+        decls[k] = val
+    # 브라우저가 펼친 border: none 을 되접는다
+    if all(decls.get(k) == want for k, want in _BORDER_NONE.items()):
+        for k in _BORDER_NONE:
+            del decls[k]
+        decls["border"] = "none"
+    # background-clip(-webkit- 포함)은 background 셔러핸드의 일부라 브라우저가
+    # "background:<값> text" 처럼 뒤에 붙여 직렬화한다. 앱은 두 선언으로 따로 쓴다.
+    for clip_key in ("-webkit-background-clip", "background-clip"):
+        if clip_key in decls and "background" in decls:
+            decls["background"] = f"{decls['background']} {decls.pop(clip_key)}"
+    return ";".join(f"{k}:{decls[k]}" for k in sorted(decls))
+
+
 DROP_ATTRS = {"type", "disabled", "aria-hidden", "role",
               # 위 "목업 데모 속성" 참조 — 목업 스크립트 전용 갈고리
-              "data-lv", "data-lang", "data-mode", "data-pick", "id"}
+              "data-lv", "data-lang", "data-mode", "data-pick", "id",
+              # 목업이 정답 선택지에 박아 둔 디자인 시점 힌트다(game__ps_play).
+              # 앱은 정답을 DOM 에 노출하지 않는다 — 채점은 handleAnswer 안에서 한다
+              "data-correct"}
 VOID = {"img", "input", "br", "hr", "rect", "path", "circle", "line", "polygon", "use"}
 
 
@@ -53,9 +223,16 @@ class Flat(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.rows, self.d = [], 0
+        self._stat_row_child_depth = None
 
     def handle_starttag(self, tag, attrs):
         a = {k: (v or "") for k, v in attrs if k not in DROP_ATTRS}
+        # 위 IGNORED "cs-stat-row 인라인 style" 참조
+        if tag == "div" and a.get("class") == "cs-stat-row":
+            a.pop("style", None)
+            self._stat_row_child_depth = self.d + 1
+        elif tag == "span" and self.d == self._stat_row_child_depth:
+            a.pop("style", None)
         if a.get("viewBox" if "viewBox" in a else "viewbox", "") == "-30 0 280 210":
             a["viewbox"] = "0 0 220 210"
             a["style"] = a.get("style", "").replace("max-width:280px", "max-width:220px")
@@ -64,6 +241,13 @@ class Flat(HTMLParser):
         # 위 IGNORED "운석 낙하 시간" 참조 — 앱만 인라인으로 준다
         if "animation-duration" in a.get("style", ""):
             a["style"] = re.sub(r"animation-duration:[^;]*;?", "", a["style"]).strip()
+            if not a["style"]:
+                del a["style"]
+        # 위 IGNORED "채움 막대 진행률" 참조 — <i> 의 인라인 width:NN% 도 같은 사정이다
+        if tag == "i" and re.fullmatch(r"width:\s*[\d.]+%\s*;?", a.get("style", "")):
+            del a["style"]
+        if "style" in a:
+            a["style"] = norm_style(norm_colors(a["style"]))
             if not a["style"]:
                 del a["style"]
         for k, v in list(a.items()):
@@ -151,6 +335,62 @@ GAME_WRAPPER_CLASSES = (
 )
 
 
+# 게임 캡처는 화면마다 껍데기 사슬이 다르다 — 목업이 화면별로 다른 무대에서 그렸다.
+# 사슬을 열거하는 대신 **화면의 뿌리 클래스**를 적어 두고 그 위를 다 벗긴다.
+# 뿌리 클래스는 앱 컴포넌트가 그 화면에 붙이는 것과 같은 것이라, 둘이 같은 데서 시작한다.
+SCREEN_ROOT = {
+    "game__ps_level": "ps-level-shell",
+    "game__ps_lesson": "ps-lesson-shell",
+    "game__ps_play": "ps-game-shell",
+    "game__cs_level": "cs-level-shell",
+    "game__cs_intro": "cs-intro-shell",
+    "game__cs_play": "cs-play-shell",
+    "game__cs_result": "cs-result-shell",
+    # 봄소풍 title·select·game 은 .spg 안에서 그린다(다크 스테이지가 아니라
+    # drop_game_wrapper 의 ux-dark-stage 종료 마커가 안 걸린다). 목업의
+    # --app-width:100% 차이는 스크린 루트를 .spg 안쪽의 실제 화면(.scr)으로 잡아
+    # 비교 대상 밖으로 뺀다 — spring-picnic.tsx 691행 주석 참고.
+    # 클래스 인용부호까지 넣는 이유 — "scr" 만 쓰면 그 앞 껍데기의
+    # "scrollbar-hide" 에도 부분일치해서 더 위에서 멈춘다.
+    "game__pc_title": 'class="s-title',
+    "game__pc_select": 'class="scr"',
+    "game__pc_game": 'class="scr"',
+    # 결과(pc_result)는 목업에 .spg 자체가 없다 — ps_result·cs_result 처럼
+    # 껍데기 없이 바로 그려서 SCREEN_ROOT 가 필요 없다
+    # 서울 퍼즐 map·entry·puzzle 은 셋 다 같은 "ux-seoul" 무대 위에서 그린다
+    # (헤더도 공유한다) — 그 반 클래스 하나로 목업의 tailwind 껍데기를 벗긴다.
+    "game__sp_map": 'class="ux-seoul"',
+    "game__sp_entry": 'class="ux-seoul"',
+    "game__sp_puzzle": 'class="ux-seoul"',
+    # 게임 목록은 목업이 ux-list-scroll(라우트 레이아웃이 그리는 스크롤 껍데기)
+    # 안에 ux-list-shell 을 두고 머리·목록을 그 직계 자식으로 둔다. 탭 바는
+    # ux-list-shell 의 형제라 뿌리 하위 나무만 남기면 저절로 빠진다 — 내비
+    # 화면에서 탭 바를 봐준 것과 같은 사정이고 여기서는 봐줄 것도 없다.
+    "game__list": "ux-list-shell",
+    # complete 는 그 셋과 달리 헤더가 없는 독립 화면이다(ps_result·cs_result 와
+    # 같은 모양) — 목업(game__sp_complete)도 껍데기 없이 바로 "result-screen
+    # sp-complete" 로 시작해서 SCREEN_ROOT 가 필요 없다.
+}
+
+
+def drop_above_root(rows, cls):
+    """뿌리 클래스가 나오는 행부터 **그 하위 나무만** 남기고 당긴다.
+
+    위쪽 껍데기만 벗기면 화면 뒤에 붙은 형제까지 남는다 — 목업 하네스가 화면
+    바깥에 둔 콤보 토스트 자리와 <audio> 가 그것이다. 앱은 그것을 그리지 않는다.
+    """
+    for i, r in enumerate(rows):
+        if cls in r:
+            indent = len(r) - len(r.lstrip())
+            out = [r.lstrip()]
+            for x in rows[i + 1 :]:
+                if len(x) - len(x.lstrip()) <= indent:
+                    break
+                out.append(x[indent:] if x.startswith(" " * indent) else x.lstrip())
+            return out
+    return rows
+
+
 def drop_game_wrapper(rows):
     """게임 캡처의 껍데기 다섯 겹을 벗기고 나머지를 그만큼 당긴다.
 
@@ -219,10 +459,12 @@ for f in sorted(glob.glob(os.path.join(out, "*.html"))):
         bad += 1
         continue
 
+    root = SCREEN_ROOT.get(name)
+
     def prep(html):
-        return drop_single_progress(
-            drop_tabbar(drop_game_wrapper(flat(strip_app_wrapper(html))))
-        )
+        rows = flat(strip_app_wrapper(html))
+        rows = drop_above_root(rows, root) if root else drop_game_wrapper(rows)
+        return drop_single_progress(drop_tabbar(rows))
 
     a = prep(open(ref, encoding="utf-8").read())
     b = prep(open(f, encoding="utf-8").read())

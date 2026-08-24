@@ -102,7 +102,7 @@ function MyPasswordPage() {
 				>
 					<ChevronLeft className="size-[24px] stroke-[2] text-[#383A3F]" />
 				</button>
-				<span className="absolute left-1/2 -translate-x-1/2 font-semibold text-[#383A3F] text-[17px] leading-[26px]">
+				<span className="-translate-x-1/2 absolute left-1/2 font-semibold text-[#383A3F] text-[17px] leading-[26px]">
 					{t("mypage.passwordChange.title")}
 				</span>
 			</div>
@@ -124,7 +124,7 @@ function MyPasswordPage() {
 						<button
 							type="button"
 							onClick={() => setShowCurrent((v) => !v)}
-							className="absolute top-1/2 right-[16px] -translate-y-1/2 text-[#7F848D]"
+							className="-translate-y-1/2 absolute top-1/2 right-[16px] text-[#7F848D]"
 						>
 							{showCurrent ? (
 								<EyeOff className="size-[20px]" />
@@ -152,7 +152,7 @@ function MyPasswordPage() {
 							<button
 								type="button"
 								onClick={() => setShowNew((v) => !v)}
-								className="absolute top-1/2 right-[16px] -translate-y-1/2 text-[#7F848D]"
+								className="-translate-y-1/2 absolute top-1/2 right-[16px] text-[#7F848D]"
 							>
 								{showNew ? (
 									<EyeOff className="size-[20px]" />
@@ -202,7 +202,7 @@ function MyPasswordPage() {
 						<button
 							type="button"
 							onClick={() => setShowConfirm((v) => !v)}
-							className="absolute top-1/2 right-[16px] -translate-y-1/2 text-[#7F848D]"
+							className="-translate-y-1/2 absolute top-1/2 right-[16px] text-[#7F848D]"
 						>
 							{showConfirm ? (
 								<EyeOff className="size-[20px]" />

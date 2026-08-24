@@ -708,6 +708,15 @@
     border-radius:10px; background:#fff1f4; color:#cf5376; font-size:16px; font-weight:800; }
   .game-frame[data-screen="pc_result"] .pc-wrong-copy { min-width:0; color:#6d555e; font-size:12px; line-height:18px; }
   .game-frame[data-screen="pc_result"] .pc-wrong-answer { color:#cf5376; font-weight:700; }
+  /* 문항 다시 듣기 — 글자였던 자리를 실제 버튼으로 바꿨다(접근성). 생김새는
+     그대로 두고 누를 수 있게만 만든다. 탭 자리는 24px 로 띄우고, 키보드
+     초점은 눈에 보이게 한다 — 버튼으로 만든 이유가 그것이다. */
+  .game-frame[data-screen="pc_result"] .pc-wrong-play { display:inline-flex;
+    align-items:center; justify-content:center; min-width:24px; min-height:24px;
+    padding:0; margin:0; border:0; background:none; color:inherit;
+    font:inherit; line-height:1; cursor:pointer; vertical-align:middle; }
+  .game-frame[data-screen="pc_result"] .pc-wrong-play:focus-visible {
+    outline:2px solid #cf5376; outline-offset:2px; border-radius:6px; }
   .game-frame[data-screen="pc_result"] .pc-result-actions { flex:none; padding:12px 16px 16px;
     border-top:1px solid #f5e7ea; background:rgba(255,255,255,.94); }
   .game-frame[data-screen="pc_result"] .pc-result-primary { width:100%; min-height:50px; border:0; border-radius:14px;

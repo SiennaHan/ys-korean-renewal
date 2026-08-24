@@ -14,7 +14,7 @@ function RouteComponent() {
 
 	const goBook = (id: number) => {
 		console.log("id=>", id);
-		navigate({ to: "/book/" + id });
+		navigate({ to: `/book/${id}` });
 	};
 
 	const bookList = books.filter((item) => item.id > 1);

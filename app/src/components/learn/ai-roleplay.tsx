@@ -640,7 +640,7 @@ function TurnLine({
 	const replayDisabled = playState === "model-speaking";
 
 	return (
-		// biome-ignore lint/a11y/useKeyWithClickEvents: 오른쪽 소리 버튼이 초점을 받는다
+		// 이 칸 자체는 누르는 자리가 아니다 — 오른쪽 소리 버튼이 초점을 받는다.
 		<div
 			className={`turn ${isCurrent ? "current" : isFuture ? "future" : ""} ${
 				isPractice ? "me" : "ai"

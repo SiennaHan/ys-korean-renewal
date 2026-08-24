@@ -64,11 +64,38 @@ import {
 } from "@/components/main/activity/stimulus";
 import { WordPreviewList } from "@/components/main/activity/word-preview";
 import Jamo from "@/components/main/course-list/jamo";
-import { ParticleSniperResultView } from "@/components/main/game/particle-sniper-result";
+import {
+	CardSortIntroView,
+	CardSortLevelView,
+	CardSortPlayView,
+	CardSortResultView,
+} from "@/components/main/game/card-sort-view";
+import {
+	ParticleSniperLessonView,
+	ParticleSniperPlayView,
+	ParticleSniperLevelView,
+	ParticleSniperResultView,
+} from "@/components/main/game/particle-sniper-view";
+import {
+	SpCompleteView,
+	SpEntryView,
+	SpMapView,
+	SpPuzzleView,
+	SpTravelHeader,
+} from "@/components/main/game/seoul-puzzle-view";
+import { C as SP_C, SP_KEYFRAMES_CSS } from "@/components/main/game/seoul-puzzle";
+import {
+	PcGameView,
+	type PcQuestion,
+	PcResultView,
+	PcSelectView,
+	PcTitleView,
+} from "@/components/main/game/spring-picnic-view";
 import {
 	VocashotPlayView,
 	VocashotResultView,
 } from "@/components/main/game/vocashot-view";
+import { GameListView } from "@/components/main/game/list-view";
 import VocashotSolo from "@/components/main/game/vocashot-solo";
 import HomeView from "@/components/main/home/view";
 import BookTabs from "@/components/main/textbook/book-tabs";
@@ -772,6 +799,75 @@ SCREENS.vocashot__result = (
  * 조사 스나이퍼 결과 — 값은 목업 캡처(game__ps_result)가 잡아 둔 상태 그대로.
  * 게임 캡처는 <div id="app"> 껍데기가 한 겹 붙어 있고 비교기가 벗긴다.
  */
+/* 조사 스나이퍼 급 선택 — levelMeta 는 서버에서 오므로 캡처가 잡아 둔 값을 넘긴다 */
+SCREENS.game__ps_level = (
+	<ParticleSniperLevelView
+		levelMeta={{
+			"1급": {
+				color: "#4ade80",
+				summary: "은/는 · 이/가 · 을/를 · 에 · 에서 · 하고 · 과/와 · 에게…",
+			},
+			"2급": { color: "#60a5fa", summary: "(으)로 · 의 · 보다 · 만" },
+			"3급": { color: "#c084fc", summary: "한테서 · 밖에 · 이나/나 · 처럼" },
+			"4급": { color: "#fb923c", summary: "에다가 · 이든지/든지 · 만큼" },
+			"5급": { color: "#f472b6", summary: "에 비해서 · 께" },
+			"6급": { color: "#a78bfa", summary: "랑/이랑 · 이라든가/라든가" },
+			"7급": { color: "#22d3ee", summary: "고급 조사 연습" },
+			"8급": { color: "#facc15", summary: "심화 조사 연습" },
+		}}
+		onPick={() => {}}
+		onBack={() => {}}
+	/>
+);
+
+/*
+ * 조사 스나이퍼 과 선택 — 값은 어드민 실측(games_spec_v1 §4·부표, 1급 레슨 32행 중 1급분) 그대로.
+ * 과별 문항수 4·16·20·20·20·20·20·20·20 은 그 과까지의 "누적" 이 아니라 각 과 자체의 실측 문항수이고,
+ * 화면 카드 숫자는 코드가 min(maxPerGame, 누적) 으로 다시 계산한다 — 여기 questions 배열 길이가 그 재료다.
+ */
+SCREENS.game__ps_lesson = (
+	<ParticleSniperLessonView
+		level="1급"
+		meta={{ color: "#4ade80", summary: "은/는 · 이/가 · 을/를 · 에 · 에서 · 하고 · 과/와 · 에게…" }}
+		lessons={{
+		"4과": { new_particles: ["은", "는"], questions: new Array(8).fill({}) },
+		"6과": { new_particles: ["이", "가"], questions: new Array(8).fill({}) },
+		"7과": { new_particles: ["에", "도"], questions: new Array(4).fill({}) },
+		"8과": { new_particles: ["을", "를"], questions: new Array(4).fill({}) },
+		"11과": { new_particles: ["하고"], questions: new Array(8).fill({}) },
+		"12과": { new_particles: ["부터", "까지"], questions: new Array(8).fill({}) },
+		"13과": { new_particles: ["에서"], questions: new Array(8).fill({}) },
+		"14과": { new_particles: ["과", "와"], questions: new Array(8).fill({}) },
+		"15과": { new_particles: ["에게"], questions: new Array(8).fill({}) },
+		}}
+		maxPerGame={20}
+		onPick={() => {}}
+		onBack={() => {}}
+	/>
+);
+
+/* 조사 스나이퍼 플레이 — 값은 목업 캡처(game__ps_play)가 잡아 둔 상태 그대로. */
+SCREENS.game__ps_play = (
+	<ParticleSniperPlayView
+		question={{
+			sentence: "저는 한국어___공부해요",
+			answer: "를",
+			choices: ["을", "를", "이", "가"],
+			sourceLesson: "8과",
+		}}
+		questionIndex={3}
+		totalQuestions={20}
+		hp={3}
+		combo={5}
+		score={1180}
+		timerProgress={62}
+		picked={null}
+		shotResult={null}
+		onAnswer={() => {}}
+		onBack={() => {}}
+	/>
+);
+
 SCREENS.game__ps_result = (
 	<ParticleSniperResultView
 		level="1급"
@@ -797,20 +893,510 @@ SCREENS.game__ps_result = (
 );
 
 /*
- * 게임 캡처 20개 중 이 대조에 들어올 수 있는 것은 셋뿐이다 —
- * vocashot__{start,play,result}. 나머지는 종류가 다르다.
- *
- *   손으로 짠 목업  vocashot 셋 · game__{pc_result,ps_result,sp_complete}
- *   앱 DOM 덤프     game__* 나머지 열넷 (<div id="app"> + tailwind 클래스)
- *
- * 덤프는 앱을 **앱의 옛 스냅샷**과 비교하는 것이라 "디자인이 같다" 를 증명하지
- * 못하고, /main 레이아웃 껍데기까지 담고 있어 컴포넌트 하나로 맞출 수도 없다.
- * game__list 를 넣어 봤고 그래서 뺐다 — GameListView 는 갈라 두었으니
- * 그 캡처를 목업에서 다시 뜨면 한 줄로 들어온다.
- *
- * play·result 는 VocaShot 의 내부 상태라 vocashot-solo(540줄)를 표시/상태로
- * 가른 뒤에 들어온다. 자세한 것은 ../BLOCKERS.md §3-b.
+ * 어휘 카드 마스터 — 값은 목업 캡처(game__cs_*)가 잡아 둔 상태 그대로.
+ * 카테고리 색은 currentCard.isRare 홀로그램 그라디언트에도 쓰는 4색
+ * (#4A9EFF·#FF9E4A·#FF4AEC·#B44AFF)과 같다 — 캡처의 rgb 값을 hex 로 되돌린 것.
  */
+const CS_CATEGORY_COLORS: Record<string, string> = {
+	직업: "#4A9EFF",
+	교통수단: "#FF9E4A",
+	위치: "#FF4AEC",
+	날씨: "#B44AFF",
+};
+
+/*
+ * 레벨 선택 목업(game__cs_level)은 2급·5과까지 선택된 상태를 캡처했고,
+ * 1~15과 버튼 전부에 "새 카테고리 있음" 점이 찍혀 있다 — 그래서 15개 과 전부
+ * new_categories 를 채운다. 미리보기(4개)에 실제로 뜨는 것은 1~4과가 내는
+ * 직업·교통수단·위치·날씨뿐이고, 5과 이후는 단어 목록 없이 점만 찍히게 한다
+ * (getCumulativeCategories 가 4단어 미만은 걸러낸다).
+ */
+const csDummyLesson = { new_categories: ["더미"] };
+SCREENS.game__cs_level = (
+	<CardSortLevelView
+		vocab={{
+			"2급": {
+				"1과": { new_categories: ["직업"], 직업: ["의사", "선생님", "경찰", "요리사"] },
+				"2과": {
+					new_categories: ["교통수단"],
+					교통수단: ["버스", "지하철", "택시", "자전거"],
+				},
+				"3과": { new_categories: ["위치"], 위치: ["위", "아래", "앞", "뒤"] },
+				"4과": { new_categories: ["날씨"], 날씨: ["비", "눈", "바람", "구름"] },
+				"5과": csDummyLesson,
+				"6과": csDummyLesson,
+				"7과": csDummyLesson,
+				"8과": csDummyLesson,
+				"9과": csDummyLesson,
+				"10과": csDummyLesson,
+				"11과": csDummyLesson,
+				"12과": csDummyLesson,
+				"13과": csDummyLesson,
+				"14과": csDummyLesson,
+				"15과": csDummyLesson,
+			},
+		}}
+		categoryColors={CS_CATEGORY_COLORS}
+		selectedGrade="2급"
+		selectedLesson={5}
+		onGradeSelect={() => {}}
+		onLessonSelect={() => {}}
+		onStart={() => {}}
+		onBack={() => {}}
+	/>
+);
+
+/* 어휘 카드 마스터 인트로 — 값은 목업 캡처(game__cs_intro)가 잡아 둔 상태 그대로. */
+SCREENS.game__cs_intro = (
+	<CardSortIntroView
+		activeCategories={["직업", "교통수단", "위치", "날씨"]}
+		categoryColors={CS_CATEGORY_COLORS}
+		introCountdown={2}
+	/>
+);
+
+/* 어휘 카드 마스터 플레이 — 값은 목업 캡처(game__cs_play)가 잡아 둔 상태 그대로. */
+SCREENS.game__cs_play = (
+	<CardSortPlayView
+		categoryColors={CS_CATEGORY_COLORS}
+		activeCategories={["직업", "교통수단", "위치", "날씨"]}
+		currentCard={{
+			word: "아래",
+			category: "위치",
+			grade: "2급",
+			lesson: "3과",
+			isRare: false,
+		}}
+		cardIndex={0}
+		deckLength={32}
+		timeLeft={60}
+		hp={5}
+		combo={0}
+		score={0}
+		scorePopup={null}
+		cardShake={false}
+		cardDismiss={false}
+		slotFlash={null}
+		activeSlot={null}
+		onSlotDown={() => {}}
+		onSlotUp={() => {}}
+		onSlotLeave={() => {}}
+		onAnswer={() => {}}
+		onFinish={() => {}}
+		onBack={() => {}}
+	/>
+);
+
+/* 어휘 카드 마스터 결과 — 값은 목업 캡처(game__cs_result)가 잡아 둔 상태 그대로. */
+SCREENS.game__cs_result = (
+	<CardSortResultView
+		selectedGrade="2급"
+		selectedLesson={4}
+		stats={{
+			score: 150,
+			correct: 1,
+			total: 6,
+			maxCombo: 1,
+			rareCorrect: 0,
+			rareTotal: 0,
+		}}
+		bestScore={2140}
+		onRetry={() => {}}
+		onLevelSelect={() => {}}
+		onExit={() => {}}
+	/>
+);
+
+/* 봄소풍 제목 — 지난 미션 기록이 없는 첫 방문 상태(목업 캡처 game__pc_title 그대로) */
+SCREENS.game__pc_title = (
+	<PcTitleView lastPlay={null} onStart={() => {}} onBack={() => {}} />
+);
+
+/*
+ * 봄소풍 미션 선택 — 값은 목업 캡처(game__pc_select)가 잡아 둔 상태 그대로.
+ * 친구 넷 다 아직 아무 것도 완료하지 않은 상태(played={})다.
+ */
+SCREENS.game__pc_select = (
+	<PcSelectView
+		friends={[
+			{
+				id: "sol",
+				face: "🐰",
+				name: "솔이",
+				bg: "#AFA9EC",
+				cats: ["age", "price"],
+				mission: "나이 · 가격",
+				desc: "~살, ~원 읽기",
+				desc2: "~살, ~원 읽기",
+			},
+			{
+				id: "gomdol",
+				face: "🐻",
+				name: "곰돌",
+				bg: "#F0997B",
+				cats: ["time", "date"],
+				mission: "시간 · 날짜",
+				desc: "~시, ~분, 월/일",
+				desc2: "~시, ~분, 월/일",
+			},
+			{
+				id: "ppiyak",
+				face: "🐥",
+				name: "삐약",
+				bg: "#F4C0D1",
+				cats: ["address", "phone"],
+				mission: "주소 · 전화",
+				desc: "동·호수 읽기",
+				desc2: "동·호수 읽기",
+			},
+			{
+				id: "nyang",
+				face: "🐱",
+				name: "냥이",
+				bg: "#9FE1CB",
+				cats: ["unit"],
+				mission: "단위",
+				desc: "개/마리/권, 낮은 숫자",
+				desc2: "개/마리/권, 낮은 숫자",
+			},
+		]}
+		played={{}}
+		onStart={() => {}}
+		onBack={() => {}}
+	/>
+);
+
+/*
+ * 봄소풍 플레이 — 값은 목업 캡처(game__pc_game)가 잡아 둔 상태 그대로(1문항째,
+ * 미답변, 점수 0). curLang="en" 이라 힌트가 "How old?" 로 뜬다.
+ */
+SCREENS.game__pc_game = (
+	<PcGameView
+		game={{
+			friend: {
+				id: "sol",
+				face: "🐰",
+				name: "솔이",
+				bg: "#AFA9EC",
+				cats: ["age", "price"],
+				mission: "나이 · 가격",
+				desc: "",
+				desc2: "",
+			},
+			level: 1,
+			// 나머지 아홉은 g-dots 진행 점만 그린다 — 내용은 안 읽으므로 빈 자리표다
+			rounds: [
+				{
+					id: "q-age-19",
+					cat: "age",
+					level: 1,
+					il: "🎂",
+					hint: { en: "How old?" },
+					num: "19살",
+					tmpl: "오빠는 ___ 살이에요.",
+					tts: "오빠는 열아홉 살이에요.",
+					correct: "열아홉",
+					wrong: ["스물", "십구"],
+				},
+				...(new Array(9).fill({}) as unknown as PcQuestion[]),
+			],
+			cur: 0,
+			score: 0,
+			answered: false,
+			totalR: 10,
+			wQueue: [],
+			wSet: new Set(),
+			w2: new Set(),
+			choices: ["열아홉", "스물", "십구"],
+			chosenAnswer: null,
+			retrying: false,
+		}}
+		curLang="en"
+		onChoose={() => {}}
+		onNext={() => {}}
+		onShowResult={() => {}}
+		onExit={() => {}}
+	/>
+);
+
+/*
+ * 봄소풍 결과 — 값은 목업 캡처(game__pc_result)가 잡아 둔 상태 그대로.
+ * pc_result 는 다른 게임 결과(ps_result·cs_result)처럼 마크업을 통째로 다시
+ * 짰다 — 옛 r-* 클래스는 game.css 의 pc-result-* 24줄과 안 겹쳐서 죽어 있었다
+ * (BLOCKERS.md "그리고 둘은 CSS 가 죽어 있다"). 통계 세 자리(첫 시도 정답 ·
+ * 끝까지 맞힘 · 점수 정답률)의 실제 값 관계는 spring-picnic-view.tsx 의
+ * PcResultView 주석에 적어 뒀다 — 집계 로직 자체는 고치지 않았다.
+ */
+SCREENS.game__pc_result = (
+	<PcResultView
+		game={{
+			friend: {
+				id: "nyang",
+				face: "🐱",
+				name: "냥이",
+				bg: "#9FE1CB",
+				cats: ["unit"],
+				mission: "단위",
+				desc: "",
+				desc2: "",
+			},
+			level: 2,
+			rounds: [],
+			cur: 0,
+			score: 4,
+			answered: true,
+			totalR: 6,
+			wQueue: [],
+			wSet: new Set(["q15", "q32"]),
+			w2: new Set(["q32"]),
+			choices: [],
+			chosenAnswer: null,
+			retrying: false,
+		}}
+		friends={[
+			{
+				id: "a",
+				face: "🐱",
+				name: "",
+				bg: "",
+				cats: [],
+				mission: "",
+				desc: "",
+				desc2: "",
+			},
+			{
+				id: "b",
+				face: "🐰",
+				name: "",
+				bg: "",
+				cats: [],
+				mission: "",
+				desc: "",
+				desc2: "",
+			},
+			{
+				id: "c",
+				face: "🐻",
+				name: "",
+				bg: "",
+				cats: [],
+				mission: "",
+				desc: "",
+				desc2: "",
+			},
+		]}
+		questions={[
+			{
+				id: "q15",
+				cat: "unit",
+				level: 2,
+				il: "",
+				hint: {},
+				num: "15",
+				tmpl: "책 ___ 권 읽었어요.",
+				tts: "",
+				correct: "열다섯",
+				wrong: [],
+			},
+			{
+				id: "q32",
+				cat: "unit",
+				level: 2,
+				il: "",
+				hint: {},
+				num: "32",
+				tmpl: "학생이 ___ 명 있어요.",
+				tts: "",
+				correct: "서른두",
+				wrong: [],
+			},
+		]}
+		totalPlayed={4}
+		onSelectScreen={() => {}}
+		onReset={() => {}}
+	/>
+);
+
+/*
+ * 서울 퍼즐 — map · entry · puzzle 세 화면은 목업(game__sp_*)에서 그대로 옮긴
+ * ux-seoul(무대) + SpTravelHeader(뒤로가기·XP·"서울 여행") + 화면별 컴포넌트다.
+ * seoul-puzzle.tsx 의 return 도 같은 조합을 쓴다 — 여기서만 다시 짠 게 아니다.
+ * complete 는 그 셋과 달리 헤더가 없는 독립 화면이라 SpCompleteView 하나로 끝난다.
+ *
+ * 값은 목업 캡처(game__sp_map·sp_entry·sp_puzzle·sp_complete)를 직접 열어서
+ * 읽은 것과 src/components/main/game/data/seoul_puzzles.json 의 "홍대"
+ * 항목(고정 표본)을 그대로 옮겼다 — 추측한 숫자·글자는 없다.
+ */
+function SpFrame({ children }: { children: ReactElement | ReactElement[] }) {
+	return (
+		<div
+			className="ux-seoul"
+			style={{
+				width: "100%",
+				maxWidth: 390,
+				height: "100%",
+				background: SP_C.bg,
+				display: "flex",
+				flexDirection: "column",
+				overflow: "hidden",
+				position: "relative",
+				margin: "0px auto",
+				fontFamily: "'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif",
+			}}
+		>
+			<style>{SP_KEYFRAMES_CSS}</style>
+			<SpTravelHeader totalXp={0} onBack={() => {}} />
+			{children}
+		</div>
+	);
+}
+
+/* 서울 퍼즐 지도 — 10 장소 전부(games_spec_v1 §서울 퍼즐 확정 데이터), 새 플레이어(완료 0) */
+const SP_LOCATIONS = [
+	{ id: "hongdae", name: "홍대", num: 1, x: 119, y: 97, unit: "4–5과", desc: "카페·음료 주문", grammar: ["이에요/예요", "은/는"], entryMessages: [] },
+	{ id: "myeongdong", name: "명동", num: 2, x: 181, y: 92, unit: "5–6과", desc: "쇼핑·물건 고르기", grammar: ["이/가 아니에요", "이/그/저"], entryMessages: [] },
+	{ id: "gyeongbokgung", name: "경복궁", num: 3, x: 0, y: 0, unit: "7과", desc: "한복 대여·위치 확인", grammar: ["에 있어요", "도"], entryMessages: [] },
+	{ id: "hangang", name: "한강공원", num: 4, x: 0, y: 0, unit: "8과", desc: "치킨·자리 잡기", grammar: ["아요/어요/여요", "을/를"], entryMessages: [] },
+	{ id: "gwangjang", name: "광장시장", num: 5, x: 0, y: 0, unit: "9과", desc: "음식 고르기", grammar: ["-지 않다", "ㅂ동사"], entryMessages: [] },
+	{ id: "seongsu", name: "성수동", num: 6, x: 0, y: 0, unit: "10–11과", desc: "식당 주문", grammar: ["-을까요?", "하고"], entryMessages: [] },
+	{ id: "museum", name: "국립중앙박물관", num: 7, x: 0, y: 0, unit: "11–12과", desc: "전시 관람", grammar: ["-으세요", "부터 까지"], entryMessages: [] },
+	{ id: "bukchon", name: "북촌한옥마을", num: 8, x: 0, y: 0, unit: "13–14과", desc: "길 묻기", grammar: ["-고 싶다", "에서"], entryMessages: [] },
+	{ id: "ddp", name: "DDP", num: 9, x: 0, y: 0, unit: "14–15과", desc: "야경·쇼핑", grammar: ["과/와", "에2"], entryMessages: [] },
+	{ id: "bukhansan", name: "북한산", num: 10, x: 0, y: 0, unit: "15과", desc: "등산 대화", grammar: ["에게"], entryMessages: [] },
+];
+
+SCREENS.game__sp_map = (
+	<SpFrame>
+		<SpMapView
+			playerName="수현"
+			totalXp={0}
+			completed={new Set()}
+			currentLoc={null}
+			locations={SP_LOCATIONS as any}
+			navDir="forward"
+			onSelectLocation={() => {}}
+		/>
+	</SpFrame>
+);
+
+/* 서울 퍼즐 입장 — 홍대(1번), 아직 시작 전이라 XP 0. entryMessages 는 seoul_puzzles.json "홍대" 그대로 */
+const SP_HONGDAE = {
+	...SP_LOCATIONS[0],
+	entryMessages: [
+		{ type: "friend", text: "안녕하세요! 저는 김연세예요. 😊" },
+		{ type: "self", text: "안녕하세요! 저는 [이름]이에요." },
+		{ type: "friend", text: "반가워요! 같이 카페 가요!" },
+	],
+};
+
+SCREENS.game__sp_entry = (
+	<SpFrame>
+		<SpEntryView
+			loc={SP_HONGDAE as any}
+			playerName="수현"
+			completed={new Set()}
+			currentLoc="hongdae"
+			locations={SP_LOCATIONS as any}
+			grammars={["이에요/예요", "은/는", "은/는, 이에요/예요", "이/가 아니에요"]}
+			navDir="forward"
+			onMapBack={() => {}}
+			onStart={() => {}}
+		/>
+	</SpFrame>
+);
+
+/* 서울 퍼즐 문제 — 홍대 1번째 퍼즐(첫 문제), 아직 답을 놓지 않은 상태.
+ * answer·distractors 는 playerName "수현"(받침 있음)으로 이미 풀어 둔 값 —
+ * seoul_puzzles.json 의 [이름] 토큰을 resolveToken 이 만드는 값 그대로다. */
+SCREENS.game__sp_puzzle = (
+	<SpFrame>
+		<SpPuzzleView
+			loc={SP_HONGDAE as any}
+			totalXp={0}
+			streak={0}
+			puzzleIdx={0}
+			totalPuzzles={4}
+			resolvedPuzzle={{
+				friendMsg: "안녕하세요! 저는 김연세예요. 😊",
+				friendMsgT: "Hello! I'm Kim Yonsei. 😊",
+				selfMsg: null,
+				selfMsgT: null,
+				friendMsg2: "이름이 뭐예요?",
+				friendMsg2T: "What is your name?",
+				hintText: "처음 만난 자리에서 이름을 소개하는 상황이에요",
+				answer: ["저는", "수현이에요."],
+				distractors: ["저가", "수현예요.", "이름이에요."],
+				grammar: "이에요/예요",
+				tip: "<strong>저는 N이에요/예요</strong><br>자음 끝: 학생<strong>이에요</strong><br>모음 끝: 유리<strong>예요</strong>",
+			}}
+			slotWords={[]}
+			shuffledChips={["이름이에요.", "저는", "저가", "수현예요.", "수현이에요."]}
+			trayUsed={new Set()}
+			answered={null}
+			hintsLeft={3}
+			grammarOpen={false}
+			transVisible={new Set()}
+			completed={new Set()}
+			currentLoc="hongdae"
+			locations={SP_LOCATIONS as any}
+			navDir="forward"
+			scrollAreaRef={{ current: null }}
+			onMapBack={() => {}}
+			onToggleGrammar={() => {}}
+			onToggleTrans={() => {}}
+			onTapTray={() => {}}
+			onRemoveSlot={() => {}}
+			onUseHint={() => {}}
+			onCheckAnswer={() => {}}
+			onRetry={() => {}}
+			onNext={() => {}}
+		/>
+	</SpFrame>
+);
+
+/* 서울 퍼즐 완료 — 목업(game__sp_complete)의 표본 그대로. 실제 finishLocation()
+ * 이 만드는 grammars 는 4종(4문제 각자의 grammar 필드)인데 이 목업은 대표로 2개만
+ * 보여 준다 — 손으로 짠 표본이라 완결 로그와는 다르다(games_spec_v1 미언급, 애매
+ * 하지 않음: 그냥 목업이 고른 표본 수다). */
+SCREENS.game__sp_complete = (
+	<SpCompleteView
+		completeSnap={{
+			locName: "홍대",
+			sx: 55,
+			sc: 3,
+			sh: 1,
+			tx: 55,
+			puzzleCount: 4,
+			grammars: ["이에요/예요", "은/는"],
+		}}
+		onBackToMap={() => {}}
+		onRetry={() => {}}
+	/>
+);
+
+/*
+ * 게임 목록 — 마지막 47번째 화면. 값은 목업 캡처(game__list)가 잡아 둔 그대로.
+ * 조사 스나이퍼만 진행이 없어(캡처에 is-progress 가 안 붙었다) 설명이 남는다.
+ *
+ * 이 자리에 오래 "게임 캡처는 앱 DOM 덤프라 대조에 못 넣는다" 고 적혀 있었다.
+ * 세 번 틀린 판단이었다 — 커밋 d1a7cfb 가 답을 갖고 있었다. 캡처 47개는
+ * **목업의 빌더 함수를 직접 불러 뜬 것**이고("stop hand-writing markup"),
+ * 게임 캡처만 구 배포판 라우트 레이아웃의 껍데기 몇 겹을 끼고 있을 뿐이다.
+ * 껍데기는 비교기가 벗긴다(drop_game_wrapper · SCREEN_ROOT).
+ * 47 = 활동 22 + 내비 5 + VocaShot 3 + 게임 17 이고, 처음부터 47이 목표였다.
+ */
+SCREENS.game__list = (
+	<GameListView
+		progress={{
+			vocashot: "2급 최고 210점",
+			"spring-picnic": "솔이 · 2단계까지 했어요",
+			"seoul-puzzle": "10곳 중 5곳 다녀왔어요",
+			"card-sort": "3급 5과 최고 2,140점",
+			// particle-sniper 는 넣지 않는다 — 진행이 없으면 설명이 남는 것이 목업이다
+		}}
+		onOpen={() => {}}
+	/>
+);
 
 const outDir = join(
 	dirname(fileURLToPath(import.meta.url)),

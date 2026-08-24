@@ -61,8 +61,8 @@ export const GAMES: GameEntry[] = [
 		to: "/main/game/spring-picnic",
 		i18nKey: "springPicnic",
 		Icon: Cherry,
-		iconBg: "bg-[#FCE4EC]",
-		iconColor: "text-[#E91E63]",
+		iconBg: "bg-[#FFF0F5]",
+		iconColor: "text-[#D4537E]",
 		// 봄소풍은 마지막 판을 _meta 행의 extra 에 남긴다 (lastFriend · lastLv)
 		progress: (rows) => {
 			const meta = rows.find((r) => r.stage_id === "_meta");
@@ -76,8 +76,8 @@ export const GAMES: GameEntry[] = [
 		to: "/main/game/seoul-puzzle",
 		i18nKey: "seoulPuzzle",
 		Icon: Map,
-		iconBg: "bg-[#E3F2FD]",
-		iconColor: "text-[#1E88E5]",
+		iconBg: "bg-[#E8F5E9]",
+		iconColor: "text-[#2E7D32]",
 		// 장소마다 한 행씩 쌓인다. _meta 행은 세지 않는다
 		progress: (rows) => {
 			const places = rows.filter((r) => r.stage_id !== "_meta");
@@ -90,8 +90,8 @@ export const GAMES: GameEntry[] = [
 		to: "/main/game/card-sort",
 		i18nKey: "cardSort",
 		Icon: Layers,
-		iconBg: "bg-[#E8F5E9]",
-		iconColor: "text-[#43A047]",
+		iconBg: "bg-[#FFF8E1]",
+		iconColor: "text-[#F9A825]",
 		// stage_id 는 {급}_{과}
 		progress: (rows) => {
 			const top = topScore(rows);
@@ -104,8 +104,8 @@ export const GAMES: GameEntry[] = [
 		to: "/main/game/particle-sniper",
 		i18nKey: "particleSniper",
 		Icon: Crosshair,
-		iconBg: "bg-[#F3E5F5]",
-		iconColor: "text-[#8E24AA]",
+		iconBg: "bg-[#E8EAF6]",
+		iconColor: "text-[#5C6BC0]",
 		progress: (rows) => {
 			const top = topScore(rows);
 			if (!top?.score) return null;
@@ -126,18 +126,26 @@ export interface GameListViewProps {
 export function GameListView({ progress, onOpen }: GameListViewProps) {
 	const { t } = useTranslation();
 
-	// 이관한 CSS 가 .game-frame[data-screen="list"] .ux-* 형태라 래퍼가 필요하다
+	/*
+	 * 이관한 CSS 가 .game-frame[data-screen="list"] .ux-* 형태라 래퍼가 필요하다.
+	 *
+	 * 두 겹의 클래스가 목업(game__list)과 어긋나 있었다 — 앱은 ux-list-scroll 을
+	 * 배경 칸에 붙이고 ux-list-shell 을 목록만 감싸는 빈 칸으로 뒀는데, 목업은
+	 * ux-list-scroll 이 바깥 스크롤 껍데기(라우트 레이아웃이 그리는 칸)이고
+	 * ux-list-shell 이 곧 그 배경 칸이며 머리와 목록이 그 직계 자식이다.
+	 * 목업을 따라 맞췄다. 두 클래스 다 game-frame 의 자손으로 남아 CSS 는 그대로 산다.
+	 */
 	return (
 		<div className="game-frame" data-screen="list">
-			<div className="ux-list-scroll flex h-full flex-col bg-[#F9FAFC]">
-				{/* Header */}
-				<div className="ux-list-head flex items-center justify-center px-[16px] py-[16px]">
-					<p className="ux-list-title font-semibold text-[#383A3F] text-[17px]">
-						{t("game.list.title")}
-					</p>
-				</div>
+			<div className="ux-list-scroll">
+				<div className="ux-list-shell flex h-full flex-col bg-[#F9FAFC]">
+					{/* Header */}
+					<div className="ux-list-head flex items-center justify-center px-[16px] py-[16px]">
+						<p className="ux-list-title font-semibold text-[#383A3F] text-[17px]">
+							{t("game.list.title")}
+						</p>
+					</div>
 
-				<div className="ux-list-shell">
 					<div className="ux-game-list flex flex-col gap-[12px] px-[16px] pt-[8px]">
 						{GAMES.map(({ key, to, i18nKey, Icon, iconBg, iconColor }) => {
 							const name = t(`game.list.${i18nKey}.name`);
@@ -151,7 +159,7 @@ export function GameListView({ progress, onOpen }: GameListViewProps) {
 									type="button"
 									aria-label={`${name} · ${sub}`}
 									onClick={() => onOpen(to)}
-									className="ux-game-card flex w-full cursor-pointer items-center gap-[14px] rounded-[16px] bg-white p-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition-colors active:bg-[#F6F7F8]"
+									className="ux-control ux-game-card flex w-full cursor-pointer items-center gap-[14px] rounded-[16px] bg-white p-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition-colors active:bg-[#F6F7F8]"
 								>
 									<div
 										className={`ux-game-icon flex size-[48px] shrink-0 items-center justify-center rounded-[12px] ${iconBg}`}
@@ -162,9 +170,15 @@ export function GameListView({ progress, onOpen }: GameListViewProps) {
 										<p className="ux-game-name font-bold text-[#24425F] text-[16px]">
 											{name}
 										</p>
+										{/*
+										 * 목업은 text-[#9BA5B0] 을 늘 두고 진행이 있을 때
+										 * is-progress 를 **더한다** — 색은 game.css 의
+										 * .is-progress 가 덮는다. 앱은 둘을 갈라 붙여서
+										 * 진행이 있으면 회색 클래스를 뺐다. 목업을 따른다.
+										 */}
 										<p
-											className={`ux-game-sub mt-[2px] text-[13px] ${
-												done ? "is-progress" : "text-[#9BA5B0]"
+											className={`ux-game-sub mt-[2px] text-[#9BA5B0] text-[13px] ${
+												done ? "is-progress" : ""
 											}`}
 										>
 											{sub}

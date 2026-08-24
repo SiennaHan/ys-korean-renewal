@@ -1,8 +1,8 @@
-import { useCallback, useRef, useState } from "react";
 import { postSpeaking } from "@/api/analyzeApi";
-import { useMicPermission } from "@/components/audio/mic-permission-provider";
 import { useSharedAudio } from "@/components/audio/audio-provider";
+import { useMicPermission } from "@/components/audio/mic-permission-provider";
 import { useToast } from "@/components/toast/toast-context";
+import { useCallback, useRef, useState } from "react";
 
 export type RecordState =
 	| "ready"
@@ -151,7 +151,13 @@ export function useRecording(options: UseRecordingOptions = {}) {
 				"녹음을 시작할 수 없습니다. 브라우저/권한 설정을 확인해 주세요.",
 			);
 		}
-	}, [addToast, clearRecorderResources, requestPermission, transcribeBlob, unlock]);
+	}, [
+		addToast,
+		clearRecorderResources,
+		requestPermission,
+		transcribeBlob,
+		unlock,
+	]);
 
 	const stopRecording = useCallback(() => {
 		const recorder = mediaRecorderRef.current;

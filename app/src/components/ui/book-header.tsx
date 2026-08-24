@@ -1,24 +1,28 @@
 import { useNavigate } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
-
-
-
-export const BookHeader = ({title, previousPage}: {title?: string, previousPage: string}) => {
-
+export const BookHeader = ({
+	title,
+	previousPage,
+}: { title?: string; previousPage: string }) => {
 	const navigate = useNavigate();
-		
-	const goPrevious = () => {
-			navigate({to: previousPage});
-	}
 
-	return <div className="h-[54px] flex justify-between items-center">
-		<div className="w-[54px] h-[54px]">
-			<div onClick={goPrevious} className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-gray-200 active:bg-gray-300">
-				<ChevronLeft />
+	const goPrevious = () => {
+		navigate({ to: previousPage });
+	};
+
+	return (
+		<div className="flex h-[54px] items-center justify-between">
+			<div className="h-[54px] w-[54px]">
+				<div
+					onClick={goPrevious}
+					className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-gray-200 active:bg-gray-300"
+				>
+					<ChevronLeft />
+				</div>
 			</div>
+			<div className="font-bold text-[#000] text-[18px]">{title}</div>
+			<div className="h-[54px] w-[54px]" />
 		</div>
-		<div className="text-[18px] text-[#000] font-bold">{title}</div>
-		<div className="w-[54px] h-[54px]"></div>
-	</div>
-}
+	);
+};

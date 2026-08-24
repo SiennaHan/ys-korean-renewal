@@ -81,7 +81,7 @@ export function WriteCanvas({
 	const { t } = useTranslation();
 	return (
 		<div className="response-area">
-			{/* biome-ignore lint/a11y/useKeyWithClickEvents: 손가락으로 긋는 판이라 키보드로 대신할 수 없다 */}
+			{/* 손가락으로 긋는 판이라 키보드로 대신할 수 없다 */}
 			<div
 				className={`canvas ${judge ?? ""}`}
 				data-action="draw"

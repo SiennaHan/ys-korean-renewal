@@ -17,7 +17,12 @@ type GameState =
 	| "result";
 type Verdict = "GOOD" | "GREAT!" | "PERFECT!!" | "MISS" | null;
 
-import { ParticleSniperResultView } from "@/components/main/game/particle-sniper-result";
+import {
+	ParticleSniperLessonView,
+	ParticleSniperLevelView,
+	ParticleSniperPlayView,
+	ParticleSniperResultView,
+} from "@/components/main/game/particle-sniper-view";
 
 interface Question {
 	sentence: string;
@@ -457,169 +462,29 @@ const ParticleSniper: React.FC = () => {
 	// 목업(ps_level)이 주입하던 클래스를 그대로 심는다 — ux-dark-stage 가 무대,
 	// ps-level-* 가 이 화면의 배치, ux-level-card 가 급 카드다.
 	const renderLevelSelect = () => (
-		<div className="ux-dark-stage relative z-10 flex min-h-full flex-col bg-[#060612] p-6 ps-level-shell ps-stage text-white">
-			<div className="mb-1 flex items-center gap-3 ps-level-header">
-				<button
-					type="button"
-					className="ux-control ps-back"
-					onClick={() => nav({ to: "/main/game" })}
-					style={{
-						width: 32,
-						height: 32,
-						borderRadius: "50%",
-						background: "rgba(255,255,255,0.08)",
-						border: "none",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						cursor: "pointer",
-						flexShrink: 0,
-					}}
-				>
-					<ArrowLeft size={18} color="rgba(255,255,255,0.7)" />
-				</button>
-				<h1
-					className="ux-title font-bold text-3xl"
-					style={{ fontFamily: "Exo 2, sans-serif" }}
-				>
-					조사 스나이퍼
-				</h1>
-			</div>
-			<p
-				className="mb-8 ps-level-subtitle text-[#7878A0] text-sm"
-				style={{ fontFamily: "Pretendard, sans-serif" }}
-			>
-				급수를 선택하세요
-			</p>
-			<div className="grid grid-cols-2 gap-3 ps-level-grid">
-				{Object.entries(levelMeta).map(([level, meta]) => (
-					<button
-						key={level}
-						onClick={() => {
-							setSelectedLevel(level);
-							setGameState("lesson-select");
-						}}
-						className="ux-level-card ux-control rounded-xl p-4 text-left transition-all active:scale-95"
-						style={{
-							border: `2px solid ${meta.color}40`,
-							background: `${meta.color}10`,
-						}}
-					>
-						<div
-							className="mb-1 font-bold text-xl"
-							style={{ color: meta.color, fontFamily: "Exo 2, sans-serif" }}
-						>
-							{level}
-						</div>
-						<div
-							className="text-xs leading-relaxed"
-							style={{ color: "#9090B0", fontFamily: "Pretendard, sans-serif" }}
-						>
-							{meta.summary}
-						</div>
-					</button>
-				))}
-			</div>
-		</div>
+		<ParticleSniperLevelView
+			levelMeta={levelMeta}
+			onPick={(level) => {
+				setSelectedLevel(level);
+				setGameState("lesson-select");
+			}}
+			onBack={() => nav({ to: "/main/game" })}
+		/>
 	);
 
 	// ── Render: Lesson Select ──────────────────────────────────────────
 	const renderLessonSelect = () => {
-		const lessons = levelData[selectedLevel] ?? {};
 		const meta = levelMeta[selectedLevel];
 		if (!meta) return null;
-		const lessonKeys = sortLessonKeys(lessons);
-
-		// Cumulative question counts
-		let cumCount = 0;
-		const cumCounts: Record<string, number> = {};
-		for (const key of lessonKeys) {
-			cumCount += lessons[key]?.questions?.length ?? 0;
-			cumCounts[key] = cumCount;
-		}
-
 		return (
-			// 목업(ps_lesson) 주입 클래스
-			<div className="ux-dark-stage relative z-10 flex min-h-full flex-col bg-[#060612] p-6 ps-lesson-shell ps-stage text-white">
-				<button
-					type="button"
-					onClick={() => setGameState("level-select")}
-					className="ux-back ux-control mb-4 flex items-center gap-1 text-sm"
-					style={{ color: meta.color, fontFamily: "Pretendard, sans-serif" }}
-				>
-					← 급수 선택
-				</button>
-				<h2
-					className="mb-1 ps-lesson-title font-bold text-2xl"
-					style={{ color: meta.color, fontFamily: "Exo 2, sans-serif" }}
-				>
-					{selectedLevel}
-				</h2>
-				<p
-					className="mb-6 ps-lesson-note text-[#7878A0] text-sm"
-					style={{ fontFamily: "Pretendard, sans-serif" }}
-				>
-					현재 과와 이전 과에서 최대 {MAX_QUESTIONS_PER_GAME}문제가 랜덤
-					출제됩니다
-				</p>
-				<div className="space-y-3 ps-lesson-list">
-					{lessonKeys.map((lesson) => {
-						const entry = lessons[lesson];
-						return (
-							<button
-								key={lesson}
-								type="button"
-								onClick={() => startGame(selectedLevel, lesson)}
-								className="ux-lesson-card ux-control flex w-full items-center justify-between rounded-xl p-4 text-left transition-all active:scale-95"
-								style={{
-									border: `2px solid ${meta.color}30`,
-									background: `${meta.color}08`,
-								}}
-							>
-								<div>
-									<div
-										className="mb-1 font-bold"
-										style={{ fontFamily: "Pretendard, sans-serif" }}
-									>
-										{lesson}
-									</div>
-									<div className="flex flex-wrap gap-1">
-										{entry.new_particles.map((p) => (
-											<span
-												key={p}
-												className="rounded px-2 py-0.5 font-bold text-xs"
-												style={{
-													background: `${meta.color}25`,
-													color: meta.color,
-												}}
-											>
-												{p}
-											</span>
-										))}
-									</div>
-								</div>
-								<div className="ml-4 shrink-0 text-right">
-									<div
-										className="font-bold text-lg"
-										style={{
-											color: meta.color,
-											fontFamily: "Exo 2, sans-serif",
-										}}
-									>
-										{Math.min(MAX_QUESTIONS_PER_GAME, cumCounts[lesson])}
-									</div>
-									<div className="text-[#7878A0] text-xs">랜덤 문제</div>
-								</div>
-							</button>
-						);
-					})}
-					{lessonKeys.length === 0 && (
-						<div className="py-12 text-center text-[#7878A0] text-sm">
-							아직 등록된 문제가 없습니다.
-						</div>
-					)}
-				</div>
-			</div>
+			<ParticleSniperLessonView
+				level={selectedLevel}
+				meta={meta}
+				lessons={levelData[selectedLevel] ?? {}}
+				maxPerGame={MAX_QUESTIONS_PER_GAME}
+				onPick={(lesson) => startGame(selectedLevel, lesson)}
+				onBack={() => setGameState("level-select")}
+			/>
 		);
 	};
 
@@ -644,114 +509,20 @@ const ParticleSniper: React.FC = () => {
 	const renderGameplay = () => {
 		const q = questions[currentQuestionIndex];
 		if (!q) return null;
-
-		// 목업의 상태 클래스 — 쏘면 is-shot 이 붙고 결과에 따라 is-hit / is-miss 가 따라온다
-		const shot = shotResult !== null;
-		const targetState = shot ? `is-shot is-${shotResult}` : "";
-
 		return (
-			<div className="ps-game-shell">
-				<div className="ps-game-hud">
-					<div className="ps-hud-left">
-						<button
-							type="button"
-							className="ps-back"
-							aria-label="나가기"
-							onClick={() => setGameState("lesson-select")}
-						>
-							←
-						</button>
-						<div className="ps-hearts" aria-label={`남은 기회 ${stats.hp}개`}>
-							{Array.from({ length: 5 }, (_, i) => (
-								<span
-									key={i}
-									style={i < stats.hp ? undefined : { opacity: 0.18 }}
-								>
-									♥
-								</span>
-							))}
-						</div>
-						{stats.combo > 1 && <div className="ps-combo">{stats.combo}×</div>}
-					</div>
-					<div>
-						<div className="ps-score">
-							{stats.score.toLocaleString("ko-KR")}
-						</div>
-						<div className="ps-progress">
-							{currentQuestionIndex + 1} / {questions.length}
-						</div>
-					</div>
-				</div>
-
-				{/* 낙하가 하던 일 — 남은 시간 */}
-				<div
-					className="ps-timer"
-					aria-label={`남은 시간 ${Math.round(timerProgress)}%`}
-				>
-					<i style={{ width: `${timerProgress}%` }} />
-				</div>
-
-				<div className="ps-range">
-					<div className={`ps-target-question ${targetState}`}>
-						<div className="ps-target-head">
-							<span className="ps-lock-state">
-								<i />
-								TARGET LOCK
-							</span>
-							<span className="ps-target-index">
-								{String(currentQuestionIndex + 1).padStart(2, "0")}
-							</span>
-						</div>
-						<div className="ps-reticle" aria-hidden="true">
-							<i />
-						</div>
-						<div className="ps-lesson-pill">{q.sourceLesson}</div>
-						<div className="ps-sentence">
-							{q.sentence.split("___")[0]}
-							<span className="ps-blank">
-								<span className="ps-blank-value">{picked ?? "?"}</span>
-								<span className="ps-impact" aria-hidden="true">
-									<i />
-								</span>
-							</span>
-							{q.sentence.split("___")[1] ?? ""}
-						</div>
-						<div className="ps-target-guide" role="status" aria-live="polite">
-							<span>＋</span>
-							<b>
-								{!shot
-									? "조사를 선택해 조준하세요"
-									: shotResult === "hit"
-										? "명중"
-										: "빗나감"}
-							</b>
-						</div>
-					</div>
-				</div>
-
-				<div className="ps-answer-tray" aria-label="조사 선택지">
-					{q.choices.map((choice) => (
-						<button
-							key={choice}
-							type="button"
-							className={`ps-answer ${
-								shot && choice === picked
-									? shotResult === "hit"
-										? "is-correct"
-										: "is-wrong"
-									: ""
-							}`}
-							aria-pressed={shot && choice === picked}
-							onPointerDown={() => handleAnswer(choice)}
-							onClick={(e) => {
-								if (e.detail === 0) handleAnswer(choice);
-							}}
-						>
-							{choice}
-						</button>
-					))}
-				</div>
-			</div>
+			<ParticleSniperPlayView
+				question={q}
+				questionIndex={currentQuestionIndex}
+				totalQuestions={questions.length}
+				hp={stats.hp}
+				combo={stats.combo}
+				score={stats.score}
+				timerProgress={timerProgress}
+				picked={picked}
+				shotResult={shotResult}
+				onAnswer={handleAnswer}
+				onBack={() => setGameState("lesson-select")}
+			/>
 		);
 	};
 

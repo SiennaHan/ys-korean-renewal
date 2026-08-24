@@ -315,6 +315,9 @@ complete 그 장소 완료</pre>
      <b>처음 맞힌 것만</b> <code>newScore++</code> 한다.</p>
   <p class="qa">VocaShot 의 <b>재출제 정답 0점</b>, 서울 퍼즐의 <b>재시도 감점</b>과
      방향이 같아진다 — 세 게임이 <b>같은 규칙</b>을 쓴다.</p>
+  <p class="qa"><b>구현됐다 (2026-08-24).</b> <code>spring-picnic.tsx</code> 의
+     <code>choose()</code> 가 위에 적은 그대로 <code>wSet.has(q.id)</code> 로 가른다.
+     아래 "따라오는 것" 도 같이 반영했다 — <code>BLOCKERS.md</code> §3-b.</p>
 </div>
 <div class="callout">
   <div class="t">따라오는 것 — <b>완료 판정은 그대로 둔다</b></div>
@@ -325,6 +328,11 @@ complete 그 장소 완료</pre>
      <b>완료</b>는 "끝까지 해냈나"(재시도 포함 정답 70%)다.
      서로 다른 질문이므로 <b>다른 값으로 재는 것이 맞다</b>.</p>
   <p class="qa">VocaShot 결과 화면에서 <b>"맞힘"과 "점수"가 다른 것을 잰다</b>고 한 것과 같은 이유다.</p>
+  <p class="qa"><b>구현됐다 (2026-08-24).</b> 완료는 이제 점수를 보지 않는다 —
+     <code>showResult()</code> 가 <code>(총 − w2) / 총 &gt;= 70%</code> 로 판정하고,
+     그 값을 세 자리(played 플래그 · <code>completed</code> 저장 · confetti)가 다 쓴다.
+     결과 화면의 배너 등급도 같은 <code>w2</code> 비율을 보므로 <b>화면과 판정이
+     갈리지 않는다</b>.</p>
 </div>
 
 <div class="callout stop">
@@ -1776,7 +1784,7 @@ POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
   <p><b>확인</b> — <code>pnpm build</code> 통과(21.2 → <b>21.0MB</b>) ·
      <code>routeTree.gen.ts</code> 재생성으로 세 라우트가 사라졌고
      <code>/main/game/vocashot-solo</code> 만 남았다 · typecheck ·
-     <code>parity:activity</code> 31화면 · 코드가 부르는데 없는 i18n 키 0.</p>
+     <code>parity:activity</code> 47화면 · 코드가 부르는데 없는 i18n 키 0.</p>
   <p class="qa"><b>밖으로 끊기는 것은 없다.</b> §18 이 "교사 앱이 학생을 그 길로 부른다면"
      을 조건으로 달아 두었지만 <b>그 전제가 틀렸다</b> — 교사 앱이 학생을 부르는 경로는
      애초에 없고 학생이 스스로 들어간다(2026-08-24 기획자 확인).

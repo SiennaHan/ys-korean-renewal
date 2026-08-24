@@ -17,7 +17,8 @@ export function LanguageSelector() {
 	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 
-	const currentLang = LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
+	const currentLang =
+		LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
 
 	const handleSelect = (code: string) => {
 		i18n.changeLanguage(code);
@@ -38,9 +39,7 @@ export function LanguageSelector() {
 				className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-gray-100"
 			>
 				<span className="text-base">{currentLang.flag}</span>
-				<span className="font-medium">
-					{t(`language.${currentLang.code}`)}
-				</span>
+				<span className="font-medium">{t(`language.${currentLang.code}`)}</span>
 				<ChevronDown
 					className={cn(
 						"h-4 w-4 text-gray-500 transition-transform",

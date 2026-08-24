@@ -104,9 +104,9 @@ export function ActivityProgress({
 					const bar = (
 						<i className={i < current ? "done" : i === current ? "now" : ""} />
 					);
-					// biome-ignore lint/suspicious/noArrayIndexKey: 칸은 위치가 곧 정체성이다
 					return onJump ? (
 						<button
+							// biome-ignore lint/suspicious/noArrayIndexKey: 칸은 위치가 곧 정체성이다
 							key={i}
 							type="button"
 							className="seg"
@@ -117,6 +117,7 @@ export function ActivityProgress({
 							{bar}
 						</button>
 					) : (
+						// biome-ignore lint/suspicious/noArrayIndexKey: 칸은 위치가 곧 정체성이다
 						<Fragment key={i}>{bar}</Fragment>
 					);
 				})}
