@@ -861,7 +861,12 @@
   <p style="margin:8px 0 0"><b>나머지 활동에는 없다.</b> 어휘퀴즈·듣기·읽기·역할극의 문항 시트에
   해설 컬럼이 없다(원장 v24 와 앱 JSON 양쪽 확인). 그쪽의 <code>change_note</code>·
   <code>hold_reason</code> 은 저작·검수용 메타다. 즉 <b>해설은 있는 활동과 없는 활동이 갈린다.</b>
-  앱에 해설을 그리는 화면은 아직 없다.</p>
+  <b>앱에 해설을 그리는 자리는 이미 있다</b>(2026-08-24 실측) —
+  <code>components/learn/fill-blank.tsx</code> 가 답을 고른 뒤
+  <code>question.grammar_focus</code> 를 <code>.grammar-note</code> 로 그린다
+  (<code>styles/activity.css:272</code>). 문법 빈칸에만 해설이 있으니 자리도 거기만 있는 것이 맞다.
+  결과 화면(<code>activity/result-screen.tsx</code>)에는 <code>explanation</code> 슬롯이
+  있지만 <b>실데이터를 넘기는 쪽이 없다</b> — 스토리에서만 채운다. 서버 대기다.</p>
   <p style="margin:8px 0 0">나머지 셋의 전제는 성립한다 —
   <code>POST /learning-record</code> 는 실제로 있고 <code>isCorrect</code> 를 받는다(2번),
   <code>GET /dashboard</code> 도 있다(4번), <code>content_counts.TOTAL_QUESTIONS</code> 도 있다.</p>

@@ -136,7 +136,11 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 
 **남은 것은 죽은 옛 라우트를 걷어내는 것이다.** `app/src/routes/book/` 에 19개가
 남아 `routeTree.gen.ts` 에 등록돼 있다 — 주소를 직접 치면 닿는다. 플래시카드와
-미션대화 쪽으로 `navigate` 하는 코드는 **하나도 없다**(확인했다).
+미션대화 쪽으로 `navigate` 하는 코드가 **한 곳 있다**(2026-08-24 다시 확인) —
+`components/main/course-list/mission-chat.tsx:36` 이 `/book/chapter/unit/mission_chat/{code}`
+로 보낸다. 그 경로는 지금 `/main/textbook` 으로 리다이렉트되므로 **누르면 교재학습에 떨어진다.**
+다만 그 컴포넌트를 쓰는 곳은 `/main/game/missionchat` 라우트뿐이고 **아무도 그 라우트를
+링크하지 않는다** — 주소를 직접 쳐야 닿는 고아다. 걷어낼 목록에 같이 넣는다.
 
 ```bash
 # 옛 경로로 가는 코드가 정말 없는지
@@ -172,6 +176,41 @@ app/rsbuild.config.ts
 `/learn/mission-chat` 이고 자모 목록은 `/main/textbook/jamo` 다. 사람이든 AI든
 `flashcard` 를 찾다가 이 스텁을 먼저 집는다. (`README` 가 `/jamolist` 를 자모 화면이라
 적어 두었던 것도 이것 때문이다 — §1 에서 고쳤다.)
+
+### 프로덕션에 실려 가는 죽은 것 — 전수 (2026-08-24 앱↔기획서 대조)
+
+스텁 넷 말고도 있다. **아무도 링크하지 않는데 주소를 치면 닿는다.**
+
+| 무엇 | 어디 | 줄 수 | 문서가 말한 것 |
+|---|---|---|---|
+| 빈 스텁 넷 | `routes/{flashcard,missionchat,jamolist,about}.tsx` | 36 | `dev_spec_v1` §4 "제외" — 안 됐다 |
+| 테스트 아홉 | `routes/test/**` | — | 같은 절. **이건 됐다**(`rsbuild.config.ts`) |
+| 구 교재 트리 | `routes/book/**` 19개 | — | 이 문서 위쪽. 자모(§2) 뒤에 한꺼번에 |
+| 교실용 VocaShot | `routes/main/game/vocashot.tsx` · `vocashot_.$pin.tsx` · `lib/vocashot/appsync.ts` | 1,459 | `games_spec_v1` §18 ⑥ "교실용 경로 삭제" — 안 됐다 |
+| 고아 미션대화 | `routes/main/game/missionchat.tsx` + `components/main/course-list/mission-chat.tsx` | — | **아무 문서도 몰랐다.** 구 경로로 보내서 누르면 교재학습에 떨어진다 |
+
+**구 교재 트리 세 층은 리다이렉트가 아니라 살아 있는 화면이다** — `/book/$id` ·
+`/book/chapter/$id` · `/book/chapter/unit/$id` 가 `chapter.ts`·`unit.ts`·`module.ts`(손으로
+관리하는 레거시)를 읽어 옛 동선을 그대로 그린다. 리프 셋(`input_word` · `make_sentence` ·
+`write2`)도 화면이다 — `jamo_authoring_spec_v1` 이 "화면만 있고 콘텐츠가 0" 이라 적은 그것들이다.
+
+### 서버에 막히지 않았는데 아직 없는 것
+
+| 무엇 | 실측 | 문서 |
+|---|---|---|
+| 자모 라우트 6→1 통합 | `routes/learn/jamo/` 에 6개 그대로 | §2 — 검수 대기. 순서가 맞다 |
+| 표현클립 · MY 목업 이식 | `clip.tsx` 15줄 · `my.tsx` 26줄, 구 `Content4`·`Content5` 껍데기 | `masterplan_v3` §15 "목업 없음" — 목업부터 없다 |
+| 게임·VocaShot 목업 대조 | 캡처 20개(게임 17 · VocaShot 3)가 `app/src/mockups/` 에 있는데 대조가 안 본다 | `masterplan_v3` §9 |
+| 권한·결제 | `ko_entitlement` 0곳 · `entitlement` 0곳 | `access_and_pricing_v1` — "코드에 권한 개념이 하나도 없다" 가 지금도 참 |
+| 메일 발송 | `api/` 에 SMTP·SES·SendGrid 어느 것도 없다 | §7 |
+
+### 서버가 있어야 되는 것 (실측으로 확인)
+
+`ko_activity_state` · `ko_review_queue` **0곳**(api·app 양쪽). 신설 API 다섯
+(`/activity/enter` · `/activity/progress` · `/activity/complete` · `GET /review-queue` ·
+`DELETE /review-queue/{id}`) 도 **api/ 에 0곳**. 앱의 API 클라이언트가 실제로 부르는 것은
+`/dashboard` 와 `/learning-record` **둘뿐**이다. `reviewCount` 는 `HomeView` 와
+`module-list` 가 받을 준비를 해 두었지만 **넘기는 쪽이 없다** — §6 그대로다.
 
 **고치는 법 둘.** 지우는 것이 낫다 — 아무것도 가리키지 않는다.
 
@@ -251,7 +290,7 @@ git log --format='%h %s%n%b' --since='2026-08-20'
 | `GET /dashboard` | 있음 — 필드 추가 필요 |
 | `ko_activity_state` · `ko_review_queue` 신설 | 없음 |
 
-화면 22종은 다 만들어져 있고 **상태만 붙이면 된다.** 다만 문서가 말하는
+**활동 컴포넌트 22종**이 다 만들어져 있고 **상태만 붙이면 된다.** 다만 문서가 말하는
 `ActivityShell` 은 **아직 없는 이름이다** — 상태를 전담하는 껍데기를 세우는 것이
 남은 일(§6 의 API 가 생긴 뒤)이고, 지금 화면들은 `ActivityFrame` 을 직접 쓰면서
 **구 `saveLearningRecord`** 로 기록한다(20곳). 실제 이름 대조는

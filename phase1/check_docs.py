@@ -17,6 +17,7 @@
   [자기 절]      자기 문서의 없는 절을 부르는 경우
   [옛 경로]      _superseded/ 로 옮겼는데 옛 이름으로 부르는 곳
   [죽은 링크]    href 가 가리키는 파일이 없는 경우
+  [앵커]         href="다른문서.html#N" 의 앵커가 그 문서에 없는 경우
   [id 중복]      한 문서에 같은 id — 앵커가 겹친다
   [id 라벨]      h2 의 id 와 보이는 절 번호가 다른 경우
   [고아]         아무 문서도, 문(README·BLOCKERS·CLAUDE)도 가리키지 않는 문서
@@ -180,7 +181,7 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     """문서가 적어 놓은 수와 실제로 센 수를 맞춰 본다.
 
     문구는 좁게 잡는다. 이 저장소에는 비슷하지만 다른 지표가 셋 있고
-    (이식 화면 24 · 활동 컴포넌트 22 · 목업 대조 27) 넓게 잡으면
+    (이식 화면 25 · 활동 컴포넌트 22 · 목업 대조 27) 넓게 잡으면
     맞는 숫자를 틀렸다고 잡는다.
     """
     act, nav = parity_screens()
@@ -336,6 +337,9 @@ ALIAS = {
     "셸 명세": "shell_spec_v1",
     "컴포넌트 명세": "shell_spec_v1",
     "구현 사양": "shell_spec_v1",
+    # 맨 이름의 "명세" 는 개발 명세다. "셸 명세" 와 겹치므로 아래 귀속은
+    # 끝 위치가 같으면 긴 별칭을 먼저 쓴다 — 안 그러면 셸 명세가 여기로 끌려온다
+    "명세": "dev_spec_v1",
 }
 
 
@@ -353,16 +357,31 @@ def sub_cites(live: set[str], raw: dict[str, str], text: dict[str, str]) -> list
                 i = lead.rfind(cand)
                 if i > at:
                     owner, at = cand, i
+            best = None  # (끝 위치, 별칭 길이, 대상)
             for alias, tgt in ALIAS.items():
                 i = lead.rfind(alias)
-                if i > at and tgt in live:
-                    owner, at = tgt, i
+                if i < 0 or tgt not in live:
+                    continue
+                cand = (i + len(alias), len(alias), tgt)
+                if best is None or cand[:2] > best[:2]:
+                    best = cand
+            if best and best[0] > at + 1:
+                owner, at = best[2], best[0]
             # 이름도 별칭도 앞에 없으면 자기 문서를 말하는 것으로 본다
             if at < 0:
                 owner = src if src in live else None
-            if owner is None or not subs.get(owner):
+            if owner is None:
                 continue
             have = subs[owner]
+            if not have:
+                # 번호 붙은 h3 이 아예 없는 문서다. 전에는 여기서 건너뛰어서
+                # 12개 중 10개 문서로 들어오는 §N.M 인용을 한 번도 안 봤다.
+                ctx = re.sub(r"\s+", " ", flat[max(0, m.start() - 45):m.end() + 20]).strip()
+                out.append(
+                    f"[하위절] {src} → {owner} §{sec} 인데 그 문서에는 번호 붙은 h3 이 없다\n"
+                    f"           …{ctx}…"
+                )
+                continue
             if sec in have or any(k.startswith(sec + "-") for k in have):
                 continue
             ctx = re.sub(r"\s+", " ", flat[max(0, m.start() - 45):m.end() + 20]).strip()
@@ -386,6 +405,31 @@ def dup_subsections(live: set[str], raw: dict[str, str]) -> list[str]:
         for k, c in sorted(seen.items()):
             if c > 1:
                 out.append(f"[하위절 중복] {n} 에 §{k} 이 {c}개 있다 — 병합 뒤 번호를 다시 매겨라")
+    return out
+
+
+def cross_anchors() -> list[str]:
+    """href="다른문서.html#앵커" 의 앵커가 그 문서에 있나.
+
+    같은 파일 안의 #sN 만 보면 이 축이 빈다 — shell_spec_v1 이
+    screens_uiux.html#act 를 셋 걸어 두었는데 그 문서의 id 는 mk-act 였다.
+    눌러도 문서 맨 위로 갈 뿐이라 사람이 조용히 길을 잃는다.
+    """
+    ids: dict[str, set[str]] = {}
+    for f in HERE.glob("*.html"):
+        ids[f.name] = set(re.findall(r'\bid="([^"]+)"',
+                                     f.read_text(encoding="utf-8", errors="replace")))
+    out: list[str] = []
+    for f in sorted(HERE.glob("*.html")):
+        body = f.read_text(encoding="utf-8", errors="replace")
+        for m in re.finditer(r'href="([A-Za-z0-9_.\-]+\.html)#([^"]+)"', body):
+            tgt, frag = m.group(1), m.group(2)
+            if tgt not in ids:
+                out.append(f"[앵커] {f.stem} → {tgt} 가 없다")
+            elif frag not in ids[tgt]:
+                near = ", ".join(sorted(x for x in ids[tgt] if frag in x)[:3])
+                hint = f" (비슷한 id: {near})" if near else ""
+                out.append(f"[앵커] {f.stem} → {tgt}#{frag} 앵커가 없다{hint}")
     return out
 
 
@@ -600,6 +644,9 @@ def main() -> int:
 
     # ── 7. 색인 정합성
     problems += index_covers(live)
+
+    # ── 파일 간 앵커
+    problems += cross_anchors()
 
     # ── 8. 하위절 인용 · 9. 하위절 번호 중복
     problems += sub_cites(live, raw, text)

@@ -277,7 +277,7 @@
   <div class="t">시각 기준이 바뀌었다 <span class="pill new">v2.4</span></div>
   <p>초안은 <b>Figma 스타일 가이드</b>를 시각 기준(SoT)으로 삼았다(§3.5). <b>피그마에 새로 그리지 않기로 하면서</b> 기준이 다음 둘로 옮겨갔다.</p>
   <ul>
-    <li><b><a href="screens_uiux.html#act">활동 UI/UX 목업</a></b> — 상태별 화면의 정본. 구현이 다르면 목업이 기준</li>
+    <li><b><a href="screens_uiux.html#mk-act">활동 UI/UX 목업</a></b> — 상태별 화면의 정본. 구현이 다르면 목업이 기준</li>
     <li><b><code>tokens.css</code></b> — 색·타이포의 유일한 기준. primitive 51 + semantic 30 + 타이포 23</li>
   </ul>
   <p>기준 폭도 <b>360 → 390</b>으로 올렸고, 세로는 <b>고정 픽셀 대신 고정 블록 + 가변 밴드</b>로 바꿨다 — 모바일 웹은 주소창 때문에 실제 높이가 기기 스펙보다 작다. 상세는 <b>이 문서 구조 §16.1</b>.</p>
@@ -554,12 +554,12 @@
 <header class="doc">
   <div class="eyebrow">Phase 1 · UI/UX 대안 확정</div>
   <h1>플레이어 공통 셸 — UI/UX 컴포넌트 명세</h1>
-  <div class="meta">2026-08-17 · <b>기존 v1과 별도로 관리하는 구조 변경안</b> · 구현 기준은 <b>이 문서 값 §21~§34</b>, 셸 화면은 <a href="shell_mockup_uiux.html">셸 목업 UI/UX</a>, 활동 예시는 <a href="screens_uiux.html#act">활동 확정 목업</a></div>
+  <div class="meta">2026-08-17 · <b>기존 v1과 별도로 관리하는 구조 변경안</b> · 구현 기준은 <b>이 문서 값 §21~§34</b>, 셸 화면은 <a href="shell_mockup_uiux.html">셸 목업 UI/UX</a>, 활동 예시는 <a href="screens_uiux.html#mk-act">활동 확정 목업</a></div>
 </header>
 
 <div class="callout good">
   <div class="t">활동 목업 확정 — 시안 2 · Functional Clarity</div>
-  <p>최종 시각 기준은 <a href="screens_uiux.html#act"><b>활동 UI/UX 확정 목업</b></a>이다. 문제·음성·응답·녹음의 기능 구분을 우선하며, 에디토리얼형과 비교 목업은 검토 이력으로만 남긴다.</p>
+  <p>최종 시각 기준은 <a href="screens_uiux.html#mk-act"><b>활동 UI/UX 확정 목업</b></a>이다. 문제·음성·응답·녹음의 기능 구분을 우선하며, 에디토리얼형과 비교 목업은 검토 이력으로만 남긴다.</p>
 </div>
 
 <div class="callout good">
@@ -742,7 +742,18 @@
       <td><code>result-screen.tsx</code></td></tr>
   <tr><td><code>StateView</code> (§14.5)</td><td><code>LoadingScreen</code> · <code>FailedScreen</code> · <code>MicDeniedScreen</code></td>
       <td><code>state-screens.tsx</code> — <b>상태마다 따로</b> 쪼갰다</td></tr>
+  <tr><td colspan="3" style="background:#f6f7f8"><b>§19 스토리북 계획의 "콘텐츠 4종" 도 이름이 다르다 (2026-08-24 실측)</b></td></tr>
+  <tr><td><code>MicZone</code></td><td><code>RecordControl</code> · <code>ListenControl</code></td><td><code>record.tsx</code></td></tr>
+  <tr><td><code>ChatThread</code></td><td><code>ChatScreen</code></td><td><code>chat.tsx</code></td></tr>
+  <tr><td><code>FlipCard</code></td><td><code>FlashcardScreen</code></td><td><code>flashcard.tsx</code></td></tr>
+  <tr><td><code>WritingCanvas</code></td><td><code>WriteCanvas</code> · <code>JamoSection</code></td><td><code>jamo-write.tsx</code></td></tr>
+  <tr><td><code>ChoiceGroup</code></td><td><code>ChoiceList</code> · <code>Choice</code> · <code>ChipOption</code> · <code>ChipWrap</code></td><td><code>choice.tsx</code></td></tr>
 </table></div>
+<p class="qa">위 표의 <b>왼쪽 이름으로 코드를 찾으면 하나도 안 나온다</b> — 문서가 부르는
+대문자 심볼 60개를 <code>app/src</code> 와 전수 대조해 얻은 것이다. 남은 차이는
+디자인 토큰 이름(<code>Positive</code> · <code>Destructive</code> · <code>Cautionary</code> ·
+<code>Dimmed</code>) · SQL 타입 · GraphQL 구독명이고 <b>코드 심볼이 아니라 정상</b>이며,
+<code>CompletionBadge</code> 는 구 앱이 그렸다가 <b>지운 것</b>이다.</p>
 <p><b><code>ActivityShell</code> 은 아직 없는 이름이다.</b> 셸은
 <code>ActivityFrame</code> · <code>ActivityAppBar</code> · <code>ActivityProgress</code> ·
 <code>ActivityBody</code> · <code>ActivityFooter</code> · <code>Dock</code> 여섯으로
