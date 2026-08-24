@@ -65,8 +65,9 @@ python3 scripts/build-content.py --check
 
 **주의 — 여기 있는 작은 로더 모듈도 같이 빠졌다.** `word-list.ts` ·
 `learn-data-check.ts` · `listen-answer.ts` · `mission-chat.ts` · `roleplay.ts` ·
-`word-quiz.ts` 처럼 JSON 을 읽어 타입을 붙이는 파일들이다. 지금은 셋 다 진단이 0이지만
-**앞으로 이 파일들이 틀리면 린터가 안 잡는다.** 손댈 때 눈으로 봐야 한다.
+`word-quiz.ts` 처럼 JSON 을 읽어 타입을 붙이는 파일들이다. 제외 직전에 `book.ts` · `dialog_word.ts` ·
+`flashcard.ts` 에 `format` 진단이 각 1건 있었고 그것은 이제 적용되지 않는다(서식뿐이다).
+그보다 **앞으로 이 파일들이 틀리면 린터가 안 잡는다**는 것이 중요하다. 손댈 때 눈으로 봐야 한다.
 
 생성 JSON 자체는 서식이 이미 맞다 — `build-content.py` 가 `json.dumps(indent="\t")` 로
 쓰고 그것이 biome 의 서식과 같다. 즉 빼는 이유는 서식 충돌이 아니라 위의 둘이다.

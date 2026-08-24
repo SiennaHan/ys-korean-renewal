@@ -816,6 +816,96 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <span class="file">.canvas-host</span> · <span class="file">.record-card .heard .miss</span> ·
 진행막대 <span class="file">.seg</span>. 각 규칙 위에 왜 만들었는지 적어 두었다.</p>
 
+<div class="callout">
+  <div class="t">거꾸로 간 것도 있다 — <b>목업을 고친 셋</b> (2026-08-24)</div>
+  <p>위 여섯은 <b>구현이 목업을 벗어난</b> 것이고, 아래 셋은 반대다 —
+     <b>목업이 틀려서 목업을 고쳤다.</b> 둘 다 이유가 있어야 남는다.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>무엇</th><th>목업이 왜 틀렸나</th><th>어떻게</th></tr></thead>
+    <tbody>
+    <tr><td><code>pc_result</code> 오답노트 🔊</td>
+        <td>버튼이 아니라 맨 글자라 <b>키보드로 닿지 않았다.</b> 옛 판에는
+            실제 <code>&lt;button&gt;</code> 이 있었다</td>
+        <td><code>aria-label</code> 붙은 <code>&lt;button&gt;</code> 으로</td></tr>
+    <tr><td><code>sp_map</code> 장소 카드 10개</td>
+        <td><code>div</code> 였다. 지도 핀은 SVG <code>&lt;g&gt;</code> 라 초점을 못 받으므로
+            <b>장소로 들어갈 방법이 마우스뿐이었다</b></td>
+        <td><code>&lt;button&gt;</code> 으로. 잠긴 곳은 <code>disabled</code></td></tr>
+    <tr><td><code>sp_entry</code>·<code>sp_puzzle</code></td>
+        <td>틀린 것이 아니라 <b>딸려 온 것</b> — 위의 버튼 기본값 되돌림이
+            공유 <code>&lt;style&gt;</code> 블록에 들어가고 그 블록이 대조 대상이다</td>
+        <td><code>.sp-loc-card</code> 에 <code>text-align</code>·<code>font</code>·<code>color</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>셋 다 <code>phase1/captured/</code> 의 날것 캡처와 갈라지므로
+     <code>check_docs.py</code> 의 <code>TWIN_ALLOW</code> 에 이유를 적었다.
+     <b>홈 셋이 08-20 에 이미 같은 길을 갔다</b> — 캡처는 시점 기록으로 남기고
+     <code>app/src/mockups/</code> 를 고치는 것이 이 저장소의 방식이다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">08-19 에 팔레트가 <b>조용히 흘렀다</b> — 되돌렸다</div>
+  <p>게임 목록의 아이콘 색이 앱과 목업에서 달랐다. "목업이 정본" 이라 목업으로
+     맞췄는데, <b>그것으로 끝내면 안 되는 자리였다</b> — 앱 쪽이 나중에 정한
+     것일 수도 있어서다. git 으로 확인했다.</p>
+  <p><code>65d3eb5</code>(08-19 17:10) <b>이전</b>의 손으로 쓴 카드 다섯이
+     <code>#FFF0F5/#D4537E</code>(봄소풍) · <code>#E8F5E9/#2E7D32</code>(서울)로
+     <b>목업과 같았다.</b> 그 커밋이 카드를 데이터 배열로 합치면서 값을 다르게
+     옮겨 적었고, <b>커밋 메시지에 색 이야기가 없다</b> — 의도가 아니라 흘린 것이다.
+     그래서 목업 값이 원래 값이고 되돌리는 것이 맞았다.</p>
+  <p class="qa"><b>배운 것</b> — "목업이 정본" 은 <b>어느 쪽이 최신인지를 묻지 않아도
+     된다는 뜻이 아니다.</b> 값이 갈렸을 때 git 으로 언제 누가 정했는지 보는 것이
+     한 단계 더 있어야 한다. 이번에는 결론이 같았지만 반대일 수도 있었다.</p>
+</div>
+
+<h2 id="s16b"><span class="n">16-b</span>내가 틀린 것 — 2026-08-24</h2>
+<p>이 절은 자랑이 아니라 <b>다음 사람이 같은 곳을 밟지 않게</b> 두는 것이다.
+   이날 린트를 505건에서 43건으로 줄이면서 여섯 번 틀렸다. 넷은 <b>측정</b>을 틀렸고,
+   둘은 <b>검사로 잡히지 않는 것을 근거 없이 바꿨다.</b></p>
+<div class="tablewrap"><table>
+  <thead><tr><th>무엇을 틀렸나</th><th>왜 틀렸나</th><th>어떻게 알았나</th></tr></thead>
+  <tbody>
+  <tr><td>"에러 14 · 경고 101" 이라고 보고</td>
+      <td>실제는 <b>404 + 101</b>. 잘린 출력에 <code>grep -c</code> 를 걸었다</td>
+      <td>기획자가 "정확히 뭐고 해결 가능한가" 를 물어 다시 셌다.
+          <code>--reporter=json</code> 으로 세니 드러났다</td></tr>
+  <tr><td>"전부 리뉴얼 전 코드" 라고 보고</td>
+      <td>그날 만든 뷰 파일 넷도 서식 대상이었다(<code>seoul-puzzle-view</code> 2,134줄)</td>
+      <td>같은 재측정에서</td></tr>
+  <tr><td>"생성 JSON 은 다시 만들면 되돌아간다"</td>
+      <td><code>build-content.py</code> 가 <code>indent="\t"</code> 로 써서
+          <b>biome 서식과 이미 같다.</b> 실제 제외 이유는 1MB 상한이었다</td>
+      <td>사본에 <code>--write</code> 를 돌려 파일별로 대 봤다</td></tr>
+  <tr><td>"제외한 로더 모듈은 진단이 0이라 잃은 것이 없다"</td>
+      <td><code>book.ts</code>·<code>dialog_word.ts</code>·<code>flashcard.ts</code> 에
+          <code>format</code> 이 각 1건 있었다(해는 없지만 영구히 안 보인다)</td>
+      <td>이 절을 쓰며 제외 이전 스냅샷을 다시 조회</td></tr>
+  <tr><td><b>훅 의존성을 좁혔다</b>
+          (<code>fill-blank</code>·<code>read-answer</code>·<code>listen-answer</code>)</td>
+      <td>"배열 원소라 참조가 안정" 이 참이려면 <b>같은 객체가 두 번 없어야</b> 하고
+          그 보장을 확인할 방법이 없었다. 틀리면 답 복원이 안 된다</td>
+      <td>기획자가 "네 맘대로 판단한 것 아니냐" 고 물어 diff 를 봤다.
+          <b>되돌리고 재웠다</b></td></tr>
+  <tr><td><b><code>MapSvg</code> 에 <code>aria-hidden</code></b></td>
+      <td>핀에 <code>onPinTap</code> 이 걸려 <b>눌리는 것</b>이다. 누를 수 있는 것을
+          감싸 숨기는 것은 ARIA 안티패턴이고 장소 이름 글자도 같이 사라진다.
+          "svg 열둘은 전부 장식" 이라고 한 번에 판단했다</td>
+      <td>같은 재검토에서 <code>&lt;svg&gt;</code> 안의 핸들러를 세어 보고.
+          <b>걷어내고 재웠다</b></td></tr>
+  </tbody>
+</table></div>
+<div class="callout">
+  <div class="t">여섯을 갈라 보면 원인이 둘이다</div>
+  <p><b>① 측정을 도구로 하지 않았다</b>(넷). 잘린 화면에 <code>grep</code> 을 걸고,
+     대신 세어 주는 것(<code>--reporter=json</code> · 사본 실험 · 스냅샷 조회)을
+     나중에 썼다. <b>고치는 법은 문서가 아니라 순서다</b> — 숫자를 말하기 전에
+     세는 도구로 한 번 더 센다.</p>
+  <p><b>② 여러 곳에 같은 판단을 한 번에 적용했다</b>(둘). svg 열둘을 "장식" 으로
+     묶고, 세 화면의 의존성을 같은 논리로 좁혔다. <b>고치는 법은 자리마다 확인</b>
+     이고, 특히 <b>검사기가 못 잡는 변경</b>(훅 재실행 · ARIA)은 근거를 말할 수
+     없으면 하지 않는다. 규칙은 <code>CLAUDE.md</code> 에 옮겼다.</p>
+</div>
+
 <h2 id="s17"><span class="n">17</span>그 밖에 오늘 바뀐 것</h2>
 
 <div class="tablewrap">

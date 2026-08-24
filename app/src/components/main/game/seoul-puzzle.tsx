@@ -336,8 +336,21 @@ export function MapSvg({
 			: "";
 
 	return (
+		/*
+		 * aria-hidden 을 붙였다가 되돌렸다. 이 지도는 장식이 아니다 —
+		 * 안의 <g> 핀에 onPinTap 이 걸려 **눌린다**. 누를 수 있는 것을 감싸서
+		 * 보조기술에서 숨기는 것은 ARIA 안티패턴이고, 지도의 <text> 장소 이름도
+		 * 같이 사라진다. noSvgWithoutTitle 을 없애려고 붙였던 것인데 그 대가가
+		 * 크다. 대신 재우고 이유를 적는다.
+		 *
+		 * 핀은 **마우스 전용 중복 경로**다. SVG <g> 는 초점을 못 받으므로 예전에도
+		 * 키보드로는 닿지 않았고, 지도 아래 장소 카드가 같은 일을 하는 진짜
+		 * <button> 이다(sp_map). 그러니 지금 상태가 접근성 손해는 아니다.
+		 * <title> 로 이름을 주는 것이 더 낫지만 그러면 목업 셋을 갈라야 한다 —
+		 * 그때 같이 하는 것이 맞다. BLOCKERS §3-b 에 남겼다.
+		 */
+		// biome-ignore lint/a11y/noSvgWithoutTitle: 이 지도는 장식이 아니다 — 위 주석 참고
 		<svg
-			aria-hidden="true"
 			viewBox={viewBox}
 			xmlns="http://www.w3.org/2000/svg"
 			preserveAspectRatio="xMidYMid slice"

@@ -917,7 +917,9 @@ pnpm build            # 통과 — §1 에서 고쳤다
 
 **딸려 오는 것 — `src/shared/data` 의 작은 로더 모듈들이 검사 밖으로 나갔다.**
 `word-list.ts` · `learn-data-check.ts` 처럼 JSON 을 읽어 타입을 붙이는 파일 열한 개다.
-지금은 셋 다 진단이 0이라 잃은 것이 없지만, **앞으로 그 파일이 틀리면 아무도 안 잡는다.**
+**정확히 말하면 잃은 것이 아주 조금 있다** — 제외 직전에 `book.ts` · `dialog_word.ts` ·
+`flashcard.ts` 에 `format` 진단이 각 1건 걸려 있었고 그것은 이제 영구히 적용되지 않는다
+(서식뿐이라 해는 없다). 더 중요한 것은 **앞으로 이 파일들이 틀려도 아무도 안 잡는다**는 것이다.
 폴더 하나를 통째로 빼는 대신 파일을 스물 몇 개 나열할 수도 있었는데, 새 데이터표가
 생길 때마다 목록을 고쳐야 해서 폴더로 갔다. 그 폴더는 자기 README 가 "이 폴더의 JSON 은
 산출물이다" 라고 밝혀 둔 곳이다.
@@ -1151,6 +1153,25 @@ biome 은 **"몸통에서 읽지 않는다"** 만 본다. 그런데 이 저장�
 `combine.tsx` · `combine3.tsx` 가 `_problem.content_sound` 를 **바로 다음 줄의
 `if (_problem)` 널 검사보다 먼저** 읽는다. `problemIndex` 가 항상 범위 안이라 지금은
 안 터지지만 순서가 뒤집혀 있다.
+
+### 남은 43건 — 손대기 전에 의도를 먼저 정한다
+
+이번에 배운 것 하나: **"진단 수를 0으로 만든다" 를 목표로 잡으면 판단이 숫자에
+끌려간다.** 남은 것은 규칙마다 우리가 원하는 끝 상태를 먼저 적어 두고 시작한다.
+
+| 규칙 | 수 | 어디가 많나 | 원하는 끝 상태 (제안) |
+|---|---|---|---|
+| `noArrayIndexKey` | 16 | `seoul-puzzle-view` 5 · `content4` 2 | **대부분 재우기.** 칸·획처럼 위치가 곧 정체성인 목록이 많다. 다만 순서가 바뀔 수 있는 목록이 섞여 있으면 그것만 진짜 열쇠로 |
+| `noExplicitAny` | 10 | `api/api.ts` 4 · `confetti-provider` 4 | **타입 붙이기.** `api.ts` 의 넷은 `post<T>` 의 `data?: any` 라 제네릭으로 좁힐 수 있다. confetti 는 외부 라이브러리 타입이라 재울 수도 |
+| `noForEach` | 6 | `spring-picnic` 2 · `mic-permission-provider` | **바꾸기.** `for…of` 로 옮기면 끝난다. 동작 동일 |
+| `noNonNullAssertion` | 5 | `HangulTracingCanvas` 2 · `card-sort` | **자리마다.** `!` 가 실제로 보장되는지 봐야 한다 — 보장이 없으면 그게 버그다 |
+| `noDangerouslySetInnerHtml` | 4 | `seoul-puzzle-view` 4 | **재우기.** 목업에서 캡처한 정적 마크업 주입이다(`mockup-parity.stories` 에 같은 이유의 주석이 이미 있다). 다만 **주입하는 값이 정말 정적인지** 한 번 확인 |
+| `useJsxKeyInIterable` | 1 | `activity/shell.tsx` | 진짜 열쇠 넣기 |
+| `noShadowRestrictedNames` | 1 | `list-view.tsx` | lucide 의 `Map` 아이콘이 전역 `Map` 을 가린다 — `Map as MapIcon` 으로 |
+
+**이 표를 먼저 합의하고 시작하는 것이 이번과 다른 점이다.** 지난번에는 규칙을
+만나서야 "이건 재울까 고칠까" 를 정했고, 그때 판단이 몇 번 헐거웠다.
+
 
 
 i18n 은 5개 로케일 **300키**가 일치한다(en·ja·ko·vi·zh 전부 300).
