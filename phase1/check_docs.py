@@ -188,10 +188,13 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         ("phase1 정본 문서 수", len(live), [
             r"문서가\s*(\d+)개",
             r"목업\s*HTML\s*(\d+)개",
+            r"정본\s*(\d+)개가\s*모두",
+            r"정본\s*(\d+)개\s*·",
         ]),
         ("_superseded 문서 수", len(list((HERE / "_superseded").glob("*.html"))), [
             r"정본이\s*아닌\s*(\d+)개",
             r"`?_superseded/`?\s*(\d+)개",
+            r"_superseded/?\s*로\s*옮겼다\s*\(\s*([가-힣\d]+)\s*개",
         ]),
         # 절 인용 총합은 여기 넣지 않는다 — 문서를 한 줄 고칠 때마다 바뀌어서
         # 정확히 맞추게 하면 신호가 아니라 잡일이 된다(한 세션에 네 번 갈렸다).
@@ -390,6 +393,80 @@ def main() -> int:
                 problems.append(
                     f"[절 인용] {src} → {nearest} §{m.group(1)} 인데 그 문서의 절은 {have}\n"
                     f"           …{ctx}…"
+                )
+
+    # ── 2b. 자기 절 인용: 이름 없이 그냥 §N 이라 쓴 것은 자기 문서의 절이다.
+    # 2 번은 "문서이름 §N" 만 본다. 그래서 문서를 합치면서 절 번호를 다시 붙일 때
+    # 정작 그 문서 안의 §N 이 옛 번호로 남는 것을 못 잡았다 — 실제로 asis_v1 에
+    # 12곳이 그렇게 남아 있었고 사람이 눈으로 찾았다. 그걸 여기서 잡는다.
+    #
+    # 본문은 남의 문서를 사람 말로도 부른다("구현 사양 §8" · "G2 §5-1"). 그런 것은
+    # 자기 절이 아니므로 건너뛴다. 별칭 목록이 이 검사의 정확도를 정한다.
+    ALIAS_OTHER = [
+        "BLOCKERS", "README", "CLAUDE", "INDEX", "G1", "G2", "저작 사양",
+        "구현 사양", "컴포넌트 명세", "셸 명세", "개발 명세", "설계 문서", "원장",
+    ]
+    ALIAS_SELF = ["이 문서", "같은 문서", "본 문서"]
+    for src, body in text.items():
+        own = secs.get(src)
+        if not own:
+            continue
+        for m in re.finditer(r"§\s?(\d+)", body):
+            lead = re.sub(r"<[^>]*>", " ", body[max(0, m.start() - 110):m.start()])
+            # "§4·§7" 처럼 이어지면 앞의 사슬을 걷어내고 그 앞을 본다
+            while True:
+                t = re.sub(r"§\s*\d+[\w.\-]*\s*[)）]?\s*[·,]\s*$", "", lead)
+                if t == lead:
+                    break
+                lead = t
+            tail = lead[-70:]
+            best, at = "self", -1
+            for tgt in live | dead:
+                if tgt == src:
+                    continue
+                i = tail.rfind(tgt)
+                if i > at:
+                    best, at = "other", i
+            for a in ALIAS_OTHER:
+                i = tail.rfind(a)
+                if i > at and len(tail) - i <= 40:
+                    best, at = "other", i
+            for a in ALIAS_SELF:
+                i = tail.rfind(a)
+                if i > at:
+                    best, at = "self", i
+            if best != "self":
+                continue
+            sec = str(int(m.group(1)))
+            if sec not in own:
+                have = ",".join(sorted(own, key=int)) or "(없음)"
+                ctx = re.sub(r"\s+", " ", re.sub(r"<[^>]*>", " ", body[max(0, m.start() - 56):m.end() + 18])).strip()
+                problems.append(
+                    f"[자기 절] {src} 가 자기 §{m.group(1)} 을 부르는데 이 문서의 절은 {have}\n"
+                    f"           …{ctx}…"
+                )
+
+    # ── 2c. id 중복과 라벨 불일치. 절 번호를 다시 붙일 때 눈에 보이는 번호만 고치고
+    # id 는 원본 그대로 남기기 쉽다 — asis_v1 · G1 이 그랬고 앵커가 겹쳐 있었다.
+    from collections import Counter
+    for f in sorted(HERE.glob("*.html")):
+        raw = f.read_text(encoding="utf-8", errors="replace")
+        nos = re.sub(r"<script[^>]*>.*?</script>", "", raw, flags=re.S)
+        ids = re.findall(r'\bid="([^"]+)"', nos)
+        for k, v in Counter(ids).items():
+            if v > 1:
+                problems.append(f'[id 중복] {f.stem} 에 id="{k}" 가 {v}곳 있다 — 앵커가 겹친다')
+        for mh in re.finditer(r"<h2([^>]*)>(.*?)</h2>", nos, re.S):
+            head, inner = mh.group(1), mh.group(2)
+            mid = re.search(r'id="(s[0-9a-z]+)"', head)
+            sp = re.match(r'\s*<span class="no?">\s*(\d+)\s*-?\s*([a-z]?)\s*</span>', inner)
+            if not (mid and sp):
+                continue
+            want = "s" + sp.group(1) + sp.group(2)
+            if mid.group(1) != want:
+                problems.append(
+                    f'[id 라벨] {f.stem} 의 h2 "{strip_tags(inner)[:24]}" 는 '
+                    f'id="{mid.group(1)}" 인데 라벨은 {want[1:]} 다'
                 )
 
     # ── 3. 고아

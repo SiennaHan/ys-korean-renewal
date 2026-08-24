@@ -228,7 +228,7 @@
 </table></div>
 <p class="qa">이 <b>312문항 + 60세트</b>가 1차 출시의 콘텐츠 정의다. 여기 걸리는 실제 소요를 측정해 2~8급(약 9배)을 환산하는 것이 <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a>의 리스크 대응(콘텐츠 인력 산정)이다.</p>
 
-<h2 id="s1"><span class="no">6</span>문항 스키마 — 유지해야 할 강점</h2>
+<h2 id="s6"><span class="no">6</span>문항 스키마 — 유지해야 할 강점</h2>
 <p class="lead">전면 재설계를 제안하지 않는다. 뼈대가 이미 옳고 아래 네 가지는 <b>그대로 가는 게 맞다</b>.</p>
 <ul>
   <li><b>활동별 시트 분리</b> — 저작 단위와 시트가 1:1이라 작업 분담·진척 관리가 쉽다. 활동마다 필드가 다른 걸 억지로 한 시트에 합치는 설계보다 낫다.</li>
@@ -237,7 +237,7 @@
   <li><b>체인지로그 방법론</b> — 신구판 페이지 단위 대조, "첫 등장 과" 규칙, <b>보류 상태 관리</b>. 특히 듣기에서 "정답이 뒤집히는 변경은 새 음원 필수 → 보류"로 판단한 건 정확하다. 문항만 고치면 음성과 어긋나 오답 처리되는 사고가 난다.</li>
 </ul>
 
-<h2 id="s2"><span class="no">7</span>스키마 내부 정합성 — 실측 결과</h2>
+<h2 id="s7"><span class="no">7</span>스키마 내부 정합성 — 실측 결과</h2>
 <p class="lead">이 콘텐츠 엑셀이 <b>자체 완결된 단일 원본</b>이다(외부 마스터에 의존하지 않는다). 그래서 볼 것은 시트 사이의 정합성인데, 1급으로 실제 대조해 보니 <b>어휘는 건전하고 문법만 문제</b>였다.</p>
 <div class="callout good">
   <div class="t">어휘 — 참조가 실질적으로 건전하다</div>
@@ -255,7 +255,7 @@
   <p>설명문 자체는 학습자에게 보여줄 값어치가 있으므로 없애자는 게 아니다. 문제는 <b>이것만으로는 "-을까요/-ㄹ까요를 다루는 문항 전부"를 뽑을 수 없다</b>는 것이다. 그래서 ① 과별 문법 커버리지 점검이 불가능하고 ② 복습 큐가 "이 문법이 약하다"로 묶어줄 수 없다.</p>
 </div>
 
-<h2 id="s3"><span class="no">8</span>확정 결정 대비 빠진 것 — 6가지</h2>
+<h2 id="s8"><span class="no">8</span>확정 결정 대비 빠진 것 — 6가지</h2>
 <div class="tablewrap"><table>
   <tr><th>#</th><th>빠진 것</th><th>왜 필요한가</th><th>등급</th></tr>
   <tr><td>①</td><td><b>문법 태그 통제 어휘</b><br><code>grammar_tag</code> + 문법 목록 시트</td><td>§2에서 확인한 대로 <code>grammar_focus</code>는 설명문이라 조회에 못 쓴다. <b>이 파일 안에 문법 목록 시트</b>(코드·대표형·분류·도입 과)를 만들고 문항이 <code>grammar_tag</code>로 참조하면, 커버리지 점검과 "약한 문법" 묶음이 가능해진다. 설명문 컬럼은 <b>그대로 유지</b>(학습자 노출용) → <b>§7에서 1급 초안 작성 완료</b></td><td><span class="pill keep">확정·착수</span></td></tr>
@@ -275,7 +275,7 @@
   <tr><td><code>grammar_focus</code>와 <code>grammar_focus_수정</code>이 나란히 있음</td><td>작업용 임시 컬럼이 데이터 컬럼과 섞임 — 어느 쪽이 정본인지 코드가 알 수 없다</td><td>정본 하나로 확정 + 이력은 <code>change_note</code>로</td></tr>
 </table></div>
 
-<h2 id="s4"><span class="no">9</span>공통 컬럼 규약</h2>
+<h2 id="s9"><span class="no">9</span>공통 컬럼 규약</h2>
 <p class="lead">모든 문항 시트가 <b>같은 앞머리 컬럼</b>을 갖고 그 뒤에 활동별 고유 컬럼이 붙는 형태. 기존 컬럼은 거의 그대로 두고 <b>앞뒤로 더하는</b> 방식이라 1급 작업이 살아남는다.</p>
 <pre>[공통 앞머리]
 item_id        Y1-04-WQ-001      전역 유일. {급}-{과}-{활동코드}-{순번}
@@ -329,7 +329,7 @@ updated_at / updated_by</pre>
   <tr><td><code>difficulty</code> <span class="pill opt">선택</span></td><td>같은 과 안에서 쉬운 것부터 출제하는 순서 제어. 없으면 <code>id</code> 순 출제</td></tr>
 </table></div>
 
-<h2 id="s5"><span class="no">10</span>1급 작업은 버리지 않는다 — 이행 방법</h2>
+<h2 id="s10"><span class="no">10</span>1급 작업은 버리지 않는다 — 이행 방법</h2>
 <div class="tablewrap"><table>
   <tr><th>작업</th><th>방법</th><th>사람 손</th></tr>
   <tr><td><code>item_id</code> 부여</td><td>기존 <code>(시트, book_id, chapter, id)</code>로 코드 생성 — 스크립트</td><td>없음</td></tr>
@@ -343,7 +343,7 @@ updated_at / updated_by</pre>
 </table></div>
 <p class="qa">즉 <b>재작업이 아니라 컬럼 추가 + 일괄 변환</b>이다. 손이 실제로 가는 건 <b>문법 대표형 확정</b>과 지시문 번역 확인뿐이다.</p>
 
-<h2 id="s7"><span class="no">11</span>문법 태그 1급 초안 — 작업 결과</h2>
+<h2 id="s11"><span class="no">11</span>문법 태그 1급 초안 — 작업 결과</h2>
 <p class="lead">확정된 원칙으로 <code>n4_blank_question</code> 1급 70행을 실제로 태깅했다. 산출물: <code>문법태그_1급_초안_v1.xlsx</code>(문법목록 · 태그 부여된 n4 · 안내 3시트).</p>
 <div class="callout good">
   <div class="t">결과 — 태그 22개로 70행 전부 분류, 미해결 0건</div>
@@ -376,7 +376,7 @@ updated_at / updated_by</pre>
 </ul>
 
 <p class="qa" style="margin-top:44px">관련: <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">활동 라인업 v2</a> · <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a> · <a href="https://claude.ai/code/artifact/1210a6f9-f264-4da0-82fe-38f12c729af2">리뉴얼 기획서 v0.2.1</a></p>
-<h2 id="s6"><span class="no">12</span>확정 기록과 다음 단계</h2>
+<h2 id="s12"><span class="no">12</span>확정 기록과 다음 단계</h2>
 <div class="tablewrap"><table>
   <tr><th>결정 항목</th><th>확정 내용</th></tr>
   <tr><td>빈칸 채우기의 말하기</td><td><b>제외</b> — 이름만 "문법 연습"으로 개칭</td></tr>
@@ -396,7 +396,7 @@ updated_at / updated_by</pre>
 </div>
 <p class="qa">③이 끝나면 G1이 닫히고 <b>1급 저작 착수</b> + G2(개발 착수 게이트)로 이동한다. VocaShot 전환에 따른 작은 결정 3개(§4-b)는 개발 명세 단계에서 확정하면 되며, 콘텐츠 저작을 막지 않는다.</p>
 
-<h2 id="s6"><span class="no">13</span>권하는 순서</h2>
+<h2 id="s13"><span class="no">13</span>권하는 순서</h2>
 <ol>
   <li><b>문법 목록 시트를 만든다</b> — 1급 <code>grammar_focus</code> 67개에서 대표형을 뽑아 확정. 이게 문항 태그의 기준이 된다.</li>
   <li><b>공통 컬럼 규약 확정</b> — §4를 그대로 쓸지, 덜어낼지 판단.</li>
@@ -409,7 +409,7 @@ updated_at / updated_by</pre>
   <p>① <b>문법 대표형 굵기</b> — <span class="pill keep">확정</span> 이형태는 한 태그, 받침 조건은 설명문이 담당. <b>§7에서 원칙 2(동형이의 분리)가 추가로 필요해져 함께 확정</b> &nbsp;② 공통 컬럼 중 <b>덜어낼 것</b>이 있는지(<code>word_ref</code>는 권장 등급이라 미룰 수 있음) &nbsp;③ <code>distractor_type</code> — <span class="pill keep">해소</span> 자동 판정되므로 1급부터 적용</p>
 </div>
 
-<h2 id="s7"><span class="no">14</span>사후 감사 — G1이 놓친 것</h2>
+<h2 id="s14"><span class="no">14</span>사후 감사 — G1이 놓친 것</h2>
 <p class="lead">G2 스펙을 시나리오로 두들겨 6개 구멍을 찾은 뒤, 같은 방식으로 G1 산출물을 데이터로 재검증했다. <b>5건이 나왔고 그중 2건은 판정의 전제 자체가 틀렸다.</b> 통과한 항목도 함께 기록한다.</p>
 
 <h3>A. 판정 전제를 확인하지 않은 것 — 2건 (1건 오류 확정 · 1건 검증 후 유지)</h3>
