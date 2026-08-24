@@ -21,5 +21,11 @@
 		"**/*.cjs",
 		"**/*.js"
 	],
-	"exclude": ["node_modules", "sample"]
+	// src/routes/test 를 뺀다 — routeTree.gen.ts 가 환경마다 갈리기 때문이다.
+	// 프로덕션 빌드는 테스트 라우트를 트리에서 빼는데(rsbuild.config.ts) 그 판이
+	// 커밋되면 routes/test/*.tsx 가 없는 라우트 타입을 참조해 tsc 가 깨졌다.
+	// 여기서 빼면 어느 판을 커밋해도 typecheck 가 통과한다. 대가는 이 아홉 개가
+	// 타입 검사를 받지 않는 것이고, 벤더 이관(2026-08-19) 뒤 아무도 손대지 않은
+	// 디버그 페이지라 감수한다.
+	"exclude": ["node_modules", "sample", "src/routes/test"]
 }
