@@ -5,18 +5,15 @@ import {
 } from "@tanstack/react-router";
 
 import { useSharedAudio } from "@/components/audio/audio-provider";
-import { env } from "@/config/env";
-import { chapters } from "@/shared/data/chapter";
-import { dialogs } from "@/shared/data/dialog";
-import { dialog_keywords } from "@/shared/data/dialog_keyword";
-import { dialog_words } from "@/shared/data/dialog_word";
-import { modules } from "@/shared/data/module";
-import { units } from "@/shared/data/unit";
-import type { ModuleType } from "@/types/book.types";
-import { X } from "lucide-react";
-import { useState } from "react";
 import MissionDialog from "@/components/learn/mission-dialog";
 import MissionReport from "@/components/learn/mission-report";
+import { env } from "@/config/env";
+import {
+	findMissionChat,
+	parseMissionDetail,
+} from "@/shared/data/mission-chat";
+import { X } from "lucide-react";
+import { useState } from "react";
 import { type LearnSearch, parseLearnSearch } from "./-search";
 
 export const Route = createFileRoute("/learn/mission-chat")({
@@ -35,20 +32,11 @@ const listItemBase =
 function RouteComponent() {
 	/*
 	 * 구 경로 /book/chapter/unit/mission_chat/$code 에서 옮겨 왔다 (명세 §4).
-	 * URL 에서 콘텐츠 코드를 걷어내고 급·과만 받는다 — 모듈은 여기서 찾는다.
-	 * 한 과에 mission_chat 모듈은 하나뿐이다(실측 117개 · 과마다 하나).
+	 * URL 에서 콘텐츠 코드를 걷어내고 급·과만 받는다. 한 과에 미션대화는
+	 * 하나뿐이라(실측 117개 · 과마다 하나) 원장을 (급, 과)로 바로 찾는다 —
+	 * 구 앱처럼 모듈→유닛→챕터를 거쳐 코드를 되짚을 필요가 없다.
 	 */
 	const { level, lesson } = Route.useSearch();
-	const code =
-		modules.find((m) => {
-			const unit = units.find((u) => u.id === m.unit_id);
-			const chapter = chapters.find((c) => c.id === unit?.chapter_id);
-			return (
-				m.scene_type === "mission_chat" &&
-				chapter?.book_id === level &&
-				chapter?.seq === lesson
-			);
-		})?.code ?? "";
 	const navigate = useNavigate();
 	const router = useRouter();
 	/*
@@ -60,58 +48,46 @@ function RouteComponent() {
 	);
 	const { unlock } = useSharedAudio();
 
-	const [isShowMore, setIsShowMore] = useState(false);
+	const dialog = findMissionChat(level, lesson);
+	const keywordList = parseMissionDetail(dialog?.mission_detail ?? "");
+	const scenarioImgUrl = `${env.RES_URL_ROOT}/${dialog?.content_img}`;
 
-	const module: ModuleType | undefined = modules.find(
-		(item) => item.code === code,
-	)
-	const unit = units.find((item) => item.id === module?.unit_id);
-	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
-
-	const dialog = dialogs.find((item) => item.module_code === code);
-	const keywordList = dialog_keywords.filter(
-		(item) => item.dialog_id === dialog?.id,
-	)
-	const wordList = dialog_words.filter((item) => item.dialog_id === dialog?.id);
-	const scenarioImgUrl = env.RES_URL_ROOT + "/" + dialog?.content_img;
-
-	// const videoList = dialog_videos.filter(item => item.dialog_id === dialog?.id);
-	// const videoListToShow = isShowMore ? videoList : videoList.slice(0, 3);
-	// const [videoId, setVideoId] = useState<string | undefined>(undefined);
-	// const [isOpenYoutube, setIsOpenYoutube] = useState(false);
-
-	const showMore = () => {
-		setIsShowMore(!isShowMore);
-	}
+	/*
+	 * ⚠️ dialogId 는 구 체계(legacy_id, 예: "C4")를 그대로 쓴다. 실제 AI 대화를
+	 * 돌리는 백엔드(`/chat/{dialogId}/...`)는 아직 이 원장이 아니라 자기 DB
+	 * (ko_chat_dialog)를 보고, 그 DB 의 id 가 이 값으로 찾아진다. 원장 쪽
+	 * item_id(MC-1-04-001)로 바꾸면 브리핑은 맞아도 실제 대화가 안 열린다.
+	 */
+	const dialogId = dialog?.legacy_id ?? "";
 
 	const goChat = async () => {
 		await unlock();
 		setPhase("chat");
-	}
+	};
 
 	const goBack = () => {
 		router.history.back();
-	}
+	};
 
 	// 대화·리포트 단계 — 라우트가 아니라 이 화면이 띄운다 (명세 §4)
 	if (phase === "chat" && dialog) {
 		return (
 			<MissionDialog
-				dialogId={dialog.id}
+				dialogId={dialogId}
 				onClose={() => navigate({ to: "/main/textbook" })}
 				onReport={() => setPhase("report")}
 			/>
-		)
+		);
 	}
 
 	if (phase === "report" && dialog) {
 		return (
 			<MissionReport
-				dialogId={dialog.id}
+				dialogId={dialogId}
 				onRetry={() => setPhase("chat")}
 				onExit={() => navigate({ to: "/main/textbook" })}
 			/>
-		)
+		);
 	}
 
 	return (
@@ -130,7 +106,7 @@ function RouteComponent() {
 							{dialog?.chapter}
 							{"과"}
 						</div>
-						<div className="w-[48px]"></div>
+						<div className="w-[48px]" />
 					</div>
 				</div>
 			</div>
@@ -138,10 +114,10 @@ function RouteComponent() {
 				<div className="">
 					<div className="w-full bg-white pt-[14px] pr-[15px] pb-[20px] pl-[15px]">
 						<div className="font-semibold text-[#383A3F] text-[20px]">
-							{dialog?.title}
+							{"상황에 맞는 대화를 연습하세요."}
 						</div>
 						<div className="text-[#7F848D] text-[14px]">
-							{dialog?.title_eng}
+							{"Practice with AI using the scenario."}
 						</div>
 					</div>
 
@@ -155,10 +131,10 @@ function RouteComponent() {
 							</div>
 							<div className="justify-center rounded-[6px] bg-[#F9FAFC] p-[16px]">
 								<div className="text-center text-[14px]">
-									{dialog?.scenario}
+									{dialog?.situation_ko}
 								</div>
 								<div className="text-center text-[#999] text-[14px]">
-									{dialog?.scenario_eng}
+									{dialog?.situation_en}
 								</div>
 							</div>
 						</div>
@@ -171,33 +147,16 @@ function RouteComponent() {
 						<div className="mt-[8px] flex w-full flex-col gap-2 rounded-[10px] bg-[#fff] p-[12px]">
 							<div className="grid gap-2">
 								{keywordList.map((item) => (
-									<div key={item.id} className="flex items-center">
+									<div key={item.label} className="flex items-center">
 										<div className="w-[100px] rounded-[5px] bg-[#DBEDFF] py-[4px] text-center font-bold text-[#0073E6] text-[14px]">
-											{item.keyword}
+											{item.label}
 										</div>
 										<div className="ml-[7px] flex-1 text-[#4B505A] text-[14px]">
-											{item.content}
+											{item.instruction}
 										</div>
 									</div>
 								))}
 							</div>
-							{wordList.length > 0 && (
-								<div className="scrollbar-hide flex gap-2 overflow-x-auto border-[#F6F7F8] border-t-1 pt-[12px]">
-									{wordList.map((item) => (
-										<div
-											key={item.id}
-											className="min-w-[100px] rounded-[6px] bg-[#F6F7F8] px-[8px] py-[8px]"
-										>
-											<div className="whitespace-nowrap text-center font-bold text-[#383A3F] text-[14px]">
-												{item.word}
-											</div>
-											<div className="whitespace-nowrap text-center font-semibold text-[#979DA8] text-[12px]">
-												{item.word_eng}
-											</div>
-										</div>
-									))}
-								</div>
-							)}
 						</div>
 					</div>
 				</div>
@@ -209,5 +168,5 @@ function RouteComponent() {
 				</div>
 			</div>
 		</div>
-	)
+	);
 }
