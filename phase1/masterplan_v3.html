@@ -184,7 +184,7 @@
   <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). 남은 큰 물음은 <b>구독인가 급별 구매인가</b></td></tr>
   <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>v29</b>. 앱에 반영된 문항 7,305개(어휘 2,890 · 어휘퀴즈 1,146 · 역할극 993턴 · 듣고답 679 · 빈칸 836 · 읽고답 383 · 듣기지문 378)<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비) — 앱 JSON 에는 아직 안 들어갔다(생성기 배선 대기). <span class="pill now">검수 대기</span> 자모 529 는 그대로 남았다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b)</td></tr>
   <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업 · CSS 규칙 1,229개. <b>목업이 시각 정본</b>이고 Figma 를 대체했다</td></tr>
-  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 <b>24개 이식</b>(handoff §02 의 표 합계) · 활동 컴포넌트 22종으로 짜였다 · 목업 대조 <b>27화면 일치</b>(<span class="file">pnpm parity:activity</span>)</td></tr>
+  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 <b>24개 이식</b>(handoff §02 의 표 합계) · 활동 컴포넌트 22종으로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
   <tr><td>개발 — 서버</td><td><span class="pill risk">막힘</span></td><td>DB 2종 · API 7종 미착수. <b>이것이 지금 임계 경로다</b>(§8) — 화면은 다 됐고 상태만 붙이면 된다</td></tr>
   <tr><td>B2C·결제</td><td><span class="pill now">설계 완료</span></td><td>경계·권한 판정·신설 DB·API 는 정해졌다(<span class="file">access_and_pricing_v1</span>). 구현 미착수</td></tr>
 </table></div>
@@ -508,8 +508,8 @@
    <b>이 절은 2026-08-19 실측이었고 그 뒤 뒤집혔다</b> — 그때는 앱 소스에 이 클래스가
    하나도 없었다. 2026-08-21 다시 세면 <code>screens_uiux</code> 의 클래스 283개 중
    <b>224개(79%)</b>가 앱 소스에 있다.
-   기계가 판정하는 것은 <code>pnpm parity:activity</code> 뿐이고 <b>47화면이 일치한다</b>
-   — 활동 22 + 내비 5 + VocaShot 3 + 게임 17. <b>목업 캡처 전부다.</b></p>
+   기계가 판정하는 것은 <code>pnpm parity:activity</code> 뿐이고 <b>목업 캡처 전부가
+   일치한다</b>. 지금 수와 갈래별 분해는 <code>README.md</code> 에 있다(숫자의 주인).</p>
 <p><b>캡처 스무 개가 다 들어왔다 (2026-08-24)</b> — 커밋 <code>d1a7cfb</code> 가 답을
    갖고 있었다. 캡처 47개는 <b>목업의 빌더 함수를 직접 불러 뜬 것</b>이고("stop
    hand-writing markup") 활동 22 + 내비 5 + VocaShot 3 + 게임 17 이다.
@@ -666,7 +666,8 @@ footer / dock   primary "다음" | "결과 보기"</pre>
   <p class="qa">이 절이 답하는 것은 <b>"어느 문서가 무엇에 답하나"</b> 뿐이다 — 아래 역할별 목록.</p>
 </div>
 
-<p>문서가 12개다. <b>합치기는 끝났다</b>(2026-08-21, 26 → 12) — 무엇을 어떻게 했는지는 아래 표다.</p>
+<p><b>합치기는 끝났다</b>(2026-08-21, 26 → 12) — 무엇을 어떻게 했는지는 아래 표다.
+   지금 문서 수는 <code>phase1/INDEX.md</code> 가 쥔다(숫자의 주인).</p>
 
 <h3>합치기 — 무엇을 합쳤고 무엇을 안 합쳤나</h3>
 <p>처음엔 "합칠 수 없다" 고 적었는데 <b>뭉뚱그린 판단이었다.</b> 축을 나눠 재 보니 갈렸다.
@@ -723,7 +724,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <b>다만 자기 안의 § 를 안 고치면 조용히 어긋난다</b> — 실제로 그렇게 12곳이 남았던 적이 있고,
 지금은 <span class="file">check_docs</span> 의 <b>[자기 절]</b> 검사가 잡는다.</p>
 
-<p class="qa">옛 판은 <span class="file">phase1/_superseded/</span> 로 옮겼다(43개).
+<p class="qa">옛 판은 <span class="file">phase1/_superseded/</span> 로 옮겼다 — 목록과 개수는 <code>phase1/INDEX.md</code> 에 있다.
 그 폴더의 <span class="file">README.txt</span> 가 무엇이 무엇을 대체했는지 적는다.
 이름은 한 갈래가 아니다 — <span class="file">_v1</span>(초안) · <span class="file">_uiux</span>(확정 디자인) · <span class="file">_v3</span>(판을 올린 것)이 섞여 있다. 무엇이 정본인지는 이름이 아니라 <span class="file">phase1/INDEX.md</span> 가 정한다.</p>
 
@@ -754,14 +755,14 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <p>색인이 답하는 것 — 시각 정본 목업 둘 · <b>셸 명세의 세 층</b>(행동 · 구조 · 값이
 <span class="file">shell_spec_v1</span> 한 문서 안에 있다) · 화면별 명세 · 실측과 근거 ·
 <b>개발자에게 넘길 묶음 셋</b>.
-<span class="file">python3 phase1/check_docs.py</span> 가 정본 12개가 모두 색인에
+<span class="file">python3 phase1/check_docs.py</span> 가 정본이 모두 색인에
 있는지 검사하므로, 문서를 만들고 색인에 안 넣으면 통과하지 않는다.</p>
 
 
 <h2 id="s15"><span class="n">15</span>화면 — 다 됐다</h2>
 <p>목업이 있는 화면은 전부 이식했다. 사람 눈이 아니라 스크립트가 판정한다 —
 <span class="file">app</span> 에서 <b>pnpm parity:activity</b> 를 돌리면 컴포넌트를
-정적 HTML 로 그려 캡처한 목업과 구조를 비교하고, <b>47개가 일치</b>한다.
+정적 HTML 로 그려 캡처한 목업과 구조를 비교하고, <b>전부 일치</b>한다.
 봐주는 차이는 실행할 때마다 같이 찍힌다.</p>
 
 <div class="tablewrap">
@@ -782,7 +783,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <div class="callout"><div class="t">시각 정본은 목업이다</div>
   <p><b>구현이 목업과 다르면 목업이 기준이다.</b> 이 규칙이 이 저장소의 시각 판단을
   전부 지배한다 — 판단이 갈릴 때 코드가 아니라 <span class="file">app/src/mockups/</span> 를 본다.
-  <span class="file">pnpm parity:activity</span> 가 47개 화면을 자동으로 대조한다.</p>
+  <span class="file">pnpm parity:activity</span> 가 <b>목업 캡처 전부</b>를 자동으로 대조한다.</p>
   <p class="qa">원래 <span class="file">_superseded/handoff_v1</span> §03 에 있던 규칙을
   여기로 옮겼다. 다른 문서가 그 옛 판을 인용하고 있어서 옮길 수 없던 것을 끊었다.</p>
 </div>

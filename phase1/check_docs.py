@@ -23,6 +23,7 @@
   [고아]         아무 문서도, 문(README·BLOCKERS·CLAUDE)도 가리키지 않는 문서
   [숫자 주장]    문서가 적어 놓은 수를 실제로 세어 보고 다른 경우
   [색인]         정본이 phase1/INDEX.md 에 빠졌거나 한 문서가 두 줄인 경우
+  [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
   [목업 쌍둥이]  phase1/captured/ 와 app/src/mockups/ 가 갈라진 경우
 
 [옛 경로] 는 인계 메모(*.txt)까지 본다.
@@ -204,6 +205,26 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     memos = len(list(HERE.glob("*.txt")))
     sec_total = sum(t.count("§") for n, t in text.items() if n in live)
 
+    # 사실마다 **주인 문서 하나**를 정해 둔다. 주인 밖에서 그 수를 말하면
+    # [사실 중복] 이 잡는다. 왜 필요한가 — 2026-08-24 에 화면 수를 27 → 47 로
+    # 늘렸을 때 같은 숫자가 **일곱 문서**에 적혀 있어서 다섯 곳이 한꺼번에 낡았다.
+    # 문서 개수가 문제가 아니라 한 사실이 여러 곳에 적힌 것이 문제였다.
+    #
+    # 주인을 고르는 기준은 "그 수로 무언가를 판단하는 곳". 화면 수는 인계에서
+    # "이것이 통과한다" 를 말하는 README, 문서·폐기본·메모 수는 목록을 쥔 INDEX 다.
+    # 나머지 문서는 숫자를 적지 말고 질적으로 쓴다("목업 캡처 전부가 일치한다").
+    OWNER = {
+        "목업 대조 화면 수": "(문) README.md",
+        "phase1 정본 문서 수": "(문) INDEX.md",
+        "_superseded 문서 수": "(문) INDEX.md",
+        "인계 메모 수": "(문) INDEX.md",
+        # 아래 셋은 지금 우연히 한 곳뿐이다. 우연을 규칙으로 굳혀 둔다 —
+        # 나중에 누가 다른 문서에 또 적으면 그때 걸린다.
+        "i18n 로케일 수": "(문) BLOCKERS.md",
+        "VocaShot 문항 은행": "games_spec_v1",
+        "n1_word_quiz 행": "games_spec_v1",
+    }
+
     # (이름, 실제, 문서가 그 수를 말할 때 쓰는 문구들)
     specs: list[tuple[str, int, list[str]]] = [
         ("목업 대조 화면 수", sum(parity.values()), [
@@ -212,6 +233,13 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             r"parity:activity\s*가\s*(\d+)개\s*화면",
             r"목업\s*대조에?\s*들어갔다\s*—\s*(\d+)화면",
             r"구조를\s*비교하고,?\s*(\d+)개가\s*일치",
+            # 아래 셋은 2026-08-24 에 빠져 있던 것을 채웠다. 그날 "31 → 47" 을
+            # 검사가 다섯 곳만 잡았는데 games_spec 의 "parity:activity 31화면" 은
+            # 문구가 없어서 통과했다 — 사람이 grep 해서 찾았다.
+            # **패턴이 없으면 검사는 조용히 통과한다.** 문구를 새로 쓰면 여기 추가해라.
+            r"parity:activity\s*(\d+)화면",
+            r"(\d+)화면이\s*일치",
+            r"목업\s*대조\s*(\d+)화면",
         ]),
         ("phase1 정본 문서 수", len(live), [
             r"문서가\s*(\d+)개",
@@ -261,6 +289,25 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
                             f"[숫자 주장] {src} → {label} 이 {floor} 을 넘는다고 적었는데 "
                             f"실제는 {real} 다"
                         )
+
+    # [사실 중복] — 주인 밖에서 그 수를 말하는 곳. 값이 맞아도 걸린다
+    for label, _real, pats in specs:
+        keeper = OWNER.get(label)
+        if not keeper:
+            continue
+        for src, body in text.items():
+            if src == keeper or src.startswith("(메모) "):
+                continue
+            flat = re.sub(r"\s+", " ", body)
+            for pat in pats:
+                m = re.search(pat, flat)
+                if m:
+                    ctx = flat[max(0, m.start() - 32):m.end() + 14].strip()
+                    out.append(
+                        f"[사실 중복] {src} 가 {label} 을 적었다 — 그 수의 주인은 {keeper} 다\n"
+                        f"           숫자를 빼고 질적으로 쓰거나 주인을 가리켜라 …{ctx}…"
+                    )
+                    break
 
     for label, real, pats in specs:
         if real == 0:
