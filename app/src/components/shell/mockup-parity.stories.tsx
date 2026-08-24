@@ -36,6 +36,9 @@ function Frame({ screen }: { screen: MockupScreen }) {
 
 	// 캡처한 마크업에는 framer-motion 이 페이드 도중에 굳혀 놓은 inline opacity:0 이
 	// 남아 있다. 목업의 render() 도 같은 보정을 한다 — 없으면 화면이 통째로 비어 보인다.
+	// screen.name 은 재실행 방아쇠다 — 스토리를 바꾸면 새 마크업에 다시 보정해야 한다.
+	// 지우면 다음 화면이 opacity:0 그대로 남아 통째로 비어 보인다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 화면이 바뀔 때 다시 보정하려고 넣은 방아쇠다
 	useEffect(() => {
 		const root = ref.current;
 		if (!root) return;

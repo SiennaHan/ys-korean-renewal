@@ -309,6 +309,8 @@ function RouteComponent() {
 	};
 
 	/** 카드 전환 시 재생 중단 */
+	// currentIndex 가 방아쇠다 — 지우면 카드를 넘겨도 앞 카드 소리가 계속 난다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 카드가 바뀔 때 소리를 끊으려고 넣은 방아쇠다
 	useEffect(() => {
 		sharedAudio.stop();
 		setIsAudioPlaying(false);

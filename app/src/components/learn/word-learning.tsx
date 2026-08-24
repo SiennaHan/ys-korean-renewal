@@ -107,6 +107,9 @@ export default function WordLearning({
 	}, [sharedAudio]);
 
 	/** 페이지 전환 시 자동 이동 타이머 초기화 */
+	// currentPage 가 방아쇠다 — 몸통은 ref 만 읽지만 지우면 페이지를 넘겨도
+	// 타이머가 안 지워져 이전 페이지의 자동 이동이 그대로 터진다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 페이지가 바뀔 때 타이머를 지우려고 넣은 방아쇠다
 	useEffect(() => {
 		if (autoAdvanceRef.current) {
 			clearTimeout(autoAdvanceRef.current);

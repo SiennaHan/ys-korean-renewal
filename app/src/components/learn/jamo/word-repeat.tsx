@@ -189,6 +189,10 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 		}, 100);
 	}, []);
 
+	// problemIndex 가 바뀔 때 그 낱말을 고르는 방아쇠다. selectWord 는 매 렌더 새로
+	// 만들어지는 함수이고 안에서 setState 와 setTimeout 재생을 부르므로, 넣으면
+	// 매 렌더마다 다시 골라 소리가 겹치고 무한 렌더가 된다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 문항 전환 방아쇠 — 위 주석 참고
 	useEffect(() => {
 		selectWord(problemIndex);
 	}, [problemIndex]);

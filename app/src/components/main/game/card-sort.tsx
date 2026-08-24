@@ -282,6 +282,7 @@ export default function CardSort() {
 
 	// 판이 끝나면 점수를 보낸다. 서버가 upsert 에서 max() 로 최고 점수를 유지하므로
 	// 클라이언트에서 비교하지 않는다. stage_id 규칙은 조사 스나이퍼와 같다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 판 하나에 한 번만 보내야 하므로 gameState 전이만 본다. grade·lesson·stats.score 는 result 로 넘어간 뒤 바뀌지 않으니 전이 시점의 값이 맞고, 넣으면 판마다 저장이 여러 번 날아갈 수 있다
 	useEffect(() => {
 		if (gameState !== "result") return;
 		const stageId = `${selectedGrade}_${selectedLesson}과`;
@@ -342,6 +343,7 @@ export default function CardSort() {
 	}, [vocab, selectedGrade, selectedLesson]);
 
 	// ─── 카드 선택 처리 ───────────────────────────────────
+	// biome-ignore lint/correctness/useExhaustiveDependencies: useSoundEffects() 는 안에 memo 가 없어 매 렌더마다 새 객체·새 함수를 돌려준다. sound.* 를 넣으면 handleAnswer 가 매 렌더 새로 만들어져 useCallback 이 무의미해진다. 이 호출들은 소리만 내고 게임 상태를 읽지 않으므로 클로저가 낡아도 판정이 달라지지 않는다
 	const handleAnswer = useCallback(
 		(chosenCategory: string) => {
 			if (gameState !== "playing" || cardIndex >= deck.length) return;

@@ -1488,14 +1488,24 @@ const HangulTracingCanvas = forwardRef<HangulTracingCanvasHandle, Props>(
 			});
 		};
 
+		/*
+		 * 아래 넷은 같은 사정이다. drawAllGuides·setupChallengesForChar 는 컴포넌트
+		 * 안에서 **매 렌더 새로 만들어지는** 함수이고, 이 훅들은 몸통에서 setState
+		 * (setActiveChallenge · setUserPath · setStatusText)를 부른다. 의존성에 넣으면
+		 * 매 렌더마다 다시 돌고 다시 setState 하므로 **무한 렌더**가 된다.
+		 * 방아쇠는 지금 적힌 것이 맞다 — 획이 바뀌면 다시 그리고, 글자가 바뀌면 다시 세운다.
+		 */
+		// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — 넣으면 무한 렌더
 		useEffect(() => {
 			drawAllGuides();
 		}, [challenges, currentChallengeIndex]);
 
+		// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — 글자가 바뀔 때만 다시 세운다
 		useEffect(() => {
 			setupChallengesForChar(char);
 		}, [char]);
 
+		// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — setupChallengesForChar 는 매 렌더 새 함수다
 		const eraseAll = useCallback(() => {
 			setIsDrawing(false);
 			setActiveChallenge(null);
@@ -1503,6 +1513,7 @@ const HangulTracingCanvas = forwardRef<HangulTracingCanvasHandle, Props>(
 			setupChallengesForChar(char);
 		}, [char]);
 
+		// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — drawAllGuides 는 매 렌더 새 함수다
 		const undo = useCallback(() => {
 			setIsDrawing(false);
 			setActiveChallenge(null);

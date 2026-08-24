@@ -237,6 +237,7 @@ const ParticleSniper: React.FC = () => {
 	}, []);
 
 	// ── Timer ──────────────────────────────────────────────────────────
+	// biome-ignore lint/correctness/useExhaustiveDependencies: currentQuestionIndex 는 문항이 바뀔 때 타이머를 100 으로 되돌리고 다시 걸려고 넣은 재실행 방아쇠다(원래 eslint-disable 이 재우던 것). 몸통은 읽지 않지만 지우면 문항이 넘어가도 이전 문항의 타이머가 그대로 이어진다
 	useEffect(() => {
 		if (gameState !== "playing") return;
 		setTimerProgress(100);
@@ -254,7 +255,7 @@ const ParticleSniper: React.FC = () => {
 		return () => {
 			if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
 		};
-	}, [gameState, currentQuestionIndex]); // eslint-disable-line
+	}, [gameState, currentQuestionIndex]);
 
 	// ── Scanline ───────────────────────────────────────────────────────
 	useEffect(() => {
@@ -270,12 +271,19 @@ const ParticleSniper: React.FC = () => {
 	}, [gameState]);
 
 	// ── Flash / verdict timeouts ───────────────────────────────────────
+	/* verdictKey 는 이 두 효과의 방아쇠로만 쓰이는 카운터다(다른 데서 읽지 않는다).
+	   MISS 가 연달아 나면 setVerdict("MISS") · setFlashColor("red") 가 같은 값을
+	   다시 넣어 상태가 안 바뀌고 효과도 다시 돌지 않는다 — 그러면 이미 걸린
+	   타임아웃이 그대로 남아 두 번째 MISS 의 표시가 일찍 사라진다. 그 재장전을
+	   위해 넣은 의존성이니 몸통이 읽지 않아도 지우면 안 된다. */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: verdictKey 는 같은 값이 연달아 들어올 때 타임아웃을 다시 걸기 위한 방아쇠다 — 위 주석 참고
 	useEffect(() => {
 		if (!flashColor) return;
 		const t = setTimeout(() => setFlashColor(null), 300);
 		return () => clearTimeout(t);
 	}, [flashColor, verdictKey]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: verdictKey 는 같은 값이 연달아 들어올 때 타임아웃을 다시 걸기 위한 방아쇠다 — 위 주석 참고
 	useEffect(() => {
 		if (!verdict) return;
 		const t = setTimeout(() => setVerdict(null), 1000);
@@ -438,11 +446,10 @@ const ParticleSniper: React.FC = () => {
 
 	// 결과 화면에 들어갈 때 한 번만 보낸다. 세 곳에서 result 로 넘어가므로
 	// 각 자리에 넣는 대신 상태 전이를 보고 처리한다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 판 하나에 한 번만 보내야 하므로 gameState 전이만 본다. persistScore 는 매 렌더 새로 만들어지고 안에서 setBestScore 를 부르므로 넣으면 무한 저장 루프가 된다. level·lesson·score 는 result 로 넘어간 뒤 바뀌지 않으니 전이 시점의 값이 맞다
 	useEffect(() => {
 		if (gameState !== "result") return;
 		void persistScore(selectedLevel, selectedLesson, stats.score);
-		// 판 하나에 한 번만 보내야 하므로 gameState 만 본다
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameState]);
 
 	const nextQuestion = () => {

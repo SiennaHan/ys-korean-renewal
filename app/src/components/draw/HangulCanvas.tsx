@@ -63,7 +63,13 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 	 * @param {CanvasEvent} event - 마우스 또는 터치 이벤트 객체
 	 * @returns {Point} 캔버스 상대 좌표
 	 */
-	const getCoordinates = (event: CanvasEvent): Point => {
+	/*
+	 * useCallback([]) 으로 감싼다 — 읽는 것이 canvasRef 하나뿐이라(ref 는 안정하다)
+	 * 의존성이 비어도 낡지 않는다. 이렇게 해 두면 아래 startDrawing·draw 의
+	 * 의존성에 그냥 넣을 수 있다. 감싸지 않으면 매 렌더 새 함수라 넣는 순간
+	 * 두 콜백이 매 렌더마다 새로 만들어진다.
+	 */
+	const getCoordinates = useCallback((event: CanvasEvent): Point => {
 		const canvas = canvasRef.current;
 		if (!canvas) return { x: 0, y: 0 };
 
@@ -88,26 +94,29 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 			x: clientX - rect.left,
 			y: clientY - rect.top,
 		};
-	};
+	}, []);
 
 	/**
 	 * 그리기 시작 (경로 시작)
 	 */
-	const startDrawing = useCallback((event: CanvasEvent): void => {
-		// setSignatureData('');
-		setHasLine(true);
-		const currentPoint = getCoordinates(event);
-		const context = contextRef.current;
+	const startDrawing = useCallback(
+		(event: CanvasEvent): void => {
+			// setSignatureData('');
+			setHasLine(true);
+			const currentPoint = getCoordinates(event);
+			const context = contextRef.current;
 
-		if (context) {
-			context.beginPath();
-			context.moveTo(currentPoint.x, currentPoint.y); // 첫 점으로 이동
+			if (context) {
+				context.beginPath();
+				context.moveTo(currentPoint.x, currentPoint.y); // 첫 점으로 이동
 
-			setIsDrawing(true);
-			// ⭐️ 마지막 기록점을 현재 위치로 초기화합니다.
-			lastPointRef.current = currentPoint;
-		}
-	}, []);
+				setIsDrawing(true);
+				// ⭐️ 마지막 기록점을 현재 위치로 초기화합니다.
+				lastPointRef.current = currentPoint;
+			}
+		},
+		[getCoordinates],
+	);
 
 	/**
 	 * 그리기 중 (선 그리기) - 부드러운 곡선 적용
@@ -140,7 +149,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 				lastPointRef.current = currentPoint;
 			}
 		},
-		[isDrawing],
+		[getCoordinates, isDrawing],
 	);
 
 	/**

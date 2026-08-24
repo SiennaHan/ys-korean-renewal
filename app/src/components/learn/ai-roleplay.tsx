@@ -222,7 +222,7 @@ export default function AiRoleplay({
 				await playModelTurn(nextIdx);
 			}
 		},
-		[turns, sharedAudio, isPracticeTurn],
+		[turns, sharedAudio, isPracticeTurn, bookId, chapterSeq],
 	);
 
 	/** 시나리오 시작 (탭 변경 시에도 호출) — 가변 턴 사전 생성 후 대화 시작 */
@@ -371,7 +371,15 @@ export default function AiRoleplay({
 				setPlayState("practice-turn");
 			}
 		},
-		[currentTurnIdx, turns, playModelTurn, isPracticeTurn, sound],
+		[
+			currentTurnIdx,
+			turns,
+			playModelTurn,
+			isPracticeTurn,
+			sound,
+			bookId,
+			chapterSeq,
+		],
 	);
 
 	/**

@@ -1044,5 +1044,94 @@ SVG `<g>` 라 초점을 못 받는다 — 즉 장소로 들어갈 방법이 마�
 `div`→`button` 전환에서 display·text-align 만 지켰다. 그 화면들을 열 수 있게 되면
 한 번 훑는 것이 좋다.
 
+### useExhaustiveDependencies 93건을 끝냈다 — 137 → 43건 (2026-08-24)
+
+**먼저 알아야 하는 것 — 이 작업은 저장소의 게이트가 지켜 주지 못한다.**
+`pnpm typecheck` · `pnpm parity:activity` · `pnpm build` 는 **훅이 언제 다시 도는지를
+검사하지 않는다.** 목업 대조는 `react-dom/server` 로 그리므로 `useEffect` 가 아예
+실행되지 않는다. 즉 의존성을 잘못 넣어 무한 렌더를 만들어도 셋 다 통과한다.
+그래서 규칙을 하나 세우고 시작했다 — **넣어도 안전하다는 것을 근거로 말할 수 없으면
+넣지 말고, 지금 코드가 왜 맞는지 이유를 적어 재운다.**
+
+#### 재우지 않고 진짜로 해소한 것
+
+| 무엇 | 어떻게 |
+|---|---|
+| `confetti-provider` 의 `randomInRange` | 상태를 안 읽는 순수 헬퍼라 **모듈 스코프로 올렸다** |
+| `content4` 의 `timeStringToSeconds` | 같음 |
+| `HangulCanvas` 의 `getCoordinates` | `canvasRef` 만 읽어 `useCallback([])` 로 안정화하고 두 콜백 의존성에 넣었다 |
+| `circular-progress` 의 `onEnd` | **ref 로 최신 콜백을 잡았다.** 의존성에 넣으면 부모가 리렌더될 때마다 애니메이션이 처음부터 다시 시작한다 |
+| `sign-provider` 의 `handleCheckSign` | `useCallback(…, [])` 로 이미 안정해서 그냥 넣었다(옛 eslint 주석 걷음) |
+
+#### 진짜 버그 둘
+
+**`mission-report.tsx` 가 리포트를 한 번만 받았다.** 의존성이 `[]` 라서 이 컴포넌트를
+다시 쓰면 **앞 대화의 리포트가 그대로 남았다.** `dialogId`·`missions?.length` 는
+원시값이라 넣어도 루프가 날 수 없어 넣었다.
+
+**`seoul-puzzle.tsx` 의 `resolvedPuzzle` 이 `puzzlesMap` 을 안 보고 있었다.**
+하이드레이션(`setCurrentLoc`)이 콘텐츠 로드(`setPuzzlesMap`)보다 먼저 끝나는
+경합에서 메모가 빈 `{}` 로 `null` 을 물고 굳는다 — 콘텐츠가 도착해도 다시 계산되지
+않는다. 지금은 `contentLoading` 이 퍼즐 화면을 막아 눈에 안 보이지만 화면 전이가 한 줄만
+바뀌면 드러나는 자리다. 의존성에 넣어 닫았다.
+
+#### "불필요한 의존성" 은 대부분 지우면 안 되는 것이었다
+
+biome 은 **"몸통에서 읽지 않는다"** 만 본다. 그런데 이 저장소에서 걸린 것은 거의 다
+**일부러 넣은 재실행 방아쇠**였다. 지웠다면 이렇게 됐다.
+
+| 어디 | 지웠다면 |
+|---|---|
+| `dialog-input` `textareaValue` | 글을 쳐도 입력칸이 늘어나지 않는다 |
+| `book-tabs` · `chapter-chips` `activeId` | 탭·칩을 바꿔도 그것이 화면 안으로 안 들어온다 |
+| `word-learning` `currentPage` | 이전 페이지의 자동 이동 타이머가 그대로 터진다 |
+| `routes/learn/flashcard` `currentIndex` | 카드를 넘겨도 앞 카드 소리가 계속 난다 |
+| `mockup-parity.stories` `screen.name` | 스토리를 바꾸면 다음 화면이 통째로 비어 보인다 |
+| `particle-sniper` `currentQuestionIndex` | 문항이 넘어가도 이전 타이머가 이어진다 |
+| `particle-sniper` `verdictKey` | MISS 가 연달아 나면 두 번째 표시가 일찍 사라진다 |
+
+`verdictKey` 는 **의존성 자리에만 존재하는 순수 재장전 카운터**다(선언 1곳 · 사용 2곳,
+둘 다 의존성 배열). 이런 것은 지우는 것이 아니라 왜 있는지 적어 두는 것이 맞다.
+
+#### 나머지는 근거를 적어 재웠다
+
+대부분 두 꼴이다. ① **마운트 1회 · 언마운트 정리** 효과 — 넣으면 매번 떼고 붙거나
+매번 치운다. ② **매 렌더 새로 만들어지는 함수 + 몸통에서 `setState`** — 넣으면
+무한 렌더다. `audio-provider.tsx` 는 진단이 11건이었는데 주석 셋으로 끝났다.
+그 파일은 `useState` 가 **0개**이고 `useRef` 가 12개라 모든 클로저가 ref 만 읽어
+낡지 않는다 — **파일 전체의 상태 관리 방식을 먼저 본 것이 판단을 갈랐다.**
+
+### 이 작업이 드러낸 것 — `use-sound-effects` 가 아무것도 memo 하지 않는다
+
+`src/components/effect/use-sound-effects.ts` 에 `useCallback` · `useMemo` 가
+**하나도 없다**(실측 0). 즉 호출마다 새 객체와 새 함수를 돌려준다. **이 훅을 18개
+파일이 쓴다.** 그래서 `sound.playCorrect` 같은 것을 의존성에 넣으면 그 콜백이 매 렌더
+새로 만들어져 `useCallback` 이 무의미해진다 — `fill-blank` · `read-answer` ·
+`card-sort` 의 억제가 전부 이 한 가지 원인에서 나왔다.
+
+**그쪽을 안정화하면 억제 몇 개가 필요 없어진다.** 공용 훅이라 18개 파일에 영향이
+가므로 이번 범위(훅 의존성)에서 손대지 않았다. 따로 잡을 일이다.
+
+### 확신이 낮아 재운 자리 — 사람이 다시 볼 것
+
+- **`flashcard-result.tsx:78`** — `cardType` 이 zustand 스토어에서 온다. 결과 화면이
+  떠 있는 동안 카드 타입을 바꿀 경로가 있으면 집계가 갱신되지 않는다. 지금 UX 에는
+  그 경로가 없다고 봤지만 확신은 중간이다.
+- **`combine.tsx` · `combine3.tsx` 의 채점 효과** — 문항이 넘어갈 때 `init()` 이
+  자모 선택을 `undefined` 로 되돌리는 것에 기대고 있다. 넘어가는 순간 이미 전부
+  `undefined` 였다면 `isSucceed` 가 낡을 수 있다(실제로는 조합을 맞춰야 쓰기 단계로
+  가므로 지금은 안 터진다).
+- **`seoul-puzzle.tsx:916` 저장 훅의 경합** — 하이드레이션이 콘텐츠보다 먼저면 이미
+  완료한 과가 `stageScore = 0` 으로 저장된다(`locations` 가 아직 `[]`). 의존성으로는
+  못 고치고 로직을 바꿔야 한다.
+- **`read-answer` · `listen-answer` 의 `handleSelect`** — 의존성에 매 렌더 새
+  `Set` 인 `currentWrongSet` 이 이미 들어 있어 `useCallback` 이 메모 역할을 못 한다.
+
+### 덤으로 눈에 띈 것 (손대지 않음)
+
+`combine.tsx` · `combine3.tsx` 가 `_problem.content_sound` 를 **바로 다음 줄의
+`if (_problem)` 널 검사보다 먼저** 읽는다. `problemIndex` 가 항상 범위 안이라 지금은
+안 터지지만 순서가 뒤집혀 있다.
+
 
 i18n 은 5개 로케일 **300키**가 일치한다(en·ja·ko·vi·zh 전부 300).

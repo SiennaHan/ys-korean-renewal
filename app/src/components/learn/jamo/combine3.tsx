@@ -133,6 +133,14 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 		tracingRef.current?.eraseAll();
 	};
 
+	/*
+	 * 문항이 바뀔 때만 도는 효과다. 빠졌다는 셋 다 넣으면 안 된다:
+	 * - init 은 컴포넌트 안에서 매 렌더 새로 만들어지는 함수이고, 이 효과는 몸통에서
+	 *   setState 를 부른다 — 넣으면 매 렌더마다 다시 돌아 무한 렌더가 된다
+	 * - problemList 는 모듈 상수 problems 를 걸러 만든 목록이라 code 가 그대로면
+	 *   내용도 그대로다. 방아쇠는 problemIndex 하나가 맞다
+	 */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — 문항 전환 1회, init 은 매 렌더 새 함수
 	useEffect(() => {
 		init();
 		const _problem = problemList[problemIndex];
@@ -150,6 +158,10 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 		if (problemIndex === problemList.length - 1) setIsLastPage(true);
 	}, [problemIndex]);
 
+	// 방아쇠는 사용자가 고른 자음·모음·받침이다. 문항이 바뀔 때는 위 효과의 init() 이
+	// 셋을 비우므로 이 효과도 따라 돈다 — problem?.content 를 넣으면 정답 문자만
+	// 달라져도 채점이 다시 도는, 지금과 다른 순서가 된다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 자모 선택에만 반응하는 채점 — 위 주석 참고
 	useEffect(() => {
 		const combined = combineHangul(consonant, vowel, finalConsonant);
 

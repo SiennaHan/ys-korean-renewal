@@ -123,13 +123,14 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		setIsSignedIn(false);
 	}, []);
 
-	// 초기 마운트 시에만 인증 상태 확인 (로그인/로그아웃은 직접 상태를 관리)
+	// 초기 마운트 시에만 인증 상태 확인 (로그인/로그아웃은 직접 상태를 관리).
+	// handleCheckSign 은 useCallback(…, []) 으로 안정하니 의존성에 넣어도
+	// 마운트 1회 그대로다 — 그래서 옛 eslint 주석을 걷고 그냥 넣었다.
 	useEffect(() => {
 		handleCheckSign().then(() => {
 			/* 초기 로딩 완료 */
 		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [handleCheckSign]);
 
 	const value = {
 		isSignedIn,

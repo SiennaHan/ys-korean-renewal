@@ -17,6 +17,15 @@ const CircularProgress = ({
 	const animationFrameRef = useRef<number | null>(null);
 	const startTimeRef = useRef<number | null>(null);
 
+	/*
+	 * onEnd 는 ref 로 잡아 둔다. 의존성에 넣으면 **부모가 리렌더될 때마다 애니메이션이
+	 * 처음부터 다시 시작한다** — 기본값이 `() => {}` 이고 쓰는 쪽도 인라인 화살표라
+	 * 매 렌더마다 새 함수다. 빼 두면 반대로 클로저가 낡는다.
+	 * ref 에 매 렌더 최신 것을 넣고 그것을 부르면 둘 다 피한다.
+	 */
+	const onEndRef = useRef(onEnd);
+	onEndRef.current = onEnd;
+
 	useEffect(() => {
 		if (isStart) {
 			startTimeRef.current = performance.now();
@@ -36,7 +45,7 @@ const CircularProgress = ({
 						cancelAnimationFrame(animationFrameRef.current);
 						animationFrameRef.current = null;
 					}
-					onEnd();
+					onEndRef.current();
 					return;
 				}
 

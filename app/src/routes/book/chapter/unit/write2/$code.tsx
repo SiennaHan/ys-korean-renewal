@@ -136,6 +136,14 @@ function RouteComponent() {
 		}
 	};
 
+	/*
+	 * problemIndex 가 유일한 방아쇠다. biome 은 init·problemList 도 넣으라고 하는데
+	 * init 은 컴포넌트 안에서 매 렌더 새로 만들어지는 함수이고 이 효과가 setState 를
+	 * 부르므로, 넣으면 **무한 렌더**가 된다. problemList 는 모듈 상수를 filter 한
+	 * 것이라 code 가 그대로면 내용도 그대로다.
+	 * 자모 화면들(learn/jamo/combine 등)이 같은 꼴이고 같은 근거로 재워 뒀다.
+	 */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: init 을 넣으면 무한 렌더가 된다 — 위 주석 참고
 	useEffect(() => {
 		init();
 		const _problem = problemList[problemIndex];

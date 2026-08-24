@@ -101,7 +101,9 @@ export default function ListenAnswer({
 		} else {
 			setSelectedIndex(null);
 		}
-	}, [currentIndex, question?.id, savedAnswers]);
+		// question 은 useMemo 배열의 원소라 렌더 사이에 같은 객체다. currentIndex 가
+		// 바뀌면 question 도 바뀌므로 문항 이동 방아쇠는 그대로 남는다.
+	}, [question, savedAnswers]);
 
 	/** 현재 문제의 틀린 시도 목록 */
 	const currentWrongSet = question

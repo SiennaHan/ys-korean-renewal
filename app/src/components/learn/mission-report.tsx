@@ -175,7 +175,10 @@ export default function MissionReport({
 		};
 
 		fetchReport();
-	}, []);
+		// dialogId·missions 가 바뀌면 다시 받아야 맞다. 둘 다 원시값(문자열·개수)이라
+		// 의존성에 넣어도 매 렌더마다 바뀌지 않는다 — 루프가 날 수 없다.
+		// 전에는 [] 라서 이 컴포넌트를 다시 쓰면 앞 대화의 리포트가 그대로 남았다.
+	}, [dialogId, missions?.length]);
 
 	const AssessmentLabel = (props: { label: string; value: string }) => {
 		return (

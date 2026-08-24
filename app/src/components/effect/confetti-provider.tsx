@@ -19,6 +19,11 @@ interface ConfettiContextType {
 	isLibLoaded: boolean;
 }
 
+/** 상태를 읽지 않는 순수 헬퍼라 컴포넌트 밖에 둔다 —
+  안에 두면 매 렌더마다 새로 만들어져 훅 의존성이 계속 흔들린다. */
+const randomInRange = (min: number, max: number) =>
+	Math.random() * (max - min) + min;
+
 const ConfettiContext = createContext<ConfettiContextType | undefined>(
 	undefined,
 );
@@ -61,9 +66,6 @@ export function ConfettiProvider({ children }: { children: React.ReactNode }) {
 			});
 		}
 	}, []);
-
-	const randomInRange = (min: number, max: number) =>
-		Math.random() * (max - min) + min;
 
 	const fireBigBang = useCallback(() => {
 		if (!isLibLoaded) return;

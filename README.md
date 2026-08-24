@@ -49,7 +49,7 @@
 |---|---|
 | `app/.env` 의 값 8개 | API 주소 · 리소스 호스트 · AppSync 키. **`.env.example` 이 없으니 값을 직접 받아야 한다** |
 | `api/.env` 의 값 | DB 접속 · OpenAI · Gemini · Tutorus · JWT |
-| `글로벌_교재기반_콘텐츠_v29.xlsx` | **콘텐츠 원장 정본.** 교재 파생이라 `.gitignore` 가 막는다.<br>앱 JSON 은 자모·미션대화를 아직 안 받는다 — 미션대화는 **검수 완료**·생성기 배선 대기, 자모는 검수 대기 — `BLOCKERS.md` §2 · §8 |
+| `글로벌_교재기반_콘텐츠_v30.xlsx` | **콘텐츠 원장 정본.** 교재 파생이라 `.gitignore` 가 막는다.<br>앱 JSON 은 자모·미션대화를 아직 안 받는다 — 미션대화는 **검수 완료**·생성기 배선 대기, 자모는 검수 대기 — `BLOCKERS.md` §2 · §8 |
 
 `PUBLIC_RES_URL_ROOT` 가 비어 있으면 **교재 삽화·음성이 전부 404** 가 된다.
 로컬에서 그림이 깨져 보이면 대개 이것이다.
@@ -63,12 +63,46 @@ cd app && pnpm install && pnpm dev
 ⚠️ **`npm install` 을 하지 마라.** `package-lock.json` 이 다시 생기면
 프로덕션 빌드가 깨진다 — 한 번 겪었다. [BLOCKERS.md](BLOCKERS.md) §1.
 
-```bash
-cd api && pip install -r requirements.txt && ./start.sh
+### API 서버는 아직 로컬에서 한 번도 안 떴다
+
+**앱만 띄우면 로그인부터 막힌다.** 앱은 켜지면 `POST /user/sign/guest` 를
+부르는데 그 서버가 없어 `ERR_CONNECTION_REFUSED` 가 나고, 홈이 오류 경계
+("오류가 발생했습니다")로 바뀐다. **화면이 없는 게 아니라 데이터를 못 받는 것이다** —
+목업 대조 47화면이 통과하므로 홈·탭바·게임 화면은 다 그려진다.
+
+띄우려면 셋이 필요하고 **2·3 은 받아야 한다.**
+
+| | 상태 | 무엇 |
+|---|---|---|
+| 1 파이썬 의존성 | **깔았다** — `api/.venv` (2026-08-24) | `requirements.txt` 20줄 → 실제 63개 |
+| 2 `api/.env` | **없다** | `DB_USER` · `DB_PASSWORD` · `DB_HOST` · `DB_PORT` · `DB_NAME` · `JWT_SECRET` · `OPENAI_API_KEY` · `GEMINI_API_KEY` · `TUTORUS_*` |
+| 3 MySQL | **없다** — `mysql` 명령도 없고 3306 도 닫혀 있다 | DB 서버 + `migration_*.sql` 넷 |
+
+`server.py` 는 켜질 때 `createAllTables()` 를 부르고 그것이
+`mysql+mysqlconnector://{DB_USER}:…@{DB_HOST}:{DB_PORT}/{DB_NAME}` 로 붙는다.
+**DB 없이는 프로세스가 아예 안 뜬다.** 지금 상태로 `import server` 를 하면 이렇게 죽는다.
+
+```
+ValueError: invalid literal for int() with base 10: 'None'
+   ← DB_PORT 가 None. api/.env 가 없다
 ```
 
-앱의 `.env` 는 서버를 `127.0.0.1:8799` 로 가리키고 `start.sh` 는 8000 에 띄운다.
-**둘 중 하나를 맞춰야 한다.**
+**돌리는 법** — 가상환경을 쓴다. 시스템 파이썬을 건드리지 않는다.
+
+```bash
+cd api
+.venv/bin/python server.py          # 개발 (.env 의 SERVER_ADDRESS/PORT)
+```
+
+없으면 먼저 만든다 — `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`.
+`api/.gitignore` 가 `.venv/` 와 `.env*` 를 막으므로 저장소에 들어가지 않는다.
+
+⚠️ **포트가 어긋나 있다.** 앱의 `.env` 는 서버를 `127.0.0.1:8799` 로 가리키고
+`start.sh` 는 `8000` 에 띄운다. **둘 중 하나를 맞춰야 한다.**
+
+> `BLOCKERS.md` §6 의 "서버 작업이 시작되지 않았다" 는 **리뉴얼용 API 6종**
+> (`/activity/enter` 등)이 없다는 뜻이고, 여기 적은 것은 그보다 **앞 단계**다.
+> 앱과 서버 코드는 양쪽 다 있고 사이에 연결이 없는 상태다.
 
 ## 이 저장소가 쓰는 세 장치
 

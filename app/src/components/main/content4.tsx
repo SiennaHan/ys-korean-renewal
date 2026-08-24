@@ -11,6 +11,29 @@ import YouTube, {
 	type YouTubePlayer,
 } from "react-youtube";
 
+/** 상태를 읽지 않는 순수 헬퍼라 컴포넌트 밖에 둔다 — 안에 두면 매 렌더마다
+  새로 만들어져 useCallback 의 의존성이 계속 흔들린다. */
+const timeStringToSeconds = (time: string) => {
+	if (typeof time !== "string") return 0;
+	const s = time.trim();
+	if (s.length === 0) return 0;
+	const parts = s.split(":").map((p) => p.trim());
+	if (parts.some((p) => p === "")) return 0;
+	const reversed = parts.slice().reverse();
+	let seconds = 0;
+	for (let i = 0; i < reversed.length; i++) {
+		const part = reversed[i];
+		if (!/^\d+(\.\d+)?$/.test(part)) return 0;
+		const value = Number(part);
+		if (!Number.isFinite(value) || value < 0) return 0;
+		if (i === 0) seconds += value;
+		else if (i === 1) seconds += value * 60;
+		else if (i === 2) seconds += value * 3600;
+		else return 0;
+	}
+	return seconds;
+};
+
 const CATEGORY = "video";
 
 /** 값은 클립 데이터가 쓰는 영어 그대로다 — 보이는 글자만 번역한다 */
@@ -407,27 +430,6 @@ export default function Content4() {
 	const [selectedCategory, setSelectedCategory] = useState<CategoryType>("All");
 	const [playingVideo, setPlayingVideo] = useState<ResultItem | null>(null);
 	const [reportVideo, setReportVideo] = useState<ResultItem | null>(null);
-
-	const timeStringToSeconds = (time: string) => {
-		if (typeof time !== "string") return 0;
-		const s = time.trim();
-		if (s.length === 0) return 0;
-		const parts = s.split(":").map((p) => p.trim());
-		if (parts.some((p) => p === "")) return 0;
-		const reversed = parts.slice().reverse();
-		let seconds = 0;
-		for (let i = 0; i < reversed.length; i++) {
-			const part = reversed[i];
-			if (!/^\d+(\.\d+)?$/.test(part)) return 0;
-			const value = Number(part);
-			if (!Number.isFinite(value) || value < 0) return 0;
-			if (i === 0) seconds += value;
-			else if (i === 1) seconds += value * 60;
-			else if (i === 2) seconds += value * 3600;
-			else return 0;
-		}
-		return seconds;
-	};
 
 	const searchScript = useCallback(
 		(word: string, category: CategoryType) => {

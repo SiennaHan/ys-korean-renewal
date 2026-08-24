@@ -64,6 +64,9 @@ export function DialogInput({
 	}, [recordedMsg]);
 
 	// Auto-resize text input textarea
+	// textareaValue 는 재실행 방아쇠다. 몸통은 ref 만 읽지만 지우면
+	// **글을 쳐도 칸이 늘어나지 않는다** — 이 효과의 존재 이유가 사라진다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 값이 바뀔 때 높이를 다시 재려고 넣은 방아쇠다
 	useEffect(() => {
 		if (textareaRef.current) {
 			const textarea = textareaRef.current;

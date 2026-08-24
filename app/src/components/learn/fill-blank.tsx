@@ -110,7 +110,9 @@ export default function FillBlank({
 			setSelectedAnswer(null);
 			setAnswerState("idle");
 		}
-	}, [currentIndex, question?.id, savedAnswers]);
+		// question 은 useMemo 배열의 원소라 렌더 사이에 같은 객체다. currentIndex 가
+		// 바뀌면 question 도 바뀌므로 문항 이동 방아쇠는 그대로 남는다.
+	}, [question, savedAnswers]);
 	const totalSteps = questions.length;
 
 	/** selections 파싱: 콤마로 분리 */
@@ -120,6 +122,7 @@ export default function FillBlank({
 	}, [question]);
 
 	/** 선택지 클릭 — 선택 즉시 채점 */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: sound.* 는 useSoundEffects 가 매 렌더마다 새로 만드는 함수다. 넣으면 이 콜백이 매 렌더 새로 만들어져 메모가 사라진다
 	const handleSelectAnswer = useCallback(
 		(sel: string) => {
 			if (answerState === "correct" || !question) return;

@@ -173,6 +173,11 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 		seteSlectedTabItems(items);
 	};
 
+	// 마운트 1회 — 첫 낱말을 골라 소리를 걸어 둔다. selectWord 는 매 렌더 새로
+	// 만들어지는 함수이고 안에서 setState 와 setTimeout 재생을 부르므로, 넣으면
+	// 매 렌더마다 첫 낱말로 되돌아가며 무한 렌더가 된다. problemList 는 모듈 상수
+	// problems 를 걸러 만든 목록이라 마운트 뒤 달라지지 않는다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 1회 첫 낱말 선택 — 위 주석 참고
 	useEffect(() => {
 		if (problemList.length > 0) {
 			selectWord(problemList[0].id);

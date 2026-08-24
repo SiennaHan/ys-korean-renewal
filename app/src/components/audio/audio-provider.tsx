@@ -319,6 +319,21 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		await replayPending();
 	};
 
+	/*
+	 * 의존성이 빈 배열인 것은 의도다. 이 값은 컨텍스트로 내려가므로 새로 만들면
+	 * **소비자 전부가 리렌더된다** — 그래서 한 번만 만든다.
+	 *
+	 * 그래도 안전한 이유: 이 파일에는 useState 가 **하나도 없고** useRef 만 열둘이다.
+	 * 아래 함수들(cancelStream · discardPending · schedulePcm · unlock ·
+	 * playWithSrc · clearObjectUrl · getAudioCtx)이 읽는 것은 전부 ref 의 .current
+	 * 라 항상 최신이다. state 를 읽는 곳이 없으니 한 번 만들어 둔 클로저가 낡지 않는다.
+	 *
+	 * biome 은 그 함수 일곱이 의존성에 없다고 한다(진단 11건). 넣으면 함수들이 매
+	 * 렌더마다 새로 만들어지므로 api 도 매번 바뀌어 위의 리렌더 문제가 그대로 생긴다.
+	 * 제대로 넣으려면 일곱을 useCallback 으로 감싸야 하는데, ref 만 읽는 함수들이라
+	 * 얻는 것이 없다.
+	 */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — 컨텍스트 값이라 한 번만 만들고, 안에서 읽는 것은 전부 ref 다
 	const api = useMemo<SharedAudioApi>(
 		() => ({
 			playUrl: async (url, options) => {
@@ -431,6 +446,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		[],
 	);
 
+	// 언마운트 때 한 번만 치운다 — 의존성을 넣으면 값이 바뀔 때마다 치워 버린다.
+	// 두 함수는 ref 만 읽으므로 클로저가 낡지 않는다(위 api 주석과 같은 사정).
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 언마운트 전용 정리
 	useEffect(() => {
 		return () => {
 			clearObjectUrl();
@@ -439,6 +457,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		};
 	}, []);
 
+	// document 에 붙이는 잠금 해제 listener — 마운트 때 한 번만 붙어야 한다.
+	// unlock·getAudioCtx 를 의존성에 넣으면 매 렌더마다 떼고 다시 붙는다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 1회 등록
 	useEffect(() => {
 		const tryUnlock = () => {
 			void unlock();

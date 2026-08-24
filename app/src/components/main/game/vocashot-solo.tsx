@@ -114,6 +114,10 @@ export default function VocashotSolo() {
 		void loadBest();
 	}, [loadBest]);
 
+	/* clearTimer 는 매 렌더마다 새로 만들어지지만 몸통이 timerRef(ref 객체) 하나만
+	   읽고 쓴다 — 클로저에 낡을 값이 없으므로 어느 렌더의 것을 불러도 결과가 같다.
+	   그래서 아래 훅 넷은 이것을 의존성에 넣지 않는다. 넣으면 운석 낙하 타이머를
+	   쥔 endRun · serveNext · resolve 가 매 렌더 새로 만들어져 문항이 순간이동한다. */
 	const clearTimer = () => {
 		if (timerRef.current) clearTimeout(timerRef.current);
 		timerRef.current = null;
@@ -132,6 +136,7 @@ export default function VocashotSolo() {
 		[mode],
 	);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: clearTimer 는 timerRef 만 읽고 쓴다 — 위 clearTimer 정의 주석 참고
 	const endRun = useCallback(async () => {
 		clearTimer();
 		setCur(null);
@@ -146,6 +151,7 @@ export default function VocashotSolo() {
 		setBest(rows.find((r) => r.stage_id === stageId)?.score ?? score);
 	}, [score, stageId]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: clearTimer 는 timerRef 만 읽고 쓴다 — 위 clearTimer 정의 주석 참고
 	const serveNext = useCallback(
 		(atScore: number, atHearts: number) => {
 			clearTimer();
@@ -179,6 +185,7 @@ export default function VocashotSolo() {
 	// resolve 가 serveNext 를 부르고 serveNext 가 resolve 를 걸어야 해서 ref 로 잇는다
 	const resolveRef = useRef<(picked: string | null) => void>(() => {});
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: clearTimer 는 timerRef 만 읽고 쓴다 — 위 clearTimer 정의 주석 참고
 	const resolve = useCallback(
 		(picked: string | null) => {
 			if (lockedRef.current || !cur) return;
@@ -263,6 +270,7 @@ export default function VocashotSolo() {
 		serveNext(0, TUNING.hearts);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 언마운트 전용 정리다 — clearTimer 를 넣으면 렌더마다 타이머를 치워 낙하가 끊긴다. 몸통은 timerRef 만 만진다
 	useEffect(() => clearTimer, []);
 
 	// ── 시작 ────────────────────────────────────────────────────────

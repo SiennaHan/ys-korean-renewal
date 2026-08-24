@@ -123,6 +123,9 @@ export default function ChatMessage({
 		await fetchAudio(lastText ?? msg);
 	}, [fetchAudio, lastText, msg]);
 
+	// idx 는 재실행 방아쇠다 — 새 말이 붙었을 때 바닥으로 내리려고 넣었다.
+	// 몸통이 idx 를 읽지는 않지만, 지우면 같은 글이 다시 와도 스크롤이 안 된다.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: idx 는 새 말이 왔음을 알리는 방아쇠다
 	useEffect(() => {
 		scrollToBottom();
 		if (msgType === "request") {

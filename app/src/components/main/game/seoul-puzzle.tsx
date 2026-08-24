@@ -913,6 +913,7 @@ export default function SeoulPuzzle() {
 
 	// ── Persistence: save on change ──
 	const lastCompletedRef = useRef<Set<string>>(new Set());
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 이 효과는 "사용자 상태가 바뀌면 저장" 이다 — 방아쇠는 playerName·completed·totalXp·currentLoc 뿐이다. locations·puzzlesMap 은 마운트에 한 번 받는 콘텐츠라 넣어도 새로 저장할 것이 없다(아래 루프가 lastCompletedRef 로 이미 보낸 과를 건너뛴다). 대신 콘텐츠가 도착할 때 META_STAGE 쓰기가 한 번 더 날아간다
 	useEffect(() => {
 		if (!playerName || !hydratedRef.current) return;
 		try {
@@ -980,7 +981,7 @@ export default function SeoulPuzzle() {
 			answer: raw.answer.map(rt),
 			distractors: raw.distractors.map(rt),
 		};
-	}, [currentLoc, puzzleIdx, playerName]);
+	}, [currentLoc, puzzleIdx, playerName, puzzlesMap]);
 
 	// ── Puzzle loading ──
 	function loadPuzzle(i: number) {

@@ -144,6 +144,16 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 		}
 	};
 
+	/*
+	 * 문항이 바뀔 때만 도는 효과다(소리도 여기서 한 번 자동 재생한다).
+	 * 빠졌다는 셋 다 넣으면 안 된다:
+	 * - init 은 컴포넌트 안에서 매 렌더 새로 만들어지는 함수이고, 이 효과는 몸통에서
+	 *   setState 를 부른다 — 넣으면 매 렌더마다 다시 돌아 무한 렌더가 되고
+	 *   자동 재생도 매 렌더마다 다시 걸린다
+	 * - problemList 는 모듈 상수 problems 를 걸러 만든 목록이라 code 가 그대로면
+	 *   내용도 그대로다. 방아쇠는 problemIndex 하나가 맞다
+	 */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — 문항 전환 1회 + 자동 재생, init 은 매 렌더 새 함수
 	useEffect(() => {
 		init();
 		const _problem = problemList[problemIndex];

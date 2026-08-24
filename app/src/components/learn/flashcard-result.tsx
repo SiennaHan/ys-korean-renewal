@@ -75,6 +75,14 @@ export default function FlashcardResult({
 		}
 	};
 
+	/*
+	 * 결과 화면에 들어올 때 한 번만 서버 기록을 읽어 아는/모르는 단어를 가른다.
+	 * cardData 는 컴포넌트 안에서 filter 로 매 렌더 새로 만드는 배열이라, 의존성에
+	 * 넣으면 효과가 매 렌더 다시 돌고 안에서 setState 를 하므로 무한 렌더가 된다.
+	 * flashcardId·cardType 은 이 화면이 떠 있는 동안 바뀌지 않는다(카드 세트를
+	 * 바꾸면 부모가 카드 화면으로 되돌린다).
+	 */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 1회 조회 — 위 주석 참고
 	useEffect(() => {
 		const fetchData = async () => {
 			const savedList = await listUserFlashcardWordByType(
