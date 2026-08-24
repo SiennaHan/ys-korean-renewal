@@ -334,11 +334,17 @@
   <li><b>콘텐츠 ID를 URL에서 제거한다</b> — <code>$code</code>(<code>YK0041</code>)·<code>$id</code>(<code>C4</code>) 노출 폐지. 급·과만 쿼리로 받고 문항 목록은 서버가 결정.</li>
   <li>구 라우트는 Phase 1에서 <b>리다이렉트만 유지</b>, Phase 3에서 제거(북마크·QR 링크 보호).</li>
   <li>프로덕션 빌드에서 <b>테스트 라우트 9종(<code>/test/**</code>)과 빈 스텁 4종 제외</b>(Phase 0과 중복 가능).
-      <span class="pill done">됐다 2026-08-24</span> 테스트는 <code>rsbuild.config.ts</code> 의
-      <code>routeFileIgnorePattern: "^test$"</code> — 전에 <code>"routes/test/"</code> 로 적혀 있어
-      <b>한 번도 동작하지 않았다</b>(패턴은 경로가 아니라 한 칸의 이름과 비교된다).
-      스텁 넷은 <b>파일을 지웠다</b> — 이름으로 거르면 <code>routes/learn/flashcard.tsx</code> 까지
-      사라진다. <code>../BLOCKERS.md</code> §3-b</li>
+      <span class="pill done">끝났다 2026-08-24 — 빼는 대신 지웠다</span><br>
+      <b>제외는 넉 달 동안 되고 있지 않았다.</b> <code>routeFileIgnorePattern</code> 이
+      <code>"routes/test/"</code> 였는데 그 패턴은 경로가 아니라 <b>한 칸의 이름</b>과
+      비교된다 — 슬래시가 있으면 어떤 이름과도 안 맞고 <b>조용히 통과한다</b>.
+      결과물에 <code>/test/tts-regen</code> · <code>/test/videos</code> 가 실려 나갔다.<br>
+      고치는 대신 <b>지웠다</b> — 스텁 넷(36줄)과 <code>src/routes/test/</code> 아홉
+      (1,196줄 + JSON 셋). 이름으로 거르면 <code>routes/learn/flashcard.tsx</code> 까지
+      사라지고, 환경마다 라우트 트리가 갈리면 생성물
+      <code>routeTree.gen.ts</code> 를 어느 판으로 커밋할지가 문제가 된다.
+      <b>지금은 개발·프로덕션 트리가 바이트까지 같다.</b>
+      자세한 것은 <code>../BLOCKERS.md</code> §3-b</li>
 </ul>
 
 <h2 id="s5"><span class="no">5</span>공통 셸 컴포넌트</h2>

@@ -18,17 +18,8 @@ import { Route as MainRouteImport } from './routes/main'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CheckEmailRouteImport } from './routes/check-email'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TestIndexRouteImport } from './routes/test/index'
 import { Route as MainIndexRouteImport } from './routes/main/index'
 import { Route as BookIndexRouteImport } from './routes/book/index'
-import { Route as TestVideosRouteImport } from './routes/test/videos'
-import { Route as TestTtsRegenRouteImport } from './routes/test/tts-regen'
-import { Route as TestRealtimeRouteImport } from './routes/test/realtime'
-import { Route as TestFlashcardRouteImport } from './routes/test/flashcard'
-import { Route as TestDebugRouteImport } from './routes/test/debug'
-import { Route as TestBoomRouteImport } from './routes/test/boom'
-import { Route as TestAudioRouteImport } from './routes/test/audio'
-import { Route as TestIdRouteImport } from './routes/test/$id'
 import { Route as MainTextbookRouteImport } from './routes/main/textbook'
 import { Route as MainMyRouteImport } from './routes/main/my'
 import { Route as MainGameRouteImport } from './routes/main/game'
@@ -121,11 +112,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TestIndexRoute = TestIndexRouteImport.update({
-  id: '/test/',
-  path: '/test/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MainIndexRoute = MainIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -134,46 +120,6 @@ const MainIndexRoute = MainIndexRouteImport.update({
 const BookIndexRoute = BookIndexRouteImport.update({
   id: '/book/',
   path: '/book/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestVideosRoute = TestVideosRouteImport.update({
-  id: '/test/videos',
-  path: '/test/videos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestTtsRegenRoute = TestTtsRegenRouteImport.update({
-  id: '/test/tts-regen',
-  path: '/test/tts-regen',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestRealtimeRoute = TestRealtimeRouteImport.update({
-  id: '/test/realtime',
-  path: '/test/realtime',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestFlashcardRoute = TestFlashcardRouteImport.update({
-  id: '/test/flashcard',
-  path: '/test/flashcard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestDebugRoute = TestDebugRouteImport.update({
-  id: '/test/debug',
-  path: '/test/debug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestBoomRoute = TestBoomRouteImport.update({
-  id: '/test/boom',
-  path: '/test/boom',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestAudioRoute = TestAudioRouteImport.update({
-  id: '/test/audio',
-  path: '/test/audio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestIdRoute = TestIdRouteImport.update({
-  id: '/test/$id',
-  path: '/test/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MainTextbookRoute = MainTextbookRouteImport.update({
@@ -446,17 +392,8 @@ export interface FileRoutesByFullPath {
   '/main/game': typeof MainGameRouteWithChildren
   '/main/my': typeof MainMyRoute
   '/main/textbook': typeof MainTextbookRouteWithChildren
-  '/test/$id': typeof TestIdRoute
-  '/test/audio': typeof TestAudioRoute
-  '/test/boom': typeof TestBoomRoute
-  '/test/debug': typeof TestDebugRoute
-  '/test/flashcard': typeof TestFlashcardRoute
-  '/test/realtime': typeof TestRealtimeRoute
-  '/test/tts-regen': typeof TestTtsRegenRoute
-  '/test/videos': typeof TestVideosRoute
   '/book': typeof BookIndexRoute
   '/main/': typeof MainIndexRoute
-  '/test': typeof TestIndexRoute
   '/book/chapter/$id': typeof BookChapterIdRoute
   '/learn/jamo/choose': typeof LearnJamoChooseRoute
   '/learn/jamo/combine': typeof LearnJamoCombineRoute
@@ -511,17 +448,8 @@ export interface FileRoutesByTo {
   '/learn/word': typeof LearnWordRoute
   '/main/clip': typeof MainClipRoute
   '/main/my': typeof MainMyRoute
-  '/test/$id': typeof TestIdRoute
-  '/test/audio': typeof TestAudioRoute
-  '/test/boom': typeof TestBoomRoute
-  '/test/debug': typeof TestDebugRoute
-  '/test/flashcard': typeof TestFlashcardRoute
-  '/test/realtime': typeof TestRealtimeRoute
-  '/test/tts-regen': typeof TestTtsRegenRoute
-  '/test/videos': typeof TestVideosRoute
   '/book': typeof BookIndexRoute
   '/main': typeof MainIndexRoute
-  '/test': typeof TestIndexRoute
   '/book/chapter/$id': typeof BookChapterIdRoute
   '/learn/jamo/choose': typeof LearnJamoChooseRoute
   '/learn/jamo/combine': typeof LearnJamoCombineRoute
@@ -580,17 +508,8 @@ export interface FileRoutesById {
   '/main/game': typeof MainGameRouteWithChildren
   '/main/my': typeof MainMyRoute
   '/main/textbook': typeof MainTextbookRouteWithChildren
-  '/test/$id': typeof TestIdRoute
-  '/test/audio': typeof TestAudioRoute
-  '/test/boom': typeof TestBoomRoute
-  '/test/debug': typeof TestDebugRoute
-  '/test/flashcard': typeof TestFlashcardRoute
-  '/test/realtime': typeof TestRealtimeRoute
-  '/test/tts-regen': typeof TestTtsRegenRoute
-  '/test/videos': typeof TestVideosRoute
   '/book/': typeof BookIndexRoute
   '/main/': typeof MainIndexRoute
-  '/test/': typeof TestIndexRoute
   '/book/chapter/$id': typeof BookChapterIdRoute
   '/learn/jamo/choose': typeof LearnJamoChooseRoute
   '/learn/jamo/combine': typeof LearnJamoCombineRoute
@@ -650,17 +569,8 @@ export interface FileRouteTypes {
     | '/main/game'
     | '/main/my'
     | '/main/textbook'
-    | '/test/$id'
-    | '/test/audio'
-    | '/test/boom'
-    | '/test/debug'
-    | '/test/flashcard'
-    | '/test/realtime'
-    | '/test/tts-regen'
-    | '/test/videos'
     | '/book'
     | '/main/'
-    | '/test'
     | '/book/chapter/$id'
     | '/learn/jamo/choose'
     | '/learn/jamo/combine'
@@ -715,17 +625,8 @@ export interface FileRouteTypes {
     | '/learn/word'
     | '/main/clip'
     | '/main/my'
-    | '/test/$id'
-    | '/test/audio'
-    | '/test/boom'
-    | '/test/debug'
-    | '/test/flashcard'
-    | '/test/realtime'
-    | '/test/tts-regen'
-    | '/test/videos'
     | '/book'
     | '/main'
-    | '/test'
     | '/book/chapter/$id'
     | '/learn/jamo/choose'
     | '/learn/jamo/combine'
@@ -783,17 +684,8 @@ export interface FileRouteTypes {
     | '/main/game'
     | '/main/my'
     | '/main/textbook'
-    | '/test/$id'
-    | '/test/audio'
-    | '/test/boom'
-    | '/test/debug'
-    | '/test/flashcard'
-    | '/test/realtime'
-    | '/test/tts-regen'
-    | '/test/videos'
     | '/book/'
     | '/main/'
-    | '/test/'
     | '/book/chapter/$id'
     | '/learn/jamo/choose'
     | '/learn/jamo/combine'
@@ -848,16 +740,7 @@ export interface RootRouteChildren {
   LearnReadAnswerRoute: typeof LearnReadAnswerRoute
   LearnRoleplayRoute: typeof LearnRoleplayRoute
   LearnWordRoute: typeof LearnWordRoute
-  TestIdRoute: typeof TestIdRoute
-  TestAudioRoute: typeof TestAudioRoute
-  TestBoomRoute: typeof TestBoomRoute
-  TestDebugRoute: typeof TestDebugRoute
-  TestFlashcardRoute: typeof TestFlashcardRoute
-  TestRealtimeRoute: typeof TestRealtimeRoute
-  TestTtsRegenRoute: typeof TestTtsRegenRoute
-  TestVideosRoute: typeof TestVideosRoute
   BookIndexRoute: typeof BookIndexRoute
-  TestIndexRoute: typeof TestIndexRoute
   BookChapterIdRoute: typeof BookChapterIdRoute
   LearnJamoChooseRoute: typeof LearnJamoChooseRoute
   LearnJamoCombineRoute: typeof LearnJamoCombineRoute
@@ -947,13 +830,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/test/': {
-      id: '/test/'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/main/': {
       id: '/main/'
       path: '/'
@@ -966,62 +842,6 @@ declare module '@tanstack/react-router' {
       path: '/book'
       fullPath: '/book'
       preLoaderRoute: typeof BookIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/videos': {
-      id: '/test/videos'
-      path: '/test/videos'
-      fullPath: '/test/videos'
-      preLoaderRoute: typeof TestVideosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/tts-regen': {
-      id: '/test/tts-regen'
-      path: '/test/tts-regen'
-      fullPath: '/test/tts-regen'
-      preLoaderRoute: typeof TestTtsRegenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/realtime': {
-      id: '/test/realtime'
-      path: '/test/realtime'
-      fullPath: '/test/realtime'
-      preLoaderRoute: typeof TestRealtimeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/flashcard': {
-      id: '/test/flashcard'
-      path: '/test/flashcard'
-      fullPath: '/test/flashcard'
-      preLoaderRoute: typeof TestFlashcardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/debug': {
-      id: '/test/debug'
-      path: '/test/debug'
-      fullPath: '/test/debug'
-      preLoaderRoute: typeof TestDebugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/boom': {
-      id: '/test/boom'
-      path: '/test/boom'
-      fullPath: '/test/boom'
-      preLoaderRoute: typeof TestBoomRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/audio': {
-      id: '/test/audio'
-      path: '/test/audio'
-      fullPath: '/test/audio'
-      preLoaderRoute: typeof TestAudioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/$id': {
-      id: '/test/$id'
-      path: '/test/$id'
-      fullPath: '/test/$id'
-      preLoaderRoute: typeof TestIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/main/textbook': {
@@ -1425,16 +1245,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearnReadAnswerRoute: LearnReadAnswerRoute,
   LearnRoleplayRoute: LearnRoleplayRoute,
   LearnWordRoute: LearnWordRoute,
-  TestIdRoute: TestIdRoute,
-  TestAudioRoute: TestAudioRoute,
-  TestBoomRoute: TestBoomRoute,
-  TestDebugRoute: TestDebugRoute,
-  TestFlashcardRoute: TestFlashcardRoute,
-  TestRealtimeRoute: TestRealtimeRoute,
-  TestTtsRegenRoute: TestTtsRegenRoute,
-  TestVideosRoute: TestVideosRoute,
   BookIndexRoute: BookIndexRoute,
-  TestIndexRoute: TestIndexRoute,
   BookChapterIdRoute: BookChapterIdRoute,
   LearnJamoChooseRoute: LearnJamoChooseRoute,
   LearnJamoCombineRoute: LearnJamoCombineRoute,
