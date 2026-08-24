@@ -1,0 +1,1907 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>게임 다섯 — 설계와 손볼 것</title>
+<style>
+/* ───────── 합친 문서의 껍데기 (원본에 없던 것은 이것뿐) ───────── */
+  .mergehead { max-width:860px; margin:0 auto; padding:30px 24px 0; font:15px/1.75 -apple-system,"Pretendard","Apple SD Gothic Neo",sans-serif; color:#2a3038; }
+  .mergehead .kick { font-size:12px; letter-spacing:.08em; color:#8a93a0; font-weight:700; }
+  .mergehead h1 { margin:6px 0 12px; font-size:27px; letter-spacing:-.02em; }
+  .mergehead p { margin:0 0 12px; color:#4a5462; }
+  .mergehead table { border-collapse:collapse; font-size:13px; margin:4px 0 8px; }
+  .mergehead td { border:1px solid #e3e7ee; padding:6px 12px; color:#4a5462; vertical-align:top; }
+  .mergehead td:first-child { white-space:nowrap; }
+  .mergehead td:last-child { white-space:nowrap; color:#8a93a0; }
+  .part { display:block; }
+  .part + .part { border-top:1px solid #dfe3ea; margin-top:8px; }
+
+/* ───────── games_polish_v1.html 그대로 ───────── */
+
+  :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
+    --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
+    --stop:#9a3f31; --stop-soft:#fbece9; --ok:#1f7a52; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb; --ink-3:#6f7887;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; --ok:#6dc79b; } }
+  :root[data-theme="dark"] { --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb;
+    --ink-3:#6f7887; --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; --ok:#6dc79b; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif}
+  main{max-width:900px;margin:0 auto;padding:46px 22px 96px}
+  header.doc{padding-bottom:22px;border-bottom:2px solid var(--accent);margin-bottom:10px}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    font-weight:800;margin-bottom:9px}
+  h1{font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:800;letter-spacing:-.015em}
+  .lead{color:var(--ink-2);margin:0;max-width:66ch}
+  .lead b{color:var(--ink)}
+  h2{font-size:19px;font-weight:800;margin:48px 0 4px}
+  h2 .n{color:var(--accent);margin-right:9px;font-variant-numeric:tabular-nums}
+  h3{font-size:15px;font-weight:700;margin:26px 0 3px}
+  p{margin:9px 0}
+  .qa{color:var(--ink-3);font-size:13px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+    background:var(--bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;overflow-x:auto;margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;margin:10px 0 5px;font-size:13px}
+  th{text-align:left;font-size:11px;letter-spacing:.05em;color:var(--ink-3);font-weight:800;
+    padding:7px 9px 5px;border-bottom:2px solid var(--line);white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  td code{white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .callout.stop{border-left-color:var(--stop)}
+  .callout .t{font-weight:800;font-size:13.5px;margin-bottom:4px}
+  .callout.stop .t{color:var(--stop)}
+  .callout.ok{border-left-color:var(--ok)}
+  .callout.ok .t{color:var(--ok)}
+  .callout p{font-size:14px;margin:6px 0}
+  ul,ol{padding-left:21px;margin:9px 0} li{margin:5px 0;font-size:14.5px}
+  li::marker{color:var(--ink-3)}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
+    border:1px solid rgba(0,0,0,.14);vertical-align:-1px;margin-right:5px}
+
+/* ───────── vocashot_solo_spec_v1.html 그대로 ───────── */
+
+  :root { --bg:#f7f8fa; --surface:#fff; --ink:#1b1f27; --ink-2:#59616f; --ink-3:#8b94a3;
+    --line:#e2e6ec; --accent:#0180FF; --accent-soft:#e6f2ff;
+    --stop:#9a3f31; --stop-soft:#fbece9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb; --ink-3:#6f7887;
+    --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; } }
+  :root[data-theme="dark"] { --bg:#12151b; --surface:#1a1e26; --ink:#e7eaf0; --ink-2:#a4adbb;
+    --ink-3:#6f7887; --line:#2b313b; --accent:#4da3ff; --accent-soft:#16283c;
+    --stop:#e2988a; --stop-soft:#2e1e1a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif}
+  main{max-width:900px;margin:0 auto;padding:46px 22px 96px}
+  header.doc{padding-bottom:22px;border-bottom:2px solid var(--accent);margin-bottom:10px}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    font-weight:800;margin-bottom:9px}
+  h1{font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:800;letter-spacing:-.015em}
+  .lead{color:var(--ink-2);margin:0;max-width:66ch}
+  .lead b{color:var(--ink)}
+  h2{font-size:19px;font-weight:800;margin:48px 0 4px}
+  h2 .n{color:var(--accent);margin-right:9px;font-variant-numeric:tabular-nums}
+  h3{font-size:15px;font-weight:700;margin:26px 0 3px}
+  p{margin:9px 0}
+  .qa{color:var(--ink-3);font-size:13px}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+    background:var(--bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+    padding:13px 16px;overflow-x:auto;margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
+  .tablewrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;margin:10px 0 5px;font-size:13px}
+  th{text-align:left;font-size:11px;letter-spacing:.05em;color:var(--ink-3);font-weight:800;
+    padding:7px 9px 5px;border-bottom:2px solid var(--line);white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  td code{white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .callout{border:1px solid var(--line);border-left:3px solid var(--accent);
+    background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .callout.stop{border-left-color:var(--stop)}
+  .callout .t{font-weight:800;font-size:13.5px;margin-bottom:4px}
+  .callout.stop .t{color:var(--stop)}
+  .callout p{font-size:14px;margin:6px 0}
+  ul,ol{padding-left:21px;margin:9px 0} li{margin:5px 0;font-size:14.5px}
+  li::marker{color:var(--ink-3)}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;
+    border:1px solid rgba(0,0,0,.14);vertical-align:-1px;margin-right:5px}
+
+</style>
+</head>
+<body>
+<header class="mergehead">
+  <div class="kick">게임 · 설계 · 검수</div>
+  <h1>게임 다섯 — 설계와 손볼 것</h1>
+  <p>게임 명세 둘을 합친 것이다. <b>네 게임을 손보는 일</b>(서울 퍼즐 · 봄소풍 · 어휘 카드 · 조사 스나이퍼)과 <b>VocaShot 혼자 하기의 설계</b>가 따로 있었는데, 게임을 보려면 두 문서를 오가야 했다. 화면은 <code>screens_uiux.html</code> 의 게임 절과 VocaShot 절에 있다.</p>
+  <table><tbody>
+<tr><td><b>네 게임 손볼 것</b></td><td>게임별로 무엇이 어긋났고 무엇을 고칠지. 신구판 대조 · 다국어 · 확정 디자인 검수</td><td>그대로</td></tr>
+<tr><td><b>VocaShot 설계</b></td><td>혼자 하기의 규칙 · 문항 원천 · 급 선택 · 점수 저장 · 남은 결정</td><td>§11~§20</td></tr>
+  </tbody></table>
+</header>
+
+<!-- ═══════ 네 게임 손볼 것 — games_polish_v1.html ═══════ -->
+<section class="part" id="part-polish" aria-label="네 게임 손볼 것">
+<main>
+<header class="doc">
+  <div class="eyebrow">손볼 것 · 게임 넷</div>
+  <h1>VocaShot 말고 나머지 — 무슨 게임이고, 무엇이 어긋나 있나</h1>
+  <p class="lead">as-is(<code>asis_v1.html</code>)는 <b>목록에서 보이는 것</b>만 옮겼다.
+     이 문서는 게임 <b>안으로 들어가서</b> 규칙을 읽고, <b>고쳐야 할 것</b>을 적는다.
+     한 게임씩 채워 나간다. 값은 전부 컴포넌트와 서버 모델 실측이다.</p>
+</header>
+
+<h2 id="s1"><span class="n">1</span>서울 여행 퍼즐 — <b>문장 조립</b></h2>
+<p class="lead"><b>서울의 장소를 하나씩 여행하며, 친구와의 대화 속 문장을 조각으로 조립하는 게임.</b>
+   지도에서 장소를 고르고 → 도착 대화를 보고 → 퍼즐 몇 개를 풀면 그 장소가 완료된다.
+   <code>components/main/game/seoul-puzzle.tsx</code> <b>1222줄</b>.</p>
+
+<div class="callout stop">
+  <div class="t">이 게임은 <b>연세 1권 전용</b>이다 — 화면에 그렇게 쓰여 있다</div>
+  <p>장소 카드에 <code>연세 1권 {l.unit}</code>이 <b>하드코딩</b>돼 있고(750줄),
+     그 아래에 그 장소에서 다루는 <b>문법 칩</b>이 붙는다.
+     장소마다 <code>unit</code>과 <code>grammar[]</code>를 들고 있다.</p>
+  <p><b>"게임은 교재와 무관하다"는 말이 이 게임에는 안 맞는다.</b>
+     진도(<code>learning-record</code>)와는 안 이어져 있지만,
+     <b>콘텐츠 자체가 1권 과에 맞춰</b> 만들어져 있다.
+     그래서 <b>1급 학습자용</b>이고 2급 이상에게는 쉬울 것이다.</p>
+</div>
+
+<h3>화면 다섯</h3>
+<pre>name     이름을 입력한다 — 대화에 <b>[이름]</b> 자리로 들어간다
+map      서울 지도. 장소가 <b>순서대로</b> 열린다(앞을 끝내야 다음)
+entry    도착 대화 — 친구/나 말풍선이 오간다
+puzzle   <b>조각을 눌러 문장을 조립</b>한다
+complete 그 장소 완료</pre>
+<div class="callout">
+  <div class="t">이름이 <b>받침에 따라 조사를 바꾼다</b></div>
+  <p><code>resolveToken</code>이 <code>[이름]이에요.</code> / <code>[이름]예요.</code>를
+     이름 끝 받침 유무로 갈라 넣는다. <b>"수현이에요"와 "민수예요"가 각각 맞게</b> 나온다.</p>
+  <p class="qa">공들여 만든 부분이다. 손대지 말 것.</p>
+</div>
+
+<h3>퍼즐 한 문항의 규칙</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>지금</th></tr>
+  <tr><td>조각</td><td><code>answer[]</code> + <code>distractors[]</code>를 <b>섞어서</b> 트레이에 깐다</td></tr>
+  <tr><td>조립</td><td>트레이 조각을 누르면 슬롯 <b>뒤에 붙는다</b>. 슬롯 조각을 누르면 트레이로 돌아간다</td></tr>
+  <tr><td><b>채점</b></td><td><code>JSON.stringify(슬롯) === JSON.stringify(answer)</code> —
+      <b>어순이 하나라도 다르면 오답</b></td></tr>
+  <tr><td>힌트</td><td>장소당 <b>3개</b>. 누르면 <b>다음 조각을 자동으로</b> 놓아 준다</td></tr>
+  <tr><td>정답</td><td>+20 XP <span class="qa">힌트를 썼으면 +10</span></td></tr>
+  <tr><td><b>오답</b></td><td><b>+5 XP</b> · <b>정답 문장을 통째로 보여 준다</b> · <b>다시 하기</b> 버튼</td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">정한 것 ① — <b>오답 0점, 재시도는 감점</b></div>
+  <p>지금은 오답이면 <b>정답 문장이 그대로 뜨고</b>, "다시 하기"가
+     <code>loadPuzzle</code>을 다시 부르며 <code>hintUsed</code>를 <b>false 로 되돌린다</b>.
+     재시도에 감점이 없어서 <b>순서가 뒤집혀 있었다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>어떻게 풀었나</th><th class="n">지금</th><th class="n">바꾼 뒤</th></tr>
+    <tr><td>바로 맞힘</td><td class="n">20</td><td class="n"><b>20</b></td></tr>
+    <tr><td>힌트를 쓰고 맞힘</td><td class="n">10</td><td class="n"><b>10</b></td></tr>
+    <tr><td><b>틀리고 다시 맞힘</b></td>
+        <td class="n"><b>25</b> <span class="qa">5+20</span></td><td class="n"><b>10</b></td></tr>
+    <tr><td>틀리고, 힌트도 쓰고 맞힘</td>
+        <td class="n">15 <span class="qa">5+10</span></td><td class="n"><b>5</b></td></tr>
+    <tr><td>끝내 못 맞힘</td><td class="n"><b>5</b></td><td class="n"><b>0</b></td></tr>
+  </table></div>
+  <p><b>실수 하나에 반씩 깎는다.</b> 틀리는 것과 힌트를 <b>같은 무게</b>로 둔다 —
+     둘 다 "혼자 못 풀었다"는 같은 사실이고, 지금처럼 <b>힌트만 벌주면
+     정직한 쪽이 손해</b>가 된다.</p>
+  <p>끝까지 맞히면 <b>0점은 주지 않는다</b>(최소 5). 풀어낸 것은 풀어낸 것이다.
+     못 맞히고 넘어가야 0이다.</p>
+  <p class="qa">고칠 곳은 <code>checkAnswer</code> 하나다 —
+     오답 분기의 <code>const xp = 5</code>를 <b>0</b>으로,
+     정답 분기를 <code>hintUsed</code>와 <b>새 플래그(이 문항에서 틀린 적 있음)</b>로 가른다.
+     <code>retryPuzzle</code>은 그 플래그를 <b>지우지 않는다</b>.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">정한 것 ② — <b>XP 를 서버에 보낸다</b>. 저장하는 값만 바꾸면 된다</div>
+  <p>헤더에 <code>{totalXp} XP</code>가 늘 떠 있는데 <b>서버로는 XP 를 안 보낸다</b>.
+     장소별 <code>score</code>가 <code>퍼즐 수 × 10</code>이라는 <b>상수</b>여서
+     실력과 무관하고 <b>누구나 같은 값</b>이다. 진짜 XP 는
+     <code>localStorage</code>에만 있어서 <b>기기를 옮기면 조용히 바뀐다</b>.</p>
+  <p><b>고칠 곳은 저장하는 줄 하나다.</b> 상수 대신 <b>그 장소에서 실제로 번 XP</b>를 보낸다 —
+     <code>sessionXp</code>가 이미 정확히 그 값이다(<code>startLocation</code>에서 0으로 리셋된다).</p>
+  <pre>지금   score = (puzzlesMap[id]?.length ?? 0) * 10   <b>← 상수</b>
+바꿔   score = sessionXp                          <b>← 그 장소에서 번 XP</b></pre>
+  <div class="callout" style="margin:10px 0 0">
+    <div class="t">불러오는 코드는 <b>안 고쳐도 된다</b></div>
+    <p>이미 <code>totalXp = 완료한 장소들의 score 합</code>으로 읽고 있다.
+       <b>더하던 숫자가 틀렸을 뿐</b>이라, 저장 값을 바로잡으면 그 계산이 <b>저절로 맞는다</b>.</p>
+    <p class="qa">그리고 서버 <code>upsert</code>가 <b><code>max()</code></b>로 유지하므로
+       같은 장소를 다시 해서 더 잘하면 <b>높은 쪽이 남는다</b>. 낮아지지 않는다.</p>
+  </div>
+  <p><b>같이 고칠 것 하나</b> — 지금은 <code>lastCompletedRef</code>가
+     <b>이미 완료한 장소는 다시 안 보낸다</b>. 그러면 <b>다시 해서 더 잘해도 반영이 안 된다</b>.
+     장소를 끝낼 때마다 그 판의 <code>sessionXp</code>를 보내고,
+     <b>높은 값 유지는 서버에 맡긴다</b>.</p>
+  <p class="qa"><code>_meta.extra</code>는 <code>{ playerName, currentLoc }</code> 그대로 둔다.
+     XP 를 거기 따로 넣을 필요가 없어진다 — <b>장소별 합이 곧 전체</b>다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">확인해야 할 것 — <b>정답이 정말 하나뿐인가</b></div>
+  <p>채점이 <b>어순 완전 일치</b>다. 한국어는 어순이 비교적 자유로워서
+     <b>다른 순서도 맞는 문장</b>일 수 있다 — 그러면 맞게 쓴 학습자가 오답 처리된다.</p>
+  <p class="qa">콘텐츠가 <b>서버 DB</b>(<code>ko_seoul_puzzle_step</code>)에 있어서
+     이 저장소만으로는 <b>실제 문장을 볼 수 없었다</b>. 확인하지 않고 단정하지 않고 남겨 뒀는데 —
+     <b>어드민에서 38단계를 전부 열어 읽었다. 그 걱정이 맞았다</b>: §10.</p>
+</div>
+
+<h3>콘텐츠 모델 — 관리자가 고칠 수 있다</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>필드</th></tr>
+  <tr><td><b>장소</b></td>
+      <td><code>id · name · num · x · y · unit · desc · grammar[] · entryMessages[] · sort_order</code><br>
+          <span class="qa">x · y 는 지도 위 좌표다</span></td></tr>
+  <tr><td><b>퍼즐</b></td>
+      <td><code>location_id · step_index · data</code> — <code>data</code>가 <b>자유형 dict</b>다.<br>
+          클라이언트가 기대하는 모양은
+          <code>friendMsg · friendMsgT · selfMsg · selfMsgT · friendMsg2 · friendMsg2T ·
+          hintText · answer[] · distractors[] · grammar · tip</code></td></tr>
+</table></div>
+<p class="qa"><code>GET /game-content/seoul-puzzle</code>은 누구나, 편집(<code>/locations</code> · <code>/steps</code>)은
+   <code>MasterAdminRequired</code>. <code>data</code>가 검증 없는 <code>dict</code>라
+   <b>필드 이름을 하나 틀리면 조용히 깨진다</b>.</p>
+
+<h2 id="s2"><span class="n">2</span>봄소풍 숫자미션 — <b>듣고 숫자 고르기</b></h2>
+<p class="lead"><b>친구를 고르면 그 친구의 주제로 숫자 문항이 나온다.</b>
+   문장을 듣고 네 개 중에서 맞는 숫자를 고른다.
+   <code>components/main/game/spring-picnic.tsx</code> <b>1045줄</b>.</p>
+
+<div class="callout">
+  <div class="t">이 게임은 <b>잘 만들어져 있다</b> — 다른 게임이 여기서 배워야 한다</div>
+  <div class="tablewrap"><table>
+    <tr><th>하고 있는 것</th><th>다른 게임은</th></tr>
+    <tr><td><b>서버 우선 복원</b> — 켤 때 <code>getGameProgress</code>로 읽어
+        <code>localStorage</code>에 <b>merge</b> 한다</td>
+        <td><b>서울 퍼즐은 반대다</b> — XP 를 서버에 안 보내고 기기를 옮기면 값이 바뀐다(§1)</td></tr>
+    <tr><td><b>다국어 힌트</b> — <code>i18n.language</code>를 따라가고
+        <code>ko</code> 로 폴백한다(<code>q.hint[curLang] || q.hint.ko</code>)</td>
+        <td>VocaShot 은 <b>영어로만</b> 줬다 — 고치기로 했다</td></tr>
+    <tr><td><b>틀린 문항을 다음 판 앞으로</b> 당긴다
+        (<code>rounds = [...틀렸던 것, ...나머지]</code>)</td>
+        <td>VocaShot 은 <b>같은 판 안에서</b> 3문항 뒤에 다시 낸다 — 방식이 다를 뿐 둘 다 맞다</td></tr>
+    <tr><td><b>음성이 없으면 TTS</b> 로 대체한다
+        (<code>/sounds/spring-picnic/{id}.m4a</code> → <code>speechSynthesis</code>)</td>
+        <td>—</td></tr>
+  </table></div>
+  <p class="qa"><code>wrongHistory</code>도 <b><code>_meta.extra</code> 에 넣어</b> 서버에 남긴다.
+     "아직 못 외운 것"이 <b>기기를 옮겨도 따라온다</b>.</p>
+</div>
+
+<h3>한 판</h3>
+<pre>친구를 고른다 → 레벨을 고른다
+        ↓
+그 친구의 주제 · 그 레벨 문항이 <b>전부</b> 한 판이 된다
+<b>틀렸던 문항이 맨 앞</b>으로 온다
+        ↓
+문장을 듣고 넷 중 하나를 고른다
+  맞히면            +1점, 다음
+  <b>처음 틀리면</b>       그 자리에서 <b>한 번 더</b>
+  <b>두 번 틀리면</b>       넘어가고 <b>못 외운 것</b>으로 기록된다
+        ↓
+결과 — 정답 수 · <b>70% 이상이면 완료</b></pre>
+<div class="callout">
+  <div class="t">"못 외운 것"을 <b>정확히</b> 관리한다</div>
+  <p>두 번 틀린 것만 <code>wrongHistory</code>에 <b>남기고</b>,
+     한 번에 맞힌 것은 <b>지운다</b>. 목록이 <b>계속 자라지 않는다</b>.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">정한 것 ① — <b>점수는 첫 시도 정답만</b> 센다</div>
+  <p>처음 틀리면 <code>answered:false, retrying:true</code>로 두고 <b>같은 문항을 다시 풀게</b> 한다.
+     거기서 맞히면 <code>newScore++</code> — <b>첫 시도에 맞힌 사람과 점수가 같았다</b>.
+     오답에 점수를 주지는 않으므로 "틀리는 게 이득"까지는 아니지만,
+     <b>넷 중 하나를 찍고 보는 것이 아무 비용 없는 전략</b>이었다.</p>
+  <p><b>재시도 정답은 점수에 넣지 않는다.</b> <code>choose</code>의 정답 분기에서
+     <b>그 문항을 이미 틀렸는지</b>(<code>wSet.has(q.id)</code>)를 보고
+     <b>처음 맞힌 것만</b> <code>newScore++</code> 한다.</p>
+  <p class="qa">VocaShot 의 <b>재출제 정답 0점</b>, 서울 퍼즐의 <b>재시도 감점</b>과
+     방향이 같아진다 — 세 게임이 <b>같은 규칙</b>을 쓴다.</p>
+</div>
+<div class="callout">
+  <div class="t">따라오는 것 — <b>완료 판정은 그대로 둔다</b></div>
+  <p>완료가 <code>pct = score / total &gt;= 70%</code>인데, 점수가 첫 시도만 세게 되면
+     <b>완료도 같이 어려워진다</b>. 초급 숫자 게임에서 <b>첫 시도 70%</b>는 빡빡하다 —
+     친구 하나를 <b>영영 못 끝내는</b> 사람이 생긴다.</p>
+  <p><b>둘을 갈라 둔다.</b> <b>점수</b>는 "얼마나 잘했나"(첫 시도 정답),
+     <b>완료</b>는 "끝까지 해냈나"(재시도 포함 정답 70%)다.
+     서로 다른 질문이므로 <b>다른 값으로 재는 것이 맞다</b>.</p>
+  <p class="qa">VocaShot 결과 화면에서 <b>"맞힘"과 "점수"가 다른 것을 잰다</b>고 한 것과 같은 이유다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">정한 것 ② — <code>wQueue</code> 를 <b>지운다</b></div>
+  <p><code>wQueue</code>는 <b>어디에서도 채워지지 않는다</b> — 늘 빈 배열이다.
+     그런데 <b>네 곳</b>이 그 값을 보고 갈라진다.</p>
+  <pre>461  if (game.wQueue.length &gt; 0) { ... }        <b>← 절대 안 들어간다</b>
+763  isLast = cur &gt;= rounds.length-1 &amp;&amp; wQueue.length === 0
+893  onClick = isLast &amp;&amp; wQueue.length === 0 ? 결과 : 다음
+895  라벨도 같은 조건으로 갈린다</pre>
+  <p><b>"틀린 것을 판 뒤에 모아서 다시"</b> 였다가
+     <b>"그 자리에서 다시"</b> 로 바뀌면서 남은 흔적이다.
+     지금 동작이 맞으므로 <b>필드와 네 분기를 다 버린다</b> —
+     <code>isLast</code>는 <code>cur &gt;= rounds.length - 1</code> 하나로 줄어든다.</p>
+</div>
+
+<h3>콘텐츠 모델</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>필드</th></tr>
+  <tr><td><b>친구</b></td>
+      <td><code>id · face · name · bg · cats[] · mission · desc · desc2</code><br>
+          <span class="qa"><code>cats</code> 가 그 친구가 내는 <b>주제</b>다</span></td></tr>
+  <tr><td><b>문항</b></td>
+      <td><code>id · cat · level · il · hint{언어별} · num · tmpl · tts · correct · wrong[]</code><br>
+          <span class="qa"><code>il</code> 그림 · <code>tts</code> 읽어 줄 문장 · <code>tmpl</code> 문장 틀</span></td></tr>
+</table></div>
+<p class="qa">저장 단위는 <code>stage_id = "{친구id}_{레벨}"</code>,
+   <code>score</code> = 정답 수, <code>completed</code> = 70% 이상.
+   <code>_meta.extra</code> 에 <code>lastFriend · lastLv · lastScore · lastDate ·
+   totalPlayed · wrongHistory</code>.</p>
+
+
+<h2 id="s3"><span class="n">3</span>어휘 카드 마스터 — <b>카드 분류</b></h2>
+<p class="lead"><b>단어 카드 한 장이 뜨면 그 단어가 어느 갈래인지 고른다.</b>
+   급과 <b>"몇 과까지"</b>를 고르면 그때까지 배운 갈래가 <b>누적</b>으로 나온다.
+   <code>components/main/game/card-sort.tsx</code> <b>1136줄</b>.</p>
+
+<div class="callout stop">
+  <div class="t">이 게임은 <b>진도를 직접 묻는다</b> — 화면에 그렇게 쓰여 있다</div>
+  <p>급 선택 아래에 <b>"과 선택 — N과까지 배운 카테고리 누적 출제"</b>가 있고,
+     <code>getCumulativeCategories</code>가 <b>1과부터 고른 과까지</b> 갈래를 모은다.</p>
+  <p><b>게임을 진도와 잇지 않기로 했지만, 이 게임은 이미 이어져 있다.</b>
+     연결하려면 <b>기본값을 학습자의 진도로 두는 것</b>만 하면 된다 —
+     <b>새로 만들 것이 없다</b>. 지금은 <code>2급 · 5과</code>가 고정 기본값이다.</p>
+  <p class="qa">서울 퍼즐(<b>1권 전용</b>)에 이어 <b>두 번째</b>다.
+     "게임 다섯이 교재와 무관하다"는 처음 판단은 <b>둘에게는 맞지 않는다</b>.</p>
+</div>
+
+<h3>한 판</h3>
+<pre>급(2~5급)과 <b>과</b>를 고른다 → 그때까지 갈래가 <b>누적</b>으로 모인다
+        ↓
+카드 한 장(단어)이 뜬다. <b>갈래를 고른다</b>
+  맞히면   (100 + <b>속도 보너스</b>) × <b>콤보 배수</b> × <b>레어 1.5</b>
+  틀리면   <b>0점 · HP −1 · 콤보 리셋</b>. 카드는 <b>넘어간다</b>
+        ↓
+<b>HP 0</b>(시작 5) 또는 덱 소진 → 결과 · 정확도로 <b>등급(S…)</b></pre>
+<div class="tablewrap"><table>
+  <tr><th>보너스</th><th>값</th></tr>
+  <tr><td>속도</td><td><b>2초 이내 +50</b>, 4초부터 0. 그 사이는 선형으로 준다</td></tr>
+  <tr><td>콤보</td><td>3연속 <b>×1.5</b> · 5연속 <b>×2.0</b> · 8연속 <b>×3.0</b></td></tr>
+  <tr><td>레어 단어</td><td><b>×1.5</b></td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">셋 중 <b>유일하게 재시도 문제가 없다</b></div>
+  <p>오답이어도 <b>카드가 넘어간다</b>(<code>setCardIndex(i+1)</code>이 오답 분기에도 있다).
+     그래서 <b>맞을 때까지 찍는 것</b>이 안 된다.
+     오답 비용도 분명하다 — <b>HP 하나와 콤보 전부</b>를 잃는다.</p>
+  <p class="qa">서울 퍼즐·봄소풍이 여기서 배워야 하는 부분이다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">앱을 돌려서 찾은 것 — <b>처음 들어와서 바로 START 를 누르면 카드가 안 나온다</b></div>
+  <p>기본값(<b>2급 · 5과</b>) 그대로 <b>START</b> 를 누르면
+     <b>"모든 카드를 처리했어요!"</b> 가 즉시 뜬다. <b>덱이 비어 있다.</b></p>
+  <pre>const startGame = useCallback(() =&gt; {
+  const allCats = getCumulativeCategories(<b>vocab</b>, selectedGrade, selectedLesson);
+  ...
+}, [selectedGrade, selectedLesson]);   <b>← vocab 이 의존성에 없다</b></pre>
+  <p><code>vocab</code>은 <b>서버에서 받아 온 뒤</b>에 채워지는데,
+     <code>startGame</code>은 <b>첫 렌더의 빈 <code>vocab</code></b>을 붙잡고 있다.
+     급이나 과를 <b>한 번이라도 바꾸면</b> 콜백이 다시 만들어지면서 정상 동작한다.</p>
+  <p><b>그래서 지금까지 안 보였다.</b> 사람은 보통 급·과를 고르고 시작하므로
+     넘어갔던 것이고, <b>기본값으로 바로 시작하는 사람만</b> 빈 화면을 본다.</p>
+  <p class="qa">고치는 법은 <code>vocab</code>을 의존성에 넣는 것 하나다.
+     확인 방법 — 과를 <b>4과로 바꿨다가</b> START 하면 <code>택시</code> 카드가
+     <b>1 / 32</b> 로 정상 출제된다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">정한 것 ① — <b>저장을 붙인다</b>. 지금은 아무것도 남지 않는다</div>
+  <p><code>game-progress</code>도, <code>localStorage</code>도 <b>쓰지 않는다</b>.
+     점수 · 최고 콤보 · 등급이 <b>판이 끝나면 사라진다</b>.
+     그래서 목록 카드에도 <b>보여 줄 것이 없다</b>(<code>asis_v1.html</code> §4d).</p>
+  <p><b>붙이면 된다.</b> 저장 단위는 이미 화면에 있다 —
+     <code>stage_id = "{급}_{과}"</code>, <code>score</code> = 그 판 점수.
+     서버가 <code>max()</code>로 최고 점수를 유지하므로 <b>그냥 보내면 된다</b>.</p>
+  <p class="qa">봄소풍이 <code>"{친구id}_{레벨}"</code>을 쓰는 것과 <b>같은 모양</b>이다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">정한 것 ② — <b>급을 연다</b>. 지금은 2~5급으로 막혀 있다</div>
+  <p>클라이언트 타입이 <code>Grade = "2급" | "3급" | "4급" | "5급"</code>로
+     <b>네 개에 고정</b>돼 있다. 서버는 <code>grade</code>를
+     <b>자유 문자열</b>(<code>max_length=20</code>)로 받는다.</p>
+  <p class="qa"><b>지금 막고 있는 것은 없다</b> — 씨드 데이터(<code>vocab.json</code>)도
+     <b>2~5급뿐</b>이다(각 15과 + <code>rare</code>). 타입이 콘텐츠를 자르는 게 아니라
+     <b>둘이 같다</b>. 그래서 급한 일은 아니고, <b>나중에 콘텐츠가 늘 때를 위한</b> 손질이다.</p>
+  <p><b>서버 데이터에서 받아 오게 바꾼다.</b> <code>Object.keys(vocab)</code>를 정렬해 쓰면
+     <b>콘텐츠를 넣는 것만으로 급이 늘어난다</b> — 코드를 다시 안 고친다.</p>
+  <p class="qa">VocaShot 이 <b>1~8급</b>을 다 쓰는 것과도 맞아진다.
+     기본 급은 <b>있는 것 중 가장 낮은 급</b>으로 둔다(지금은 2급이 고정 기본값이다).</p>
+</div>
+
+<h3>콘텐츠 모델</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>필드</th></tr>
+  <tr><td><b>갈래</b></td><td><code>name · color · sort_order</code>
+      <span class="qa">color 는 hex 검증이 있다</span></td></tr>
+  <tr><td><b>어휘</b></td><td><code>grade · lesson · new_categories[] · words{갈래: 단어[]} · sort_order</code><br>
+      <span class="qa">그 과에서 <b>새로 나오는</b> 갈래를 <code>new_categories</code> 로 표시한다</span></td></tr>
+  <tr><td><b>레어</b></td><td>별도 목록. 맞히면 <b>×1.5</b></td></tr>
+</table></div>
+<p class="qa">단어가 <b>4개 미만인 갈래는 버린다</b>(<code>words.length &gt;= 4</code>) —
+   선택지를 못 만들기 때문이다.</p>
+
+
+<h2 id="s4"><span class="n">4</span>조사 스나이퍼 — <b>문장에 맞는 조사 고르기</b></h2>
+<p class="lead"><b>문장 하나가 뜨고, 빈 자리에 들어갈 조사를 12초 안에 고른다.</b>
+   한 판 <b>8문항</b>이고, 그중 <b>절반이 이전 과 복습</b>이다.
+   <code>components/main/game/particle-sniper.tsx</code> <b>829줄</b>.</p>
+
+<div class="callout">
+  <div class="t">넷 중 <b>구조가 가장 깔끔하다</b></div>
+  <div class="tablewrap"><table>
+    <tr><th>하고 있는 것</th><th>어떻게</th></tr>
+    <tr><td><b>복습이 규칙에 들어 있다</b></td>
+        <td>현재 과에서 <b>4문항</b> + 그 앞 과들에서 <b>4문항</b>.
+            앞 과가 없으면 현재 과에서 <b>8문항</b>을 채운다</td></tr>
+    <tr><td><b>급·과가 서버에서 온다</b></td>
+        <td><code>getParticleSniperLevels</code> · <code>...Sentences</code>.
+            <b>하드코딩이 없다</b> — 카드 마스터와 정반대다</td></tr>
+    <tr><td><b>재시도가 없다</b></td><td>한 번 답하면 넘어간다. 찍기 반복이 불가능하다</td></tr>
+    <tr><td><b>틀린 것을 자세히 남긴다</b></td>
+        <td><code>{ 문장, 정답, 내가 고른 것 }</code>. 시간 초과도
+            <code>userAnswer: '선택 안 함'</code>으로 <b>같이 기록</b>한다</td></tr>
+  </table></div>
+</div>
+
+<h3>한 판</h3>
+<pre>급을 고르고 → 과를 고른다
+        ↓
+문항 8개를 뽑는다 — <b>현재 과 4 + 이전 과 4</b>(복습)
+        ↓
+문장이 뜬다. <b>12초</b> 안에 조사를 고른다
+  맞히면   (100 + <b>속도 보너스</b>) × <b>콤보 배수</b>
+  틀리면   <b>0점 · HP −1 · 콤보 리셋</b> · 오답 기록
+  <b>12초 넘기면</b>  MISS — 틀린 것과 <b>같게</b> 처리한다
+        ↓
+<b>HP 0</b>(시작 5) 또는 8문항 끝 → 결과 · <b>오답 목록</b></pre>
+<p class="qa">점수 공식이 <b>어휘 카드 마스터와 같다</b> — 2초 이내 +50, 4초부터 0,
+   콤보 3·5·8 에서 ×1.5·×2.0·×3.0. 레어 배수만 없다.</p>
+
+<div class="callout">
+  <div class="t">과가 <b>띄엄띄엄한 것은 의도된 것</b>이다 — 확인했다</div>
+  <p>씨드 데이터의 과가 이렇게 비어 있다.</p>
+  <pre>1급  4 · 6 · 7 · 8 · 11 · 12 · 13 · 14 · 15과   <b>5 · 9 · 10과가 없다</b>
+2급  2 · 3 · 4 · 12과       3급  1 · 6 · 12 · 15과
+4급  3 · 13 · 14과          5급  4 · 13과      6급  1 · 14과</pre>
+  <p><b>어미만 있는 과에는 낼 조사가 없다.</b> 교재의
+     <code>grammar_focus</code>(<code>n4_blank_question</code>)와 맞춰 보면 그대로 나온다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>1급 과</th><th>게임</th><th>교재 문법</th></tr>
+    <tr><td>8과</td><td><b>있음</b></td><td>목적격 <code>을/를</code></td></tr>
+    <tr><td><b>9과</b></td><td>없음</td><td><code>-지 않다</code> · <code>ㅂ불규칙</code> — <b>전부 어미</b></td></tr>
+    <tr><td><b>10과</b></td><td>없음</td><td><code>-어요</code> 활용 · <code>-을까요/-ㄹ까요</code> — <b>전부 어미</b></td></tr>
+    <tr><td>12과</td><td><b>있음</b></td><td><code>부터 ~ 까지</code> · 시간명사<code>+에</code></td></tr>
+    <tr><td>15과</td><td><b>있음</b></td><td>단위명사<code>+에</code> · 사람<code>+에게</code></td></tr>
+  </table></div>
+  <p class="qa">5과만 예외처럼 보인다 — 주격 <code>이</code>가 있는데 빠졌다.
+     그런데 <b>4과·6과에 같은 주격 <code>이/가</code></b>가 있으므로
+     <b>겹쳐서 하나만 쓴 것</b>으로 읽힌다. <b>빠뜨린 것이 아니다.</b></p>
+</div>
+<div class="callout stop">
+  <div class="t">정정 — <b>씨드 파일은 낡았다. 정본은 어드민이다</b></div>
+  <p>처음에 <code>seed_data/</code>를 보고 <b>"7·8급은 문항이 없다"</b>고 적었는데
+     <b>틀렸다</b>. 어드민(<code>admin.korean.pulleyai.co.kr</code>)의 실제 데이터는
+     <b>1~8급 전부</b>에 레슨이 있다.</p>
+  <div class="tablewrap"><table>
+    <tr><th></th><th class="n">급</th><th class="n">레슨</th><th>7·8급</th></tr>
+    <tr><td>씨드 파일</td><td class="n">6</td><td class="n">24</td><td><b>없음</b></td></tr>
+    <tr><td><b>어드민(정본)</b></td><td class="n"><b>8</b></td><td class="n"><b>32</b></td>
+        <td>7급 1·2·3과 · 8급 4·5·11과</td></tr>
+  </table></div>
+  <p><b>사람이 손수 채워 온 것</b>이고 씨드는 초기 상태다.
+     <b>게임 콘텐츠를 볼 때는 어드민을 봐야 한다.</b></p>
+  <p class="qa">한 판이 8문항인데 레슨당 문항이 <b>4~8개</b>다.
+     그래서 <b>이전 과 복습으로 채우는 규칙</b>이 있어야 판이 성립한다 — 앞의 설계와 맞물린다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">정한 것 — <b>고정 8을 버리고 조건으로 끝낸다. 상한 20</b></div>
+  <p>어드민 실측으로 <b>32레슨 · 173문항</b>이 있는데
+     <code>MAX_QUESTIONS_PER_GAME = 8</code> 이 <b>모든 급에 똑같이</b> 걸려 있었다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>급</th><th class="n">레슨</th><th class="n">문항</th>
+        <th class="n">8이 덮던 비율</th><th>바꾼 뒤 한 판</th></tr>
+    <tr><td><b>1급</b></td><td class="n">9</td><td class="n"><b>64</b></td>
+        <td class="n"><b>12%</b></td><td><b>20</b> <span class="qa">상한에 걸림</span></td></tr>
+    <tr><td>2급</td><td class="n">4</td><td class="n">22</td><td class="n">36%</td>
+        <td><b>20</b> <span class="qa">상한에 걸림</span></td></tr>
+    <tr><td>3급</td><td class="n">4</td><td class="n">19</td><td class="n">42%</td>
+        <td>19 <span class="qa">후보 소진</span></td></tr>
+    <tr><td><b>4급</b></td><td class="n">3</td><td class="n"><b>12</b></td>
+        <td class="n"><b>67%</b></td><td>12 <span class="qa">후보 소진</span></td></tr>
+    <tr><td>5~8급</td><td class="n">3씩</td><td class="n">13~15</td><td class="n">53~62%</td>
+        <td>13~15 <span class="qa">후보 소진</span></td></tr>
+  </table></div>
+  <p><b>같은 숫자가 정반대로 작동하고 있었다.</b> 1급은 여덟 판을 해야 한 바퀴인데
+     4급은 두 판이면 다 본다. 숫자를 고정하는 대신 <b>조건으로 끝낸다</b> —
+     다른 게임이 이미 그렇게 한다(VocaShot 하트 0/문항 소진 · 카드 마스터 60초 ·
+     봄소풍 그 묶음 전 문항). <b>조사 스나이퍼만 고정이었다.</b></p>
+  <pre>지금   문항 <b>8개</b>를 뽑는다 (현재 과 4 + 이전 과 4)
+바꿔   <b>하트 0</b> · <b>후보 소진</b> · <b>20문항</b> 중 먼저 오는 것에서 끝
+       현재 과 : 이전 과 = <b>1 : 1</b> 은 그대로 — 비율로 유지한다</pre>
+  <p><b>상한 20이 실제로 걸리는 것은 1급과 2급뿐</b>이고
+     3급 이하는 <b>후보 소진으로 저절로 끝난다</b>. 급마다 다른 사정을 규칙이 흡수한다.</p>
+  <p class="qa">상한을 두는 이유는 시간이다 — <b>20문항 × 12초 = 최장 4분</b>.
+     그 위로 가면 한 판이 너무 길어진다. 실제로는 답을 빨리 하므로 더 짧다.</p>
+  <p class="qa">따라오는 것 — 결과 화면의 <code>n / 8</code> 이 <b>가변</b>이 된다.
+     한 판 안에서 같은 문항이 두 번 나오지는 않지만(섞어서 잘라 쓴다),
+     <b>판을 넘기면 겹칠 수 있다</b> — 지금도 같다.
+     "안 본 것 먼저"를 넣을지는 <b>별개 판단</b>으로 남긴다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">손볼 것 — <b>저장을 안 한다</b>. 오답 목록까지 버려진다</div>
+  <p><code>game-progress</code>도 <code>localStorage</code>도 <b>쓰지 않는다</b>.
+     카드 마스터와 같은 문제인데 <b>더 아깝다</b> —
+     이 게임은 <b>틀린 문장과 내가 고른 조사를 이미 다 갖고 있고</b>
+     결과 화면에 목록으로 보여 주기까지 한다. 그런데 <b>판이 끝나면 사라진다</b>.</p>
+  <p><b>저장을 붙인다.</b> <code>stage_id = "{급}_{과}"</code> · <code>score</code> = 그 판 점수.
+     카드 마스터와 <b>같은 모양</b>이다.</p>
+  <p class="qa">오답 목록을 <code>_meta.extra</code> 에 넣을지는 <b>나중 문제</b>다 —
+     봄소풍이 <code>wrongHistory</code> 로 그렇게 하고 있으므로
+     <b>따라갈 본보기가 이미 있다</b>. 먼저 점수만 붙인다.</p>
+</div>
+
+<h2 id="s6"><span class="n">6</span>신구판 대조 — <b>게임은 거의 안 바뀐다</b></h2>
+<p class="lead">어드민 콘텐츠는 <b>구판 교재 기준</b>으로 사람이 만든 것이다.
+   그러면 고칠 것은 <b>신구판에서 바뀐 것</b>뿐이다.
+   워크북(<code>글로벌_교재기반_콘텐츠_v15.xlsx</code>)의
+   <code>99_변경내역</code> <b>533건</b>과 맞춰 봤다.</p>
+<div class="tablewrap"><table>
+  <tr><th>변경 종류</th><th class="n">건</th><th>게임에 영향</th></tr>
+  <tr><td>어휘 폐기 · 교체 · 과이동 · 구판잔재 · 교정</td><td class="n"><b>106</b></td>
+      <td>구판 낱말 <b>58개</b>를 추려 다섯 게임 콘텐츠와 맞춰 봤다</td></tr>
+</table></div>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th class="n">낱말</th><th>바뀐 낱말과 정확히 일치</th></tr>
+  <tr><td>어휘 카드 마스터</td><td class="n">502</td><td class="n"><b>0</b></td></tr>
+  <tr><td>서울 퍼즐</td><td class="n">509</td><td class="n"><b>0</b></td></tr>
+  <tr><td>조사 스나이퍼</td><td class="n">249</td><td class="n"><b>0</b></td></tr>
+  <tr><td>봄소풍</td><td class="n">136</td><td class="n"><b>0</b></td></tr>
+  <tr><td>VocaShot 프리셋</td><td class="n">108</td><td class="n"><b>0</b></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">처음에 3건이 잡혔는데 <b>내 검사 탓이었다</b></div>
+  <p><code>되다</code> · <code>시험</code> · <code>야영</code>이 걸렸다.
+     그런데 <b>정확히 일치하는 항목은 하나도 없었다</b> —
+     게임이 <b>연어로 쓰기 때문에</b> 부분 문자열로 걸린 것이다.</p>
+  <pre>되다  →  수업이 시작되다 · 학기가 시작되다 · 소화가 안되다
+시험  →  시험을 보다
+야영  →  야영을 하다</pre>
+  <p><b>낱말을 포함만 해도 잡히게 검사해서</b> 3건이 나왔다.
+     낱말 단위로 맞추면 <b>0건</b>이다.</p>
+</div>
+<div class="callout">
+  <div class="t">다만 하나는 <b>사람이 봐야 한다</b> — <code>야영을 하다</code></div>
+  <p><code>야영</code>은 신판에서 <b>빠진 낱말</b>이다
+     (<code>VL-3-15-016</code> · <b>구판잔재 · 삭제/교체 판단 필요</b>).
+     게임은 <code>야영을 하다</code>를 쓰고 있다.</p>
+  <p><b>교재 대조로는 판정할 수 없다.</b> 교재 어휘 목록은 <b>낱말 단위</b>여서
+     <code>야영을 하다</code>라는 연어는 <b>구판에도 신판에도 없다</b>.
+     낱말 <code>야영</code>이 빠졌다는 사실만 있다.</p>
+  <p><b>정한 것 — 그 문항은 아예 뺀다.</b> 낱말이 신판에서 사라졌으므로
+     <code>야영을 하다</code>를 <b>대체하지 않고 제거</b>한다.
+     갈래가 <b>4개 미만이 되면 그 갈래도 함께 빠진다</b>(<code>words.length &gt;= 4</code>).</p>
+  <p class="qa"><code>되다</code>·<code>시험</code>은 <b>과이동</b>이라 낱말이 살아 있다 —
+     게임이 연어로 쓰므로 <b>그냥 두면 된다</b>.</p>
+</div>
+<div class="callout">
+  <div class="t">1급 조사 배치는 <b>신판과 그대로 맞는다</b></div>
+  <p>어드민의 조사 스나이퍼 1급 <b>9개 과</b>를 신판 교재 문법
+     (<code>n4_blank_question.grammar_focus</code>)과 맞춰 보니 <b>9/9 일치</b>다 —
+     4과 <code>은/는</code> · 6과 <code>이/가</code> · 8과 <code>을/를</code> ·
+     12과 <code>부터~까지</code> · 15과 <code>에게</code>.</p>
+  <p><b>빠진 과도 근거가 있다.</b> 게임에 없는 <b>9·10과</b>는 신판 문법이
+     <code>-지 않다</code> · <code>ㅂ불규칙</code> · <code>-어요</code> 활용 —
+     <b>전부 어미</b>다. 조사 게임에 낼 것이 없다.</p>
+  <p class="qa">2급 이상은 <b>이 방법으로 검증할 수 없다</b>.
+     <code>n4_blank_question</code>은 <b>빈칸 활동이 쓰는 문법</b>만 담고 있어서
+     그 과의 문법 전체 목록이 아니다. 고급 조사(<code>마다</code>·<code>조차</code>·<code>로서</code>)는
+     빈칸 활동에 안 나오므로 <b>안 잡히는 것이 정상</b>이다 —
+     게임이 틀렸다는 뜻이 아니다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">그래서 — <b>진도 연결 작업은 없다</b></div>
+  <p><b>학습자가 급·과를 직접 고른다.</b> 카드 마스터와 조사 스나이퍼가 이미 그렇게 되어 있고,
+     자동으로 맞춰 줄 필요가 없다. 기본값만 <b>있는 것 중 가장 낮은 급</b>으로 두면 된다.</p>
+  <p><b>콘텐츠도 거의 안 바꾼다.</b> 신구판 변경 533건 중
+     게임에 손댈 것은 <b><code>야영을 하다</code> 하나</b>다.</p>
+</div>
+
+<h2 id="s8"><span class="n">8</span>앱을 띄워서 본 것 — <b>목업이 놓친 것들</b></h2>
+<p class="lead">로컬에서 앱을 돌려 네 게임을 <b>실제 렌더</b>로 봤다.
+   가짜 API(<code>seed_data</code>)를 물리고 게임 라우트로 바로 들어갔다.
+   <b>코드를 읽어서는 못 봤을 것들</b>이 나왔다.</p>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th>목업이 놓친 것</th></tr>
+  <tr><td><b>봄소풍</b></td>
+      <td><b>CSS 로 그린 소풍 풍경</b>이 화면 위쪽을 차지한다 — 벚나무 · 잔디 · 돗자리 ·
+          친구 이모지가 <b>화면마다 이어진다</b>. 제 목업에는 아예 없었다</td></tr>
+  <tr><td><b>서울 퍼즐</b></td>
+      <td><b>서울 지도를 CSS 로 그렸다</b> — 한강 물결 · 녹지 · 격자 · 지명.
+          장소 카드에 <b>문법 칩이 두 개씩</b> 붙고 <code>연세 1권 4-5과</code> 처럼
+          <b>과 범위</b>가 적힌다(단일 과가 아니다)</td></tr>
+  <tr><td><b>조사 스나이퍼</b></td>
+      <td>급 선택이 <b>2열 카드</b>이고 <b>급마다 테두리·글자 색이 다르다</b>.
+          과 선택에는 <b>그 과의 조사 칩</b>과 <b>문항 수</b>가 붙는다</td></tr>
+  <tr><td><b>카드 마스터</b></td>
+      <td>과 격자에 <b>새 갈래가 있는 과마다 노란 점</b>이 붙는다.
+          결과의 등급이 <b>큰 글자 하나</b>(C)로 뜨고 통계는 <b>세로 목록</b>이다 —
+          제가 2열 격자로 그렸다</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">그리고 <b>진짜 버그를 하나 찾았다</b> — §3 에 적었다</div>
+  <p>어휘 카드 마스터에서 <b>기본값 그대로 START</b> 를 누르면 덱이 비어
+     <b>"모든 카드를 처리했어요!"</b> 가 즉시 뜬다.
+     <code>startGame</code> 의 <code>useCallback</code> 이 <code>vocab</code> 을
+     의존성에 안 넣어서 <b>빈 <code>vocab</code></b> 을 붙잡고 있다.</p>
+  <p class="qa"><b>코드만 읽어서는 못 찾았을 것이다.</b> 급·과를 한 번이라도 바꾸면
+     정상 동작해서, 읽을 때는 자연스러워 보인다.</p>
+</div>
+<div class="callout">
+  <div class="t">띄우는 데 걸린 것 셋 — <b>다음에 또 띄울 때를 위해</b></div>
+  <ol>
+    <li><code>npm install</code> 이 필요하다(<code>node_modules</code> 가 없다). 266개 · 39초.</li>
+    <li><b><code>.env</code> 에 <code>PUBLIC_*</code> 여덟 개를 다 채워야 한다.</b>
+        rsbuild 는 <b>정의된 것만</b> 치환해서, 하나라도 빠지면
+        <code>process is not defined</code> 로 <b>흰 화면</b>이 된다.</li>
+    <li>로그인 게이트는 라우트가 아니라 <code>/main</code> 레이아웃에 있다.
+        <code>isSignedIn = !!getAccessToken()</code> 이라
+        <code>localStorage.koreanAccessToken</code> 에 아무 값이나 넣으면 열린다.</li>
+  </ol>
+  <p class="qa">게임 콘텐츠는 <code>/game-content/*</code> 아홉 개만 흉내내면 된다 —
+     <code>seed_data</code> 를 그대로 내보내면 충분하다.</p>
+</div>
+
+<h2 id="s9"><span class="n">9</span>확정 디자인 검수 — <b>screens_uiux.html 의 게임 절</b></h2>
+<p class="lead">디자인 세션이 <b>17화면</b>으로 다듬어 왔다(내가 넘긴 14 + <b>결과 화면 3개 추가</b>).
+   제약과 결정이 지켜졌는지 하나씩 확인했다.</p>
+
+<div class="callout">
+  <div class="t">넘긴 것보다 <b>늘려 왔다</b> — 결과 화면 셋</div>
+  <p><code>pc_result</code> · <code>ps_result</code> · <code>sp_complete</code>.
+     내가 캡처를 못 했던 화면들이다. 게임을 끝까지 몰고 가야 나오는 것이라 빠뜨렸는데
+     <b>채워 왔다</b>.</p>
+</div>
+
+<h3>최종 규칙 — <b>재확인</b></h3>
+<div class="tablewrap"><table>
+  <tr><th>규칙</th><th>확인</th></tr>
+  <tr><td>조사 스나이퍼 <b>고정 문항</b></td>
+      <td><code>.ps-target-question</code>은 중앙에 고정 · 상단 타이머만 감소한다.
+          과녁·조준경·탄착은 <b>초점과 정오답 피드백</b>에만 쓴다</td></tr>
+  <tr><td>카드 마스터 <b>60초 타이머</b></td><td><b>60s</b> 표기 유지</td></tr>
+  <tr><td>카드 마스터 <b>갈래 색</b>(데이터 유래)</td>
+      <td>네 갈래 색 <b>그대로</b> — <code>#4A9EFF</code> 계열 유지</td></tr>
+  <tr><td>서울 퍼즐 <b>[이름] 치환</b></td><td>"저는 <b>수현이에요</b>" — 받침 처리 유지</td></tr>
+  <tr><td>봄소풍 <b>숫자 3.2rem</b></td><td><b>51.2px</b> = 3.2rem 그대로</td></tr>
+  <tr><td>봄소풍 <b>선택지 세로 1열 · 왼쪽 정렬</b></td><td><code>text-align:left</code> · 전체폭 유지</td></tr>
+  <tr><td><b>CSS 일러스트</b></td>
+      <td>소풍 풍경 <code>.t-illo</code> <b>260 → 300px</b>(키움) · 서울 지도 요소 <b>33개</b> 유지</td></tr>
+  <tr><td>목록 <b>카드 높이 80</b></td><td><b>80px</b> 다섯 장 모두 유지</td></tr>
+</table></div>
+
+<h3>결정이 화면에 들어왔다</h3>
+<div class="tablewrap"><table>
+  <tr><th>결정</th><th>어떻게 반영됐나</th></tr>
+  <tr><td><b>목록 둘째 줄에 진행</b></td>
+      <td>"2급 최고 210점" · "<b>솔이</b> · 2단계까지 했어요" · "12곳 중 5곳 다녀왔어요".
+          내가 쓴 예시 이름(민수)을 <b>실제 친구 이름(솔이)</b>으로 고쳐 왔다</td></tr>
+  <tr><td><b>점수 저장</b></td>
+      <td>결과에 <b>"최고 점수 2,140점"</b> 자리가 생겼다 — 카드 마스터·조사 스나이퍼 둘 다</td></tr>
+  <tr><td><b>맞힘 ≠ 점수</b></td>
+      <td>봄소풍 결과에 <b>"6 첫 시도 정답 / 7 끝까지 맞힘"</b>이 <b>나란히</b> 놓였다.
+          §2 에서 정한 "점수는 첫 시도만, 완료는 재시도 포함"이 <b>그대로 화면이 됐다</b></td></tr>
+  <tr><td>서울 퍼즐 힌트</td><td>완료 화면에 <b>"1 힌트 사용"</b>이 남았다 — 감점 규칙과 맞물린다</td></tr>
+</table></div>
+
+<h3>2차 — <b>분모 고정 지적 뒤</b></h3>
+<p>디자인 세션이 두 커밋을 올렸다(<code>a065dd1</code> 이름 정렬 · <code>1e94d83</code> 분모 파생).
+   다시 열어 봤다.</p>
+
+<div class="callout ok">
+  <div class="t">분모가 <b>풀렸다</b> — 그것도 제대로</div>
+  <p>결과 화면을 <code>PS_RESULT_SAMPLE</code> 한 덩어리로 빼고
+     <b><code>answered</code> 하나에서 분수도 정확도도 파생</b>시켰다.
+     <code>9 / 12</code> 와 <code>75%</code> 가 <b>같은 수에서 나온다</b> —
+     숫자 둘을 따로 적어 두면 어긋나는데, 그걸 막아 놨다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">더 큰 자리가 <b>아직 8</b>이다 — 과 선택 화면</div>
+  <p><code>ps_lesson</code> 이 그대로다.
+     안내 문구가 <b>"현재 과와 이전 과에서 최대 <u>8</u>문제가 랜덤 출제됩니다"</b>,
+     과 카드 숫자도 <b>4 / 8 / 8 / 8 …</b>.</p>
+  <p><b>여기가 학생이 판 길이를 실제로 보는 자리다.</b> 결과 화면은 끝나고 한 번 보지만,
+     과 선택은 <b>시작하기 전에</b> 본다. 결과만 고치면 앞뒤가 어긋난다.</p>
+  <p class="qa">카드 숫자는 코드가 <code>Math.min(MAX_QUESTIONS_PER_GAME, 누적)</code> 이라
+     <b>상수만 20으로 올리면 따라온다</b>. 손대야 하는 건 <b>문구 안의 "8"</b> —
+     그건 문자열에 박혀 있다.</p>
+</div>
+
+<div class="callout ok">
+  <div class="t">플레이 화면 <code>4 / 8</code> 은 <b>고칠 게 없다</b></div>
+  <p>실제 코드가 이미 <code>{currentQuestionIndex + 1} / {questions.length}</code> —
+     <b>처음부터 가변이었다</b>. 목업의 8은 내가 캡처한 판이 8문항이었을 뿐이다.
+     상한을 올리면 <b>저절로 따라온다</b>. 표본만 갈아 주면 된다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">표본의 <b>3급 6과 → 12</b> 는 <b>틀렸다</b> — 어드민에서 확인했다</div>
+  <p>어드민 <b>조사 스나이퍼 · 레슨 32행</b>을 그대로 세었다.
+     3급은 <b>1과 5 · 6과 5 · 12과 5 · 15과 4</b>.
+     6과를 고르면 후보가 <b>1과 + 6과 = 10</b>이다.
+     상한 20은 근처도 안 간다. <b>12는 나올 수 없다.</b></p>
+  <p><b>더 큰 문제가 하나 더 있다.</b> 오답 목록 셋이 <b>전부 1급 조사</b>다 —
+     <code>하고</code>(1급 11과) · <code>에</code>(1급 7과) 둘.
+     그런데 조사 스나이퍼는 <b>고른 급 안에서만</b> 이전 과를 가져온다
+     (<code>levelData[level]</code> 안에서만 뽑는다).
+     3급 6과 판에 나올 수 있는 건 <b><code>한테서</code>와 <code>밖에</code>뿐</b>이다.</p>
+  <p class="qa"><b>고치는 법 — 급·과를 <u>1급 13과</u>로 바꾸면 둘 다 풀린다.</b>
+     오답 문장 셋을 <b>그대로 쓸 수 있고</b>(하고·에 모두 13과보다 앞),
+     누적 52라 <b>상한 20에 걸려</b> <code>answered:20</code> 이 된다.
+     <code>correct:17</code> 이면 오답 셋과 맞고 정확도 <b>85%</b>가 나온다.
+     <b>상한이 실제로 작동하는 화면</b>이라 보여 주기에도 이쪽이 낫다.</p>
+</div>
+
+<h3>어드민 실측 — <b>과별 판 길이</b></h3>
+<p>§4 에 급별 합계만 적어 뒀는데 <b>과별로 세어 두지 않아</b> 이번에 막혔다. 남긴다.</p>
+<div class="tablewrap"><table>
+  <tr><th>급</th><th>과별 한 판 길이 = <code>min(20, 누적)</code></th><th class="n">급 합계</th></tr>
+  <tr><td><b>1급</b></td><td>4과 8 · 6과 16 · <b>7과 20</b> · 8과 20 · 11과 20 · 12과 20 · 13과 20 · 14과 20 · 15과 20</td><td class="n">64</td></tr>
+  <tr><td><b>2급</b></td><td>2과 6 · 3과 10 · 4과 16 · <b>12과 20</b></td><td class="n">22</td></tr>
+  <tr><td>3급</td><td>1과 5 · <b>6과 10</b> · 12과 15 · 15과 19</td><td class="n">19</td></tr>
+  <tr><td>4급</td><td>3과 4 · 13과 8 · 14과 12</td><td class="n">12</td></tr>
+  <tr><td>5급</td><td>1과 4 · 4과 9 · 13과 14</td><td class="n">14</td></tr>
+  <tr><td>6급</td><td>1과 4 · 5과 9 · 14과 14</td><td class="n">14</td></tr>
+  <tr><td>7급</td><td>1과 5 · 2과 10 · 3과 15</td><td class="n">15</td></tr>
+  <tr><td>8급</td><td>4과 5 · 5과 9 · 11과 13</td><td class="n">13</td></tr>
+</table></div>
+<p><b>레슨 32 · 문항 173</b> — §4 에 적은 수와 <b>맞는다</b>.
+   상한 20에 걸리는 것은 <b>1급 7과 이후와 2급 12과</b>, 여덟 자리뿐이다.</p>
+<div class="callout stop">
+  <div class="t">그러니 <b>씨드 파일은 쓰면 안 된다</b></div>
+  <p>저장소 씨드는 <b>24레슨 96문항</b>이라 어드민(<b>32레슨 173문항</b>)과 다르다.
+     <b>씨드가 낡았다.</b> 3급 6과를 씨드로 세면 6이 나오는데 <b>실제는 10</b>이다.</p>
+  <p class="qa">2차 검수에서 내가 <b>씨드로 먼저 세고</b> 어긋난 것을 §4 탓으로 의심했다.
+     <b>§4 가 맞았다</b> — 그건 어드민을 보고 적은 것이었다. 출처를 먼저 봤어야 했다.</p>
+</div>
+
+<h3>내가 §9 에 <b>덜 적은 것</b></h3>
+<div class="callout">
+  <div class="t">"급마다 <b>12~20</b>" 은 <b>마지막 과 기준</b>이다</div>
+  <p>§4 표의 12(4급)~20(1·2급)은 <b>각 급을 끝까지 갔을 때</b>의 판 길이다.
+     <b>앞쪽 과는 훨씬 짧다</b> — 1급 4과는 <b>4문항</b>짜리 한 판이다.
+     실측하니 실제 범위는 <b>4(4급 3과) ~ 20</b>이다.</p>
+  <p class="qa">그래서 <b>"20문항짜리 게임"이라고 부르면 안 된다.</b>
+     20은 <b>상한</b>이지 길이가 아니다. 화면 문구도 <b>"최대"</b>를 살려야 한다 —
+     지금 문구가 이미 "최대 8문제"라 <b>그 형태는 맞게 잡혀 있다</b>. 숫자만 바뀐다.</p>
+</div>
+
+<div class="callout ok">
+  <div class="t">문구 다국어도 <b>8이 박혀 있었다</b> — 고쳤다</div>
+  <p><code>game_ui_i18n_v1.ts</code> 의 <code>lessonHint</code> 가
+     <b>5개 로케일 전부</b> "8"을 문자열에 물고 있었다.
+     <code>{n}</code> 매개변수로 바꿨다.</p>
+<pre>ko  현재 과와 이전 과에서 최대 <b>{n}</b>문제가 랜덤 출제됩니다
+en  Up to <b>{n}</b> questions, drawn from this lesson and earlier ones
+ja  この課と前の課から最大<b>{n}</b>問が出ます
+zh  从本课和之前的课中随机出最多<b>{n}</b>题
+vi  Tối đa <b>{n}</b> câu, lấy từ bài này và các bài trước</pre>
+  <p class="qa">나머지 문구에 박힌 숫자는 <b>봄소풍 "2번 틀리면"</b> 하나뿐인데
+     그건 <b>안 바뀌는 규칙</b>이라 그대로 둔다.</p>
+</div>
+
+<h3>3차 — <b>여섯 군데를 고쳤다</b></h3>
+<p>디자인 세션이 <code>a0a3547</code> 로 조사 스나이퍼 표본과 과 선택 숫자를 이미 반영했다.
+   나머지와, <b>확인하다 나온 것들</b>을 내가 고쳤다.</p>
+<div class="tablewrap"><table>
+  <tr><th>화면</th><th>무엇이 틀렸나</th><th>어떻게 고쳤나</th></tr>
+  <tr><td>조사 · 결과</td><td>급·과가 <b>3급 6과</b>인데 <code>answered:12</code> — 최대 10.
+      오답 셋이 <b>1급 조사</b>라 3급 판에 못 나온다</td>
+      <td><b>1급 13과 · 20 · 17</b> <span class="qa">(디자인 세션)</span></td></tr>
+  <tr><td>조사 · 결과</td><td><code>grade:"A"</code> 가 <b>하드코딩</b> — 분수는 파생시켜 놓고 등급만 남았다</td>
+      <td>정확도에서 파생. 앱과 같은 경계 <b>90/75/60</b></td></tr>
+  <tr><td>조사 · 과 선택</td><td>문구 "최대 <b>8</b>문제" · 카드 숫자가 <b>낡은 씨드</b> 기준</td>
+      <td>"최대 20문제" · <b>8·16·20…</b> <span class="qa">(디자인 세션)</span></td></tr>
+  <tr><td>조사 · 플레이</td><td><code>4 / 8</code> — 1급 8과 한 판은 <b>20</b>이다</td>
+      <td><code>4 / 20</code></td></tr>
+  <tr><td>목록</td><td>"<b>12곳</b> 중 5곳" — 장소는 <b>10곳</b>.
+      같은 목업의 지도가 이미 "0 / 10"이라 <b>자기모순</b>이었다</td>
+      <td>"10곳 중 5곳"</td></tr>
+  <tr><td>봄소풍 · 결과</td><td><code>6 / 8</code> · 솔이 쉬움 — 솔이 쉬움은 <b>10문항</b>.
+      게다가 오답 예시 두 문장이 <b>운영 콘텐츠에 없다</b></td>
+      <td><b>냥이 어려움</b>(단위 6문항) <code>4 / 6</code> · 67% ·
+          오답을 <b>어드민 실제 문항</b>으로</td></tr>
+</table></div>
+
+<div class="callout stop">
+  <div class="t">뿌리 원인 — <b>목업 표본이 낡은 씨드에서 나왔다</b></div>
+  <p>목업은 내가 로컬 앱을 띄워 캡처한 것인데, 그 앱이 <code>game_mockapi.py</code> 를 통해
+     <b>저장소 씨드</b>를 물고 있었다. 그래서 화면에 박힌 수와 문장이
+     <b>운영 콘텐츠와 어긋났다</b>. 디자인이 아니라 <b>데이터 출처</b> 문제였다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">고치다 나온 것 — <b>보정 코드가 절반은 안 돌고 있었다</b></div>
+  <p><code>render()</code> 가 <code>d.close()</code> 직후 <code>polishFrame()</code> 을 부르는데,
+     <b>외부 stylesheet 와 canvas 가 있는 화면</b>은 그 시점에 <b>body 가 비어 있다</b>.
+     버튼을 세어 보니 <code>ps_lesson</code>·<code>ps_level</code>·<code>cs_level</code> 이
+     <b>0개</b>였다 — 아무것도 못 찾고 <b>조용히 지나갔다</b>.</p>
+  <p><b>디자인 세션의 과 선택 수정이 안 보인 것도 이것 때문</b>이다.
+     코드는 맞게 들어와 있었는데 <b>실행이 안 됐다</b>.</p>
+  <p class="qa">파싱을 기다렸다 <b>한 번만</b> 적용하도록 고쳤다
+     (<code>load</code> · <code>rAF</code> · <code>setTimeout</code> 셋으로 받고
+     <code>dataset.polished</code> 로 중복을 막는다).
+     이제 <b>17화면 전부 보정이 적용된다</b>.</p>
+  <p class="qa">앞선 검수에서 이 화면들이 <b>빈 화면으로 잡혔던 것</b>도 같은 뿌리였다.
+     그때는 <b>내 검사 탓</b>으로만 적었는데, <b>절반은 목업의 실제 결함</b>이었다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">고치고 다시 검사</div>
+  <p>17화면을 <b>동시에 띄워</b> 한 번에 읽었다(패널이 숨겨지면 타이머가 눌려 순차 검사가 안 끝난다).
+     <b>보정 미적용 0 · 빈 화면 0 · 320폭 넘침 0</b>, 제약 <b>9건 전부 유지</b>.</p>
+</div>
+
+<div class="callout ok">
+  <div class="t">목업 밖 — <b>봄소풍 삐약 구멍을 메웠다</b></div>
+  <p><code>전화</code> 에 <b>레벨1 문항이 0개</b>라 삐약 쉬움이 <b>주소 4문항</b>뿐이었다.
+     기획자가 <b>119·112를 쉬움으로 옮기고</b>, 양쪽에 <b>3건씩</b> 새로 넣었다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>레벨</th><th>숫자</th><th>문장</th><th>정답</th><th>오답</th></tr>
+    <tr><td rowspan="3"><b>쉬움</b></td><td class="n">114</td><td>전화번호는 ___에 물어보세요.</td>
+        <td>일일사</td><td>일십사 · 십일사</td></tr>
+    <tr><td class="n">1339</td><td>건강 상담은 ___에 하세요.</td>
+        <td>일삼삼구</td><td>천삼백삼십구 · 일삼구삼</td></tr>
+    <tr><td class="n">1544</td><td>고객센터는 ___로 전화해요.</td>
+        <td>일오사사</td><td>천오백사십사 · 일오사십사</td></tr>
+    <tr><td rowspan="4"><b>어려움</b></td><td class="n">031</td><td>경기도 지역번호는 ___이에요.</td>
+        <td>공삼일</td><td>영삼일 · 삼십일</td></tr>
+    <tr><td class="n">051</td><td>부산 지역번호는 ___이에요.</td>
+        <td>공오일</td><td>영오일 · 오십일</td></tr>
+    <tr><td class="n">070</td><td>인터넷 전화는 ___으로 시작해요.</td>
+        <td>공칠공</td><td>영칠영 · 칠십</td></tr>
+    <tr><td class="n">120</td><td>서울시 상담은 ___이에요.</td>
+        <td>일이공</td><td><b>백이십</b> · 일이영</td></tr>
+  </table></div>
+  <p><b>레벨을 난이도가 아니라 결로 갈랐다</b> —
+     쉬움은 <b>0이 없는 짧은 번호</b>(한 자씩 읽기), 어려움은 <b>0이 들어간 번호</b>(0을 '공'으로 + 지역번호).
+     주소가 이미 그렇게 갈려 있다(쉬움 동·호수 / 어려움 도로명).</p>
+  <p class="qa">오답은 전부 <b>인용 가능한 이유로</b> 틀리게 잡았다 —
+     자릿수로 읽기(<code>천삼백삼십구</code>) · 0을 '영'으로(<code>영삼일</code>) · 순서 바꾸기(<code>일삼구삼</code>).
+     기존 <code>tel01</code> 의 오답이 <code>영일공</code>·<code>일공일</code> 로 같은 방식이다.</p>
+  <p class="qa"><b>120(다산콜)은 기획자가 어려움으로 짚었다</b> —
+     <code>백이십</code> 으로 <b>읽고 싶어지는</b> 번호라서다.
+     "숫자로 읽지 않는다"를 가장 또렷하게 묻는 문항이라 오답에 <b>백이십</b>을 세웠다.
+     0도 들어가 있어 어려움의 결과도 맞는다.</p>
+  <p>결과 — <b>삐약 쉬움 9 · 어려움 9</b>. 솔이 10/10, 곰돌 10/9, 냥이 7/6 과 나란해졌다.
+     봄소풍 총 문항은 <b>63 → 70</b>.</p>
+</div>
+
+<div class="callout">
+  <div class="t">검사한 것 — <b>회귀 없음</b></div>
+  <p><b>2차에서 다시 돌렸다.</b> 17화면 × 320 에서 <b>문서 가로 스크롤 0</b> ·
+     <b>안 잘리는 넘침 0</b> · <b>빈 화면 0</b>. 제약 8건도 <b>그대로</b>.</p>
+  <p class="qa">중간에 <code>60s</code> 와 <b>최고 점수</b>가 사라진 줄 알았는데
+     <b>내 검사가 틀렸다</b> — 숫자와 단위가 다른 요소라 <code>innerText</code> 에
+     <b>줄바꿈이 끼어</b> 정규식이 못 넘었다. 화면에는 둘 다 있다.</p>
+  <p class="qa"><code>ps_level</code>·<code>ps_lesson</code> 이 <b>빈 화면으로 잡히기도 했다</b> —
+     이것도 검사 탓이다. 그 둘은 <b>외부 스타일시트와 canvas</b>가 있어 늦게 그려지는데
+     <code>render()</code> 직후에 <b>동기로</b> 읽었다. 기다렸다 읽으니 <b>186자로 정상</b>이다.</p>
+  <p><b>폭</b> 1차 기록 — 17화면 × 320 에서 <b>문서 가로 스크롤 0</b>.
+     봄소풍 일러스트가 29px 넘치지만 <b>조상이 잘라 준다</b> — 배경 장식이라 의도된 것이다.</p>
+  <p><b>번역</b> 난이도 버튼(72.9px)에 <code>むずかしい</code> · <code>Play again</code> 등
+     실제 번역을 넣어 봤다 — <b>넘치는 것 없음</b>.</p>
+  <p class="qa">처음에 넘침 4건으로 잡혔는데 <b>내 검사가 과했다</b> —
+     조상이 자르는지, 문서가 실제로 스크롤되는지를 안 봤다. 원본과 대조해서 확인했다.</p>
+</div>
+
+
+<h2 id="s10"><span class="n">10</span>서울 퍼즐 문장 검수 — <b>38단계 전문</b></h2>
+<p class="lead">§1 에서 <b>"다른 순서도 맞는 문장일 수 있다"</b>고 걱정만 해 두었던 것을 실제로 확인했다.
+   채점이 <code>JSON.stringify(slotWords)===JSON.stringify(answer)</code> —
+   <b>배열 완전일치</b>라서, 트레이 조각으로 만들 수 있는 <b>다른 정문은 전부 오답</b>이 된다.
+   그 기준으로 10장소 38단계를 한 건씩 열어 읽었다.</p>
+
+<div class="callout stop">
+  <div class="t">복수정답 <b>다섯</b> — 맞는 한국어를 쓰고 틀렸다고 나온다</div>
+  <div class="tablewrap"><table>
+    <tr><th>단계</th><th>정답</th><th>트레이로 만들 수 있는 또 하나의 정문</th></tr>
+    <tr><td><code>bukhansan#2</code></td><td>세 시간쯤 걸려요.</td>
+        <td><b>네 시간쯤 걸려요.</b> — 힌트가 숫자를 안 준다</td></tr>
+    <tr><td><code>seongsu#1</code></td><td>커피하고 물이 있어요.</td>
+        <td><b>커피와 물이 있어요.</b> — <code>과/와</code>는 <code>ddp#0</code>에서 가르치는 정식 문법이다</td></tr>
+    <tr><td><code>seongsu#2</code></td><td>삼겹살하고 된장찌개를 먹어요.</td>
+        <td><b>된장찌개하고 삼겹살을 먹어요.</b> — 순서만 바뀐 동의문</td></tr>
+    <tr><td><code>gwangjang#2</code></td><td>날씨가 덥지 않아요.</td>
+        <td><b>날씨는 덥지 않아요.</b> — 친구가 "덥지 않아?"라 물어 대조의 <code>는</code>이 오히려 자연스럽다</td></tr>
+    <tr><td><code>hangang#3</code></td><td>친구가 책을 읽어요.</td>
+        <td><b>친구는 책을 읽어요.</b></td></tr>
+  </table></div>
+  <p class="qa"><code>bukhansan#2</code> 가 제일 나빴다 — 다른 단계는 <code>friendMsg2</code> 에서
+     "<b>열 시에</b> 연다고 말해봐요"처럼 답을 못박는데 <b>이것만 열어 뒀다</b>.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">죽은 오답 <b>아홉 단계 · 열두 토큰</b></div>
+  <p>오답이 정답 토큰과 <b>글자까지 같았다</b>. 배열 비교라 어느 타일을 놓아도 정답이니
+     <b>틀릴 수가 없는 오답</b>이다. 광장시장은 <b>네 단계가 전부</b> 걸려 있어
+     오답 넷 중 <b>한둘이 늘 허수</b>였다.</p>
+</div>
+
+<h3>고친 것 — <b>14단계</b></h3>
+<p>죽은 오답은 아무 말로나 바꾸지 않고 <b>그 과의 문법을 겨냥</b>하게 잡았다.</p>
+<div class="tablewrap"><table>
+  <tr><th>단계</th><th>정답</th><th>바꾼 것</th><th>왜 그것으로</th></tr>
+  <tr><td><code>bukhansan#2</code></td><td>세 시간쯤 걸려요.</td>
+      <td><code>friendMsg2</code> → "<b>세 시간쯤</b> 걸린다고 말해봐요!"</td>
+      <td>나머지 단계와 같은 방식으로 답을 못박는다</td></tr>
+  <tr><td><code>seongsu#1</code></td><td>커피하고 물이 있어요.</td>
+      <td>커피와 → <b>커피를</b></td><td>"커피를 물이 있어요" 비문</td></tr>
+  <tr><td><code>seongsu#2</code></td><td>삼겹살하고 된장찌개를 먹어요.</td>
+      <td>된장찌개하고 → <b>된장찌개가</b></td><td>먹다는 <code>을/를</code></td></tr>
+  <tr><td><code>gwangjang#2</code></td><td>날씨가 덥지 않아요.</td>
+      <td>날씨는 → <b>날씨를</b> · 덥지 → <b>더우지</b></td>
+      <td>문법 라벨이 <b>ㅂ불규칙</b> — 오답이 그 오류를 겨눈다</td></tr>
+  <tr><td><code>gwangjang#1</code></td><td>한국 음식이 맵지 않아요.</td>
+      <td>한국 → <b>한국을</b> · 맵지 → <b>매우지</b></td><td>같은 ㅂ불규칙</td></tr>
+  <tr><td><code>gwangjang#0</code></td><td>저는 김치를 먹지 않아요.</td>
+      <td>저는 → <b>저가</b> · 먹지 → <b>먹고</b></td>
+      <td><code>-지 않다</code> 의 <code>-지</code> 자리를 겨눈다</td></tr>
+  <tr><td><code>gwangjang#3</code></td><td>시장에 사람이 많지 않아요.</td>
+      <td>시장에 → <b>시장을</b> · 많지 → <b>많고</b></td><td>같음</td></tr>
+  <tr><td><code>hangang#3</code></td><td>친구가 책을 읽어요.</td>
+      <td>친구는 → <b>친구를</b></td><td>"친구를 책을 읽어요" 비문</td></tr>
+  <tr><td><code>museum#3</code></td><td>열 시부터 여섯 시까지예요.</td>
+      <td>열 → <b>십</b> · 여섯 → <b>육</b></td>
+      <td>시간은 <b>고유어 수사</b> — 한자어 수사가 오답이 된다</td></tr>
+  <tr><td><code>ddp#2</code></td><td>두 시에 와요.</td>
+      <td>두 → <b>둘</b> · 시부터 → <b>시가</b></td><td>같은 고유어 수사 규칙</td></tr>
+  <tr><td><code>bukhansan#3</code></td><td>이거 얼마예요?</td>
+      <td>이거 → <b>이거를</b></td><td>조사가 안 붙는 자리</td></tr>
+  <tr><td><code>hongdae#1</code></td><td>저는 미국 사람이에요.</td>
+      <td>미국 → <b>미국을</b></td><td>관형 자리</td></tr>
+  <tr><td><code>myeongdong#1</code></td><td>이것은 제 책이 아니에요.</td>
+      <td>제 → <b>저를</b></td><td>관형격 <code>제</code> 자리</td></tr>
+  <tr><td><code>myeongdong#2</code></td><td>존슨 씨는 의사가 아니에요.</td>
+      <td>씨가 → <b>씨를</b></td><td>경계였던 복수정답을 없앤다</td></tr>
+</table></div>
+
+<div class="callout ok">
+  <div class="t">저장 후 <b>다시 읽어 확인했다</b></div>
+  <p>14단계를 서버에서 <b>도로 열어</b> 대조했다 — <b>죽은 오답 0</b>,
+     실질 오답이 <b>2~4개</b>로 회복됐다(허수를 빼면 광장시장은 1~2였다).</p>
+  <p class="qa">힌트가 막아 주는 것은 <b>그냥 뒀다</b> —
+     <code>museum#3</code> 은 힌트에 "(열 시~여섯 시)"가 박혀 있고,
+     <code>hangang#0</code> 은 "<b>점심에</b> 먹을 메뉴",
+     <code>myeongdong#0</code> 은 "<b>멀리 있는</b> 물건"이라 대안이 걸러진다.</p>
+  <p class="qa">번역 누락 · 힌트 누락 · 문장 중복은 <b>0건</b>이었다.</p>
+</div>
+
+<h2 id="s7"><span class="n">7</span>다국어 — <b>UI 문구가 전부 한국어로 박혀 있다</b></h2>
+<p class="lead">번역해야 하는 것은 <b>콘텐츠가 아니라 화면 문구</b>다 —
+   지시문 · 규칙 설명 · 버튼 라벨 · "점수" 같은 용어.
+   <b>네 게임 다 <code>t()</code>를 한 번도 부르지 않는다.</b></p>
+<div class="tablewrap"><table>
+  <tr><th>게임</th><th><code>useTranslation</code></th><th class="n"><code>t()</code> 호출</th>
+      <th class="n">박혀 있는 한글 문구</th></tr>
+  <tr><td>봄소풍</td><td>import 함</td><td class="n"><b>0</b></td><td class="n">약 <b>42</b></td></tr>
+  <tr><td>서울 퍼즐</td><td>안 함</td><td class="n"><b>0</b></td><td class="n">약 <b>39</b></td></tr>
+  <tr><td>카드 마스터</td><td>안 함</td><td class="n"><b>0</b></td><td class="n">약 <b>29</b></td></tr>
+  <tr><td>조사 스나이퍼</td><td>안 함</td><td class="n"><b>0</b></td><td class="n">약 <b>18</b></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">목록은 번역되는데 <b>들어가면 한국어가 된다</b></div>
+  <p><code>ko.ts</code>의 <code>game</code> 블록에는 다섯 게임의 <b>이름과 설명이 다 있다</b> —
+     목록 화면(<code>index.tsx</code>)이 <code>t()</code>로 쓴다.
+     그런데 <b>게임 안으로 들어가면 번역이 끊긴다</b>.</p>
+  <p>베트남 학습자가 <b>"Đoán từ"</b>를 눌러 들어가면
+     <code>급수를 선택하세요</code> · <code>과 선택</code> · <code>다시하기</code> ·
+     <code>로딩 중...</code>을 만난다. <b>게임을 시작하는 방법을 읽을 수 없다.</b></p>
+  <p class="qa">봄소풍이 <code>useTranslation</code>을 import 하고도
+     <code>i18n.language</code>(힌트 언어 고르기)에만 쓴다 — <b>문구는 그대로 한국어다</b>.</p>
+</div>
+<div class="callout">
+  <div class="t">콘텐츠는 <b>번역하지 않는다</b></div>
+  <p>앞서 이 문서에 <b>갈래 이름 번역</b>(57 × 4언어)과
+     <b>문장 번역</b>(약 160 × 4언어)을 적었는데 <b>범위를 잘못 잡은 것</b>이다.
+     그건 콘텐츠 저작이고, <b>지금 필요한 일이 아니다</b>.</p>
+  <p><b>필요한 것은 화면 문구뿐</b>이다 — 네 게임 합쳐 <b>약 128개</b>.
+     기존 <code>ko.ts</code> 구조에 <code>game.seoulPuzzle.*</code> 처럼 넣고
+     다섯 로케일에 채우면 된다. <b>콘텐츠 테이블은 손대지 않는다.</b></p>
+  <p class="qa">그래서 <b>카드 마스터에 단어 뜻이 새어 나갈 걱정도 없어진다</b> —
+     애초에 뜻을 띄우지 않는다.</p>
+</div>
+<div class="callout">
+  <div class="t">급·과 라벨은 <b>손대지 않아도 된다</b></div>
+  <p><code>2급</code>·<code>5과</code> 같은 것은 <b>교재의 이름</b>이라
+     번역 대상이 아니다. 다만 <code>급수를 선택하세요</code> 같은
+     <b>둘러싼 문구</b>는 번역해야 한다.</p>
+</div>
+<div class="callout">
+  <div class="t">씨드 파일은 <b>갱신하지 않는다</b></div>
+  <p>어드민이 정본이고 씨드는 초기 상태다. 씨드를 정본으로 만들려는 것은
+     <b>도구를 잘못 고른 것</b>이다 — 사람이 어드민에서 계속 고치므로 <b>또 낡는다</b>.</p>
+  <p><b>대신 위험을 적어 둔다.</b> 새 환경을 세우거나 DB 를 잃으면
+     <b>사람이 채운 것이 사라진 구버전으로 시작</b>한다
+     (조사 스나이퍼: 레슨 <b>32 → 24</b>, 급 <b>8 → 6</b>).
+     이건 <b>DB 백업으로 다룰 문제</b>다.</p>
+</div>
+
+<h2 id="s5"><span class="n">5</span>넷을 나란히 놓으면</h2>
+<p class="lead"><b>네 게임이 각각 다른 조각을 잘 풀고, 각각 다른 조각을 빼먹었다.</b>
+   서로에게서 가져오면 되는 것이 대부분이다 — 새로 발명할 것이 거의 없다.</p>
+<div class="tablewrap"><table>
+  <tr><th></th><th>서울 퍼즐</th><th>봄소풍</th><th>카드 마스터</th><th>조사 스나이퍼</th></tr>
+  <tr><td><b>점수 저장</b></td>
+      <td>서버 — <b>값이 상수</b></td><td><b>서버 · 제대로</b></td>
+      <td><b>없음</b></td><td><b>없음</b></td></tr>
+  <tr><td><b>재시도</b></td>
+      <td><b>무제한 + 정답 공개</b></td><td>1회 · 감점 없었음</td>
+      <td><b>없음</b></td><td><b>없음</b></td></tr>
+  <tr><td><b>복습</b></td>
+      <td>없음</td><td><b>틀린 것 앞으로</b></td>
+      <td>과 <b>누적</b> 출제</td><td><b>이전 과 절반</b></td></tr>
+  <tr><td><b>다국어</b></td>
+      <td>문장 번역 있음</td><td><b>힌트 언어별</b></td><td>—</td><td>—</td></tr>
+  <tr><td><b>급 · 과</b></td>
+      <td>1권 <b>고정</b></td><td>레벨</td>
+      <td><b>2~5급 하드코딩</b></td><td><b>서버에서</b></td></tr>
+  <tr><td><b>오답 기록</b></td>
+      <td>없음</td><td><code>wrongHistory</code> <b>서버</b></td>
+      <td>없음</td><td><b>상세 · 결과에만</b></td></tr>
+  <tr><td><b>시간 제한</b></td>
+      <td>없음</td><td>없음</td><td>속도 보너스만</td><td><b>12초</b></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">공통으로 정한 것 — <b>점수는 처음 맞힌 것만</b></div>
+  <p>네 게임과 VocaShot 이 <b>같은 규칙</b>을 쓰게 했다.
+     각자 다른 말로 어긋나 있던 것을 한 줄로 맞춘 것이다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>게임</th><th>어떻게 맞추나</th></tr>
+    <tr><td>서울 퍼즐</td><td>오답 <b>0점</b> · 재시도 정답은 <b>반으로</b>(§1)</td></tr>
+    <tr><td>봄소풍</td><td>점수는 <b>첫 시도 정답만</b>. 완료 판정은 그대로(§2)</td></tr>
+    <tr><td>VocaShot</td><td>재출제 정답 <b>0점</b></td></tr>
+    <tr><td>카드 마스터 · 조사 스나이퍼</td><td><b>이미 맞다</b> — 재시도가 없다</td></tr>
+  </table></div>
+</div>
+<div class="callout">
+  <div class="t">저장은 <b>같은 모양</b>으로 붙인다</div>
+  <pre>stage_id = "{그 게임의 단계}"   score = 그 판 점수   completed = 그 게임의 기준
+_meta.extra = 마지막에 고른 것 · 누적
+
+서울 퍼즐   장소id          ← 값을 sessionXp 로 고친다
+봄소풍      {친구id}_{레벨}   ← 이미 맞다
+카드 마스터  {급}_{과}        ← <b>새로 붙인다</b>
+조사 스나이퍼 {급}_{과}       ← <b>새로 붙인다</b>
+VocaShot   lv{급}           ← <b>새로 붙인다</b></pre>
+  <p class="qa">서버 <code>upsert</code> 가 <code>max()</code> 로 최고 점수를 유지하므로
+     <b>어느 게임도 클라이언트에서 비교할 필요가 없다</b>. 그냥 보내면 된다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">그러면 목록 카드 다섯이 <b>다 채워진다</b></div>
+  <p><code>asis_v1.html</code> §4d 에서 <b>둘은 설명이 남는다</b>고 했는데,
+     카드 마스터·조사 스나이퍼에 저장을 붙이면 <b>다섯 다 진행을 쓸 수 있다</b>.</p>
+  <p class="qa">그 목업의 "저장 안 하는 게임" 갈래는 <b>없어진다</b> —
+     다만 <b>한 번도 안 한 게임</b>은 여전히 설명이 남는다. 갈래 자체는 유지된다.</p>
+</div>
+
+
+</main>
+</section>
+<!-- ═══════ VocaShot 설계 — vocashot_solo_spec_v1.html ═══════ -->
+<section class="part" id="part-voca" aria-label="VocaShot 설계">
+<main>
+<header class="doc">
+  <div class="eyebrow">설계 · VocaShot 개인 플레이</div>
+  <h1>VocaShot 혼자 하기 — 무슨 게임이고, 방 없이 어떻게 돌리나</h1>
+  <div style="border-left:4px solid #1a7f4b;background:#eff7f1;padding:14px 18px;margin:14px 0">
+  <p style="margin:0 0 8px"><b>이 명세는 구현됐다 (2026-08-21 확인)</b></p>
+  <p style="margin:0 0 8px">아래는 <b>지시가 아니라 근거</b>다. 실물이 여기 있다 —
+     라우트 <code>/main/game/vocashot-solo</code>
+     (<code>app/src/routes/main/game/vocashot-solo.tsx</code>), 화면은
+     <code>app/src/components/main/game/vocashot-solo.tsx</code>(540줄)이고
+     <b>게임 목록이 링크한다</b>(<code>routes/main/game/index.tsx</code>).
+     시작 · 플레이 · 결과 셋이 다 있고 <b><code>appsync</code> 참조가 0</b>이다 —
+     방 없이 돈다는 것이 이 문서의 핵심이었다.</p>
+  <p style="margin:0"><b>§13 와 §16 가 "정해야 한다" 던 값은 <code>TUNING</code> 상수로 들어갔다</b> —
+     <code>hearts: 5</code>(명세대로 고정) · <code>difficultySpeed</code> 없음(명세대로 버렸다) ·
+     낙하가 <code>fallStepPoints</code> 마다 <code>fallStepSec</code> 씩 줄어드는 자동 가속 ·
+     오답을 <code>retryAfterN: 3</code> 문항 뒤에 다시 낸다 · <code>maxQuestions: 30</code>.
+     값을 바꿀 일이 있으면 <b>그 상수 하나만</b> 고치면 된다.</p>
+  </div>
+  <p class="lead"><b>§11이 이 게임이 무엇인지</b>부터 설명한다. 그 뒤가 본론이다 —
+     게임 화면은 <b>이미 다 있고</b>(797줄), 없는 것은 <b>무엇이 유성을 만들고 누가 판정하느냐</b>다.
+     지금은 그 둘이 <b>교사 앱과 AppSync</b>에 있다. 이 문서는 그것을 <b>클라이언트로 내리는 데</b>
+     필요한 값과 규칙을 정한다. 값은 전부 코드에서 확인했고, <b>없는 것은 없다고 적었다</b>.
+     규칙은 <b>돌려 보고</b> 고쳤다(§19c).</p>
+  <p class="qa" style="margin-top:10px">읽는 순서 — <b>§11 게임 소개</b> → §12~2 무엇이 걸려 있나 →
+     §14~5 무엇을 낼지와 규칙 → §17~7 결과와 버릴 것 → <b>§19 순서</b> ·
+     §19b 화면 · §19c 돌려 본 결과.</p>
+</header>
+
+<h2 id="s11"><span class="n">11</span>이 게임이 무엇인가</h2>
+<p class="lead"><b>한국어 단어가 뜻과 함께 위에서 떨어진다. 바닥에 닿기 전에 그 단어를 골라야 한다.</b>
+   못 고르면 하트가 하나 줄고, 하트 다섯을 다 쓰면 끝난다.
+   교실에서 여럿이 <b>같은 방을 방어하던</b> 게임이었고, 그것을 <b>혼자 하는 게임</b>으로 바꾸는 것이 이 문서다.</p>
+
+<h3>화면이 곧 남은 시간이다</h3>
+<figure style="margin:18px 0">
+<svg viewBox="0 0 660 300" role="img" style="max-width:100%;height:auto"
+     aria-label="유성이 화면 위에서 아래로 떨어지는 동안이 답할 수 있는 시간이고, 바닥에 닿으면 놓침이 된다">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <polygon points="0,0 10,5 0,10" fill="currentColor"/>
+    </marker>
+  </defs>
+  <!-- 기기 -->
+  <rect x="30" y="16" width="180" height="268" rx="18" fill="none" stroke="currentColor" opacity=".45"/>
+  <line x1="30" y1="58" x2="210" y2="58" stroke="currentColor" opacity=".25"/>
+  <line x1="30" y1="222" x2="210" y2="222" stroke="currentColor" opacity=".25"/>
+  <line x1="30" y1="244" x2="210" y2="244" stroke="currentColor" opacity=".25"/>
+  <text x="42" y="42" font-size="11" fill="currentColor" opacity=".8">♥♥♥♥♥</text>
+  <text x="198" y="42" font-size="11" text-anchor="end" fill="#10b981">120</text>
+  <!-- 유성 세 시점 -->
+  <g fill="none" stroke="#f59e0b">
+    <rect x="72" y="70" width="96" height="26" rx="11" opacity=".35"/>
+    <rect x="72" y="140" width="96" height="26" rx="11" opacity=".6"/>
+    <rect x="72" y="196" width="96" height="26" rx="11"/>
+  </g>
+  <text x="120" y="87" font-size="10" text-anchor="middle" fill="currentColor" opacity=".45">autumn</text>
+  <text x="120" y="157" font-size="10" text-anchor="middle" fill="currentColor" opacity=".7">autumn</text>
+  <text x="120" y="213" font-size="10" text-anchor="middle" fill="currentColor">autumn</text>
+  <!-- 바닥 -->
+  <line x1="46" y1="222" x2="194" y2="222" stroke="#f43f5e" stroke-width="2"/>
+  <!-- 선택지 -->
+  <g fill="none" stroke="currentColor" opacity=".45">
+    <rect x="44" y="252" width="72" height="22" rx="8"/>
+    <rect x="124" y="252" width="72" height="22" rx="8"/>
+  </g>
+  <text x="80" y="267" font-size="10" text-anchor="middle" fill="currentColor">가을</text>
+  <text x="160" y="267" font-size="10" text-anchor="middle" fill="currentColor" opacity=".6">겨울</text>
+  <!-- 시간 축 -->
+  <line x1="248" y1="70" x2="248" y2="222" stroke="currentColor" marker-end="url(#ar)" opacity=".7"/>
+  <text x="262" y="74" font-size="12" fill="currentColor">0초 — 유성이 뜬다</text>
+  <text x="262" y="150" font-size="12" fill="currentColor">답할 수 있는 동안</text>
+  <text x="262" y="226" font-size="12" fill="#f43f5e">7.8초 — 바닥. 놓침</text>
+  <text x="262" y="252" font-size="12" fill="currentColor" opacity=".75">아래 넷 중 하나를 누르면</text>
+  <text x="262" y="270" font-size="12" fill="currentColor" opacity=".75">그 자리에서 판정된다</text>
+</svg>
+<figcaption class="qa" style="margin-top:6px">유성이 떨어지는 거리가 곧 <b>남은 시간</b>이다.
+  타이머 숫자를 따로 보지 않아도 <b>얼마나 급한지가 눈에 보인다</b> — 이 게임의 핵심 장치다.</figcaption>
+</figure>
+
+<h3>한 문항이 끝나는 방법은 셋뿐이다</h3>
+<figure style="margin:18px 0">
+<svg viewBox="0 0 700 250" role="img" style="max-width:100%;height:auto"
+     aria-label="유성 하나는 첫 시도 정답, 오답, 놓침 셋 중 하나로 끝나고 각각 점수와 하트와 재출제 대기열에 다르게 영향을 준다">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <polygon points="0,0 10,5 0,10" fill="currentColor"/>
+    </marker>
+  </defs>
+  <rect x="12" y="100" width="104" height="40" rx="10" fill="none" stroke="currentColor"/>
+  <text x="64" y="125" font-size="12" text-anchor="middle" fill="currentColor">유성 하나</text>
+
+  <g stroke="currentColor" fill="none" marker-end="url(#ar2)" opacity=".8">
+    <path d="M116 112 L 210 42"/>
+    <path d="M116 120 L 210 120"/>
+    <path d="M116 128 L 210 198"/>
+  </g>
+  <text x="150" y="66" font-size="11" fill="#10b981">맞힘</text>
+  <text x="146" y="113" font-size="11" fill="currentColor" opacity=".8">틀림</text>
+  <text x="146" y="180" font-size="11" fill="currentColor" opacity=".8">바닥</text>
+
+  <rect x="214" y="24" width="118" height="36" rx="10" fill="none" stroke="#10b981"/>
+  <text x="273" y="47" font-size="12" text-anchor="middle" fill="#10b981">첫 시도 정답</text>
+  <rect x="214" y="102" width="118" height="36" rx="10" fill="none" stroke="#f43f5e"/>
+  <text x="273" y="125" font-size="12" text-anchor="middle" fill="#f43f5e">오답 · 하트 −1</text>
+  <rect x="214" y="180" width="118" height="36" rx="10" fill="none" stroke="#f43f5e"/>
+  <text x="273" y="203" font-size="12" text-anchor="middle" fill="#f43f5e">놓침 · 하트 −1</text>
+
+  <g stroke="currentColor" fill="none" marker-end="url(#ar2)" opacity=".8">
+    <path d="M332 42 L 428 42"/>
+    <path d="M332 120 L 428 132"/>
+    <path d="M332 198 L 428 144"/>
+  </g>
+  <text x="346" y="34" font-size="11" fill="#10b981">+10점</text>
+  <text x="352" y="170" font-size="11" fill="currentColor" opacity=".75">대기열로</text>
+
+  <rect x="432" y="24" width="150" height="36" rx="10" fill="none" stroke="currentColor"/>
+  <text x="507" y="47" font-size="12" text-anchor="middle" fill="currentColor">유성이 빨라진다</text>
+  <rect x="432" y="120" width="150" height="36" rx="10" fill="none" stroke="currentColor"/>
+  <text x="507" y="143" font-size="12" text-anchor="middle" fill="currentColor">재출제 대기열</text>
+
+  <path d="M582 138 L 620 138 L 620 214 L 64 214 L 64 144" stroke="currentColor" fill="none"
+        marker-end="url(#ar2)" stroke-dasharray="4 3" opacity=".7"/>
+  <text x="330" y="230" font-size="11" text-anchor="middle" fill="currentColor" opacity=".75">
+    3문항 뒤에 한 번만 다시 — 맞혀도 0점, 또 틀리면 하트 −1</text>
+</svg>
+<figcaption class="qa" style="margin-top:6px"><b>점수는 첫 시도 정답에만</b> 붙고,
+  <b>하트는 오답과 놓침에</b> 같은 무게로 줄어든다.
+  틀린 단어만 <b>대기열을 통해 한 번 더</b> 돌아온다.</figcaption>
+</figure>
+
+<h3>한 판</h3>
+<pre>급을 고른다 (1~8급) · 뜻 언어 · 4개 중 고르기 / 직접 입력
+        ↓
+문항이 하나씩 떨어진다.  맞힐수록 <b>다음 유성이 빨라진다</b> (7.8초 → 3.3초)
+        ↓
+<b>하트 0</b> → 게임 오버      또는      <b>30문항</b> → 완주
+        ↓
+결과 — 점수 · 최고 점수 · <b>놓친 단어와 뜻</b></pre>
+
+<h3>무엇을 연습하게 되나</h3>
+<div class="tablewrap"><table>
+  <tr><th>장치</th><th>학습에서 하는 일</th></tr>
+  <tr><td><b>제한 시간이 있는 인출</b></td>
+      <td>뜻을 보고 <b>한국어 단어를 떠올리는 속도</b>를 올린다.
+          시간이 없으면 "천천히 생각하면 아는 단어"에 머문다</td></tr>
+  <tr><td><b>4지선다 / 직접 입력</b></td>
+      <td><b>재인</b>(보면 안다)과 <b>인출</b>(스스로 쓴다)은 다른 능력이다.
+          같은 단어를 두 방식으로 만난다</td></tr>
+  <tr><td><b>틀린 것만 다시</b></td>
+      <td>모르는 단어에 <b>짧은 간격을 두고</b> 한 번 더 부딪힌다</td></tr>
+  <tr><td><b>맞힐수록 빨라짐</b></td>
+      <td>실력에 맞춰 <b>난이도가 따라 올라간다</b>. 못 맞히면 안 빨라진다 — §16</td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">교재 진도와는 <b>잇지 않는다</b></div>
+  <p>급만 고르고 <b>과·단원은 묻지 않는다</b>. 게임 다섯 종을 학습 진도와 연결하지 않기로 했고
+     (<code>asis_v1.html</code> §8), VocaShot도 같다.
+     <b>부가 콘텐츠</b>로 두되, 문항만은 <b>교재에서 온 것</b>을 쓴다 — §14.</p>
+</div>
+
+<h2 id="s12"><span class="n">12</span>먼저 — 화면은 손댈 게 거의 없다</h2>
+<div class="callout">
+  <div class="t"><code>FallingMeteor</code>는 <b>타임스탬프 두 개로만</b> 돈다</div>
+  <p>낙하 애니메이션이 <code>spawnedAt</code>·<code>expiresAt</code> 차이로
+     <code>durationSec</code>을 만들고, <code>spawnedAt - Date.now()</code>로 <code>delaySec</code>을 만든다.
+     서버를 보지 않는다.</p>
+  <p><b>로컬에서 만든 타임스탬프를 주면 컴포넌트가 그대로 작동한다.</b> 고칠 것이 없다.</p>
+</div>
+<div class="callout">
+  <div class="t">4지선다도 <b>이미 클라이언트가 만든다</b></div>
+  <p><code>easyChoices</code>가 <code>question.wrong</code>을 섞어 3개 뽑고 정답과 합쳐 다시 섞는다.
+     <b>서버가 관여하지 않는다.</b></p>
+</div>
+<div class="callout">
+  <div class="t">화면에 <b>유성은 언제나 하나</b>다</div>
+  <p><code>activeMeteor</code>가 <code>FALLING</code> 중 <b>가장 이른 것 하나</b>만 고른다.
+     교사가 여러 개를 흘려도 학생 화면은 한 번에 하나를 본다.</p>
+  <p class="qa">그래서 혼자 하기를 <b>"하나 끝나면 다음 하나"</b>로 두면
+     지금 화면 로직과 <b>어긋나지 않는다</b>.</p>
+</div>
+
+<h2 id="s13"><span class="n">13</span>저장소에 없어서 <b>정해야 하는 것</b></h2>
+<p class="lead">아래 값들은 교사 앱과 AppSync 리졸버에 있었다. 이 저장소에 <b>없다</b> — 추측하지 않고 정한다.</p>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>지금 어디에</th><th>확인한 근거</th></tr>
+  <tr><td><b>낙하 시간</b></td><td>서버가 <code>expiresAt</code>을 계산해 내려줬다</td>
+      <td><code>difficultySpeed</code>가 학생 앱에서 <b>한 번도 쓰이지 않는다</b> —
+          GraphQL 필드 목록에만 있다. slow/normal/fast → 초 매핑이 <b>없다</b></td></tr>
+  <tr><td><b>점수 규칙</b></td><td><code>submitAnswer</code> 리졸버가 <code>scoreDelta</code>를 줬다</td>
+      <td>계산식이 저장소에 없다</td></tr>
+  <tr><td><b>정답 판정</b></td><td>같은 리졸버가 <code>FIRST</code>/<code>GRACE</code>/<code>WRONG</code>을 줬다</td>
+      <td>문자열 비교 규칙(공백·대소문자·유사 허용)이 저장소에 없다</td></tr>
+  <tr><td><b>문항</b></td><td><code>RoomConfig.questions</code>에 교사가 담아 줬다</td>
+      <td>혼자 할 때 <b>무엇을 낼지</b>가 정해져 있지 않다 → §14</td></tr>
+  <tr><td><b>유성 스폰</b></td><td><code>spawnMeteor</code> 호출부가 교사 앱에 있다</td>
+      <td>이 저장소에 <b>호출부가 없다</b>(함수 정의만 있다)</td></tr>
+</table></div>
+
+<h2 id="s14"><span class="n">14</span>문항 원천 — <b>이미 있다</b></h2>
+<div class="callout stop">
+  <div class="t"><code>n1_word_quiz.json</code> — <b>1146문항, 검수된 4지선다</b></div>
+  <p><code>VocabQuestion</code>이 요구하는 <code>{ image?, english?, answer, wrong[] }</code>에
+     <b>그대로 매핑된다</b>. 오답을 새로 만들 필요가 없다 — <b>사람이 만든 선택지</b>가 이미 들어 있다.</p>
+</div>
+<div class="tablewrap"><table>
+  <tr><th><code>VocabQuestion</code></th><th>가져오는 곳</th></tr>
+  <tr><td><code>answer</code></td><td><code>selection{answer_index + 1}</code></td></tr>
+  <tr><td><code>wrong[]</code></td><td>나머지 <b>selection 3개</b></td></tr>
+  <tr><td>뜻(힌트)</td><td><code>meaning_en</code> · <code>_jp</code> · <code>_cn</code> · <code>_vi</code>
+      <span class="qa">넷 다 쓴다 — 아래 콜아웃</span></td></tr>
+  <tr><td><code>image</code></td><td><code>/textbook/{book_id}/{image}</code></td></tr>
+  <tr><td><code>id</code></td><td><code>id</code></td></tr>
+</table></div>
+<div class="tablewrap"><table>
+  <tr><th>실측</th><th>값</th></tr>
+  <tr><td>총 문항</td><td class="n"><b>1149</b></td></tr>
+  <tr><td>유형</td><td><code>meaning-to-word</code> <b>950</b> · <code>image-to-word</code> <b>199</b></td></tr>
+  <tr><td>급별</td><td class="n">1급 114 · 2급 146 · 3급 148 · 4급 145 · 5급 150 · 6급 149 · 7급 150 · 8급 147</td></tr>
+  <tr><td>선택지 4개가 빈 문항</td><td class="n"><b>0</b></td></tr>
+  <tr><td>다국어 뜻</td><td><b>950 전부 네 언어가 다 있다</b> — 빠진 것 <b>0</b></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">힌트를 <b>영어로만 주면 안 된다</b></div>
+  <p><code>VocabQuestion.english</code>라는 이름 때문에 <b>영어 하나만</b> 쓰게 돼 있었다.
+     그런데 데이터에는 <b>일본어 · 중국어 · 베트남어가 950문항 전부</b> 채워져 있다 —
+     <b>세 언어를 그냥 버리고 있었다</b>.</p>
+  <p>학습자가 영어권이 아니면 <b>힌트가 두 번째 외국어</b>가 된다.
+     한국어 단어를 떠올리기 전에 영어부터 해석해야 하므로 <b>낙하 시간이 더 모자란다</b>.</p>
+  <p><b>앱 언어를 따라간다.</b> 앱이 이미 <code>ko · en · ja · zh · vi</code> 다섯을 지원한다.
+     <code>ko</code>일 때만 <b>영어로 떨어뜨린다</b> — 뜻이 한국어로는 없다
+     (한국어 단어를 묻는 문제이므로 당연하다).</p>
+  <p class="qa">그림 문항 199개는 언어가 필요 없다. 그림이 곧 문제다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">그림 문항 <b>6개는 버린다</b> — 그림 파일이 없다</div>
+  <p>그림 문항은 <b>그림이 곧 문제</b>다(<code>meaning_en</code>이 <b>199개 전부 비어 있다</b>).
+     그런데 <code>public/textbook/{급}/</code>에 <b>파일이 아예 없는</b> 문항이 여섯 있다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>급</th><th><code>image</code></th><th>정답</th><th>무엇이 문제</th></tr>
+    <tr><td>3</td><td><code>b3_ch1_p14_18</code></td><td>출석하다</td><td rowspan="5"><b>확장자가 없다</b></td></tr>
+    <tr><td>3</td><td><code>b3_ch10_p117_11</code></td><td>한옥마을</td></tr>
+    <tr><td>4</td><td><code>b4_ch9_p113_8</code></td><td>양복</td></tr>
+    <tr><td>5</td><td><code>b5_ch1_p13_10</code></td><td>사귀다</td></tr>
+    <tr><td>5</td><td><code>b5_ch12_p139_7</code></td><td>둥글다</td></tr>
+    <tr><td>6</td><td><code>b6_ch9_p83_3.jpg</code></td><td>실수하다</td><td>확장자는 있는데 <b>파일이 없다</b></td></tr>
+  </table></div>
+  <p>확장자를 붙여도 파일이 없어서 <b>이름 오타가 아니라 누락</b>이다.
+     그림이 곧 문제이므로 <b>낼 수 없는 문항</b>이다 — <b>그냥 버린다</b>.
+     그림을 새로 구해 채우지 않는다. 급마다 <b>144~150문항</b>이 남으므로
+     여섯을 빼도 <b>아쉬울 것이 없다</b>.</p>
+  <p style="background:#fdf6e3;padding:8px 12px;border-left:3px solid #b58900;margin:8px 0">
+  <b>실측 정정 (2026-08-21)</b> — 아래 산수의 출발점이 바뀌었다.
+  <code>n1_word_quiz.json</code> 은 지금 <b>1146행</b>이다(문서가 쓰인 때는 1149).
+  은행은 <b>1143</b> 이 맞으니 실제로 걸러지는 것은 <b>여섯이 아니라 셋</b>이다 —
+  아래 여섯 중 셋은 그 뒤 원장에서 정리된 것으로 보인다.
+  <b>어느 셋이 남았는지는 확인해야 한다.</b></p>
+  <p><b>1149 → 1143</b>, 그림 <b>199 → 193</b>. 급별로는 3급 148→146 · 4급 145→144 ·
+     5급 150→148 · 6급 149→148 이고 나머지는 그대로다.</p>
+  <div class="callout" style="margin:10px 0 0">
+    <div class="t">거르는 자리는 <b>어댑터가 아니라 은행을 만들 때</b>다</div>
+    <p>런타임에 "파일이 있나" 물어볼 수는 없다. 문항 은행은 어차피
+       <code>n1_word_quiz.json</code>에서 <b>만들어 내는 것</b>이므로,
+       만들 때 <code>public/textbook/{급}/{image}</code>가 <b>실제로 있는지 확인</b>하고
+       없으면 넣지 않는다.</p>
+    <p class="qa">확장자 유무로 거르면 다섯만 잡힌다 — <code>b6_ch9_p83_3.jpg</code>는
+       이름이 멀쩡한데 파일이 없다. <b>존재 확인이라야 여섯이 다 잡힌다.</b></p>
+  </div>
+</div>
+<div class="callout">
+  <div class="t">그림 문항이 <b>급마다 골고루 섞여 있다</b> — 섞기 규칙이 따로 필요 없다</div>
+  <div class="tablewrap"><table>
+    <tr><th>급</th><th class="n">전체</th><th class="n">뜻→단어</th><th class="n">그림→단어</th><th class="n">그림 비율</th></tr>
+    <tr><td>1급</td><td class="n">114</td><td class="n">96</td><td class="n">18</td><td class="n">16%</td></tr>
+    <tr><td>2급</td><td class="n">146</td><td class="n">111</td><td class="n">35</td><td class="n">24%</td></tr>
+    <tr><td>3급</td><td class="n">148</td><td class="n">124</td><td class="n">24</td><td class="n">16%</td></tr>
+    <tr><td>4급</td><td class="n">145</td><td class="n">123</td><td class="n">22</td><td class="n">15%</td></tr>
+    <tr><td>5급</td><td class="n">150</td><td class="n">121</td><td class="n">29</td><td class="n">19%</td></tr>
+    <tr><td>6급</td><td class="n">149</td><td class="n">116</td><td class="n">33</td><td class="n">22%</td></tr>
+    <tr><td><b>7급</b></td><td class="n">150</td><td class="n">141</td><td class="n"><b>9</b></td><td class="n"><b>6%</b></td></tr>
+    <tr><td>8급</td><td class="n">147</td><td class="n">118</td><td class="n">29</td><td class="n">20%</td></tr>
+  </table></div>
+  <p>비율이 <b>6~24%</b>다. 그림 문항만 몰리는 급이 없으므로
+     <b>그냥 섞으면 된다</b> — 유형을 번갈아 내는 규칙을 만들 필요가 없다.
+     7급만 9개로 적지만 그래도 섞인다.</p>
+  <p><b>같은 급 안에서 정답 단어가 겹치는 경우가 0건</b>이다.
+     한 판에서 같은 단어가 두 번 나오지 않는다.</p>
+</div>
+<div class="callout">
+  <div class="t">이미지도 <b>고칠 것 없이 뜬다</b></div>
+  <p><code>FallingMeteor</code>는 <code>image</code>가 <code>/</code> 나 <code>http</code>로 시작하면
+     <code>&lt;img&gt;</code>로, 아니면 <b>이모지로</b> 렌더한다.
+     <code>image-to-word</code>의 값은 <code>b1_ch6_p63_10.jpg</code> 꼴이고
+     실제 파일이 <code>public/textbook/1/</code>에 있다.
+     <b><code>/textbook/{book_id}/</code>를 앞에 붙여 넘기면</b> 그대로 이미지가 된다.</p>
+  <p class="qa">단어 학습 화면이 이미 같은 경로 규칙을 쓴다
+     (<code>word-quiz-card.tsx</code> · <code>word-learning.tsx</code>).</p>
+</div>
+<div class="callout stop">
+  <div class="t">쓰지 않는 것 — <code>components/main/game/data/vocab.json</code></div>
+  <p>급·과·카테고리별 단어 목록이 들어 있는데 <b>아무 데서도 import 하지 않는다</b>.
+     그리고 <b>영어 뜻도 이미지도 없다</b> — 한국어 단어만 있다.</p>
+  <p>이 게임은 <b>뜻이나 그림을 보고 단어를 떠올리는</b> 것이므로 <b>단서가 있어야 한다</b>.
+     단어만 있으면 낼 문제가 만들어지지 않는다. <b>쓰지 않는다.</b></p>
+</div>
+
+<h2 id="s15"><span class="n">15</span>급을 고르게 한다 — <b>진도 연결과는 다르다</b></h2>
+<div class="callout stop">
+  <div class="t">게임을 진도에 연결하지 않기로 한 것과 <b>충돌하지 않는다</b></div>
+  <p>1급 학습자에게 8급 어휘가 떨어지면 게임이 성립하지 않는다.
+     1149문항이 <b>1급부터 8급까지 고르게 퍼져</b> 있으므로(급당 114~150)
+     전체에서 무작위로 뽑으면 <b>8분의 7이 모르는 단어</b>가 된다.</p>
+  <p>그러나 <b>진도를 읽어 자동으로 정하는 것</b>과 <b>사용자가 급을 고르는 것</b>은 다르다.
+     앞엣것은 학습 기록에 매달리는 일이고, 뒤엣것은 <b>난이도 선택</b>이다.
+     게임을 진도에 연결하지 않는다는 결정은 <b>앞엣것만 막는다</b>.</p>
+  <p class="qa">시작 화면에서 <b>급을 고른다</b>. 기본값은 마지막에 고른 급
+     (<code>game-progress</code>의 <code>extra</code>에 남긴다).
+     학습 기록은 <b>읽지 않는다</b>.</p>
+</div>
+
+<h2 id="s16"><span class="n">16</span>규칙</h2>
+
+<h3>스폰 — 하나 끝나면 다음 하나</h3>
+<p>문항을 급 안에서 섞어 순서를 만들고, <b>앞 유성이 끝나면</b>(맞힘·오답·놓침)
+   <b>다음 하나를 띄운다</b>. 겹쳐 떨어지지 않는다.</p>
+<div class="tablewrap"><table>
+  <tr><th>값</th><th>제안</th><th>왜</th></tr>
+  <tr><td>첫 낙하 시간</td><td class="n"><b>7.8초</b></td>
+      <td>외국인 학습자에게 <b>7.0초는 빠듯하다</b>. 속도를 0.9배로 늦춘 값이다</td></tr>
+  <tr><td>최소 낙하 시간</td><td class="n"><b>3.3초</b></td><td>이 아래로는 읽기가 불가능해진다</td></tr>
+  <tr><td>줄어드는 폭</td><td class="n"><b>-0.28초</b> / <b>10점</b>마다</td>
+      <td><b>낸 문항이 아니라 점수에 연동</b>한다 — 아래 콜아웃</td></tr>
+  <tr><td>입력 모드</td><td><code>easy</code> 4지선다 · <code>hard</code> 직접 입력</td>
+      <td>둘 다 이미 구현돼 있다. <code>hard</code>는 <b>+2.2초</b>를 준다</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">빨라지는 기준은 <b>낸 문항이 아니라 점수</b>다</div>
+  <p>처음에는 <b>유성 개수</b>마다 줄였다. 그러면 <b>계속 틀리는 사람이 더 몰린다</b> —
+     못 맞히는데 속도까지 올라가서 회복할 길이 없어진다.</p>
+  <p><b>점수는 첫 시도로 맞힌 것에만 붙는다.</b> 그래서 점수에 연동하면
+     <b>맞힌 만큼만 빨라진다</b>. 실제로 재 보니 정답률 50%인 사람은
+     <b>끝까지 7.0초를 유지</b>했고, 95%인 사람만 <b>3.3초</b>까지 갔다.</p>
+  <p class="qa">17개를 첫 시도로 맞히면(170점) 최소 낙하에 닿는다.
+     한 판 상한이 30문항이므로 <b>잘하는 사람은 뒤쪽 13문항을 최고 속도로</b> 푼다.</p>
+</div>
+<div class="callout">
+  <div class="t">하트는 <b>늘지 않는다</b></div>
+  <p>골든 유성을 버렸으므로 <b>하트를 채워 주는 것이 하나도 없다</b>.
+     한 판에 주어진 5개가 전부다 — 그래서 하트가 <b>남은 실수 횟수</b>를 정확히 뜻한다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">이 숫자들은 <b>출발점이다</b> — 한 곳에 모아 두고 만들어서 고친다</div>
+  <p>원래 값이 저장소에 없으므로 <b>기준이 없다</b>. 표에서 오래 다투는 것보다
+     <b>돌려 보고 만지는 편</b>이 빠르다. 다만 그러려면
+     <b>흩어져 있으면 안 된다</b> — 상수 하나에 모은다.</p>
+  <pre>const TUNING = {
+  fallFirstSec:   7.8,   // 첫 낙하 시간
+  fallMinSec:     3.3,   // 하한
+  fallStepSec:    0.28,  // 줄어드는 폭
+  fallStepPoints: 10,    // 몇 점마다 줄이나
+  hardModeBonusSec: 2.2, // 직접 입력에 더 주는 시간
+  scoreBase:      10,    // 첫 시도 정답 하나. 속도 보너스는 없다
+  hearts:         5,
+  retryAfterN:    3,     // 틀린 문항을 몇 문항 뒤에 다시 낼지
+  maxQuestions:   30,    // 한 판 문항 상한 — §19c
+}</pre>
+  <p class="qa">이 아홉 개가 <b>난이도의 전부</b>다. 교사가 돌리던 다이얼이
+     여기로 왔다는 뜻이기도 하다.</p>
+</div>
+
+<h3>판정 — 클라이언트에서, 규칙을 적어 둔다</h3>
+<div class="tablewrap"><table>
+  <tr><th>모드</th><th>판정</th></tr>
+  <tr><td><code>easy</code></td><td>고른 선택지가 <code>answer</code>와 <b>같은 문자열</b>이면 정답.
+      선택지 자체가 데이터에서 온 것이므로 정규화가 필요 없다</td></tr>
+  <tr><td><code>hard</code></td><td><b>양끝 공백만 제거</b>하고 완전 일치.
+      한국어 단어라 대소문자 문제가 없다</td></tr>
+</table></div>
+<div class="callout">
+  <div class="t"><code>GRACE</code>는 버린다</div>
+  <p><b>남이 먼저 맞힌 직후를 봐주는</b> 판정이다. 혼자 하면 남이 없으므로 의미가 없다.
+     <code>AnswerResult</code>는 <b>정답 · 오답</b> 둘로 줄어든다.</p>
+</div>
+
+<h3>오답을 어떻게 다루나 — <b>지금 동작이 이미 답이다</b></h3>
+<div class="callout stop">
+  <div class="t">재시도를 허용하면 <b>4지선다가 소거법이 된다</b></div>
+  <p>학습 활동 셸에서 <b>오답 소거를 금지</b>했다 — 오답을 흐리거나 잠그면
+     정답을 공개하는 것과 같아진다. 게임에서 <b>오답 후 다시 고르게 하면</b>
+     남은 3개 중에서 고르는 것이 되어 <b>같은 문제</b>가 생긴다.</p>
+  <p>지금 코드는 오답이면 그 유성을 <code>skippedMeteorIds</code>에 넣고 <b>다음으로 넘어간다</b>.
+     <b>재시도가 없다.</b> 소거 문제를 이미 피하고 있다 — <b>그대로 둔다</b>.</p>
+  <p class="qa">대신 <b>정답을 0.6초 보여준다</b>. 틀린 채로 넘어가면 배우는 것이 없다.</p>
+</div>
+<div class="callout">
+  <div class="t">오답 잠금 UI는 <b>죽은 코드</b>다 — 예전 설계의 흔적</div>
+  <p><code>easyChoiceLockMs</code>와 <code>"오답! {{seconds}}초 후 입력 가능"</code> 문구가 있다.
+     그런데 <code>setEasyChoiceLockMs</code>를 <b>양수로 설정하는 곳이 없다</b> —
+     줄이는 인터벌 안에서만 불린다. <b>그 문구는 절대 표시되지 않는다.</b></p>
+  <p class="qa">"오답 → N초 잠금 후 재시도"였다가 <b>"오답 → 그 문항 종료"로 바뀐</b> 흔적이다.
+     지금 동작이 맞고, <b>죽은 코드는 지운다</b>.</p>
+</div>
+
+<h3>난이도 — <b>교사가 돌리던 다이얼을 우리가 물려받는다</b></h3>
+<div class="callout stop">
+  <div class="t">이 값들은 원래 <b>교사가 방을 만들 때 맞춰 주는</b> 것이었다</div>
+  <div class="tablewrap"><table>
+    <tr><th><code>RoomConfig</code></th><th>혼자 하기에서</th></tr>
+    <tr><td><code>initialHearts</code></td><td><b>5 고정</b></td></tr>
+    <tr><td><code>difficultySpeed</code></td><td>버린다 — <b>판 안에서 자동으로 빨라진다</b>(유성마다 -0.25초)</td></tr>
+    <tr><td><code>gameDurationSec</code></td><td>버린다 — 하트 0 이 종료 조건이다</td></tr>
+    <tr><td><code>wrongPenaltyEnabled</code></td><td><b>켠 채 고정</b> — 안 켜면 찍고 넘어가는 게 이득이 된다</td></tr>
+    <tr><td><code>goldenMeteorEnabled</code></td><td><b>버린다</b> — 혼자면 공짜 하트가 된다</td></tr>
+    <tr><td><code>inputMode</code></td><td><b>사용자가 고른다</b> — 4개 중 고르기 / 직접 입력</td></tr>
+    <tr><td><code>questions</code></td><td><b>급 선택</b>으로 결정된다(§14 · §15)</td></tr>
+  </table></div>
+  <p><b>다이얼을 사용자에게 넘기지 않는다.</b> 시작 화면에 속도·하트 선택을 또 놓으면
+     <b>놀기 전에 설정을 하게 된다</b>. 게임은 바로 시작돼야 한다.</p>
+  <p>난이도 축은 <b>둘로 충분하다</b> — <b>급</b>이 어휘 난이도를 정하고,
+     <b>판 안에서 낙하 시간이 계속 줄어드는 것</b>이 실력에 따라 알아서 끝을 만든다.
+     잘하는 사람은 <b>급을 올리면</b> 된다. 상한이 없다.</p>
+</div>
+
+<h3>하트 · 점수 · 종료</h3>
+<div class="tablewrap"><table>
+  <tr><th>무엇</th><th>규칙</th><th>왜</th></tr>
+  <tr><td><b>하트</b></td><td><b>5개</b>로 시작. <b>개인 하트</b>다 — 아래 콜아웃</td>
+      <td><code>RoomRuntime.remainingHearts</code>가 방 공유였다.
+          값 자체는 그대로 쓸 수 있다</td></tr>
+  <tr><td>놓침</td><td>하트 <b>-1</b></td><td>지금과 같다</td></tr>
+  <tr><td>오답</td><td>하트 <b>-1</b></td>
+      <td><code>wrongPenaltyEnabled</code>를 <b>켠 상태로 고정</b>한다.
+          안 켜면 4지선다를 <b>찍고 넘어가는</b> 것이 이득이 된다</td></tr>
+  <tr><td><b>점수</b></td>
+      <td>첫 시도 정답 <b>+10</b>. 그것뿐이다</td>
+      <td>속도 보너스는 <b>두지 않는다</b> — 속도는 점수를 매기는 대신
+          <b>난이도를 올리는 데</b> 쓴다. 아래 콜아웃</td></tr>
+  <tr><td>골든 유성</td><td><b>버린다</b></td>
+      <td>협동판에서는 <b>방 하트를 채워 주는 팀 보상</b>이었다.
+          혼자면 <b>공짜 하트</b>일 뿐이고, 하트 5의 의미가 흐려진다</td></tr>
+  <tr><td><b>재출제</b></td><td>틀린 문항을 <b>3문항 뒤에 한 번 더</b> 낸다</td>
+      <td>아래 콜아웃</td></tr>
+  <tr><td><b>종료</b></td><td><b>하트 0</b> 또는 <b>문항 상한 30</b></td>
+      <td>상한은 돌려 보고 넣었다 — §19c</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">틀린 단어는 <b>그 판 안에서 한 번 더</b> 낸다</div>
+  <p>인출 연습은 <b>틀린 직후 짧은 간격</b>을 두고 다시 물을 때 가장 잘 붙는다.
+     다음 판으로 넘기면 <b>그 판을 또 해야</b> 만나고, 바로 다음에 내면 <b>답이 아직 화면에 남아</b> 있다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>무엇</th><th>규칙</th><th>왜</th></tr>
+    <tr><td>다시 내는 시점</td><td><b>3문항 뒤</b></td>
+        <td>즉시 반복은 기억이 아니라 잔상이다</td></tr>
+    <tr><td>횟수</td><td><b>한 번만</b> (첫 시도 + 재시도 1회)</td>
+        <td>계속 모르는 단어가 판을 잠식하면 게임이 늘어진다</td></tr>
+    <tr><td>재시도 점수</td><td><b>0점</b></td>
+        <td>하트를 이미 잃었다. 다시 맞히는 것은 <b>학습 목적</b>이지 점수 목적이 아니다</td></tr>
+    <tr><td>재시도 오답</td><td>하트 <b>-1</b></td>
+        <td>한 단어가 하트 둘을 먹을 수 있다. 계속 모르면 계속 손해인 것이 맞다</td></tr>
+  </table></div>
+  <p class="qa">재출제가 <b>결과 화면을 바꾼다</b> — 놓친 단어가
+     <b>다시 맞힌 것</b>과 <b>끝내 못 맞힌 것</b>으로 갈린다. 행에 표시를 붙인다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">그려 보니 나온 것 — <b>하트 수가 결과 화면의 목록 길이를 정한다</b></div>
+  <p>오답과 놓침이 각각 하트 <b>-1</b>이고 하트 0에 끝나므로,
+     <b>한 판에서 틀리는 횟수는 정확히 하트 수</b>다.
+     그래서 결과 화면의 <b>"놓친 단어" 목록 길이가 하트 수에 묶인다</b>.</p>
+  <p>처음에 하트를 <b>3</b>으로 잡았는데, 그러면 4지선다에서 <b>세 번 틀리면 끝</b>이라
+     초보는 다섯 문항 만에 판이 닫힌다. 게임이 너무 짧고,
+     결과에 남는 복습거리도 세 단어뿐이다.</p>
+  <p><b>5로 올린다.</b> 실수 여유가 생기고, 결과에 <b>다섯 단어</b>가 남는다.
+     목록이 <b>5행을 넘을 수 없으므로</b> 결과 화면을 720 안에 고정 배치할 수 있다 —
+     세로 여백 4px만 줄이면 스크롤이 사라진다(목업에서 확인).</p>
+  <p class="qa">이 결합은 표로만 정했으면 안 보였다. <b>하트 수를 바꾸면 결과 화면 높이가 바뀐다.</b>
+     재출제를 넣어도 <b>상한은 그대로다</b> — 같은 단어를 두 번 틀리면 하트는 둘 줄지만
+     <b>목록의 고유 단어는 하나</b>이므로 5행을 넘지 않는다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">옛 점수(<b>+5 / +1</b>)는 <b>물려받을 수 없다</b> — 그건 순위를 매기던 값이다</div>
+  <p><code>ko.ts</code>에 <code>"+5점! 가장 먼저 맞혔습니다!"</code>와
+     <code>"+1점! 아슬아슬 성공!"</code>이 있다.
+     이 둘은 난이도나 속도가 아니라 <b>여럿 중 몇 번째로 터뜨렸는지</b>를 매기는 값이었다 —
+     <b>가장 먼저면 5, 뒤따라오면 1</b>.</p>
+  <p>혼자 하면 <b>그 축이 아예 없어진다</b>. <code>GRACE</code>가 사라지면서
+     <b>5와 1의 구별도 함께 사라진다</b>. 남은 <b>5</b>를 기준 점수로 쓰는 것은
+     <b>근거 없이 숫자만 가져오는 것</b>이다.</p>
+  <p><b>점수를 새로 만든다.</b> 그리고 <b>단순하게</b> 둔다.</p>
+  <pre>첫 시도 정답     <b>+10</b>
+재출제 정답      <b>0</b>   (하트를 이미 잃었다)
+오답 · 놓침      <b>0</b>   (하트 -1)</pre>
+  <p><b>속도 보너스는 넣지 않는다.</b> 속도로 점수를 주면 점수가
+     <b>실력과 운을 섞어</b> 재게 된다. 대신 속도는 <b>난이도를 올리는 쪽</b>으로 쓴다 —
+     점수가 오르면 유성이 빨라진다(위 콜아웃).
+     <b>빨리 맞히는 보상은 점수가 아니라 더 어려운 판</b>이다.</p>
+  <p class="qa">그래서 점수는 <b>첫 시도로 맞힌 개수 × 10</b>이다.
+     결과 화면의 <b>"맞힘"은 재출제 정답까지 포함</b>하므로 둘이 다를 수 있다 —
+     맞힘 4 · 점수 30 이면 <b>첫 시도 3개, 다시 맞힌 1개</b>다.</p>
+</div>
+<div class="callout">
+  <div class="t">제한 시간(<code>gameDurationSec</code>)은 <b>두지 않는다</b></div>
+  <p>교실에서는 <b>수업 시간</b>이 있어서 필요했다. 혼자 하면 끊을 이유가 없고,
+     <b>하트 0</b>이 이미 실패 조건이다. 잘하면 오래 하는 것이 맞다.</p>
+  <p class="qa">낙하 시간이 계속 줄어들므로 <b>언젠가 반드시 끝난다</b>. 무한히 늘어지지 않는다.</p>
+</div>
+<div class="callout">
+  <div class="t"><code>questionLoopIndex</code>도 <b>버린다</b> — 급마다 문항이 충분하다</div>
+  <p>원래는 교사가 담은 문항 수가 적을 수 있어서(<code>customCount</code>)
+     <b>소진되면 처음부터 다시 돌렸다</b>. 급마다 <b>114~150문항</b>이 있으므로 필요 없다.</p>
+  <p>실제로는 <b>문항 소진이 거의 일어나지 않는다</b>. 하트 5로 146문항을 버텨야 하는데
+     낙하 시간이 3초로 수렴하므로 <b>사실상 항상 하트 0으로 끝난다</b>.
+     그래도 소진 종료는 <b>처리해 둔다</b> — 안 하면 목록 끝에서 무엇을 낼지가 없다.</p>
+</div>
+
+<h2 id="s17"><span class="n">17</span>점수 저장 — <b>만들 것이 없다</b></h2>
+<p><code>ko_game_progress</code> 테이블과 <code>POST /game-progress</code> ·
+   <code>GET /game-progress/{gameName}</code>가 이미 있고,
+   <b>서울 여행 퍼즐과 봄소풍이 이미 쓴다</b>. VocaShot만 안 쓴다.
+   계정마다 게임별로, <b>게임 안에서 다시 단계별로</b> 나뉘어 저장된다.</p>
+<div class="tablewrap"><table>
+  <tr><th>컬럼</th><th>무엇</th></tr>
+  <tr><td><code>user_id</code></td><td>계정. JWT 에서 꺼낸다 — 클라이언트가 안 보낸다</td></tr>
+  <tr><td><code>game_name</code></td><td><code>"vocashot"</code></td></tr>
+  <tr><td><b><code>stage_id</code></b></td><td><b>급</b>을 여기 넣는다 — 급별 최고 점수가 <b>행 하나씩</b> 생긴다</td></tr>
+  <tr><td><code>score</code></td><td>정수 하나</td></tr>
+  <tr><td><code>extra_data</code></td><td>JSON 텍스트. 나머지는 다 여기</td></tr>
+  <tr><td><code>completed_at</code></td><td>처음 완료한 시각. <b>한 번 찍히면 안 바뀐다</b></td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">정정 — <b>서버가 이미 최고 점수만 남긴다</b></div>
+  <p>앞서 이 문서에 <b>"upsert 가 그냥 덮어쓰므로 최고 점수는 클라이언트가 관리해야 한다"</b>고
+     적었는데 <b>틀렸다</b>. <code>repo_game_progress.upsert</code>는 이렇게 되어 있다.</p>
+  <pre>existing.score = score if existing.score is None else <b>max(existing.score, score)</b></pre>
+  <p>보낸 점수가 <b>기존보다 낮으면 무시</b>된다. 그러니 <b>매 판 그냥 보내면 된다</b> —
+     저장 전에 읽어 비교할 필요가 없다. <code>completed_at</code>도
+     <b>이미 있으면 덮어쓰지 않는다</b>.</p>
+  <p class="qa">봄소풍도 <b>비교 없이 그냥 보낸다</b>. 그게 맞는 사용법이었다.</p>
+</div>
+<h3>VocaShot 이 보낼 것</h3>
+<pre>판이 끝날 때마다 두 번 보낸다.
+
+POST /game-progress   { gameName:"vocashot", stageId:<b>"lv2"</b>,
+                        score:180, completed:true }
+POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
+                        extra:{ lastLevel:2, lastLang:"en", lastMode:"easy",
+                                lastScore:180, totalPlayed:14 } }</pre>
+<div class="tablewrap"><table>
+  <tr><th>행</th><th><code>stageId</code></th><th>담는 것</th></tr>
+  <tr><td><b>급별</b></td><td><code>lv1</code> ~ <code>lv8</code></td>
+      <td><code>score</code> = 그 급 <b>최고 점수</b>(서버가 유지) ·
+          <code>completed</code> = 완주했는가(30문항 도달)</td></tr>
+  <tr><td>메타</td><td><code>_meta</code></td>
+      <td><code>extra</code>에 <b>마지막 급 · 뜻 언어 · 입력 방식</b>(다음에 기본값으로 쓴다) ·
+          누적 판 수. <b><code>score</code>는 안 보낸다</b></td></tr>
+</table></div>
+<div class="callout">
+  <div class="t">읽기는 <b>한 번이면 된다</b></div>
+  <p><code>GET /game-progress/vocashot</code>이 <b>그 계정의 모든 행</b>을 배열로 준다 —
+     급별 최고 점수 여덟 개와 메타가 <b>한 번에</b> 온다.
+     시작 화면이 <b>"2급 최고 점수 180"</b>을 띄우는 데 필요한 것이 이것뿐이다.</p>
+  <p class="qa"><code>_meta</code>는 봄소풍·서울퍼즐이 쓰는 이름 그대로다
+     (<code>META_STAGE = "_meta"</code>). 이름 규칙을 새로 만들지 않는다.</p>
+</div>
+<div class="callout">
+  <div class="t">틀린 단어는 <b>보내지 않는다</b></div>
+  <p><code>extra</code>에 넣을 수는 있지만(봄소풍은 <code>wrongHistory</code>를 넣는다),
+     게임을 학습 진도와 <b>잇지 않기로 했으므로</b> 판을 넘겨 쌓을 이유가 없다.
+     놓친 단어는 <b>그 판의 결과 화면에서 한 번 보여 주고 끝</b>이다.</p>
+  <p class="qa">나중에 "틀린 단어 모아 보기"를 하고 싶어지면 그때 <code>extra</code>에 넣으면 된다.
+     <b>스키마를 안 바꿔도 된다</b>는 것이 이 테이블의 장점이다.</p>
+</div>
+
+<h2 id="s18"><span class="n">18</span>그대로 쓰는 것 / 버리는 것</h2>
+<div class="tablewrap"><table>
+  <tr><th></th><th>무엇</th></tr>
+  <tr><td><b>그대로</b></td>
+      <td><code>FallingMeteor</code> · 낙하 애니메이션 · <code>easyChoices</code> 생성 ·
+          <code>activeMeteor</code> 선택 · 입력 UI(easy · hard) · 하트·점수 표시 ·
+          정답/오답 피드백(<code>firePop</code> · <code>correct.mp3</code> · 흔들림) ·
+          나가기 확인 · <code>VocabQuestion</code> 타입</td></tr>
+  <tr><td><b>버린다</b></td>
+      <td>방(<code>Room</code> · <code>RoomConfig</code> · <code>RoomRuntime</code>) ·
+          PIN 입력·닉네임 화면 · <code>joinRoom</code> ·
+          실시간 구독 <b>4종</b>(<code>MeteorSpawned</code> · <code>MeteorUpdate</code> ·
+          <code>PlayerUpdate</code> · <code>RoomUpdate</code>) ·
+          <code>Player</code> 순위표 · <code>myRank</code> · 전광판 안내 ·
+          <code>GRACE</code> · <code>gameDurationSec</code> · <code>difficultySpeed</code> ·
+          <code>lib/vocashot/appsync.ts</code>(452줄) <b>전체</b><br>
+          <b>죽은 코드도 같이</b> — <code>easyChoiceLockMs</code>와
+          <code>wrongWait</code> 문구(설정되는 곳이 없다) ·
+          <code>firstBonus</code> · <code>graceBonus</code> 문구(순위 보상이라 쓸 데가 없어진다)</td></tr>
+  <tr><td><b>같이 버린다</b><br><span class="qa">교실용 경로</span></td>
+      <td><code>routes/main/game/vocashot.tsx</code>(PIN·닉네임 화면 210줄) ·
+          라우트 <code>/main/game/vocashot/$pin</code> ·
+          <code>PLAYER_STORAGE_KEY</code> 세션 복구 ·
+          i18n <code>game.vocashot</code>의 방 관련 문구
+          (<code>roomPin</code> · <code>nickname</code> · <code>join</code> ·
+          <code>roomNotFound</code> · <code>waitingTeacher</code> ·
+          <code>checkScreenRanking</code> · <code>top5</code> · <code>yourRank</code>)</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">교실용을 버리면 <b>일이 오히려 줄어든다</b></div>
+  <p>둘을 나란히 두려면 <b>루프를 방에서 떼어내</b> 두 경로가 같은 화면을 쓰게 만들어야 했다.
+     교실용을 버리면 그 분리가 필요 없다 — <b>방 상태를 들어내고 그 자리에 로컬 상태를 넣으면</b> 끝이다.</p>
+  <p>실행 경로가 <b>하나</b>가 되므로 <code>appsync.ts</code>(452줄)와 구독 4종이
+     <b>남김없이</b> 사라진다. 두 경로를 유지할 때 생기는
+     <b>"이 상태가 방에서 왔나 로컬에서 왔나"</b>가 아예 없다.</p>
+  <p class="qa">교사 앱이 아직 학생을 그 길로 부른다면 <b>그쪽이 끊기는 것</b>이다.
+     이 저장소만으로는 확인할 수 없으므로 <b>교사 앱 담당에게 알려야 한다</b>.</p>
+</div>
+
+<h2 id="s19"><span class="n">19</span>순서</h2>
+<pre>① 방 상태를 들어내고 로컬 상태를 넣는다              ← 가장 크다
+② 문항 어댑터 (n1_word_quiz.json → VocabQuestion)   ← 작다. 순수 함수
+③ 로컬 스폰 · 로컬 판정 · 하트 · 점수 · 재출제 대기열
+④ 시작 화면 (급 선택) · 결과 화면 (놓친 단어)
+⑤ game-progress 연결
+⑥ 교실용 경로 삭제 — PIN 화면 · $pin 라우트 · appsync.ts · 방 관련 문구
+⑦ 게임 목록 문구 교체 — 이름 · 설명
+   이름  ko · ja · zh · vi 를 VocaShot 으로 (en 은 이미 그렇다)
+   설명  지금 "선생님이 만든 게임에 참여하세요" — 혼자 하기만 남으면 틀린 설명이 된다</pre>
+<p class="qa">⑥을 <b>마지막에 두는</b> 이유는 ①~⑤가 도는 것을 확인한 뒤 지우기 위해서다.
+   먼저 지우면 비교할 대상이 없어진다.</p>
+<div class="callout">
+  <div class="t">봇은 <b>여기 없다</b></div>
+  <p>①②③ 위에 <b>가짜 정답을 스폰 루프에 끼워넣는</b> 일이라 나중에 얹힌다.
+     먼저 만들어 보고 <b>실제로 밋밋한지 확인한 다음</b> 판단한다.</p>
+  <p class="qa">봇이 먼저 맞히면 <b>그 단어를 인출할 기회가 사라진다</b>는 것이
+     처음에 봇을 미룬 이유였다(<code>asis_v1.html</code> §4b).</p>
+</div>
+
+<h2 id="s19b"><span class="n">19b</span>시작 · 결과 화면 — 그려서 확인했다</h2>
+<p><code>_superseded/vocashot_mockup_v1.html</code>. <b>화면 2 × 폭 3 × 갈래 5 = 15조합</b>에서
+   가로 넘침 · 세로 넘침 <b>0</b>.</p>
+<div class="tablewrap"><table>
+  <tr><th>화면</th><th>무엇이 그 자리에 들어가나</th></tr>
+  <tr><td><b>시작</b><br><span class="qa">어둡게 — 플레이 화면과 같은 <code>bg-slate-950</code></span></td>
+      <td><b>PIN · 닉네임이 빠진 자리에 급 · 입력 방식</b>이 들어간다.
+          교실용을 버렸으므로 <b>진입점이 하나</b>다.<br>
+          <b>급</b> 4열 × 2줄 · <b>입력 방식</b> 2열 · <b>급별 최고 점수</b> 카드 ·
+          하단에 시작 버튼.<br>
+          요소를 새로 만들지 않았다 — <b>전부 플레이 화면에 있던 것</b>이다.
+          아래 콜아웃</td></tr>
+  <tr><td><b>결과</b><br><span class="qa">어둡게 — 플레이 화면 안(<code>bg-slate-950</code>)</span></td>
+      <td><b>순위표가 빠진 자리에 놓친 단어</b>가 들어간다.
+          방 순위 · 전광판 안내가 없어지면 결과가 텅 비는데,
+          그 자리가 <b>학습으로 돌아오는</b> 자리가 된다.<br>
+          점수 카드(신기록이면 <b>경신 배지</b>, 아니면 <b>최고 점수 N</b>) ·
+          맞힘 / 낸 문항 · <b>놓친 단어 + 뜻</b> 최대 5행 ·
+          하단 <b>다시 하기 + 나가기</b>.<br>
+          헤더의 <b>RANK 자리는 BEST로</b> 바뀐다</td></tr>
+</table></div>
+<div class="callout stop">
+  <div class="t">시작 화면도 <b>어둡게</b> — 새로 만들지 않고 <b>플레이 화면 것을 가져다 쓴다</b></div>
+  <p>처음에 구 진입 화면(<code>#F9FAFC</code> 밝은 배경 + 흰 카드)을 그대로 따랐다.
+     그런데 <b>시작 버튼을 누르면 곧바로 검은 화면</b>이 된다 — 게임에 들어가는 느낌이 끊긴다.
+     이 게임은 <b>어두운 화면이 정체성</b>이다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>시작 화면 요소</th><th>어디서 가져왔나</th></tr>
+    <tr><td>배경</td><td>플레이 화면 <code>bg-slate-950</code></td></tr>
+    <tr><td>헤더</td><td>플레이 헤더 — 원 28 <code>bg-slate-800</code> + 이름 18 semibold
+        + 아래 12 <code>text-slate-400</code></td></tr>
+    <tr><td>급 · 입력 방식 선택지</td><td>4지선다 버튼 —
+        <code>h-14 rounded-2xl border-slate-700 bg-slate-900</code></td></tr>
+    <tr><td><b>고른 것</b></td><td>결과 오버레이의 <b>내 순위 행</b> —
+        <code>border-emerald-500/50 bg-emerald-500/20</code></td></tr>
+    <tr><td>최고 점수 카드</td><td>결과 오버레이의 점수 카드 —
+        <code>rounded-2xl border-slate-700 bg-slate-900/80</code></td></tr>
+    <tr><td>시작 버튼</td><td><b>발사 버튼</b> — <code>bg-emerald-500 text-slate-950</code></td></tr>
+    <tr><td>나가기 버튼</td><td>나가기 확인 대화상자 — <code>rounded-xl bg-slate-700</code></td></tr>
+  </table></div>
+  <p class="qa"><b>새로 만든 것이 없다.</b> 그래서 시작 → 플레이 → 결과가 한 화면처럼 이어진다.</p>
+</div>
+<div class="callout stop">
+  <div class="t">이름은 <b>VocaShot</b>이다 — 이미 그렇게 부르고 있었다</div>
+  <p>플레이 화면 헤더가 <b>하드코딩 <code>VocaShot</code></b>이고,
+     <b>영어판 i18n도 이미 <code>"VocaShot"</code></b>이다.
+     한국어·일본어·중국어·베트남어 <b>목록 이름만 번역돼</b> 있었다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>로케일</th><th>지금</th><th>바꾼 뒤</th></tr>
+    <tr><td><code>en</code></td><td>VocaShot</td><td>그대로</td></tr>
+    <tr><td><code>ko</code></td><td>낱말맞추기</td><td rowspan="4"><b>VocaShot</b></td></tr>
+    <tr><td><code>ja</code></td><td>単語当て</td></tr>
+    <tr><td><code>zh</code></td><td>猜单词</td></tr>
+    <tr><td><code>vi</code></td><td>Đoán từ</td></tr>
+  </table></div>
+  <p><b>고유명사는 번역하지 않는다.</b> 지금은 목록에서 "낱말맞추기"를 누르면
+     <b>VocaShot이라고 쓰인 화면</b>이 열린다 — 같은 것을 두 이름으로 부르고 있다.</p>
+  <p class="qa"><code>game.vocashot.title</code>("낱말맞추기 게임")도 같이 바꾼다.</p>
+</div>
+
+<h2 id="s19c"><span class="n">19c</span>돌려 봤다 — <b>표로는 안 보이던 것</b></h2>
+<p class="lead"><code>_superseded/vocashot_play_v1.html</code>. 실제 문항 <b>1149개</b>로 도는 시제품이다.
+   조정값을 옆에서 바꾸며 직접 해 볼 수 있다.
+   <span class="qa">그림 문항은 정적 서버가 떠 있어야 보인다.</span></p>
+
+<div class="callout stop">
+  <div class="t"><b>판 길이가 정답률에 휘둘린다</b> — 하트 구조의 필연이다</div>
+  <p>오답과 놓침이 각각 하트 -1 이므로 <b>판 길이 ≈ 하트 ÷ (1 − 정답률)</b>이다.
+     정답률이 조금만 올라도 판이 <b>몇 배로</b> 길어진다. 자동으로 5판씩 돌려 재 봤다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>정답률</th><th class="n">문항 (상한 없음)</th><th class="n">점수</th>
+        <th class="n">문항 (상한 30)</th><th class="n">점수</th></tr>
+    <tr><td>50%</td><td class="n">12</td><td class="n">106</td><td class="n">8</td><td class="n">42</td></tr>
+    <tr><td>70%</td><td class="n">16</td><td class="n">163</td><td class="n">16</td><td class="n">190</td></tr>
+    <tr><td>85%</td><td class="n">47</td><td class="n">749</td><td class="n">25</td><td class="n">353</td></tr>
+    <tr><td><b>95%</b></td><td class="n"><b>121</b></td><td class="n"><b>2139</b></td>
+        <td class="n">30</td><td class="n">524</td></tr>
+  </table></div>
+  <p class="qa">위는 <b>속도 보너스가 있던 때</b>의 측정이다. 규칙을 고친 뒤 다시 쟀다 — 아래.</p>
+  <p>상한이 없으면 <b>잘하는 사람의 판이 7분을 넘고</b>, 점수가 <b>20배</b>까지 벌어진다.
+     점수가 실력이 아니라 <b>얼마나 오래 버텼나</b>를 재게 되고,
+     그러면 <b>속도 보상이 묻힌다</b> — 속도를 점수로 삼은 이유가 사라진다.</p>
+  <p><b>한 판 문항 상한을 30으로 둔다.</b> 점수가 <b>같은 분모</b> 위에서 비교되고,
+     판 길이가 <b>2~3분</b>으로 예측 가능해진다.
+     <code>TUNING.maxQuestions</code>에 넣었다(0 이면 무제한).</p>
+  <p class="qa">앞에서 <code>gameDurationSec</code>(시간 제한)을 버렸는데,
+     <b>결국 끊는 장치가 필요했다</b>. 다만 시간이 아니라 <b>문항 수</b>로 끊는다 —
+     시간으로 끊으면 느리게 푸는 사람이 문항을 덜 만난다.</p>
+</div>
+
+<div class="callout stop">
+  <div class="t">규칙을 고치고 <b>다시 쟀다</b> — 점수 격차가 20배에서 <b>9배</b>로 줄었다</div>
+  <p>속도 보너스를 빼고, 빨라지는 기준을 <b>점수</b>로 옮기고,
+     낙하를 <b>0.9배 속도</b>로 늦춘 뒤의 측정이다. 각 4판 평균.</p>
+  <div class="tablewrap"><table>
+    <tr><th>정답률</th><th class="n">문항</th><th class="n">맞힘</th><th class="n">점수</th>
+        <th class="n">남은 하트</th><th class="n">마지막 낙하</th></tr>
+    <tr><td>50%</td><td class="n">9</td><td class="n">4</td><td class="n">30</td>
+        <td class="n">0</td><td class="n"><b>7.0초</b></td></tr>
+    <tr><td>70%</td><td class="n">17</td><td class="n">12</td><td class="n">98</td>
+        <td class="n">0</td><td class="n">5.0초</td></tr>
+    <tr><td>85%</td><td class="n">25</td><td class="n">20</td><td class="n">180</td>
+        <td class="n">0.5</td><td class="n">4.0초</td></tr>
+    <tr><td><b>95%</b></td><td class="n">30</td><td class="n">29</td><td class="n">278</td>
+        <td class="n">3.5</td><td class="n"><b>3.3초</b></td></tr>
+  </table></div>
+  <p><b>못하는 사람은 안 빨라진다.</b> 정답률 50%는 끝까지 <b>7.0초</b>를 유지했고,
+     95%만 <b>3.3초</b>까지 갔다. 속도를 점수에 묶은 효과가 그대로 나온다.</p>
+  <p class="qa"><b>맞힘과 점수가 다르다</b>는 것도 여기서 보인다 —
+     50%에서 맞힘 4 · 점수 30 이면 <b>첫 시도 3개, 다시 맞힌 1개</b>다.</p>
+</div>
+<div class="callout">
+  <div class="t">결과 제목이 <b>둘로 갈린다</b></div>
+  <p>상한을 두니 <b>하트를 남기고 끝나는 판</b>이 생겼다(95%에서 평균 3.6개 남음).
+     그건 실패가 아니므로 <b>"게임 오버"라고 쓸 수 없다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>끝난 방식</th><th>제목</th><th>설명</th></tr>
+    <tr><td>하트 0</td><td><b>게임 오버</b> <span class="qa">rose</span></td>
+        <td>하트가 0이 되어 끝났습니다</td></tr>
+    <tr><td>문항 상한 도달</td><td><b>완주</b> <span class="qa">emerald</span></td>
+        <td>N문항을 하트 M개 남기고 끝냈습니다</td></tr>
+  </table></div>
+</div>
+
+<div class="callout">
+  <div class="t">시제품을 만들며 고친 것 둘</div>
+  <p><b>한 유성에 두 번 답할 수 있었다.</b> 버튼을 <code>disabled</code>로 잠갔는데
+     그 잠금이 <b>DOM 에만</b> 있었다. 상태(<code>G.locked</code>)로 옮겼다 —
+     자동 검사가 이걸 바로 밟았다.</p>
+  <p class="qa"><b>첫 유성을 만들기 전에 화면을 그리고 있었다.</b>
+     순서를 바꿨다. 표로 설계했으면 안 나왔을 종류의 것이다.</p>
+</div>
+
+<h2 id="s20"><span class="n">20</span>아직 안 정한 것</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>무엇</th><th>왜 지금 안 정하나</th></tr>
+  <tr><td>1</td><td><b>낙하 시간·점수 계수</b>의 실제 값</td>
+      <td>기준이 될 원래 값이 저장소에 없다. <b>만들어서 해 보고</b> 고치는 편이 빠르다 —
+          아래 표의 값은 <b>출발점일 뿐</b>이다</td></tr>
+  <tr><td>2</td><td><b>재출제 간격 3문항</b>이 맞는지</td>
+      <td>규칙은 정했고 값만 남았다. <b>해 보고</b> 고친다</td></tr>
+</table></div>
+<p class="qa">근거: <code>routes/main/game/vocashot_.$pin.tsx</code>(797줄) ·
+   <code>lib/vocashot/{types,appsync}.ts</code> ·
+   <code>shared/data/n1_word_quiz.json</code>(1146건) ·
+   <code>components/learn/word-quiz-card.tsx</code> ·
+   <code>api/game-progress.ts</code> · <code>business/game_progress.py</code> ·
+   <code>components/main/game/spring-picnic.tsx</code> 실측.</p>
+</main>
+</section>
+</body>
+</html>

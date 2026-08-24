@@ -6,6 +6,8 @@
     game_screens_v1.html     → _superseded/   game_screens_uiux.html 로 대체됐다
     gamelist_mockup_v1.html  → _superseded/   진행 표시 제안의 근거로만 남는다
     game_screens_uiux.html → _superseded/   screens_uiux.html 의 게임 절로 합쳤다
+    games_polish_v1.html → _superseded/       games_spec_v1.html 로 합쳤다 (§1~§10 그대로)
+    vocashot_solo_spec_v1.html → _superseded/  games_spec_v1.html §11~§20 으로
 
 [게임 다섯 — 디자인 인계]
 
