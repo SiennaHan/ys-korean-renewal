@@ -255,7 +255,7 @@ git log --format='%h %s%n%b' --since='2026-08-20'
 `ActivityShell` 은 **아직 없는 이름이다** — 상태를 전담하는 껍데기를 세우는 것이
 남은 일(§6 의 API 가 생긴 뒤)이고, 지금 화면들은 `ActivityFrame` 을 직접 쓰면서
 **구 `saveLearningRecord`** 로 기록한다(20곳). 실제 이름 대조는
-`phase1/Shell_component_spec_uiux.html` §3 맨 위에 있다.
+`phase1/shell_spec_v1.html` §14 맨 위에 있다.
 
 `dev_spec_v1.html` §16 의 네 물음은 **아직 답이 없다** — 해설 문자열 포함 여부 ·
 `DELETE /review-queue` 유지 여부 · 진행 저장 주기 · 게스트 허용 범위.

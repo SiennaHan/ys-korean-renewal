@@ -429,7 +429,7 @@
       정오답이 색으로만 남는다(<code>Positive</code> / <code>Destructive</code> / 미응답 <code>Gray/300</code>).
       <b>초록–빨강은 색만으로 구분되지 않으므로</b>, 정오답의 권위 있는 표시는
       <b>피드백 pill 문구</b>(문항 화면)와 <b>결과 화면 오답 목록</b>(글자)이다.
-      진행바는 <b>진행 표시가 주된 일</b>이다 — 구현 사양 §3·§13 참조.</li>
+      진행바는 <b>진행 표시가 주된 일</b>이다 —  §23·§33 참조.</li>
   <li>세그먼트 <code>aria-label</code>: i18n 키 <code>player.a11ySegment</code> 사용.</li>
   <li>피드백은 색 변화만이 아니라 텍스트로도 명시(<code>player.answerIs</code>).</li>
   <li>탭 대상 최소 44×44pt.</li>
@@ -649,7 +649,7 @@
             선택지를 눌렀으면 · 써서 제출했으면 · 녹음했으면 · 플래시카드에서
             <b>"몰라요"를 눌렀어도</b> · 미션 대화를 끝냈으면 <b>전부 +1</b>입니다.<br>
             빼는 것은 둘뿐 — <b>건너뛴 문항</b>과 <b>녹음 없이 넘긴 발음·롤플레잉 문항</b>
-            (<a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a> §8 판정표)</td></tr>
+            (<a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe"></a> §28 판정표)</td></tr>
     <tr><td><code>gradedCount</code></td><td class="t">int</td><td>✓</td>
         <td><b>채점 대상 문항 수</b> — 정답률의 분모.
             발음(자모 <code>sub=1</code>·<code>3</code>) · 플래시카드 · 롤플레잉은 <b><code>0</code></b>이라
@@ -673,7 +673,7 @@
             <b>주 "푼 문항 <code>answeredCount</code>/<code>totalItems</code>"</b> ·
             부 "정답률 <code>correctCount</code>/<code>gradedCount</code>",
             <b><code>gradedCount == 0</code>이면 "—"</b>
-            (<a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a> §8)</td></tr>
+            (<a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe"></a> §28)</td></tr>
     <tr><td><code>hasPendingReview</code></td><td class="t">bool</td><td><code>firstTryWrongCount &gt; 0</code>.
         활동 목록의 "복습 권장" 표시용</td></tr>
     <tr><td><code>wrongItems</code></td><td class="t">array</td><td>결과 화면 오답 목록. <b>첫 시도 오답 기준</b>이며 각 항목에
@@ -712,7 +712,7 @@
     <div class="callout stop" style="margin-top:12px">
       <div class="t">발음 활동은 <b>정답률에서만</b> 빠집니다 — 진행률에는 들어갑니다</div>
       <p>자모 <code>sub=1</code>(자모 듣고 따라하기) · <code>sub=3</code>(단어 듣고 따라하기)는
-         STT 판정을 쓰지만 <b>진행을 막지 않고 채점하지도 않습니다</b>(구현 사양 §6).
+         STT 판정을 쓰지만 <b>진행을 막지 않고 채점하지도 않습니다</b>( §26).
          <b>그렇다고 활동에서 통째로 빼는 것은 아닙니다</b> — 풀었는지 안 풀었는지는 셉니다.</p>
       <ul>
         <li><code>totalItems</code> · <code>answeredCount</code> — <b>정상적으로 셉니다.</b>

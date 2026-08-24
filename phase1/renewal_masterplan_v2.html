@@ -129,8 +129,8 @@
 <table>
   <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
   <tbody>
-    <tr><td><b>활동 셸</b></td><td>G2 §1·3</td><td>Shell_component_spec_uiux · build_spec_uiux</td><td>shell_mockup_uiux</td><td>Phase1_dev_spec §2·5</td></tr>
-    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>mockup_read_v1</td><td>screens_uiux(활동)</td><td>dev_spec_v1 §11</td></tr>
+    <tr><td><b>활동 셸</b></td><td>G2 §1·3</td><td>shell_spec_v1 · shell_spec_v1</td><td>shell_mockup_uiux</td><td>Phase1_dev_spec §2·5</td></tr>
+    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>_superseded/mockup_read_v1</td><td>screens_uiux(활동)</td><td>dev_spec_v1 §11</td></tr>
     <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>같은 문서 §3·4</td><td>screens_uiux(활동)</td><td><span class="pill open">라우트 통합 대기</span></td></tr>
     <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>screens_uiux(홈·목록)</td><td>dev_spec_v1 §14</td></tr>
     <tr><td><b>교재학습</b></td><td>asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>screens_uiux(홈·목록)</td><td>textbook_tab_spec_v1 §06</td></tr>
@@ -141,7 +141,7 @@
     <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>같은 문서 §04·05</td><td><span class="pill stop">없음</span></td><td>같은 문서 §05</td></tr>
     <tr><td><b>콘텐츠 파이프</b></td><td>G1_content_gate_v1 §6~11</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
     <tr><td><b>다국어</b></td><td><span class="pill open">없음</span></td><td>G2 §4 · Phase1_dev_spec §6</td><td>—</td><td>—</td></tr>
-    <tr><td><b>접근성</b></td><td>—</td><td>G2 §7 · build_spec_uiux</td><td>—</td><td>—</td></tr>
+    <tr><td><b>접근성</b></td><td>—</td><td>G2 §7 · shell_spec_v1</td><td>—</td><td>—</td></tr>
     <tr><td><b>오프라인·오류</b></td><td>—</td><td>G2 §6</td><td>build_spec §9</td><td>api_schema §5</td></tr>
     <tr><td><b>알림·리텐션</b></td><td><span class="pill done">정했다</span> <b>푸시·PWA 를 만들지 않는다</b></td><td colspan="3">밖으로 나가는 것은 <b>메일 넷만</b>(재설정 · 영수증 · 환불 · 구독 만료). 재방문 유도는 앱 안의 연속 학습일로 한다 — <span class="file">BLOCKERS.md</span> §7</td></tr>
     <tr><td><b>어드민</b></td><td><span class="file">_superseded/renewal_plan_v0.2</span> §7</td><td colspan="3">이번 리뉴얼 <b>범위 밖</b>으로 선언됐다 — 의도된 공백이다</td></tr>
@@ -265,17 +265,17 @@
       <td><span class="file">access_and_pricing_v1</span> §01 용어 · <span class="file">app/src/components/main/textbook/labels.ts</span></td></tr>
     <tr><td>D2</td><td>학습 단위 · 상태 모델</td>
       <td><span class="pill done">확정</span> 4단계 + 복습 큐. <b>기록은 전부 첫 시도 기준</b></td>
-      <td><span class="file">G2_shell_and_state_spec_v1</span> §1</td></tr>
+      <td><span class="file">shell_spec_v1</span> §1</td></tr>
     <tr><td>D3</td><td>콘텐츠 단일 원본</td>
       <td><span class="pill done">확정</span> 원장(xlsx)이 정본, <span class="file">n*.json</span> 은 산출물.
         <span class="file">review_status</span> 가 <span class="file">reviewed</span> 인 것만 노출</td>
       <td><span class="file">G1_content_gate_v1</span> §6~11 · <span class="file">app/src/shared/data/README.md</span></td></tr>
     <tr><td>D4</td><td>다국어 원칙</td>
       <td><span class="pill done">확정</span> 지시문은 한국어 + UI 언어, <b>학습 텍스트는 한국어 고정</b></td>
-      <td><span class="file">G2_shell_and_state_spec_v1</span> §4</td></tr>
+      <td><span class="file">shell_spec_v1</span> §4</td></tr>
     <tr><td>D5</td><td>디자인 시스템과 게임의 위치</td>
       <td><span class="pill done">확정</span> 목업이 시각 정본, 토큰 2단(primitive → semantic). 게임은 존치</td>
-      <td><span class="file">Shell_component_spec_uiux</span> · <span class="file">build_spec_uiux</span></td></tr>
+      <td><span class="file">shell_spec_v1</span> · <span class="file">shell_spec_v1</span></td></tr>
     <tr><td>D6</td><td>음성 · AI 전략</td>
       <td><span class="pill risk">미정</span> STT 엔진 · 발음 평가 정식 채택 · Tutorus 계약. <b>G4 에 남아 있다</b></td>
       <td>아래 G4</td></tr>
@@ -285,7 +285,7 @@
       <td><span class="file">access_and_pricing_v1</span></td></tr>
   </tbody>
 </table></div>
-<p class="qa"><span class="file">Shell_component_spec_uiux</span> 의 <b>S1~S3 은 이것과 다른 것</b>이다 —
+<p class="qa"><span class="file">shell_spec_v1</span> 의 <b>S1~S3 은 이것과 다른 것</b>이다 —
 셸 결정이고 그 문서가 정의처다.</p>
 
 <div class="gate">
@@ -299,7 +299,7 @@
 </div>
 
 <div class="gate">
-  <div class="gh"><span class="gid">G2</span><span class="gt">개발 착수 게이트</span><span class="gw"><span class="pill done">닫혔다</span> G2_shell_and_state_spec_v1 · dev_spec_v1 로 · Phase 1 진행 중(§8)</span></div>
+  <div class="gh"><span class="gid">G2</span><span class="gt">개발 착수 게이트</span><span class="gw"><span class="pill done">닫혔다</span> shell_spec_v1 · dev_spec_v1 로 · Phase 1 진행 중(§8)</span></div>
   <ul>
     <li><b>상태 모델</b>(D2) — 4단계 + 복습 큐 규칙.</li>
     <li><b>라우트·IA 규칙</b> — 단일 체계 통일.</li>
@@ -473,7 +473,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 
 <h2 id="s11"><span class="no">11</span>문서끼리 어긋나는 것 — 목업이 기준</h2>
 <div class="tablewrap"><table>
-  <tr><th>항목</th><th><code>build_spec_uiux</code></th><th>목업 <span class="pill">기준</span></th></tr>
+  <tr><th>항목</th><th><code>shell_spec_v1</code></th><th>목업 <span class="pill">기준</span></th></tr>
   <tr><td>선택지</td><td>§5 세로 1열 · 전폭 · min-height 68 · padding 16 · radius 14</td>
       <td><code>chip-opt</code> 73×40 · radius 8 / <code>choice</code> 목록 — <b>두 종류</b></td></tr>
   <tr><td>진행바 칸 상태</td><td>§3 <b>4상태</b> — 정답 <code>fill-correct</code> · 오답 <code>fill-wrong</code> · 채점없음 · 미응답</td>
