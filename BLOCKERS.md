@@ -320,11 +320,38 @@ app/rsbuild.config.ts
 
 | 무엇 | 어디 | 줄 수 | 문서가 말한 것 |
 |---|---|---|---|
-| 빈 스텁 넷 | `routes/{flashcard,missionchat,jamolist,about}.tsx` | 36 | `dev_spec_v1` §4 "제외" — 안 됐다 |
-| 테스트 아홉 | `routes/test/**` | — | 같은 절. **이건 됐다**(`rsbuild.config.ts`) |
+| ~~빈 스텁 넷~~ | ~~`routes/{flashcard,missionchat,jamolist,about}.tsx`~~ | ~~36~~ | **지웠다 2026-08-24** — 아래 |
+| ~~테스트 아홉~~ | ~~`routes/test/**`~~ | — | **이제 정말 빠진다 2026-08-24** — 안 되고 있었다. 아래 |
 | 구 교재 트리 | `routes/book/**` 19개 | — | 이 문서 위쪽. 자모(§2) 뒤에 한꺼번에 |
 | ~~교실용 VocaShot~~ | ~~`routes/main/game/vocashot.tsx` · `vocashot_.$pin.tsx` · `lib/vocashot/appsync.ts`~~ | ~~1,459~~ | **지웠다 2026-08-24** — `types.ts` 90줄과 문구 33줄×5언어까지. `games_spec_v1` §19 |
 | ~~고아 미션대화~~ | ~~`routes/main/game/missionchat.tsx` + `components/main/course-list/mission-chat.tsx`~~ | ~~135~~ | **지웠다 2026-08-24** — 같이 걷었다 |
+
+### 테스트 라우트 제외는 **되고 있지 않았다** (2026-08-24)
+
+이 문서가 "테스트 아홉은 됐다" 고 적어 두었는데 **틀렸다.** 프로덕션 결과물에
+`(0,S.WK)("/test/tts-regen")` · `path:"/test/videos"` 가 그대로 들어 있었다.
+
+원인은 패턴이 **경로가 아니라 한 칸의 이름과 비교**되기 때문이다 —
+`@tanstack/router-generator` 의 `getRouteNodes` 가 디렉터리를 훑으며
+`d.name.match(routeFileIgnoreRegExp)` 를 한다. `d.name` 은 `test` · `about.tsx` 처럼
+**슬래시가 없는 한 칸**이라 `"routes/test/"` 는 어떤 이름과도 맞지 않았다.
+`"test/"` 로 줄여도 안 맞는다(그것도 슬래시가 있다). `^test$` 로 고쳤다.
+
+**스텁 넷은 같은 방법으로 뺄 수 없어서 파일을 지웠다.** `flashcard.tsx` 가
+스텁 · `routes/learn/`(진짜 학습 화면) · `routes/test/` **셋에 다 있다.**
+이름으로 거르면 진짜 플래시카드 화면까지 프로덕션에서 사라진다. 지우는 쪽이 맞다 —
+스텁은 `Hello "/…"` 한 줄이고 개발에서도 아무 값이 없다.
+
+확인 — 프로덕션 트리 1,547 → **1,274줄**, `dist` 에서 테스트 라우트 참조 **0회**,
+스텁 흔적 0, 그리고 **`/learn/flashcard` 는 살아 있다**. 번들 20,981.8 → 20,952.9 kB.
+
+> ⚠️ **릴리스 빌드 뒤 `app/src/routeTree.gen.ts` 를 커밋하지 마라.**
+> 이 파일은 생성물인데 저장소에 추적된다. 제외가 실제로 동작하게 되면서
+> **개발 판(1,463줄, 테스트 포함)과 프로덕션 판(1,274줄, 테스트 없음)이 갈린다.**
+> `pnpm build` 는 프로덕션 판을 남기고, **그 판을 커밋하면 다음 `pnpm typecheck` 가
+> 깨진다** — `routes/test/*.tsx` 가 없는 라우트 타입을 참조하게 된다(실측했다).
+> 커밋해야 하는 것은 **개발 판**이다. 릴리스 빌드 뒤에는
+> `git checkout app/src/routeTree.gen.ts` 로 되돌린다.
 
 > **교사 앱 통보는 필요 없다 (2026-08-24 기획자 확인).** 교실용 VocaShot 을 지울 때
 > `games_spec_v1` §19 가 "교사 앱이 아직 학생을 그 길로 부른다면 그쪽이 끊긴다" 는

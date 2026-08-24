@@ -14,13 +14,9 @@ import { Route as QrRouteImport } from './routes/qr'
 import { Route as NewPasswordRouteImport } from './routes/new-password'
 import { Route as MyProfileRouteImport } from './routes/my-profile'
 import { Route as MyPasswordRouteImport } from './routes/my-password'
-import { Route as MissionchatRouteImport } from './routes/missionchat'
 import { Route as MainRouteImport } from './routes/main'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as JamolistRouteImport } from './routes/jamolist'
-import { Route as FlashcardRouteImport } from './routes/flashcard'
 import { Route as CheckEmailRouteImport } from './routes/check-email'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestIndexRouteImport } from './routes/test/index'
 import { Route as MainIndexRouteImport } from './routes/main/index'
@@ -105,11 +101,6 @@ const MyPasswordRoute = MyPasswordRouteImport.update({
   path: '/my-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MissionchatRoute = MissionchatRouteImport.update({
-  id: '/missionchat',
-  path: '/missionchat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MainRoute = MainRouteImport.update({
   id: '/main',
   path: '/main',
@@ -120,24 +111,9 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const JamolistRoute = JamolistRouteImport.update({
-  id: '/jamolist',
-  path: '/jamolist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FlashcardRoute = FlashcardRouteImport.update({
-  id: '/flashcard',
-  path: '/flashcard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CheckEmailRoute = CheckEmailRouteImport.update({
   id: '/check-email',
   path: '/check-email',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -446,13 +422,9 @@ const BookChapterUnitDialogReportIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/check-email': typeof CheckEmailRoute
-  '/flashcard': typeof FlashcardRoute
-  '/jamolist': typeof JamolistRoute
   '/login': typeof LoginRoute
   '/main': typeof MainRouteWithChildren
-  '/missionchat': typeof MissionchatRoute
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
   '/new-password': typeof NewPasswordRoute
@@ -518,12 +490,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/check-email': typeof CheckEmailRoute
-  '/flashcard': typeof FlashcardRoute
-  '/jamolist': typeof JamolistRoute
   '/login': typeof LoginRoute
-  '/missionchat': typeof MissionchatRoute
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
   '/new-password': typeof NewPasswordRoute
@@ -588,13 +556,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/check-email': typeof CheckEmailRoute
-  '/flashcard': typeof FlashcardRoute
-  '/jamolist': typeof JamolistRoute
   '/login': typeof LoginRoute
   '/main': typeof MainRouteWithChildren
-  '/missionchat': typeof MissionchatRoute
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
   '/new-password': typeof NewPasswordRoute
@@ -662,13 +626,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
     | '/check-email'
-    | '/flashcard'
-    | '/jamolist'
     | '/login'
     | '/main'
-    | '/missionchat'
     | '/my-password'
     | '/my-profile'
     | '/new-password'
@@ -734,12 +694,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
     | '/check-email'
-    | '/flashcard'
-    | '/jamolist'
     | '/login'
-    | '/missionchat'
     | '/my-password'
     | '/my-profile'
     | '/new-password'
@@ -803,13 +759,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/about'
     | '/check-email'
-    | '/flashcard'
-    | '/jamolist'
     | '/login'
     | '/main'
-    | '/missionchat'
     | '/my-password'
     | '/my-profile'
     | '/new-password'
@@ -876,13 +828,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
   CheckEmailRoute: typeof CheckEmailRoute
-  FlashcardRoute: typeof FlashcardRoute
-  JamolistRoute: typeof JamolistRoute
   LoginRoute: typeof LoginRoute
   MainRoute: typeof MainRouteWithChildren
-  MissionchatRoute: typeof MissionchatRoute
   MyPasswordRoute: typeof MyPasswordRoute
   MyProfileRoute: typeof MyProfileRoute
   NewPasswordRoute: typeof NewPasswordRoute
@@ -971,13 +919,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/missionchat': {
-      id: '/missionchat'
-      path: '/missionchat'
-      fullPath: '/missionchat'
-      preLoaderRoute: typeof MissionchatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/main': {
       id: '/main'
       path: '/main'
@@ -992,32 +933,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/jamolist': {
-      id: '/jamolist'
-      path: '/jamolist'
-      fullPath: '/jamolist'
-      preLoaderRoute: typeof JamolistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/flashcard': {
-      id: '/flashcard'
-      path: '/flashcard'
-      fullPath: '/flashcard'
-      preLoaderRoute: typeof FlashcardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/check-email': {
       id: '/check-email'
       path: '/check-email'
       fullPath: '/check-email'
       preLoaderRoute: typeof CheckEmailRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -1485,13 +1405,9 @@ const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
   CheckEmailRoute: CheckEmailRoute,
-  FlashcardRoute: FlashcardRoute,
-  JamolistRoute: JamolistRoute,
   LoginRoute: LoginRoute,
   MainRoute: MainRouteWithChildren,
-  MissionchatRoute: MissionchatRoute,
   MyPasswordRoute: MyPasswordRoute,
   MyProfileRoute: MyProfileRoute,
   NewPasswordRoute: NewPasswordRoute,
