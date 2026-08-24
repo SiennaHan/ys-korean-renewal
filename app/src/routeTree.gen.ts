@@ -53,11 +53,9 @@ import { Route as MainTextbookIndexRouteImport } from './routes/main/textbook/in
 import { Route as MainGameIndexRouteImport } from './routes/main/game/index'
 import { Route as MainTextbookJamoRouteImport } from './routes/main/textbook/jamo'
 import { Route as MainGameVocashotSoloRouteImport } from './routes/main/game/vocashot-solo'
-import { Route as MainGameVocashotRouteImport } from './routes/main/game/vocashot'
 import { Route as MainGameSpringPicnicRouteImport } from './routes/main/game/spring-picnic'
 import { Route as MainGameSeoulPuzzleRouteImport } from './routes/main/game/seoul-puzzle'
 import { Route as MainGameParticleSniperRouteImport } from './routes/main/game/particle-sniper'
-import { Route as MainGameMissionchatRouteImport } from './routes/main/game/missionchat'
 import { Route as MainGameCardSortRouteImport } from './routes/main/game/card-sort'
 import { Route as LearnJamoWordWriteRouteImport } from './routes/learn/jamo/word-write'
 import { Route as LearnJamoWordRepeatRouteImport } from './routes/learn/jamo/word-repeat'
@@ -66,7 +64,6 @@ import { Route as LearnJamoCombine3RouteImport } from './routes/learn/jamo/combi
 import { Route as LearnJamoCombineRouteImport } from './routes/learn/jamo/combine'
 import { Route as LearnJamoChooseRouteImport } from './routes/learn/jamo/choose'
 import { Route as BookChapterIdRouteImport } from './routes/book/chapter/$id'
-import { Route as MainGameVocashotPinRouteImport } from './routes/main/game/vocashot_.$pin'
 import { Route as BookChapterUnitIdRouteImport } from './routes/book/chapter/unit/$id'
 import { Route as BookChapterUnitWrite3CodeRouteImport } from './routes/book/chapter/unit/write3/$code'
 import { Route as BookChapterUnitWrite2CodeRouteImport } from './routes/book/chapter/unit/write2/$code'
@@ -303,11 +300,6 @@ const MainGameVocashotSoloRoute = MainGameVocashotSoloRouteImport.update({
   path: '/vocashot-solo',
   getParentRoute: () => MainGameRoute,
 } as any)
-const MainGameVocashotRoute = MainGameVocashotRouteImport.update({
-  id: '/vocashot',
-  path: '/vocashot',
-  getParentRoute: () => MainGameRoute,
-} as any)
 const MainGameSpringPicnicRoute = MainGameSpringPicnicRouteImport.update({
   id: '/spring-picnic',
   path: '/spring-picnic',
@@ -321,11 +313,6 @@ const MainGameSeoulPuzzleRoute = MainGameSeoulPuzzleRouteImport.update({
 const MainGameParticleSniperRoute = MainGameParticleSniperRouteImport.update({
   id: '/particle-sniper',
   path: '/particle-sniper',
-  getParentRoute: () => MainGameRoute,
-} as any)
-const MainGameMissionchatRoute = MainGameMissionchatRouteImport.update({
-  id: '/missionchat',
-  path: '/missionchat',
   getParentRoute: () => MainGameRoute,
 } as any)
 const MainGameCardSortRoute = MainGameCardSortRouteImport.update({
@@ -367,11 +354,6 @@ const BookChapterIdRoute = BookChapterIdRouteImport.update({
   id: '/book/chapter/$id',
   path: '/book/chapter/$id',
   getParentRoute: () => rootRouteImport,
-} as any)
-const MainGameVocashotPinRoute = MainGameVocashotPinRouteImport.update({
-  id: '/vocashot_/$pin',
-  path: '/vocashot/$pin',
-  getParentRoute: () => MainGameRoute,
 } as any)
 const BookChapterUnitIdRoute = BookChapterUnitIdRouteImport.update({
   id: '/book/chapter/unit/$id',
@@ -511,17 +493,14 @@ export interface FileRoutesByFullPath {
   '/learn/jamo/word-repeat': typeof LearnJamoWordRepeatRoute
   '/learn/jamo/word-write': typeof LearnJamoWordWriteRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
-  '/main/game/missionchat': typeof MainGameMissionchatRoute
   '/main/game/particle-sniper': typeof MainGameParticleSniperRoute
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
   '/main/game/spring-picnic': typeof MainGameSpringPicnicRoute
-  '/main/game/vocashot': typeof MainGameVocashotRoute
   '/main/game/vocashot-solo': typeof MainGameVocashotSoloRoute
   '/main/textbook/jamo': typeof MainTextbookJamoRoute
   '/main/game/': typeof MainGameIndexRoute
   '/main/textbook/': typeof MainTextbookIndexRoute
   '/book/chapter/unit/$id': typeof BookChapterUnitIdRoute
-  '/main/game/vocashot/$pin': typeof MainGameVocashotPinRoute
   '/book/chapter/unit/dialog/$id': typeof BookChapterUnitDialogIdRoute
   '/book/chapter/unit/flashcard/$id': typeof BookChapterUnitFlashcardIdRoute
   '/book/chapter/unit/input_word/$code': typeof BookChapterUnitInput_wordCodeRoute
@@ -583,17 +562,14 @@ export interface FileRoutesByTo {
   '/learn/jamo/word-repeat': typeof LearnJamoWordRepeatRoute
   '/learn/jamo/word-write': typeof LearnJamoWordWriteRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
-  '/main/game/missionchat': typeof MainGameMissionchatRoute
   '/main/game/particle-sniper': typeof MainGameParticleSniperRoute
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
   '/main/game/spring-picnic': typeof MainGameSpringPicnicRoute
-  '/main/game/vocashot': typeof MainGameVocashotRoute
   '/main/game/vocashot-solo': typeof MainGameVocashotSoloRoute
   '/main/textbook/jamo': typeof MainTextbookJamoRoute
   '/main/game': typeof MainGameIndexRoute
   '/main/textbook': typeof MainTextbookIndexRoute
   '/book/chapter/unit/$id': typeof BookChapterUnitIdRoute
-  '/main/game/vocashot/$pin': typeof MainGameVocashotPinRoute
   '/book/chapter/unit/dialog/$id': typeof BookChapterUnitDialogIdRoute
   '/book/chapter/unit/flashcard/$id': typeof BookChapterUnitFlashcardIdRoute
   '/book/chapter/unit/input_word/$code': typeof BookChapterUnitInput_wordCodeRoute
@@ -659,17 +635,14 @@ export interface FileRoutesById {
   '/learn/jamo/word-repeat': typeof LearnJamoWordRepeatRoute
   '/learn/jamo/word-write': typeof LearnJamoWordWriteRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
-  '/main/game/missionchat': typeof MainGameMissionchatRoute
   '/main/game/particle-sniper': typeof MainGameParticleSniperRoute
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
   '/main/game/spring-picnic': typeof MainGameSpringPicnicRoute
-  '/main/game/vocashot': typeof MainGameVocashotRoute
   '/main/game/vocashot-solo': typeof MainGameVocashotSoloRoute
   '/main/textbook/jamo': typeof MainTextbookJamoRoute
   '/main/game/': typeof MainGameIndexRoute
   '/main/textbook/': typeof MainTextbookIndexRoute
   '/book/chapter/unit/$id': typeof BookChapterUnitIdRoute
-  '/main/game/vocashot_/$pin': typeof MainGameVocashotPinRoute
   '/book/chapter/unit/dialog/$id': typeof BookChapterUnitDialogIdRoute
   '/book/chapter/unit/flashcard/$id': typeof BookChapterUnitFlashcardIdRoute
   '/book/chapter/unit/input_word/$code': typeof BookChapterUnitInput_wordCodeRoute
@@ -736,17 +709,14 @@ export interface FileRouteTypes {
     | '/learn/jamo/word-repeat'
     | '/learn/jamo/word-write'
     | '/main/game/card-sort'
-    | '/main/game/missionchat'
     | '/main/game/particle-sniper'
     | '/main/game/seoul-puzzle'
     | '/main/game/spring-picnic'
-    | '/main/game/vocashot'
     | '/main/game/vocashot-solo'
     | '/main/textbook/jamo'
     | '/main/game/'
     | '/main/textbook/'
     | '/book/chapter/unit/$id'
-    | '/main/game/vocashot/$pin'
     | '/book/chapter/unit/dialog/$id'
     | '/book/chapter/unit/flashcard/$id'
     | '/book/chapter/unit/input_word/$code'
@@ -808,17 +778,14 @@ export interface FileRouteTypes {
     | '/learn/jamo/word-repeat'
     | '/learn/jamo/word-write'
     | '/main/game/card-sort'
-    | '/main/game/missionchat'
     | '/main/game/particle-sniper'
     | '/main/game/seoul-puzzle'
     | '/main/game/spring-picnic'
-    | '/main/game/vocashot'
     | '/main/game/vocashot-solo'
     | '/main/textbook/jamo'
     | '/main/game'
     | '/main/textbook'
     | '/book/chapter/unit/$id'
-    | '/main/game/vocashot/$pin'
     | '/book/chapter/unit/dialog/$id'
     | '/book/chapter/unit/flashcard/$id'
     | '/book/chapter/unit/input_word/$code'
@@ -883,17 +850,14 @@ export interface FileRouteTypes {
     | '/learn/jamo/word-repeat'
     | '/learn/jamo/word-write'
     | '/main/game/card-sort'
-    | '/main/game/missionchat'
     | '/main/game/particle-sniper'
     | '/main/game/seoul-puzzle'
     | '/main/game/spring-picnic'
-    | '/main/game/vocashot'
     | '/main/game/vocashot-solo'
     | '/main/textbook/jamo'
     | '/main/game/'
     | '/main/textbook/'
     | '/book/chapter/unit/$id'
-    | '/main/game/vocashot_/$pin'
     | '/book/chapter/unit/dialog/$id'
     | '/book/chapter/unit/flashcard/$id'
     | '/book/chapter/unit/input_word/$code'
@@ -1280,13 +1244,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainGameVocashotSoloRouteImport
       parentRoute: typeof MainGameRoute
     }
-    '/main/game/vocashot': {
-      id: '/main/game/vocashot'
-      path: '/vocashot'
-      fullPath: '/main/game/vocashot'
-      preLoaderRoute: typeof MainGameVocashotRouteImport
-      parentRoute: typeof MainGameRoute
-    }
     '/main/game/spring-picnic': {
       id: '/main/game/spring-picnic'
       path: '/spring-picnic'
@@ -1306,13 +1263,6 @@ declare module '@tanstack/react-router' {
       path: '/particle-sniper'
       fullPath: '/main/game/particle-sniper'
       preLoaderRoute: typeof MainGameParticleSniperRouteImport
-      parentRoute: typeof MainGameRoute
-    }
-    '/main/game/missionchat': {
-      id: '/main/game/missionchat'
-      path: '/missionchat'
-      fullPath: '/main/game/missionchat'
-      preLoaderRoute: typeof MainGameMissionchatRouteImport
       parentRoute: typeof MainGameRoute
     }
     '/main/game/card-sort': {
@@ -1370,13 +1320,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/book/chapter/$id'
       preLoaderRoute: typeof BookChapterIdRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/main/game/vocashot_/$pin': {
-      id: '/main/game/vocashot_/$pin'
-      path: '/vocashot/$pin'
-      fullPath: '/main/game/vocashot/$pin'
-      preLoaderRoute: typeof MainGameVocashotPinRouteImport
-      parentRoute: typeof MainGameRoute
     }
     '/book/chapter/unit/$id': {
       id: '/book/chapter/unit/$id'
@@ -1488,26 +1431,20 @@ declare module '@tanstack/react-router' {
 
 interface MainGameRouteChildren {
   MainGameCardSortRoute: typeof MainGameCardSortRoute
-  MainGameMissionchatRoute: typeof MainGameMissionchatRoute
   MainGameParticleSniperRoute: typeof MainGameParticleSniperRoute
   MainGameSeoulPuzzleRoute: typeof MainGameSeoulPuzzleRoute
   MainGameSpringPicnicRoute: typeof MainGameSpringPicnicRoute
-  MainGameVocashotRoute: typeof MainGameVocashotRoute
   MainGameVocashotSoloRoute: typeof MainGameVocashotSoloRoute
   MainGameIndexRoute: typeof MainGameIndexRoute
-  MainGameVocashotPinRoute: typeof MainGameVocashotPinRoute
 }
 
 const MainGameRouteChildren: MainGameRouteChildren = {
   MainGameCardSortRoute: MainGameCardSortRoute,
-  MainGameMissionchatRoute: MainGameMissionchatRoute,
   MainGameParticleSniperRoute: MainGameParticleSniperRoute,
   MainGameSeoulPuzzleRoute: MainGameSeoulPuzzleRoute,
   MainGameSpringPicnicRoute: MainGameSpringPicnicRoute,
-  MainGameVocashotRoute: MainGameVocashotRoute,
   MainGameVocashotSoloRoute: MainGameVocashotSoloRoute,
   MainGameIndexRoute: MainGameIndexRoute,
-  MainGameVocashotPinRoute: MainGameVocashotPinRoute,
 }
 
 const MainGameRouteWithChildren = MainGameRoute._addFileChildren(

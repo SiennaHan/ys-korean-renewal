@@ -323,8 +323,14 @@ app/rsbuild.config.ts
 | 빈 스텁 넷 | `routes/{flashcard,missionchat,jamolist,about}.tsx` | 36 | `dev_spec_v1` §4 "제외" — 안 됐다 |
 | 테스트 아홉 | `routes/test/**` | — | 같은 절. **이건 됐다**(`rsbuild.config.ts`) |
 | 구 교재 트리 | `routes/book/**` 19개 | — | 이 문서 위쪽. 자모(§2) 뒤에 한꺼번에 |
-| 교실용 VocaShot | `routes/main/game/vocashot.tsx` · `vocashot_.$pin.tsx` · `lib/vocashot/appsync.ts` | 1,459 | `games_spec_v1` §18 ⑥ "교실용 경로 삭제" — 안 됐다 |
-| 고아 미션대화 | `routes/main/game/missionchat.tsx` + `components/main/course-list/mission-chat.tsx` | — | **아무 문서도 몰랐다.** 구 경로로 보내서 누르면 교재학습에 떨어진다 |
+| ~~교실용 VocaShot~~ | ~~`routes/main/game/vocashot.tsx` · `vocashot_.$pin.tsx` · `lib/vocashot/appsync.ts`~~ | ~~1,459~~ | **지웠다 2026-08-24** — `types.ts` 90줄과 문구 33줄×5언어까지. `games_spec_v1` §19 |
+| ~~고아 미션대화~~ | ~~`routes/main/game/missionchat.tsx` + `components/main/course-list/mission-chat.tsx`~~ | ~~135~~ | **지웠다 2026-08-24** — 같이 걷었다 |
+
+> **교사 앱 담당에게 알려야 한다 (2026-08-24).** 교실용 VocaShot 을 지웠으므로,
+> 교사 앱이 아직 학생을 PIN 으로 부르고 있다면 **그 길이 지금 끊겼다.** 이 저장소만으로는
+> 교사 앱이 그 링크를 쓰는지 확인할 수 없다. `games_spec_v1` §19 가 지우기 전부터
+> 이것을 조건으로 달아 두었다. 서버의 `api/seed_vocashot.py` 는 어휘 은행을 심는 것이라
+> 방과 무관하다(확인했다).
 
 **구 교재 트리 세 층은 리다이렉트가 아니라 살아 있는 화면이다** — `/book/$id` ·
 `/book/chapter/$id` · `/book/chapter/unit/$id` 가 `chapter.ts`·`unit.ts`·`module.ts`(손으로

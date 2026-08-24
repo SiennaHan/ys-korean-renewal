@@ -1745,6 +1745,38 @@ POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
    설명  지금 "선생님이 만든 게임에 참여하세요" — 혼자 하기만 남으면 틀린 설명이 된다</pre>
 <p class="qa">⑥을 <b>마지막에 두는</b> 이유는 ①~⑤가 도는 것을 확인한 뒤 지우기 위해서다.
    먼저 지우면 비교할 대상이 없어진다.</p>
+<div class="callout good">
+  <div class="t">①~⑦ 다 됐다 — ⑥·⑦ 은 2026-08-24</div>
+  <p><b>⑦은 먼저 되어 있었다.</b> 다섯 언어 모두 이름이 <code>VocaShot</code> 이고 설명이
+     "운석을 맞히며 어휘를 익혀요" 계열이다 — "선생님이 만든 게임에" 는 남아 있지 않다.</p>
+  <p><b>⑥ 을 실행했다.</b> 지운 것 — 파일 여섯 · <b>1,684줄</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>지운 것</th><th>줄</th><th>왜 안전했나</th></tr>
+    <tr><td><code>routes/main/game/vocashot.tsx</code> (PIN 화면)</td><td class="n">210</td>
+        <td rowspan="4">넷을 import 하는 곳이 서로뿐이었다. <code>vocashot-solo</code> 는
+            <code>api/game-progress</code> 와 <code>shared/data/vocashot-bank</code> 만 쓴다 —
+            교실용 자산을 하나도 안 쓴다</td></tr>
+    <tr><td><code>routes/main/game/vocashot_.$pin.tsx</code></td><td class="n">797</td></tr>
+    <tr><td><code>lib/vocashot/appsync.ts</code> (구독 4종)</td><td class="n">452</td></tr>
+    <tr><td><code>lib/vocashot/types.ts</code></td><td class="n">90</td></tr>
+    <tr><td><code>routes/main/game/missionchat.tsx</code> +<br><code>components/main/course-list/mission-chat.tsx</code></td>
+        <td class="n">135</td>
+        <td>덤으로 걷었다. <b>아무도 링크하지 않는 고아</b>였고 구 경로
+            <code>/book/chapter/unit/mission_chat/{code}</code> 로 보내는데 그 경로는
+            <code>/main/textbook</code> 으로 리다이렉트돼서 <b>누르면 교재학습에 떨어졌다</b></td></tr>
+  </table></div>
+  <p><b>문구도 같이 걷었다</b> — <code>game.vocashot.*</code> 33줄 × 5개 언어.
+     <code>roomPin</code> · <code>waitingTeacher</code> · <code>top5</code> ·
+     <code>checkScreenRanking</code> 처럼 방이 없으면 뜻이 없는 것들이다.
+     i18n 키가 <b>291 → 260</b> 이 됐고 다섯 언어가 여전히 같다.</p>
+  <p><b>확인</b> — <code>pnpm build</code> 통과(21.2 → <b>21.0MB</b>) ·
+     <code>routeTree.gen.ts</code> 재생성으로 세 라우트가 사라졌고
+     <code>/main/game/vocashot-solo</code> 만 남았다 · typecheck ·
+     <code>parity:activity</code> 27화면 · 코드가 부르는데 없는 i18n 키 0.</p>
+  <p class="qa"><b>남은 일은 이 저장소 밖이다</b> — 위에 적은 대로 <b>교사 앱이 아직 학생을
+     PIN 으로 부른다면 그 길이 지금 끊겼다.</b> 교사 앱 담당에게 알려야 한다.
+     서버의 <code>api/seed_vocashot.py</code> 는 어휘 은행을 심는 것이라 방과 무관하다(확인했다).</p>
+</div>
 <div class="callout">
   <div class="t">봇은 <b>여기 없다</b></div>
   <p>①②③ 위에 <b>가짜 정답을 스폰 루프에 끼워넣는</b> 일이라 나중에 얹힌다.
