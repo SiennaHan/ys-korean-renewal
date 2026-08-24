@@ -32,6 +32,13 @@ interface BlankQuestion {
 	answer: string;
 	completion: string;
 	grammar_focus: string;
+	/**
+	 * 학습자에게 보여 줄 해설. grammar_focus 는 저작용 기호식
+	 * ("받침 O → -을까요 (먹 + 을까요)")이고 이쪽이 문장이다
+	 * ("받침이 있어요. 먹+을까요"). dev_spec_v1 §16 이 이것을 쓰라고 한다.
+	 * 836행 중 한 행(GF-7-7-003)만 비어 있어 그때는 기호식으로 돌아간다.
+	 */
+	grammar_focus_revised?: string;
 }
 
 /** 지시문은 원장이 문항마다 들고 온다 */
@@ -283,7 +290,9 @@ export default function FillBlank({
 						)}
 					</BlankCard>
 					{selectedAnswer && (
-						<div className="grammar-note">{question.grammar_focus}</div>
+						<div className="grammar-note">
+							{question.grammar_focus_revised?.trim() || question.grammar_focus}
+						</div>
 					)}
 				</ProblemCard>
 
