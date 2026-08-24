@@ -119,17 +119,23 @@ HANGUL_NUM = {"하나": 1, "둘": 2, "셋": 3, "넷": 4, "다섯": 5, "여섯": 
               "일곱": 7, "여덟": 8, "아홉": 9, "열": 10}
 
 
-def parity_screens() -> tuple[int, int]:
-    """목업 대조가 그리는 화면 수를 스크립트에서 센다 — (활동, 내비).
+def parity_screens() -> dict[str, int]:
+    """목업 대조가 그리는 화면 수를 스크립트에서 센다 — 갈래별로.
 
     돌려 보지 않고 세는 것이 중요하다. .parity-out/ 은 .gitignore 밖이라
     받는 사람의 저장소에는 없다.
+
+    갈래를 접두사로 가른다. 전에는 `SCREENS.x =` 꼴을 전부 "내비" 로 셌는데,
+    그 꼴을 쓰는 것이 내비뿐이었을 때만 맞는 말이었다. 지금은 VocaShot 과
+    게임 넷도 같은 꼴로 들어와서, 46화면을 "활동 22 + 내비 24" 라고 찍고
+    있었다 — 내비는 다섯뿐이다.
     """
+    out = {"활동": 0, "내비": 0, "VocaShot": 0, "게임": 0}
     f = APP / "scripts" / "activity-parity.tsx"
     if not f.exists():
-        return (0, 0)
+        return out
     lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
-    activity, nav, inside = 0, 0, False
+    inside = False
     for ln in lines:
         if re.match(r"const SCREENS\b", ln):
             inside = True
@@ -138,10 +144,20 @@ def parity_screens() -> tuple[int, int]:
             if ln.startswith("};"):
                 inside = False
             elif re.match(r"\t[A-Za-z_][A-Za-z0-9_]*:", ln):
-                activity += 1
-        if re.match(r"^SCREENS\.[A-Za-z0-9_]+ =", ln):
-            nav += 1
-    return (activity, nav)
+                out["활동"] += 1
+        m = re.match(r"^SCREENS\.([A-Za-z0-9_]+) =", ln)
+        if m:
+            name = m.group(1)
+            if name.startswith("nav__"):
+                out["내비"] += 1
+            elif name.startswith("vocashot__"):
+                out["VocaShot"] += 1
+            elif name.startswith("game__"):
+                out["게임"] += 1
+            else:
+                # 접두사가 없는 것은 활동으로 본다 — 옛 꼴이 그랬다
+                out["활동"] += 1
+    return out
 
 
 def data_counts() -> dict[str, int]:
@@ -184,13 +200,13 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     (이식 화면 25 · 활동 컴포넌트 22 · 목업 대조 27) 넓게 잡으면
     맞는 숫자를 틀렸다고 잡는다.
     """
-    act, nav = parity_screens()
+    parity = parity_screens()
     memos = len(list(HERE.glob("*.txt")))
     sec_total = sum(t.count("§") for n, t in text.items() if n in live)
 
     # (이름, 실제, 문서가 그 수를 말할 때 쓰는 문구들)
     specs: list[tuple[str, int, list[str]]] = [
-        ("목업 대조 화면 수", act + nav, [
+        ("목업 대조 화면 수", sum(parity.values()), [
             r"(\d+)개\s*화면이\s*일치",
             r"parity:activity\s*#?\s*(\d+)개\s*화면\s*일치",
             r"parity:activity\s*가\s*(\d+)개\s*화면",
@@ -274,6 +290,7 @@ TWIN_ALLOW = {
     "nav__home__none.html": "캡처는 탭바가 위·홈 비활성. mockups 가 아래·활성으로 고친 판(08-20)",
     "nav__home__resume.html": "같음",
     "nav__home__review.html": "같음",
+    "game__pc_result.html": "캡처는 🔊 가 맨 글자. mockups 는 aria-label 붙은 button 으로 감쌌다 — 접근성 개선(2026-08-24)",
 }
 
 
@@ -657,7 +674,7 @@ def main() -> int:
     problems += twin_bad
 
     # ── 결과
-    act, nav = parity_screens()
+    parity = parity_screens()
     memos = len(list(HERE.glob("*.txt")))
     kinds = len(set(re.findall(r"^  \[([^\]]+)\]", __doc__ or "", re.M)))
     print(
@@ -665,7 +682,9 @@ def main() -> int:
         f"문 {len(DOORS)}개 + 색인 1 · 메모 {memos}개 · 검사 {kinds}종"
     )
     print(
-        f"센 것: 목업 대조 {act + nav}화면(활동 {act} + 내비 {nav}) · "
+        f"센 것: 목업 대조 {sum(parity.values())}화면("
+        + " + ".join(f"{k} {v}" for k, v in parity.items() if v)
+        + ") · "
         f"절 인용 {sum(t.count('§') for n, t in text.items() if n in live)}개"
     )
     for line in twin_ok:

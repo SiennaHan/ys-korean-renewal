@@ -41,6 +41,21 @@ EXTRA_SHEETS = {
     "n6_flashcard": "n6_flashcard.json",
     "n6_flashcard_card": "n6_flashcard_card.json",
     "문법목록": "grammar_list.json",
+    # 자모 529행. 내용은 problem.ts 를 옮긴 것이라 화면이 보는 것이 안 바뀐다 —
+    # 배관만 원장 쪽으로 돌린다. BLOCKERS.md §2
+    "n8_jamo": "n8_jamo.json",
+    # 117행 · 검수 완료(v29). ai_gender·ai_role·user_role 은 컬럼을 늘리지 않고
+    # ai_persona_prompt 본문에서 뽑는다(파생 가능한 것은 옆에 안 둔다는 원칙) —
+    # DERIVE_FROM_PROMPT 참고.
+    "n7_mission_chat": "n7_mission_chat.json",
+}
+
+# ai_persona_prompt 본문에 박혀 있는 것을 정규식으로 뽑아 JSON 에 얹는다.
+# 컬럼을 늘리지 않되, 화면이 바로 쓸 수 있게 한다(n3 의 voice CARRY_OVER 와 같은 결).
+DERIVE_FROM_PROMPT = {
+    "ai_gender": r"\*\*AI Gender:\*\*\s*(\w+)",
+    "ai_role": r"\*\*Role:\*\*\s*([^\n-]+?)\s*-\s*\*\*AI Gender",
+    "user_role": r"\*\*User Role:\*\*\s*([^\n]+?)\s*-\s*\*\*Situation",
 }
 
 # 컬럼 이름을 JSON 키로 쓸 수 없는 것만 바꾼다
@@ -118,6 +133,22 @@ def coerce(rows, int_cols):
     return rows
 
 
+def derive_from_prompt(sheet, rows):
+    """ai_persona_prompt 본문에서 ai_gender·ai_role·user_role 을 뽑아 얹는다.
+
+    n7_mission_chat 전용. 컬럼을 늘리지 않기로 한 결정(v27) 때문에 이 셋은
+    프롬프트 텍스트 안에만 있다 — 화면이 매번 정규식을 돌리게 두지 않고
+    생성 시점에 한 번 뽑아 둔다. 117행 전량 매치 확인됨(2026-08-24).
+    """
+    if sheet != "n7_mission_chat":
+        return
+    for r in rows:
+        p = str(r.get("ai_persona_prompt", ""))
+        for key, pat in DERIVE_FROM_PROMPT.items():
+            m = re.search(pat, p)
+            r[key] = m.group(1).strip() if m else ""
+
+
 def carry(sheet, rows, prev):
     """원장에 없는 앱 전용 열을 id 로 이어 붙인다"""
     keys = CARRY_OVER.get(sheet)
@@ -184,6 +215,7 @@ def main():
 
         path = OUT_DIR / filename
         prev = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        derive_from_prompt(sheet, rows)
         rows = coerce(rows, int_columns(rows, prev))
         derived = carry(sheet, rows, prev)
 
@@ -211,25 +243,8 @@ def main():
         if len(warnings) > 10:
             print(f"    … 그 밖에 {len(warnings) - 10}개")
 
-    # 왜 건너뛰는지가 시트마다 다르다. 뭉뚱그리면 "예시뿐" 이라고
-    # 거짓을 찍는다 — n8_jamo 는 529행이 실제로 들어와 있고 검수만 남았다.
-    SKIP_WHY = {
-        "n7_mission_chat": "v25 에서 117행 들어왔다 — 생성기 배선과 검수가 남았다",
-        "n8_jamo": "포팅은 끝났고 검수 대기다 — 전부 draft. BLOCKERS §2",
-    }
-    print("\n앱이 아직 쓰지 않는 것:")
-    for s in ["n7_mission_chat", "n8_jamo"]:
-        ws = wb[s]
-        n = sum(1 for r in ws.iter_rows(min_row=2, values_only=True)
-                if any(x is not None and str(x).strip() for x in r))
-        drafts = 0
-        hdr = [c.value for c in next(ws.iter_rows(min_row=1, max_row=1))]
-        if "review_status" in hdr:
-            i = hdr.index("review_status")
-            drafts = sum(1 for r in ws.iter_rows(min_row=2, values_only=True)
-                         if r[i] == "draft")
-        tail = f" (draft {drafts})" if drafts else ""
-        print(f"  {s:<26}{n:>5}행{tail} — {SKIP_WHY[s]}")
+    # n7_mission_chat·n8_jamo 둘 다 배선됐다(2026-08-24) — 이 안내는 더 필요 없다.
+    # 새로 원장에 시트가 생기고 아직 안 쓴다면 여기에 같은 모양으로 다시 둔다.
 
 
 if __name__ == "__main__":

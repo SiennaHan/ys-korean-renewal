@@ -3,6 +3,10 @@
  *
  * 구 경로 /book/chapter/unit/listen-repeat2/$code 에서 옮겨 왔다.
  * 그쪽은 리다이렉트만 남는다.
+ *
+ * 2026-08-24: 라우트에서 컴포넌트로 옮겼다. 자모는 /learn/jamo 한 라우트가
+ * sub 로 갈라 이 컴포넌트들을 부른다 — URL 에서 콘텐츠 ID 를 걷어냈다.
+ * moduleCode 는 주소 (과·묶음·활동) 에서 풀어 받는다 — shared/data/jamo.ts
  */
 import { CardCheckIcon, SpeakerIcon } from "@/assets/icons";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
@@ -29,28 +33,20 @@ import { wordgroup } from "@/shared/data/problem_wordgroup";
 import { wordgroup_choice } from "@/shared/data/problem_wordgroup_choice";
 import { units } from "@/shared/data/unit";
 import type { ProblemType } from "@/types/book.types";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Volume2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { type JamoSearch, parseJamoSearch } from "../-jamo-search";
-
-export const Route = createFileRoute("/learn/jamo/word-repeat")({
-	validateSearch: (search: Record<string, unknown>): JamoSearch =>
-		parseJamoSearch(search),
-	component: RouteComponent,
-});
 
 const baseButtonClasses =
 	"flex rounded-[8px] items-center justify-center cursor-pointer hover:bg-gray-200 active:bg-gray-300";
 
-export default function RouteComponent() {
-	const { code } = Route.useSearch();
+export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
+	const code = moduleCode;
 	const router = useRouter();
 	const { t } = useTranslation();
 
-	console.log("code=>", code);
 	const sound = useSoundEffects();
 
 	const module = modules.find((item) => item.code === code);
@@ -115,7 +111,7 @@ export default function RouteComponent() {
 
 		setSelectedWord(item);
 		setResultColor("#C8CCD3");
-		setAudioSrc(env.RES_URL_ROOT + "/" + item.content_sound);
+		setAudioSrc(`${env.RES_URL_ROOT}/${item.content_sound}`);
 
 		setTimeout(() => {
 			playAudio();
@@ -127,7 +123,7 @@ export default function RouteComponent() {
 		index,
 		isChecked,
 	}: { item: ProblemType; index: number; isChecked: boolean }) => {
-		const imgSrc = env.RES_URL_ROOT + "/" + item.content_img;
+		const imgSrc = `${env.RES_URL_ROOT}/${item.content_img}`;
 
 		const realIndex = problemList.findIndex((p) => p.id === item.id);
 
@@ -143,7 +139,7 @@ export default function RouteComponent() {
 			>
 				<div
 					className={`size-[50px] rounded-[5px] p-[5px] bg-[url(${imgSrc})] bg-center bg-cover bg-size-[90px] bg-white bg-no-repeat`}
-				></div>
+				/>
 				<div className="relative flex size-[50px] items-center justify-center text-[12px]">
 					{item.content}
 					<div className="absolute top-[0px] right-[0px]">

@@ -1,8 +1,12 @@
 /**
- * 자모 — 자음-모음 조합하고 쓰기 (받침)
+ * 자모 — 자음-모음 조합하고 쓰기
  *
- * 구 경로 /book/chapter/unit/write3/$code 에서 옮겨 왔다.
+ * 구 경로 /book/chapter/unit/write/$code 에서 옮겨 왔다.
  * 그쪽은 리다이렉트만 남는다.
+ *
+ * 2026-08-24: 라우트에서 컴포넌트로 옮겼다. 자모는 /learn/jamo 한 라우트가
+ * sub 로 갈라 이 컴포넌트들을 부른다 — URL 에서 콘텐츠 ID 를 걷어냈다.
+ * moduleCode 는 주소 (과·묶음·활동) 에서 풀어 받는다 — shared/data/jamo.ts
  */
 import {
 	ActivityAppBar,
@@ -15,9 +19,8 @@ import {
 	PrimaryButton,
 	ProblemCard,
 } from "@/components/main/activity";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { type JamoSearch, parseJamoSearch } from "../-jamo-search";
 
 import { SpeakerIcon } from "@/assets/icons";
 import HangulTracingCanvas, {
@@ -37,12 +40,6 @@ import clsx from "clsx";
 import { ChevronRight, CircleCheckBig, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export const Route = createFileRoute("/learn/jamo/combine3")({
-	validateSearch: (search: Record<string, unknown>): JamoSearch =>
-		parseJamoSearch(search),
-	component: RouteComponent,
-});
-
 const baseButton =
 	"w-full max-w-[500px] h-[56px] bg-[#0180FF] text-white rounded-[10px] flex items-center justify-center cursor-pointer \
 										hover:bg-[#0180FFdd] active:bg-[#0180FFcc] \
@@ -56,8 +53,8 @@ const baseControlButton =
 	"px-[12px] py-[6px] text-[12px] font-semibold rounded-[6px] hover:opacity-[0.8] active:opacity-[0.9] cursor-pointer\
 													disabled:text-[#ADB3BE] disabled:shadow-none disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#E5E8EC] disabled:hover:bg-[#bbb]";
 
-function RouteComponent() {
-	const { code } = Route.useSearch();
+export default function JamoCombine({ moduleCode }: { moduleCode: string }) {
+	const code = moduleCode;
 	const { t } = useTranslation();
 	const router = useRouter();
 	const sound = useSoundEffects();
@@ -75,17 +72,12 @@ function RouteComponent() {
 	const [problem, setProblem] = useState<ProblemType | undefined>(undefined);
 	const [consonant, setConsonant] = useState<string | undefined>(undefined);
 	const [vowel, setVowel] = useState<string | undefined>(undefined);
-	const [finalConsonant, setFinalConsonant] = useState<string | undefined>(
-		undefined,
-	);
 	const [combined, setCombined] = useState<string | undefined>(undefined);
 
 	const [consonantList, setConsonantList] = useState<string[]>([]);
 	const [vowelList, setVowelList] = useState<string[]>([]);
 
 	const tracingRef = useRef<HangulTracingCanvasHandle>(null);
-
-	const [finalConsonantList, setFinalConsonantList] = useState<string[]>([]);
 
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const [audioSrc, setAudioSrc] = useState<undefined | string>(undefined);
@@ -99,8 +91,8 @@ function RouteComponent() {
 	const [stage, setStage] = useState<"select" | "write">("select");
 
 	const next = () => {
-		sound.playCorrect();
 		if (stage === "select") {
+			sound.playCorrect();
 			setStage("write");
 			setIsSucceed(false);
 		} else if (problemIndex < problemList.length - 1) {
@@ -112,11 +104,19 @@ function RouteComponent() {
 		setStage("select");
 		setConsonant(undefined);
 		setVowel(undefined);
-		setFinalConsonant(undefined);
 		setCombined(undefined);
 	};
 
+	const undoDrawing = () => {
+		tracingRef.current?.undo();
+	};
+
+	const eraseDrawing = () => {
+		tracingRef.current?.eraseAll();
+	};
+
 	const isWriteDone = () => {
+		sound.playCorrect();
 		setIsSucceed(true);
 		if (problemIndex === problemList.length - 1) {
 			setIsExit(true);
@@ -128,38 +128,26 @@ function RouteComponent() {
 		if (audioRef.current) audioRef.current.play();
 	};
 
-	const undoDrawing = () => {
-		tracingRef.current?.undo();
-	};
-
-	const eraseDrawing = () => {
-		tracingRef.current?.eraseAll();
-	};
-
 	useEffect(() => {
 		init();
 		const _problem = problemList[problemIndex];
 		setProblem(_problem);
-		const audioUrl = env.RES_URL_ROOT + "/" + _problem.content_sound;
+		const audioUrl = `${env.RES_URL_ROOT}/${_problem.content_sound}`;
 		setAudioSrc(audioUrl);
 
 		if (_problem) {
 			setConsonantList(_problem.choice_1.split(",").map((item) => item.trim()));
+
 			setVowelList(_problem.choice_2.split(",").map((item) => item.trim()));
-			setFinalConsonantList(
-				_problem.choice_3.split(",").map((item) => item.trim()),
-			);
 		}
 		if (problemIndex === problemList.length - 1) setIsLastPage(true);
 	}, [problemIndex]);
 
 	useEffect(() => {
-		const combined = combineHangul(consonant, vowel, finalConsonant);
-
+		const combined = combineHangul(consonant, vowel);
 		setCombined(combined);
-
 		setIsSucceed(combined !== undefined && combined === problem?.content);
-	}, [consonant, vowel, finalConsonant]);
+	}, [consonant, vowel]);
 
 	const groupName = (unit?.title ?? "").split(":")[0].trim();
 	const lesson = [
@@ -178,13 +166,7 @@ function RouteComponent() {
 					<ProblemCard instruction={t("activity.instrWriteSelect")}>
 						<ComboResult
 							syllable={combined || "?"}
-							parts={
-								consonant && vowel
-									? [consonant, vowel, finalConsonant]
-											.filter(Boolean)
-											.join(" + ")
-									: ""
-							}
+							parts={consonant && vowel ? `${consonant} + ${vowel}` : ""}
 							word={problem?.content ?? ""}
 							onPlay={playAudio}
 						/>
@@ -202,13 +184,6 @@ function RouteComponent() {
 						options={vowelList}
 						picked={vowel ?? ""}
 						onPick={setVowel}
-					/>
-					<JamoSection
-						step={3}
-						slot="final"
-						options={finalConsonantList}
-						picked={finalConsonant ?? ""}
-						onPick={setFinalConsonant}
 					/>
 				</ActivityBody>
 			) : (

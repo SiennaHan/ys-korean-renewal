@@ -3,6 +3,10 @@
  *
  * 구 경로 /book/chapter/unit/listen/$code 에서 옮겨 왔다.
  * 그쪽은 리다이렉트만 남는다.
+ *
+ * 2026-08-24: 라우트에서 컴포넌트로 옮겼다. 자모는 /learn/jamo 한 라우트가
+ * sub 로 갈라 이 컴포넌트들을 부른다 — URL 에서 콘텐츠 ID 를 걷어냈다.
+ * moduleCode 는 주소 (과·묶음·활동) 에서 풀어 받는다 — shared/data/jamo.ts
  */
 import {
 	ActivityAppBar,
@@ -18,9 +22,8 @@ import {
 	PrimaryButton,
 	ProblemCard,
 } from "@/components/main/activity";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { type JamoSearch, parseJamoSearch } from "../-jamo-search";
 
 import { SpeakerIcon } from "@/assets/icons";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
@@ -37,12 +40,6 @@ import clsx from "clsx";
 import { Volume2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export const Route = createFileRoute("/learn/jamo/choose")({
-	validateSearch: (search: Record<string, unknown>): JamoSearch =>
-		parseJamoSearch(search),
-	component: RouteComponent,
-});
-
 const baseButton =
 	"w-full max-w-[500px] h-[56px] bg-[#4396F4] text-white rounded-[10px] flex items-center justify-center cursor-pointer \
 										hover:bg-[#4396F4dd] active:bg-[#4396F4cc] \
@@ -53,8 +50,8 @@ const baseCardButton =
 												disabled:border-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:hover:bg-gray-100";
 const selectedCardButton = "!bg-[#359AFF] !text-white";
 
-function RouteComponent() {
-	const { code } = Route.useSearch();
+export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
+	const code = moduleCode;
 	const { addToast } = useToast();
 	const router = useRouter();
 	const { t } = useTranslation();
@@ -159,7 +156,7 @@ function RouteComponent() {
 		if (_problem) {
 			const _wordList = _problem.choice_1.split(",").map((item) => item.trim());
 			setWordList(_wordList);
-			const _audioSrc = env.RES_URL_ROOT + "/" + _problem.content_sound;
+			const _audioSrc = `${env.RES_URL_ROOT}/${_problem.content_sound}`;
 			setAudioSrc(_audioSrc);
 
 			setTimeout(() => {

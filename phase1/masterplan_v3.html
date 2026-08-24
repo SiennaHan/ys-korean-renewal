@@ -182,7 +182,7 @@
   <tr><td>현행 파악</td><td><span class="pill done">완료</span></td><td>역기획서 v1.2 (소스 4종 전수 조사) · 현행 인터랙티브 목업</td></tr>
   <tr><td>방향 설정</td><td><span class="pill done">완료</span></td><td>코어 루프 목업 v1 · 리뉴얼 기획서 v0.2.1 (결정 D1~D7 권고안)</td></tr>
   <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). 남은 큰 물음은 <b>구독인가 급별 구매인가</b></td></tr>
-  <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>v28</b>. 앱에 반영된 문항 7,305개(어휘 2,890 · 어휘퀴즈 1,146 · 역할극 993턴 · 듣고답 679 · 빈칸 836 · 읽고답 383 · 듣기지문 378)<br><span class="pill now">검수 대기</span> 자모 529 · 미션대화 117 — 앱 JSON 에 아직 안 들어갔다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b)</td></tr>
+  <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>v29</b>. 앱에 반영된 문항 7,305개(어휘 2,890 · 어휘퀴즈 1,146 · 역할극 993턴 · 듣고답 679 · 빈칸 836 · 읽고답 383 · 듣기지문 378)<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비) — 앱 JSON 에는 아직 안 들어갔다(생성기 배선 대기). <span class="pill now">검수 대기</span> 자모 529 는 그대로 남았다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b)</td></tr>
   <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업 · CSS 규칙 1,229개. <b>목업이 시각 정본</b>이고 Figma 를 대체했다</td></tr>
   <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 <b>24개 이식</b>(handoff §02 의 표 합계) · 활동 컴포넌트 22종으로 짜였다 · 목업 대조 <b>27화면 일치</b>(<span class="file">pnpm parity:activity</span>)</td></tr>
   <tr><td>개발 — 서버</td><td><span class="pill risk">막힘</span></td><td>DB 2종 · API 7종 미착수. <b>이것이 지금 임계 경로다</b>(§8) — 화면은 다 됐고 상태만 붙이면 된다</td></tr>
@@ -508,27 +508,26 @@
    <b>이 절은 2026-08-19 실측이었고 그 뒤 뒤집혔다</b> — 그때는 앱 소스에 이 클래스가
    하나도 없었다. 2026-08-21 다시 세면 <code>screens_uiux</code> 의 클래스 283개 중
    <b>224개(79%)</b>가 앱 소스에 있다.
-   기계가 판정하는 것은 <code>pnpm parity:activity</code> 뿐이고 <b>31화면이 일치한다</b>
-   — 활동 22 + 내비 5 + VocaShot 셋 + 조사 스나이퍼 결과.</p>
-<p><b>캡처 스무 개를 파 봤다 (2026-08-24)</b> — 커밋 <code>d1a7cfb</code> 가 답을 갖고
-   있었다. 캡처 47개는 <b>목업의 빌더 함수를 직접 불러 뜬 것</b>이고("stop hand-writing
-   markup") 활동 22 + 내비 5 + VocaShot 3 + 게임 17 이다. <b>처음부터 47이 목표였다.</b>
-   지금 <b>31</b>이 들어가 있다.</p>
-<div class="tablewrap"><table>
-  <thead><tr><th>묶음</th><th>몇 개</th><th>상태</th></tr></thead>
-  <tbody>
-  <tr><td>활동 · 내비</td><td class="n">27</td><td><span class="pill done">들어갔다</span></td></tr>
-  <tr><td>VocaShot 셋 · 조사 스나이퍼 결과</td><td class="n">4</td>
-      <td><span class="pill done">들어갔다</span> 화면마다 뷰를 떼어냈다</td></tr>
-  <tr><td>게임 나머지</td><td class="n">14</td>
-      <td>남음. 게임 캡처만 <b>구 배포판 라우트 레이아웃 다섯 겹</b>을 끼고 있어
-          비교기가 벗게 했다(<code>drop_game_wrapper</code>) — 이제 막는 것은
-          <b>화면마다 뷰를 떼어내는 일</b>뿐이다.
-          <code>pc_result</code>·<code>sp_complete</code> 둘은 설계 결정이 먼저다</td></tr>
-  <tr><td><code>game__list</code></td><td class="n">1</td>
-      <td>남음. <code>list-view.tsx</code> 는 이미 갈라 뒀다</td></tr>
-  </tbody>
-</table></div>
+   기계가 판정하는 것은 <code>pnpm parity:activity</code> 뿐이고 <b>47화면이 일치한다</b>
+   — 활동 22 + 내비 5 + VocaShot 3 + 게임 17. <b>목업 캡처 전부다.</b></p>
+<p><b>캡처 스무 개가 다 들어왔다 (2026-08-24)</b> — 커밋 <code>d1a7cfb</code> 가 답을
+   갖고 있었다. 캡처 47개는 <b>목업의 빌더 함수를 직접 불러 뜬 것</b>이고("stop
+   hand-writing markup") 활동 22 + 내비 5 + VocaShot 3 + 게임 17 이다.
+   <b>처음부터 47이 목표였고 이제 47이 들어가 있다.</b></p>
+<p>게임 넷과 목록을 <b>표시와 상태로 갈라</b> 넣었다 —
+   <code>particle-sniper-view</code> · <code>card-sort-view</code> ·
+   <code>spring-picnic-view</code> · <code>seoul-puzzle-view</code> ·
+   <code>list-view</code>. 통짜였을 때는 정적으로 그리면 로딩 화면밖에 안 나왔다.
+   게임 캡처가 끼고 있는 구 배포판 라우트 레이아웃 껍데기는 비교기가 벗는다
+   (<code>drop_game_wrapper</code> 와 화면별 <code>SCREEN_ROOT</code>).</p>
+<p><b>값은 대조 자체가 아니라 대조가 드러낸 것에 있었다.</b> 화면을 넣을 때마다 앱이
+   목업에서 벗어난 자리가 나왔다 — VocaShot 의 <b>그리지 않던 마크업 여덟 자리</b>,
+   조사 스나이퍼 과 선택의 낡은 상한(8 → 20), 게임 목록의 <b>아이콘 색 배정</b>이
+   통째로 달랐던 것(서울=파랑·카드=초록·조사=보라 → 목업은 서울=초록·카드=호박·
+   조사=인디고). 셋 다 목업을 따랐다. 죽어 있던 <code>game.css</code> 42줄
+   (<code>pc-result-*</code> · <code>sp-complete-*</code>)은 <b>되살리는 쪽으로</b>
+   끝났다 — 대조를 통과시키려면 컴포넌트가 목업 구조와 같아야 했기 때문이다.
+   남겨 둔 애매한 자리는 <code>BLOCKERS.md</code> §3-b 에 적었다.</p>
 <p class="qa"><b>넣자마자 하나 잡았다.</b> VocaShot 시작 화면의 뒤로가기가 목업은 svg 화살표인데
    앱은 글자 <code>←</code> 였다. 목업이 기준이므로 앱을 고쳤다 — 대조를 넣는 값어치가 이것이다.</p>
 <p class="qa">셸은 클래스 86개 중 25개(29%)만 앱에 있다.</p>
@@ -762,7 +761,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <h2 id="s15"><span class="n">15</span>화면 — 다 됐다</h2>
 <p>목업이 있는 화면은 전부 이식했다. 사람 눈이 아니라 스크립트가 판정한다 —
 <span class="file">app</span> 에서 <b>pnpm parity:activity</b> 를 돌리면 컴포넌트를
-정적 HTML 로 그려 캡처한 목업과 구조를 비교하고, <b>31개가 일치</b>한다.
+정적 HTML 로 그려 캡처한 목업과 구조를 비교하고, <b>47개가 일치</b>한다.
 봐주는 차이는 실행할 때마다 같이 찍힌다.</p>
 
 <div class="tablewrap">
@@ -783,7 +782,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <div class="callout"><div class="t">시각 정본은 목업이다</div>
   <p><b>구현이 목업과 다르면 목업이 기준이다.</b> 이 규칙이 이 저장소의 시각 판단을
   전부 지배한다 — 판단이 갈릴 때 코드가 아니라 <span class="file">app/src/mockups/</span> 를 본다.
-  <span class="file">pnpm parity:activity</span> 가 31개 화면을 자동으로 대조한다.</p>
+  <span class="file">pnpm parity:activity</span> 가 47개 화면을 자동으로 대조한다.</p>
   <p class="qa">원래 <span class="file">_superseded/handoff_v1</span> §03 에 있던 규칙을
   여기로 옮겼다. 다른 문서가 그 옛 판을 인용하고 있어서 옮길 수 없던 것을 끊었다.</p>
 </div>

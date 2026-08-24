@@ -31,6 +31,7 @@ import { Route as LearnReadRouteImport } from './routes/learn/read'
 import { Route as LearnMissionChatRouteImport } from './routes/learn/mission-chat'
 import { Route as LearnListenAnswerRouteImport } from './routes/learn/listen-answer'
 import { Route as LearnListenRouteImport } from './routes/learn/listen'
+import { Route as LearnJamoRouteImport } from './routes/learn/jamo'
 import { Route as LearnGrammarRouteImport } from './routes/learn/grammar'
 import { Route as LearnFlashcardRouteImport } from './routes/learn/flashcard'
 import { Route as LearnFillBlankRouteImport } from './routes/learn/fill-blank'
@@ -44,12 +45,6 @@ import { Route as MainGameSpringPicnicRouteImport } from './routes/main/game/spr
 import { Route as MainGameSeoulPuzzleRouteImport } from './routes/main/game/seoul-puzzle'
 import { Route as MainGameParticleSniperRouteImport } from './routes/main/game/particle-sniper'
 import { Route as MainGameCardSortRouteImport } from './routes/main/game/card-sort'
-import { Route as LearnJamoWordWriteRouteImport } from './routes/learn/jamo/word-write'
-import { Route as LearnJamoWordRepeatRouteImport } from './routes/learn/jamo/word-repeat'
-import { Route as LearnJamoPronounceRouteImport } from './routes/learn/jamo/pronounce'
-import { Route as LearnJamoCombine3RouteImport } from './routes/learn/jamo/combine3'
-import { Route as LearnJamoCombineRouteImport } from './routes/learn/jamo/combine'
-import { Route as LearnJamoChooseRouteImport } from './routes/learn/jamo/choose'
 import { Route as BookChapterIdRouteImport } from './routes/book/chapter/$id'
 import { Route as BookChapterUnitIdRouteImport } from './routes/book/chapter/unit/$id'
 import { Route as BookChapterUnitWrite3CodeRouteImport } from './routes/book/chapter/unit/write3/$code'
@@ -177,6 +172,11 @@ const LearnListenRoute = LearnListenRouteImport.update({
   path: '/learn/listen',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearnJamoRoute = LearnJamoRouteImport.update({
+  id: '/learn/jamo',
+  path: '/learn/jamo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LearnGrammarRoute = LearnGrammarRouteImport.update({
   id: '/learn/grammar',
   path: '/learn/grammar',
@@ -241,36 +241,6 @@ const MainGameCardSortRoute = MainGameCardSortRouteImport.update({
   id: '/card-sort',
   path: '/card-sort',
   getParentRoute: () => MainGameRoute,
-} as any)
-const LearnJamoWordWriteRoute = LearnJamoWordWriteRouteImport.update({
-  id: '/learn/jamo/word-write',
-  path: '/learn/jamo/word-write',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearnJamoWordRepeatRoute = LearnJamoWordRepeatRouteImport.update({
-  id: '/learn/jamo/word-repeat',
-  path: '/learn/jamo/word-repeat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearnJamoPronounceRoute = LearnJamoPronounceRouteImport.update({
-  id: '/learn/jamo/pronounce',
-  path: '/learn/jamo/pronounce',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearnJamoCombine3Route = LearnJamoCombine3RouteImport.update({
-  id: '/learn/jamo/combine3',
-  path: '/learn/jamo/combine3',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearnJamoCombineRoute = LearnJamoCombineRouteImport.update({
-  id: '/learn/jamo/combine',
-  path: '/learn/jamo/combine',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearnJamoChooseRoute = LearnJamoChooseRouteImport.update({
-  id: '/learn/jamo/choose',
-  path: '/learn/jamo/choose',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const BookChapterIdRoute = BookChapterIdRouteImport.update({
   id: '/book/chapter/$id',
@@ -381,6 +351,7 @@ export interface FileRoutesByFullPath {
   '/learn/fill-blank': typeof LearnFillBlankRoute
   '/learn/flashcard': typeof LearnFlashcardRoute
   '/learn/grammar': typeof LearnGrammarRoute
+  '/learn/jamo': typeof LearnJamoRoute
   '/learn/listen': typeof LearnListenRoute
   '/learn/listen-answer': typeof LearnListenAnswerRoute
   '/learn/mission-chat': typeof LearnMissionChatRoute
@@ -395,12 +366,6 @@ export interface FileRoutesByFullPath {
   '/book': typeof BookIndexRoute
   '/main/': typeof MainIndexRoute
   '/book/chapter/$id': typeof BookChapterIdRoute
-  '/learn/jamo/choose': typeof LearnJamoChooseRoute
-  '/learn/jamo/combine': typeof LearnJamoCombineRoute
-  '/learn/jamo/combine3': typeof LearnJamoCombine3Route
-  '/learn/jamo/pronounce': typeof LearnJamoPronounceRoute
-  '/learn/jamo/word-repeat': typeof LearnJamoWordRepeatRoute
-  '/learn/jamo/word-write': typeof LearnJamoWordWriteRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
   '/main/game/particle-sniper': typeof MainGameParticleSniperRoute
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
@@ -439,6 +404,7 @@ export interface FileRoutesByTo {
   '/learn/fill-blank': typeof LearnFillBlankRoute
   '/learn/flashcard': typeof LearnFlashcardRoute
   '/learn/grammar': typeof LearnGrammarRoute
+  '/learn/jamo': typeof LearnJamoRoute
   '/learn/listen': typeof LearnListenRoute
   '/learn/listen-answer': typeof LearnListenAnswerRoute
   '/learn/mission-chat': typeof LearnMissionChatRoute
@@ -451,12 +417,6 @@ export interface FileRoutesByTo {
   '/book': typeof BookIndexRoute
   '/main': typeof MainIndexRoute
   '/book/chapter/$id': typeof BookChapterIdRoute
-  '/learn/jamo/choose': typeof LearnJamoChooseRoute
-  '/learn/jamo/combine': typeof LearnJamoCombineRoute
-  '/learn/jamo/combine3': typeof LearnJamoCombine3Route
-  '/learn/jamo/pronounce': typeof LearnJamoPronounceRoute
-  '/learn/jamo/word-repeat': typeof LearnJamoWordRepeatRoute
-  '/learn/jamo/word-write': typeof LearnJamoWordWriteRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
   '/main/game/particle-sniper': typeof MainGameParticleSniperRoute
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
@@ -497,6 +457,7 @@ export interface FileRoutesById {
   '/learn/fill-blank': typeof LearnFillBlankRoute
   '/learn/flashcard': typeof LearnFlashcardRoute
   '/learn/grammar': typeof LearnGrammarRoute
+  '/learn/jamo': typeof LearnJamoRoute
   '/learn/listen': typeof LearnListenRoute
   '/learn/listen-answer': typeof LearnListenAnswerRoute
   '/learn/mission-chat': typeof LearnMissionChatRoute
@@ -511,12 +472,6 @@ export interface FileRoutesById {
   '/book/': typeof BookIndexRoute
   '/main/': typeof MainIndexRoute
   '/book/chapter/$id': typeof BookChapterIdRoute
-  '/learn/jamo/choose': typeof LearnJamoChooseRoute
-  '/learn/jamo/combine': typeof LearnJamoCombineRoute
-  '/learn/jamo/combine3': typeof LearnJamoCombine3Route
-  '/learn/jamo/pronounce': typeof LearnJamoPronounceRoute
-  '/learn/jamo/word-repeat': typeof LearnJamoWordRepeatRoute
-  '/learn/jamo/word-write': typeof LearnJamoWordWriteRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
   '/main/game/particle-sniper': typeof MainGameParticleSniperRoute
   '/main/game/seoul-puzzle': typeof MainGameSeoulPuzzleRoute
@@ -558,6 +513,7 @@ export interface FileRouteTypes {
     | '/learn/fill-blank'
     | '/learn/flashcard'
     | '/learn/grammar'
+    | '/learn/jamo'
     | '/learn/listen'
     | '/learn/listen-answer'
     | '/learn/mission-chat'
@@ -572,12 +528,6 @@ export interface FileRouteTypes {
     | '/book'
     | '/main/'
     | '/book/chapter/$id'
-    | '/learn/jamo/choose'
-    | '/learn/jamo/combine'
-    | '/learn/jamo/combine3'
-    | '/learn/jamo/pronounce'
-    | '/learn/jamo/word-repeat'
-    | '/learn/jamo/word-write'
     | '/main/game/card-sort'
     | '/main/game/particle-sniper'
     | '/main/game/seoul-puzzle'
@@ -616,6 +566,7 @@ export interface FileRouteTypes {
     | '/learn/fill-blank'
     | '/learn/flashcard'
     | '/learn/grammar'
+    | '/learn/jamo'
     | '/learn/listen'
     | '/learn/listen-answer'
     | '/learn/mission-chat'
@@ -628,12 +579,6 @@ export interface FileRouteTypes {
     | '/book'
     | '/main'
     | '/book/chapter/$id'
-    | '/learn/jamo/choose'
-    | '/learn/jamo/combine'
-    | '/learn/jamo/combine3'
-    | '/learn/jamo/pronounce'
-    | '/learn/jamo/word-repeat'
-    | '/learn/jamo/word-write'
     | '/main/game/card-sort'
     | '/main/game/particle-sniper'
     | '/main/game/seoul-puzzle'
@@ -673,6 +618,7 @@ export interface FileRouteTypes {
     | '/learn/fill-blank'
     | '/learn/flashcard'
     | '/learn/grammar'
+    | '/learn/jamo'
     | '/learn/listen'
     | '/learn/listen-answer'
     | '/learn/mission-chat'
@@ -687,12 +633,6 @@ export interface FileRouteTypes {
     | '/book/'
     | '/main/'
     | '/book/chapter/$id'
-    | '/learn/jamo/choose'
-    | '/learn/jamo/combine'
-    | '/learn/jamo/combine3'
-    | '/learn/jamo/pronounce'
-    | '/learn/jamo/word-repeat'
-    | '/learn/jamo/word-write'
     | '/main/game/card-sort'
     | '/main/game/particle-sniper'
     | '/main/game/seoul-puzzle'
@@ -733,6 +673,7 @@ export interface RootRouteChildren {
   LearnFillBlankRoute: typeof LearnFillBlankRoute
   LearnFlashcardRoute: typeof LearnFlashcardRoute
   LearnGrammarRoute: typeof LearnGrammarRoute
+  LearnJamoRoute: typeof LearnJamoRoute
   LearnListenRoute: typeof LearnListenRoute
   LearnListenAnswerRoute: typeof LearnListenAnswerRoute
   LearnMissionChatRoute: typeof LearnMissionChatRoute
@@ -742,12 +683,6 @@ export interface RootRouteChildren {
   LearnWordRoute: typeof LearnWordRoute
   BookIndexRoute: typeof BookIndexRoute
   BookChapterIdRoute: typeof BookChapterIdRoute
-  LearnJamoChooseRoute: typeof LearnJamoChooseRoute
-  LearnJamoCombineRoute: typeof LearnJamoCombineRoute
-  LearnJamoCombine3Route: typeof LearnJamoCombine3Route
-  LearnJamoPronounceRoute: typeof LearnJamoPronounceRoute
-  LearnJamoWordRepeatRoute: typeof LearnJamoWordRepeatRoute
-  LearnJamoWordWriteRoute: typeof LearnJamoWordWriteRoute
   BookChapterUnitIdRoute: typeof BookChapterUnitIdRoute
   BookChapterUnitDialogIdRoute: typeof BookChapterUnitDialogIdRoute
   BookChapterUnitFlashcardIdRoute: typeof BookChapterUnitFlashcardIdRoute
@@ -921,6 +856,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnListenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn/jamo': {
+      id: '/learn/jamo'
+      path: '/learn/jamo'
+      fullPath: '/learn/jamo'
+      preLoaderRoute: typeof LearnJamoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/learn/grammar': {
       id: '/learn/grammar'
       path: '/learn/grammar'
@@ -1011,48 +953,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/main/game/card-sort'
       preLoaderRoute: typeof MainGameCardSortRouteImport
       parentRoute: typeof MainGameRoute
-    }
-    '/learn/jamo/word-write': {
-      id: '/learn/jamo/word-write'
-      path: '/learn/jamo/word-write'
-      fullPath: '/learn/jamo/word-write'
-      preLoaderRoute: typeof LearnJamoWordWriteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/learn/jamo/word-repeat': {
-      id: '/learn/jamo/word-repeat'
-      path: '/learn/jamo/word-repeat'
-      fullPath: '/learn/jamo/word-repeat'
-      preLoaderRoute: typeof LearnJamoWordRepeatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/learn/jamo/pronounce': {
-      id: '/learn/jamo/pronounce'
-      path: '/learn/jamo/pronounce'
-      fullPath: '/learn/jamo/pronounce'
-      preLoaderRoute: typeof LearnJamoPronounceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/learn/jamo/combine3': {
-      id: '/learn/jamo/combine3'
-      path: '/learn/jamo/combine3'
-      fullPath: '/learn/jamo/combine3'
-      preLoaderRoute: typeof LearnJamoCombine3RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/learn/jamo/combine': {
-      id: '/learn/jamo/combine'
-      path: '/learn/jamo/combine'
-      fullPath: '/learn/jamo/combine'
-      preLoaderRoute: typeof LearnJamoCombineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/learn/jamo/choose': {
-      id: '/learn/jamo/choose'
-      path: '/learn/jamo/choose'
-      fullPath: '/learn/jamo/choose'
-      preLoaderRoute: typeof LearnJamoChooseRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/book/chapter/$id': {
       id: '/book/chapter/$id'
@@ -1238,6 +1138,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearnFillBlankRoute: LearnFillBlankRoute,
   LearnFlashcardRoute: LearnFlashcardRoute,
   LearnGrammarRoute: LearnGrammarRoute,
+  LearnJamoRoute: LearnJamoRoute,
   LearnListenRoute: LearnListenRoute,
   LearnListenAnswerRoute: LearnListenAnswerRoute,
   LearnMissionChatRoute: LearnMissionChatRoute,
@@ -1247,12 +1148,6 @@ const rootRouteChildren: RootRouteChildren = {
   LearnWordRoute: LearnWordRoute,
   BookIndexRoute: BookIndexRoute,
   BookChapterIdRoute: BookChapterIdRoute,
-  LearnJamoChooseRoute: LearnJamoChooseRoute,
-  LearnJamoCombineRoute: LearnJamoCombineRoute,
-  LearnJamoCombine3Route: LearnJamoCombine3Route,
-  LearnJamoPronounceRoute: LearnJamoPronounceRoute,
-  LearnJamoWordRepeatRoute: LearnJamoWordRepeatRoute,
-  LearnJamoWordWriteRoute: LearnJamoWordWriteRoute,
   BookChapterUnitIdRoute: BookChapterUnitIdRoute,
   BookChapterUnitDialogIdRoute: BookChapterUnitDialogIdRoute,
   BookChapterUnitFlashcardIdRoute: BookChapterUnitFlashcardIdRoute,

@@ -4,6 +4,7 @@ import { buildBookTabs } from "@/components/main/textbook/labels";
 import { ActRow, ChapterHead } from "@/components/main/textbook/module-list";
 import { books } from "@/shared/data/book";
 import { chapters } from "@/shared/data/chapter";
+import { addressOfModule } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
 import { units } from "@/shared/data/unit";
 import {
@@ -89,24 +90,17 @@ export default function Jamo() {
 		[setActiveChapterSeq],
 	);
 
-	/** 구 scene_type → /learn/jamo/* 경로. 이름은 무엇을 하는 활동인지로 바꿨다 */
-	const JAMO_ROUTE: Record<string, string> = {
-		"listen-repeat": "/learn/jamo/pronounce",
-		"listen-repeat2": "/learn/jamo/word-repeat",
-		write: "/learn/jamo/combine",
-		write3: "/learn/jamo/combine3",
-		"read-write": "/learn/jamo/word-write",
-		listen: "/learn/jamo/choose",
-	};
-
+	/*
+	 * 자모는 라우트가 하나다 — /learn/jamo?level&lesson&group&sub (dev_spec §4).
+	 * 전에는 활동마다 경로가 따로였고 URL 에 모듈 코드를 실었다.
+	 * 코드를 주소(과·묶음·활동)로 풀어 보낸다 — 못 풀면 코드를 그대로 실어
+	 * 보내고 파서가 받는다(routes/learn/-jamo-search.ts).
+	 */
 	const handleModuleClick = useCallback(
 		(id: string) => {
-			const [sceneType, code] = id.split("/");
-			const to = JAMO_ROUTE[sceneType];
-			// 아직 안 옮긴 활동이 있으면 구 경로로 보낸다 — 리다이렉트가 받아 준다
-			navigate(
-				to ? { to, search: { code } } : { to: `/book/chapter/unit/${id}` },
-			);
+			const code = id.split("/")[1];
+			const addr = addressOfModule(code);
+			navigate({ to: "/learn/jamo", search: addr ?? { code } });
 		},
 		[navigate],
 	);
