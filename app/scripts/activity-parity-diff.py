@@ -72,7 +72,9 @@ class Flat(HTMLParser):
                     a[k] = v.replace(old, new)
                     v = a[k]
         if "class" in a:
-            a["class"] = " ".join(a["class"].split())
+            # 순서는 CSS 에서 뜻이 없다. 목업은 ps-result-retry ux-control,
+            # 앱은 ux-control ps-result-retry 처럼 적어서 정렬해 맞춘다
+            a["class"] = " ".join(sorted(a["class"].split()))
             if not a["class"]:
                 del a["class"]
         bits = " ".join(f'{k}="{a[k]}"' for k in sorted(a))
@@ -138,6 +140,22 @@ def drop_single_progress(rows):
     return out
 
 
+def strip_app_wrapper(html):
+    """게임 캡처의 <div id="app"> 껍데기를 파싱 전에 벗긴다.
+
+    게임 목업은 화면을 iframe 안에서 그리고 그 body 를 통째로 떴다 — 그래서
+    맨 바깥에 <div id="app" style="height:100%"> 이 한 겹 붙는다. 활동 캡처의
+    activity-frame 을 렌더 쪽에서 벗기는 것과 같은 처리다.
+
+    파싱 뒤에 하면 안 된다 — DROP_ATTRS 가 id 를 지워서 껍데기를 못 알아본다.
+    """
+    m = re.match(r'\s*<div id="app"[^>]*>', html)
+    if not m:
+        return html
+    body = html[m.end():]
+    return body[: body.rindex("</div>")]
+
+
 here = os.path.dirname(os.path.abspath(__file__))
 out = os.path.join(here, "..", ".parity-out")
 mock = os.path.join(here, "..", "src", "mockups")
@@ -162,7 +180,7 @@ for f in sorted(glob.glob(os.path.join(out, "*.html"))):
         continue
 
     def prep(html):
-        return drop_single_progress(drop_tabbar(flat(html)))
+        return drop_single_progress(drop_tabbar(flat(strip_app_wrapper(html))))
 
     a = prep(open(ref, encoding="utf-8").read())
     b = prep(open(f, encoding="utf-8").read())

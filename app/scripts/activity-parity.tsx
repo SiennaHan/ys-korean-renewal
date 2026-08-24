@@ -64,6 +64,7 @@ import {
 } from "@/components/main/activity/stimulus";
 import { WordPreviewList } from "@/components/main/activity/word-preview";
 import Jamo from "@/components/main/course-list/jamo";
+import { ParticleSniperResultView } from "@/components/main/game/particle-sniper-result";
 import {
 	VocashotPlayView,
 	VocashotResultView,
@@ -764,6 +765,34 @@ SCREENS.vocashot__result = (
 		missed={[]}
 		onAgain={() => {}}
 		onExit={() => {}}
+	/>
+);
+
+/*
+ * 조사 스나이퍼 결과 — 값은 목업 캡처(game__ps_result)가 잡아 둔 상태 그대로.
+ * 게임 캡처는 <div id="app"> 껍데기가 한 겹 붙어 있고 비교기가 벗긴다.
+ */
+SCREENS.game__ps_result = (
+	<ParticleSniperResultView
+		level="1급"
+		lesson="13과"
+		score={1860}
+		best={2480}
+		correct={17}
+		answered={20}
+		maxCombo={4}
+		mistakes={[
+			{
+				sentence: "친구___ 같이 영화를 봤어요.",
+				userAnswer: "와",
+				correct: "하고",
+			},
+			{ sentence: "학교___ 버스로 가요.", userAnswer: "에서", correct: "에" },
+			{ sentence: "책상___ 책이 있어요.", userAnswer: "이", correct: "에" },
+		]}
+		onRetry={() => {}}
+		onLesson={() => {}}
+		onLevel={() => {}}
 	/>
 );
 

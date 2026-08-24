@@ -32,7 +32,7 @@ package-lock.json 1.170.29    ← 섞여 들어온 것. node_modules 는 이쪽�
 ```bash
 pnpm build            # 통과 · 총 21.2MB (gzip 4.7MB)
 pnpm typecheck        # 통과
-pnpm parity:activity  # 30개 화면 일치
+pnpm parity:activity  # 31개 화면 일치
 ```
 
 ⚠️ **npm 으로 설치하지 마라.** `package-lock.json` 이 다시 생기면 같은 일이 반복된다.
@@ -433,7 +433,40 @@ app/rsbuild.config.ts
 대조에서 봐주는 것 둘을 새로 적었다 — 목업의 데모 갈고리(`data-pick` 등)와
 운석의 `animation-duration`(점수에 따라 짧아지는 값이라 앱이 인라인으로 준다).
 
-**남은 게임 넷은 그대로다.** `export` 가 하나뿐인 통짜이고
+**`game__ps_result` 도 넣었다 — 31화면 (2026-08-24).**
+`particle-sniper.tsx` 의 결과 화면을 `particle-sniper-result.tsx` 로 떼어냈다.
+이 캡처는 앱과 **구조가 그대로 같아서** 값만 넘기면 맞았다.
+비교기도 둘 손봤다 — 클래스 토큰을 정렬해 순서 차이를 없애고(`ps-result-retry ux-control`
+vs `ux-control ps-result-retry`), 게임 캡처의 `<div id="app">` 껍데기를 **파싱 전에**
+벗긴다(파싱 뒤에 하면 `DROP_ATTRS` 가 `id` 를 지워서 껍데기를 못 알아본다).
+
+### 남은 캡처 열셋은 게임을 갈라도 안 들어온다 — 내가 두 번 틀렸다
+
+**첫 번째로 틀린 것.** "`game__*` 는 앱 DOM 덤프라 대상이 아니다" 고 잘라 말했다.
+클래스 이름을 세 보니 열셋이 앱과 87~100% 겹쳤다 — 지나친 단정이었다.
+
+**두 번째로 틀린 것.** 그래서 "열셋은 게임을 가르면 들어온다" 고 적었다. 그 측정이
+**이름이 앱 어딘가에 있나**만 본 것이라 틀렸다. 구조를 열어 보니 이렇다.
+
+| 캡처 최상위 | 앱 | 왜 못 맞추나 |
+|---|---|---|
+| `<div class="h-[100dvh] overflow-y-auto">` → `bg-white` **`style="opacity: 0"`** → … | `game-frame ux-dark-stage` · `cs-level-shell` … | **구 배포판의 페이지 전환 레이아웃**이 세 겹 끼어 있다. `opacity` 는 전환 중 한순간이라 재현이 불가능하다 |
+| `<style>.hide-scrollbar…</style>` 가 마크업 안에 | 앱에 그 블록이 **아예 없다**(0곳) | 구 앱이 화면 안에 스타일을 심었다 |
+
+`game__ps_result` 가 맞았던 이유는 그 캡처만 **껍데기 없이 `.result-screen` 에서 바로
+시작**하기 때문이다. 나머지 열셋은 **컴포넌트를 가르는 문제가 아니라 캡처가 다른
+구현의 것**이다. 이 화면들에 회귀 방패를 두고 싶으면 **지금 앱에서 다시 떠야 한다.**
+
+### 그리고 둘은 CSS 가 죽어 있다
+
+`game__pc_result`(봄소풍 결과)와 `game__sp_complete`(서울 퍼즐 완료)는 클래스 겹침이
+7% · 10% 다. `src/styles/game.css` 에 `pc-result-*` 24줄 · `sp-complete-*` 18줄이
+있는데 **컴포넌트가 하나도 그리지 않는다**(`src/mockups/` 와 `screens.ts` 밖에서는
+0곳). 두 게임은 각자 자기 스타일을 갖고 있다 — 봄소풍은 `spring-picnic.css`,
+서울 퍼즐은 컴포넌트 안의 `<style>` 블록이다. 구 배포판 화면을 되살릴지는
+**설계 판단**이라 남겨 둔다. 되살리지 않기로 하면 그 42줄은 지우는 것이 맞다.
+
+**남은 게임 넷을 가르는 일은 대조를 위해서는 값이 없다.** `export` 가 하나뿐인 통짜이고
 `useState` 가 8~27개다. 정적으로 그리면 **첫 화면밖에 안 나온다** — 실측하면
 `card-sort` 184자 · `particle-sniper` 190자 · `seoul-puzzle` 249자로 전부 로딩
 화면이다(콘텐츠를 받아야 레벨 선택이 나온다). `spring-picnic` 은 `.css` 를 import 해서
@@ -637,7 +670,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 ```bash
 cd app
 pnpm typecheck        # 통과
-pnpm parity:activity  # 30개 화면 일치
+pnpm parity:activity  # 31개 화면 일치
 npx biome check src      # 통과
 pnpm build            # 통과 — §1 에서 고쳤다
 ```

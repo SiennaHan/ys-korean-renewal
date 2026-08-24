@@ -17,6 +17,8 @@ type GameState =
 	| "result";
 type Verdict = "GOOD" | "GREAT!" | "PERFECT!!" | "MISS" | null;
 
+import { ParticleSniperResultView } from "@/components/main/game/particle-sniper-result";
+
 interface Question {
 	sentence: string;
 	blank: string;
@@ -757,94 +759,21 @@ const ParticleSniper: React.FC = () => {
 	// ── Render: Result ─────────────────────────────────────────────────
 	// 확정 목업(ps_result)의 구조다. 등급은 목업이 표본으로 박아 두었지만
 	// 정확도에서 파생시킨다 — 두 값을 따로 두면 어긋난다.
-	const renderResult = () => {
-		const acc =
-			stats.answered > 0
-				? Math.round((stats.correct / stats.answered) * 100)
-				: 0;
-		const grade = acc >= 90 ? "S" : acc >= 75 ? "A" : acc >= 60 ? "B" : "C";
-
-		return (
-			<div className="result-screen ux-dark-stage ps-result">
-				<div className="ps-result-scroll">
-					<div className="ps-result-hero">
-						<div className="ps-result-grade">{grade}</div>
-						<div className="ps-result-stage">
-							{selectedLevel} · {selectedLesson}
-						</div>
-						<div className="ps-result-score">
-							{stats.score.toLocaleString("ko-KR")}점
-						</div>
-						{bestScore !== null && (
-							<div className="ps-result-best">
-								최고 점수 <b>{bestScore.toLocaleString("ko-KR")}점</b>
-							</div>
-						)}
-					</div>
-
-					<div className="ps-result-stats">
-						<div className="ps-result-stat">
-							<b>{acc}%</b>
-							<span>정확도</span>
-						</div>
-						<div className="ps-result-stat">
-							<b>{stats.maxCombo}×</b>
-							<span>최고 콤보</span>
-						</div>
-						<div className="ps-result-stat">
-							<b>
-								{stats.correct} / {stats.answered}
-							</b>
-							<span>맞힌 문항</span>
-						</div>
-						<div className="ps-result-stat">
-							<b>{stats.mistakes.length}</b>
-							<span>오답</span>
-						</div>
-					</div>
-
-					{stats.mistakes.length > 0 && (
-						<div className="ps-mistakes">
-							<h3>틀린 문제</h3>
-							{stats.mistakes.map((m, idx) => (
-								<div key={`${m.sentence}-${idx}`} className="ps-mistake">
-									<p className="sentence">{m.sentence}</p>
-									<p className="mine">나의 선택: {m.userAnswer}</p>
-									<p className="answer">정답: {m.correct}</p>
-								</div>
-							))}
-						</div>
-					)}
-				</div>
-
-				<div className="ps-result-actions">
-					<button
-						type="button"
-						className="ux-control ps-result-retry"
-						onClick={() => startGame(selectedLevel, selectedLesson)}
-					>
-						다시하기
-					</button>
-					<div className="ps-result-links">
-						<button
-							type="button"
-							className="ux-control"
-							onClick={() => setGameState("lesson-select")}
-						>
-							과 선택
-						</button>
-						<button
-							type="button"
-							className="ux-control"
-							onClick={() => setGameState("level-select")}
-						>
-							급수 선택
-						</button>
-					</div>
-				</div>
-			</div>
-		);
-	};
+	const renderResult = () => (
+		<ParticleSniperResultView
+			level={selectedLevel}
+			lesson={selectedLesson}
+			score={stats.score}
+			best={bestScore}
+			correct={stats.correct}
+			answered={stats.answered}
+			maxCombo={stats.maxCombo}
+			mistakes={stats.mistakes}
+			onRetry={() => startGame(selectedLevel, selectedLesson)}
+			onLesson={() => setGameState("lesson-select")}
+			onLevel={() => setGameState("level-select")}
+		/>
+	);
 
 	// ── Root ───────────────────────────────────────────────────────────
 	if (contentLoading) {
