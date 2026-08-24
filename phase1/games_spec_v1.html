@@ -1729,8 +1729,12 @@ POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
   <p>실행 경로가 <b>하나</b>가 되므로 <code>appsync.ts</code>(452줄)와 구독 4종이
      <b>남김없이</b> 사라진다. 두 경로를 유지할 때 생기는
      <b>"이 상태가 방에서 왔나 로컬에서 왔나"</b>가 아예 없다.</p>
-  <p class="qa">교사 앱이 아직 학생을 그 길로 부른다면 <b>그쪽이 끊기는 것</b>이다.
-     이 저장소만으로는 확인할 수 없으므로 <b>교사 앱 담당에게 알려야 한다</b>.</p>
+  <p class="qa"><s>교사 앱이 아직 학생을 그 길로 부른다면 그쪽이 끊기는 것이다.
+     이 저장소만으로는 확인할 수 없으므로 교사 앱 담당에게 알려야 한다.</s><br>
+     <b>이 조건은 틀렸다 (2026-08-24 기획자 확인).</b> 교사 앱이 학생을 부르는 경로는
+     <b>애초에 없다</b> — 학생이 스스로 들어간다. 교실용도 <b>학생이 전광판의 PIN 을 보고
+     직접 치는</b> 방식이었고 교사 앱이 학생을 어디로 보내는 것이 아니었다.
+     지울 때 통보할 밖의 상대가 없다.</p>
 </div>
 
 <h2 id="s19"><span class="n">19</span>순서</h2>
@@ -1773,9 +1777,10 @@ POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
      <code>routeTree.gen.ts</code> 재생성으로 세 라우트가 사라졌고
      <code>/main/game/vocashot-solo</code> 만 남았다 · typecheck ·
      <code>parity:activity</code> 27화면 · 코드가 부르는데 없는 i18n 키 0.</p>
-  <p class="qa"><b>남은 일은 이 저장소 밖이다</b> — 위에 적은 대로 <b>교사 앱이 아직 학생을
-     PIN 으로 부른다면 그 길이 지금 끊겼다.</b> 교사 앱 담당에게 알려야 한다.
-     서버의 <code>api/seed_vocashot.py</code> 는 어휘 은행을 심는 것이라 방과 무관하다(확인했다).</p>
+  <p class="qa"><b>밖으로 끊기는 것은 없다.</b> §18 이 "교사 앱이 학생을 그 길로 부른다면"
+     을 조건으로 달아 두었지만 <b>그 전제가 틀렸다</b> — 교사 앱이 학생을 부르는 경로는
+     애초에 없고 학생이 스스로 들어간다(2026-08-24 기획자 확인).
+     서버의 <code>api/seed_vocashot.py</code> 도 어휘 은행을 심는 것이라 방과 무관하다.</p>
 </div>
 <div class="callout">
   <div class="t">봇은 <b>여기 없다</b></div>

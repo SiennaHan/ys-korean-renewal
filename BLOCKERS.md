@@ -326,11 +326,11 @@ app/rsbuild.config.ts
 | ~~교실용 VocaShot~~ | ~~`routes/main/game/vocashot.tsx` · `vocashot_.$pin.tsx` · `lib/vocashot/appsync.ts`~~ | ~~1,459~~ | **지웠다 2026-08-24** — `types.ts` 90줄과 문구 33줄×5언어까지. `games_spec_v1` §19 |
 | ~~고아 미션대화~~ | ~~`routes/main/game/missionchat.tsx` + `components/main/course-list/mission-chat.tsx`~~ | ~~135~~ | **지웠다 2026-08-24** — 같이 걷었다 |
 
-> **교사 앱 담당에게 알려야 한다 (2026-08-24).** 교실용 VocaShot 을 지웠으므로,
-> 교사 앱이 아직 학생을 PIN 으로 부르고 있다면 **그 길이 지금 끊겼다.** 이 저장소만으로는
-> 교사 앱이 그 링크를 쓰는지 확인할 수 없다. `games_spec_v1` §19 가 지우기 전부터
-> 이것을 조건으로 달아 두었다. 서버의 `api/seed_vocashot.py` 는 어휘 은행을 심는 것이라
-> 방과 무관하다(확인했다).
+> **교사 앱 통보는 필요 없다 (2026-08-24 기획자 확인).** 교실용 VocaShot 을 지울 때
+> `games_spec_v1` §19 가 "교사 앱이 아직 학생을 그 길로 부른다면 그쪽이 끊긴다" 는
+> 조건을 달아 두었고 나도 그걸 옮겼는데, **전제가 틀렸다.** 교사 앱이 학생을 부르는
+> 경로는 **애초에 없다** — 학생이 스스로 들어간다. 그래서 이 삭제로 끊기는 밖의 길이 없다.
+> 서버의 `api/seed_vocashot.py` 도 어휘 은행을 심는 것이라 방과 무관하다(확인했다).
 
 **구 교재 트리 세 층은 리다이렉트가 아니라 살아 있는 화면이다** — `/book/$id` ·
 `/book/chapter/$id` · `/book/chapter/unit/$id` 가 `chapter.ts`·`unit.ts`·`module.ts`(손으로
