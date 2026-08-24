@@ -927,5 +927,25 @@ Exo 2 를 `<link>` 로 부른다.
 
 `biome check` 는 220 → **214건**이 됐다. `noInvalidPositionAtImportRule` 0.
 
+### noUnsafeFinally 2건 — 죽은 코드였다 (2026-08-24)
+
+`api/report.ts` 의 두 함수가 `finally { return result }` 로 값을 돌려줬다.
+**finally 의 return 은 try·catch 의 return 을 덮어쓰고 던져진 예외까지 삼킨다** —
+그래서 try 안의 `return []` 과 catch 안의 `return null` 이 전부 **죽은 코드**였다.
+
+마침 `result` 의 초기값이 그 return 들과 같은 값이라 **결과는 우연히 맞았다.**
+옛 모양과 새 모양을 여덟 경로(정상 · `result=false` · `data=null` · 빈 배열 ×
+예외 유무)로 대 봤고 전부 같은 값을 냈다.
+
+위험한 것은 지금이 아니라 다음이다. `catch` 에서 되던지도록 고치는 순간
+그 예외가 **조용히 사라지고 `null` 이 반환된다** — 실측했다.
+
+    옛: catch 에서 되던져도 → 값 null 반환 (예외가 사라졌다)
+    새: catch 에서 되던지면 → throw boom
+
+값을 그 자리에서 바로 돌려주도록 바꿨다. 호출부 둘 다 안전하다 —
+`listReport` 는 배열의 `.length` 만 보고, `createReport` 는 반환값을 쓰지 않는다.
+`biome check` 214 → **212건**.
+
 
 i18n 은 5개 로케일 **300키**가 일치한다(en·ja·ko·vi·zh 전부 300).
