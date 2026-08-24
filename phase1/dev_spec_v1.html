@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 1 개발 명세 — 무엇을 만들라</title>
+<style>
+/* ───────── 합친 문서의 껍데기 (원본에 없던 것은 이것뿐) ───────── */
+  .mergehead { max-width:860px; margin:0 auto; padding:30px 24px 0; font:15px/1.75 -apple-system,"Pretendard","Apple SD Gothic Neo",sans-serif; color:#2a3038; }
+  .mergehead .kick { font-size:12px; letter-spacing:.08em; color:#8a93a0; font-weight:700; }
+  .mergehead h1 { margin:6px 0 12px; font-size:27px; letter-spacing:-.02em; }
+  .mergehead p { margin:0 0 12px; color:#4a5462; }
+  .mergehead table { border-collapse:collapse; font-size:13px; margin:4px 0 8px; }
+  .mergehead td { border:1px solid #e3e7ee; padding:6px 12px; color:#4a5462; vertical-align:top; }
+  .mergehead td:first-child { white-space:nowrap; }
+  .mergehead td:last-child { white-space:nowrap; color:#8a93a0; }
+  .part { display:block; }
+  .part + .part { border-top:1px solid #dfe3ea; margin-top:8px; }
+
+/* ───────── Phase1_dev_spec_v1.html 그대로 ───────── */
+
+  :root {
+    --bg: #fafbfd; --surface: #ffffff; --ink: #1a2233; --ink-2: #4a5568; --ink-3: #8b95a8;
+    --line: #e3e8f0; --accent: #0f766e; --accent-soft: #e6f4f2;
+    --warn: #b45309; --warn-soft: #fdf3e3; --bad: #b91c1c; --bad-soft: #fdeaea;
+    --good: #15803d; --good-soft: #e9f6ee; --code-bg: #eef1f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151c; --surface: #1a1f29; --ink: #e7ebf3; --ink-2: #aeb7c6; --ink-3: #6e7889;
+      --line: #2a3141; --accent: #4fd1c5; --accent-soft: #16302d;
+      --warn: #e6a34a; --warn-soft: #2d2618; --bad: #f08a8a; --bad-soft: #331b1b;
+      --good: #5ec98a; --good-soft: #16291e; --code-bg: #232936;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151c; --surface: #1a1f29; --ink: #e7ebf3; --ink-2: #aeb7c6; --ink-3: #6e7889;
+    --line: #2a3141; --accent: #4fd1c5; --accent-soft: #16302d;
+    --warn: #e6a34a; --warn-soft: #2d2618; --bad: #f08a8a; --bad-soft: #331b1b;
+    --good: #5ec98a; --good-soft: #16291e; --code-bg: #232936;
+  }
+  body { background: var(--bg); color: var(--ink); margin: 0;
+    font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+    line-height: 1.72; font-size: 15.5px; }
+  main { max-width: 920px; margin: 0 auto; padding: 48px 24px 96px; }
+  header.doc { border-bottom: 1px solid var(--line); padding-bottom: 26px; margin-bottom: 36px; }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+  h1 { font-size: 28px; line-height: 1.32; margin: 0 0 10px; font-weight: 800; letter-spacing: -.01em; }
+  .meta { color: var(--ink-3); font-size: 13.5px; }
+  h2 { font-size: 21px; font-weight: 800; margin: 52px 0 6px; letter-spacing: -.01em; }
+  h2 .no { color: var(--accent); margin-right: 8px; font-variant-numeric: tabular-nums; }
+  h3 { font-size: 16.5px; font-weight: 700; margin: 28px 0 6px; }
+  h4 { font-size: 14px; font-weight: 700; margin: 20px 0 4px; color: var(--ink-2); }
+  p { margin: 10px 0; }
+  .lead { color: var(--ink-2); }
+  code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: .84em; background: var(--code-bg); padding: 1.5px 6px; border-radius: 5px; }
+  pre { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
+    overflow-x: auto; font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; line-height: 1.65; margin: 12px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 6px; font-size: 13px; }
+  .tablewrap { overflow-x: auto; }
+  th { text-align: left; font-size: 11.5px; color: var(--ink-3); font-weight: 700; padding: 8px 9px 6px; border-bottom: 2px solid var(--line); white-space: nowrap; }
+  td { padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td code { white-space: nowrap; }
+  .callout { border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--surface); border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.bad { border-left-color: var(--bad); }
+  .callout.good { border-left-color: var(--good); }
+  .callout .t { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .callout.warn .t { color: var(--warn); }
+  .callout.bad .t { color: var(--bad); }
+  .callout.good .t { color: var(--good); }
+  .callout p { margin: 6px 0; font-size: 14.5px; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 99px; padding: 1px 8px; white-space: nowrap; }
+  .pill.new { background: var(--warn-soft); color: var(--warn); }
+  .pill.keep { background: var(--good-soft); color: var(--good); }
+  .pill.fix { background: var(--accent-soft); color: var(--accent); }
+  .pill.drop { background: var(--bad-soft); color: var(--bad); }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 5px 0; }
+  li::marker { color: var(--ink-3); }
+  a { color: var(--accent); }
+  .qa { color: var(--ink-3); font-size: 13px; }
+
+/* ───────── api_schema_v1.html (#part-api 로 감쌌다) ───────── */
+#part-api{
+    --bg:#f8f9fb; --surface:#ffffff; --surface-2:#eef1f6; --ink:#161a21;
+    --ink-2:#4d5563; --ink-3:#868e9d; --line:#e1e5ec;
+    --accent:#2f5fd0; --accent-soft:#e9f0fe;
+    --get:#1c6b42; --get-soft:#e6f4ec; --post:#2f5fd0; --post-soft:#e9f0fe;
+    --patch:#8a5a00; --patch-soft:#fdf3e0; --del:#b3261e; --del-soft:#fdecea;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 8px 22px rgba(16,24,40,.06);
+  }
+  @media (prefers-color-scheme: dark) {:not([data-theme="light"]) #part-api{
+      --bg:#0f1218; --surface:#171b22; --surface-2:#1e232c; --ink:#e7eaf1;
+      --ink-2:#a6aeba; --ink-3:#717988; --line:#282e38;
+      --accent:#83b0ff; --accent-soft:#15243c;
+      --get:#7ad3a2; --get-soft:#122a1e; --post:#83b0ff; --post-soft:#15243c;
+      --patch:#e0ab52; --patch-soft:#2b2417; --del:#f19b93; --del-soft:#311c1a;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px rgba(0,0,0,.42);
+    }
+  }[data-theme="dark"] #part-api{
+    --bg:#0f1218; --surface:#171b22; --surface-2:#1e232c; --ink:#e7eaf1;
+    --ink-2:#a6aeba; --ink-3:#717988; --line:#282e38;
+    --accent:#83b0ff; --accent-soft:#15243c;
+    --get:#7ad3a2; --get-soft:#122a1e; --post:#83b0ff; --post-soft:#15243c;
+    --patch:#e0ab52; --patch-soft:#2b2417; --del:#f19b93; --del-soft:#311c1a;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px rgba(0,0,0,.42);
+  }#part-api *{ box-sizing:border-box; }#part-api{ margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    font-size:15px; line-height:1.7; }#part-api main{ max-width:900px; margin:0 auto; padding:48px 22px 96px; }#part-api header.doc{ padding-bottom:24px; border-bottom:2px solid var(--ink); margin-bottom:30px; }#part-api .eyebrow{ font-size:11.5px; letter-spacing:.17em; text-transform:uppercase;
+    color:var(--accent); font-weight:800; margin-bottom:9px; }#part-api h1{ font-size:28px; line-height:1.3; margin:0 0 10px; font-weight:800; letter-spacing:-.015em; }#part-api .lead{ color:var(--ink-2); margin:0; max-width:66ch; }#part-api .lead b{ color:var(--ink); }#part-api h2{ font-size:19px; font-weight:800; margin:52px 0 6px; letter-spacing:-.01em; }#part-api h3{ font-size:14px; font-weight:700; margin:20px 0 4px; color:var(--ink-2);
+    letter-spacing:.02em; }#part-api p{ margin:9px 0; }#part-api .qa{ color:var(--ink-3); font-size:13px; }#part-api code{ font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.85em;
+    background:var(--surface-2); padding:1.5px 6px; border-radius:5px; }#part-api pre{ background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; overflow-x:auto; margin:10px 0;
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; line-height:1.65; }#part-api pre .c{ color:var(--ink-3); }#part-api .tablewrap{ overflow-x:auto; }#part-api table{ border-collapse:collapse; width:100%; margin:10px 0 6px; font-size:13px; }#part-api th{ text-align:left; font-size:11px; letter-spacing:.05em; color:var(--ink-3);
+    font-weight:700; padding:7px 9px 5px; border-bottom:2px solid var(--line); white-space:nowrap; }#part-api td{ padding:7px 9px; border-bottom:1px solid var(--line); vertical-align:top; }#part-api td:first-child code{ white-space:nowrap; }#part-api td.t{ color:var(--ink-3); font-family:ui-monospace,Menlo,monospace; font-size:11.5px; white-space:nowrap; }#part-api .ep{ background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px; margin:20px 0; box-shadow:var(--shadow); }#part-api .ep .sig{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px; }#part-api .m{ font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:800;
+    padding:2px 8px; border-radius:5px; letter-spacing:.04em; }#part-api .m.get{ background:var(--get-soft); color:var(--get); }#part-api .m.post{ background:var(--post-soft); color:var(--post); }#part-api .m.patch{ background:var(--patch-soft); color:var(--patch); }#part-api .m.del{ background:var(--del-soft); color:var(--del); }#part-api .ep .path{ font-family:ui-monospace,Menlo,monospace; font-size:14.5px; font-weight:700; }#part-api .ep .why{ color:var(--ink-2); font-size:13.5px; margin:2px 0 10px; }#part-api .tag{ font-size:10.5px; font-weight:800; border-radius:99px; padding:1.5px 8px;
+    background:var(--accent-soft); color:var(--accent); }#part-api .callout{ border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:11px; padding:14px 18px; margin:16px 0; }#part-api .callout.bad{ border-left-color:var(--del); }#part-api .callout.warn{ border-left-color:var(--patch); }#part-api .callout .t{ font-weight:800; font-size:13.5px; margin-bottom:4px; }#part-api .callout.bad .t{ color:var(--del); }#part-api .callout.warn .t{ color:var(--patch); }#part-api .callout p{ font-size:14px; margin:6px 0; }#part-api ul{ padding-left:21px; margin:9px 0; }#part-api li{ margin:5px 0; }#part-api li::marker{ color:var(--ink-3); }#part-api a{ color:var(--accent); text-underline-offset:3px; }
+
+</style>
+</head>
+<body>
+<header class="mergehead">
+  <div class="kick">개발자에게 넘기는 문서</div>
+  <h1>Phase 1 개발 명세 — 무엇을 만들라</h1>
+  <p>개발자가 볼 둘을 합친 것이다. <b>무엇을 만들라</b>(DB · API · 라우트 · 셸 · i18n · 검증 기준)와 <b>그 API 의 필드 계약</b>이 따로 있었는데, 경로만 있고 필드가 없거나 반대인 채로 읽히곤 했다. <b>§16 의 물음 넷은 아직 답이 없다</b> — 개발자와 정할 것이다.</p>
+  <table><tbody>
+<tr><td><b>만들 것</b></td><td>작업 묶음 · DB 신설 2종 · API · 라우트 · 공통 셸 · i18n · 검증 기준 · 착수 준비도</td><td>그대로</td></tr>
+<tr><td><b>필드 계약</b></td><td>요청·응답 필드. 공통 규칙 · 활동 상태 · 학습 기록 · 다시 풀기 · 홈 · 오류 코드 · 남은 물음</td><td>§10~§16</td></tr>
+  </tbody></table>
+</header>
+
+<!-- ═══════ 만들 것 — Phase1_dev_spec_v1.html ═══════ -->
+<section class="part" id="part-dev" aria-label="만들 것">
+<main>
+<header class="doc">
+  <div class="eyebrow">Phase 1 · 개발 착수 명세</div>
+  <h1>플레이어 공통 셸 — 개발 요구사항</h1>
+  <div class="meta">2026-08-14 · 대상: 외부 개발 · 제품 명세는 <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2 스펙</a>, 이 문서는 <b>그것을 DB·API·라우트로 옮긴 것</b></div>
+</header>
+
+<div class="callout good">
+  <div class="t">Phase 1의 범위와 전제</div>
+  <p><b>콘텐츠 없이 셸만 먼저 만든다.</b> 새 교재 콘텐츠(1급)는 아직 저작 중이므로, Phase 1은 <b>구 앱 콘텐츠를 그대로 꽂은 채</b> 셸·상태·라우트만 교체해 검증한다. 콘텐츠 교체는 Phase 2다.</p>
+  <p>따라서 이 문서는 <b>콘텐츠 스키마를 건드리지 않는다</b> — 기존 <code>ko_learning_record</code>의 <code>question_id</code>(Integer)를 그대로 쓰고, Phase 2에서 새 <code>item_id</code> 체계로 이관한다.</p>
+</div>
+
+<h2 id="s1"><span class="no">1</span>작업 묶음 요약</h2>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>작업</th><th>영역</th><th>선행</th></tr>
+  <tr><td>0</td><td><b>디자인 토큰 적용</b> — 동봉 <code>tokens.css</code></td><td>korean(FE)</td><td>—</td></tr>
+  <tr><td>1</td><td>DB 2종 신설 — 활동 상태 · 다시 풀기 목록</td><td>koreanapi</td><td>—</td></tr>
+  <tr><td>2</td><td>API 7종 신설·확장</td><td>koreanapi</td><td>1</td></tr>
+  <tr><td>3</td><td>라우트 통일 + 구 라우트 리다이렉트</td><td>korean(FE)</td><td>—</td></tr>
+  <tr><td>4</td><td><b>Storybook 셋업</b> — 목업 대조 · 수정 요청 통로</td><td>korean(FE)</td><td>0</td></tr>
+  <tr><td>5</td><td>플레이어 공통 셸 컴포넌트 <span class="qa">+ 컴포넌트별 스토리</span></td><td>korean(FE)</td><td>0·2·3·4</td></tr>
+  <tr><td>6</td><td>활동 8종을 셸에 이식</td><td>korean(FE)</td><td>5</td></tr>
+  <tr><td>7</td><td>i18n 리소스 등록(5개 언어 × 55키)</td><td>korean(FE)</td><td>—</td></tr>
+  <tr><td>8</td><td>홈 개편(오늘 할 일 · 다시 풀기 카드)</td><td>양쪽</td><td>2</td></tr>
+</table></div>
+<div class="callout good">
+  <div class="t">0번과 4번이 이번에 새로 들어왔다 — 피그마를 쓰지 않기 때문이다</div>
+  <p>셸을 <b>피그마에 그리지 않고 명세대로 바로 구현</b>한다. 규격은 <a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a>에 있다 — <b>기준 폭 390</b>, 세로는 <b>고정 블록 219</b> + 가변 밴드, 선택지 173×96, 하단 버튼 358×56.</p>
+  <p><b>시각 기준은 기획이 만든 HTML 목업</b>이 담당한다 — 이 문서와 함께 전달된다. 목업은 상태별 화면을 전부 담고 있으므로 <b>구현 대상의 정본</b>으로 삼는다.</p>
+  <p>대신 두 가지가 필수가 된다. <b>① <code>tokens.css</code></b> — 디자인 파일이 SoT가 아니므로 코드의 토큰이 유일한 기준이다. <b>② Storybook</b> — 구현한 뒤 목업과 대조하고, 이후 수정 요청을 주고받는 통로다. 실제 앱에서는 오답·마이크 거부·로드 실패를 재현하기 어렵다.</p>
+</div>
+<p class="qa">Phase 0(보안 핫픽스)은 이 문서와 독립이며 <b>먼저 또는 병행</b>해도 된다.</p>
+
+<h2 id="s2"><span class="no">2</span>DB 신설</h2>
+<p class="lead">기존 명명 규칙(<code>ko_</code> 접두, <code>user_id</code>는 게스트 겸용 <code>String(45)</code>, FK 없이 논리 참조)을 그대로 따른다.</p>
+
+<h3>2.1 <code>ko_activity_state</code> — 활동 상태 <span class="pill new">신설</span></h3>
+<p>현재는 활동 완료를 <code>learning_record</code> 건수와 <code>content_counts.TOTAL_QUESTIONS</code>를 비교해 <b>매번 계산</b>한다. G2 상태 머신은 명시적 상태와 <b>이어하기 위치</b>가 필요하므로 별도 테이블로 승격한다.</p>
+<pre>CREATE TABLE ko_activity_state (
+  id                  INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id             VARCHAR(45)  NOT NULL,
+  book_id             INT          NOT NULL,      -- 급 (화면 라벨만 "급", 컬럼명 유지)
+  chapter_seq         INT          NOT NULL,      -- 과
+  menu_type           VARCHAR(20)  NOT NULL,      -- 기존 값 그대로 사용 (아래 §2.2 참조)
+                                                  -- word | fill-blank | listen-answer | read-answer
+                                                  -- | roleplay | flashcard | mission-chat | jamo(신규)
+  state               VARCHAR(16)  NOT NULL DEFAULT 'in_progress',  -- in_progress | completed
+                                                  -- ※ 미학습은 행 자체가 없는 상태로 표현(G2 §9: 화면에도 표기 안 함)
+  sub                 TINYINT      NOT NULL DEFAULT 0,   -- 하위 유형. 자모만 1~6, 나머지 활동은 0
+  current_item_index  INT          NOT NULL DEFAULT 0,   -- 이어하기 위치
+  total_items         INT          NULL,                 -- 전체 문항 수. <b>진행률의 분모</b>
+  answered_count      INT          NOT NULL DEFAULT 0,
+                                                  -- ※ <b>응답한 문항 수. 진행률의 분자</b>. 정오답 무관, 발음도 센다
+                                                  --    건너뛴 문항과 녹음 없이 넘긴 발음 문항은 <b>세지 않는다</b>
+  graded_count        INT          NOT NULL DEFAULT 0,
+                                                  -- ※ <b>채점 대상 문항 수. 정답률의 분모</b>
+                                                  --    발음(자모 sub=1·3)과 플래시카드는 <b>0</b> → 화면에 "—"
+  correct_count       INT          NOT NULL DEFAULT 0,
+                                                  -- ※ <b>첫 시도 기준</b>. 재시도로 맞힌 것은 세지 않는다(셸 명세 S1)
+  completed_at        DATETIME     NULL,
+  created_at          DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
+  updated_at          DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()) ON UPDATE UTC_TIMESTAMP(),
+  UNIQUE KEY uq_state (user_id, book_id, chapter_seq, menu_type, sub),
+  KEY ix_user (user_id)
+);</pre>
+<div class="callout bad">
+  <div class="t"><code>sub</code>가 없으면 자모 6종이 같은 행을 쓴다</div>
+  <p>자모는 라우트가 <code>/learn/jamo?sub=1~6</code>로 <b>6개 하위활동</b>인데 <code>menu_type</code>은 <code>jamo</code> 하나다.
+     키에 <code>sub</code>가 없으면 <b>다섯이 한 행을 공유</b>해서, 하나를 완료하면 나머지도 완료로 보이고
+     이어하기 위치가 서로 덮인다.</p>
+  <p><b><code>menu_type</code>을 <code>jamo-1</code>~<code>jamo-5</code>로 쪼개지 않는 이유</b>: 그러면
+     <code>ko_learning_record</code>·<code>ko_daily_activity</code>·<code>content_counts</code>의 키가 전부 5개씩 늘어난다.
+     <code>sub</code>는 <b>자모에만 의미가 있고 나머지는 0</b>이라 기존 코드가 영향을 안 받는다.</p>
+  <p class="qa"><code>NULL</code>이 아니라 <code>NOT NULL DEFAULT 0</code>인 이유 — MySQL은 <b>UNIQUE 키에서 <code>NULL</code>을 중복 허용</b>하므로,
+     <code>NULL</code>로 두면 자모 아닌 활동의 유니크 제약이 무력해진다.</p>
+</div>
+
+<div class="callout">
+  <div class="t">"복습 권장"은 컬럼이 아니다</div>
+  <p>G2 §1에서 복습 권장은 <b>완료의 하위 표시</b>로 정의했다. 따라서 <code>state</code>에 값을 추가하지 않고, <code>ko_review_queue</code>에 해당 활동 소속 항목이 남아 있는지로 판정한다 — 상태를 두 곳에 쓰면 어긋난다.</p>
+</div>
+
+<div class="callout bad">
+  <div class="t">채점은 첫 시도만 기록한다 <span class="pill new">셸 명세 S1 반영</span></div>
+  <p>선택지 활동은 <b>재시도형</b>으로 확정됐다 — 오답이어도 정답을 공개하지 않고 맞힐 때까지 다시 고르게 한다. 따라서 <b>무엇을 기록하는지가 모호해질 수 있다.</b></p>
+  <ul>
+    <li><code>correct_count</code> · <code>ko_learning_record</code> · 진행바 칸 상태 — <b>전부 첫 시도 기준</b></li>
+    <li>두 번째 이후 시도는 <b>기록하지 않는다</b> (정답률이 항상 100%가 되어 무의미해진다)</li>
+    <li><code>ko_review_queue</code> 예약도 <b>첫 시도 오답</b> 기준 — 재시도로 맞혀도 복습 큐에 남는다</li>
+  </ul>
+  <p class="qa">즉 문항당 <b>정확히 한 번</b>만 기록된다. 재시도 횟수를 남기고 싶으면 별도 컬럼이 필요하지만, Phase 1 범위 밖이다.</p>
+</div>
+
+<h3>2.2 <code>menu_type</code> 값은 바꾸지 않는다 <span class="pill drop">v1.1 정정</span></h3>
+<div class="callout bad">
+  <div class="t">v1 초안의 오류</div>
+  <p>초안에서 <code>menu_type</code>을 <code>grammar · listen · read</code>로 적었다. <b>이는 라우트 개칭(§4)을 DB 값에까지 잘못 확장한 것</b>이다. 기존 <code>ko_learning_record</code>·<code>ko_daily_activity</code>·<code>content_counts.TOTAL_QUESTIONS</code>가 전부 <code>fill-blank · listen-answer · read-answer</code>를 키로 쓰고 있어, 값을 바꾸면 <b>기존 학습 기록이 통째로 미아가 되고 진행률 계산이 깨진다.</b></p>
+  <p><b>확정: 라우트(사용자에게 보이는 주소)만 개칭하고, <code>menu_type</code>(내부 저장 값)은 그대로 둔다.</b> 화면 라벨 "권→급"과 같은 원칙 — 표기와 스키마를 분리한다.</p>
+</div>
+<div class="tablewrap"><table>
+  <tr><th>활동</th><th>라우트 <span class="qa">(개칭)</span></th><th><code>menu_type</code> <span class="qa">(유지)</span></th></tr>
+  <tr><td>문법 연습</td><td><code>/learn/grammar</code></td><td><code>fill-blank</code></td></tr>
+  <tr><td>듣기</td><td><code>/learn/listen</code></td><td><code>listen-answer</code></td></tr>
+  <tr><td>읽기</td><td><code>/learn/read</code></td><td><code>read-answer</code></td></tr>
+  <tr><td>단어 · 롤플레잉 · 플래시카드 · 미션대화</td><td>변경 없음</td><td>변경 없음</td></tr>
+  <tr><td>자모 <span class="pill new">신규</span></td><td><code>/learn/jamo</code></td><td><code>jamo</code> — 기존에 없던 값(현재 진도 미저장)</td></tr>
+</table></div>
+<p class="qa">값 통일이 필요하다면 <b>Phase 2</b>에서 콘텐츠 이관·구 기록 폐기와 함께 한 번에 처리한다(G1에서 구 학습 기록 폐기가 이미 확정돼 있으므로 그때가 비용이 가장 낮다).</p>
+
+<h3>2.2-b <code>ko_daily_activity</code> — 스트릭 기준 변경 <span class="pill fix">기존 테이블</span></h3>
+<div class="callout bad">
+  <div class="t">스트릭은 이미 있고, 기준을 바꾼다</div>
+  <p>현행 스트릭은 <code>business/dashboard.py</code>의 <code>_calculateStreak()</code>가
+     <b><code>ko_daily_activity</code>에 그날 행이 있는지</b>로 계산한다. 그 행은
+     <code>saveLearningRecord</code> → <code>updateLastStudy</code> → <code>ensureExists</code> 경로로 만들어지므로,
+     <b>지금은 문항 하나만 응답해도 스트릭이 오른다.</b></p>
+  <p><b>확정 기준: 활동 1개 완료</b>(또는 다시 풀기 세션 완주). 아래처럼 바꾼다.</p>
+</div>
+<div class="tablewrap"><table>
+  <tr><th>대상</th><th>변경</th></tr>
+  <tr><td><code>modules_done</code> 컬럼</td>
+      <td><b>스키마 변경 없이 되살린다.</b> 현재 <code>repo_daily_activity.ensureExists()</code>에서
+          <code>0</code>으로만 설정되고 <b>증가하는 코드가 어디에도 없다</b> — 죽은 컬럼이다.<br>
+          정의: <b>그날 완결한 학습 단위 수</b> = 활동 완료 + 다시 풀기 세션 완주</td></tr>
+  <tr><td>증가 시점</td>
+      <td><code>POST /activity/complete</code> 성공 시 <code>+1</code> ·
+          다시 풀기 세션 완주 시 <code>+1</code>.<br>
+          <b>연습 세션은 <code>complete</code>를 부르지 않으므로 자동으로 빠진다</b></td></tr>
+  <tr><td><code>_calculateStreak()</code></td>
+      <td>날짜 목록을 <b>행이 있는 날</b>에서 <b><code>modules_done &gt;= 1</code>인 날</b>로 바꾼다.
+          <code>findRecentDates()</code>에 조건 추가</td></tr>
+  <tr><td>다른 집계</td>
+      <td><code>study_seconds</code> · <code>words_learned</code> · <code>last_*</code>는 <b>그대로</b>.
+          행 생성 시점도 그대로 — 학습 시간 집계는 문항 단위가 맞다</td></tr>
+</table></div>
+<p class="qa">구 학습 기록을 폐기하기로 했으므로(G1) <b>기존 사용자의 스트릭이 재계산되어 줄어드는 문제는 없다.</b></p>
+
+<h3>2.3 <code>ko_review_queue</code> — 다시 풀기 목록 <span class="pill new">신설</span></h3>
+<pre>CREATE TABLE ko_review_queue (
+  id            INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id       VARCHAR(45)  NOT NULL,
+  book_id       INT          NOT NULL,
+  chapter_seq   INT          NOT NULL,
+  menu_type     VARCHAR(20)  NOT NULL,
+  sub           TINYINT      NOT NULL DEFAULT 0,     -- 활동 상태와 같은 규칙
+  question_id   INT          NOT NULL,     -- Phase 1은 기존 체계 유지. Phase 2에서 item_id로 이관
+  reason        VARCHAR(16)  NOT NULL,     -- wrong | skipped | unknown(플래시카드 "몰라요")
+  attempts      INT          NOT NULL DEFAULT 1,
+  available_at  DATETIME     NOT NULL,     -- 홈 목록 노출 시각 = 오답 다음 날 0시(KST). 결과화면 [다시 풀기]는 이 값 무시
+  created_at    DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
+  updated_at    DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()) ON UPDATE UTC_TIMESTAMP(),
+  UNIQUE KEY uq_queue (user_id, book_id, chapter_seq, menu_type, sub, question_id),
+  KEY ix_user_avail (user_id, available_at)
+);</pre>
+<div class="tablewrap"><table>
+  <tr><th>규칙 (G2 §6)</th><th>구현</th></tr>
+  <tr><td>같은 날 재출제 방지</td><td><code>available_at</code> = 오답 발생일 <b>다음 날 KST 00:00</b>. 홈 목록은 <code>available_at &lt;= now</code>만 노출, 결과 화면 [다시 풀기]는 무시하고 즉시 출제</td></tr>
+  <tr><td>제거 조건</td><td>다시 풀기에서 <b>정답 1회</b> → 행 삭제</td></tr>
+  <tr><td>재오답</td><td><code>attempts += 1</code>, <code>available_at</code> 갱신. <b>3회 이상</b>은 ⓐ 결과 화면 강조 ⓑ 세션에서 먼저 출제 ⓒ 밀어내기 보호</td></tr>
+  <tr><td>상한 · 세션</td><td><b>보관 60</b>(초과 시 <code>created_at</code> 오래된 것부터 삭제, 단 <code>attempts ≥ 3</code> 보호) ·
+    <b>한 세션 10문항</b> · 홈 카드는 보관 총계(60 도달 시 "60+")<br>
+    <span class="qa">과당 26.7문항 실측 기준으로 60은 7~8과 분량 — 상한은 적정하나 한 번에 내보내면 압도한다</span></td></tr>
+  <tr><td>정렬</td><td><code>attempts</code> 내림차순 → <code>created_at</code> 오름차순. <b>여러 번 틀린 문항이 먼저</b></td></tr>
+  <tr><td>콘텐츠 삭제 대응</td><td>조회 시 문항이 없으면 <b>조용히 행 삭제</b> 후 다음 항목으로</td></tr>
+  <tr><td>잠긴 콘텐츠(B2C)</td><td>행은 유지하고 <b>노출만 제외</b>. 재구독 시 자동 복원</td></tr>
+</table></div>
+
+<h2 id="s3"><span class="no">3</span>API</h2>
+<div class="tablewrap"><table>
+  <tr><th>메서드 · 경로</th><th>구분</th><th>동작</th></tr>
+  <tr><td><code>POST /activity/enter</code></td><td><span class="pill new">신설</span></td><td>활동 진입. body <code>{bookId, chapterSeq, menuType, totalItems}</code> → 상태 행 upsert(없으면 <code>in_progress</code> 생성), 응답으로 <code>currentItemIndex</code> 반환. <b>완료 상태에서 재진입하면 상태를 바꾸지 않고</b> 연습 세션으로 응답(G2 §6-1)</td></tr>
+  <tr><td><code>PATCH /activity/progress</code></td><td><span class="pill new">신설</span></td><td>문항 이동마다 <code>currentItemIndex</code> 저장. ✕ 종료·이탈 시에도 호출(G2 §3.1 "저장 없이 나가기 없음")</td></tr>
+  <tr><td><code>POST /activity/complete</code></td><td><span class="pill new">신설</span></td><td>마지막 문항 응답 시. <code>state='completed'</code>, <code>completed_at</code> 기록. 응답에 <b>이 활동의 잔여 다시 풀기 수</b> 포함 → 결과 화면이 "다시 풀 문제 N개"에 사용</td></tr>
+  <tr><td><code>POST /learning-record</code></td><td><span class="pill fix">확장</span></td><td>기존 유지 + <b>오답·skip이면 <code>ko_review_queue</code>에 자동 upsert</b>. <span class="pill drop">주의</span> 현재 <code>fill-blank</code>가 정답만 저장하는 버그가 있어(Phase 0 대상) 반드시 <b>오답도 저장</b>되도록 고친 뒤 연동</td></tr>
+  <tr><td><code>GET /review-queue</code></td><td><span class="pill new">신설</span></td><td>쿼리 <code>?scope=home|activity&amp;bookId=&amp;chapterSeq=&amp;menuType=</code>. <code>home</code>은 <code>available_at &lt;= now</code>만, <code>activity</code>는 해당 활동분 전체(시각 무시). 응답에 총 개수 포함</td></tr>
+  <tr><td><code>DELETE /review-queue/{id}</code></td><td><span class="pill new">신설</span></td><td>다시 풀기에서 정답 시 제거. 또는 <code>POST /learning-record</code>가 <code>isCorrect=true</code>이면 서버가 자동 제거(권장 — 클라 왕복 감소)</td></tr>
+  <tr><td><code>GET /dashboard</code></td><td><span class="pill fix">확장</span></td><td>응답에 <code>reviewCount</code>(홈 다시 풀기 카드용)와 <code>todayTask</code>(오늘 할 일 = 이어하기 or 다시 풀기 최상단) 추가. 기존 필드는 유지</td></tr>
+</table></div>
+<div class="callout warn">
+  <div class="t">기존 진행률 계산과의 관계</div>
+  <p><code>GET /learning-record/progress</code>는 <code>content_counts.TOTAL_QUESTIONS</code> 하드코딩 테이블에 의존한다. Phase 1에서는 <b>그대로 두고</b>, <code>ko_activity_state.total_items</code>를 진입 시점에 클라이언트가 넘겨 받는 방식으로 병행한다. 하드코딩 테이블 폐지는 <b>Phase 2</b>(콘텐츠 DB 이관) 과제다.</p>
+</div>
+
+<h2 id="s4"><span class="no">4</span>라우트</h2>
+<div class="tablewrap"><table>
+  <tr><th>신규</th><th>구 라우트</th><th>처리</th></tr>
+  <tr><td><code>/learn/word?level=&amp;lesson=</code></td><td><code>/learn/word?book=&amp;chapter=</code></td><td>쿼리 키 개칭 + 구 키 호환 수용</td></tr>
+  <tr><td><code>/learn/grammar</code></td><td><code>/learn/fill-blank</code></td><td>301 리다이렉트</td></tr>
+  <tr><td><code>/learn/listen</code></td><td><code>/learn/listen-answer</code></td><td>301</td></tr>
+  <tr><td><code>/learn/read</code></td><td><code>/learn/read-answer</code></td><td>301</td></tr>
+  <tr><td><code>/learn/roleplay</code></td><td>동일</td><td>쿼리 키만</td></tr>
+  <tr><td><code>/learn/flashcard?level=&amp;lesson=</code></td><td><code>/book/chapter/unit/flashcard/$id</code><br><code>.../flashcard/result/$id</code></td><td>리다이렉트. <b>결과는 셸 공통이라 별도 라우트 폐지</b></td></tr>
+  <tr><td><code>/learn/mission-chat?level=&amp;lesson=</code></td><td><code>.../mission_chat/$code</code> · <code>.../dialog/$id</code> · <code>.../dialog/report/$id</code></td><td>리다이렉트. 내부 단계는 컴포넌트 상태로</td></tr>
+  <tr><td><code>/learn/jamo?level=1&amp;lesson=&amp;sub=1~6</code></td><td>5개 라우트(<code>listen-repeat</code>·<code>write</code>·<code>listen-repeat2</code>·<code>read-write</code>·<code>listen</code>)</td><td><b>6→1 통합</b></td></tr>
+</table></div>
+<ul>
+  <li><b>콘텐츠 ID를 URL에서 제거한다</b> — <code>$code</code>(<code>YK0041</code>)·<code>$id</code>(<code>C4</code>) 노출 폐지. 급·과만 쿼리로 받고 문항 목록은 서버가 결정.</li>
+  <li>구 라우트는 Phase 1에서 <b>리다이렉트만 유지</b>, Phase 3에서 제거(북마크·QR 링크 보호).</li>
+  <li>프로덕션 빌드에서 <b>테스트 라우트 9종(<code>/test/**</code>)과 빈 스텁 4종 제외</b>(Phase 0과 중복 가능).</li>
+</ul>
+
+<h2 id="s5"><span class="no">5</span>공통 셸 컴포넌트</h2>
+<h3>5.0 토큰 — <code>tokens.css</code> <span class="pill fix">했다 (2026-08-21 확인)</span></h3>
+<p><b>이미 들어가 있다</b> — <code>app/src/styles/tokens.css</code> 이고 4곳에서 쓴다. 아래는 그때 정한 규격이고, 지금은 <b>지시가 아니라 기록</b>이다.</p>
+<p><code>src/styles/globals.css</code>의 <code>@import "tailwindcss";</code> 아래에 <code>@import</code>한다. <b>2단 구조</b>다.</p>
+<pre>--color-primitive-blue-500: #0180FF;                     /* 무슨 색인가 — 51개 */
+--color-fill-primary: var(--color-primitive-blue-500);   /* 어디에 쓰나 — 30개 */</pre>
+<div class="tablewrap"><table>
+  <tr><th>규칙</th><th>내용</th></tr>
+  <tr><td>화면 코드는 <b>semantic만</b></td><td><code>bg-fill-primary</code> · <code>text-text-sub</code> · <code>border-line-normal</code>. primitive 직접 사용은 예외</td></tr>
+  <tr><td>새 hex 금지</td><td>팔레트 밖 색이 필요하면 <b>semantic 이름을 먼저 추가</b>한다. primitive 51개를 늘리는 것은 마지막 수단</td></tr>
+</table></div>
+<div class="callout bad">
+  <div class="t">지우면 깨지는 것 — 실측</div>
+  <div class="tablewrap"><table>
+    <tr><th>대상</th><th>실측</th><th>Phase 1 처리</th></tr>
+    <tr><td>Tailwind 기본 색 클래스</td><td><b>389회</b> <span class="qa">gray 211 · blue 65 · slate 53 · green 18 · emerald 13 · red 8 …</span></td><td><code>--color-*: initial</code>을 <b>켜지 않는다</b></td></tr>
+    <tr><td>shadcn <code>--primary</code> 등 oklch</td><td><b>14회 / 2개 파일</b> · <code>src/components/ui</code> 9종이 참조</td><td>지우지 않는다</td></tr>
+    <tr><td><code>bg-[#......]</code> 임의값</td><td><b>998회</b></td><td>손대지 않는다</td></tr>
+  </table></div>
+  <p><code>tokens.css</code>는 접두어(<code>primitive-</code>)가 있어 <b>충돌 없이 병존</b>한다. 위 셋의 이관과 <code>initial</code> 활성화는 Phase 2~3이다.</p>
+</div>
+
+<h3>5.1 Storybook <span class="pill fix">했다 (2026-08-21 확인)</span></h3>
+<p><b>이미 들어가 있다</b> — <code>app/.storybook/</code>(<code>main.ts</code> · <code>preview.tsx</code>) 과 <code>pnpm storybook</code>(6006). 스토리는 둘이다 — <b>"목업 대조"</b>(캡처한 목업)와 <b>"활동 컴포넌트"</b>(우리 것)를 나란히 놓고 본다. 아래 9종 목록은 그때의 계획이다.</p>
+<p><b>목업을 대체하는 것이 아니라 구현 결과를 목업과 대조하는 도구</b>다. <b>셸 컴포넌트 9종만</b> 올린다. 나머지 화면은 이미 있으므로 대상이 아니다. <b>셸 명세 §3의 상태표가 그대로 스토리 목록</b>이라 새로 설계할 것이 없다.</p>
+<div class="tablewrap"><table>
+  <tr><th>컴포넌트</th><th>스토리</th></tr>
+  <tr><td>ProgressBar</td><td>2모드(segment ≤15 / continuous ≥16) × 4상태</td></tr>
+  <tr><td>ChoiceGroup</td><td>3배치(2·3·4개) × 4상태 + <b>오답 진동</b></td></tr>
+  <tr><td>FeedbackLayer</td><td>3상태</td></tr>
+  <tr><td>ResultScreen</td><td>3상태(perfect · hasWrong · reviewDone)</td></tr>
+  <tr><td>StateView</td><td>5상태(로딩 · 실패 · 음성없음 · 마이크거부 · 종료확인)</td></tr>
+  <tr><td>MicZone · ChatThread · FlipCard · WritingCanvas</td><td>기본 + 응답 후</td></tr>
+</table></div>
+<div class="callout warn">
+  <div class="t">전역 토글 2개가 필수다</div>
+  <ol>
+    <li><b>UI 언어 5종</b>(en·ko·ja·zh·vi) — §7의 "가장 긴 문자열" 검사가 <b>클릭 한 번</b>이 된다. 없으면 그 검사는 사실상 수행되지 않는다.</li>
+    <li><b>뷰포트 360 / 320</b> — 320에서 선택지 칸 높이가 <b>96 → 72</b>로 줄어야 한다.</li>
+  </ol>
+  <p class="qa">이 두 축이 없으면 Storybook이 "컴포넌트 카탈로그"에 그치고, <b>도입한 이유의 절반이 사라진다</b>.</p>
+</div>
+
+<h3>5.2 컴포넌트 구조</h3>
+<pre>&lt;ActivityShell&gt;                     // 상태·진행·종료를 전담. 활동은 콘텐츠만 렌더
+  ├─ ShellHeader                    // ✕(위치 저장 후 종료) · 활동명 · 진행 표시
+  │    └─ ProgressBar               // <b>높이 6 얇은 선</b>. ≤15 분절(색만) / ≥16 연속바 + 옆에 n/N
+  ├─ &lt;slot&gt; 활동 콘텐츠              // 활동별 컴포넌트가 들어오는 자리
+  ├─ FeedbackLayer                  // 하단 가운데 pill(hug×36) — 정답/오답 문구
+  └─ ResultScreen                   // 정답률 · 오답+해설 목록 · [다시 풀기] · [다음 활동]</pre>
+<p class="qa">규격·좌표·상태 목록은 <a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a>에 있다 — <b>기준 폭 390</b>(360·320 지원), 고정 블록 <b>219</b> + 가변 밴드, 선택지 173×96.</p>
+<h3>5.3 활동별 분기 (G2 §3.4)</h3>
+<div class="tablewrap"><table>
+  <tr><th>활동</th><th>셸에 필요한 분기</th></tr>
+  <tr><td>단어 · 문법 · 듣기 · 읽기</td><td>없음. <b>선택지 수는 2~4개 가변</b>(데이터에서 받음) — 1과 2지선다, 3과 3지선다가 실제로 섞인다</td></tr>
+  <tr><td>플래시카드</td><td>진행바 색 의미 교체(<b>파랑=알아요 / 노랑=몰라요</b> — 자기 평가라 의미색을 쓰지 않는다). <b>과당 최대 45장</b>이므로 연속바 경로가 반드시 동작해야 함</td></tr>
+  <tr><td>AI 롤플레잉</td><td>마이크 존 추가. 재시도 <b>2회 초과</b>부터 다시 풀기 예약</td></tr>
+  <tr><td>AI 미션 대화</td><td>진행 단위가 문항이 아니라 <b>미션 키워드 3개</b>. 결과는 기존 리포트 화면 유지. <b>✕ 종료 시 확인 다이얼로그</b>(재개 불가)</td></tr>
+  <tr><td>자모</td><td>쓰기 유형은 캔버스가 콘텐츠 영역 차지, 피드백은 OCR 결과. 5개 하위 유형을 <code>sub</code> 파라미터로 분기</td></tr>
+</table></div>
+<h3>5.4 오답 인터랙션 <span class="pill new">셸 명세 S1 반영</span></h3>
+<p><b>즉시 채점</b>이다 — 선택지를 누르는 순간 판정한다. 별도 [정답 확인] 동작은 없다.</p>
+<div class="tablewrap"><table>
+  <tr><th>동작</th><th>구현</th></tr>
+  <tr><td>정답 탭</td><td>pill "아주 잘 했어요!" · <b>소리만</b> 재생 · 하단 [다음] 활성화. <b>자동 진행 없음</b></td></tr>
+  <tr><td>오답 탭</td><td>pill "다시 해보세요" · <b>선택지 진동</b> · <code>playIncorrect()</code>. 정답 비공개, 선택지 비활성화 안 함</td></tr>
+  <tr><td><b>같은 오답 재탭</b></td><td><b>진동과 소리를 매번 다시 실행</b>. pill 문구는 같으므로 이것이 유일한 피드백이다</td></tr>
+</table></div>
+<div class="callout bad">
+  <div class="t">진동 규격과 <code>playCorrect()</code> 분리</div>
+  <ul>
+    <li><b>진동</b>: 좌우 <b>±6px · 왕복 3회 · 총 300ms</b> · ease-out · 제자리 복귀. <code>framer-motion</code>(^12.23.24 설치돼 있음)으로 구현.</li>
+    <li><b><code>playCorrect()</code>를 그대로 쓰지 말 것.</b> 현행 <code>use-sound-effects.ts</code>의 <code>playCorrect()</code>는 <code>lottieEffect.playCelebration()</code>을 함께 호출한다 — <b>문항마다 축하 연출이 터진다</b>. 소리만 내는 함수를 분리하고, 축하는 결과 화면 만점일 때만.</li>
+    <li><code>playIncorrect()</code> · <code>/sounds/incorrect.mp3</code> · <code>correct.mp3</code>는 <b>이미 있다</b> — 신규 자산 불필요.</li>
+  </ul>
+</div>
+<div class="callout bad">
+  <div class="t"><code>prefers-reduced-motion</code> 분기가 필요하다 — 현재 코드에 0건</div>
+  <p>진동 애니메이션은 전정 장애 사용자에게 불편을 준다. 전수 검색 결과 프로젝트에 <code>prefers-reduced-motion</code> 대응이 <b>하나도 없다</b>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>조건</th><th>오답 신호</th></tr>
+    <tr><td>기본</td><td>진동 300ms + 효과음 + pill</td></tr>
+    <tr><td><code>reduce</code></td><td><b>진동 대신</b> 테두리 200ms 1회 깜빡(위치 이동 없음) + 효과음 + pill</td></tr>
+  </table></div>
+  <p class="qa">소리는 <b>보조</b>다 — 무음 모드·교실·청각장애가 흔하므로 소리 없이도 오답이 전달돼야 한다. 반대로 스크린리더는 진동·소리를 못 받으므로 pill을 <code>aria-live</code>로 두되, 같은 문구 반복 고지를 위해 영역을 비웠다 다시 채운다.</p>
+</div>
+
+<h3>5.5 접근성 (G2 §8 — 필수)</h3>
+<ul>
+  <li>진행 세그먼트는 <b>높이 6의 얇은 선</b>이라 <b>아이콘이 들어가지 않는다</b> —
+      정오답이 색으로만 남는다(<code>Positive</code> / <code>Destructive</code> / 미응답 <code>Gray/300</code>).
+      <b>초록–빨강은 색만으로 구분되지 않으므로</b>, 정오답의 권위 있는 표시는
+      <b>피드백 pill 문구</b>(문항 화면)와 <b>결과 화면 오답 목록</b>(글자)이다.
+      진행바는 <b>진행 표시가 주된 일</b>이다 — 구현 사양 §3·§13 참조.</li>
+  <li>세그먼트 <code>aria-label</code>: i18n 키 <code>player.a11ySegment</code> 사용.</li>
+  <li>피드백은 색 변화만이 아니라 텍스트로도 명시(<code>player.answerIs</code>).</li>
+  <li>탭 대상 최소 44×44pt.</li>
+</ul>
+
+<h2 id="s6"><span class="no">6</span>i18n</h2>
+<p>동봉 파일 <code>i18n_player_shell.ts</code>에 <b>5개 언어 × 30키</b>를 작성했다(키 일치 검증 완료). 각 언어 파일 최상위에 <code>player</code>·<code>result</code>·<code>review</code>·<code>state</code> 블록을 추가하면 된다. 기존 키는 건드리지 않는다.</p>
+<div class="callout warn">
+  <div class="t">번역은 초안이다</div>
+  <p>특히 학습 앱 문맥에서 <b>practice / review의 뉘앙스</b>는 언어마다 다르다. 원어민 검수 후 확정할 것. 다만 <b>내부 용어를 화면에 내보내지 않는다</b>는 원칙(큐·상태·세션 금지)은 검수에서도 유지해야 한다.</p>
+</div>
+
+<h2 id="s7"><span class="no">7</span>검증 기준</h2>
+<p class="lead">Phase 1이 "됐다"고 말할 수 있는 조건. 콘텐츠가 구 앱 것이므로 <b>콘텐츠 정확성은 검증 대상이 아니다</b>.</p>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>시나리오</th><th>기대</th></tr>
+  <tr><td>1</td><td>활동 진입 → 3문항 풀고 ✕ → 재진입</td><td>4번째 문항부터 재개. 확인 다이얼로그 없음</td></tr>
+  <tr><td>2</td><td>오답 2개 포함해 끝까지 완료</td><td>결과 화면에 "다시 풀 문제 2개". <b>문항마다 토스트가 뜨지 않는다</b></td></tr>
+  <tr><td>3</td><td>결과 화면 [다시 풀기] → 2문항 정답</td><td>목록에서 제거, 활동의 복습 권장 표시 해제</td></tr>
+  <tr><td>4</td><td>같은 날 홈 확인</td><td>방금 틀린 문항이 <b>홈 목록에 안 보임</b>(다음 날부터)</td></tr>
+  <tr><td>5</td><td>완료한 활동 재진입 후 이탈</td><td>완료 상태 <b>유지</b>. 진도·스트릭 지표 불변</td></tr>
+  <tr><td>6</td><td>플래시카드 8과(45장) 진입</td><td>세그먼트바가 아니라 <b>연속바 + n/N</b>로 표시</td></tr>
+  <tr><td>7</td><td>미션 대화 진행 중 ✕</td><td><b>확인 다이얼로그</b> 노출. 확인 시 미션 달성 현황만 저장</td></tr>
+  <tr><td>8</td><td>마이크 권한 거부 상태로 롤플레잉 진입</td><td>안내 + <b>건너뛰기 허용</b>(과가 막히지 않음)</td></tr>
+  <tr><td>9</td><td>UI 언어를 5개로 바꿔가며 셸 순회</td><td>미번역 문자열 노출 0. <b>"복습 큐" 같은 내부 용어 노출 0</b></td></tr>
+  <tr><td>10</td><td>색각 시뮬레이터로 결과 화면 확인</td><td>정오답이 <b>아이콘으로</b> 구분됨</td></tr>
+  <tr><td>13</td><td><b>목업과 나란히 놓고 대조</b></td><td>여백·크기가 목업과 일치. 다르면 <b>목업이 기준</b></td></tr>
+  <tr><td>14</td><td>Storybook에서 <b>UI 언어 5종 토글</b></td><td>가장 긴 문자열(보통 베트남어)로도 레이아웃 안 깨짐</td></tr>
+  <tr><td>15</td><td>Storybook에서 <b>뷰포트 320</b></td><td>선택지 칸 높이 96 → 72로 축소</td></tr>
+  <tr><td>16</td><td>셸 코드에서 <code>#</code> 검색</td><td><b>0건</b>. semantic 토큰만 쓴다(§5.0)</td></tr>
+  <tr><td>11</td><td>구 라우트(<code>/learn/fill-blank</code> 등) 직접 접근</td><td>신규 라우트로 리다이렉트</td></tr>
+  <tr><td>12</td><td>네트워크 끊고 3문항 진행 후 복구</td><td>진도 손실 없음(로컬 저장 → 동기화, 더 진행된 쪽 채택)</td></tr>
+</table></div>
+
+<h2 id="s8"><span class="no">8</span>Phase 1이 다루지 않는 것</h2>
+<div class="tablewrap"><table>
+  <tr><th>제외</th><th>이유 · 담당 단계</th></tr>
+  <tr><td>새 교재 콘텐츠 반영</td><td>저작 진행 중 — <b>Phase 2</b></td></tr>
+  <tr><td><code>item_id</code> 체계 이관</td><td>콘텐츠 DB 이관과 함께 — <b>Phase 2</b></td></tr>
+  <tr><td><code>content_counts</code> 하드코딩 폐지</td><td>동상 — <b>Phase 2</b></td></tr>
+  <tr><td>B2C 접근 제어 실동작</td><td>게이트 <b>배선만</b>(단일 함수 자리) 두고 판정은 항상 통과. 활성화는 <b>Phase 2.5</b></td></tr>
+  <tr><td>어드민 학습 리포트</td><td><b>Phase 3</b></td></tr>
+  <tr><td>발음평가 저장·노출</td><td>G4 결정 대기 — <b>Phase 3</b></td></tr>
+  <tr><td>VocaShot 개인 플레이 전환</td><td>게임 영역, 셸 밖 — 별도 작업</td></tr>
+</table></div>
+
+<h2 id="s9"><span class="no">9</span>착수 준비도</h2>
+<p class="lead">넘길 수 있는 것과 아직 없는 것을 구분해 적는다.</p>
+<h3>함께 넘기는 것</h3>
+<div class="tablewrap"><table>
+  <tr><th>산출물</th><th>상태</th></tr>
+  <tr><td><b>HTML 목업</b></td><td><span class="pill keep">시각 정본</span> 기획이 제작. 상태별 화면 포함. <b>구현이 목업과 다르면 목업이 기준</b></td></tr>
+  <tr><td><b><code>tokens.css</code></b></td><td><span class="pill keep">그대로 적용</span> primitive 51 + semantic 30 + 타이포 23. 참조 무결성 검증 완료</td></tr>
+  <tr><td><b><code>i18n_player_shell.ts</code></b></td><td><span class="pill keep">파일 제공</span> 5개 언어 × <b>55키</b>, 키 일치 검증 완료. <b>번역은 초안 — 원어민 검수 전</b></td></tr>
+  <tr><td>DB 2종 DDL(§2)</td><td><span class="pill keep">그대로 실행 가능</span> 기존 명명·타입 규칙 확인 완료</td></tr>
+  <tr><td>라우트 매핑표(§4)</td><td><span class="pill keep">그대로 적용 가능</span></td></tr>
+  <tr><td>검증 시나리오 16건(§7)</td><td><span class="pill keep">QA 기준</span></td></tr>
+  <tr><td><a href="https://claude.ai/code/artifact/4cb5004e-91f8-41cb-9d9c-55a2a8c7d59a">셸 컴포넌트 명세</a></td><td><span class="pill keep">실측 규격</span> 좌표·상태·토큰 역할. 목업의 근거 문서</td></tr>
+  <tr><td>Phase 0 핫픽스 목록</td><td><span class="pill keep">전달 가능</span> 독립 — <b>먼저 보내는 편이 낫다</b></td></tr>
+</table></div>
+<h3>아직 없는 것</h3>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>빠진 것</th><th>없으면 생기는 일</th><th>담당</th></tr>
+  <tr><td>1</td><td><b>API 요청/응답 스키마</b></td><td>§3은 경로와 동작만 있다. 필드 단위 계약이 없어 프론트·백엔드가 <b>각자 다르게 구현</b>할 수 있다</td><td>기획+개발 합의</td></tr>
+  <tr><td>2</td><td><b>개발자 검토</b></td><td>이 문서는 <b>혼자 쓴 것</b>이다. 공수 산정·기술적 실현성·일정 합의를 받은 적이 없다</td><td>개발</td></tr>
+  <tr><td>3</td><td>G2 미결 4건</td><td>다시 풀기 상한 60 적정성 · 3회 이상 오답 처리 · 번역 검수 · 미션대화 부분 재개 여부</td><td>기획</td></tr>
+  <tr><td>4</td><td>VocaShot 작은 결정 3건</td><td>어휘 범위·난이도 선택권·멀티 코드 제거 — 셸 밖이라 Phase 1은 막지 않음</td><td>기획</td></tr>
+</table></div>
+<div class="callout good">
+  <div class="t">"디자인이 최대 병목"이었던 항목이 사라졌다</div>
+  <p>v1.1까지는 <b>Figma 셸 컴포넌트 부재</b>가 1순위 블로커였다. <b>피그마를 쓰지 않기로 하면서 그 경로 자체가 없어졌고</b>, 대신 <b>HTML 목업 + <code>tokens.css</code> + 실측 명세</b>가 그 자리를 채운다.</p>
+  <p class="qa">대가는 §5.4의 시각 결정 — 여백 리듬·그림자·전환 느낌이 <b>목업에 담긴 만큼만</b> 정해진다. 목업에 없는 것은 구현자가 정하게 되므로, <b>1차 결과물을 한 번 대조·수정하는 라운드</b>를 일정에 넣는다.</p>
+</div>
+<div class="callout warn">
+  <div class="t">순서 권고</div>
+  <p><b>① Phase 0 핫픽스를 먼저 보낸다</b> — 독립적이고, <code>fill-blank</code>가 정답만 저장하는 버그는 Phase 1의 선행조건이다(재시도형에서도 <b>첫 시도 오답</b>이 저장돼야 복습 큐가 동작한다). <b>② 목업 + 이 문서 + <code>tokens.css</code> + i18n 파일을 한 묶음으로</b> 보내 공수·실현성 의견을 받는다. <b>③ 토큰 적용과 DB·API는 목업을 기다리지 않고</b> 바로 시작할 수 있다.</p>
+</div>
+
+<p class="qa" style="margin-top:44px">근거 문서: <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2 셸·상태 스펙</a> · <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">G1 활동 라인업</a> · <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a> · 동봉 <code>i18n_player_shell.ts</code></p>
+</main>
+</section>
+<!-- ═══════ 필드 계약 — api_schema_v1.html ═══════ -->
+<section class="part" id="part-api" aria-label="필드 계약">
+<main>
+<header class="doc">
+  <div class="eyebrow">Phase 1 · 초안</div>
+  <h1>API 필드 스키마</h1>
+  <p class="lead">개발 명세 §3에 <b>경로와 동작만</b> 있고 필드 계약이 없어서, 그대로 두면
+     프론트·백엔드가 서로 다른 이름으로 구현할 수 있습니다. <b>기획에서 먼저 초안을 잡은 것</b>이니
+     고칠 부분은 고쳐 주세요 — 백지에서 논의하는 것보다 빠를 것 같아 씁니다.</p>
+</header>
+
+<h2 id="s10">10. 공통 규칙 — 기존 코드에서 확인한 것</h2>
+<p>새로 정한 게 아니라 <b>현행 <code>koreanapi</code>가 이미 쓰고 있는 방식</b>입니다. 신규 API도 여기 맞춥니다.</p>
+<div class="tablewrap"><table>
+  <tr><th>항목</th><th>규칙</th><th>근거</th></tr>
+  <tr><td>JSON 키</td><td><b>camelCase</b> — <code>bookId</code> · <code>chapterSeq</code> · <code>menuType</code></td>
+      <td><code>LearningRecordRequest</code></td></tr>
+  <tr><td>응답 봉투</td><td><code>{ result, code, message, data }</code> — 실제 값은 <code>data</code> 안</td>
+      <td><code>makeResponse()</code></td></tr>
+  <tr><td>오류</td><td><code>{ result:false, code, message, data:null }</code></td><td><code>makeError()</code></td></tr>
+  <tr><td><b>사용자 식별</b></td><td><b>요청 본문에 <code>userId</code>를 넣지 않습니다.</b>
+      <code>Depends(auth.JWTBearer())</code>로 검증하고 <code>auth.getUserIdFrom(token)</code>으로 꺼냅니다</td>
+      <td>전 엔드포인트 공통</td></tr>
+  <tr><td>게스트</td><td><code>user_id</code>가 <code>VARCHAR(45)</code>로 게스트 겸용입니다. 게스트 학습을 유지한다면
+      신규 API도 같은 방식으로 동작해야 합니다 <span class="tag">확인 필요</span></td><td><code>model.py</code></td></tr>
+  <tr><td><code>menuType</code> 값</td><td><code>word</code> · <code>fill-blank</code> · <code>listen-answer</code> · <code>read-answer</code> ·
+      <code>roleplay</code> · <code>flashcard</code> · <code>mission-chat</code> · <code>jamo</code><span class="tag">신규</span><br>
+      <b>기존 값을 그대로 씁니다</b> — 라우트만 개칭하고 DB 값은 유지(개발 명세 §2.2)</td><td>—</td></tr>
+</table></div>
+<div class="callout bad">
+  <div class="t"><code>makeResponse()</code>를 신규 API에도 그대로 쓰면 값이 섞일 수 있습니다</div>
+  <pre>def makeResponse(data: object):
+  response = CommonResponse   <span class="c"># 모듈 전역 dict를 그대로 참조</span>
+  response["data"] = data     <span class="c"># 같은 객체를 매 요청이 덮어씀</span>
+  return response</pre>
+  <p>동시 요청이 겹치면 <b>A 요청의 응답에 B 요청의 <code>data</code>가 실릴 수 있습니다.</b>
+     <code>dict(CommonResponse)</code>로 복사하거나 매번 새로 만드는 편이 안전합니다.
+     기존 API 전체에 해당하는 문제라 <b>Phase 0에서 같이 보시면</b> 좋겠습니다.</p>
+</div>
+
+<h2 id="s11">11. 활동 상태</h2>
+
+<div class="ep">
+  <div class="sig"><span class="m post">POST</span><span class="path">/activity/enter</span><span class="tag">신설</span></div>
+  <p class="why">활동에 들어갈 때 한 번. 상태 행이 없으면 만들고, 있으면 <b>이어할 위치</b>를 돌려줍니다.</p>
+  <h3>Request</h3>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>타입</th><th>필수</th><th>설명</th></tr>
+    <tr><td><code>bookId</code></td><td class="t">int</td><td>✓</td><td>급</td></tr>
+    <tr><td><code>chapterSeq</code></td><td class="t">int</td><td>✓</td><td>과</td></tr>
+    <tr><td><code>menuType</code></td><td class="t">string</td><td>✓</td><td>위 8종 중 하나</td></tr>
+    <tr><td><code>sub</code></td><td class="t">int</td><td>—</td><td><b>자모만 1~6</b>, 나머지 활동은 생략(서버가 <code>0</code>으로 처리).
+        <b>없으면 자모 6종이 같은 상태 행을 쓴다</b></td></tr>
+    <tr><td><code>totalItems</code></td><td class="t">int</td><td>✓</td><td>이번 진입 시점의 문항 수. 진행률 표시용 스냅샷</td></tr>
+  </table></div>
+  <h3>Response <code>data</code></h3>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>타입</th><th>설명</th></tr>
+    <tr><td><code>state</code></td><td class="t">string</td><td><code>in_progress</code> | <code>completed</code></td></tr>
+    <tr><td><code>currentItemIndex</code></td><td class="t">int</td><td>이어할 문항 위치. 새로 시작이면 <code>0</code>.
+        <b><code>isPractice</code>가 <code>true</code>면 항상 <code>0</code></b> — 아래 참조</td></tr>
+    <tr><td><code>totalItems</code></td><td class="t">int</td><td>저장된 값</td></tr>
+    <tr><td><code>correctCount</code></td><td class="t">int</td><td><b>첫 시도</b> 정답 수</td></tr>
+    <tr><td><code>isPractice</code></td><td class="t">bool</td><td><b>이미 완료한 활동에 다시 들어온 경우 <code>true</code></b> — 연습 세션(G2 §5-1)</td></tr>
+    <tr><td><code>reviewCount</code></td><td class="t">int</td><td>이 활동에 남은 다시 풀 문항 수</td></tr>
+  </table></div>
+  <pre><span class="c">// 3문항 풀고 나갔다가 재진입</span>
+{ "result": true, "code": 200, "message": "ok",
+  "data": { "state": "in_progress", "currentItemIndex": 3, "totalItems": 10,
+            "correctCount": 2, "isPractice": false, "reviewCount": 1 } }
+
+<span class="c">// 이미 완료한 활동에 다시 들어온 경우 — 처음부터</span>
+{ "data": { "state": "completed", "currentItemIndex": 0, "totalItems": 10,
+            "correctCount": 8, "isPractice": true, "reviewCount": 0 } }</pre>
+  <div class="callout bad">
+    <div class="t">연습 세션에서 지켜야 할 것 4가지</div>
+    <p>완료한 활동을 <b>다시 풀어볼 수 있어야 한다</b>는 요구가 있습니다. 완료 기록은 남기되 재도전은 열어 두는 방식인데,
+       그냥 두면 어긋나는 지점이 있습니다.</p>
+    <div class="tablewrap"><table>
+      <tr><th>#</th><th>규칙</th><th>안 지키면</th></tr>
+      <tr><td>1</td><td><b><code>isPractice</code>면 <code>currentItemIndex</code>를 <code>0</code>으로</b> 돌려줍니다.
+          저장된 값이 아니라 <b>항상 0</b></td>
+          <td>저장값이 마지막 위치(예: 10)라 <b>들어가자마자 결과 화면</b>이 뜹니다</td></tr>
+      <tr><td>2</td><td>연습 중에는 <code>PATCH /activity/progress</code>를 <b>호출하지 않습니다</b></td>
+          <td>원래 완료 기록의 위치가 연습 진행에 덮입니다</td></tr>
+      <tr><td>3</td><td><code>POST /activity/complete</code>도 <b>호출하지 않습니다</b>.
+          결과 화면은 <b>클라이언트가 이번 세션 값으로</b> 그립니다</td>
+          <td><code>completedAt</code>과 <code>correctCount</code>가 덮여 최초 기록이 사라집니다</td></tr>
+      <tr><td>4</td><td><b><code>POST /learning-record</code>는 호출합니다</b> — 연습에서 새로 틀린 문항은
+          다시 풀기 목록에 들어갑니다(G2 §5-1)</td>
+          <td>연습이 학습에 아무 영향을 못 줍니다</td></tr>
+    </table></div>
+    <p>정리하면 <b>연습 세션은 읽기 전용에 가깝고, 예외가 4번 하나</b>입니다.</p>
+  </div>
+  <div class="callout warn">
+    <div class="t">정답률은 갱신하지 않습니다 — 확인 부탁드립니다</div>
+    <p>연습에서 더 잘 풀어도 <code>correctCount</code>는 <b>최초 기록 그대로</b> 둡니다.
+       "첫 시도 기준"이라는 원칙과 일관되고, 무한 연습으로 100%를 만드는 걸 막습니다.</p>
+    <p>대신 <b>학습자는 "다시 풀어서 다 맞혔는데 왜 8/10이지?"라고 느낄 수 있습니다.</b>
+       그게 문제가 되면 <code>lastPracticeAccuracy</code> 같은 컬럼을 따로 두는 방법이 있는데,
+       <b>Phase 1 범위를 넘습니다</b>. 이번엔 갱신하지 않는 쪽으로 두고 반응을 보는 게 어떨까 합니다.</p>
+  </div>
+</div>
+
+<div class="ep">
+  <div class="sig"><span class="m patch">PATCH</span><span class="path">/activity/progress</span><span class="tag">신설</span></div>
+  <p class="why">문항을 넘길 때마다, 그리고 <b>✕로 나갈 때</b> 호출합니다. "저장 없이 나가기"를 없애는 게 목적입니다.</p>
+  <h3>Request</h3>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>타입</th><th>필수</th><th>설명</th></tr>
+    <tr><td><code>bookId</code> · <code>chapterSeq</code> · <code>menuType</code> · <code>sub</code></td><td class="t">—</td><td>✓</td><td>활동 식별. <code>sub</code>는 자모만</td></tr>
+    <tr><td><code>currentItemIndex</code></td><td class="t">int</td><td>✓</td><td>다음에 이어할 위치</td></tr>
+  </table></div>
+  <h3>Response <code>data</code></h3>
+  <pre>{ "currentItemIndex": 4 }</pre>
+  <div class="callout warn">
+    <div class="t">이탈 시점 호출은 유실될 수 있습니다</div>
+    <p>탭을 닫거나 앱을 백그라운드로 보낼 때 일반 <code>fetch</code>는 중간에 끊깁니다.
+       <code>navigator.sendBeacon</code>이나 <code>keepalive</code> 옵션이 필요할 수 있는데,
+       <b>어느 쪽이 나을지는 개발 쪽 판단</b>에 맡기겠습니다.</p>
+  </div>
+</div>
+
+<div class="ep">
+  <div class="sig"><span class="m post">POST</span><span class="path">/activity/complete</span><span class="tag">신설</span></div>
+  <p class="why">마지막 문항에 응답했을 때. 결과 화면이 이 응답만으로 그려지도록 값을 담습니다.</p>
+  <h3>Request</h3>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>타입</th><th>필수</th><th>설명</th></tr>
+    <tr><td><code>bookId</code> · <code>chapterSeq</code> · <code>menuType</code> · <code>sub</code></td><td class="t">—</td><td>✓</td><td>활동 식별. <code>sub</code>는 자모만</td></tr>
+    <tr><td><code>correctCount</code></td><td class="t">int</td><td>✓</td><td>첫 시도 정답 수</td></tr>
+    <tr><td><code>totalItems</code></td><td class="t">int</td><td>✓</td>
+        <td><b>전체 문항 수</b> — 진행률의 분모. 발음 문항도 포함합니다</td></tr>
+    <tr><td><code>answeredCount</code></td><td class="t">int</td><td>✓</td>
+        <td><b>응답한 문항 수</b> — 진행률의 분자. <b>정오답을 묻지 않습니다</b>.<br>
+            선택지를 눌렀으면 · 써서 제출했으면 · 녹음했으면 · 플래시카드에서
+            <b>"몰라요"를 눌렀어도</b> · 미션 대화를 끝냈으면 <b>전부 +1</b>입니다.<br>
+            빼는 것은 둘뿐 — <b>건너뛴 문항</b>과 <b>녹음 없이 넘긴 발음·롤플레잉 문항</b>
+            (<a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a> §8 판정표)</td></tr>
+    <tr><td><code>gradedCount</code></td><td class="t">int</td><td>✓</td>
+        <td><b>채점 대상 문항 수</b> — 정답률의 분모.
+            발음(자모 <code>sub=1</code>·<code>3</code>) · 플래시카드 · 롤플레잉은 <b><code>0</code></b>이라
+            정답률이 <b>"—"</b>가 됩니다. 미션 대화는 <b>미션 수</b>(보통 3)이고
+            <code>correctCount</code>는 <b>달성 수</b>입니다 —
+            다만 <code>firstTryWrongCount</code>는 <b><code>0</code>으로 두어 복습 큐에 넣지 않습니다</b>
+            (문항 단위로 되짚을 수 없기 때문)</td></tr>
+  </table></div>
+  <h3>Response <code>data</code></h3>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>타입</th><th>설명</th></tr>
+    <tr><td><code>state</code></td><td class="t">string</td><td>항상 <code>completed</code></td></tr>
+    <tr><td><code>completedAt</code></td><td class="t">string</td><td>ISO 8601 UTC</td></tr>
+    <tr><td><code>correctCount</code> · <code>totalItems</code></td><td class="t">int</td><td>저장된 값</td></tr>
+    <tr><td><code>firstTryWrongCount</code></td><td class="t">int</td><td><b>첫 시도에 틀린 문항 수.</b> 재시도로 맞혀도 셉니다 →
+        결과 화면 "내일 다시 만나요 N개". 복습 큐에 들어간 수와 같습니다</td></tr>
+    <tr><td><code>unresolvedCount</code></td><td class="t">int</td><td><b>끝난 시점에도 해소되지 않은 항목 수</b> →
+        <b>[다시 풀기] 버튼의 노출 조건</b>. 아래 참조</td></tr>
+    <tr><td><code>answeredCount</code> · <code>gradedCount</code></td><td class="t">int</td>
+        <td>저장된 값. 결과 화면 카드 2개가 이걸로 그려집니다 —
+            <b>주 "푼 문항 <code>answeredCount</code>/<code>totalItems</code>"</b> ·
+            부 "정답률 <code>correctCount</code>/<code>gradedCount</code>",
+            <b><code>gradedCount == 0</code>이면 "—"</b>
+            (<a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a> §8)</td></tr>
+    <tr><td><code>hasPendingReview</code></td><td class="t">bool</td><td><code>firstTryWrongCount &gt; 0</code>.
+        활동 목록의 "복습 권장" 표시용</td></tr>
+    <tr><td><code>wrongItems</code></td><td class="t">array</td><td>결과 화면 오답 목록. <b>첫 시도 오답 기준</b>이며 각 항목에
+        <code>resolved</code>(그 자리에서 맞혔는지)를 담습니다.
+        <code>[{ questionId, selectedAnswer, correctAnswer, explanation, attempts, resolved }]</code><br>
+        <span class="qa">해설 문자열을 여기 담을지, 문항 조회 API를 따로 부를지는 정해 주세요</span> <span class="tag">협의</span></td></tr>
+  </table></div>
+  <div class="callout bad">
+    <div class="t">두 숫자를 나눠야 합니다 — 안 나누면 "방금 맞힌 걸 또 풀라"고 하게 됩니다</div>
+    <p>재시도형(S1)에서는 <b>선택지형 활동이 끝나면 모든 문항을 결국 맞힌 상태</b>가 됩니다.
+       그런데도 "오답 ≥ 1이면 [다시 풀기]"로 판단하면 <b>방금 맞힌 것을 또 풀라고</b> 하게 됩니다.</p>
+    <div class="tablewrap"><table>
+      <tr><th>필드</th><th>의미</th><th>쓰임</th></tr>
+      <tr><td><code>firstTryWrongCount</code></td><td>첫 시도에 틀린 것. <b>재시도로 맞혀도 남음</b></td>
+          <td>복습 큐 → <b>내일</b> 홈에서. 결과 화면은 안내만</td></tr>
+      <tr><td><code>unresolvedCount</code></td><td>끝났는데도 <b>아직 해소 안 된 것</b></td>
+          <td><b>[다시 풀기] 버튼 노출 조건</b></td></tr>
+    </table></div>
+    <h3 style="margin-top:12px">활동별로 <code>unresolvedCount</code>가 생기는가</h3>
+    <div class="tablewrap"><table>
+      <tr><th>활동</th><th><code>unresolvedCount</code>에 들어가는 것</th></tr>
+      <tr><td>어휘 · 문법 · 듣기 · 읽기 · 자모</td>
+          <td><b>건너뛴 문항만</b>. 오답으로는 생기지 않는다 — 맞힐 때까지 진행되지 않으므로</td></tr>
+      <tr><td>플래시카드</td><td>"몰라요" 카드 + 건너뛴 카드</td></tr>
+      <tr><td>AI 롤플레잉</td><td>재시도 2회 초과로 넘어간 턴 + 건너뛴 턴</td></tr>
+      <tr><td>AI 미션 대화</td>
+          <td><b>달성 못 한 미션 키워드.</b> 다만 [다시 풀기]의 <b>동작이 다릅니다</b> —
+              미해결 항목만 고르는 게 아니라 <b>이전 대화 스레드를 지우고 처음부터</b> 다시 대화합니다.<br>
+              <b>API는 이미 있습니다</b> — <code>POST /dialog/{dialogId}/reset</code>
+              (<code>api/chat.ts</code>의 <code>resetDialog()</code>).
+              <b>현재 이걸 부르는 화면이 하나도 없어</b> 사실상 죽어 있습니다.
+              결과 화면의 [다시 풀기]에 연결하면 됩니다</td></tr>
+      <tr><td><b>발음</b> <span class="qa">자모 <code>sub=1·3</code></span></td>
+          <td><b>건너뛴 문항만.</b> 진행을 막지 않으므로 오답이 남지 않는다</td></tr>
+    </table></div>
+    <div class="callout stop" style="margin-top:12px">
+      <div class="t">발음 활동은 <b>정답률에서만</b> 빠집니다 — 진행률에는 들어갑니다</div>
+      <p>자모 <code>sub=1</code>(자모 듣고 따라하기) · <code>sub=3</code>(단어 듣고 따라하기)는
+         STT 판정을 쓰지만 <b>진행을 막지 않고 채점하지도 않습니다</b>(구현 사양 §6).
+         <b>그렇다고 활동에서 통째로 빼는 것은 아닙니다</b> — 풀었는지 안 풀었는지는 셉니다.</p>
+      <ul>
+        <li><code>totalItems</code> · <code>answeredCount</code> — <b>정상적으로 셉니다.</b>
+            진행률 "푼 문항 15/18"이 그대로 나옵니다.</li>
+        <li><code>gradedCount</code> — <b><code>0</code></b>입니다. 결과 화면의 정답률이 <b>"—"</b>가 됩니다.</li>
+        <li><code>correctCount</code> · <code>firstTryWrongCount</code> — <b>세지 않습니다.</b>
+            복습 큐에도 넣지 않습니다.</li>
+        <li><code>unresolvedCount</code> — <b>녹음하지 않고 넘긴 문항을 셉니다</b>(건너뛰기와 같게).</li>
+      </ul>
+      <p class="qa">플래시카드도 <code>gradedCount = 0</code>입니다 — 자기 평가라 정오답이 없습니다.
+         답안 제출 시 <code>isCorrect</code>는 그대로 받되 <b>집계에 반영하지 않습니다</b>.
+         기록을 남겨 두면 나중에 STT 정확도를 점검할 때 쓸 수 있습니다.</p>
+    </div>
+    <p><b>건너뛰기를 빼먹으면 안 됩니다.</b> 헤더의 <b>→ 건너뛰기</b>가 상시 있어서, 선택지형에서도
+       건너뛴 문항이 있으면 <code>unresolvedCount &gt; 0</code>이 됩니다. <b>"선택지형은 항상 0"이 아닙니다.</b></p>
+  </div>
+</div>
+
+<h2 id="s12">12. 학습 기록</h2>
+<div class="ep">
+  <div class="sig"><span class="m post">POST</span><span class="path">/learning-record</span><span class="tag">확장</span></div>
+  <p class="why">기존 엔드포인트입니다. <b>요청은 그대로 두고 응답만 넓힙니다.</b></p>
+  <h3>Request — 변경 없음</h3>
+  <pre>{ "bookId": 1, "chapterSeq": 4, "menuType": "fill-blank",
+  "questionId": 231, "selectedAnswer": "오", "isCorrect": false }</pre>
+  <div class="callout bad">
+    <div class="t">호출 규칙이 바뀝니다 — 문항당 첫 시도에 딱 한 번</div>
+    <p>재시도형이라 학습자는 맞힐 때까지 여러 번 고릅니다. 그런데 <b>기록은 첫 시도만</b> 합니다 —
+       전부 세면 정답률이 항상 100%가 되어 의미가 없어집니다.</p>
+    <ul>
+      <li>클라이언트는 <b>첫 응답에서만</b> 호출합니다</li>
+      <li>서버는 <code>(userId, bookId, chapterSeq, menuType, questionId)</code>로 <b>upsert</b> 해서,
+          중복 호출이 와도 첫 값이 덮이지 않게 하는 편이 안전합니다</li>
+      <li><b>현재 <code>fill-blank</code>는 오답을 아예 저장하지 않습니다</b>(정답 분기 안에서만 호출 + <code>isCorrect:true</code> 하드코딩).
+          이게 고쳐져야 아래 <code>reviewQueued</code>가 동작합니다 — Phase 0 항목</li>
+    </ul>
+  </div>
+  <h3>Response <code>data</code> — 확장</h3>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>타입</th><th>설명</th></tr>
+    <tr><td><code>saved</code></td><td class="t">bool</td><td>—</td></tr>
+    <tr><td><code>reviewQueued</code></td><td class="t">bool</td><td>이번 호출로 다시 풀기 목록에 들어갔는지</td></tr>
+    <tr><td><code>reviewCount</code></td><td class="t">int</td><td>이 활동의 누적 수. <b>화면에 토스트로 띄우지는 않습니다</b> — 결과 화면에서 한 번만 알립니다</td></tr>
+  </table></div>
+</div>
+
+<h2 id="s13">13. 다시 풀기</h2>
+<div class="ep">
+  <div class="sig"><span class="m get">GET</span><span class="path">/review-queue</span><span class="tag">신설</span></div>
+  <h3>Query</h3>
+  <div class="tablewrap"><table>
+    <tr><th>파라미터</th><th>타입</th><th>설명</th></tr>
+    <tr><td><code>scope</code></td><td class="t">string</td><td><code>home</code> — <b><code>availableAt &lt;= now</code>인 것만</b>(오답 다음 날부터 노출)<br>
+        <code>activity</code> — 해당 활동의 <b>미해결 항목</b>, 시각 무시(결과 화면 [다시 풀기]).<br><span class="qa">선택지형 5종은 미해결이 0이라 이 경로를 타지 않습니다</span></td></tr>
+    <tr><td><code>bookId</code> · <code>chapterSeq</code> · <code>menuType</code> · <code>sub</code></td><td class="t">—</td><td><code>scope=activity</code>일 때 필수. <code>sub</code>는 자모만</td></tr>
+    <tr><td><code>limit</code></td><td class="t">int</td><td>기본 <b><code>10</code></b> — <b>한 세션 분량</b>.
+    보관 상한 60과 다른 값입니다(아래 참조)</td></tr>
+  </table></div>
+  <h3>Response <code>data</code></h3>
+  <pre>{ "total": 7,
+  "items": [
+    { "id": 91, "bookId": 1, "chapterSeq": 4, "menuType": "fill-blank",
+      "questionId": 231, "reason": "wrong", "attempts": 2,
+      "availableAt": "2026-08-15T15:00:00Z" }
+  ] }</pre>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>값</th></tr>
+    <tr><td><code>reason</code></td><td><code>wrong</code> · <code>skipped</code> · <code>unknown</code>(플래시카드 "몰라요")</td></tr>
+    <tr><td><code>attempts</code></td><td>다시 풀어서 또 틀린 횟수</td></tr>
+    <tr><td><code>total</code></td><td><b>보관 중인 전체 개수</b>(<code>items</code> 길이가 아님). 화면에서 <code>60+</code>로 표기</td></tr>
+  </table></div>
+  <div class="callout bad">
+    <div class="t">보관 60 · 한 세션 10 — 두 숫자가 다릅니다</div>
+    <p>구 앱 실측으로 <b>과당 26.7문항</b>입니다. 첫 시도 오답률 30%면 과당 약 8개가 쌓이고,
+       보관 상한 60은 <b>7~8과 분량</b>입니다. 상한 자체는 적정하지만
+       <b>60개를 한 번에 내보내면 학습자가 압도됩니다.</b></p>
+    <div class="tablewrap"><table>
+      <tr><th>숫자</th><th>어디에</th></tr>
+      <tr><td><b>60</b> — 보관 상한</td><td>초과 시 <b>오래된 것부터</b> 삭제. <code>total</code>로 노출</td></tr>
+      <tr><td><b>10</b> — 한 세션</td><td><code>items</code>에 담아 내보내는 개수(<code>limit</code> 기본값)</td></tr>
+    </table></div>
+    <p><b>정렬은 <code>attempts</code> 내림차순 → <code>createdAt</code> 오름차순</b>입니다.
+       여러 번 틀린 문항이 먼저 나옵니다.</p>
+    <p><b>밀어내기에서 <code>attempts &gt;= 3</code>은 보호합니다</b> — 자주 틀린 문항을
+       "오래됐다"는 이유로 지우면 정확히 반대 효과가 납니다.</p>
+  </div>
+  <p class="qa">문항 본문은 여기 담지 않습니다 — 다시 풀기 세션이 기존 문항 조회 경로를 그대로 씁니다.
+     <b>이 판단이 맞는지 확인 부탁드립니다.</b></p>
+</div>
+
+<div class="ep">
+  <div class="sig"><span class="m del">DELETE</span><span class="path">/review-queue/{id}</span><span class="tag">신설</span></div>
+  <p class="why">다시 풀어서 맞혔을 때. 다만 <b>안 쓰게 될 수도</b> 있습니다 — 아래 참조.</p>
+  <h3>Response <code>data</code></h3>
+  <pre>{ "removed": true, "remaining": 6 }</pre>
+  <div class="callout warn">
+    <div class="t">서버가 알아서 지우는 쪽이 나을 것 같습니다</div>
+    <p>다시 풀기 중 <code>POST /learning-record</code>가 <code>isCorrect:true</code>로 오면
+       <b>서버가 해당 항목을 바로 제거</b>하면 클라이언트가 두 번 호출할 일이 없습니다.
+       그 경우 이 엔드포인트는 <b>수동 제거용으로만</b> 남기거나 아예 빼도 됩니다. <b>편한 쪽으로 정해 주세요.</b></p>
+  </div>
+</div>
+
+<h2 id="s14">14. 홈</h2>
+<div class="ep">
+  <div class="sig"><span class="m get">GET</span><span class="path">/dashboard</span><span class="tag">확장</span></div>
+  <p class="why"><b>기존 필드는 그대로 두고</b> 두 개만 추가합니다.</p>
+  <h3>Response <code>data</code> — 추가분</h3>
+  <div class="tablewrap"><table>
+    <tr><th>필드</th><th>타입</th><th>설명</th></tr>
+    <tr><td><code>reviewCount</code></td><td class="t">int</td><td>전 활동 합산. 홈의 "다시 풀 문항 N개" 카드</td></tr>
+    <tr><td><code>todayTask</code></td><td class="t">object</td><td>오늘 할 일 하나. 아래 참조</td></tr>
+  </table></div>
+  <pre>"todayTask": {
+  "type": "resume",              <span class="c">// resume | review | none</span>
+  "bookId": 1, "chapterSeq": 4,
+  "menuType": "fill-blank",
+  "currentItemIndex": 3
+}</pre>
+  <div class="tablewrap"><table>
+    <tr><th><code>type</code></th><th>의미</th><th>동반 필드</th></tr>
+    <tr><td><code>resume</code></td><td>진행 중인 활동 이어하기 <b>(우선)</b></td><td>활동 식별 + <code>currentItemIndex</code></td></tr>
+    <tr><td><code>review</code></td><td>다시 풀기 최상단 문항</td><td>활동 식별 + <code>questionId</code></td></tr>
+    <tr><td><code>none</code></td><td>둘 다 없음 — 새 활동을 고르게 한다</td><td>없음</td></tr>
+  </table></div>
+  <p class="qa">문구는 서버가 만들지 않습니다. <b>UI 언어가 5종</b>이라 클라이언트가 i18n으로 조립합니다.</p>
+</div>
+
+<h2 id="s15">15. 오류 코드</h2>
+<div class="tablewrap"><table>
+  <tr><th>code</th><th>상황</th><th>클라이언트 처리</th></tr>
+  <tr><td><code>400</code></td><td>필수 필드 누락 · <code>menuType</code> 허용값 밖</td><td>버그. 재시도하지 않음</td></tr>
+  <tr><td><code>401</code></td><td>토큰 없음 · 만료 <span class="qa">(JWT 30일, 갱신 없음)</span></td><td>로그인으로</td></tr>
+  <tr><td><code>404</code></td><td>대상 활동·문항 없음 — 콘텐츠 개정으로 사라진 경우 포함</td><td>다시 풀기 항목이면 <b>조용히 목록에서 제거</b>하고 다음 항목으로</td></tr>
+  <tr><td><code>500</code></td><td>서버 오류</td><td>진행 저장 실패는 <b>로컬에 두었다가 재시도</b> — 학습자가 푼 것을 잃지 않게</td></tr>
+</table></div>
+
+<h2 id="s16">16. 정해 주셔야 할 것</h2>
+
+<div class="warn" style="border:1px solid var(--line);border-left:3px solid var(--bad);background:var(--surface);border-radius:10px;padding:14px 18px;margin:16px 0">
+  <b style="color:var(--bad)">2026-08-21 · 이 절의 전제를 코드와 원장으로 검증했다</b>
+  <p style="margin:8px 0 0"><b>해설은 있다 — 문법 빈칸에만.</b>
+  <code>n4_blank_question</code> 의 <code>grammar_focus</code>(정정판 <code>grammar_focus_revised</code>)가
+  그것이다. <b>836행 전부 채워져 있고</b> 평균 34자로 학습자에게 바로 보여 줄 문장이다 —
+  "받침이 있어요. 먹+을까요" 처럼. 처음에 이 컬럼을 "문법 초점" 이라는 메타로 잘못 읽었다.</p>
+  <p style="margin:8px 0 0"><b>나머지 활동에는 없다.</b> 어휘퀴즈·듣기·읽기·역할극의 문항 시트에
+  해설 컬럼이 없다(원장 v24 와 앱 JSON 양쪽 확인). 그쪽의 <code>change_note</code>·
+  <code>hold_reason</code> 은 저작·검수용 메타다. 즉 <b>해설은 있는 활동과 없는 활동이 갈린다.</b>
+  앱에 해설을 그리는 화면은 아직 없다.</p>
+  <p style="margin:8px 0 0">나머지 셋의 전제는 성립한다 —
+  <code>POST /learning-record</code> 는 실제로 있고 <code>isCorrect</code> 를 받는다(2번),
+  <code>GET /dashboard</code> 도 있다(4번), <code>content_counts.TOTAL_QUESTIONS</code> 도 있다.</p>
+  <p style="margin:8px 0 0"><b>교훈</b> — 개발자에게 묻기 전에 그 물음이 성립하는지를 먼저 코드로 확인한다.
+  안 그러면 없는 선택지를 놓고 논의하게 된다.</p>
+</div>
+
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>항목</th><th>상태 · 근거</th></tr>
+  <tr><td>1</td><td><code>complete</code>의 <code>wrongItems</code>에 <b>해설 문자열까지</b> 담을지</td>
+      <td><b>정해졌다(2026-08-21) — 담지 않는다.</b> 문항 조회로 따로 받는다.
+        오답은 과당 한 자릿수이고, 다시 풀기 세션이 이미 기존 문항 조회 경로를 쓰도록 설계돼 있어
+        그 경로에 해설을 얹으면 된다. 따로 부르는 왕복이 체감될 양이 아니다.
+        <br><b>응답 계약</b> — <code>explanation</code> 은 <code>wrongItems</code> 에서 뺀다.
+        대신 문항 조회가 <code>grammar_focus_revised</code>(없으면 <code>grammar_focus</code>)를 낸다.
+        <b>문법 빈칸 외 활동은 이 값이 빈다</b> — 화면은 없을 때를 정상으로 다뤄야 한다</td></tr>
+  <tr><td>2</td><td><code>DELETE /review-queue/{id}</code>를 <b>남길지</b></td>
+      <td><b>개발 판단 · 권고는 서버 자동 제거.</b> 이건 취향이 아니라 <b>정합성</b> 문제다 —
+        클라이언트가 <code>learning-record</code> 와 <code>DELETE</code> 를 둘 다 부르면
+        그 사이 실패가 끼어 <b>맞힌 문항이 큐에 남거나 큐에서만 사라진다.</b>
+        한 트랜잭션으로 묶으면 그 틈이 없다. <code>DELETE</code> 는 어드민 수동 제거용으로만 남긴다.
+        <br>다만 "정답 1회로 제거" 규칙이 서버에 박히면 정책 변경이 서버 수정이 된다 — 그 대가를 안다</td></tr>
+  <tr><td>3</td><td>진행 저장을 <b>매 문항</b> 보낼지, 몇 개씩 묶을지</td>
+      <td><b>개발 판단 · 권고는 매 문항 + <code>keepalive</code>.</b> 셋 중 유일하게
+        <b>사용자가 손해를 보는</b> 물음이다.
+        <br>실측 호출량 — 과당 문항은 어휘퀴즈 9.8 · 역할극 8.5(최대 19) · 빈칸 7.1 ·
+        듣고답 5.8 · 읽고답 3.3 로, <b>한 과의 기초 5종을 다 하면 약 35회</b>다.
+        120과 전부라도 4,144회, 학생 100명이면 41만 회 — 절대량은 부담이 아니다.
+        <br>진짜 쟁점은 이탈이다. 모바일 웹이라 전화가 오거나 앱을 바꾸면 페이지가 얼어붙고,
+        "나갈 때 한 번" 에만 의존하면 그 호출이 유실돼 <b>학습자가 방금 푼 것을 다시 푼다.</b>
+        묶으면 호출은 줄지만 유실 구간이 그만큼 커진다.
+        <br><b>확인 필요</b> — <code>sendBeacon</code> 은 POST 만 되고 응답을 못 받는다.
+        지금 설계가 <code>PATCH</code> 이므로 <code>fetch(keepalive)</code> 쪽이 맞아 보이는데,
+        이 대목은 명세가 정한 메서드와 부딪히니 개발자와 맞춰야 한다</td></tr>
+  <tr><td>4</td><td><b>게스트 사용자</b>도 신규 API를 쓰는지</td>
+      <td><b>정해졌다</b> → <code>access_and_pricing_v1</code>. 게스트는 무료 범위를 본다
+        (과 단위 맛보기). <code>user_id</code> 가 게스트 겸용이므로 신규 API 도 쓴다.
+        <br><b>남은 것</b> — 게스트 진행을 서버에 남길지. 남기면 로그인 시
+        <code>migrateGuestData</code> 가 실제로 돌게 되는데 그 경로는 한 번도 실행된 적이 없다
+        (<code>BLOCKERS.md</code> §6)</td></tr>
+</table></div>
+
+<p class="qa" style="margin-top:44px;padding-top:18px;border-top:1px solid var(--line)">
+  근거: <a href="https://claude.ai/code/artifact/c045e99a-a438-4f3a-8260-2e339f84c515">Phase 1 개발 명세</a> §2(DDL)·§3(경로) ·
+  <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2</a> §1(상태 머신)·§5(엣지 케이스) ·
+  현행 <code>koreanapi</code> <code>accepter/base.py</code>·<code>learning_record_accepter.py</code>
+</p>
+</main>
+</section>
+</body>
+</html>

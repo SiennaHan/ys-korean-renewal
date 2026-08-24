@@ -44,7 +44,7 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 
 ## 2. 자모 라우트 — 명세가 옳았고 전제가 늦게 왔다 · 진행 중
 
-`Phase1_dev_spec_v1.html` §4 는 이렇게 못박는다.
+`dev_spec_v1.html` §4 는 이렇게 못박는다.
 
 > `/learn/jamo?level=1&lesson=&sub=1~6` ← 5개 라우트 · **6→1 통합**
 > **콘텐츠 ID를 URL에서 제거한다** — `$code`(YK0041)·`$id`(C4) 노출 폐지.
@@ -150,7 +150,7 @@ grep -rn 'to: "/book/chapter/unit/' app/src --include='*.tsx' | grep -v routeTre
 
 ## 3-b. 빈 스텁 라우트 넷이 프로덕션에 나간다 (2026-08-21 발견)
 
-`Phase1_dev_spec_v1.html` §4 는 **"테스트 라우트 9종과 빈 스텁 4종 제외"** 를 요구한다.
+`dev_spec_v1.html` §4 는 **"테스트 라우트 9종과 빈 스텁 4종 제외"** 를 요구한다.
 **절반만 됐다.**
 
 ```
@@ -257,7 +257,7 @@ git log --format='%h %s%n%b' --since='2026-08-20'
 **구 `saveLearningRecord`** 로 기록한다(20곳). 실제 이름 대조는
 `phase1/Shell_component_spec_uiux.html` §3 맨 위에 있다.
 
-`api_schema_v1.html` §6 의 네 물음은 **아직 답이 없다** — 해설 문자열 포함 여부 ·
+`dev_spec_v1.html` §16 의 네 물음은 **아직 답이 없다** — 해설 문자열 포함 여부 ·
 `DELETE /review-queue` 유지 여부 · 진행 저장 주기 · 게스트 허용 범위.
 
 이 중 **게스트 허용 범위는 정해졌다** → `phase1/access_and_pricing_v1.html`.
