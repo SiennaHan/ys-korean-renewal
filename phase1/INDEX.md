@@ -70,7 +70,7 @@
 |---|---|
 | `textbook_tab_spec_v1.html` | **교재학습 탭** — 활동으로 들어가는 유일한 길. 상태 5종 · 라우트 사상 · 권한 잠금이 들어갈 자리 |
 | `access_and_pricing_v1.html` | **누가 무엇까지 볼 수 있나** — 무료/유료 경계 · 권한 판정 · 신설이 필요한 DB·API. **B2C 는 여기부터** |
-| `dev_spec_v1.html` | **둘을 합쳤다** — §1~§9 무엇을 만들라(DB · API · 라우트 · 셸 · i18n · 검증) ·<br>§10~§16 그 API 의 필드 계약. **§16 의 네 물음은 아직 답이 없다** |
+| `dev_spec_v1.html` | **둘을 합쳤다** — §1~§9 무엇을 만들라(DB · API · 라우트 · 셸 · i18n · 검증) ·<br>§10~§16 그 API 의 필드 계약. **§16 의 물음 넷 중 둘은 정해졌고 둘은 개발 판단이다** |
 | `my_learning_summary_v1.html` | MY 누적 학습 기록에 필요한 데이터 |
 | `jamo_authoring_spec_v1.html` | 자모 콘텐츠 저작 · `n8_jamo` 스키마. **맨 위의 실측 정정을 먼저 읽어라** |
 | `games_spec_v1.html` | **둘을 합쳤다** — §1~§10 게임 넷에서 손볼 것(서울 퍼즐 38단계 문장 검수 포함) ·<br>§11~§20 VocaShot 혼자 하기 설계. **구현됐다** — `/main/game/vocashot-solo` |
@@ -96,7 +96,7 @@
 | 순서 | 문서 | 왜 필요 |
 |---|---|---|
 | 1 | [`../BLOCKERS.md`](../BLOCKERS.md) **§6 · §7** | 서버 작업이 시작되지 않았다 · 메일 발송 수단이 없다. **여기가 실제 작업 목록이다** |
-| 2 | `dev_spec_v1.html` | DB 신설 2종(`ko_activity_state` · `ko_review_queue`) · API · 검증 기준 ·<br>요청·응답 필드(§10~§16). **§16 의 네 물음에 답을 받아야 한다** |
+| 2 | `dev_spec_v1.html` | DB 신설 2종(`ko_activity_state` · `ko_review_queue`) · API · 검증 기준 ·<br>요청·응답 필드(§10~§16). **§16 의 남은 둘에 답을 받아야 한다**(나머지 둘은 정해졌다) |
 | 3 | `access_and_pricing_v1.html` | 권한 판정 · 결제. **§07 의 "구독인가 급별 구매인가" 가 미결이고 `ko_entitlement` 의 모양을 바꾼다** |
 
 외부 API 는 이미 붙어 있는 것과 새로 붙일 것이 갈린다 —

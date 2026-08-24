@@ -46,7 +46,7 @@
 
   /* ─────────────────────────────────────────────
      제품 토큰 — tokens.css 의 semantic 이름과 1:1
-     화면 안쪽은 라이트 단일 테마(§6.7 확정)
+     화면 안쪽은 라이트 단일 테마(shell_spec_v1 §17.7 확정)
      ───────────────────────────────────────────── */
   .screen {
     --primitive-blue-50:#DBEDFF;  --primitive-blue-400:#359AFF; --primitive-blue-500:#0180FF;
@@ -664,7 +664,7 @@ function progressHTML() {
       <div class="bar"><span style="width:26.7%"></span><b style="left:calc(26.7% - 5px)"></b></div>
       <div class="n">12 / 45</div></div>`;
   }
-  // 발음은 정오답 의미색을 쓰지 않는다 — 응답한 칸만 파랑(§6)
+  // 발음은 정오답 의미색을 쓰지 않는다 — 응답한 칸만 파랑(shell_spec_v1 §23)
   const states = REC.includes(S.phase)
     ? ["dn","dn","dn","cur","","","","",""]
     : ["ok","ok","no","cur","","","","",""];

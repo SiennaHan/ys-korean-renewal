@@ -7,21 +7,32 @@
 
   python3 phase1/check_docs.py
 
-검사하는 것 일곱
-  1. 파일 참조   : 다른 문서를 이름으로 부르는데 그 파일이 없는 경우
-  2. 절 인용     : "문서이름 §N" 인데 그 문서에 N 절이 없는 경우
-  3. 고아        : 아무 문서도, README·BLOCKERS 도 가리키지 않는 문서
-  4. 옛 경로     : _superseded/ 로 옮겼는데 옛 경로로 부르는 곳
-  5. 숫자 주장   : 문서가 적어 놓은 수를 실제로 세어 보고 다른 경우
-  6. 목업 쌍둥이 : phase1/captured/ 와 app/src/mockups/ 가 갈라진 경우
-  7. 색인        : 정본이 phase1/INDEX.md 에 빠진 경우
+검사하는 것 — 라벨로 보면 이렇다. 개수를 여기 적지 않는다.
+검사를 늘릴 때 이 목록만 고치고 숫자는 실행할 때 세어 찍는다
+(전에 이 문서 문자열이 "일곱" 인데 구현은 여덟이었다).
 
-1·4 는 인계 메모(*.txt)까지 본다 — 메모가 폐기본을 현행처럼 부르고 있어도
-검사기가 통과하던 틈이 있었다.
+  [절 인용]      "문서이름 §N" 인데 그 문서에 N 절이 없는 경우
+  [하위절]       "§N.M" 인데 그 번호의 h3 이 없는 경우
+  [하위절 중복]  한 문서에 같은 N.M 이 둘 이상 — 합치면 생긴다
+  [자기 절]      자기 문서의 없는 절을 부르는 경우
+  [옛 경로]      _superseded/ 로 옮겼는데 옛 이름으로 부르는 곳
+  [죽은 링크]    href 가 가리키는 파일이 없는 경우
+  [id 중복]      한 문서에 같은 id — 앵커가 겹친다
+  [id 라벨]      h2 의 id 와 보이는 절 번호가 다른 경우
+  [고아]         아무 문서도, 문(README·BLOCKERS·CLAUDE)도 가리키지 않는 문서
+  [숫자 주장]    문서가 적어 놓은 수를 실제로 세어 보고 다른 경우
+  [색인]         정본이 phase1/INDEX.md 에 빠졌거나 한 문서가 두 줄인 경우
+  [목업 쌍둥이]  phase1/captured/ 와 app/src/mockups/ 가 갈라진 경우
 
-5 가 이 검사기의 핵심이다. 참조가 안 끊어졌는지만 보면, 문서에 적힌 수가
-작업이 진행되며 조용히 낡는 것을 못 잡는다 — 실제로 목업 대조 화면 수가
-문서마다 22·24·27 로 갈렸다. 세어서 알 수 있는 것은 세서 비교한다.
+[옛 경로] 는 인계 메모(*.txt)까지 본다.
+
+[숫자 주장] 과 [하위절] 이 값어치가 크다. 참조가 끊어졌는지만 보면
+작업이 진행되며 문서의 수와 절 번호가 조용히 낡는 것을 못 잡는다 —
+목업 대조 화면 수가 22·24·27 로 갈렸고, 문서를 합치며 h2 만 다시 매기고
+h3 을 두어서 §N.M 인용 59곳이 닿지 않았다. 둘 다 "통과" 뒤에 있었다.
+
+**통과는 "문서가 정확하다" 가 아니다.** "지금 세는 축에서 어긋난 게 없다" 다.
+새 축은 사람이 찾아야 한다 — 회차마다 하나씩 나왔다.
 
 끝에 0 을 내면 통과다. 하나라도 걸리면 1 을 낸다.
 """
@@ -300,6 +311,84 @@ def mockup_twins() -> tuple[list[str], list[str]]:
     return (bad, ok)
 
 
+def subsections(body: str) -> dict[str, str]:
+    """그 문서가 가진 하위절 번호 → 제목.
+
+    h2 는 병합할 때 다시 매기면서 h3 은 그대로 두는 일이 생긴다. 그러면
+    "§14.1" 을 인용하는데 그 자리의 제목은 "3.1" 이라 사람이 못 찾는다 —
+    실제로 shell_spec_v1 에서 62곳이 그랬다. 접미가 붙은 것(6.5-b)도 받는다.
+    """
+    out: dict[str, str] = {}
+    for m in re.finditer(r"<h[34][^>]*>(.*?)</h[34]>", body, re.S):
+        t = re.sub(r"\s+", " ", re.sub(r"<[^>]*>", "", m.group(1))).strip()
+        mm = re.match(r"(\d+\.\d+(?:-[a-z])?)", t)
+        if mm:
+            out.setdefault(mm.group(1), t)
+    return out
+
+
+# 합치기 전 이름으로 계속 인용되는 것들. 흡수한 문서의 절 번호가 그대로
+# 남아 있으면 여기 적어야 인용이 어디로 가는지 검사기가 안다.
+#   G2      = 옛 G2_shell_and_state_spec_v1 → shell_spec_v1 §0~§10 (번호 그대로)
+#   셸 명세 · 컴포넌트 명세 · 구현 사양 = shell_spec_v1 의 세 층
+ALIAS = {
+    "G2": "shell_spec_v1",
+    "셸 명세": "shell_spec_v1",
+    "컴포넌트 명세": "shell_spec_v1",
+    "구현 사양": "shell_spec_v1",
+}
+
+
+def sub_cites(live: set[str], raw: dict[str, str], text: dict[str, str]) -> list[str]:
+    """§N.M 인용이 실제 h3 에 닿는지 본다. 검사 2 는 정수만 봐서 못 잡는다."""
+    subs = {n: subsections(raw[n]) for n in live}
+    out: list[str] = []
+    for src, body in text.items():
+        flat = re.sub(r"\s+", " ", body)
+        for m in re.finditer(r"§\s?(\d+\.\d+)", flat):
+            sec = m.group(1)
+            lead = flat[max(0, m.start() - 70):m.start()]
+            owner, at = None, -1
+            for cand in live:
+                i = lead.rfind(cand)
+                if i > at:
+                    owner, at = cand, i
+            for alias, tgt in ALIAS.items():
+                i = lead.rfind(alias)
+                if i > at and tgt in live:
+                    owner, at = tgt, i
+            # 이름도 별칭도 앞에 없으면 자기 문서를 말하는 것으로 본다
+            if at < 0:
+                owner = src if src in live else None
+            if owner is None or not subs.get(owner):
+                continue
+            have = subs[owner]
+            if sec in have or any(k.startswith(sec + "-") for k in have):
+                continue
+            ctx = re.sub(r"\s+", " ", flat[max(0, m.start() - 45):m.end() + 20]).strip()
+            out.append(
+                f"[하위절] {src} → {owner} §{sec} 인데 그 문서에 그 번호의 h3 이 없다\n"
+                f"           …{ctx}…"
+            )
+    return out
+
+
+def dup_subsections(live: set[str], raw: dict[str, str]) -> list[str]:
+    """한 문서 안에서 같은 하위절 번호가 둘 이상. 병합하면 생긴다."""
+    out: list[str] = []
+    for n in sorted(live):
+        seen: dict[str, int] = {}
+        for m in re.finditer(r"<h[34][^>]*>(.*?)</h[34]>", raw[n], re.S):
+            t = re.sub(r"\s+", " ", re.sub(r"<[^>]*>", "", m.group(1))).strip()
+            mm = re.match(r"(\d+\.\d+)(?![\d-])", t)
+            if mm:
+                seen[mm.group(1)] = seen.get(mm.group(1), 0) + 1
+        for k, c in sorted(seen.items()):
+            if c > 1:
+                out.append(f"[하위절 중복] {n} 에 §{k} 이 {c}개 있다 — 병합 뒤 번호를 다시 매겨라")
+    return out
+
+
 def index_covers(live: set[str]) -> list[str]:
     """색인이 정본 전부를 담고 있는지 본다.
 
@@ -450,8 +539,9 @@ def main() -> int:
     # id 는 원본 그대로 남기기 쉽다 — asis_v1 · G1 이 그랬고 앵커가 겹쳐 있었다.
     from collections import Counter
     for f in sorted(HERE.glob("*.html")):
-        raw = f.read_text(encoding="utf-8", errors="replace")
-        nos = re.sub(r"<script[^>]*>.*?</script>", "", raw, flags=re.S)
+        # 이름을 raw 로 두면 main 의 문서 사전(raw)을 덮어써서 뒤의 검사가 죽는다
+        src_html = f.read_text(encoding="utf-8", errors="replace")
+        nos = re.sub(r"<script[^>]*>.*?</script>", "", src_html, flags=re.S)
         ids = re.findall(r'\bid="([^"]+)"', nos)
         for k, v in Counter(ids).items():
             if v > 1:
@@ -511,6 +601,10 @@ def main() -> int:
     # ── 7. 색인 정합성
     problems += index_covers(live)
 
+    # ── 8. 하위절 인용 · 9. 하위절 번호 중복
+    problems += sub_cites(live, raw, text)
+    problems += dup_subsections(live, raw)
+
     # ── 6. 목업 쌍둥이
     twin_bad, twin_ok = mockup_twins()
     problems += twin_bad
@@ -518,9 +612,10 @@ def main() -> int:
     # ── 결과
     act, nav = parity_screens()
     memos = len(list(HERE.glob("*.txt")))
+    kinds = len(set(re.findall(r"^  \[([^\]]+)\]", __doc__ or "", re.M)))
     print(
         f"정본 {len(live)}개 · 폐기본 {len(dead)}개 · "
-        f"문 {len(DOORS)}개 + 색인 1 · 메모 {memos}개"
+        f"문 {len(DOORS)}개 + 색인 1 · 메모 {memos}개 · 검사 {kinds}종"
     )
     print(
         f"센 것: 목업 대조 {act + nav}화면(활동 {act} + 내비 {nav}) · "

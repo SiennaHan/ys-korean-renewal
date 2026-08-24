@@ -349,7 +349,7 @@
   <div class="t">"Figma 스타일 가이드를 SoT로"를 정정한다 <span class="pill new">v2.4</span></div>
   <p>초안의 방향은 맞았으나 <b>수단이 틀렸다</b>. 실제로 재보니 가이드는 멀쩡했고 <b>코드가 참조하지 않은 것</b>이 문제였다 — 하드코딩 hex 93개 파일, 임의값 <code>bg-[#......]</code> 998회. 피그마에 변수를 등록하는 것은 <b>간접 처방</b>이다.</p>
   <p><b>확정: 코드의 <code>tokens.css</code>가 SoT다.</b> 가이드의 51색·23타이포 실측값을 <b>primitive / semantic 2단</b>으로 옮겼고, 화면 코드는 semantic만 쓴다(<code>bg-fill-primary</code> · <code>text-text-sub</code>). 피그마 파일은 <b>실측 참조용</b>으로만 남기고 새로 그리지 않는다.</p>
-  <p class="qa">게임의 다크 룩은 별도 시스템이 아니라 같은 토큰의 다크 변형으로 흡수한다 — 다만 <b>학습 화면은 라이트 단일</b>로 확정했다(셸 명세 §6.7).</p>
+  <p class="qa">게임의 다크 룩은 별도 시스템이 아니라 같은 토큰의 다크 변형으로 흡수한다 — 다만 <b>학습 화면은 라이트 단일</b>로 확정했다(셸 명세 §17.7).</p>
 </div>
 
 <h2 id="s4"><span class="no">4</span>다국어 적용 재확인</h2>
@@ -461,7 +461,7 @@
 <ul>
   <li>진행 세그먼트에 <code>aria-label</code>: "3번 문항, 정답" / "4번 문항, 오답" — 스크린리더로 진행 상황 파악 가능</li>
   <li>스크린리더는 진동·효과음을 받지 못한다. 오답 pill을 <code>aria-live</code>로 두되, <b>같은 문구를 반복 고지</b>하려면 영역을 비웠다 다시 채운다(동일 텍스트는 재고지하지 않는 리더가 있다).</li>
-  <li><code>prefers-reduced-motion: reduce</code>일 때 진동 대신 테두리 200ms 1회 깜빡으로 대체 — <b>현재 코드에 이 분기가 하나도 없다</b>.</li>
+  <li><code>prefers-reduced-motion: reduce</code>일 때 진동 대신 테두리 200ms 1회 깜빡으로 대체 — <b>현재 코드에 이 분기가 없다.</b> activity.css 에 <code>@media (prefers-reduced-motion:reduce)</code> 블록이 <b>하나 있는데 녹음 버튼 펄스만 끈다</b> — 오답 신호 분기는 없다.</li>
   <li>피드백은 색 변화만이 아니라 텍스트로도 명시("정답이에요" / "정답은 ○○예요")</li>
   <li>탭 대상 최소 44×44pt (구 앱 O/X 버튼은 충분, 세그먼트바는 탭 대상 아님)</li>
 </ul>
@@ -590,7 +590,7 @@
     <tr><td>CSS의 <code>--primary</code> 등 oklch 변수 <b>64개</b></td><td>shadcn 기본 스캐폴딩. <b>2개 파일에서 14회 실사용 중</b>(<code>bg-primary</code> 6 · <code>muted</code> 4 · <code>secondary</code> 3 · <code>border</code> 1) — <span class="pill drop">정정</span> 앞서 "폐기 대상"이라 썼으나 <b>지우면 <code>src/components/ui</code>의 9개 컴포넌트가 깨진다</b></td></tr>
   </table></div>
 </div>
-<h3>0.1 코드 hex ↔ 가이드 팔레트 대조</h3>
+<h3>11.1 코드 hex ↔ 가이드 팔레트 대조</h3>
 <p>코드에서 가장 많이 쓰인 색 12종을 가이드에 맞춰봤다. <b>11종은 정식 토큰이었다.</b></p>
 <div class="tablewrap"><table>
   <tr><th>코드 hex</th><th>사용</th><th>가이드 토큰</th><th>판정</th></tr>
@@ -612,7 +612,7 @@
   <p>v1에서 "파랑 3종이 전부 드리프트"라고 썼는데, 가이드를 열어보니 <b><code>#359AFF</code>는 <code>Blue/400</code>으로 정식 등재된 색</b>이었다. 드리프트는 <b><code>#4396F4</code> 하나뿐</b>이고, 이건 사장된 <code>main.bak/</code>이 아니라 <b>살아있는 코드에서 50회</b> 쓰인다(<code>word-learning</code> · <code>ai-roleplay</code> · <code>chat-text</code> 등).</p>
   <p>남은 문제는 <b>정의되지 않은 색</b>이 아니라 <b>역할 혼용</b>이다 — <code>Blue/400</code>과 <code>Blue/500</code>이 같은 자리(주요 버튼·강조 텍스트)에 뒤섞여 있다. 셸에서는 <b><code>Blue/500</code>만</b> 쓰고, <code>Blue/400</code>은 Hover·Pressed 같은 상태 단계에만 남긴다.</p>
 </div>
-<h3>0.2 진짜 문제 — 의미색이 있는데 코드가 안 썼다</h3>
+<h3>11.2 진짜 문제 — 의미색이 있는데 코드가 안 썼다</h3>
 <div class="callout bad">
   <div class="t">피드백 색은 미정의가 아니라 방치였다</div>
   <p>가이드에는 <code>Positive</code>(초록) · <code>Cautionary</code>(주황) · <code>Destructive</code>(빨강)와 <code>Green/*</code> · <code>Yellow/*</code> · <code>Red/*</code> 램프가 <b>처음부터 있었다</b>. 정답/오답을 이 계열로 표현하는 것이 원래 설계였다.</p>
@@ -750,7 +750,7 @@
 <b>서버 API 가 생긴 뒤에</b> 세운다 — <code>BLOCKERS.md</code> §6.</p>
 </div>
 
-<h3>3.1 ProgressBar <span class="pill fix">연속형은 기존에 있음 · 분절형만 신규</span></h3>
+<h3>14.1 ProgressBar <span class="pill fix">연속형은 기존에 있음 · 분절형만 신규</span></h3>
 <div class="callout good">
   <div class="t">연속형 진행바가 이미 그려져 있다</div>
   <p><code>[디자인] 단어 플래시카드</code> › <code>추가단어 플래시카드</code> 요약 화면에 있다. <b>328 × 24</b> — 트랙(연한 파랑) + 채움 + <b>끝에 원형 knob 24 × 24</b>, 그 위에 <b><code>16/32</code> 카운트</b>. 실측 채움 164 = 정확히 50%다.</p>
@@ -793,7 +793,7 @@
   <p>플래시카드 <b>재생</b> 화면은 카드 우하단에 <code>1 / 12</code>를 작은 회색으로, <b>요약</b> 화면은 진행바 위 가운데에 <code>16/32</code>로 쓴다. <b>띄어쓰기·위치·크기가 전부 다르다.</b> 셸에서는 <b>진행바 위 가운데 <code>n/N</code></b> 하나로 통일한다.</p>
 </div>
 
-<h3>3.2 ChoiceList — 선택지 <span class="pill fix">UI/UX 신규 확정</span></h3>
+<h3>14.2 ChoiceList — 선택지 <span class="pill fix">UI/UX 신규 확정</span></h3>
 <div class="callout good">
   <div class="t">기존 <code>Button_Choose</code>는 참고만 하고 세로형으로 재정의한다</div>
   <p>2·3·4개 모두 <b>한 열</b>에 놓고 첫 선택지의 시작 y를 같게 한다. 선택지 개수가 적어도 가운데로 내려가지 않는다. 이 규칙이 문항 전환 때 레이아웃이 재조립되는 느낌을 없앤다.</p>
@@ -829,7 +829,7 @@
   <p>오답의 ✕와 빨간 표면은 탭이 처리됐음을 알리는 피드백일 뿐, 소거법을 돕는 기록이 아니다. 약 650ms 뒤 선택지는 기본으로 돌아가고 <b>"다시 해보세요" pill만 유지</b>한다. 따라서 같은 오답을 다시 누르면 같은 피드백이 다시 실행된다.</p>
 </div>
 
-<h3>3.3 FeedbackLayer <span class="pill keep">S1 확정 · 기존 pill 사용</span></h3>
+<h3>14.3 FeedbackLayer <span class="pill keep">S1 확정 · 기존 pill 사용</span></h3>
 <p>기존 자모 화면의 피드백은 <b>하단 고정 바가 아니라 화면 하단 가운데의 pill</b>이다(<code>Frame 742</code>). 그대로 쓴다.</p>
 <div class="tablewrap"><table>
   <tr><th>항목</th><th>실측</th></tr>
@@ -874,7 +874,7 @@
 <div class="callout bad">
   <div class="t">② 소리를 못 듣는 상황이 기본값이다</div>
   <p>교실·대중교통·무음 모드·청각장애 — <b>소리가 안 들리는 쪽이 오히려 흔하다</b>. 그래서 효과음은 보조이고 <b>진동이 주 신호</b>다. 소리 없이도 오답이 전달되는지 반드시 확인한다.</p>
-  <p><b>반대 방향도 있다.</b> 진동 애니메이션은 <b>전정 장애(vestibular)</b>가 있는 사용자에게 불편을 준다. 현행 코드에 <code>prefers-reduced-motion</code> 대응이 <b>하나도 없다</b>(전수 검색 결과 0건).</p>
+  <p><b>반대 방향도 있다.</b> 진동 애니메이션은 <b>전정 장애(vestibular)</b>가 있는 사용자에게 불편을 준다. 현행 코드의 <code>prefers-reduced-motion</code> 대응은 <b>한 곳뿐이다</b>(전수 검색 1건) — activity.css 에 <code>@media (prefers-reduced-motion:reduce)</code> 블록이 <b>하나 있는데 녹음 버튼 펄스만 끈다</b> — 오답 신호 분기는 없다.</p>
   <div class="tablewrap"><table>
     <tr><th>조건</th><th>오답 신호</th></tr>
     <tr><td>기본</td><td>진동 300ms + 효과음 + pill</td></tr>
@@ -892,7 +892,7 @@
   <p>초안에는 오답마다 "다시 풀기에 담겼어요" 토스트가 따로 있었다. 재시도형에서는 <b>오답 pill이 이미 그 역할</b>을 하므로 중복이다. 복습 큐 집계는 <b>결과 화면에서 한 번</b>만 말한다(<code>result.toPractice</code>).</p>
 </div>
 
-<h3>3.4 ResultScreen <span class="pill keep">미션 대화 리포트를 원형으로</span></h3>
+<h3>14.4 ResultScreen <span class="pill keep">미션 대화 리포트를 원형으로</span></h3>
 <div class="callout good">
   <div class="t">원형을 바꾼다 — 플래시카드 요약(다크)이 아니라 <code>AI 대화 리포트</code></div>
   <p>미션 대화의 종료 리포트(360×1639 스크롤)에 <b>필요한 것이 거의 다 있다</b>. 앞서 "오답 목록은 기존에 대응물이 없어 새로 붙여야 한다"고 썼는데 <b>틀렸다</b> — 여기 이미 있다. 게다가 <b>라이트 테마</b>라 색 변환도 필요 없다.</p>
@@ -963,7 +963,7 @@
   <tr><td><code>reviewDone</code></td><td>다시 풀기 세션 종료</td><td><code>review.sessionDone</code> · [돌아가기]</td></tr>
 </table></div>
 
-<h3>3.5 StateView — 정상 흐름 밖 (G2 §8)</h3>
+<h3>14.5 StateView — 정상 흐름 밖 (G2 §8)</h3>
 <div class="tablewrap"><table>
   <tr><th>상태</th><th>화면</th><th>i18n 키</th></tr>
   <tr><td><code>loading</code></td><td>진행바 자리에 스켈레톤</td><td><code>state.loading</code></td></tr>
@@ -977,7 +977,7 @@
 <h2 id="s15"><span class="no">15</span>어디서 베껴올 것인가</h2>
 <p class="lead">가이드 컴포넌트와 기존 화면 3개 섹션(자모·플래시카드·스타일 가이드)을 프레임까지 열어 확인했다. <b>백지에서 그려야 하는 건 진행바의 분절형 하나뿐</b>이고, 나머지는 복제·변형·조립이다.</p>
 
-<h3>4.1 그대로 쓰는 것</h3>
+<h3>15.1 그대로 쓰는 것</h3>
 <div class="tablewrap"><table>
   <tr><th>가이드 컴포넌트 · variant</th><th>셸에서</th></tr>
   <tr><td><code>App Bar / close/next</code> <span class="qa">360×58</span></td><td>✕ + 건너뛰기 구성이 <b>이미 있다</b>. ShellHeader는 여기에 얹기만 한다</td></tr>
@@ -990,7 +990,7 @@
   <tr><td><code>icon/close</code> · <code>arrow_left</code> · <code>arrow_right</code> · <code>volume</code> <span class="qa">24×24</span></td><td>헤더 · 음성 재생</td></tr>
 </table></div>
 
-<h3>4.2 복제해서 상태만 얹는 것</h3>
+<h3>15.2 복제해서 상태만 얹는 것</h3>
 <div class="tablewrap"><table>
   <tr><th>만들 것</th><th>베이스 · 메모</th></tr>
   <tr><td><b>ChoiceList</b></td><td>기존 <code>Button_Choose</code>의 색 토큰만 참고하고, <b>세로 1열 · min-height 68 · auto-height</b>로 신규 구현</td></tr>
@@ -999,7 +999,7 @@
   <tr><td><b>StateView 5종</b></td><td><code>Modal</code> · <code>Bottom Sheets</code> — 문구만 교체</td></tr>
 </table></div>
 
-<h3>4.3 기존 화면에서 잘라내 컴포넌트화할 것</h3>
+<h3>15.3 기존 화면에서 잘라내 컴포넌트화할 것</h3>
 <p>이미 그려져 있는 화면에서 <b>떼어내는</b> 작업이다. 새로 디자인하지 않는다.</p>
 <div class="tablewrap"><table>
   <tr><th>만들 것</th><th>출처 후보 <span class="qa">(연재쌤_디자인수정 페이지)</span></th></tr>
@@ -1011,7 +1011,7 @@
 <p class="qa"><b>녹음과 [다음]은 같은 하단 도크에서 칸을 나눈다.</b> 가운데는 녹음, 오른쪽 44는 [다음]이며 녹음 완료 후 켜진다. 롤플레잉의 턴 탐색은 하단이 아니라 대본 목록 안에서 처리한다.</p>
 <p class="qa"><code>한글 자모</code> 섹션은 프레임까지 확인했다(§16.1·§17). <code>단어 플래시카드</code>·<code>AI 미션 대화</code>는 섹션 이름으로만 지목한 상태라 링크를 받으면 규격으로 채운다.</p>
 
-<h3>4.4 새로 그리는 것</h3>
+<h3>15.4 새로 그리는 것</h3>
 <div class="callout warn">
   <div class="t">ProgressBar의 <code>segment</code> 모드 (문항 15개 이하)</div>
   <p><b>연속형은 이미 있다</b> — 플래시카드 요약 화면의 328×24 진행바를 복제하면 된다(§14.1). 가이드에도 기존 화면에도 없는 것은 <b>문항별로 칸이 나뉘고 칸마다 맞음/틀림이 보이는 분절형</b>뿐이다.</p>
@@ -1019,7 +1019,7 @@
 </div>
 <p class="qa">결과 화면의 <b>오답 목록</b>도 기존에 대응물이 없어 새로 붙여야 한다(§14.4). 다만 이건 컴포넌트라기보다 목록 항목이라 난이도가 낮다.</p>
 
-<h3>4.5 셸에서 안 쓰는 것</h3>
+<h3>15.5 셸에서 안 쓰는 것</h3>
 <p class="qa"><code>Bottom Navigation</code>(120×72) · <code>Search Input</code> — 학습 중에는 탭바·검색이 없다. · <code>Tab</code> — 채점형 활동의 결과 화면은 1화면이라 안 쓴다. 다만 <b>미션 대화·말하기 리포트는 탭을 쓴다</b>(§14.4). · <code>Radio Button</code> — ChoiceList의 즉시 채점 피드백을 담지 못해 대체하지 않는다. 시각 언어만 참고. · <code>Button_Secondary/*</code> — 셸에서는 쓰지 않는다. <b><code>Button_Primary/Large</code>는 하단 버튼으로 실제 사용된다</b>(§16.1).</p>
 
 <div class="callout warn">
@@ -1066,7 +1066,7 @@
   <li>탭 대상 44×44는 아이콘 24보다 크다. <b>아이콘 주변 여백까지 포함해 44를 확보</b>한다.</li>
 </ul>
 
-<h3>5.1 화면 구조 — 고정 블록 + 가변 밴드</h3>
+<h3>16.1 화면 구조 — 고정 블록 + 가변 밴드</h3>
 <div class="callout good">
   <div class="t">기준 폭을 <b>390</b>으로 올린다</div>
   <p>기존 파일은 <b>360</b>(Android 표준 dp) 기준이었다. iPhone SE2는 375, iPhone 12~14는 <b>390</b>, 14 Pro·15·16과 Pixel은 393이다. <b>390이면 393과 3px 차이라 사실상 같고, 360보다 위라 Android도 축소 없이 커버</b>한다.</p>
@@ -1106,7 +1106,7 @@
   <p>v1~v2는 기준 폭 375, v3~는 360과 <b>절대 y좌표</b>(58 / 90 / 158 / 608 / 652)로 적었다. <b>기준 폭은 390</b>, 그리고 <b>절대 좌표 대신 고정 블록 + 가변 밴드</b>로 바꾼다. Title도 지시문 병기 폐지로 <b>68 → 48</b>이다(§17.5).</p>
 </div>
 
-<h3>5.2 320 폭에서의 실측</h3>
+<h3>16.2 320 폭에서의 실측</h3>
 <p>파일에 <code>최소 사이즈 320×568</code> 프레임이 따로 있다. 여기서 잰 값:</p>
 <div class="tablewrap"><table>
   <tr><th>항목</th><th>360</th><th>320</th></tr>
@@ -1119,7 +1119,7 @@
 </table></div>
 <p class="qa"><b>320에서도 최소 높이 68을 줄이지 않는다.</b> 네 개의 긴 문장이 하단 버튼과 충돌하면 텍스트나 터치 영역을 줄이는 대신 선택지 목록만 스크롤한다.</p>
 
-<h3>5.3 화면 구조 실측 — AI 미션 대화</h3>
+<h3>16.3 화면 구조 실측 — AI 미션 대화</h3>
 <p>선택지형과 골격이 다르다. <b>세로로 층이 더 많고 스레드가 가변</b>이다.</p>
 <pre>y=0    App Bar                    360×58    ✕  [1권 4과] 과제목입니다과…  <b>skip</b>(47×26)
 y=58   시나리오 바                  360×76    <b>Blue/500 채움</b> · 흰 글자 + 연파랑 영문 · 오른쪽 접기 ∨
@@ -1145,7 +1145,7 @@ y=648  마이크 영역                  360×92
 <h2 id="s17"><span class="no">17</span>완성도가 떨어지는 지점</h2>
 <p class="lead">자모 화면 5종을 실제로 열어 확인한 것만 적었다. <b>추측은 넣지 않았다.</b> 이게 "기존을 살리되 고칠 부분"의 목록이다.</p>
 
-<h3>6.1 진행 표시가 활동마다 다르다 <span class="pill drop">가장 큰 문제</span></h3>
+<h3>17.1 진행 표시가 활동마다 다르다 <span class="pill drop">가장 큰 문제</span></h3>
 <div class="tablewrap"><table>
   <tr><th>화면</th><th>진행 표시</th></tr>
   <tr><td>자모 5종 <span class="qa">듣고 고르기 · 조합해 쓰기 · 발음하기 · 단어 쓰기 등</span></td><td><b>아무것도 없다</b> — 진행바도 카운트도 없음</td></tr>
@@ -1155,7 +1155,7 @@ y=648  마이크 영역                  360×92
 <p>자모는 학습자가 <b>몇 문항 중 몇 번째인지, 언제 끝나는지 알 수 없다</b>. 이어하기(G2)를 붙여도 어디까지 했는지 보여줄 자리가 없다. 플래시카드는 표시가 있지만 <b>재생과 요약이 서로 다른 방식</b>을 쓴다.</p>
 <p class="qa">→ §14.1 ProgressBar가 이 구멍을 메운다. <b>연속형은 플래시카드 요약 화면에서 그대로 가져오고</b>, 카운트 위치·표기를 <b>진행바 위 가운데 <code>n/N</code></b> 하나로 통일한다.</p>
 
-<h3>6.2 선택지 개수가 바뀌어도 시작 위치를 고정한다 <span class="pill keep">해결 방식 확정</span></h3>
+<h3>17.2 선택지 개수가 바뀌어도 시작 위치를 고정한다 <span class="pill keep">해결 방식 확정</span></h3>
 <p>2·3·4개 문항이 섞이는 활동에서 그룹 전체를 세로 가운데에 두면 첫 선택지의 위치가 매번 바뀐다. UI/UX안은 빈 공간을 채우려고 목록을 이동시키지 않고 <b>첫 선택지의 시작점을 고정</b>한다.</p>
 <div class="callout good">
   <div class="t">확정: 질문 아래 고정 간격 이후 한 열로 쌓는다</div>
@@ -1174,7 +1174,7 @@ y=648  마이크 영역                  360×92
 </table></div>
 <p class="qa">자모와 어휘의 ‘가운데’는 <b>카드 내부 정렬</b>을 뜻한다. 목록 전체를 화면 가운데로 옮긴다는 뜻이 아니다.</p>
 
-<h3>6.3 앱바 제목이 잘린다 <span class="pill keep">S3로 확정</span></h3>
+<h3>17.3 앱바 제목이 잘린다 <span class="pill keep">S3로 확정</span></h3>
 <div class="tablewrap"><table>
   <tr><th>활동</th><th>현행 앱바 제목</th></tr>
   <tr><td>자모</td><td><code>[모음 1] ㅏ,ㅓ,ㅗ,ㅜ…</code> <span class="qa">잘림</span></td></tr>
@@ -1195,7 +1195,7 @@ y=648  마이크 영역                  360×92
   <p class="qa"><code>N권</code>은 <b>급</b>으로 바꾼다 — G2에서 확정한 라벨이다. DB 컬럼명(<code>book_id</code>)은 그대로 두고 <b>표기만</b> 바꾼다.</p>
 </div>
 
-<h3>6.4 버튼 라벨이 상태를 따라가지 않는다 <span class="pill keep">S1로 해결</span></h3>
+<h3>17.4 버튼 라벨이 상태를 따라가지 않는다 <span class="pill keep">S1로 해결</span></h3>
 <p>정답을 맞힌 화면에서도 하단 버튼이 <b>"정답 확인 check answer"</b>로 남아 있다. 이미 채점이 끝났는데 다시 확인하라고 한다.</p>
 <div class="callout good">
   <div class="t">확정: 라벨을 <b>"다음"</b> 하나로 단일화하고 활성/비활성만 바꾼다</div>
@@ -1209,7 +1209,7 @@ y=648  마이크 영역                  360×92
   <p class="qa">라벨이 하나로 줄어드니 S2 언어 규칙 적용도 단순해진다(§17.5).</p>
 </div>
 
-<h3>6.5 언어 규칙이 일관되지 않다 <span class="pill keep">S2로 확정</span></h3>
+<h3>17.5 언어 규칙이 일관되지 않다 <span class="pill keep">S2로 확정</span></h3>
 <div class="tablewrap"><table>
   <tr><th>실측 라벨</th><th>현행 형태</th></tr>
   <tr><td><code>정답 확인 check answer</code> · <code>완료 done</code></td><td>한국어 + 영어 <b>병기</b></td></tr>
@@ -1249,7 +1249,7 @@ y=648  마이크 영역                  360×92
 </table></div>
 <p class="qa"><b>i18n 파일에 키를 더 넣어야 한다.</b> Phase 1의 <code>i18n_player_shell.ts</code>는 30키인데, 위 표의 도구 버튼·오디오 버튼 라벨이 빠져 있다 — <code>player.playAudio</code> · <code>player.eraseAll</code> · <code>player.undo</code> · <code>player.viewMission</code> 등을 5개 언어로 추가한다.</p>
 
-<h3>6.5-b "다시 풀기"가 세 가지를 가리킨다 <span class="pill keep">정리</span></h3>
+<h3>17.5-b "다시 풀기"가 세 가지를 가리킨다 <span class="pill keep">정리</span></h3>
 <p>같은 말이 서로 다른 행동 셋에 걸쳐 있었다. 학습자가 무엇이 나올지 예상할 수 없다.</p>
 <div class="tablewrap"><table>
   <tr><th>#</th><th>행동</th><th>언제</th><th>화면 이름</th></tr>
@@ -1262,7 +1262,7 @@ y=648  마이크 영역                  360×92
    실제로는 선택지를 다시 누르는 동작이라 라벨이 붙을 자리가 없다. 그래서 충돌하는 것은 2·3번뿐이고
    서로 다른 화면에 나온다(결과·홈 / 활동 목록).</p>
 
-<h3>6.6 팔레트에 없는 색이 화면에 있다</h3>
+<h3>17.6 팔레트에 없는 색이 화면에 있다</h3>
 <p><code>자음과 모음을 조합해서 쓰기</code>의 <b>획순 번호 뱃지가 보라색</b>인데, 스타일 가이드 51개 토큰에 <b>보라 계열이 아예 없다</b>. <code>Erase all</code>의 연빨강도 <code>Red/50</code>인지 임의값인지 불명이다.</p>
 <p class="qa">→ 획순 번호는 <code>Blue/500</code>으로 충분하다(캔버스가 회색이라 대비가 확보된다). 새 색을 추가하기보다 <b>기존 토큰으로 대체</b>하는 쪽이 §12 원칙과 맞는다.</p>
 
@@ -1271,7 +1271,7 @@ y=648  마이크 영역                  360×92
   <p>6.1 · 6.2는 <b>셸 설계로 해결</b>된다(진행바 추가, 배치 규칙 통일). 6.3 ~ 6.6은 <b>기존 화면을 조금씩 손보는 일</b>이고 개별로는 작다. <b>새로 디자인할 것은 여전히 ProgressBar 하나</b>다.</p>
 </div>
 
-<h3>6.7 같은 활동 안에서 라이트/다크가 섞인다 <span class="pill keep">라이트로 확정</span></h3>
+<h3>17.7 같은 활동 안에서 라이트/다크가 섞인다 <span class="pill keep">라이트로 확정</span></h3>
 <div class="tablewrap"><table>
   <tr><th>화면</th><th>기존 테마</th></tr>
   <tr><td>자모 5종 전부</td><td>라이트 <span class="qa">배경 <code>Blue Gray/50</code></span></td></tr>
@@ -1300,17 +1300,17 @@ y=648  마이크 영역                  360×92
   <p class="qa">보조 버튼으로 <code>Button_White/Large/Round</code>를 쓸 때도([다시 풀기]·[돌아가기]) 같은 문제가 생길 수 있다. <b>테두리가 있는지 확인</b>하고, 없으면 <code>Blue Gray/100</code> 테두리를 넣는다.</p>
 </div>
 
-<h3>6.8 앱바 제목 잘림이 플래시카드에서도 반복된다 <span class="pill keep">§17.3에 통합</span></h3>
+<h3>17.8 앱바 제목 잘림이 플래시카드에서도 반복된다 <span class="pill keep">§17.3에 통합</span></h3>
 <p><code>[N권 4과] 과제목입니다과…</code> — 자모의 <code>[모음 1] ㅏ,ㅓ,ㅗ,ㅜ…</code>와 같은 문제다(§17.3). <b>두 활동에서 같은 방식으로 잘리므로 개별 실수가 아니라 앱바 규칙의 문제</b>다.</p>
 <p class="qa">→ §17.3에서 <code>{급} {과}</code>로 확정했다. <b>8종 전부에 같게</b> 적용한다.</p>
 
-<h3>6.9 미션 키워드 목록이 화면 밖으로 잘린다 <span class="pill drop">확인됨</span></h3>
+<h3>17.9 미션 키워드 목록이 화면 밖으로 잘린다 <span class="pill drop">확인됨</span></h3>
 <p>미션 진행 바(<code>Frame 754</code>)의 키워드 체크리스트는 <b>폭 290을 x=73에 놓아</b> 총 363이 된다. 부모 폭은 328이므로 <b>35가 밖으로 나간다</b>. 스크린샷에서 세 번째 항목이 실제로 오른쪽 끝에서 잘려 있다.</p>
 <p class="qa">플레이스홀더 텍스트가 하필 <code>미션 키워드 지시문이 길어질때</code>다 — 긴 경우를 테스트하다가 <b>깨진 상태로 남은 것</b>으로 보인다.</p>
 <p class="qa">→ 키워드가 3개 고정이 아니고 길이도 가변이므로, <b>가로 스크롤로 바꾸거나 chip만 남기고 지시문은 "미션 보기"를 눌렀을 때</b>만 보여준다. 후자가 낫다 — 지시문 전문은 브리핑 화면과 중복이다.</p>
 <p class="qa"><b>계산상</b> 브리핑 화면의 키워드 3개도 같은 문제로 보인다(112×3 + 간격 = 352를 폭 304 안에 넣는다). <b>스크린샷으로 확인하지는 않았다.</b></p>
 
-<h3>6.10 결과 화면이 활동마다 다른 스타일이다</h3>
+<h3>17.10 결과 화면이 활동마다 다른 스타일이다</h3>
 <div class="tablewrap"><table>
   <tr><th>활동</th><th>결과 화면</th></tr>
   <tr><td>미션 대화</td><td><b>파랑 헤더 + 탭 + 레이더 차트 + 오답·해설 목록</b> · 라이트</td></tr>
@@ -1350,7 +1350,7 @@ y=648  마이크 영역                  360×92
   <tr><td>8.4 확인 · 수정 요청</td><td><b>기획</b> — 여기가 그리기를 대신한다</td></tr>
 </table></div>
 
-<h3>8.0 확정된 결정 3건</h3>
+<h3>19.0 확정된 결정 3건</h3>
 <div class="callout good">
   <div class="t">셋 다 확정됐다 — 착수를 막는 것이 없다</div>
   <p>이름은 <b>S1·S2·S3</b>(Shell) — <a href="https://claude.ai/code/artifact/1210a6f9-f264-4da0-82fe-38f12c729af2">리뉴얼 기획서</a>의 선결 결정 <b>D1~D7과는 다른 것</b>이다. 기획서 D1은 포지셔닝·계정 모델, D2는 학습 단위·상태 모델이다.</p>
@@ -1362,7 +1362,7 @@ y=648  마이크 영역                  360×92
   <tr><td><b>S3</b> 앱바 제목</td><td><code>{급} {과}</code>만. 과 제목·학습 대상은 넣지 않는다</td><td>§17.3</td></tr>
 </table></div>
 
-<h3>8.1 토큰 적용 <span class="pill keep">§17.6 함께 해결</span></h3>
+<h3>19.1 토큰 적용 <span class="pill keep">§17.6 함께 해결</span></h3>
 <p>동봉 <code>tokens.css</code>를 <code>globals.css</code>의 <code>@import "tailwindcss";</code> 아래에 <code>@import</code>한다. <b>2단 구조</b>다.</p>
 <pre>--color-primitive-blue-500: #0180FF;              /* 무슨 색인가 — 51개 */
 --color-fill-primary: var(--color-primitive-blue-500);   /* 어디에 쓰나 — 30개 */</pre>
@@ -1383,7 +1383,7 @@ y=648  마이크 영역                  360×92
   <p><code>--color-*: initial</code>은 <b>팔레트 밖 색을 컴파일 단계에서 막는 장치</b>다. 최종 목표로는 맞지만 위 389 + 998을 이관한 뒤에 켠다 — 지금 켜면 화면이 깨진다.</p>
 </div>
 
-<h3>8.2 Storybook <span class="pill new">신규</span></h3>
+<h3>19.2 Storybook <span class="pill new">신규</span></h3>
 <div class="callout warn">
   <div class="t">이게 없으면 "보면서 고치기"가 성립하지 않는다</div>
   <p>실제 앱에서는 <b>고쳐야 할 상태를 재현하기가 어렵다.</b> 오답 화면을 보려면 일부러 틀려야 하고, 마이크 거부는 브라우저 설정을 바꿔야 하고, 로드 실패는 네트워크를 끊어야 하고, 베트남어 최장 문자열은 언어를 바꿔가며 전 화면을 돌아야 한다. <b>그리는 단계를 뺀 대가를 여기서 치른다.</b></p>
@@ -1405,7 +1405,7 @@ y=648  마이크 영역                  360×92
 </ol>
 <p class="qa">참고로 준 디자인 시스템 예시가 Storybook 기반이다(<code>.storybook/</code> + 컴포넌트별 <code>*.stories.tsx</code>). 셋업 방식을 그대로 참고하면 된다 — 다만 <b>그쪽은 컴포넌트 29종의 완성된 시스템</b>이고, 여기는 <b>셸 9종만</b> 올린다. 나머지 화면은 이미 있으므로 대상이 아니다.</p>
 
-<h3>8.3 구현 순서</h3>
+<h3>19.3 구현 순서</h3>
 <p>앞이 안 되면 뒤가 못 나가는 순서다. 각 단계는 <b>스토리를 함께 올려야</b> 완료로 친다.</p>
 <div class="tablewrap"><table>
   <tr><th>#</th><th>컴포넌트</th><th>내용</th><th>해결되는 §17</th></tr>
@@ -1422,7 +1422,7 @@ y=648  마이크 영역                  360×92
   <p>ShellHeader와 밴드 좌표(§16.1)가 확정되면 <b>라우팅·상태 저장·이어하기</b>를 붙이기 시작할 수 있다. 콘텐츠 컴포넌트는 나중에 끼워 넣으면 된다.</p>
 </div>
 
-<h3>8.4 확인 · 수정 요청 — 그리기를 대신하는 단계</h3>
+<h3>19.4 확인 · 수정 요청 — 그리기를 대신하는 단계</h3>
 <p class="lead">피그마를 안 쓰기로 한 대가는 <b>시각 결정이 구현하는 사람에게 넘어간다</b>는 것이다. 치수는 이 문서에 있지만 <b>여백 리듬 · 그림자 · 전환 느낌</b>은 코드 쓰는 사람이 정한다. <b>1차 결과물은 한 번 손볼 것을 전제로</b> 잡는다.</p>
 <h4>수정 요청을 쓰는 법</h4>
 <div class="tablewrap"><table>
@@ -1437,17 +1437,17 @@ y=648  마이크 영역                  360×92
   <p>그건 대개 <b>semantic 이름이 부족하다는 신호</b>지 색이 부족하다는 신호가 아니다. 먼저 §12의 30개 semantic에서 맞는 역할을 찾고, 정말 없으면 <b>새 semantic 이름을 추가</b>한다(primitive는 그대로 재사용). primitive 51개를 늘리는 것은 마지막 수단이다.</p>
 </div>
 
-<h3>8.5 각 단계의 검증</h3>
+<h3>19.5 각 단계의 검증</h3>
 <div class="tablewrap"><table>
   <tr><th>검사</th><th>왜</th></tr>
   <tr><td><b>UI 언어 5종 전환</b> <span class="qa">Storybook 토글</span></td><td>가장 긴 문자열(보통 베트남어)로 레이아웃이 깨지는지. <b>§17.9가 정확히 이 유형의 사고</b>다 — 긴 경우를 테스트하다 깨진 채로 남았고 플레이스홀더에 "지시문이 길어질때"라고 적혀 있는데도 그대로였다</td></tr>
   <tr><td><b>320 폭</b></td><td>min-height 68·padding 16·탭 대상 44를 유지한다. 4개의 긴 문장에서 목록 내부 스크롤과 하단 버튼 고정을 확인</td></tr>
   <tr><td><b>정답/오답 아이콘 형태</b></td><td>초록–빨강이라 <b>색만으로는 구별되지 않는다</b>(§14.1). ✓와 ✕는 형태가 확실히 달라야 한다</td></tr>
   <tr><td><b>semantic 토큰만 사용</b></td><td>새 hex·primitive 직접 사용이 있으면 §11 상태로 되돌아간다</td></tr>
-  <tr><td><b><code>prefers-reduced-motion</code></b></td><td>진동 대신 테두리 깜빡. 현재 코드에 <b>0건</b></td></tr>
+  <tr><td><b><code>prefers-reduced-motion</code></b></td><td>진동 대신 테두리 깜빡. 현재 코드에 <b>오답 분기 0건</b>(있는 1건은 녹음 버튼 펄스용)</td></tr>
 </table></div>
 
-<h3>8.6 이번에 하지 않는 것</h3>
+<h3>19.6 이번에 하지 않는 것</h3>
 <div class="tablewrap"><table>
   <tr><th>미루는 것</th><th>이유 · 단계</th></tr>
   <tr><td>Tailwind 기본 색 389회 · 임의값 998회 이관</td><td>셸 밖. Phase 2~3. 완료 후 <code>--color-*: initial</code> 활성화</td></tr>
@@ -1686,7 +1686,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
 <div class="rule stop">
   <div class="t"><code>prefers-reduced-motion: reduce</code> 분기</div>
   <p>진동 대신 <b>테두리가 <code>fill-wrong</code>으로 200ms 한 번 깜빡</b>인다. 위치 이동 없음.
-     효과음과 pill은 그대로. <b>현재 코드에 이 분기가 0건</b>이므로 새로 넣는다.</p>
+     효과음과 pill은 그대로. <b>현재 코드에 이 분기가 없으므로</b> 새로 넣는다 — activity.css 의 기존 <code>reduce</code> 블록은 녹음 버튼 펄스만 끈다.</p>
 </div>
 <h3>막히지 않게 하기</h3>
 <div class="rule stop">
