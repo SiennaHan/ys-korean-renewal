@@ -228,6 +228,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 				{/* Control Buttons */}
 				<div className="flex items-center justify-between space-x-3 p-2">
 					<button
+						type="button"
 						onClick={clearCanvas}
 						className="transform cursor-pointer rounded-lg border-1 bg-white px-4 py-3 font-bold text-[#4396f4] shadow-md transition duration-300 hover:scale-[1.02] hover:bg-gray-100 focus:outline-none active:scale-[0.98]"
 					>
@@ -251,6 +252,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 						)}
 					</div>
 					<button
+						type="button"
 						onClick={saveSignature}
 						className="transform cursor-pointer rounded-lg bg-[#4396f4] px-4 py-3 font-semibold text-white shadow-md transition duration-300 hover:scale-[1.02] hover:bg-blue-500 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-white disabled:text-gray-300 disabled:opacity-70 disabled:shadow-none disabled:hover:bg-white"
 						disabled={!hasLine || isUploading}

@@ -174,8 +174,9 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 	}: { item: ProblemType; index: number; isChecked: boolean }) => {
 		const imgSrc = `${env.RES_URL_ROOT}/${item.content_img}`;
 		return (
-			<div
-				onClick={(e) => selectWord(item)}
+			<button
+				type="button"
+				onClick={() => selectWord(item)}
 				className={clsx(
 					baseButtonClasses,
 					"w-[100px] border-[#fff] border-[4px] bg-[#fff]",
@@ -192,7 +193,7 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 						<CardCheckIcon color={isChecked ? "#11C378" : "#E5E8EC"} />
 					</div>
 				</div>
-			</div>
+			</button>
 		);
 		// <div
 		// 	onClick={(e)=>selectWord(item)}

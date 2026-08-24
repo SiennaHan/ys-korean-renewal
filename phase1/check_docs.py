@@ -291,6 +291,11 @@ TWIN_ALLOW = {
     "nav__home__resume.html": "같음",
     "nav__home__review.html": "같음",
     "game__pc_result.html": "캡처는 🔊 가 맨 글자. mockups 는 aria-label 붙은 button 으로 감쌌다 — 접근성 개선(2026-08-24)",
+    "game__sp_map.html": "장소 카드 10개가 캡처에는 div 였다 — 장소로 들어가는 유일한 경로인데"
+    " 키보드로 닿지 않아 mockups 를 button 으로 고친 판(08-24). 지도 핀은 SVG <g> 라 초점을 못 받는다",
+    "game__sp_entry.html": "위 sp_map 과 같은 사정 — .sp-loc-card 의 버튼 기본값 되돌림"
+    "(text-align·font·color)이 공유 <style> 블록에 들어갔다",
+    "game__sp_puzzle.html": "같음",
 }
 
 

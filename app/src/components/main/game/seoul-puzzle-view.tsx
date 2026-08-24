@@ -208,9 +208,19 @@ export function SpMapView({
 							? "도전 가능"
 							: "잠금";
 					return (
-						<div
+						/*
+						 * 장소 카드가 이 게임에서 장소로 들어가는 **유일한 경로**다.
+						 * 지도 핀도 눌리지만 SVG <g> 라 초점을 못 받는다 — 그래서 이 카드가
+						 * div 였을 때 게임 전체가 키보드로 닿지 않았다. 목업도 div 였는데
+						 * 목업 쪽을 고쳤다(app/src/mockups/game__sp_map.html · TWIN_ALLOW).
+						 * 잠긴 장소는 disabled 로 막는다 — CSS 의 pointer-events:none 만으로는
+						 * 버튼이 여전히 초점을 받아 "누를 수 있는 것처럼" 읽힌다.
+						 */
+						<button
+							type="button"
 							key={l.id}
 							className={`sp-loc-card ${stateClass}`}
+							disabled={isLocked}
 							onPointerDown={
 								!isLocked ? () => onSelectLocation(l.id) : undefined
 							}
@@ -295,7 +305,7 @@ export function SpMapView({
 							>
 								{statusText}
 							</div>
-						</div>
+						</button>
 					);
 				})}
 			</div>

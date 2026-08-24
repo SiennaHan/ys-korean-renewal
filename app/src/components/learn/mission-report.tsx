@@ -203,12 +203,14 @@ export default function MissionReport({
 					</div>
 					<div className="grid h-[46px] grid-cols-2">
 						<button
+							type="button"
 							onClick={(e) => handleTab(0)}
 							className={tabIndex === 0 ? selectedTabBase : tabBase}
 						>
 							{"평가"}
 						</button>
 						<button
+							type="button"
 							onClick={(e) => handleTab(1)}
 							className={tabIndex === 1 ? selectedTabBase : tabBase}
 						>
@@ -273,18 +275,20 @@ export default function MissionReport({
 					<div className="h-[8px]" />
 				</div>
 				<div className="grid grid-cols-2 gap-[8px] px-[20px] py-[10px]">
-					<div
+					<button
+						type="button"
 						onClick={finishReport}
 						className="flex h-[56px] cursor-pointer items-center justify-center rounded-[12px] bg-[#DBEDFF] font-bold text-[#0180FF] text-[16px]"
 					>
 						끝내기
-					</div>
-					<div
+					</button>
+					<button
+						type="button"
 						onClick={retryDialog}
 						className="flex h-[56px] cursor-pointer items-center justify-center rounded-[12px] bg-[#0180FF] font-bold text-[#fff] text-[16px]"
 					>
 						다시 말해보기
-					</div>
+					</button>
 				</div>
 			</div>
 			{isResponding && (

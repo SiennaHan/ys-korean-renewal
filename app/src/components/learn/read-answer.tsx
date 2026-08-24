@@ -15,7 +15,6 @@ import {
 	ProblemCard,
 	QuestionText,
 } from "@/components/main/activity";
-import { useToast } from "@/components/toast/toast-context";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import readQuestions from "@/shared/data/n5_read_answer_questions.json";
 import readTexts from "@/shared/data/n5_read_answer_text.json";
@@ -61,7 +60,6 @@ export default function ReadAnswer({
 	const router = useRouter();
 	const { t } = useTranslation();
 	const sound = useSoundEffects();
-	const { addToast } = useToast();
 
 	/** 해당 book/chapter의 지문 */
 	const texts = useMemo(() => {
@@ -165,12 +163,10 @@ export default function ReadAnswer({
 
 				if (isCorrect) {
 					sound.playCorrect();
-					addToast("Correct", "success");
 					setSelectedAnswer(idx);
 					setSavedAnswers((prev) => ({ ...prev, [question.id]: idx }));
 				} else {
 					sound.playIncorrect();
-					addToast("Incorrect", "error");
 					setWrongAttempts((prev) => ({
 						...prev,
 						[question.id]: new Set(prev[question.id]).add(idx),

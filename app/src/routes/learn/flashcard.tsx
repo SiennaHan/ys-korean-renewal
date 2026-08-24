@@ -389,12 +389,13 @@ function RouteComponent() {
 		<div className="flex h-full flex-col bg-[#efefef]">
 			<div className="sticky top-0 z-10 items-center">
 				<div className="flex h-[48px] justify-between">
-					<div
+					<button
+						type="button"
 						onClick={onClose}
 						className="flex h-[48px] w-[48px] cursor-pointer items-center justify-center hover:bg-gray-200 active:bg-gray-300"
 					>
 						<X />
-					</div>
+					</button>
 					<div className="flex items-center text-[#888] text-[14px]">
 						{flashcardModule?.chapter}
 						{"과 - "}

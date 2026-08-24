@@ -106,7 +106,7 @@ export const BotMsgBox = ({
 		<div className="items-top mt-[10px] mr-[15px] flex flex-row px-[12px]">
 			<div>
 				<div className="flex size-[40px] flex-shrink-0 items-center justify-center">
-					<img src="/images/chat_ai_img.svg" width="40" height="40" />
+					<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />
 				</div>
 			</div>
 			<div className="relative ml-[10px] rounded-[15px] bg-[#F6F7F8] p-[10px] text-[14px]">
@@ -222,7 +222,7 @@ export const BotMsgProgress = () => {
 		<div className="items-top mt-[10px] mr-[15px] flex flex-row px-[12px]">
 			<div>
 				<div className="flex size-[40px] flex-shrink-0 items-center justify-center">
-					<img src="/images/chat_ai_img.svg" width="40" height="40" />
+					<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />
 				</div>
 			</div>
 			<div className="relative ml-[10px] h-[40px] w-[60px] rounded-[15px] bg-[#F6F7F8] p-[10px]">
@@ -263,6 +263,7 @@ export const CompletedMsgBox = (props: CompleteBoxInterface) => {
 					{"You can keep talking if you want, or end the chat here."}
 				</div>
 				<button
+					type="button"
 					onClick={props.closeDialog}
 					className={clsx(
 						"mt-[20px] flex h-[32px] w-full items-center justify-center rounded-[10px] bg-[#DBEDFF] text-[#0180FF]",

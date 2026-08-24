@@ -465,6 +465,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<SharedAudioContext.Provider value={api}>
 			{children}
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
 			<audio ref={audioRef} className="hidden" playsInline preload="auto" />
 		</SharedAudioContext.Provider>
 	);

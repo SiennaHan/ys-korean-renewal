@@ -60,6 +60,7 @@ export function ParticleSniperLevelView({
 			<div className="grid grid-cols-2 gap-3 ps-level-grid">
 				{Object.entries(levelMeta).map(([level, meta]) => (
 					<button
+						type="button"
 						key={level}
 						onClick={() => {
 							onPick(level);
@@ -325,6 +326,13 @@ export function ParticleSniperPlayView({
 						</span>
 						{after ?? ""}
 					</div>
+					{/*
+					 * biome 은 role="status" 대신 <output> 을 쓰라고 한다. 보조기술에는
+					 * 차이가 없다 — <output> 의 암묵 role 이 곧 status 다. 얻는 것이 없는데
+					 * 목업(game__ps_play)이 div 라 갈라야 하고, <output> 은 기본이 inline
+					 * 이라 배치도 흔들린다. 목업을 따른다.
+					 */}
+					{/* biome-ignore lint/a11y/useSemanticElements: role="status" 로 이미 같은 뜻이다 — 위 주석 */}
 					<div className="ps-target-guide" role="status" aria-live="polite">
 						<span>＋</span>
 						<b>

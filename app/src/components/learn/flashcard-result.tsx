@@ -101,12 +101,13 @@ export default function FlashcardResult({
 		<div className="flex h-full flex-col bg-[#0180FF]">
 			<div className="sticky top-0 z-10 items-center">
 				<div className="flex h-[48px] justify-between">
-					<div
+					<button
+						type="button"
 						onClick={onClose}
 						className="flex h-[48px] w-[48px] cursor-pointer items-center justify-center hover:opacity-[0.8] active:opacity-[0.9]"
 					>
 						<X color="white" />
-					</div>
+					</button>
 					<div className="flex items-center text-[#fff] text-[14px]">
 						{"["}
 						{currentCard?.chapter}
@@ -145,7 +146,10 @@ export default function FlashcardResult({
 				<div className="m-2 rounded-[20px] bg-white pt-8 shadow-sm">
 					<div className="mb-8 flex justify-center">
 						<div className="relative h-48 w-48">
-							<svg className="-rotate-90 h-full w-full transform">
+							<svg
+								aria-hidden="true"
+								className="-rotate-90 h-full w-full transform"
+							>
 								<circle
 									cx="96"
 									cy="96"
@@ -175,7 +179,8 @@ export default function FlashcardResult({
 					</div>
 
 					<div className="mb-[12px] grid grid-cols-2 gap-[12px] px-[12px]">
-						<div
+						<button
+							type="button"
 							className={clsx(buttonBase, "bg-[#FFDB5C]")}
 							onClick={() => openSheet("unknown")}
 						>
@@ -185,9 +190,10 @@ export default function FlashcardResult({
 							<div className="flex flex-1 items-center justify-center font-bold text-[#383A3F] text-[16px] text-black">
 								모르는 단어
 							</div>
-						</div>
+						</button>
 
-						<div
+						<button
+							type="button"
 							className={clsx(buttonBase, "bg-[#0180FF]")}
 							onClick={() => openSheet("known")}
 						>
@@ -197,13 +203,14 @@ export default function FlashcardResult({
 							<div className="flex flex-1 items-center justify-center font-bold text-[16px] text-white">
 								아는 단어
 							</div>
-						</div>
+						</button>
 					</div>
 				</div>
 
 				<div className="flex-1" />
 
 				<button
+					type="button"
 					onClick={handleRestart}
 					className="sticky bottom-0 h-[56px] w-full cursor-pointer rounded-[10px] bg-white font-bold text-[#0180FF] text-[16px] transition-colors hover:opacity-[0.8]"
 				>

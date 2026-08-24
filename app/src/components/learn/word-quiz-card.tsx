@@ -5,7 +5,6 @@ import {
 	MeaningFocus,
 	ProblemCard,
 } from "@/components/main/activity";
-import { useToast } from "@/components/toast/toast-context";
 import { wordList } from "@/shared/data/word-list";
 import type { WordQuizItem } from "@/shared/data/word-quiz";
 import { useCallback, useMemo, useState } from "react";
@@ -62,7 +61,6 @@ export default function WordQuizCard({
 	savedSelectedIndex,
 }: WordQuizCardProps) {
 	const sound = useSoundEffects();
-	const { addToast } = useToast();
 	const { i18n } = useTranslation();
 	const solved =
 		savedSelectedIndex !== null && savedSelectedIndex !== undefined;
@@ -120,14 +118,12 @@ export default function WordQuizCard({
 
 			if (isCorrect) {
 				sound.playCorrect();
-				addToast("Correct", "success");
 			} else {
 				sound.playIncorrect();
-				addToast("Incorrect", "error");
 				setWrongIndices((prev) => new Set(prev).add(idx));
 			}
 		},
-		[solved, wrongIndices, quiz, onAnswered, sound, addToast],
+		[solved, wrongIndices, quiz, onAnswered, sound],
 	);
 
 	return (

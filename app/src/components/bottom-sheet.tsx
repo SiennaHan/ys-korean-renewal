@@ -53,7 +53,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
 						}}
 					>
 						<div className="flex justify-end px-3 pt-3">
-							<button className={iconBase} onClick={onClose}>
+							<button type="button" className={iconBase} onClick={onClose}>
 								<X />
 							</button>
 						</div>
@@ -69,7 +69,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
 						</div>
 
 						<div className="flex items-center justify-center p-[16px]">
-							<button className={buttonBase} onClick={onClose}>
+							<button type="button" className={buttonBase} onClick={onClose}>
 								확인
 							</button>
 						</div>

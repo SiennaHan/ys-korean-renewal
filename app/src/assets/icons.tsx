@@ -7,6 +7,7 @@ interface IconProps {
 export const PracticeIcon = ({ color, className }: IconProps) => {
 	return (
 		<svg
+			aria-hidden="true"
 			xmlns="http://www.w3.org"
 			width="24"
 			height="24"
@@ -25,6 +26,7 @@ export const PracticeIcon = ({ color, className }: IconProps) => {
 export const ClipIcon = ({ color, className }: IconProps) => {
 	return (
 		<svg
+			aria-hidden="true"
 			xmlns="http://www.w3.org"
 			width="24"
 			height="24"
@@ -45,6 +47,7 @@ export const SpeakerIcon = ({ color, className, size }: IconProps) => {
 	const height = size ? size : 14;
 	return (
 		<svg
+			aria-hidden="true"
 			xmlns="http://www.w3.org"
 			width={width}
 			height={height}
@@ -63,6 +66,7 @@ export const SpeakerIcon = ({ color, className, size }: IconProps) => {
 export const TranslationIcon = ({ color, className }: IconProps) => {
 	return (
 		<svg
+			aria-hidden="true"
 			xmlns="http://www.w3.org"
 			width="15"
 			height="10"
@@ -81,6 +85,7 @@ export const TranslationIcon = ({ color, className }: IconProps) => {
 export const CardCheckIcon = ({ color, className }: IconProps) => {
 	return (
 		<svg
+			aria-hidden="true"
 			xmlns="http://www.w3.org"
 			width="14"
 			height="14"
@@ -104,6 +109,7 @@ export const CardCheckIcon = ({ color, className }: IconProps) => {
 export const MicIcon = ({ color, className }: IconProps) => {
 	return (
 		<svg
+			aria-hidden="true"
 			xmlns="http://www.w3.org"
 			width="60"
 			height="60"

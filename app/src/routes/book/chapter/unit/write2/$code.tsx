@@ -3,7 +3,6 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import HangulCanvas from "@/components/draw/HangulCanvas";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import { ProblemHeader } from "@/components/problem/scene/header";
-import { useToast } from "@/components/toast/toast-context";
 import Dialog from "@/components/ui/dialog";
 import { env } from "@/config/env";
 import { chapters } from "@/shared/data/chapter";
@@ -29,7 +28,6 @@ const selectedCardButton = "border-5 border-[#b9daff]";
 
 function RouteComponent() {
 	const { code } = Route.useParams();
-	const { addToast } = useToast();
 	const router = useRouter();
 
 	const sound = useSoundEffects();
@@ -81,7 +79,6 @@ function RouteComponent() {
 
 	const next = () => {
 		sound.playCorrect();
-		addToast("Correct", "success");
 		setIsDisabled(true);
 
 		setTimeout(() => {
@@ -91,7 +88,6 @@ function RouteComponent() {
 
 	const setIncorrect = () => {
 		sound.playIncorrect();
-		addToast("Incorrect", "error");
 
 		const _words = problem?.choice_1.split(",");
 		const wordIndex = _words?.indexOf(word ?? "") ?? -1;
@@ -165,6 +161,7 @@ function RouteComponent() {
 					</div>
 					<div className="mt-[10px] w-full">
 						<button
+							type="button"
 							onClick={play}
 							className="cursor-pointer rounded-full bg-gray-100 p-2 text-blue-500 hover:bg-gray-200 active:bg-gray-300"
 						>
@@ -175,6 +172,7 @@ function RouteComponent() {
 						{wordList.map((item, idx) => {
 							return (
 								<button
+									type="button"
 									key={idx}
 									onClick={(e) => selectWord(item)}
 									className={clsx(
@@ -192,11 +190,13 @@ function RouteComponent() {
 			</div>
 
 			<div className="flex w-full items-end justify-end p-[10px]">
+				{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
 				<audio ref={audioRef} className="hidden" src={audioSrc}>
 					Your device does not support the audio.
 				</audio>
 				{isExit ? (
 					<button
+						type="button"
 						onClick={exit}
 						className={clsx(baseButton, "!bg-green-500 h-[60px] w-[80px]")}
 					>
@@ -204,6 +204,7 @@ function RouteComponent() {
 					</button>
 				) : (
 					<button
+						type="button"
 						onClick={checkAnswer}
 						className={clsx(baseButton, "h-[60px] w-[80px]")}
 						disabled={isDisabled}

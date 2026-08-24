@@ -91,7 +91,7 @@ export const SP_KEYFRAMES_CSS = `
         .sp-chip-slot:active { transform:scale(.94); }
         .sp-chip-slot.cor { background:#0f9b82; cursor:default; }
         .sp-chip-slot.wrg { background:#fdf0f0; color:#e03e3e; border-color:#f0a8a8; text-decoration:line-through; cursor:default; }
-        .sp-loc-card { background:#fff; border-radius:14px; border:1px solid #e5e7eb; padding:14px 16px; display:flex; align-items:center; gap:14px; cursor:pointer; transition:transform .12s, box-shadow .12s; }
+        .sp-loc-card { text-align:left; font:inherit; color:inherit; background:#fff; border-radius:14px; border:1px solid #e5e7eb; padding:14px 16px; display:flex; align-items:center; gap:14px; cursor:pointer; transition:transform .12s, box-shadow .12s; }
         .sp-loc-card:active { transform:scale(.98); }
         .sp-loc-card.locked { opacity:.45; cursor:default; pointer-events:none; }
         .sp-loc-card.done { border-color:#7ecfc3; }
@@ -337,6 +337,7 @@ export function MapSvg({
 
 	return (
 		<svg
+			aria-hidden="true"
 			viewBox={viewBox}
 			xmlns="http://www.w3.org/2000/svg"
 			preserveAspectRatio="xMidYMid slice"
@@ -629,6 +630,7 @@ export function MapSvg({
 				// game.css 624행의 :not(.is-active):not(.is-done):not(.is-context) 규칙이다.
 
 				return (
+					// biome-ignore lint/a11y/useKeyWithClickEvents: 지도 아래 장소 카드가 같은 일을 하고 초점을 받는다 — SVG <g> 는 tabIndex 가 브라우저마다 달라 여기서 받지 않는다
 					<g
 						key={l.id}
 						className={[
@@ -1384,6 +1386,7 @@ export default function SeoulPuzzle() {
 									/>
 								</div>
 								<button
+									type="button"
 									disabled={!nameInput.trim()}
 									onPointerDown={submitName}
 									onClick={(e) => {

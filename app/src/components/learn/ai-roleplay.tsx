@@ -489,6 +489,7 @@ export default function AiRoleplay({
 					<span>{t("activity.rolePracticeOrder")}</span>
 					<div
 						className="role-order"
+						// biome-ignore lint/a11y/useSemanticElements: <fieldset> 의 암묵 role 이 곧 group 이라 보조기술에는 차이가 없다. fieldset 은 기본 테두리·여백을 갖고 온다
 						role="group"
 						aria-label={t("activity.rolePracticeOrder")}
 					>

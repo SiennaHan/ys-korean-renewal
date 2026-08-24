@@ -333,6 +333,7 @@ const ReportBottomSheet = ({
 				>
 					<div className="flex size-[24px] items-center justify-center">
 						<svg
+							aria-hidden="true"
 							width="18"
 							height="18"
 							viewBox="0 0 18 18"
@@ -356,6 +357,7 @@ const ReportBottomSheet = ({
 				>
 					<div className="flex size-[24px] items-center justify-center">
 						<svg
+							aria-hidden="true"
 							width="16"
 							height="18"
 							viewBox="0 0 16 18"

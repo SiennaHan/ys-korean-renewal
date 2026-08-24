@@ -223,8 +223,33 @@
 .activity-frame .record-wave i:nth-child(3n) { height:8px; }
 @keyframes record-pulse { 0% { transform:scale(.92); opacity:.8; } 100% { transform:scale(1.16); opacity:0; } }
 
+/* 오답 진동 — shell_spec_v1 값: 좌우 ±6px · 왕복 3회 · 총 300ms · ease-out · 제자리 복귀.
+   framer-motion 이 아니라 CSS 로 한다. parity 가 이 버튼을 정적 HTML 로 그려 목업
+   캡처와 DOM 을 비교하므로 motion.button 으로 감싸면 대조가 깨진다. CSS 는 노드를
+   늘리지 않는다. 선택지가 한 열이라 진동 중 옆과 겹칠 일이 없고, 좌우 여백 16 안에서만
+   움직인다(명세 §14.2). */
+@keyframes choice-shake {
+  0%, 100% { transform:translateX(0); }
+  16%      { transform:translateX(-6px); }
+  33%      { transform:translateX(6px); }
+  50%      { transform:translateX(-6px); }
+  66%      { transform:translateX(6px); }
+  83%      { transform:translateX(-6px); }
+}
+.activity-frame .choice.shake { animation:choice-shake 300ms ease-out; }
+
+/* 진동 대신 테두리 깜빡 — 위치 이동이 전정 장애에 불편하다(명세 §14.2·§19.5) */
+@keyframes choice-blink {
+  0%, 100% { border-color:var(--color-line-control); }
+  50%      { border-color:var(--color-fill-wrong); }
+}
+
 @media (prefers-reduced-motion:reduce) {
   .activity-frame .record-button.recording::after { animation:none; }
+  /* 진동은 끄고 테두리 200ms 한 번 깜빡으로 바꾼다. 소리와 pill 은 그대로 */
+  .activity-frame .choice.shake {
+    animation:choice-blink 200ms ease-out;
+  }
 }
 
 .activity-frame /* 롤플레잉 */

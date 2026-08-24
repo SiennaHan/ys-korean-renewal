@@ -19,7 +19,6 @@ import {
 	ProblemCard,
 	QuestionText,
 } from "@/components/main/activity";
-import { useToast } from "@/components/toast/toast-context";
 import { useInstruction } from "@/shared/data/instruction";
 import {
 	type ListenQuestion,
@@ -48,7 +47,6 @@ export default function ListenAnswer({
 	const { t } = useTranslation();
 	const sharedAudio = useSharedAudio();
 	const sound = useSoundEffects();
-	const { addToast } = useToast();
 
 	/** 페이지 이탈 시 음원 중단 */
 	useEffect(() => {
@@ -212,12 +210,10 @@ export default function ListenAnswer({
 
 			if (isCorrect) {
 				sound.playCorrect();
-				addToast("Correct", "success");
 				setSelectedIndex(idx);
 				setSavedAnswers((prev) => ({ ...prev, [question.id]: idx }));
 			} else {
 				sound.playIncorrect();
-				addToast("Incorrect", "error");
 				setWrongAttempts((prev) => ({
 					...prev,
 					[question.id]: new Set(prev[question.id]).add(idx),

@@ -29,7 +29,6 @@ import { SpeakerIcon } from "@/assets/icons";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import { ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
-import { useToast } from "@/components/toast/toast-context";
 import { env } from "@/config/env";
 import { chapters } from "@/shared/data/chapter";
 import { modules } from "@/shared/data/module";
@@ -52,7 +51,6 @@ const selectedCardButton = "!bg-[#359AFF] !text-white";
 
 export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	const code = moduleCode;
-	const { addToast } = useToast();
 	const router = useRouter();
 	const { t } = useTranslation();
 
@@ -94,7 +92,6 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	const next = () => {
 		// 맞았습니다 출력 후 1초 딜레이 후
 
-		addToast("Correct", "success");
 		setIsDisabled(true);
 
 		setTimeout(() => {
@@ -107,8 +104,6 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	};
 
 	const setIncorrect = (picked: string) => {
-		addToast("Incorrect", "error");
-
 		const wordIndex = wordList?.indexOf(picked) ?? -1;
 
 		setIncorrectSlots((prevSlots) => {

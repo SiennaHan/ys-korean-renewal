@@ -32,27 +32,29 @@ function RouteComponent() {
 			<div className="">
 				<BookHeader title="3주완성 연세한국어" previousPage={previousPage} />
 				<div className="mt-[20px] flex flex-col gap-[16px] pr-[18px] pl-[18px]">
-					<div
-						onClick={(e) => goBook(1)}
-						className="block h-[163px] cursor-pointer rounded-[15px] bg-[#6BC0E5] p-[10px] shadow-[0_0px_6px_0.5px_rgb(94,129,169,0.3)]"
+					<button
+						type="button"
+						onClick={() => goBook(1)}
+						className="block h-[163px] cursor-pointer rounded-[15px] bg-[#6BC0E5] p-[10px] text-left shadow-[0_0px_6px_0.5px_rgb(94,129,169,0.3)]"
 					>
 						<div className="flex justify-between rounded-[8px] border-[#ffffff] border-[3px] border-solid p-[13px]">
 							<div>
-								<img src="/images/image-yonsei-korean-in3weeks.png" />
+								<img alt="" src="/images/image-yonsei-korean-in3weeks.png" />
 							</div>
 							<div>
-								<img src="/images/image-no-1.png" />
+								<img alt="" src="/images/image-no-1.png" />
 							</div>
 						</div>
 						<div className="mt-[10px] ml-[14px] text-left font-bold text-[#fff] text-[15px]">
 							3주완성 연세한국어 1
 						</div>
-					</div>
+					</button>
 					{bookList.map((item) => {
 						return (
 							<button
+								type="button"
 								key={item.id}
-								onClick={(e) => goBook(item.id)}
+								onClick={() => goBook(item.id)}
 								className="h-[40px] cursor-pointer rounded-[15px] bg-white pl-[24px] text-left text-black shadow-[0_0px_6px_0.5px_rgb(94,129,169,0.2)] hover:bg-gray-200"
 							>
 								{item.title}

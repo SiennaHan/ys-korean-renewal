@@ -229,6 +229,7 @@ const AudioRecorder = (props: Props) => {
 				<div className="flex size-[50px] items-center">
 					{recorderStatus === "recorded" && (
 						<button
+							type="button"
 							onClick={handleCancelOrDelete}
 							className={clsx(baseButtonClasses, "!bg-[#FFE8E8] size-[44px]")}
 						>
@@ -247,6 +248,7 @@ const AudioRecorder = (props: Props) => {
 						/>
 					</div>
 					<button
+						type="button"
 						onClick={handlePrimaryAction}
 						disabled={
 							props.disabled ||
@@ -281,6 +283,7 @@ const AudioRecorder = (props: Props) => {
 			</div>
 
 			{/* 숨겨진 audio 요소 */}
+			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
 			<audio
 				ref={audioRef}
 				onPlay={() => setIsPlaying(true)}

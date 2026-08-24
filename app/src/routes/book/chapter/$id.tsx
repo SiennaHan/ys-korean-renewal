@@ -81,6 +81,7 @@ function RouteComponent() {
 					<div className="mt-[10px] gap-[10px]">
 						{moduleList1.map((item) => (
 							<button
+								type="button"
 								key={item.id}
 								onClick={(e) => goProblem(item)}
 								className={buttonBase}
@@ -104,6 +105,7 @@ function RouteComponent() {
 					<div className="mt-[5px] gap-[15px]">
 						{moduleList2.map((item) => (
 							<button
+								type="button"
 								key={item.id}
 								onClick={(e) => goProblem(item)}
 								className={buttonBase}

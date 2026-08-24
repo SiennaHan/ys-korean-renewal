@@ -127,8 +127,9 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 		isChecked,
 	}: { item: ProblemType; index: number; isChecked: boolean }) => {
 		return (
-			<div
-				onClick={(e) => selectWord(item.id)}
+			<button
+				type="button"
+				onClick={() => selectWord(item.id)}
 				className={clsx(
 					"size-[56px] rounded-[10px] bg-[#fff] font-semibold text-[#24425F] text-[20px] transition-colors",
 					"relative flex cursor-pointer items-center justify-center rounded-[5px] hover:bg-gray-200 active:bg-gray-300",
@@ -139,7 +140,7 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 				<div className="absolute top-[2px] right-[2px]">
 					<CardCheckIcon color={isChecked ? "#11C378" : "#E5E8EC"} />
 				</div>
-			</div>
+			</button>
 		);
 	};
 

@@ -24,6 +24,7 @@ export function MicBlockedDialog({
 			<div className="modal-box notice">
 				<div className="notice-icon" aria-hidden="true">
 					<svg
+						aria-hidden="true"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"

@@ -14,7 +14,6 @@ import {
 	PrimaryButton,
 	ProblemCard,
 } from "@/components/main/activity";
-import { useToast } from "@/components/toast/toast-context";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import blankQuestions from "@/shared/data/n4_blank_question.json";
 import { useRouter } from "@tanstack/react-router";
@@ -60,7 +59,6 @@ export default function FillBlank({
 	const router = useRouter();
 	const { t } = useTranslation();
 	const sound = useSoundEffects();
-	const { addToast } = useToast();
 
 	const questions = useMemo(() => {
 		return (blankQuestions as BlankItem[]).filter(
@@ -138,7 +136,6 @@ export default function FillBlank({
 			if (sel === question.answer) {
 				setAnswerState("correct");
 				sound.playCorrect();
-				addToast("Correct", "success");
 				if (bookId && chapterSeq) {
 					saveLearningRecord({
 						bookId,
@@ -156,7 +153,6 @@ export default function FillBlank({
 			} else {
 				setAnswerState("wrong");
 				sound.playIncorrect();
-				addToast("Incorrect", "error");
 			}
 		},
 		[answerState, selectedAnswer, question, bookId, chapterSeq],

@@ -96,12 +96,13 @@ function RouteComponent() {
 				{/* <ProblemHeader chapterSeq={chapter?.seq} unitTitle={unit?.title} /> */}
 				<div className="sticky top-0 z-10 items-center bg-white">
 					<div className="flex h-[48px] justify-between">
-						<div
+						<button
+							type="button"
 							onClick={goBack}
 							className="flex h-[48px] w-[48px] cursor-pointer items-center justify-center hover:bg-gray-200 active:bg-gray-300"
 						>
 							<X />
-						</div>
+						</button>
 						<div className="flex items-center font-semibold text-[#383A3F] text-[17px]">
 							{dialog?.chapter}
 							{"과"}
@@ -127,7 +128,7 @@ function RouteComponent() {
 						</div>
 						<div className="mt-[8px] w-full rounded-[10px] bg-[#fff] p-[12px]">
 							<div className="mb-[16px] flex justify-center">
-								<img src={scenarioImgUrl} />
+								<img alt="" src={scenarioImgUrl} />
 							</div>
 							<div className="justify-center rounded-[6px] bg-[#F9FAFC] p-[16px]">
 								<div className="text-center text-[14px]">
@@ -162,10 +163,10 @@ function RouteComponent() {
 				</div>
 			</div>
 			<div className="sticky bottom-0 flex items-center justify-center">
-				<div className={baseButton} onClick={goChat}>
+				<button type="button" className={baseButton} onClick={goChat}>
 					{" "}
 					시작하기{" "}
-				</div>
+				</button>
 			</div>
 		</div>
 	);

@@ -15,12 +15,13 @@ export function ProblemHeader(props: HeaderInterface) {
 	return (
 		<div className="sticky top-0 z-10 items-center bg-white">
 			<div className="flex h-[48px] justify-between">
-				<div
+				<button
+					type="button"
 					onClick={goBack}
 					className="flex h-[48px] w-[48px] cursor-pointer items-center justify-center hover:bg-gray-200 active:bg-gray-300"
 				>
 					<X />
-				</div>
+				</button>
 				<div className="flex items-center text-[#888] text-[14px]">
 					{props.chapterSeq}
 					{"과 - "}
@@ -41,12 +42,13 @@ export function JamoHeader(props: HeaderInterface) {
 	return (
 		<div className="sticky top-0 z-10 items-center bg-white">
 			<div className="flex h-[48px] justify-between">
-				<div
+				<button
+					type="button"
 					onClick={goBack}
 					className="flex h-[48px] w-[48px] cursor-pointer items-center justify-center hover:bg-gray-200 active:bg-gray-300"
 				>
 					<X />
-				</div>
+				</button>
 				<div className="flex items-center text-[#888] text-[14px]">
 					{props.chapterSeq}
 					{"과 - "}

@@ -128,8 +128,9 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 		const realIndex = problemList.findIndex((p) => p.id === item.id);
 
 		return (
-			<div
-				onClick={(e) => setProblemIndex(realIndex)}
+			<button
+				type="button"
+				onClick={() => setProblemIndex(realIndex)}
 				className={clsx(
 					baseButtonClasses,
 					"w-[100px] border-[#fff] border-[4px] bg-[#fff]",
@@ -146,7 +147,7 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 						<CardCheckIcon color={isChecked ? "#11C378" : "#E5E8EC"} />
 					</div>
 				</div>
-			</div>
+			</button>
 		);
 	};
 

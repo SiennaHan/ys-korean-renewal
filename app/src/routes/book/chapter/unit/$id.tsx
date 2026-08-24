@@ -63,10 +63,11 @@ function RouteComponent() {
 
 				<div className="pr-[15px] pl-[15px]">
 					{moduleList.map((item) => (
-						<div
+						<button
+							type="button"
 							key={item.id}
-							onClick={(e) => goProblem(item)}
-							className="mb-[7px] flex cursor-pointer rounded-[5px] border-1 border-[#efefef] bg-[#fff] px-[8px] py-[6px] shadow-[0_0px_6px_0.5px_rgb(94,129,169,0.1)] hover:bg-[#e9f2fc] active:bg-[#e9f2ff]"
+							onClick={() => goProblem(item)}
+							className="mb-[7px] flex cursor-pointer rounded-[5px] border-1 border-[#efefef] bg-[#fff] px-[8px] py-[6px] text-left shadow-[0_0px_6px_0.5px_rgb(94,129,169,0.1)] hover:bg-[#e9f2fc] active:bg-[#e9f2ff]"
 						>
 							<div className="flex w-[20px] items-center justify-center">
 								<ChevronRight />
@@ -75,7 +76,7 @@ function RouteComponent() {
 								<div className="font-bold text-[14px]">{item.title}</div>
 								<div className="text-[#bbb] text-[10px]">{item.eng}</div>
 							</div>
-						</div>
+						</button>
 					))}
 				</div>
 			</div>

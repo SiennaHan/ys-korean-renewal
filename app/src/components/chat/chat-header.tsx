@@ -23,9 +23,9 @@ export function ChatHeader(props: HeaderInterface) {
 
 	return (
 		<div className="flex items-center justify-between">
-			<div onClick={goBack} className={baseButton}>
+			<button type="button" onClick={goBack} className={baseButton}>
 				<X />
-			</div>
+			</button>
 			<div className="flex items-center pl-[16px] font-semibold text-[#383A3F] text-[17px]">
 				{props.chapterSeq}
 				{"과"}
@@ -33,6 +33,7 @@ export function ChatHeader(props: HeaderInterface) {
 			<div className="flex items-center pr-[16px]">
 				{props.isCompleted ? (
 					<button
+						type="button"
 						className={clsx(baseTextButton, "text-[12px]")}
 						onClick={props.goResult}
 					>
@@ -41,6 +42,7 @@ export function ChatHeader(props: HeaderInterface) {
 				) : (
 					props.skip && (
 						<button
+							type="button"
 							className={clsx(baseTextButton, "text-[12px]")}
 							onClick={props.skip}
 						>

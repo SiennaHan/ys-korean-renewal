@@ -699,7 +699,7 @@ grep -rn 'to: "/\(flashcard\|missionchat\|jamolist\|about\)"' app/src --include=
 | 지시문 출처 | — | **원장(xlsx)이 정본** · i18n 은 대비책 | 같은 읽기 활동에서 객관식과 O/X 지시문이 다르다. 실제로 O/X 177문항이 객관식 지시문을 달고 있었다 |
 | 녹음 시작·종료 | 누르면 바로 | **2초 준비 · 1초 마무리** | 마이크보다 사람이 빨라 첫 음절이 잘린다 |
 | 마이크 거부 | 전체 화면 | **지금 화면 위 알림 + 다시 시도** | 설정에서 켜고 돌아왔을 때 있던 자리를 잃지 않아야 한다 |
-| 선택지 채점 | 고른 것 하나만 표시 | **틀린 것이 여럿 남는다** | 맞을 때까지 다시 고르는 기존 동작을 살렸다 |
+| 선택지 채점 | 고른 것 하나만 표시 | **고른 것 하나만 · 2초 뒤 복귀** | **2026-08-24 에 명세 쪽으로 되돌렸다** — 전에는 틀린 것이 계속 남았다. 명세가 "오답 표시는 순간 상태다. ✕와 빨간 표면은 탭이 처리됐음을 알리는 피드백일 뿐, 소거법을 돕는 기록이 아니다" 라고 정했다. 아래 §5-b |
 
 목업에 없어서 **새로 만든 CSS** 도 있다 — `.instruction p` · `.image-choices` ·
 `.grammar-note` · `.catalog-empty` · `.preview-extra` · `.canvas-host` ·
@@ -711,6 +711,46 @@ grep -rn 'to: "/\(flashcard\|missionchat\|jamolist\|about\)"' app/src --include=
 ```bash
 git log --format='%h %s%n%b' --since='2026-08-20'
 ```
+
+---
+
+## 5-b. 오답 신호를 명세대로 넣었다 (2026-08-24)
+
+**임시 토스트를 걷고 진동을 넣었다.** 개발자가 임시로 붙여 둔
+`addToast("Correct"|"Incorrect")` 12곳이 채점마다 초록·빨간 상자를 띄우고 있었다.
+명세는 그것을 쓰지 않는다 — 신호는 **선택지 색 + ✕ + 진동 + 효과음 + pill** 이다.
+
+| | 명세 | 전 | 후 |
+|---|---|---|---|
+| 임시 토스트 | 없음 | 12곳 | **걷었다** |
+| 오답 효과음 | `incorrect.mp3` | 있었다 | 그대로 |
+| **진동** | 좌우 ±6px · 왕복 3회 · 300ms · ease-out | **없었다** | **넣었다** |
+| 오답 표시 지속 | 약 650ms 후 복귀 | 계속 남았다 | **2초 후 복귀** |
+| pill 지속 | 계속 표시 | 계속 표시 | **2초 후 거둠** |
+| `reduced-motion` | 진동 대신 테두리 200ms 깜빡 | 분기 없었다 | **넣었다** |
+
+**지속시간 2초는 기획 판단이다.** 명세의 650ms 는 눈으로 좇기에 짧았다.
+값은 `components/main/activity/choice.tsx` 의 `WRONG_VISIBLE_MS` 하나다.
+pill 도 같은 값을 쓴다 — 둘이 같이 사라져야 한 신호로 읽힌다.
+
+**framer-motion 을 쓰지 않았다.** 명세는 그것으로 하라고 적었는데,
+`parity:activity` 가 선택지를 정적 HTML 로 그려 목업 캡처와 **DOM 을** 비교한다.
+`motion.button` 으로 감싸면 노드가 늘어 대조가 깨진다. CSS `@keyframes` 는
+노드를 안 늘린다 — `activity.css` 의 `choice-shake` · `choice-blink`.
+
+**같은 오답을 또 눌러도 매번 다시 난다**(명세 요구). 부모의 `state` 는 `wrong` 에
+머물러 있어 그것만으로는 재발동이 안 되므로, 선택지가 표시를 켤 때
+`WRONG_FLASH_EVENT` 를 쏘고 pill 이 그것을 듣는다. 화면마다 오답 기록의 모양이
+달라서(`Set` · 단일 상태 · `Record` · `boolean[]` — 넷) 부모 넷을 고치는 대신
+공통 컴포넌트 둘에서 처리했다.
+
+**남긴 것** — 체크 컨페티(`playCorrect()` 안의 `lottieEffect.playCelebration()`)와
+기능 오류 토스트 10곳(마이크 권한 · 녹음 실패 · 음성 인식 실패 등). 후자는 채점 UI 가
+아니라 사용자에게 알려야 하는 것이다.
+
+**돌려서 확인했다.** 60ms 에 −5.2px, 200ms 에 +4.4px 로 실제로 흔들리고 300ms 에
+멈춘다. 2초에 선택지와 pill 이 함께 사라진다. 재탭에도 둘이 다시 뜬다.
+목업 대조 47화면 그대로 일치한다 — 초기 상태는 `class="choice "` 라 대조에 안 걸린다.
 
 ---
 
@@ -946,6 +986,63 @@ Exo 2 를 `<link>` 로 부른다.
 값을 그 자리에서 바로 돌려주도록 바꿨다. 호출부 둘 다 안전하다 —
 `listReport` 는 배열의 `.length` 만 보고, `createReport` 는 반환값을 쓰지 않는다.
 `biome check` 214 → **212건**.
+
+### a11y 73건을 화면 단위로 끝냈다 — 212 → 137건 (2026-08-24)
+
+**기계적인 34건.** `useButtonType` 22 → `type="button"`, `noSvgWithoutTitle` 12 →
+`aria-hidden="true"`. 둘 다 비교기의 `DROP_ATTRS` 에 있어 **목업 대조에 안 보인다.**
+svg 열둘은 전부 장식이었다(수치·목록이 곁에 글자로 있다). 버튼 스물둘이 든 파일에는
+`<form>` 이 하나도 없어 `submit` 의도가 없는 것을 확인했다.
+
+**`useAltText` 7 → `alt=""`.** 책 표지·아바타·상황 그림인데 제목·대화 글이 곁에 있어
+읽어 주면 같은 말을 두 번 한다.
+
+**`useMediaCaption` 3 → 재웠다.** 숨은 재생 전용 `<audio>` 다 — 저장소가 이미 같은
+이유로 여덟 곳을 재워 뒀다.
+
+**`useKeyWithClickEvents` 25 → 진짜 `<button>` 으로.** `role="button"` +
+`tabIndex` + `onKeyDown` 으로도 이 규칙은 사라지지만 **그러면 `useSemanticElements`
+가 새로 뜬다**(실측했다). biome 은 native 버튼을 원한다. 클래스는 한 글자도 빼지 않고
+옮기고, display 지정이 없던 곳엔 `block`, 왼쪽 정렬 글자가 있던 곳엔 `text-left` 를
+더했다 — 버튼은 기본이 `inline-block` · 글자 가운데 정렬이라서다.
+
+**`useSemanticElements` 4 중 3은 재웠다.** `role="status"` → `<output>`,
+`role="group"` → `<fieldset>` 인데 **보조기술에는 차이가 없다** — 그 요소들의 암묵
+role 이 곧 status·group 이다. 얻는 것이 없는데 목업을 갈라야 하고 배치도 흔들린다.
+
+#### 여기서 나온 것들
+
+**서울 퍼즐이 키보드로 아예 닿지 않았다.** 장소 카드가 `div` 였고, 지도 핀은
+SVG `<g>` 라 초점을 못 받는다 — 즉 장소로 들어갈 방법이 마우스뿐이었다. 카드가
+유일한 경로라 **목업을 고쳤다**(`game__sp_map.html` 카드 10개 → `<button>`,
+잠긴 곳은 `disabled`). 🔊 때와 같은 판단이다. 딸려서 `sp_entry`·`sp_puzzle` 목업도
+고쳤다 — `.sp-loc-card` 의 버튼 기본값 되돌림이 **공유 `<style>` 블록**에 들어가고
+그 블록이 대조 대상이라서다. `TWIN_ALLOW` 에 셋 다 적었다.
+
+**교재 목록에 실제 버그가 있었다.** `routes/book/index.tsx` 의
+`onClick={() => goBook(1)}` 이 2~8권 버튼까지 감싸는 **래퍼**에 붙어 있어서,
+3권을 눌러도 이벤트가 위로 올라가 **`/book/1` 로 갔다.** 1권 카드로 내렸다.
+같은 화면의 `routes/book/list.tsx` 가 처음부터 올바른 꼴이었다. 같은 자리의
+`map` 에 `key` 가 없던 것도 함께 넣었다(HEAD 에도 없었다).
+
+**죽은 코드 하나.** `components/main/course-list/scene-header.tsx`(36줄)는 참조가
+0곳이었다. a11y 를 고치는 대신 지웠다.
+
+**모달에 Esc 가 없었다.** `components/ui/dialog.tsx` 는 바깥을 마우스로 누르는 것이
+닫는 유일한 방법이라 **키보드만 쓰면 모달에 갇혔다.** Esc 로 닫히게 하고, 열릴 때
+초점이 모달로 가고 닫힐 때 원래 자리로 돌아오게 했다. `role="dialog"` 도 화면을 덮는
+오버레이에서 **상자 쪽으로 옮겼다**(전에는 어두운 배경까지 대화상자로 읽혔다).
+
+**남은 것 — 초점 갇힘(focus trap)이 없다.** Tab 을 계속 누르면 초점이 모달 밖으로
+나가므로 `aria-modal="true"` 가 아직 정확한 말이 아니다. native `<dialog>` +
+`showModal()` 로 가면 브라우저가 갇힘·Esc·top layer 를 다 해 준다. 이 모달을 쓰는
+두 화면(`learn/jamo/word-write` · `book/chapter/unit/write2`)이 로그인 뒤라 눈으로
+확인할 수 없어 미뤘다 — **볼 수 있을 때 하는 것이 맞다.**
+
+**눈으로 못 본 것.** 고친 화면 대부분이 로그인·서버 데이터가 있어야 열린다.
+목업 대조 47화면이 통과하는 것으로 갈음했고, 대조 밖 레거시 화면은
+`div`→`button` 전환에서 display·text-align 만 지켰다. 그 화면들을 열 수 있게 되면
+한 번 훑는 것이 좋다.
 
 
 i18n 은 5개 로케일 **300키**가 일치한다(en·ja·ko·vi·zh 전부 300).

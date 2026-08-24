@@ -65,7 +65,7 @@ const CircularProgress = ({
 
 	return (
 		<div className="relative" style={{ width: sqSize, height: sqSize }}>
-			<svg className="block h-full w-full" viewBox={viewBox}>
+			<svg aria-hidden="true" className="block h-full w-full" viewBox={viewBox}>
 				<circle
 					className={`${progressColor} -rotate-90 origin-center transform`}
 					strokeWidth={strokeWidth}

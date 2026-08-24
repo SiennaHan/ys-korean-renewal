@@ -37,12 +37,13 @@ function RouteComponent() {
 			<div className="flex rounded-[5px] bg-white shadow-[0_0px_6px_0.5px_rgb(94,129,169,0.2)]">
 				<div className="w-[5px] rounded-l-[5px] bg-[#037]" />
 				<div className="flex w-full flex-col">
-					<div
-						onClick={(e) => goChapter(chapter.id, chapter.seq)}
+					<button
+						type="button"
+						onClick={() => goChapter(chapter.id, chapter.seq)}
 						className={
 							chapter.seq > 3
-								? "flex h-[53px] cursor-pointer items-center hover:bg-gray-200 active:bg-gray-300"
-								: "flex h-[53px] items-center"
+								? "flex h-[53px] cursor-pointer items-center text-left hover:bg-gray-200 active:bg-gray-300"
+								: "flex h-[53px] items-center text-left"
 						}
 					>
 						<div className="flex w-[40px] justify-center pl-[15px] font-extrabold text-[#037] text-[32px]">
@@ -52,17 +53,18 @@ function RouteComponent() {
 							<div className="text-[14px]">{chapter.title}</div>
 							<div className="text-[#999] text-[10px]">{chapter.eng}</div>
 						</div>
-					</div>
+					</button>
 					{chapter.is_show_unit &&
 						unitList.map((item) => {
 							return (
-								<div
+								<button
+									type="button"
 									key={item.id}
-									onClick={(e) => goUnit(item.id)}
-									className="flex h-[40px] cursor-pointer items-center border-gray-100 border-t-1 pl-[15px] text-[14px] hover:bg-gray-200 active:bg-gray-300"
+									onClick={() => goUnit(item.id)}
+									className="flex h-[40px] cursor-pointer items-center border-gray-100 border-t-1 pl-[15px] text-left text-[14px] hover:bg-gray-200 active:bg-gray-300"
 								>
 									{item.title}
-								</div>
+								</button>
 							);
 						})}
 				</div>
