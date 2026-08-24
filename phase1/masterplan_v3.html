@@ -182,7 +182,7 @@
   <tr><td>현행 파악</td><td><span class="pill done">완료</span></td><td>역기획서 v1.2 (소스 4종 전수 조사) · 현행 인터랙티브 목업</td></tr>
   <tr><td>방향 설정</td><td><span class="pill done">완료</span></td><td>코어 루프 목업 v1 · 리뉴얼 기획서 v0.2.1 (결정 D1~D7 권고안)</td></tr>
   <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). 남은 큰 물음은 <b>구독인가 급별 구매인가</b></td></tr>
-  <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 <b>v23 이 앱에 반영</b>. 문항 7,305개(어휘 2,890 · 어휘퀴즈 1,146 · 역할극 993턴 · 듣고답 679 · 빈칸 836 · 읽고답 383 · 듣기지문 378) + 자모 529<br><span class="pill now">검수 대기</span> v24 의 자모 포팅분</td></tr>
+  <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>v26</b>. 앱에 반영된 문항 7,305개(어휘 2,890 · 어휘퀴즈 1,146 · 역할극 993턴 · 듣고답 679 · 빈칸 836 · 읽고답 383 · 듣기지문 378)<br><span class="pill now">검수 대기</span> 자모 529 · 미션대화 117 — 앱 JSON 에 아직 안 들어갔다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b)</td></tr>
   <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업 · CSS 규칙 1,229개. <b>목업이 시각 정본</b>이고 Figma 를 대체했다</td></tr>
   <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 <b>24개 이식</b>(handoff §02 의 표 합계) · 활동 컴포넌트 22종으로 짜였다 · 목업 대조 <b>27화면 일치</b>(<span class="file">pnpm parity:activity</span>)</td></tr>
   <tr><td>개발 — 서버</td><td><span class="pill risk">막힘</span></td><td>DB 2종 · API 7종 미착수. <b>이것이 지금 임계 경로다</b>(§8) — 화면은 다 됐고 상태만 붙이면 된다</td></tr>
@@ -818,7 +818,8 @@ footer / dock   primary "다음" | "결과 보기"</pre>
     <tr><td><b>자모 콘텐츠를 원장으로</b></td>
       <td>자모는 원장 밖(<span class="file">problem.ts</span>)에만 있어 <b>검수 이력이 없고</b>
         한국어·영어뿐이었다 — 다른 활동은 5개 언어다. 529문항을
-        <span class="file">v24</span> 의 <span class="file">n8_jamo</span> 로 옮겼다(컬럼 12→31).
+        <span class="file">v24</span> 의 <span class="file">n8_jamo</span> 로 옮겼다(컬럼 12→27).
+        <b>그 v24 는 8/24 에 덮여 사라졌고 v26 으로 다시 만들었다</b> — <span class="file">BLOCKERS.md</span> §2-b.
         <b>전부 draft — 검수 대기이고 앱은 아직 problem.ts 를 쓴다.</b>
         <span class="file">jamo_authoring_spec_v1</span> §4 스키마로는 담기지 않아 실측으로 넓혔다</td></tr>
     <tr><td><b>문서 정리 — 문을 하나로</b></td>
@@ -874,7 +875,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <h2 id="s18"><span class="n">18</span>남은 일 — 순서대로</h2>
 <div class="cards">
   <div class="card"><div class="k">1</div><div class="nm">자모 포팅 검수 → 라우트 통합</div>
-    <div class="d">명세가 옳았고 전제(원장의 자모 콘텐츠)가 늦게 왔다. 529행을 v24 에 채웠으니
+    <div class="d">명세가 옳았고 전제(원장의 자모 콘텐츠)가 늦게 왔다. 529행이 v26 에 있으니
       <b>검수</b> 뒤에 생성기·화면·라우트를 잇는다. 검수 전에는 손대지 않는다 — BLOCKERS §2</div></div>
   <div class="card"><div class="k">2</div><div class="nm">DB 2종 · API 7종</div>
     <div class="d">ko_activity_state · ko_review_queue 신설, /activity/* 와 /review-queue.
