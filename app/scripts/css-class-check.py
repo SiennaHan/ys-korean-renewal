@@ -61,9 +61,6 @@ UNUSED_ALLOW = {
 	# 죽은 규칙
 	"mobile-fixed-height": "쓰는 곳이 없다 — 남은 유틸리티",
 	"role-footer": "`.chat-footer` 와 한 규칙에 묶여 있을 뿐 쓰는 곳이 없다",
-	# ── 아직 안 그린 것(할 일) — BLOCKERS.md 참고 ────────────────────
-	"log": "TODO: VocaShot 요격 기록 목록. 정본에 있고 앱은 안 그린다",
-	"destroying": "TODO: 운석 파괴 애니메이션. .meteor-shell 은 그리는데 이 상태를 안 붙인다",
 }
 
 USED_ALLOW = {

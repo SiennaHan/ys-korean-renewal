@@ -11,6 +11,7 @@
  * 운석 그림도 지구도 발사대도 없는 화면이었다. 대조에 넣으면서 드러났다.
  */
 import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const LANGS = [
 	{ code: "en", label: "English" },
@@ -333,6 +334,67 @@ export function VocashotPlayView({
 	onTyped,
 	onResolve,
 }: PlayViewProps) {
+	/*
+	 * 요격 연출 — 정답을 맞히면 방어선에서 운석까지 광선이 뻗고, 맞은 자리에
+	 * 불꽃이 터지고, 운석이 부서진다. 정본(`screens_uiux.html`)의 `playHitEffect()`
+	 * 와 같은 계산이다. 광선은 **두 요소의 실제 좌표**를 이어야 해서 그릴 때
+	 * 재 봐야 한다 — 화면 폭이나 낙하 위치가 달라도 같은 자리를 잇는다.
+	 *
+	 * 정본은 DOM 을 직접 만들어 붙이지만, 여기서는 잰 값을 상태로 두고 React 가
+	 * 그리게 한다. 렌더러와 다투지 않는 쪽이 낫다.
+	 */
+	const skyRef = useRef<HTMLDivElement>(null);
+	const meteorRef = useRef<HTMLDivElement>(null);
+	const emitterRef = useRef<HTMLDivElement>(null);
+	const fxTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [hitFx, setHitFx] = useState<{
+		x: number;
+		y: number;
+		len: number;
+		angle: number;
+		tx: number;
+		ty: number;
+	} | null>(null);
+
+	useEffect(() => {
+		if (!feedback?.ok) return;
+		const sky = skyRef.current;
+		const met = meteorRef.current;
+		const emi = emitterRef.current;
+		if (!sky || !met || !emi) return;
+		const sr = sky.getBoundingClientRect();
+		const mr = met.getBoundingClientRect();
+		const er = emi.getBoundingClientRect();
+		const x = er.left + er.width / 2 - sr.left;
+		const y = er.top + 2 - sr.top;
+		const tx = mr.left + mr.width / 2 - sr.left;
+		const ty = mr.top + mr.height / 2 - sr.top;
+		const dx = tx - x;
+		const dy = ty - y;
+		setHitFx({
+			x,
+			y,
+			len: Math.hypot(dx, dy),
+			angle: Math.atan2(dy, dx),
+			tx,
+			ty,
+		});
+		/*
+		 * 타이머를 ref 에 둔다. 정리 함수에 두면 `feedback` 이 null 로 바뀔 때
+		 * React 가 그것을 먼저 부르는데, 되먹임은 900ms 뒤에 지워지고 연출은
+		 * 560ms 라 **먼저 끊길 수 있다.** 그러면 불꽃이 안 사라진다.
+		 */
+		if (fxTimer.current) clearTimeout(fxTimer.current);
+		fxTimer.current = setTimeout(() => setHitFx(null), 560);
+	}, [feedback]);
+
+	useEffect(
+		() => () => {
+			if (fxTimer.current) clearTimeout(fxTimer.current);
+		},
+		[],
+	);
+
 	return (
 		<div
 			ref={frameRef}
@@ -367,14 +429,15 @@ export function VocashotPlayView({
 					</div>
 				</div>
 
-				<div className="sky">
+				<div className="sky" ref={skyRef}>
 					{meteor && (
 						<div
+							ref={meteorRef}
 							className="meteor"
 							// 낙하 시간은 점수에 따라 달라진다 — 목업의 fallSec 그대로
 							style={{ animationDuration: `${meteor.dur}s` }}
 						>
-							<div className="meteor-shell">
+							<div className={`meteor-shell${hitFx ? " destroying" : ""}`}>
 								<MeteorArt />
 								<div className="meteor-question">
 									<div className="txt">{meteor.meaning}</div>
@@ -383,7 +446,39 @@ export function VocashotPlayView({
 						</div>
 					)}
 					<EarthSurface />
-					<div className="defense-emitter" aria-hidden="true" />
+					<div
+						ref={emitterRef}
+						className="defense-emitter"
+						aria-hidden="true"
+					/>
+					{hitFx && (
+						<>
+							<span
+								className="laser-beam"
+								style={
+									{
+										left: hitFx.x,
+										top: hitFx.y,
+										width: hitFx.len,
+										"--laser-angle": `${hitFx.angle}rad`,
+									} as React.CSSProperties
+								}
+							/>
+							<span
+								className="impact-burst"
+								style={{ left: hitFx.tx, top: hitFx.ty }}
+							>
+								{[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+									<i
+										key={deg}
+										style={
+											{ "--spark-angle": `${deg}deg` } as React.CSSProperties
+										}
+									/>
+								))}
+							</span>
+						</>
+					)}
 				</div>
 
 				{/* 목업은 이 자리를 늘 둔다 — 없을 때는 no 로 비운다 */}
@@ -425,9 +520,7 @@ export function VocashotPlayView({
 							 * `g-go` 는 4지선다 쪽 전폭 버튼이라 `width:100%` 가 붙어 있어서,
 							 * 여기 쓰면 입력 칸을 34px 로 찌그러뜨리고 줄이 넘쳤다.
 							 */}
-							<button type="submit">
-								쏘기
-							</button>
+							<button type="submit">쏘기</button>
 						</form>
 					)}
 				</div>
