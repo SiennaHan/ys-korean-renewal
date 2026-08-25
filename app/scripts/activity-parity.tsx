@@ -822,6 +822,8 @@ SCREENS.vocashot__result = (
 		level={2}
 		mode="easy"
 		best={0}
+		// 목업 캡처는 0점·최고 0 이라 신기록이 아니다("최고 점수 0" 이 보인다)
+		isBest={false}
 		score={0}
 		correct={0}
 		asked={1}

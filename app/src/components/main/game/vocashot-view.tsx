@@ -439,6 +439,8 @@ export function VocashotPlayView({
 /* ── 결과 ─────────────────────────────────────────────── */
 
 export interface ResultViewProps {
+	/** 이번 판이 신기록인가. 정본의 `G.score > prev` 와 같다 */
+	isBest: boolean;
 	/**
 	 * 화면이 바뀔 때 초점을 받을 자리. 프레임에 붙인다 —
 	 * 목업 캡처는 프레임 안쪽만 담았고 대조가 이 껍데기를 벗기므로,
@@ -460,6 +462,7 @@ export interface ResultViewProps {
 }
 
 export function VocashotResultView({
+	isBest,
 	frameRef,
 	level,
 	mode,
@@ -527,9 +530,18 @@ export function VocashotResultView({
 					<div className="r-score">
 						<div className="r-k">내 점수</div>
 						<p className="big">{score.toLocaleString("ko-KR")}</p>
-						<p className="r-prev">
-							최고 점수 {(best ?? 0).toLocaleString("ko-KR")}
-						</p>
+						{/*
+						 * 정본(`phase1/screens_uiux.html`)은 신기록이면 이전 최고 점수
+						 * 대신 배지를 띄운다. 이 자리가 비어 있어서 `.r-new` 규칙이
+						 * 아무도 안 쓰는 채로 남아 있었다(`pnpm check:css` 가 잡았다).
+						 */}
+						{isBest ? (
+							<span className="r-new">최고 점수 경신</span>
+						) : (
+							<p className="r-prev">
+								최고 점수 {(best ?? 0).toLocaleString("ko-KR")}
+							</p>
+						)}
 					</div>
 
 					{/* 목업은 둘만 둔다 — 남은 하트는 위 r-desc 가 이미 말한다 */}

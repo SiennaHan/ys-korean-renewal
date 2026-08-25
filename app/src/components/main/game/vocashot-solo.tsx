@@ -111,6 +111,23 @@ export default function VocashotSolo() {
 
 	const stageId = `lv${level}`;
 
+	/*
+	 * 결과 화면의 "최고 점수 경신" 판정.
+	 *
+	 * `endRun()` 은 점수를 **저장한 뒤** 최고 점수를 다시 받아 온다. 그래서 결과를
+	 * 그릴 때의 `best` 는 이미 새 점수다 — 그것만으로는 경신인지 동점인지 갈리지
+	 * 않는다. **저장 전 값**을 따로 봐야 한다.
+	 *
+	 * ref 로 두는 이유는 아래 `clearTimer` 주석과 같다 — `best` 를 `endRun` 의
+	 * 의존성에 넣으면 `endRun` 신원이 바뀌고, 그것을 쥔 `serveNext` 의 낙하 타이머가
+	 * 매 렌더 다시 걸려 문항이 순간이동한다.
+	 */
+	const bestRef = useRef<number | null>(null);
+	useEffect(() => {
+		bestRef.current = best;
+	}, [best]);
+	const [isBest, setIsBest] = useState(false);
+
 	// 최고 점수는 시작 화면과 결과 화면 양쪽에 나온다
 	const loadBest = useCallback(async () => {
 		const rows = await getGameProgress("vocashot");
@@ -148,6 +165,8 @@ export default function VocashotSolo() {
 		clearTimer();
 		setCur(null);
 		setView("result");
+		// 저장하기 전에 갈라야 한다 — 정본과 같은 기준(`score > 이전 최고`)이다
+		setIsBest(score > (bestRef.current ?? 0));
 		await saveGameProgress({
 			gameName: "vocashot",
 			stageId,
@@ -302,6 +321,7 @@ export default function VocashotSolo() {
 		return (
 			<VocashotResultView
 				frameRef={frameRef}
+				isBest={isBest}
 				level={level}
 				mode={mode}
 				best={best}
