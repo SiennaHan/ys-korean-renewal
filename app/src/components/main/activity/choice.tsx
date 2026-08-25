@@ -169,13 +169,40 @@ export function ChipOption({
 	value?: string;
 	onClick?: () => void;
 }) {
+	const [wrongShown, setWrongShown] = useState(state === "no");
+	const [shaking, setShaking] = useState(false);
+	const [shakeNo, setShakeNo] = useState(state === "no" ? 1 : 0);
+
+	useEffect(() => {
+		if (state === "no") setShakeNo((n) => n + 1);
+		else setWrongShown(false);
+	}, [state]);
+
+	useEffect(() => {
+		if (shakeNo === 0) return;
+		setWrongShown(true);
+		setShaking(true);
+		window.dispatchEvent(new Event(WRONG_FLASH_EVENT));
+		const off = setTimeout(() => setShaking(false), SHAKE_MS);
+		const hide = setTimeout(() => setWrongShown(false), WRONG_VISIBLE_MS);
+		return () => {
+			clearTimeout(off);
+			clearTimeout(hide);
+		};
+	}, [shakeNo]);
+
+	const shown: ChipState = state === "no" ? (wrongShown ? "no" : "") : state;
+
 	return (
 		<button
 			type="button"
-			className={`chip-opt ${state}`}
+			className={`chip-opt ${shown}${shaking ? " shake" : ""}`}
 			data-action="gpick"
 			data-value={value}
-			onClick={onClick}
+			onClick={() => {
+				if (state === "no") setShakeNo((n) => n + 1);
+				onClick?.();
+			}}
 		>
 			{children}
 		</button>

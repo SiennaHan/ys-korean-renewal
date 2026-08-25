@@ -3,18 +3,20 @@ import {
 	updateUserFlashcardStatus,
 } from "@/api/flashcard";
 import BottomSheet from "@/components/bottom-sheet";
+import {
+	ActivityAppBar,
+	ActivityFooter,
+	ActivityFrame,
+	Dock,
+	PrimaryButton,
+} from "@/components/main/activity";
 import { flashcards } from "@/shared/data/flashcard";
 import {
 	type FlashcardWord,
 	flashcard_words,
 } from "@/shared/data/flashcard_word";
 import { useSelectedCardTypeStore } from "@/shared/store/menu-store";
-import clsx from "clsx";
-import { X } from "lucide-react";
-import { useEffect, useState } from "react";
-
-const buttonBase =
-	"flex items-center h-[56px] rounded-full p-[8px] cursor-pointer hover:opacity-[0.8] active:opacity-[0.9]";
+import { type CSSProperties, useEffect, useState } from "react";
 
 /**
  * 플래시카드 결과 — 명세 §4
@@ -25,10 +27,15 @@ const buttonBase =
  */
 export default function FlashcardResult({
 	flashcardId,
+	knownIds,
+	unknownIds,
 	onClose,
 	onRetry,
 }: {
 	flashcardId: number;
+	/** 방금 끝낸 세션의 판정. 서버 반영을 기다리지 않고 결과에 즉시 쓴다. */
+	knownIds?: string[];
+	unknownIds?: string[];
 	/** 활동을 끝내고 나간다 */
 	onClose: () => void;
 	/** 모르는 단어만 다시 — 카드 화면으로 되돌린다 */
@@ -59,7 +66,9 @@ export default function FlashcardResult({
 		setIsOpenSheet(true);
 	};
 
-	const percentage = Math.round((knownWords.length / cardData.length) * 100);
+	const percentage = cardData.length
+		? Math.round((knownWords.length / cardData.length) * 100)
+		: 0;
 
 	const handleRestart = async () => {
 		if (percentage === 100) {
@@ -76,7 +85,8 @@ export default function FlashcardResult({
 	};
 
 	/*
-	 * 결과 화면에 들어올 때 한 번만 서버 기록을 읽어 아는/모르는 단어를 가른다.
+	 * 방금 끝낸 세션의 판정이 있으면 그것을 즉시 쓰고, 직접 결과 화면에 들어온
+	 * 경우에만 서버 기록을 읽어 아는/모르는 단어를 가른다.
 	 * cardData 는 컴포넌트 안에서 filter 로 매 렌더 새로 만드는 배열이라, 의존성에
 	 * 넣으면 효과가 매 렌더 다시 돌고 안에서 setState 를 하므로 무한 렌더가 된다.
 	 * flashcardId·cardType 은 이 화면이 떠 있는 동안 바뀌지 않는다(카드 세트를
@@ -85,6 +95,15 @@ export default function FlashcardResult({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 1회 조회 — 위 주석 참고
 	useEffect(() => {
 		const fetchData = async () => {
+			if (knownIds || unknownIds) {
+				setKnownWords(
+					cardData.filter((item) => (knownIds ?? []).includes(item.id)),
+				);
+				setUnknownWords(
+					cardData.filter((item) => (unknownIds ?? []).includes(item.id)),
+				);
+				return;
+			}
 			const savedList = await listUserFlashcardWordByType(
 				flashcardId,
 				cardType,
@@ -106,125 +125,61 @@ export default function FlashcardResult({
 	}, []);
 
 	return (
-		<div className="flex h-full flex-col bg-[#0180FF]">
-			<div className="sticky top-0 z-10 items-center">
-				<div className="flex h-[48px] justify-between">
-					<button
-						type="button"
-						onClick={onClose}
-						className="flex h-[48px] w-[48px] cursor-pointer items-center justify-center hover:opacity-[0.8] active:opacity-[0.9]"
-					>
-						<X color="white" />
-					</button>
-					<div className="flex items-center text-[#fff] text-[14px]">
-						{"["}
-						{currentCard?.chapter}
-						{"과] "}
-						{currentCard?.title}
-					</div>
-					<div className="w-[48px]" />
-				</div>
-			</div>
-			<div className="flex h-full flex-col p-4">
-				{percentage === 100 ? (
-					<div className="mb-2 px-[10px] text-white">
-						<p className="mb-2 font-bold text-[24px]">
-							{"훌륭해요! 단어를 다 외웠어요 :)"}
+		<>
+			<ActivityFrame>
+				<ActivityAppBar
+					lesson={`${currentCard?.chapter ?? ""}과 · ${currentCard?.title ?? "플래시카드"}`}
+					onExit={onClose}
+				/>
+				<main className="activity-content flash-result-content">
+					<div className="result-head">
+						<h2>
+							{percentage === 100
+								? "단어를 다 외웠어요!"
+								: "이번 학습을 마쳤어요"}
+						</h2>
+						<p>
+							{percentage === 100
+								? "이 세트의 모든 단어를 알고 있어요."
+								: "모르는 단어만 모아 다시 연습할 수 있어요."}
 						</p>
-						<p className="font-semibold text-[#DBEDFF] text-[16px]">
-							이 세트의 단어를 완벽하게 익혔어요.
-						</p>
-						<p className="font-semibold text-[#DBEDFF] text-[16px]">
-							다음 단계로 가볼까요?
-						</p>
-					</div>
-				) : (
-					<div className="mb-2 px-[10px] text-white">
-						<p className="mb-2 font-bold text-[24px]">
-							잘했어요! 거의 다 왔어요.
-						</p>
-						<p className="font-semibold text-[#DBEDFF] text-[16px]">
-							아직 익히지 못한 단어들이 있어요.
-						</p>
-						<p className="font-semibold text-[#DBEDFF] text-[16px]">
-							한번 더 복습해 볼까요?
-						</p>
-					</div>
-				)}
-				<div className="m-2 rounded-[20px] bg-white pt-8 shadow-sm">
-					<div className="mb-8 flex justify-center">
-						<div className="relative h-48 w-48">
-							<svg
-								aria-hidden="true"
-								className="-rotate-90 h-full w-full transform"
-							>
-								<circle
-									cx="96"
-									cy="96"
-									r="75"
-									stroke="#DBEDFF"
-									strokeWidth="16"
-									fill="none"
-								/>
-								<circle
-									cx="96"
-									cy="96"
-									r="75"
-									stroke="#0180FF"
-									strokeWidth="16"
-									fill="none"
-									strokeLinecap="round"
-									strokeDasharray={`${2 * Math.PI * 88}`}
-									strokeDashoffset={`${2 * Math.PI * 88 * (1 - percentage / 100)}`}
-								/>
-							</svg>
-							<div className="absolute inset-0 flex items-center justify-center">
-								<span className="font-bold text-[#0180FF] text-[32px]">
-									{percentage}%
-								</span>
-							</div>
+						<div className="stat-row flash-result-stat">
+							<button type="button" onClick={() => openSheet("unknown")}>
+								<span>모르는 단어</span>
+								<strong>{unknownWords.length}</strong>
+							</button>
+							<button type="button" onClick={() => openSheet("known")}>
+								<span>아는 단어</span>
+								<strong>{knownWords.length}</strong>
+							</button>
 						</div>
 					</div>
-
-					<div className="mb-[12px] grid grid-cols-2 gap-[12px] px-[12px]">
-						<button
-							type="button"
-							className={clsx(buttonBase, "bg-[#FFDB5C]")}
-							onClick={() => openSheet("unknown")}
+					<div className="scroll-area flash-result-body">
+						<div
+							className="flash-result-ring"
+							style={{ "--flash-rate": percentage } as CSSProperties}
 						>
-							<div className="flex size-[40px] items-center justify-center rounded-full bg-[#FFF8E1] text-[#383A3F] text-[14px]">
-								{unknownWords.length}
-							</div>
-							<div className="flex flex-1 items-center justify-center font-bold text-[#383A3F] text-[16px] text-black">
-								모르는 단어
-							</div>
-						</button>
-
-						<button
-							type="button"
-							className={clsx(buttonBase, "bg-[#0180FF]")}
-							onClick={() => openSheet("known")}
-						>
-							<div className="flex size-[40px] items-center justify-center rounded-full bg-[#DBEDFF] text-[#383A3F] text-[14px]">
-								{knownWords.length}
-							</div>
-							<div className="flex flex-1 items-center justify-center font-bold text-[16px] text-white">
-								아는 단어
-							</div>
-						</button>
+							<strong>{percentage}%</strong>
+							<span>알아요</span>
+						</div>
+						<p>
+							숫자를 누르면 아는 단어와 모르는 단어 목록을 확인할 수 있어요.
+						</p>
 					</div>
-				</div>
-
-				<div className="flex-1" />
-
-				<button
-					type="button"
-					onClick={handleRestart}
-					className="sticky bottom-0 h-[56px] w-full cursor-pointer rounded-[10px] bg-white font-bold text-[#0180FF] text-[16px] transition-colors hover:opacity-[0.8]"
-				>
-					{percentage === 100 ? "끝내기" : "모르는 단어 한번 더 학습하기"}
-				</button>
-			</div>
+				</main>
+				<ActivityFooter>
+					<Dock mainStyle={{ gap: 12 }}>
+						{percentage < 100 && (
+							<PrimaryButton
+								label="모르는 단어 다시"
+								on
+								onClick={handleRestart}
+							/>
+						)}
+						<PrimaryButton label="학습 끝내기" on onClick={onClose} />
+					</Dock>
+				</ActivityFooter>
+			</ActivityFrame>
 			<BottomSheet
 				isOpen={isOpenSheet}
 				onClose={onCloseSheet}
@@ -245,6 +200,6 @@ export default function FlashcardResult({
 					</div>
 				</div>
 			</BottomSheet>
-		</div>
+		</>
 	);
 }

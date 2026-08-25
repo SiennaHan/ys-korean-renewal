@@ -4,13 +4,11 @@ import { SpeakerIcon } from "@/assets/icons";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
-	ActivityAppBar,
 	ActivityFooter,
-	ActivityFrame,
-	ActivityProgress,
 	IconClose,
 	IconNext,
 	IconVolume,
+	RoleplayLayout,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { type RoleplayTurn, getScenarios } from "@/shared/data/roleplay";
@@ -474,130 +472,90 @@ export default function AiRoleplay({
 	}
 
 	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={chapterLabel}
-				onExit={() => router.history.back()}
-				onSkip={handleSkip}
-			/>
-			{/* 목업 롤플레잉에는 진행 막대가 없지만, 시나리오 사이를 오갈 길이
-			    도크에서 사라졌으므로 그 역할을 여기로 옮겼다 */}
-			<ActivityProgress
-				current={scenarioIdx}
-				total={scenarios.length}
-				onJump={setScenarioIdx}
-			/>
-
-			<section className="role-intro">
-				<div className="role-title">{t("activity.roleIntro")}</div>
-			</section>
-
-			<div className="turns">
-				<div className="script-toolbar">
-					<span>{t("activity.rolePracticeOrder")}</span>
-					<div
-						className="role-order"
-						// biome-ignore lint/a11y/useSemanticElements: <fieldset> 의 암묵 role 이 곧 group 이라 보조기술에는 차이가 없다. fieldset 은 기본 테두리·여백을 갖고 온다
-						role="group"
-						aria-label={t("activity.rolePracticeOrder")}
-					>
-						<button
-							type="button"
-							className={activeTab === "ai-to-me" ? "on" : ""}
-							aria-pressed={activeTab === "ai-to-me"}
-							onClick={() => {
-								tabSwitchedRef.current = true;
-								setActiveTab("ai-to-me");
-							}}
-						>
-							{t("activity.roleAiFirst")}
-						</button>
-						<button
-							type="button"
-							className={activeTab === "me-to-ai" ? "on" : ""}
-							aria-pressed={activeTab === "me-to-ai"}
-							onClick={() => {
-								tabSwitchedRef.current = true;
-								setActiveTab("me-to-ai");
-							}}
-						>
-							{t("activity.roleMeFirst")}
-						</button>
-					</div>
-				</div>
-
-				{turns.map((turn, idx) => {
-					const isCurrent = idx === currentTurnIdx;
-					const isPast = idx < currentTurnIdx;
-					const isFuture = idx > currentTurnIdx;
-					const record = userRecords[idx];
-					const isPractice = isPracticeTurn(turn.turn_seq);
-					// 정답 처리된 녹음만 다시 듣기 대상 (교정 중인 오답은 제외)
-					const myRecordUrl =
-						record?.isCorrect && record.audioUrl ? record.audioUrl : undefined;
-
-					return (
-						<Fragment key={turn.id}>
-							<TurnLine
-								turn={turn}
-								isCurrent={isCurrent}
-								isPast={isPast}
-								isFuture={isFuture}
-								playState={playState}
-								isPractice={isPractice}
-								myRecordUrl={myRecordUrl}
-								onReplay={() =>
-									isPractice
-										? myRecordUrl && handleReplayMyVoice(myRecordUrl)
-										: handleReplayTurn(turn)
-								}
+		<RoleplayLayout
+			lesson={chapterLabel}
+			direction={activeTab === "ai-to-me" ? "ai" : "me"}
+			currentScenario={scenarioIdx}
+			totalScenarios={scenarios.length}
+			onExit={() => router.history.back()}
+			onSkip={handleSkip}
+			onScenarioJump={setScenarioIdx}
+			onDirection={(direction) => {
+				tabSwitchedRef.current = true;
+				setActiveTab(direction === "ai" ? "ai-to-me" : "me-to-ai");
+			}}
+			footer={
+				<ActivityFooter>
+					<div className="dock">
+						<span className="slot" aria-hidden="true" />
+						<div className="main">
+							<AudioRecorder
+								dock
+								setResult={handleRecordResult}
+								onSkipActivity={handleSkip}
+								disabled={playState !== "practice-turn" || evaluating}
 							/>
-							{isPractice && record && isCurrent && (
-								<UserRecordCard
-									turn={turn}
-									record={record}
-									onClear={() => handleClearRecord(idx)}
-									lang={i18n.language}
-								/>
-							)}
-						</Fragment>
-					);
-				})}
-			</div>
-
-			<ActivityFooter>
-				<div className="dock">
-					{/* 오른쪽 다음과 폭을 맞춰 녹음을 가운데 세운다 */}
-					<span className="slot" aria-hidden="true" />
-					<div className="main">
-						<AudioRecorder
-							dock
-							setResult={handleRecordResult}
-							onSkipActivity={handleSkip}
-							disabled={playState !== "practice-turn" || evaluating}
-						/>
+						</div>
+						<button
+							type="button"
+							className="slot"
+							data-action="roleNext"
+							aria-label={t("player.next")}
+							disabled={
+								hasNext
+									? false
+									: !scenarios.every(
+											(sc) =>
+												sc.turns.length > 0 &&
+												completedScenarios.has(sc.turns[0].id),
+										)
+							}
+							onClick={hasNext ? handleNext : () => router.history.back()}
+						>
+							<IconNext />
+						</button>
 					</div>
-					<button
-						type="button"
-						className="slot"
-						data-action="roleNext"
-						aria-label={t("player.next")}
-						disabled={
-							hasNext
-								? false
-								: !scenarios.every(
-										(sc) =>
-											sc.turns.length > 0 &&
-											completedScenarios.has(sc.turns[0].id),
-									)
-						}
-						onClick={hasNext ? handleNext : () => router.history.back()}
-					>
-						<IconNext />
-					</button>
-				</div>
-			</ActivityFooter>
-		</ActivityFrame>
+				</ActivityFooter>
+			}
+		>
+			{turns.map((turn, idx) => {
+				const isCurrent = idx === currentTurnIdx;
+				const isPast = idx < currentTurnIdx;
+				const isFuture = idx > currentTurnIdx;
+				const record = userRecords[idx];
+				const isPractice = isPracticeTurn(turn.turn_seq);
+				// 정답 처리된 녹음만 다시 듣기 대상 (교정 중인 오답은 제외)
+				const myRecordUrl =
+					record?.isCorrect && record.audioUrl ? record.audioUrl : undefined;
+
+				return (
+					<Fragment key={turn.id}>
+						<TurnLine
+							turn={turn}
+							isCurrent={isCurrent}
+							isPast={isPast}
+							isFuture={isFuture}
+							playState={playState}
+							isPractice={isPractice}
+							myRecordUrl={myRecordUrl}
+							onReplay={() =>
+								isPractice
+									? myRecordUrl && handleReplayMyVoice(myRecordUrl)
+									: handleReplayTurn(turn)
+							}
+						/>
+						{isPractice && record && isCurrent && (
+							<UserRecordCard
+								turn={turn}
+								record={record}
+								onClear={() => handleClearRecord(idx)}
+								lang={i18n.language}
+							/>
+						)}
+					</Fragment>
+				);
+			})}
+		</RoleplayLayout>
 	);
 }
 

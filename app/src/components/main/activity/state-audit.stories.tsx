@@ -398,8 +398,7 @@ export const 녹음_보내는중: Story = {
 };
 
 // ─── 녹음 경로 ② 미션대화 ─────────────────────────────────────────────
-// ChatScreen 도 같은 `RecordMode` 를 받는다. 훅(useRecording)의 상태 이름과
-// 다른데(ready·converting·recorded), 그 어긋남은 보고서에 적었다.
+// ChatScreen 과 useRecording 모두 공통 RecordMode 여섯 상태를 쓴다.
 
 const CHAT = {
 	lesson: "1급 4과",

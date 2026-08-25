@@ -831,13 +831,13 @@
   <tr><th>상태</th><th>모양</th><th>유지</th></tr>
   <tr><td><code>default</code></td><td>흰 배경 · 얇은 회색 테두리</td><td>기본</td></tr>
   <tr><td><code>pressed</code></td><td>연한 파랑 배경 · 파랑 테두리</td><td>누르는 순간만</td></tr>
-  <tr><td><code>wrong</code></td><td>연한 빨강 · 빨강 테두리 · ✕ · 진동</td><td><b>약 650ms 후 default 복귀</b></td></tr>
+  <tr><td><code>wrong</code></td><td>연한 빨강 · 빨강 테두리 · ✕ · 진동</td><td><b>약 2초 후 default 복귀</b></td></tr>
   <tr><td><code>correct</code></td><td>연한 초록 · 초록 테두리 · ✓</td><td>다음 문항 전까지</td></tr>
   <tr><td><code>focus</code></td><td><code>line-focus</code> 2px 강조</td><td>키보드·스위치 조작 중</td></tr>
 </table></div>
 <div class="callout warn">
   <div class="t">오답 표시는 순간 상태다</div>
-  <p>오답의 ✕와 빨간 표면은 탭이 처리됐음을 알리는 피드백일 뿐, 소거법을 돕는 기록이 아니다. 약 650ms 뒤 선택지는 기본으로 돌아가고 <b>"다시 해보세요" pill만 유지</b>한다. 따라서 같은 오답을 다시 누르면 같은 피드백이 다시 실행된다.</p>
+  <p>오답의 ✕와 빨간 표면은 탭이 처리됐음을 알리는 피드백일 뿐, 소거법을 돕는 기록이 아니다. 약 2초 뒤 <b>선택지와 "다시 해보세요" pill을 함께 거둔다.</b> 따라서 같은 오답을 다시 누르면 같은 피드백이 다시 실행된다.</p>
 </div>
 
 <h3>14.3 FeedbackLayer <span class="pill keep">S1 확정 · 기존 pill 사용</span></h3>
@@ -853,8 +853,8 @@
 <div class="tablewrap"><table>
   <tr><th>학습자 행동</th><th>피드백</th><th>진행</th></tr>
   <tr><td>정답 선택지 탭</td><td>선택지 <b>초록 표면 + ✓ 유지</b> · pill <b>"아주 잘 했어요!"</b> · 효과음 <code>correct.mp3</code> <span class="qa">축하 연출 없이 소리만</span></td><td>하단 <b>[다음] 활성화</b></td></tr>
-  <tr><td>오답 선택지 탭</td><td>선택지 <b>빨간 표면 + ✕ + 진동</b> · pill <b>"다시 해보세요"</b> · 효과음 <code>incorrect.mp3</code></td><td>약 650ms 후 선택지만 기본 복귀. <b>정답은 공개하지 않는다</b></td></tr>
-  <tr><td><b>같은 오답을 다시 탭</b></td><td><b>빨간 순간 상태 + 진동 + 효과음 다시</b> · pill은 그대로 유지</td><td>없음</td></tr>
+  <tr><td>오답 선택지 탭</td><td>선택지 <b>빨간 표면 + ✕ + 진동</b> · pill <b>"다시 해보세요"</b> · 효과음 <code>incorrect.mp3</code></td><td>약 2초 후 선택지와 pill을 함께 거둔다. <b>정답은 공개하지 않는다</b></td></tr>
+  <tr><td><b>같은 오답을 다시 탭</b></td><td><b>빨간 순간 상태 + 진동 + 효과음 다시</b> · pill도 다시 표시</td><td>없음</td></tr>
   <tr><td>다른 오답을 탭</td><td>동일 <span class="qa">진동은 새로 누른 선택지에서</span></td><td>없음</td></tr>
 </table></div>
 <h4>오답 신호 — 진동 + 효과음 <span class="pill keep">확정</span></h4>
@@ -1421,7 +1421,7 @@ y=648  마이크 영역                  360×92
 <div class="tablewrap"><table>
   <tr><th>#</th><th>컴포넌트</th><th>내용</th><th>해결되는 §17</th></tr>
   <tr><td>1</td><td><b>ShellHeader</b></td><td>App Bar + <b>ProgressBar</b> + Title. 진행바 <b>연속형은 플래시카드 요약 화면에서 복제</b>, 분절형만 신규(§14.1). 카운트는 <code>n/N</code> 하나로 통일, 앱바는 <code>{급} {과}</code></td><td>6.1 · 6.3 · 6.8</td></tr>
-  <tr><td>2</td><td><b>ChoiceList</b></td><td>세로 1열 · min-height 68 · auto-height · gap 10. 질문 단위 <code>contentAlign</code>, 첫 행 y 고정, 목록 내부 스크롤. <b>wrong은 650ms 후 기본 복귀</b></td><td>6.2</td></tr>
+  <tr><td>2</td><td><b>ChoiceList</b></td><td>세로 1열 · min-height 68 · auto-height · gap 10. 질문 단위 <code>contentAlign</code>, 첫 행 y 고정, 목록 내부 스크롤. <b>wrong은 2초 후 선택지와 pill이 함께 기본 복귀</b></td><td>6.2</td></tr>
   <tr><td>3</td><td><b>FeedbackLayer</b></td><td>기존 pill(hug×36, y=608). 오답 시 <b>진동 ±6px/300ms + <code>playIncorrect()</code></b>. 버튼 라벨은 "다음" 하나로</td><td>6.4</td></tr>
   <tr><td>4</td><td><b>ResultScreen</b></td><td><code>AI 대화 리포트</code> 복제 — 탭·레이더만 제거. 플래시카드 요약의 다크는 <b>라이트로</b></td><td>6.7 · 6.10</td></tr>
   <tr><td>5</td><td><b>StateView</b> 5종</td><td>Modal · Bottom Sheets 재사용. 문구는 <b>전부 UI 언어</b>(S2)</td><td>6.5</td></tr>
@@ -1660,7 +1660,7 @@ y=648  마이크 영역                  360×92
   <tr><th>상태</th><th>모양</th><th>지속</th></tr>
   <tr><td>기본</td><td>흰 배경 · 회색 테두리</td><td>기본</td></tr>
   <tr><td>눌림</td><td>연한 파랑 · 파랑 테두리</td><td>탭 순간</td></tr>
-  <tr><td>오답</td><td><code>background-wrong</code> · <code>fill-wrong</code> 테두리 · ✕ · 진동</td><td><b>약 650ms 후 기본 복귀</b></td></tr>
+  <tr><td>오답</td><td><code>background-wrong</code> · <code>fill-wrong</code> 테두리 · ✕ · 진동</td><td><b>약 2초 후 기본 복귀</b></td></tr>
   <tr><td>정답</td><td><code>background-correct</code> · <code>fill-correct</code> 테두리 · ✓</td><td>다음 문항 전까지</td></tr>
   <tr><td>포커스</td><td><code>line-focus</code> 2px</td><td>키보드·스위치 조작 중</td></tr>
 </table></div>
@@ -1680,8 +1680,8 @@ y=648  마이크 영역                  360×92
   <tr><th>학습자 행동</th><th>일어나는 일</th><th>진행</th></tr>
   <tr><td>정답을 누름</td><td>선택지 <b>초록 표면 + ✓ 유지</b> · pill "잘했어요" · 효과음(소리만)</td><td>하단 <b>[다음] 활성화</b>. <b>자동 진행 없음</b></td></tr>
   <tr><td>오답을 누름</td><td>선택지 <b>빨간 표면 + ✕ + 진동</b> · pill "다시 해보세요" · <code>playIncorrect()</code></td>
-      <td><b>약 650ms 후 선택지만 기본 복귀</b>. 정답은 공개하지 않는다</td></tr>
-  <tr><td><b>같은 오답을 또 누름</b></td><td><b>빨간 순간 상태·진동·효과음을 매번 다시 실행</b>. pill은 그대로</td><td>없음</td></tr>
+      <td><b>약 2초 후 선택지와 pill을 함께 거둔다</b>. 정답은 공개하지 않는다</td></tr>
+  <tr><td><b>같은 오답을 또 누름</b></td><td><b>빨간 순간 상태·진동·효과음을 매번 다시 실행</b>. pill도 다시 표시</td><td>없음</td></tr>
   <tr><td>다른 오답을 누름</td><td>동일 — 진동은 새로 누른 선택지에서</td><td>없음</td></tr>
 </table></div>
 <h3>진동</h3>

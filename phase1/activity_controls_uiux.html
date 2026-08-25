@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>연세 한국어 · 학습 활동 공통 조작 시안</title>
+  <style>
+    :root {
+      --ac-blue:#0180ff;
+      --ac-blue-dark:#006fdc;
+      --ac-blue-weak:#eaf4ff;
+      --ac-heading:#24425f;
+      --ac-ink:#393d43;
+      --ac-sub:#7f8791;
+      --ac-muted:#adb4bd;
+      --ac-line:#e8ecef;
+      --ac-line-strong:#dfe4e8;
+      --ac-canvas:#f5f7f9;
+      --ac-surface:#fff;
+      --ac-choice:#f8f9fb;
+      --ac-correct:#2fb876;
+      --ac-correct-weak:#edf9f3;
+      --ac-wrong:#ed6659;
+      --ac-wrong-weak:#fff0ee;
+      --ac-font:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,sans-serif;
+    }
+    * { box-sizing:border-box; }
+    html,body { margin:0; min-width:320px; min-height:100%; background:#eef1f5; color:var(--ac-ink); font-family:var(--ac-font); }
+    button { font:inherit; }
+    button:focus-visible { outline:3px solid rgba(1,128,255,.2); outline-offset:2px; }
+    .page { width:min(1120px,100%); margin:0 auto; padding:34px 24px 60px; }
+    .intro { display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,.75fr); gap:30px; align-items:end; }
+    .eyebrow { margin:0 0 8px; color:var(--ac-blue); font-size:12px; font-weight:800; letter-spacing:.08em; }
+    h1 { margin:0; color:#283f55; font-size:30px; line-height:1.28; letter-spacing:-.035em; }
+    .intro-copy { margin:0; color:#6d7783; font-size:14px; line-height:1.65; word-break:keep-all; }
+    .tabs { display:flex; flex-wrap:wrap; gap:5px; margin-top:24px; padding:9px 0; border-top:1px solid #d9dee4; border-bottom:1px solid #d9dee4; }
+    .tab { min-height:36px; padding:7px 12px; border:1px solid transparent; border-radius:10px; background:transparent; color:#697480; font-size:13px; font-weight:750; cursor:pointer; }
+    .tab.on { border-color:#cce0f5; background:#fff; color:var(--ac-blue-dark); }
+    .bench { display:grid; grid-template-columns:minmax(0,1fr) minmax(322px,420px); gap:46px; align-items:start; padding-top:28px; }
+    .guide { padding-top:14px; }
+    .guide h2 { margin:0 0 8px; color:#324a61; font-size:21px; letter-spacing:-.02em; }
+    .guide > p { margin:0 0 22px; color:#78828d; font-size:13px; line-height:1.7; word-break:keep-all; }
+    .rules { border-top:1px solid #dce1e6; }
+    .rule { display:grid; grid-template-columns:84px 1fr; gap:12px; padding:15px 0; border-bottom:1px solid #dce1e6; }
+    .rule b { color:#3b5166; font-size:12px; }
+    .rule span { color:#747e89; font-size:12px; line-height:1.6; word-break:keep-all; }
+    .sub-controls { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:20px; }
+    .sub-controls strong { margin-right:4px; color:#7b858f; font-size:11px; }
+    .small-chip { min-height:31px; padding:5px 9px; border:1px solid #dce2e7; border-radius:9px; background:rgba(255,255,255,.56); color:#78828d; font-size:11px; font-weight:700; cursor:pointer; }
+    .small-chip.on { border-color:transparent; background:#354f68; color:#fff; }
+    .scope { margin-top:16px; color:#9098a1; font-size:11px; line-height:17px; }
+    .device-wrap { display:flex; justify-content:center; }
+    .device { position:relative; width:377px; height:720px; overflow:hidden; border:1px solid #d7dde3; border-radius:30px; background:var(--ac-canvas); box-shadow:0 18px 55px rgba(32,48,64,.11); transition:width .18s ease; }
+    .device.w320 { width:322px; }
+    .device.no-progress .content { height:calc(100% - 58px - 89px); }
+    .appbar { display:grid; grid-template-columns:44px 1fr 44px; align-items:center; height:58px; padding:0 12px; background:#fff; }
+    .icon-btn { display:grid; place-items:center; width:44px; height:44px; border:0; border-radius:50%; background:transparent; color:#5d6875; cursor:pointer; }
+    .icon-btn svg { width:21px; height:21px; }
+    .lesson { text-align:center; font-size:15px; font-weight:750; }
+    .progress { display:flex; gap:5px; height:32px; padding:0 20px 9px; background:#fff; }
+    .progress i { flex:1; height:4px; border-radius:5px; background:#e0e4e7; }
+    .progress i.on { background:var(--ac-blue); }
+    .content { height:calc(100% - 90px - 89px); overflow:auto; padding:14px 14px 62px; }
+    .card { padding:16px; border:1px solid var(--ac-line-strong); border-radius:17px; background:#fff; }
+    .instruction { margin:0; padding-bottom:13px; border-bottom:1px solid var(--ac-line); color:var(--ac-heading); font-size:15px; line-height:22px; font-weight:750; }
+    .stimulus { padding-top:16px; }
+    .word { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .word strong { color:#373b41; font-size:27px; line-height:1.2; letter-spacing:-.035em; }
+
+    .speaker { display:block; width:17px; height:17px; flex:0 0 auto; }
+    .audio-bar { display:grid; grid-template-columns:34px minmax(0,1fr) auto; align-items:center; gap:10px; min-height:48px; padding:7px 10px; border-radius:12px; background:var(--ac-blue-weak); }
+    .audio-play { display:grid; place-items:center; width:34px; height:34px; padding:0; border:0; border-radius:50%; background:var(--ac-blue); color:#fff; cursor:pointer; }
+    .audio-copy { min-width:0; }
+    .audio-copy b,.audio-copy span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .audio-copy b { color:#315677; font-size:12px; line-height:16px; }
+    .audio-copy span { margin-top:1px; color:#8794a0; font-size:10px; line-height:14px; }
+    .wave { display:flex; align-items:center; gap:2px; height:18px; }
+    .wave i { width:2px; border-radius:2px; background:#76baff; }
+    .wave i:nth-child(3n+1){height:7px}.wave i:nth-child(3n+2){height:15px}.wave i:nth-child(3n){height:10px}
+    .audio-bar.playing .wave i { animation:wave .55s ease-in-out infinite alternate; }
+    .audio-bar.playing .wave i:nth-child(2n){animation-delay:.15s}
+    .audio-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+    .audio-pair button { display:flex; align-items:center; justify-content:center; gap:7px; height:40px; border:0; border-radius:11px; background:#f1f4f6; color:#9da6af; font-size:11px; font-weight:750; }
+    .audio-pair button.on { background:var(--ac-blue-weak); color:var(--ac-blue-dark); cursor:pointer; }
+    .inline-audio { display:grid; place-items:center; width:34px; height:34px; border:0; border-radius:50%; background:var(--ac-blue-weak); color:var(--ac-blue); cursor:pointer; }
+
+    .choices { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+    .choice { position:relative; display:flex; align-items:center; width:100%; min-height:60px; padding:14px 48px 14px 16px; border:1px solid #f0f2f4; border-radius:12px; background:#fff; color:#40454c; text-align:left; font-size:15px; font-weight:550; cursor:pointer; transition:.15s ease; }
+    .choice:hover { background:#fafbfc; }
+    .choice.correct { border-color:transparent; background:var(--ac-correct-weak); }
+    .choice.wrong { border-color:transparent; background:var(--ac-wrong-weak); animation:shake .3s ease-out; }
+    .mark { position:absolute; right:16px; top:50%; display:grid; place-items:center; width:21px; height:21px; border-radius:50%; transform:translateY(-50%); color:#fff; font-size:11px; font-weight:800; }
+    .correct .mark { background:var(--ac-correct); }
+    .wrong .mark { background:var(--ac-wrong); }
+
+    .sentence { padding:15px 13px; border-radius:12px; background:#f7f9fa; color:#46505a; font-size:16px; line-height:25px; }
+    .blank { display:inline-flex; align-items:center; justify-content:center; min-width:64px; margin:0 3px; padding:1px 8px; border-bottom:2px solid #a9b8c5; color:var(--ac-blue-dark); font-weight:750; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .option-chip { min-height:40px; padding:8px 14px; border:1px solid #f0f2f4; border-radius:9px; background:#fff; color:#48505a; font-size:14px; font-weight:600; cursor:pointer; }
+    .option-chip.on { border-color:#cbe3fa; background:var(--ac-blue-weak); color:var(--ac-blue-dark); }
+    .option-chip.ok { border-color:transparent; background:var(--ac-correct-weak); }
+    .option-chip.no { border-color:transparent; background:var(--ac-wrong-weak); }
+
+    .write-list { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
+    .write-cell { min-height:68px; border:1px solid #f0f2f4; border-radius:12px; background:#fff; color:#4d5761; font-size:18px; font-weight:700; cursor:pointer; }
+    .write-cell.done { color:var(--ac-blue-dark); background:var(--ac-blue-weak); }
+    .helper { margin:12px 0 0; color:#87919b; font-size:11px; line-height:17px; }
+
+    .feedback-slot { position:absolute; left:0; right:0; bottom:89px; z-index:3; display:flex; align-items:center; justify-content:center; height:44px; pointer-events:none; }
+    .feedback { display:flex; align-items:center; gap:7px; min-height:34px; padding:7px 13px; border-radius:99px; background:#3d434a; color:#fff; font-size:12px; font-weight:700; }
+    .feedback i { display:grid; place-items:center; width:18px; height:18px; border-radius:50%; color:#fff; font-style:normal; font-size:10px; }
+    .feedback.correct i { background:var(--ac-correct); }
+    .feedback.wrong i { background:var(--ac-wrong); }
+    .footer { position:absolute; left:0; right:0; bottom:0; z-index:4; height:89px; padding:16px 14px 17px; border-top:1px solid var(--ac-line); background:#fff; }
+    .dock { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; gap:10px; }
+    .primary { grid-column:1/4; width:100%; height:56px; border:0; border-radius:12px; background:#e3e7eb; color:#aab1ba; font-size:15px; font-weight:750; }
+    .primary.on { background:var(--ac-blue); color:#fff; cursor:pointer; }
+    .slot { display:grid; place-items:center; width:44px; height:44px; border:0; border-radius:13px; background:#f0f3f6; color:#b6bdc5; }
+    .slot.on { background:var(--ac-blue); color:#fff; cursor:pointer; }
+    .slot svg { width:20px; height:20px; }
+    .dock-caption { grid-column:2; text-align:center; color:#76818c; font-size:12px; font-weight:700; }
+
+    .state-view { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:410px; padding:20px; text-align:center; }
+    .state-icon { display:grid; place-items:center; width:54px; height:54px; margin-bottom:16px; border-radius:18px; background:#fff; color:#778694; }
+    .state-icon svg { width:25px; height:25px; }
+    .state-view strong { color:#344b60; font-size:16px; }
+    .state-view p { margin:7px 0 0; color:#87919a; font-size:13px; line-height:20px; }
+    .skeleton { width:100%; display:flex; flex-direction:column; gap:10px; }
+    .skeleton i { display:block; height:60px; border-radius:12px; background:linear-gradient(90deg,#e9edf0,#f4f6f8,#e9edf0); background-size:220% 100%; animation:loading 1.4s infinite; }
+    .skeleton i:first-child { width:62%; height:20px; }
+
+    .modal { position:absolute; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(31,36,42,.46); }
+    .modal-box { width:100%; padding:16px; border-radius:17px; background:#fff; }
+    .modal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .modal-head strong { color:#344b60; font-size:15px; }
+    .modal-head button { display:grid; place-items:center; width:32px; height:32px; border:0; border-radius:50%; background:#f2f4f6; color:#6d7883; cursor:pointer; }
+    .canvas { position:relative; display:grid; place-items:center; width:100%; aspect-ratio:1; overflow:hidden; border-radius:13px; background:#f7f8fa; cursor:crosshair; }
+    .canvas::before,.canvas::after { content:""; position:absolute; background:#dfe4e8; }
+    .canvas::before { left:0; right:0; top:50%; height:1px; }
+    .canvas::after { top:0; bottom:0; left:50%; width:1px; }
+    .canvas .guide-char { color:#d8dde2; font-size:150px; line-height:1; }
+    .ink-stroke { position:absolute; z-index:2; width:104px; height:14px; border-radius:20px; background:#325170; transform:rotate(40deg); opacity:0; }
+    .canvas.drawn .ink-stroke { opacity:1; }
+    .modal-tools { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+    .modal-tools button { height:40px; border:0; border-radius:10px; background:#f1f4f6; color:#697581; font-size:12px; font-weight:700; cursor:pointer; }
+
+    .device.w320 .content { padding-left:10px; padding-right:10px; }
+    .device.w320 .card { padding:14px; }
+    .device.w320 .audio-bar { grid-template-columns:34px minmax(0,1fr); }
+    .device.w320 .audio-bar .wave { display:none; }
+    .device.w320 .choice { min-height:56px; }
+    .device.w320 .footer { padding-left:10px; padding-right:10px; }
+    @keyframes wave { to{height:3px;opacity:.5} }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 30%{transform:translateX(-4px)} 65%{transform:translateX(4px)} }
+    @keyframes loading { to{background-position:-220% 0} }
+    @media(max-width:800px){.page{padding:24px 14px 50px}.intro,.bench{grid-template-columns:1fr}.intro{gap:12px}.device-wrap{order:1}.guide{order:2}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="intro">
+      <div><p class="eyebrow">LEARNING ACTIVITY · COMMON CONTROLS</p><h1>같은 기능은 같은 문법으로,<br>예외는 같은 셸 안에서</h1></div>
+      <p class="intro-copy">실제 활동 컴포넌트에서 확인한 기능 차이는 유지하고, 크기·상태·색·버튼 관계만 한 규칙으로 정리하는 확인용 시안입니다.</p>
+    </header>
+    <nav class="tabs" id="tabs" aria-label="공통 조작 종류">
+      <button class="tab on" data-view="audio">듣기·재생</button>
+      <button class="tab" data-view="choice">선택·채점</button>
+      <button class="tab" data-view="action">확인·다음</button>
+      <button class="tab" data-view="write">쓰기 모달</button>
+      <button class="tab" data-view="state">예외 상태</button>
+    </nav>
+    <main class="bench">
+      <section class="guide">
+        <h2 id="guideTitle"></h2><p id="guideCopy"></p>
+        <div class="rules" id="rules"></div>
+        <div class="sub-controls" id="subControls"></div>
+        <p class="scope">※ 문항 내용은 배치 확인용입니다. 기존 확정 화면의 정보 구조와 학습 목록은 변경 대상이 아닙니다.</p>
+      </section>
+      <div class="device-wrap"><section class="device" id="device" aria-label="학습 활동 공통 조작 미리보기"></section></div>
+    </main>
+  </div>
+  <script>
+    const S = { view:"audio", width:375, playing:false, picked:null, result:null, chip:null, judged:false, modal:false, drawn:false, exception:"loading", wrongTimer:null };
+    const I = {
+      x:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+      next:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+      retry:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 8a7 7 0 10.5 7M19 4v4h-4"/></svg>`,
+      micOff:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0011.8 5.1M12 18v3M4 3l16 18"/></svg>`,
+      speaker:`<svg class="speaker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.75 9.3v5.4c0 .72.58 1.3 1.3 1.3h2.52l3.96 3.13c.82.65 2.02.07 2.02-.97V5.84c0-1.04-1.2-1.62-2.02-.97L8.57 8H6.05c-.72 0-1.3.58-1.3 1.3Z"/><path d="M18.15 9.2c.8.72 1.2 1.65 1.2 2.8s-.4 2.08-1.2 2.8"/></svg>`
+    };
+    const META = {
+      audio:{title:"재생 버튼은 역할에 따라 세 크기만",copy:"큰 소리 제시물, 카드 안 보조 재생, 녹음 비교를 같은 아이콘과 상태 색으로 연결합니다.",rules:[["34px 원형","소리가 문제의 핵심일 때"],["34px 소프트","단어나 카드에 붙는 보조 재생"],["40px 막대","원래 음성·내 녹음을 비교할 때"]]},
+      choice:{title:"선택지는 의미에 따라 두 형태만",copy:"긴 답은 목록형, 짧은 조사·어미는 내용폭 칩형을 유지합니다. 오답은 선택한 것만 잠깐 표시합니다.",rules:[["목록형","긴 답 · 한 줄 한 선택지"],["칩형","짧은 조사·어미 · 확인 전 선택 상태"],["오답 2초","정답 공개·선택지 소거 없음"]]},
+      action:{title:"확인과 다음은 한 자리에서 상태만 전환",copy:"선택 전에는 확인이 꺼져 있고, 채점 뒤 같은 자리가 다음으로 바뀝니다. 학습 진행 조작은 하단에 하나만 둡니다.",rules:[["선택 전","확인 비활성"],["선택 후","확인 활성"],["채점 후","다음으로 라벨 전환"]]},
+      write:{title:"쓰기 판은 화면 위 모달로",copy:"단어의 글자 칸을 누르면 쓰기 판이 열리고, 완료하면 원래 위치로 돌아옵니다. 화면을 갈아치우지 않습니다.",rules:[["진입","글자 칸을 직접 누름"],["도구","되돌리기·전체 지우기"],["복귀","완료 후 같은 목록 위치 유지"]]},
+      state:{title:"예외 화면도 활동 셸을 유지",copy:"로딩·실패·마이크 차단은 새 레이아웃을 만들지 않고 상단과 하단의 익숙한 자리를 유지합니다.",rules:[["로딩","진행 위치 유지 · 다음 비활성"],["실패","재시도 하나를 주 조작으로"],["마이크 차단","화면 위 알림 또는 활동 건너뛰기"]]}
+    };
+    function wave(){return `<span class="wave">${Array.from({length:9},()=>"<i></i>").join("")}</span>`}
+    function shell(inner, footer, feedback="", opts={}){
+      const right=opts.skip===false?`<span aria-hidden="true"></span>`:`<button class="icon-btn" aria-label="건너뛰기">${I.next}</button>`;
+      const progress=opts.progress===false?"":`<div class="progress"><i class="on"></i><i></i><i></i><i></i></div>`;
+      return `<header class="appbar"><button class="icon-btn" aria-label="나가기">${I.x}</button><div class="lesson">1급 4과</div>${right}</header>${progress}<main class="content">${inner}</main><div class="feedback-slot">${feedback}</div><footer class="footer">${footer}</footer>`
+    }
+    function primary(label,on=true){return `<div class="dock"><button class="primary ${on?"on":""}" data-action="primary" ${on?"":"disabled"}>${label}</button></div>`}
+    function audioView(){
+      const inner=`<section class="card"><h2 class="instruction">음성을 듣고 알맞은 답을 고르세요.</h2><div class="stimulus"><div class="audio-bar ${S.playing?"playing":""}"><button class="audio-play" data-action="play" aria-label="문장 듣기">${I.speaker}</button><span class="audio-copy"><b>문장 듣기</b><span>${S.playing?"재생 중":"눌러서 들어 보세요"}</span></span>${wave()}</div><div class="word" style="margin-top:18px"><strong>사과</strong><button class="inline-audio" data-action="play" aria-label="사과 듣기">${I.speaker}</button></div><div class="audio-pair"><button class="on" data-action="play">${I.speaker}<span>원래 음성</span></button><button>${I.speaker}<span>내 녹음</span></button></div></div></section>`;
+      return shell(inner,primary("다음",false));
+    }
+    function listChoices(){return ["apple","grape","peach","pear"].map((v,i)=>{const st=S.picked===i?S.result||"":"";return `<button class="choice ${st}" data-action="pick" data-index="${i}"><span>${v}</span>${st?`<i class="mark">${st==="correct"?"✓":"✕"}</i>`:""}</button>`}).join("")}
+    function choiceView(){
+      const inner=`<section class="card"><h2 class="instruction">단어에 맞는 뜻을 고르세요.</h2><div class="stimulus"><div class="word"><strong>사과</strong><button class="inline-audio" data-action="play">${I.speaker}</button></div></div></section><div class="choices">${listChoices()}</div>`;
+      const fb=S.result?`<div class="feedback ${S.result}"><i>${S.result==="correct"?"✓":"✕"}</i>${S.result==="correct"?"잘했어요!":"다시 골라 보세요"}</div>`:"";
+      return shell(inner,primary("다음",S.result==="correct"),fb);
+    }
+    function actionView(){
+      const vals=["좋아서","좋지만","좋으면","좋아도"];
+      const inner=`<section class="card"><h2 class="instruction">문장을 완성하세요.</h2><div class="stimulus"><div class="sentence">날씨가 <span class="blank">${S.chip??"(   )"}</span> 공원에 갔어요.</div><div class="chips">${vals.map((v,i)=>`<button class="option-chip ${S.chip===v?(S.judged?(i===0?"ok":"no"):"on"):""}" data-action="chip" data-value="${v}">${v}</button>`).join("")}</div></div></section>`;
+      const correct=S.judged&&S.chip===vals[0], wrong=S.judged&&S.chip!==vals[0];
+      const fb=correct?`<div class="feedback correct"><i>✓</i>잘했어요!</div>`:wrong?`<div class="feedback wrong"><i>✕</i>다시 골라 보세요</div>`:"";
+      return shell(inner,primary(correct?"다음":"확인",correct||(!S.judged&&!!S.chip)),fb);
+    }
+    function writeView(){
+      const inner=`<section class="card"><h2 class="instruction">단어를 글자별로 써 보세요.</h2><div class="stimulus"><div class="write-list">${["어","머","니"].map((v,i)=>`<button class="write-cell ${S.drawn&&i===0?"done":""}" data-action="open" data-char="${v}">${v}</button>`).join("")}</div><p class="helper">글자 칸을 누르면 손가락 쓰기 판이 열립니다.</p></div></section>`;
+      return shell(inner,primary("다음",S.drawn));
+    }
+    function modal(){return `<div class="modal"><div class="modal-box"><div class="modal-head"><strong>‘어’를 따라 써 보세요</strong><button data-action="close" aria-label="닫기">${I.x}</button></div><div class="canvas ${S.drawn?"drawn":""}" data-action="draw"><span class="guide-char">어</span><i class="ink-stroke"></i></div><div class="modal-tools"><button data-action="clear">전체 지우기</button><button data-action="done">${S.drawn?"완료":"쓰기 완료"}</button></div></div></div>`}
+    function stateView(){
+      let body,foot;
+      if(S.exception==="loading"){body=`<div class="state-view"><div class="skeleton"><i></i><i></i><i></i><i></i></div></div>`;foot=primary("다음",false)}
+      else if(S.exception==="failed"){body=`<div class="state-view"><span class="state-icon">${I.retry}</span><strong>문제를 불러오지 못했어요</strong><p>인터넷 연결을 확인하고 다시 시도해 주세요.</p></div>`;foot=primary("다시 시도")}
+      else {body=`<div class="state-view"><span class="state-icon">${I.micOff}</span><strong>마이크를 사용할 수 없어요</strong><p>설정에서 마이크 권한을 허용한 뒤<br>다시 시도해 주세요.</p></div>`;foot=primary("이 활동 건너뛰기")}
+      return shell(body,foot,"",{skip:false,progress:S.exception==="loading"});
+    }
+    function controls(){
+      const common=`<strong>화면</strong><button class="small-chip ${S.width===320?"on":""}" data-width="320">320</button><button class="small-chip ${S.width===375?"on":""}" data-width="375">375</button>`;
+      if(S.view==="state") return common+`<strong style="margin-left:8px">상태</strong>${[["loading","로딩"],["failed","실패"],["mic","마이크 차단"]].map(([v,l])=>`<button class="small-chip ${S.exception===v?"on":""}" data-exception="${v}">${l}</button>`).join("")}`;
+      return common;
+    }
+    function render(){
+      document.querySelectorAll("[data-view]").forEach(b=>b.classList.toggle("on",b.dataset.view===S.view));
+      const m=META[S.view]; document.getElementById("guideTitle").textContent=m.title;document.getElementById("guideCopy").textContent=m.copy;
+      document.getElementById("rules").innerHTML=m.rules.map(r=>`<div class="rule"><b>${r[0]}</b><span>${r[1]}</span></div>`).join("");
+      document.getElementById("subControls").innerHTML=controls();
+      const noProgress=S.view==="state"&&S.exception!=="loading";
+      const d=document.getElementById("device");d.className=`device ${S.width===320?"w320":""} ${noProgress?"no-progress":""}`;
+      d.innerHTML=S.view==="audio"?audioView():S.view==="choice"?choiceView():S.view==="action"?actionView():S.view==="write"?writeView():stateView();
+      if(S.view==="write"&&S.modal)d.insertAdjacentHTML("beforeend",modal());
+    }
+    function resetView(){clearTimeout(S.wrongTimer);S.playing=false;S.picked=null;S.result=null;S.chip=null;S.judged=false;S.modal=false;S.drawn=false;render()}
+    document.addEventListener("click",e=>{
+      const b=e.target.closest("button,[data-action]");if(!b)return;
+      if(b.dataset.view){S.view=b.dataset.view;resetView();return}
+      if(b.dataset.width){S.width=+b.dataset.width;render();return}
+      if(b.dataset.exception){S.exception=b.dataset.exception;render();return}
+      const a=b.dataset.action;
+      if(a==="play"){S.playing=!S.playing;render();if(S.playing)setTimeout(()=>{S.playing=false;render()},1600)}
+      else if(a==="pick"){clearTimeout(S.wrongTimer);S.picked=+b.dataset.index;S.result=S.picked===0?"correct":"wrong";render();if(S.result==="wrong")S.wrongTimer=setTimeout(()=>{S.picked=null;S.result=null;render()},2000)}
+      else if(a==="chip"){S.chip=b.dataset.value;S.judged=false;render()}
+      else if(a==="primary"&&S.view==="action"){
+        if(!S.judged){S.judged=true;render();if(S.chip!=="좋아서")S.wrongTimer=setTimeout(()=>{S.chip=null;S.judged=false;render()},2000)}
+        else if(S.chip==="좋아서")resetView()
+      }
+      else if(a==="open"){S.modal=true;render()}
+      else if(a==="close"){S.modal=false;render()}
+      else if(a==="draw"){S.drawn=true;render()}
+      else if(a==="clear"){S.drawn=false;render()}
+      else if(a==="done"){S.drawn=true;S.modal=false;render()}
+    });
+    render();
+  </script>
+</body>
+</html>

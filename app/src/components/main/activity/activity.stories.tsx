@@ -6,6 +6,7 @@ import { ChatScreen } from "./chat";
 import { ChipOption, ChipWrap, Choice, ChoiceList } from "./choice";
 import { FeedbackMessage } from "./feedback";
 import { FlashcardScreen } from "./flashcard";
+import { IconVolume } from "./icons";
 import { JamoSection, WriteCanvas } from "./jamo-write";
 import { PracticeBrowser, ThumbWordCards, WordCards } from "./practice-browser";
 import { ProblemCard } from "./problem-card";
@@ -100,16 +101,7 @@ function wordQuiz(picked: number | null, correct: number) {
 						data-action="audio"
 						aria-label="발음 듣기"
 					>
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth={2}
-							strokeLinecap="round"
-							aria-hidden="true"
-						>
-							<path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 010 6" />
-						</svg>
+						<IconVolume />
 					</button>
 				</div>
 			</ProblemCard>

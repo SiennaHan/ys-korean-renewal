@@ -13,13 +13,14 @@ import {
 	FeedbackMessage,
 	PrimaryButton,
 	ProblemCard,
+	WRONG_VISIBLE_MS,
 } from "@/components/main/activity";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import blankQuestions from "@/shared/data/n4_blank_question.json";
 import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface BlankQuestion {
@@ -71,6 +72,7 @@ export default function FillBlank({
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 	const [answerState, setAnswerState] = useState<AnswerState>("idle");
+	const wrongResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	/** questionId → { selectedAnswer, isCorrect } from server */
 	const [savedAnswers, setSavedAnswers] = useState<
 		Record<number, { answer: string; correct: boolean }>
@@ -117,15 +119,22 @@ export default function FillBlank({
 	 */
 	// biome-ignore lint/correctness/useExhaustiveDependencies: 지금 배열이 맞다 — 위 주석 참고
 	useEffect(() => {
-		if (question && savedAnswers[question.id]) {
+		if (question && savedAnswers[question.id]?.correct) {
 			const saved = savedAnswers[question.id];
 			setSelectedAnswer(saved.answer);
-			setAnswerState(saved.correct ? "correct" : "wrong");
+			setAnswerState("correct");
 		} else {
 			setSelectedAnswer(null);
 			setAnswerState("idle");
 		}
 	}, [currentIndex, question?.id, savedAnswers]);
+
+	useEffect(
+		() => () => {
+			if (wrongResetTimer.current) clearTimeout(wrongResetTimer.current);
+		},
+		[],
+	);
 	const totalSteps = questions.length;
 
 	/** selections 파싱: 콤마로 분리 */
@@ -139,6 +148,10 @@ export default function FillBlank({
 	const handleSelectAnswer = useCallback(
 		(sel: string) => {
 			if (answerState === "correct" || !question) return;
+			if (wrongResetTimer.current) {
+				clearTimeout(wrongResetTimer.current);
+				wrongResetTimer.current = null;
+			}
 			if (selectedAnswer === sel) {
 				// 같은 걸 다시 클릭 → 해제
 				sound.playClick();
@@ -169,6 +182,11 @@ export default function FillBlank({
 			} else {
 				setAnswerState("wrong");
 				sound.playIncorrect();
+				wrongResetTimer.current = setTimeout(() => {
+					setSelectedAnswer(null);
+					setAnswerState("idle");
+					wrongResetTimer.current = null;
+				}, WRONG_VISIBLE_MS);
 			}
 		},
 		[answerState, selectedAnswer, question, bookId, chapterSeq],

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>연세 한국어 · 녹음 인터랙션 시안</title>
+  <style>
+    :root {
+      --blue-50:#edf6ff;
+      --blue-100:#d9ecff;
+      --blue-300:#72b9ff;
+      --blue-500:#0180ff;
+      --blue-600:#006fe0;
+      --blue-900:#24425f;
+      --ink:#34383e;
+      --sub:#7f8791;
+      --muted:#a9b0b9;
+      --line:#edf0f3;
+      --line-strong:#dfe4e9;
+      --surface:#fff;
+      --canvas:#f5f7f9;
+      --coral:#f26655;
+      --coral-weak:#fff0ed;
+      --green:#35b979;
+      --shadow:0 18px 54px rgba(33,49,65,.11);
+      --font:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,sans-serif;
+    }
+
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-width:320px; min-height:100%; background:#eef1f5; color:var(--ink); font-family:var(--font); }
+    button { font:inherit; }
+    button:focus-visible { outline:3px solid rgba(1,128,255,.22); outline-offset:2px; }
+
+    .page { width:min(1120px,100%); margin:0 auto; padding:34px 24px 64px; }
+    .intro { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr); gap:32px; align-items:end; margin-bottom:24px; }
+    .eyebrow { margin:0 0 9px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:750; letter-spacing:.08em; }
+    h1 { margin:0; color:#263b50; font-size:30px; line-height:1.25; letter-spacing:-.035em; }
+    .intro p { margin:0; color:#687381; font-size:14px; line-height:1.7; word-break:keep-all; }
+
+    .bench-controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 20px; padding:13px 0; border-top:1px solid #d9dee4; border-bottom:1px solid #d9dee4; }
+    .scope-note { margin:10px 0 0; color:#7c8792; font-size:11px; line-height:17px; text-align:right; }
+    .control-set { display:flex; flex-wrap:wrap; align-items:center; gap:7px; }
+    .control-label { margin-right:3px; color:#737d89; font-size:12px; font-weight:700; }
+    .chip { min-height:34px; padding:7px 12px; border:1px solid transparent; border-radius:10px; background:transparent; color:#626d79; font-size:13px; font-weight:700; cursor:pointer; transition:.16s ease; }
+    .chip:hover { background:rgba(255,255,255,.65); }
+    .chip.on { border-color:#c9def6; background:#fff; color:var(--blue-600); }
+
+    .workspace { display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,420px); gap:48px; align-items:start; padding-top:30px; }
+    .notes { padding-top:20px; }
+    .notes h2 { margin:0 0 20px; color:#2f465d; font-size:20px; line-height:28px; letter-spacing:-.02em; }
+    .rule { display:grid; grid-template-columns:42px 1fr; gap:14px; padding:16px 0; border-top:1px solid #dce1e6; }
+    .rule:last-of-type { border-bottom:1px solid #dce1e6; }
+    .rule-no { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:#fff; color:var(--blue-600); font-size:12px; font-weight:800; }
+    .rule b { display:block; margin:1px 0 5px; color:#384a5e; font-size:14px; }
+    .rule p { margin:0; color:#727c88; font-size:13px; line-height:1.65; word-break:keep-all; }
+    .state-jump { margin-top:24px; }
+    .state-jump strong { display:block; margin-bottom:10px; color:#6c7681; font-size:12px; }
+    .state-list { display:flex; flex-wrap:wrap; gap:7px; }
+    .state-pill { padding:7px 10px; border:1px solid #dce2e8; border-radius:999px; background:rgba(255,255,255,.55); color:#7a838d; font-size:11px; font-weight:750; cursor:pointer; }
+    .state-pill.on { border-color:transparent; background:#334d66; color:#fff; }
+
+    .device-wrap { display:flex; justify-content:center; }
+    /* 바깥 1px 벤치 테두리를 제외한 실제 화면 폭이 각각 375 / 320이 되게 한다. */
+    .device { position:relative; width:377px; height:720px; overflow:hidden; border:1px solid #d8dee5; border-radius:30px; background:var(--canvas); box-shadow:var(--shadow); transition:width .2s ease; }
+    .device.w320 { width:322px; }
+    .device.mission .activity { height:calc(100% - 58px - 89px); }
+
+    .appbar { display:grid; grid-template-columns:44px 1fr 44px; align-items:center; height:58px; padding:0 12px; background:#fff; }
+    .appbar button { display:grid; place-items:center; width:44px; height:44px; border:0; border-radius:50%; background:transparent; color:#596473; cursor:pointer; }
+    .appbar button:hover { background:#f4f6f8; }
+    .lesson { text-align:center; color:#383c42; font-size:15px; font-weight:750; }
+    .ico { width:22px; height:22px; display:block; }
+
+    .progress-row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:11px; height:32px; padding:0 20px 9px; background:#fff; }
+    .progress { display:flex; gap:5px; }
+    .progress i { height:4px; flex:1; border-radius:10px; background:#e2e5e8; }
+    .progress i.on { background:var(--blue-500); }
+    .progress-count { color:#838b94; font-size:11px; font-weight:700; }
+
+    .activity { height:calc(100% - 90px - 89px); overflow:auto; padding:14px 14px 64px; }
+    .problem { padding:16px; border:1px solid var(--line-strong); border-radius:17px; background:#fff; }
+    .instruction { margin:0; padding:0 0 13px; border-bottom:1px solid var(--line); color:var(--blue-900); font-size:15px; line-height:22px; font-weight:750; letter-spacing:-.01em; }
+    .stimulus { padding-top:17px; }
+
+    .repeat-word { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+    .repeat-word strong { color:#34383e; font-size:29px; line-height:1.2; letter-spacing:-.04em; }
+    .source-play { display:flex; align-items:center; gap:8px; min-height:40px; padding:0 13px; border:0; border-radius:12px; background:var(--blue-100); color:var(--blue-600); font-size:13px; font-weight:750; cursor:pointer; }
+    .source-play svg { width:16px; height:16px; flex:0 0 auto; }
+    .audio-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .audio-row button { display:flex; align-items:center; justify-content:center; gap:7px; min-height:42px; padding:0 8px; border:0; border-radius:11px; background:#f4f6f8; color:#a1a8b1; font-size:12px; font-weight:700; }
+    .audio-row button.active { background:var(--blue-50); color:var(--blue-600); cursor:pointer; }
+    .audio-row button svg { width:16px; height:16px; flex:0 0 auto; }
+
+    .practice { margin-top:14px; padding:14px 4px 0; }
+    .practice-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .practice-head span { color:#7d858e; font-size:11px; font-weight:700; }
+    .practice-dots { display:flex; gap:5px; }
+    .practice-dots i { width:5px; height:5px; border-radius:50%; background:#d5d9de; }
+    .practice-dots i.on { width:16px; border-radius:6px; background:var(--blue-500); }
+    .word-list { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+    .word-item { display:flex; align-items:center; gap:7px; min-width:0; padding:7px; border-radius:11px; background:#fff; }
+    .word-item.on { outline:1.5px solid var(--blue-500); outline-offset:-1px; }
+    .word-thumb { display:grid; place-items:center; flex:0 0 34px; height:34px; border-radius:9px; background:linear-gradient(145deg,#fff5df,#e7f4ff); color:#5a4333; font-size:18px; }
+    .word-item span:last-child { overflow:hidden; color:#4c535b; font-size:11px; font-weight:650; text-overflow:ellipsis; white-space:nowrap; }
+
+    .role-scene { display:flex; flex-direction:column; gap:9px; }
+    .turn { display:grid; grid-template-columns:34px minmax(0,1fr); gap:9px; align-items:start; }
+    .turn.me { grid-template-columns:minmax(0,1fr) 34px; }
+    .turn.me .speaker { grid-column:2; }
+    .turn.me .bubble { grid-column:1; grid-row:1; justify-self:end; background:var(--blue-50); color:#315271; }
+    .speaker { display:grid; place-items:center; height:28px; border-radius:9px; background:#eef2f5; color:#6b7783; font-size:10px; font-weight:800; }
+    .speaker.mine { background:#dceeff; color:var(--blue-600); }
+    .bubble { max-width:95%; padding:10px 12px; border-radius:13px; background:#f4f6f8; color:#434a52; font-size:13px; line-height:19px; }
+    .turn.current .bubble { box-shadow:inset 3px 0 0 var(--blue-500); background:#fff; }
+    .turn-label { display:flex; align-items:center; gap:7px; margin:3px 0 12px; color:#73808c; font-size:11px; font-weight:700; }
+    .turn-label::before { content:""; width:16px; height:3px; border-radius:4px; background:var(--blue-500); }
+    .review-audio { display:flex; justify-content:flex-end; margin-top:13px; }
+    .review-audio button { display:flex; align-items:center; gap:7px; min-height:36px; padding:0 11px; border:0; border-radius:10px; background:var(--blue-50); color:var(--blue-600); font-size:11px; font-weight:750; cursor:pointer; }
+    .review-audio svg { width:16px; height:16px; flex:0 0 auto; }
+
+    .mission-card { margin-bottom:12px; padding:12px 13px; border-radius:13px; background:#f6f8fa; }
+    .mission-card b { display:block; margin-bottom:4px; color:#365069; font-size:13px; }
+    .mission-card span { color:#89919a; font-size:11px; }
+    .chat { display:flex; flex-direction:column; gap:10px; }
+    .chat-line { display:flex; align-items:flex-end; gap:7px; }
+    .avatar { display:grid; place-items:center; flex:0 0 28px; height:28px; border-radius:9px; background:#eef2f5; font-size:15px; }
+    .chat-bubble { max-width:78%; padding:10px 12px; border-radius:13px 13px 13px 4px; background:#fff; border:1px solid var(--line); color:#444b53; font-size:13px; line-height:19px; }
+    .chat-line.mine { justify-content:flex-end; }
+    .chat-line.mine .chat-bubble { border:0; border-radius:13px 13px 4px 13px; background:var(--blue-100); color:#305677; }
+    .typing { display:flex; gap:4px; padding:10px 12px; border-radius:13px; background:#fff; }
+    .typing i { width:5px; height:5px; border-radius:50%; background:#aeb6bf; animation:bounce 1s infinite; }
+    .typing i:nth-child(2) { animation-delay:.13s; }
+    .typing i:nth-child(3) { animation-delay:.26s; }
+
+    .record-status { position:absolute; left:0; right:0; bottom:89px; z-index:3; display:flex; align-items:center; justify-content:center; min-height:42px; padding:7px 14px; border-top:1px solid var(--line); background:rgba(255,255,255,.96); backdrop-filter:blur(8px); }
+    .status-copy { min-width:0; text-align:center; }
+    .status-copy b { display:block; overflow:hidden; color:#46515d; font-size:12px; line-height:16px; text-overflow:ellipsis; white-space:nowrap; }
+    .status-copy span { display:block; overflow:hidden; margin-top:1px; color:#9199a2; font-size:10px; line-height:14px; text-overflow:ellipsis; white-space:nowrap; }
+    .status-copy.recording b, .status-copy.finishing b { color:var(--coral); }
+    .status-copy.done b { color:var(--blue-600); }
+    .redo { flex:0 0 auto; margin-left:9px; padding:5px 8px; border:0; border-radius:8px; background:#f1f5f8; color:#5e7182; font-size:10px; font-weight:750; cursor:pointer; }
+
+    .footer { position:absolute; left:0; right:0; bottom:0; z-index:4; height:89px; padding:14px 14px 15px; border-top:1px solid var(--line); background:#fff; }
+    .dock { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; width:100%; height:60px; }
+    .side-action { display:grid; place-items:center; width:44px; height:44px; border:0; border-radius:13px; background:#f2f5f7; color:#65727f; cursor:pointer; }
+    .side-action.next { background:var(--blue-500); color:#fff; }
+    .side-action:disabled { background:#eef1f4; color:#b8bfc7; cursor:default; }
+    .side-action svg { width:20px; height:20px; }
+    .record-zone { display:flex; justify-content:center; min-width:0; }
+    .record-button { position:relative; display:grid; place-items:center; width:60px; height:60px; padding:0; border:0; border-radius:50%; background:var(--blue-500); color:#fff; cursor:pointer; box-shadow:0 6px 16px rgba(1,128,255,.24); transition:transform .14s ease, background .18s ease, box-shadow .18s ease; }
+    .record-button:hover { transform:translateY(-1px); }
+    .record-button:active { transform:translateY(1px) scale(.98); }
+    .record-button svg { width:25px; height:25px; }
+    .record-button.preparing { background:#fff; color:var(--blue-600); box-shadow:0 0 0 7px var(--blue-100); }
+    .record-button.recording, .record-button.finishing { background:var(--coral); box-shadow:0 0 0 7px var(--coral-weak); }
+    .record-button.sending { background:#fff; color:var(--blue-600); box-shadow:0 0 0 7px var(--blue-50); cursor:wait; }
+    .record-button.done { background:#fff; color:var(--green); box-shadow:0 0 0 2px #dff3e9; }
+    .record-button.finishing { cursor:wait; }
+    .record-button .countdown { font-size:21px; line-height:1; font-weight:800; font-variant-numeric:tabular-nums; }
+    .record-button .spinner { width:24px; height:24px; border:3px solid rgba(1,128,255,.2); border-top-color:var(--blue-500); border-radius:50%; animation:spin .75s linear infinite; }
+    .record-button .stop { width:18px; height:18px; border-radius:5px; background:#fff; }
+    .record-button.recording::after { content:""; position:absolute; inset:-8px; border:1px solid rgba(242,102,85,.35); border-radius:50%; animation:pulse 1.35s ease-out infinite; }
+    .waves { position:absolute; left:50%; top:-8px; display:flex; align-items:flex-end; gap:2px; height:10px; transform:translateX(-50%); }
+    .waves i { width:2px; border-radius:2px; background:var(--coral); animation:wave .72s ease-in-out infinite alternate; }
+    .waves i:nth-child(1) { height:4px; }
+    .waves i:nth-child(2) { height:9px; animation-delay:.12s; }
+    .waves i:nth-child(3) { height:6px; animation-delay:.24s; }
+    .waves i:nth-child(4) { height:10px; animation-delay:.36s; }
+    .waves i:nth-child(5) { height:5px; animation-delay:.48s; }
+
+    .device.w320 .activity { padding-left:10px; padding-right:10px; }
+    .device.w320 .problem { padding:14px; }
+    .device.w320 .word-list { gap:5px; }
+    .device.w320 .word-item { gap:5px; padding:5px; }
+    .device.w320 .word-thumb { flex-basis:30px; height:30px; font-size:16px; }
+    .device.w320 .bubble, .device.w320 .chat-bubble { font-size:12px; line-height:18px; }
+    .device.w320 .footer { padding-left:10px; padding-right:10px; }
+
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes pulse { from { opacity:.75; transform:scale(.96); } to { opacity:0; transform:scale(1.28); } }
+    @keyframes wave { to { height:2px; opacity:.45; } }
+    @keyframes bounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-3px); } }
+
+    @media (max-width:800px) {
+      .page { padding:24px 14px 52px; }
+      .intro, .workspace { grid-template-columns:1fr; }
+      .intro { gap:12px; }
+      .workspace { gap:22px; }
+      .device-wrap { order:1; }
+      .notes { order:2; padding-top:0; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *, *::before, *::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="intro">
+      <div>
+        <p class="eyebrow">RECORDING INTERACTION · UIUX</p>
+        <h1>녹음은 여유 있게,<br>진행은 한 자리에서</h1>
+      </div>
+      <p>사용자가 버튼과 동시에 말하거나 끝음을 다 말하기 전에 종료해도 잘리지 않도록, 시작 전 2초와 종료 후 1초를 한 흐름으로 설계한 시안입니다.</p>
+    </header>
+
+    <div class="bench-controls" aria-label="시안 설정">
+      <div class="control-set" id="modeControls">
+        <span class="control-label">활동</span>
+        <button class="chip on" data-mode="repeat">따라 말하기</button>
+        <button class="chip" data-mode="role">롤플레잉</button>
+        <button class="chip" data-mode="mission">미션 대화</button>
+      </div>
+      <div class="control-set" id="widthControls">
+        <span class="control-label">화면</span>
+        <button class="chip" data-width="320">320</button>
+        <button class="chip on" data-width="375">375</button>
+      </div>
+    </div>
+    <p class="scope-note">※ 문제 카드와 학습 목록은 배치 확인용 샘플입니다. 기존 확정 화면의 콘텐츠 디자인은 변경하지 않습니다.</p>
+
+    <main class="workspace">
+      <section class="notes" aria-label="설계 원칙">
+        <h2>한 녹음 컴포넌트, 세 가지 진행 규칙</h2>
+        <div class="rule">
+          <span class="rule-no">01</span>
+          <div><b>앞부분은 실제로 먼저 담습니다</b><p>버튼을 누르는 즉시 캡처하되 화면은 2초 준비 상태를 보여 줍니다. 카운트가 끝나는 순간 소리와 진동으로 발화 시작을 알립니다.</p></div>
+        </div>
+        <div class="rule">
+          <span class="rule-no">02</span>
+          <div><b>종료 뒤 1초까지 자동으로 담습니다</b><p>종료 버튼을 누른 순간부터 1초간 마무리 상태를 유지한 뒤 자동 저장·분석합니다. 별도의 저장 버튼은 두지 않습니다.</p></div>
+        </div>
+        <div class="rule">
+          <span class="rule-no">03</span>
+          <div><b>긴 문구는 도크 위에 둡니다</b><p>하단은 44 / 중앙 / 44의 고정 그리드입니다. 따라 말하기와 롤플레잉은 오른쪽 다음, 미션 대화는 왼쪽 키보드만 사용합니다.</p></div>
+        </div>
+        <div class="state-jump">
+          <strong>검수용 상태 바로 보기</strong>
+          <div class="state-list" id="stateControls"></div>
+        </div>
+      </section>
+
+      <div class="device-wrap">
+        <section class="device" id="device" aria-label="녹음 인터랙션 미리보기"></section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const STATES = [
+      ["idle","대기"],
+      ["preparing","준비 2초"],
+      ["recording","녹음"],
+      ["finishing","마무리 1초"],
+      ["sending","저장·분석"],
+      ["done","완료"]
+    ];
+
+    const app = {
+      mode:"repeat",
+      width:375,
+      state:"idle",
+      countdown:2,
+      elapsed:0,
+      item:1,
+      timer:null,
+      clock:null
+    };
+
+    const icons = {
+      x:`<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+      chevron:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>`,
+      mic:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>`,
+      volume:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.75 9.3v5.4c0 .72.58 1.3 1.3 1.3h2.52l3.96 3.13c.82.65 2.02.07 2.02-.97V5.84c0-1.04-1.2-1.62-2.02-.97L8.57 8H6.05c-.72 0-1.3.58-1.3 1.3Z"/><path d="M18.15 9.2c.8.72 1.2 1.65 1.2 2.8s-.4 2.08-1.2 2.8"/></svg>`,
+      keyboard:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>`,
+      check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg>`
+    };
+
+    function clearTimers() {
+      clearTimeout(app.timer);
+      clearInterval(app.clock);
+      app.timer = null;
+      app.clock = null;
+    }
+
+    function signalStart() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          const ctx = new AudioCtx();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.value = 760;
+          gain.gain.setValueAtTime(.045,ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.12);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime+.13);
+        }
+        if (navigator.vibrate) navigator.vibrate(35);
+      } catch (_) {}
+    }
+
+    function begin() {
+      clearTimers();
+      app.state = "preparing";
+      app.countdown = 2;
+      render();
+      const started = performance.now();
+      app.clock = setInterval(() => {
+        const remain = Math.max(0, 2 - (performance.now() - started) / 1000);
+        app.countdown = remain;
+        renderDevice();
+      }, 100);
+      app.timer = setTimeout(() => {
+        clearTimers();
+        signalStart();
+        app.state = "recording";
+        app.elapsed = 0;
+        const recordStart = performance.now();
+        app.clock = setInterval(() => {
+          app.elapsed = (performance.now() - recordStart) / 1000;
+          renderDevice();
+        }, 100);
+        render();
+      }, 2000);
+    }
+
+    function finish() {
+      if (app.state !== "recording") return;
+      clearTimers();
+      app.state = "finishing";
+      render();
+      app.timer = setTimeout(() => {
+        app.state = "sending";
+        render();
+        app.timer = setTimeout(() => {
+          app.state = "done";
+          render();
+        }, 1200);
+      }, 1000);
+    }
+
+    function reset() {
+      clearTimers();
+      app.state = "idle";
+      app.countdown = 2;
+      app.elapsed = 0;
+      render();
+    }
+
+    function next() {
+      if (app.state !== "done") return;
+      app.item = app.item % 3 + 1;
+      reset();
+    }
+
+    function forceState(state) {
+      clearTimers();
+      app.state = state;
+      app.countdown = 1.4;
+      app.elapsed = 3.8;
+      render();
+    }
+
+    function statusCopy() {
+      const map = {
+        idle:["눌러서 녹음","말할 준비가 되면 시작하세요"],
+        preparing:["잠시만요 · 곧 시작해요","버튼을 누른 순간부터 소리를 담고 있어요"],
+        recording:[`녹음 중 · ${app.elapsed.toFixed(1)}초`,"말을 마치고 가운데 버튼을 눌러 주세요"],
+        finishing:["마지막 음성을 담고 있어요","1초 뒤 자동으로 녹음을 마칩니다"],
+        sending:[app.mode === "mission" ? "답변을 보내고 있어요" : "녹음을 저장하고 있어요","잠시만 기다려 주세요"],
+        done:[app.mode === "mission" ? "답변을 보냈어요" : "녹음이 준비됐어요",app.mode === "mission" ? "상대방의 답을 기다리고 있어요" : "내 녹음을 듣거나 다음으로 이동하세요"]
+      };
+      return map[app.state];
+    }
+
+    function recordButton() {
+      let body = icons.mic;
+      let label = "녹음 시작";
+      let disabled = false;
+      if (app.state === "preparing") {
+        body = `<span class="countdown">${Math.max(1,Math.ceil(app.countdown))}</span>`;
+        label = "녹음 준비 중";
+      } else if (app.state === "recording") {
+        body = `<span class="waves"><i></i><i></i><i></i><i></i><i></i></span><span class="stop"></span>`;
+        label = "녹음 종료";
+      } else if (app.state === "finishing") {
+        body = `<span class="stop"></span>`;
+        label = "마지막 음성 녹음 중";
+        disabled = true;
+      } else if (app.state === "sending") {
+        body = `<span class="spinner"></span>`;
+        label = "저장 중";
+        disabled = true;
+      } else if (app.state === "done") {
+        body = icons.check;
+        label = "녹음 완료";
+        disabled = true;
+      }
+      return `<button class="record-button ${app.state}" data-action="record" aria-label="${label}" ${disabled?"disabled":""}>${body}</button>`;
+    }
+
+    function repeatContent() {
+      const words = [["👩","어머니"],["👨","아버지"],["🧑","형"],["👩‍🦰","누나"],["👦","남동생"],["👧","여동생"]];
+      return `
+        <section class="problem">
+          <h2 class="instruction">단어를 듣고 따라 말해 보세요.</h2>
+          <div class="stimulus">
+            <div class="repeat-word"><strong>어머니</strong><button class="source-play" data-action="audio">${icons.volume}<span>듣기</span></button></div>
+            <div class="audio-row"><button class="active" data-action="audio">${icons.volume}<span>원래 음성</span></button><button class="${app.state === "done" ? "active" : ""}" ${app.state === "done" ? 'data-action="audio"' : "disabled"}>${icons.volume}<span>내 녹음</span></button></div>
+          </div>
+        </section>
+        <section class="practice">
+          <div class="practice-head"><span>학습 목록</span><div class="practice-dots"><i class="on"></i><i></i><i></i></div></div>
+          <div class="word-list">${words.map((w,i)=>`<div class="word-item ${i===0?"on":""}"><span class="word-thumb">${w[0]}</span><span>${w[1]}</span></div>`).join("")}</div>
+        </section>`;
+    }
+
+    function roleContent() {
+      return `
+        <section class="problem">
+          <h2 class="instruction">내 차례의 대사를 말해 보세요.</h2>
+          <div class="stimulus">
+            <div class="turn-label">AI → 나</div>
+            <div class="role-scene">
+              <div class="turn"><span class="speaker">AI</span><div class="bubble">주말에 뭐 했어요?</div></div>
+              <div class="turn me current"><span class="speaker mine">나</span><div class="bubble">친구하고 영화를 봤어요.</div></div>
+              <div class="turn"><span class="speaker">AI</span><div class="bubble">어떤 영화였어요?</div></div>
+              <div class="turn me"><span class="speaker mine">나</span><div class="bubble">아주 재미있는 영화였어요.</div></div>
+            </div>
+            ${app.state === "done" ? `<div class="review-audio"><button data-action="audio">${icons.volume}<span>내 녹음 듣기</span></button></div>` : ""}
+          </div>
+        </section>`;
+    }
+
+    function missionContent() {
+      const sent = app.state === "done";
+      return `
+        <div class="mission-card"><b>카페에서 음료를 주문해 보세요</b><span>주문하기 · 가격 묻기 · 인사하기</span></div>
+        <div class="chat">
+          <div class="chat-line"><span class="avatar">🧑‍🍳</span><div class="chat-bubble">어서 오세요. 무엇을 드릴까요?</div></div>
+          <div class="chat-line mine"><div class="chat-bubble">커피 주세요.</div></div>
+          <div class="chat-line"><span class="avatar">🧑‍🍳</span><div class="chat-bubble">따뜻한 걸로 드릴까요?</div></div>
+          ${sent?`<div class="chat-line mine"><div class="chat-bubble">네, 따뜻한 커피 주세요.</div></div><div class="chat-line"><span class="avatar">🧑‍🍳</span><span class="typing"><i></i><i></i><i></i></span></div>`:""}
+        </div>`;
+    }
+
+    function content() {
+      if (app.mode === "role") return roleContent();
+      if (app.mode === "mission") return missionContent();
+      return repeatContent();
+    }
+
+    function dock() {
+      const left = app.mode === "mission"
+        ? `<button class="side-action" data-action="keyboard" aria-label="키보드로 입력">${icons.keyboard}</button>`
+        : `<span aria-hidden="true"></span>`;
+      const right = app.mode === "mission"
+        ? `<span aria-hidden="true"></span>`
+        : `<button class="side-action next" data-action="next" aria-label="다음" ${app.state === "done" ? "" : "disabled"}>${icons.chevron}</button>`;
+      return `<div class="dock">${left}<div class="record-zone">${recordButton()}</div>${right}</div>`;
+    }
+
+    function renderDevice() {
+      const device = document.getElementById("device");
+      const copy = statusCopy();
+      const segmented = app.mode !== "mission";
+      device.className = `device ${app.width === 320 ? "w320" : ""} ${app.mode === "mission" ? "mission" : ""}`;
+      device.innerHTML = `
+        <header class="appbar"><button aria-label="나가기">${icons.x}</button><div class="lesson">1급 4과</div><button aria-label="건너뛰기">${icons.chevron}</button></header>
+        ${segmented?`<div class="progress-row"><div class="progress"><i class="on"></i><i class="${app.item>1?"on":""}"></i><i class="${app.item>2?"on":""}"></i></div></div>`:""}
+        <main class="activity">${content()}</main>
+        <div class="record-status" aria-live="polite"><div class="status-copy ${app.state}"><b>${copy[0]}</b><span>${copy[1]}</span></div>${app.state === "done" && app.mode !== "mission"?`<button class="redo" data-action="redo">다시 녹음</button>`:""}</div>
+        <footer class="footer">${dock()}</footer>`;
+    }
+
+    function renderControls() {
+      document.querySelectorAll("[data-mode]").forEach(el=>el.classList.toggle("on",el.dataset.mode===app.mode));
+      document.querySelectorAll("[data-width]").forEach(el=>el.classList.toggle("on",+el.dataset.width===app.width));
+      document.getElementById("stateControls").innerHTML = STATES.map(([key,label])=>`<button class="state-pill ${app.state===key?"on":""}" data-state="${key}">${label}</button>`).join("");
+    }
+
+    function render() {
+      renderControls();
+      renderDevice();
+    }
+
+    document.addEventListener("click", e => {
+      const el = e.target.closest("button");
+      if (!el) return;
+      if (el.dataset.mode) {
+        app.mode = el.dataset.mode;
+        app.item = 1;
+        reset();
+        return;
+      }
+      if (el.dataset.width) {
+        app.width = +el.dataset.width;
+        render();
+        return;
+      }
+      if (el.dataset.state) {
+        forceState(el.dataset.state);
+        return;
+      }
+      const action = el.dataset.action;
+      if (action === "record") {
+        if (app.state === "idle") begin();
+        else if (app.state === "recording") finish();
+      } else if (action === "redo") reset();
+      else if (action === "next") next();
+      else if (action === "keyboard") el.animate([{transform:"scale(1)"},{transform:"scale(.94)"},{transform:"scale(1)"}],180);
+      else if (action === "audio") el.animate([{transform:"scale(1)"},{transform:"scale(.96)"},{transform:"scale(1)"}],180);
+    });
+
+    render();
+  </script>
+</body>
+</html>

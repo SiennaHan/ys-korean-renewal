@@ -8,6 +8,7 @@ export {
 	ChipOption,
 	type ChipState,
 	ChipWrap,
+	WRONG_VISIBLE_MS,
 } from "./choice";
 export { FeedbackMessage } from "./feedback";
 export {
@@ -15,6 +16,7 @@ export {
 	IconClose,
 	IconMic,
 	IconNext,
+	IconSpinner,
 	IconStop,
 	IconVolume,
 } from "./icons";
@@ -47,8 +49,14 @@ export {
 	ThumbWordCards,
 	WordCards,
 } from "./practice-browser";
-export { ListenControl, RecordControl, type RecordMode } from "./record";
-export { type RoleTurn, RoleplayScreen } from "./roleplay";
+export {
+	ListenControl,
+	RecordControl,
+	RECORD_PREPARE_MS,
+	RECORD_TAIL_MS,
+	type RecordMode,
+} from "./record";
+export { RoleplayLayout, type RoleTurn, RoleplayScreen } from "./roleplay";
 export {
 	AudioBar,
 	AudioPair,

@@ -1,8 +1,13 @@
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { IconNext, IconVolume } from "./icons";
 import { ListenControl, RecordControl, type RecordMode } from "./record";
-import { ActivityAppBar, ActivityFooter, ActivityFrame } from "./shell";
+import {
+	ActivityAppBar,
+	ActivityFooter,
+	ActivityFrame,
+	ActivityProgress,
+} from "./shell";
 
 export interface RoleTurn {
 	/** 화면에 그대로 나오는 이름 — "나" 또는 상대 */
@@ -10,6 +15,82 @@ export interface RoleTurn {
 	mine: boolean;
 	ko: string;
 	en: string;
+}
+
+/**
+ * 확정 롤플레잉 화면의 공통 골격.
+ *
+ * 실제 라우트는 TTS·발음 판정·녹음처럼 상태가 많고, 확인용 RoleplayScreen은
+ * 정적 상태만 받는다. 둘이 대본 행까지 억지로 공유하면 실제 기능이 약해지므로
+ * 셸·시나리오 진행·순서 선택·대본 컨테이너·도크 자리까지만 공유한다.
+ */
+export function RoleplayLayout({
+	lesson,
+	direction,
+	currentScenario = 0,
+	totalScenarios = 1,
+	onExit,
+	onSkip,
+	onScenarioJump,
+	onDirection,
+	children,
+	footer,
+}: {
+	lesson: string;
+	direction: "ai" | "me";
+	currentScenario?: number;
+	totalScenarios?: number;
+	onExit?: () => void;
+	onSkip?: () => void;
+	onScenarioJump?: (index: number) => void;
+	onDirection?: (direction: "ai" | "me") => void;
+	children: ReactNode;
+	footer: ReactNode;
+}) {
+	const { t } = useTranslation();
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			<ActivityProgress
+				current={currentScenario}
+				total={totalScenarios}
+				onJump={onScenarioJump}
+			/>
+			<section className="role-intro">
+				<div className="role-title">{t("activity.roleIntro")}</div>
+			</section>
+			<div className="turns">
+				<div className="script-toolbar">
+					<span>{t("activity.rolePracticeOrder")}</span>
+					<div
+						className="role-order"
+						// biome-ignore lint/a11y/useSemanticElements: fieldset 기본 스타일 없이 같은 group 의미를 준다
+						role="group"
+						aria-label={t("activity.rolePracticeOrder")}
+					>
+						<button
+							type="button"
+							className={direction === "ai" ? "on" : ""}
+							aria-pressed={direction === "ai"}
+							onClick={() => onDirection?.("ai")}
+						>
+							{t("activity.roleAiFirst")}
+						</button>
+						<button
+							type="button"
+							className={direction === "me" ? "on" : ""}
+							aria-pressed={direction === "me"}
+							onClick={() => onDirection?.("me")}
+						>
+							{t("activity.roleMeFirst")}
+						</button>
+					</div>
+				</div>
+				{children}
+			</div>
+			{footer}
+		</ActivityFrame>
+	);
 }
 
 /**

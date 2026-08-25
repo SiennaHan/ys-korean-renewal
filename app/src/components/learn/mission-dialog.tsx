@@ -149,7 +149,7 @@ export default function MissionDialog({
 				return;
 			}
 
-			recording.setRecordState("uploading");
+			recording.setRecordState("sending");
 			const mission = await checkMission(msg);
 
 			if (mission && ["perfect", "tip"].includes(mission.status)) {
@@ -174,7 +174,7 @@ export default function MissionDialog({
 
 	// --- Event handlers ---
 	const handleRecord = useCallback(async () => {
-		if (recording.recordState === "ready") {
+		if (recording.recordState === "idle") {
 			await recording.startRecording();
 			return;
 		}
@@ -182,7 +182,7 @@ export default function MissionDialog({
 			recording.stopRecording();
 			return;
 		}
-		if (recording.recordState === "recorded") {
+		if (recording.recordState === "done") {
 			if (!recording.recordedMsg) {
 				addToast("녹음된 내용이 없습니다.");
 				recording.terminate();
@@ -384,7 +384,6 @@ export default function MissionDialog({
 			<DialogInput
 				recordState={recording.recordState}
 				recordedMsg={recording.recordedMsg}
-				isRecording={recording.isRecording}
 				mediaRecorder={recording.mediaRecorder}
 				textareaValue={textareaValue}
 				setTextareaValue={setTextareaValue}

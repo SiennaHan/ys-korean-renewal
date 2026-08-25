@@ -1,15 +1,15 @@
 import { postSpeaking } from "@/api/analyzeApi";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useMicPermission } from "@/components/audio/mic-permission-provider";
+import {
+	RECORD_PREPARE_MS,
+	RECORD_TAIL_MS,
+	type RecordMode,
+} from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { useCallback, useRef, useState } from "react";
 
-export type RecordState =
-	| "ready"
-	| "recording"
-	| "converting"
-	| "recorded"
-	| "uploading";
+export type RecordState = RecordMode;
 type StopAction = "transcribe" | "discard";
 
 interface UseRecordingOptions {
@@ -21,18 +21,25 @@ export function useRecording(options: UseRecordingOptions = {}) {
 	const { requestPermission } = useMicPermission();
 	const { addToast } = useToast();
 
-	const [recordState, setRecordState] = useState<RecordState>("ready");
+	const [recordState, setRecordState] = useState<RecordState>("idle");
 	const [recordedMsg, setRecordedMsg] = useState<string | null>(null);
 	const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
 		null,
 	);
-	const [isRecording, setIsRecording] = useState(false);
 
 	const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 	const mediaStreamRef = useRef<MediaStream | null>(null);
 	const recordChunksRef = useRef<Blob[]>([]);
 	const stopActionRef = useRef<StopAction>("transcribe");
 	const transcribeReqIdRef = useRef(0);
+	const phaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const clearPhaseTimer = useCallback(() => {
+		if (phaseTimerRef.current) {
+			clearTimeout(phaseTimerRef.current);
+			phaseTimerRef.current = null;
+		}
+	}, []);
 
 	const clearRecorderResources = useCallback(() => {
 		if (mediaStreamRef.current) {
@@ -43,19 +50,18 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		}
 		mediaRecorderRef.current = null;
 		setMediaRecorder(null);
-		setIsRecording(false);
 	}, []);
 
 	const transcribeBlob = useCallback(
 		async (blob: Blob) => {
 			if (blob.size === 0) {
-				setRecordState("ready");
+				setRecordState("idle");
 				addToast("녹음 데이터가 비어있습니다. 다시 시도해 주세요.");
 				return;
 			}
 
 			const reqId = ++transcribeReqIdRef.current;
-			setRecordState("converting");
+			setRecordState("sending");
 
 			try {
 				const sttMsg = await postSpeaking(blob);
@@ -63,17 +69,17 @@ export function useRecording(options: UseRecordingOptions = {}) {
 
 				const text = String(sttMsg ?? "").trim();
 				if (!text) {
-					setRecordState("ready");
+					setRecordState("idle");
 					addToast("음성 인식 결과가 비어있습니다. 다시 시도해 주세요.");
 					return;
 				}
 
 				setRecordedMsg(text);
-				setRecordState("recorded");
+				setRecordState("done");
 				options.onTranscribed?.(text);
 			} catch {
 				if (reqId !== transcribeReqIdRef.current) return;
-				setRecordState("ready");
+				setRecordState("idle");
 				addToast("음성 인식에 실패했습니다. 다시 시도해 주세요.");
 			}
 		},
@@ -81,7 +87,10 @@ export function useRecording(options: UseRecordingOptions = {}) {
 	);
 
 	const startRecording = useCallback(async () => {
+		clearPhaseTimer();
+		setRecordState("preparing");
 		if (typeof MediaRecorder === "undefined") {
+			setRecordState("idle");
 			addToast("현재 브라우저는 음성 녹음을 지원하지 않습니다.");
 			return;
 		}
@@ -89,6 +98,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		await unlock();
 		const granted = await requestPermission();
 		if (!granted) {
+			setRecordState("idle");
 			addToast("마이크 권한이 필요합니다.");
 			return;
 		}
@@ -140,19 +150,22 @@ export function useRecording(options: UseRecordingOptions = {}) {
 
 			mediaRecorderRef.current = recorder;
 			setMediaRecorder(recorder);
-			setIsRecording(true);
 			setRecordedMsg(null);
-			setRecordState("recording");
 			recorder.start();
+			phaseTimerRef.current = setTimeout(() => {
+				setRecordState("recording");
+				phaseTimerRef.current = null;
+			}, RECORD_PREPARE_MS);
 		} catch {
 			clearRecorderResources();
-			setRecordState("ready");
+			setRecordState("idle");
 			addToast(
 				"녹음을 시작할 수 없습니다. 브라우저/권한 설정을 확인해 주세요.",
 			);
 		}
 	}, [
 		addToast,
+		clearPhaseTimer,
 		clearRecorderResources,
 		requestPermission,
 		transcribeBlob,
@@ -160,19 +173,24 @@ export function useRecording(options: UseRecordingOptions = {}) {
 	]);
 
 	const stopRecording = useCallback(() => {
+		clearPhaseTimer();
 		const recorder = mediaRecorderRef.current;
 		if (!recorder || recorder.state === "inactive") {
-			setRecordState("ready");
+			setRecordState("idle");
 			addToast("녹음이 시작되지 않았습니다. 다시 시도해 주세요.");
 			return;
 		}
 
 		stopActionRef.current = "transcribe";
-		setRecordState("converting");
-		recorder.stop();
-	}, [addToast]);
+		setRecordState("finishing");
+		phaseTimerRef.current = setTimeout(() => {
+			recorder.stop();
+			phaseTimerRef.current = null;
+		}, RECORD_TAIL_MS);
+	}, [addToast, clearPhaseTimer]);
 
 	const terminate = useCallback(() => {
+		clearPhaseTimer();
 		stopActionRef.current = "discard";
 		if (
 			mediaRecorderRef.current &&
@@ -183,11 +201,12 @@ export function useRecording(options: UseRecordingOptions = {}) {
 			clearRecorderResources();
 		}
 
-		setRecordState("ready");
+		setRecordState("idle");
 		setRecordedMsg(null);
-	}, [clearRecorderResources]);
+	}, [clearPhaseTimer, clearRecorderResources]);
 
 	const cleanup = useCallback(() => {
+		clearPhaseTimer();
 		stopActionRef.current = "discard";
 		if (
 			mediaRecorderRef.current &&
@@ -196,7 +215,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 			mediaRecorderRef.current.stop();
 		}
 		clearRecorderResources();
-	}, [clearRecorderResources]);
+	}, [clearPhaseTimer, clearRecorderResources]);
 
 	return {
 		recordState,
@@ -204,7 +223,6 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		recordedMsg,
 		setRecordedMsg,
 		mediaRecorder,
-		isRecording,
 		startRecording,
 		stopRecording,
 		terminate,

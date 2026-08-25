@@ -658,9 +658,11 @@ function IconVolumeInline() {
 			stroke="currentColor"
 			strokeWidth={2}
 			strokeLinecap="round"
+			strokeLinejoin="round"
 			aria-hidden="true"
 		>
-			<path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 010 6" />
+			<path d="M4.75 9.3v5.4c0 .72.58 1.3 1.3 1.3h2.52l3.96 3.13c.82.65 2.02.07 2.02-.97V5.84c0-1.04-1.2-1.62-2.02-.97L8.57 8H6.05c-.72 0-1.3.58-1.3 1.3Z" />
+			<path d="M18.15 9.2c.8.72 1.2 1.65 1.2 2.8s-.4 2.08-1.2 2.8" />
 		</svg>
 	);
 }

@@ -6,6 +6,8 @@ import { postSpeaking } from "@/api/analyzeApi";
 import { MicIcon } from "@/assets/icons";
 import {
 	MicBlockedDialog,
+	RECORD_PREPARE_MS,
+	RECORD_TAIL_MS,
 	RecordControl,
 	type RecordMode,
 } from "@/components/main/activity";
@@ -31,23 +33,13 @@ interface Props {
 	 */
 	onSkipActivity?: () => void;
 }
-type RecorderStatus =
-	| "idle"
-	| "preparing"
-	| "recording"
-	| "finishing"
-	| "recorded"
-	| "uploading";
+type RecorderStatus = RecordMode;
 
 /**
  * 누르자마자 말하면 첫 음절이 잘린다 — 마이크보다 사람이 빠르다.
  * "준비 중"을 2초 보여 주어 그동안 말하지 않게 한다.
  * 녹음 자체는 누르는 즉시 시작한다. 그래야 그 사이에 말해도 잃는 것이 없다.
  */
-const PREPARE_MS = 2000;
-/** 끝났다고 누른 뒤에도 1초 더 담는다 — 마지막 말이 잘리지 않게 */
-const TAIL_MS = 1000;
-
 const baseButtonClasses =
 	"flex justify-center items-center rounded-full text-[#fff] transition-all duration-200 ease-in-out cursor-pointer \
                           bg-[#0180FF] hover:bg-[#0180FFbb] active:bg-[#0180FFdd] \
@@ -82,7 +74,7 @@ const AudioRecorder = (props: Props) => {
 			if (audioRef.current) {
 				audioRef.current.src = url;
 			}
-			setRecorderStatus("recorded");
+			setRecorderStatus("done");
 		}
 	}, [recordingBlob]);
 
@@ -125,12 +117,12 @@ const AudioRecorder = (props: Props) => {
 			startRecording();
 			timerRef.current = setTimeout(
 				() => setRecorderStatus("recording"),
-				PREPARE_MS,
+				RECORD_PREPARE_MS,
 			);
 		} else if (recorderStatus === "recording") {
 			setRecorderStatus("finishing");
-			timerRef.current = setTimeout(() => stopRecording(), TAIL_MS);
-		} else if (recorderStatus === "recorded") {
+			timerRef.current = setTimeout(() => stopRecording(), RECORD_TAIL_MS);
+		} else if (recorderStatus === "done") {
 			handleUpload();
 		}
 	};
@@ -152,7 +144,7 @@ const AudioRecorder = (props: Props) => {
 
 	const handleUpload = async () => {
 		if (recordingBlob) {
-			setRecorderStatus("uploading");
+			setRecorderStatus("sending");
 			try {
 				const resultMsg = await postSpeaking(recordingBlob);
 
@@ -186,16 +178,8 @@ const AudioRecorder = (props: Props) => {
 	};
 
 	if (props.dock) {
-		// recorded 는 목업의 done 과 자리는 같지만 하는 일이 다르다 —
+		// done 은 다시 녹음이 아니라 발음을 확인하러 보내는 상태다 —
 		// 다시 녹음이 아니라 발음을 확인하러 보낸다. 그래서 글을 갈아 끼운다.
-		// recorded 는 목업의 done 과 자리는 같지만 하는 일이 다르다 —
-		// 다시 녹음이 아니라 발음을 확인하러 보낸다. 그래서 글을 갈아 끼운다.
-		const mode: RecordMode =
-			recorderStatus === "uploading"
-				? "sending"
-				: recorderStatus === "recorded"
-					? "done"
-					: recorderStatus;
 		return (
 			<>
 				{micBlocked && (
@@ -212,7 +196,7 @@ const AudioRecorder = (props: Props) => {
 					/>
 				)}
 				<RecordControl
-					mode={mode}
+					mode={recorderStatus}
 					action="srec"
 					doneHint={t("activity.recordCheckSub")}
 					onPress={props.disabled ? undefined : handlePrimaryAction}
@@ -227,7 +211,7 @@ const AudioRecorder = (props: Props) => {
 		<div className="flex flex-col items-center pt-[10px]">
 			<div className="flex items-center justify-between pr-[8px] pl-[12px] ">
 				<div className="flex size-[50px] items-center">
-					{recorderStatus === "recorded" && (
+					{recorderStatus === "done" && (
 						<button
 							type="button"
 							onClick={handleCancelOrDelete}
@@ -254,7 +238,7 @@ const AudioRecorder = (props: Props) => {
 							props.disabled ||
 							recorderStatus === "preparing" ||
 							recorderStatus === "finishing" ||
-							recorderStatus === "uploading"
+							recorderStatus === "sending"
 						}
 						className={clsx(
 							baseButtonClasses,
@@ -270,8 +254,8 @@ const AudioRecorder = (props: Props) => {
 						{recorderStatus === "preparing" && (
 							<div className="h-6 w-6 animate-spin rounded-full border-[#fff] border-b-2" />
 						)}
-						{recorderStatus === "recorded" && <Upload size={24} />}
-						{recorderStatus === "uploading" && (
+						{recorderStatus === "done" && <Upload size={24} />}
+						{recorderStatus === "sending" && (
 							<div className="h-6 w-6 animate-spin rounded-full border-[#fff] border-b-2" />
 						)}
 					</button>

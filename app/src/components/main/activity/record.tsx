@@ -1,5 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { IconCheck, IconMic, IconStop, IconVolume } from "./icons";
+import { IconCheck, IconMic, IconSpinner, IconStop, IconVolume } from "./icons";
+
+/** 누른 뒤 말하기 시작 시점을 분명히 알리는 준비 구간 */
+export const RECORD_PREPARE_MS = 2000;
+/** 정지를 누른 뒤 문장 끝을 보존하는 꼬리 녹음 구간 */
+export const RECORD_TAIL_MS = 1000;
 
 /**
  * 녹음 버튼의 모습. 한 버튼을 눌러 idle → recording → done 으로 돈다.
@@ -75,9 +80,11 @@ export function RecordControl({
 				}
 				onClick={onPress}
 			>
-				{mode === "recording" || mode === "finishing" ? (
+				{mode === "preparing" || mode === "sending" ? (
+					<IconSpinner />
+				) : mode === "recording" || mode === "finishing" ? (
 					<IconStop />
-				) : mode === "done" || mode === "sending" ? (
+				) : mode === "done" ? (
 					<IconCheck />
 				) : (
 					<IconMic />

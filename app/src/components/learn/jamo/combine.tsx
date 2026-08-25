@@ -13,6 +13,7 @@ import {
 	ActivityBody,
 	ActivityFooter,
 	ActivityFrame,
+	ActivityProgress,
 	AudioRow,
 	ComboTarget,
 	Dock,
@@ -207,6 +208,11 @@ export default function JamoCombine({ moduleCode }: { moduleCode: string }) {
 			{/* 건너뛰기 — 목업 모든 활동 화면에 있는데 실제 자모 화면엔 없었다.
 			    대조가 못 잡는 자리다(activity-parity 는 learn/jamo 를 안 본다). */}
 			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={skip} />
+			<ActivityProgress
+				current={problemIndex}
+				total={problemList.length}
+				onJump={setProblemIndex}
+			/>
 
 			{stage === "select" ? (
 				<ActivityBody>

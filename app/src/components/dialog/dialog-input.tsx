@@ -15,7 +15,6 @@ interface DialogInputProps {
 	// Recording state
 	recordState: RecordState;
 	recordedMsg: string | null;
-	isRecording: boolean;
 	mediaRecorder: MediaRecorder | null;
 
 	// Text input
@@ -38,7 +37,6 @@ interface DialogInputProps {
 export function DialogInput({
 	recordState,
 	recordedMsg,
-	isRecording,
 	mediaRecorder,
 	textareaValue,
 	setTextareaValue,
@@ -143,7 +141,7 @@ export function DialogInput({
 			) : (
 				/* Voice recording mode */
 				<div className="mb-[10px] flex items-center justify-center gap-2">
-					{recordState === "ready" ? (
+					{recordState === "idle" ? (
 						<button
 							type="button"
 							className={chatBaseWhiteButton}
@@ -159,7 +157,7 @@ export function DialogInput({
 							type="button"
 							className={chatBaseRedButton}
 							onClick={onTerminate}
-							disabled={recordState === "uploading"}
+							disabled={recordState === "sending"}
 						>
 							<Trash2 color="#F15F49" size={20} />
 						</button>
@@ -168,7 +166,9 @@ export function DialogInput({
 					<div className="relative">
 						<CircularProgress
 							sqSize={66}
-							isStart={isRecording}
+							isStart={
+								recordState === "recording" || recordState === "finishing"
+							}
 							onEnd={stopRecording}
 						/>
 						<button
@@ -179,16 +179,17 @@ export function DialogInput({
 							)}
 							onClick={onRecord}
 							disabled={
-								recordState === "converting" || recordState === "uploading"
+								recordState === "preparing" ||
+								recordState === "finishing" ||
+								recordState === "sending"
 							}
 						>
-							{recordState === "ready" && <MicIcon color="#fff" />}
-							{recordState === "recording" && (
+							{recordState === "idle" && <MicIcon color="#fff" />}
+							{(recordState === "recording" || recordState === "finishing") && (
 								<Square fill="#fff" strokeWidth={0} />
 							)}
-							{recordState === "recorded" && <Upload />}
-							{(recordState === "converting" ||
-								recordState === "uploading") && (
+							{recordState === "done" && <Upload />}
+							{(recordState === "preparing" || recordState === "sending") && (
 								<div className="h-6 w-6 animate-spin rounded-full border-white border-b-2" />
 							)}
 						</button>
