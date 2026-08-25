@@ -36,9 +36,7 @@ export function DialogScenario({
 				className="w-full cursor-pointer bg-[#0180FF] py-2 pr-4 pl-4 text-left"
 				onClick={() => setIsShowImage((prev) => !prev)}
 			>
-				<div
-					className={clsx(chatBaseTextItem, "items-top flex justify-between")}
-				>
+				<div className={clsx(chatBaseTextItem, "flex justify-between")}>
 					<span className="font-semibold text-base text-white">{scenario}</span>
 					<ChevronUp
 						style={{

@@ -103,7 +103,7 @@ export const BotMsgBox = ({
 		}
 	};
 	return (
-		<div className="items-top mt-[10px] mr-[15px] flex flex-row px-[12px]">
+		<div className="mt-[10px] mr-[15px] flex flex-row px-[12px]">
 			<div>
 				<div className="flex size-[40px] flex-shrink-0 items-center justify-center">
 					<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />
@@ -219,7 +219,7 @@ export const TipUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
 
 export const BotMsgProgress = () => {
 	return (
-		<div className="items-top mt-[10px] mr-[15px] flex flex-row px-[12px]">
+		<div className="mt-[10px] mr-[15px] flex flex-row px-[12px]">
 			<div>
 				<div className="flex size-[40px] flex-shrink-0 items-center justify-center">
 					<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />

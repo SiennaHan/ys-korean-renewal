@@ -63,13 +63,7 @@ UNUSED_ALLOW = {
 	"role-footer": "`.chat-footer` 와 한 규칙에 묶여 있을 뿐 쓰는 곳이 없다",
 }
 
-USED_ALLOW = {
-	"items-top": "TODO: Tailwind 에 없는 이름이다(어느 판에도 없다). 지금은 아무것도"
-	" 안 하므로 화면은 기본값 stretch 다. `items-start` 가 의도였는지 확인 전에는"
-	" 바꾸지 않는다 — 바꾸면 모양이 달라지는데 견줄 목업이 없다",
-	"font-inter": "TODO: 이 이름의 폰트 규칙이 없다. HangulCanvas 가 달고 있지만"
-	" 아무것도 안 입는다. 어떤 글꼴을 의도했는지 정하기 전에는 손대지 않는다",
-}
+USED_ALLOW: dict[str, str] = {}
 
 
 def classes_in(css: str) -> set[str]:

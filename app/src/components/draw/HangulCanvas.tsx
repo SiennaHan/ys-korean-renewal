@@ -277,7 +277,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-center font-inter">
+		<div className="flex flex-col items-center justify-center">
 			<div className="w-full max-w-sm rounded-xl bg-white transition-all hover:shadow-3xl">
 				{/* Signature Canvas Area */}
 				<div className="mb-[10px] w-full text-center">
