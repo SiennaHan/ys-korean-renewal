@@ -20,7 +20,14 @@ import blankQuestions from "@/shared/data/n4_blank_question.json";
 import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 interface BlankQuestion {
@@ -195,17 +202,15 @@ export default function FillBlank({
 	/** 선택한 답이 맞는지 */
 	const isSelectionCorrect = selectedAnswer === question?.answer;
 
-	/** 빈칸 표시: 선택 전엔 넓은 밑줄, 선택 후엔 텍스트 교체 */
+	/**
+	 * 빈칸 표시: 원장에는 한 문장 안에 빈칸이 둘인 문항도 있다.
+	 * 모든 `( )` 를 같은 밑줄로 바꾸고, `으면 … 을수록` 같은 복합 선택지는
+	 * 말줄임표를 기준으로 나눠 각각의 빈칸에 넣는다.
+	 */
 	const questionParts = useMemo(() => {
-		if (!question) return { before: "", after: "", completionFilled: "" };
+		if (!question) return { segments: [""], completionFilled: "" };
 		// 빈칸 패턴: "(     )" (5칸) 또는 "( )" (1칸)
-		const blankPattern = /\(\s+\)/;
-		const match = question.question.match(blankPattern);
-		if (!match || match.index === undefined)
-			return { before: question.question, after: "", completionFilled: "" };
-		const idx = match.index;
-		const before = question.question.slice(0, idx);
-		const after = question.question.slice(idx + match[0].length);
+		const segments = question.question.split(/\(\s*\)/);
 
 		// completion의 <b>...</b> 태그가 볼드로 강조할 영역을 그대로 표시한다.
 		// 태그 안쪽만 볼드로 렌더하고, 태그 문자열 자체는 화면에 노출하지 않는다.
@@ -222,13 +227,17 @@ export default function FillBlank({
 		}
 
 		return {
-			before,
-			after,
+			segments,
 			completionBefore,
 			completionFilled,
 			completionAfter,
 		};
 	}, [question]);
+
+	const selectedParts = useMemo(
+		() => selectedAnswer?.split(/\s*…\s*/) ?? [],
+		[selectedAnswer],
+	);
 
 	/** 이전/다음 문제 */
 	const handlePrev = useCallback(() => {
@@ -304,19 +313,25 @@ export default function FillBlank({
 								{questionParts.completionAfter}
 							</>
 						) : selectedAnswer ? (
-							<>
-								{questionParts.before}
-								<b className={isSelectionCorrect ? "" : "miss"}>
-									{selectedAnswer}
-								</b>
-								{questionParts.after}
-							</>
+							questionParts.segments.map((segment, index) => (
+								<Fragment key={`${index}-${segment}`}>
+									{segment}
+									{index < questionParts.segments.length - 1 && (
+										<b className={isSelectionCorrect ? "" : "miss"}>
+											{selectedParts[index] ?? selectedAnswer}
+										</b>
+									)}
+								</Fragment>
+							))
 						) : (
-							<>
-								{questionParts.before}
-								<u>　</u>
-								{questionParts.after}
-							</>
+							questionParts.segments.map((segment, index) => (
+								<Fragment key={`${index}-${segment}`}>
+									{segment}
+									{index < questionParts.segments.length - 1 && (
+										<span className="blank-slot" />
+									)}
+								</Fragment>
+							))
 						)}
 					</BlankCard>
 					{selectedAnswer && (

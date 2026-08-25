@@ -6,8 +6,8 @@ import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
 	ActivityFooter,
 	IconClose,
-	IconNext,
 	IconVolume,
+	PrimaryButton,
 	RoleplayLayout,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
@@ -486,35 +486,33 @@ export default function AiRoleplay({
 			}}
 			footer={
 				<ActivityFooter>
-					<div className="dock">
-						<span className="slot" aria-hidden="true" />
-						<div className="main">
-							<AudioRecorder
-								dock
-								setResult={handleRecordResult}
-								onSkipActivity={handleSkip}
-								disabled={playState !== "practice-turn" || evaluating}
-							/>
+					{playState === "done" ? (
+						<div className="dock">
+							<div className="main">
+								<PrimaryButton
+									label={
+										hasNext
+											? t("activity.roleNextDialogue")
+											: t("activity.roleFinish")
+									}
+									on
+									action="roleNext"
+									onClick={hasNext ? handleNext : () => router.history.back()}
+								/>
+							</div>
 						</div>
-						<button
-							type="button"
-							className="slot"
-							data-action="roleNext"
-							aria-label={t("player.next")}
-							disabled={
-								hasNext
-									? false
-									: !scenarios.every(
-											(sc) =>
-												sc.turns.length > 0 &&
-												completedScenarios.has(sc.turns[0].id),
-										)
-							}
-							onClick={hasNext ? handleNext : () => router.history.back()}
-						>
-							<IconNext />
-						</button>
-					</div>
+					) : (
+						<div className="dock">
+							<div className="main">
+								<AudioRecorder
+									dock
+									setResult={handleRecordResult}
+									onSkipActivity={handleSkip}
+									disabled={playState !== "practice-turn" || evaluating}
+								/>
+							</div>
+						</div>
+					)}
 				</ActivityFooter>
 			}
 		>

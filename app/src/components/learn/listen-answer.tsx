@@ -306,7 +306,7 @@ export default function ListenAnswer({
 					</div>
 				</ProblemCard>
 
-				<div className="response-area">
+				<div className="response-area listen-response">
 					{!isOxType && <QuestionText>{question.question}</QuestionText>}
 					<ChoiceList
 						variant={isImageType ? "image" : isOxType ? "binary" : "list"}

@@ -238,7 +238,7 @@
 <h3>활동별 예외</h3>
 <div class="tablewrap"><table>
   <tr><th>활동</th><th>이 상태 머신을 그대로 쓰는가</th></tr>
-  <tr><td>단어 학습·문법 연습·듣기·읽기</td><td>그대로 적용. 문항 = 시트의 각 행</td></tr>
+  <tr><td>단어 학습·빈칸 채우기·듣기·읽기</td><td>그대로 적용. 문항 = 시트의 각 행</td></tr>
   <tr><td>플래시카드</td><td>그대로 적용. "몰라요" = 오답과 동일하게 복습 큐 예약(구 앱의 repeat 패턴을 이 머신의 정식 사례로 승격)</td></tr>
   <tr><td>AI 롤플레잉</td><td>그대로 적용. 문항 = 대화 턴. STT 실패·재시도는 오답이 아니라 미응답으로 취급(복습 큐 미예약)</td></tr>
   <tr><td>AI 미션 대화</td><td><b>부분 적용</b> — 진행바는 "미션 키워드" 단위이지만
@@ -257,7 +257,7 @@
 <div class="tablewrap"><table>
   <tr><th>활동</th><th>구 라우트</th><th>신 라우트</th></tr>
   <tr><td>단어 학습하기</td><td><code>/learn/word?book=&amp;chapter=</code></td><td><code>/learn/word?level=&amp;lesson=</code> <span class="pill keep">유지(쿼리 키만 급/과로 개칭)</span></td></tr>
-  <tr><td>문법 연습</td><td><code>/learn/fill-blank?...</code></td><td><code>/learn/grammar?level=&amp;lesson=</code> <span class="pill new">개칭</span></td></tr>
+  <tr><td>빈칸 채우기</td><td><code>/learn/fill-blank?...</code></td><td><code>/learn/grammar?level=&amp;lesson=</code> <span class="pill new">개칭</span></td></tr>
   <tr><td>듣고 질문에 답하기</td><td><code>/learn/listen-answer?...</code></td><td><code>/learn/listen?level=&amp;lesson=</code></td></tr>
   <tr><td>읽고 질문에 답하기</td><td><code>/learn/read-answer?...</code></td><td><code>/learn/read?level=&amp;lesson=</code></td></tr>
   <tr><td>AI 롤플레잉</td><td><code>/learn/roleplay?...</code></td><td><code>/learn/roleplay?level=&amp;lesson=</code></td></tr>
@@ -345,7 +345,7 @@
 <h3>3.4 활동별 셸 적용 매트릭스</h3>
 <div class="tablewrap"><table>
   <tr><th>활동</th><th>문항 단위</th><th>입력 방식</th><th>셸 커스터마이징</th></tr>
-  <tr><td>단어 학습·문법 연습·듣기·읽기</td><td>행 1개</td><td>탭 선택</td><td>없음 — 셸 그대로</td></tr>
+  <tr><td>단어 학습·빈칸 채우기·듣기·읽기</td><td>행 1개</td><td>탭 선택</td><td>없음 — 셸 그대로</td></tr>
   <tr><td>플래시카드</td><td>카드 1장</td><td>스와이프(아는/모르는)</td><td>진행바는 유지하되 정오답 대신 <span style="color:var(--accent)">파랑=알아요</span>/<span style="color:var(--warn)">노랑=몰라요</span>로 색 의미만 교체. <b>자기 평가라 의미색(<code>Positive</code>/<code>Destructive</code>)을 쓰지 않는다</b> — 기존 플래시카드 디자인 그대로</td></tr>
   <tr><td>AI 롤플레잉</td><td>대화 턴 1개</td><td>음성(마이크)</td><td>헤더 아래 마이크 존 추가. 피드백은 pass/재시도(오답 개념 없음, 재시도 2회 초과 시에만 복습 큐)</td></tr>
   <tr><td>AI 미션 대화</td><td>미션 키워드 1개</td><td>음성+키보드</td><td>진행 세그먼트가 문항이 아니라 미션 키워드 개수만큼(보통 3개). 결과 화면은 <b>기존 리포트 화면 유지</b>(§1 예외)</td></tr>
@@ -697,7 +697,7 @@
   <rect x="40" y="20" width="280" height="360" rx="18" fill="none" stroke="currentColor" stroke-opacity=".45"/>
   <rect x="40" y="20" width="280" height="70" rx="18" fill="currentColor" fill-opacity=".05"/>
   <text x="60" y="48" font-size="12" fill="currentColor">✕</text>
-  <text x="180" y="48" text-anchor="middle" font-size="12" fill="currentColor">4과 · 문법 연습</text>
+  <text x="180" y="48" text-anchor="middle" font-size="12" fill="currentColor">4과 · 빈칸 채우기</text>
   <text x="298" y="48" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">건너뛰기</text>
   <rect x="60" y="66" width="34" height="7" rx="3" fill="#11C378"/>
   <rect x="98" y="66" width="34" height="7" rx="3" fill="#F15F49"/>
@@ -1346,7 +1346,7 @@ y=648  마이크 영역                  360×92
 <div class="tablewrap"><table>
   <tr><th>활동</th><th>ContentSlot</th><th>셸 커스터마이징</th></tr>
   <tr><td>단어 학습</td><td>뜻 카드 + ChoiceList(4)</td><td>짧은 어휘는 카드 안 가운데 정렬</td></tr>
-  <tr><td>문법 연습</td><td>빈칸 문장 + ChoiceList(2~4)</td><td>카드 안 왼쪽 정렬</td></tr>
+  <tr><td>빈칸 채우기</td><td>빈칸 문장 + ChoiceList(2~4)</td><td>카드 안 왼쪽 정렬</td></tr>
   <tr><td>듣기</td><td>재생 버튼 + ChoiceList(2~4)</td><td><code>audioMissing</code> 상태 사용</td></tr>
   <tr><td>읽기</td><td>지문 + ChoiceList(2~4)</td><td>지문·선택지 목록은 각자 필요한 영역에서 스크롤</td></tr>
   <tr><td>AI 롤플레잉</td><td>대화 턴 + <b>MicZone</b></td><td>피드백이 <code>speaking</code> 상태 사용</td></tr>
