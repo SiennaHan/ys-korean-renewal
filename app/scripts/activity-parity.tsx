@@ -1488,6 +1488,10 @@ for (const [name, element] of Object.entries(SCREENS)) {
 	/*
 	 * 프레임은 목업 캡처에 없다 — 캡처는 프레임 안쪽만 담았다.
 	 * activity-frame 은 활동 화면, vocashot-frame 은 VocaShot 이 쓴다.
+	 *
+	 * **`class` 가 첫 속성이어야 한다.** 아래 정규식이 `^<div class=` 로 시작하므로,
+	 * 프레임에 속성을 더할 때 `className` 앞에 두면 껍데기가 안 벗겨지고 세 화면이
+	 * 통째로 갈린다. VocaShot 에 초점용 `tabIndex` 를 붙이다 실제로 겪었다.
 	 * data-screen 처럼 프레임에 붙는 속성도 같이 벗긴다.
 	 */
 	const inner = html

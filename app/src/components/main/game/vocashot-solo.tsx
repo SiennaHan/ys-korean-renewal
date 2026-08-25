@@ -23,6 +23,7 @@ import {
 import { VOCA_BANK, type VocaItem } from "@/shared/data/vocashot-bank";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useScreenFocus } from "./use-screen-focus";
 
 /** 목업 TUNING — 값을 바꾸면 체감이 달라지므로 한곳에 둔다 */
 const TUNING = {
@@ -78,6 +79,12 @@ export default function VocashotSolo() {
 	const nav = useNavigate();
 
 	const [view, setView] = useState<View>("start");
+	/*
+	 * 화면이 바뀌면 초점을 새 화면으로 옮긴다. SPA 라 아무도 안 해 주면 초점이
+	 * `<body>` 로 떨어져, 스크린리더는 화면이 바뀐 줄 모르고 다음 Tab 은 문서
+	 * 맨 처음으로 간다. 붙는 자리는 세 화면이 각자 그리는 `.vocashot-frame` 이다.
+	 */
+	const frameRef = useScreenFocus(view);
 	const [level, setLevel] = useState(2);
 	const [lang, setLang] = useState<string>("en");
 	const [mode, setMode] = useState<Mode>("easy");
@@ -277,6 +284,7 @@ export default function VocashotSolo() {
 	if (view === "start") {
 		return (
 			<VocashotStartView
+				frameRef={frameRef}
 				level={level}
 				lang={lang}
 				mode={mode}
@@ -293,6 +301,7 @@ export default function VocashotSolo() {
 	if (view === "result") {
 		return (
 			<VocashotResultView
+				frameRef={frameRef}
 				level={level}
 				mode={mode}
 				best={best}
@@ -309,6 +318,7 @@ export default function VocashotSolo() {
 
 	return (
 		<VocashotPlayView
+			frameRef={frameRef}
 			level={level}
 			mode={mode}
 			lang={lang}

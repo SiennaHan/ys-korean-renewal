@@ -10,6 +10,7 @@
  * r-again · r-exit · av 규칙이 다 들어와 있는데 컴포넌트가 그리지 않고 있었다 —
  * 운석 그림도 지구도 발사대도 없는 화면이었다. 대조에 넣으면서 드러났다.
  */
+import type React from "react";
 
 export const LANGS = [
 	{ code: "en", label: "English" },
@@ -29,6 +30,13 @@ export interface Missed {
 }
 
 export interface StartViewProps {
+	/**
+	 * 화면이 바뀔 때 초점을 받을 자리. 프레임에 붙인다 —
+	 * 목업 캡처는 프레임 안쪽만 담았고 대조가 이 껍데기를 벗기므로,
+	 * 여기 붙는 `tabIndex`·`aria-label` 은 대조에 안 보인다.
+	 * 만드는 쪽은 `vocashot-solo.tsx` 의 `useScreenFocus(view)` 다.
+	 */
+	frameRef?: React.Ref<HTMLDivElement>;
 	level: number;
 	lang: string;
 	mode: Mode;
@@ -41,6 +49,7 @@ export interface StartViewProps {
 }
 
 export function VocashotStartView({
+	frameRef,
 	level,
 	lang,
 	mode,
@@ -52,7 +61,13 @@ export function VocashotStartView({
 	onBack,
 }: StartViewProps) {
 	return (
-		<div className="vocashot-frame" data-screen="vs_start">
+		<div
+			ref={frameRef}
+			className="vocashot-frame"
+			data-screen="vs_start"
+			tabIndex={-1}
+			aria-label="VocaShot — 시작"
+		>
 			<div
 				className="g-dark"
 				style={{ display: "flex", flexDirection: "column", height: "100%" }}
@@ -282,6 +297,13 @@ function EarthSurface() {
 }
 
 export interface PlayViewProps {
+	/**
+	 * 화면이 바뀔 때 초점을 받을 자리. 프레임에 붙인다 —
+	 * 목업 캡처는 프레임 안쪽만 담았고 대조가 이 껍데기를 벗기므로,
+	 * 여기 붙는 `tabIndex`·`aria-label` 은 대조에 안 보인다.
+	 * 만드는 쪽은 `vocashot-solo.tsx` 의 `useScreenFocus(view)` 다.
+	 */
+	frameRef?: React.Ref<HTMLDivElement>;
 	level: number;
 	mode: Mode;
 	lang: string;
@@ -298,6 +320,7 @@ export interface PlayViewProps {
 }
 
 export function VocashotPlayView({
+	frameRef,
 	level,
 	mode,
 	lang,
@@ -311,7 +334,13 @@ export function VocashotPlayView({
 	onResolve,
 }: PlayViewProps) {
 	return (
-		<div className="vocashot-frame" data-screen="vs_play">
+		<div
+			ref={frameRef}
+			className="vocashot-frame"
+			data-screen="vs_play"
+			tabIndex={-1}
+			aria-label="VocaShot — 문제"
+		>
 			<div
 				className="g-dark"
 				style={{ display: "flex", flexDirection: "column", height: "100%" }}
@@ -399,6 +428,13 @@ export function VocashotPlayView({
 /* ── 결과 ─────────────────────────────────────────────── */
 
 export interface ResultViewProps {
+	/**
+	 * 화면이 바뀔 때 초점을 받을 자리. 프레임에 붙인다 —
+	 * 목업 캡처는 프레임 안쪽만 담았고 대조가 이 껍데기를 벗기므로,
+	 * 여기 붙는 `tabIndex`·`aria-label` 은 대조에 안 보인다.
+	 * 만드는 쪽은 `vocashot-solo.tsx` 의 `useScreenFocus(view)` 다.
+	 */
+	frameRef?: React.Ref<HTMLDivElement>;
 	level: number;
 	mode: Mode;
 	best: number | null;
@@ -413,6 +449,7 @@ export interface ResultViewProps {
 }
 
 export function VocashotResultView({
+	frameRef,
 	level,
 	mode,
 	best,
@@ -426,7 +463,13 @@ export function VocashotResultView({
 }: ResultViewProps) {
 	const cleared = hearts > 0;
 	return (
-		<div className="vocashot-frame" data-screen="vs_result">
+		<div
+			ref={frameRef}
+			className="vocashot-frame"
+			data-screen="vs_result"
+			tabIndex={-1}
+			aria-label="VocaShot — 결과"
+		>
 			<div
 				className="g-dark"
 				style={{ display: "flex", flexDirection: "column", height: "100%" }}
