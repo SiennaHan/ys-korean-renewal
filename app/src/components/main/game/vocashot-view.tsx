@@ -538,12 +538,23 @@ export function VocashotResultView({
 					</div>
 
 					{missed.length > 0 ? (
-						<div className="r-missed">
-							<div className="r-k">놓친 단어</div>
+						/*
+						 * 정본은 `phase1/screens_uiux.html` 이다. 전에는 여기를
+						 * `r-missed` · `r-miss` · `<b>` 로 적어 두었는데, **그 이름에는
+						 * 규칙이 하나도 없어서** 단어와 뜻이 붙어 나왔다
+						 * (`녹차green tea다시 맞힘`). 쓸 CSS 는 `.r-wrong` · `.r-row` ·
+						 * `.w` · `.m` · `.re` 로 이미 다 이관돼 있었다.
+						 * 목업 캡처가 **놓친 단어 없는 상태**만 담아서 대조가 못 봤다.
+						 */
+						<div className="r-wrong">
+							<div className="r-k cap">
+								놓친 단어 {missed.length}개 · 다시 맞힘{" "}
+								{missed.filter((x) => x.got).length}
+							</div>
 							{missed.map((m) => (
-								<div key={m.w} className={`r-miss${m.got ? " got" : ""}`}>
-									<b>{m.w}</b>
-									<span>{m.m}</span>
+								<div key={m.w} className={`r-row${m.got ? " got" : ""}`}>
+									<span className="w">{m.w}</span>
+									<span className="m">{m.m}</span>
 									{m.got && <span className="re">다시 맞힘</span>}
 								</div>
 							))}

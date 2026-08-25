@@ -8,6 +8,7 @@ import {
 	Map,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type React from "react";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -121,9 +122,20 @@ export interface GameListViewProps {
 	 */
 	progress: Record<string, string | null>;
 	onOpen: (to: string) => void;
+	/**
+	 * 화면이 초점을 받을 자리. 목록은 화면이 하나뿐이라 옮길 일이 없어 보이지만,
+	 * **게임에서 나오면 여기로 돌아온다.** 그때 초점이 `<body>` 에 떨어져 있으면
+	 * 스크린리더는 아무 말도 안 하고 다음 Tab 은 문서 맨 처음으로 간다.
+	 * 만드는 쪽은 `routes/main/game/index.tsx` 의 `useScreenFocus("list")` 다.
+	 */
+	frameRef?: React.Ref<HTMLDivElement>;
 }
 
-export function GameListView({ progress, onOpen }: GameListViewProps) {
+export function GameListView({
+	progress,
+	onOpen,
+	frameRef,
+}: GameListViewProps) {
 	const { t } = useTranslation();
 
 	/*
@@ -136,7 +148,14 @@ export function GameListView({ progress, onOpen }: GameListViewProps) {
 	 * 목업을 따라 맞췄다. 두 클래스 다 game-frame 의 자손으로 남아 CSS 는 그대로 산다.
 	 */
 	return (
-		<div className="game-frame" data-screen="list">
+		/* class 가 첫 속성이어야 목업 대조가 이 껍데기를 벗긴다 */
+		<div
+			ref={frameRef}
+			className="game-frame"
+			data-screen="list"
+			tabIndex={-1}
+			aria-label={t("game.list.title")}
+		>
 			<div className="ux-list-scroll">
 				<div className="ux-list-shell flex h-full flex-col bg-[#F9FAFC]">
 					{/* Header */}

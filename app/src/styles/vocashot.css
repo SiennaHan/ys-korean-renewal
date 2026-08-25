@@ -16,6 +16,14 @@
   flex-direction: column;
   overflow: hidden;
 
+  /* 부모를 채운다 — game.css 의 .game-frame 과 같은 규칙이다.
+     없으면 프레임이 내용 높이로 줄어들고, 그러면 `flex:1 1 auto` 로 짜인
+     .r-body · .sky 가 채울 것이 없어진다. 결과 화면이 화면 아래를 하얗게
+     남기고 긴 목록이 스크롤되지 않던 것이 이 때문이었다.
+     프레임은 목업 대조가 벗기는 껍데기라 대조로는 드러나지 않는다. */
+  width: 100%;
+  height: 100%;
+
   /* 토큰에 대응이 없어 리터럴로 남긴 목업 색 */
   --blue-100: #a2d1ff;
   --blue-300: #59acff;
