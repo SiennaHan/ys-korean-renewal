@@ -340,12 +340,8 @@
 .activity-frame /* 롤플레잉 */
   .role-intro { flex:0 0 auto; margin:12px 16px 10px; padding:14px 16px; border:1px solid var(--color-line-control); border-radius:14px; background:var(--color-background-surface); }
 .activity-frame .role-title { color:var(--color-text-heading); font-size:17px; line-height:24px; font-weight:600; }
-/* 목업에 없는 것 — 내 발음에서 틀린 글자를 짚어 준다.
-   record-card 의 heard 줄 안에서만 쓴다 */
+/* 내 발음에서 다르게 인식된 글자만 짚어 준다. 카드 전체를 빨갛게 칠하지 않는다 */
 .activity-frame .record-card .heard .miss { color:var(--color-fill-wrong); }
-.activity-frame .record-card .heard { display:flex; align-items:center; gap:2px; flex-wrap:wrap; }
-.activity-frame .record-card .heard .clear { margin-left:auto; width:24px; height:24px; flex:none; border:0; border-radius:50%; background:var(--color-line-normal); color:var(--color-text-sub); display:grid; place-items:center; cursor:pointer; }
-.activity-frame .record-card .heard .clear svg { width:14px; height:14px; }
 .activity-frame .turns { flex:1 1 auto; min-height:0; overflow-y:auto; margin:0 16px; padding:0; border:1px solid var(--color-line-control); border-radius:14px; background:var(--color-background-surface); }
 .activity-frame .script-toolbar { min-height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 10px 8px 12px; border-bottom:1px solid var(--color-line-control); }
 .activity-frame .script-toolbar > span { color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; }
@@ -361,9 +357,20 @@
 .activity-frame .turn .listen svg { width:17px; height:17px; }
 .activity-frame .turn.future .who { background:#f7f8f9; color:var(--color-text-disable); }
 .activity-frame .turn.future .line { color:var(--color-text-disable); }
-.activity-frame .record-card { margin:0; padding:7px 12px 8px 54px; border-bottom:1px solid var(--color-line-control); border-radius:0; background:#f7fbff; }
-.activity-frame .record-card .meta { color:var(--color-text-sub); font-size:12px; line-height:18px; }
-.activity-frame .record-card .heard { margin-top:5px; color:var(--color-text-strong); font-size:14px; line-height:20px; }
+.activity-frame .record-card { margin:0; padding:11px 12px 12px 54px; border-bottom:1px solid var(--color-line-control); border-radius:0; background:var(--color-background-surface); }
+.activity-frame .record-result-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:5px 8px; }
+.activity-frame .record-result-label { color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; }
+.activity-frame .record-verdict { flex:none; padding:3px 7px; border-radius:999px; font-size:11px; line-height:16px; font-weight:600; }
+.activity-frame .record-verdict.match { background:var(--color-background-correct); color:var(--color-fill-correct); }
+.activity-frame .record-verdict.different { background:var(--color-background-caution); color:var(--color-text-strong); }
+.activity-frame .record-card .heard { min-height:24px; margin-top:6px; color:var(--color-text-strong); display:flex; align-items:center; gap:1px; flex-wrap:wrap; font-size:15px; line-height:24px; font-weight:500; }
+.activity-frame .record-result-help { margin:5px 0 0; color:var(--color-text-sub); font-size:12px; line-height:18px; }
+.activity-frame .record-result-actions { margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.activity-frame .record-result-actions button { min-width:0; height:34px; border-radius:8px; font-size:12px; line-height:18px; font-weight:600; white-space:nowrap; cursor:pointer; }
+.activity-frame .record-replay { grid-column:1 / -1; border:0; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); display:flex; align-items:center; justify-content:center; gap:6px; }
+.activity-frame .record-replay svg { width:16px; height:16px; }
+.activity-frame .record-retry { border:1px solid var(--color-line-control); background:var(--color-background-surface); color:var(--color-text-sub); }
+.activity-frame .record-continue { border:0; background:var(--color-fill-primary); color:var(--color-text-inverse); }
 .activity-frame /* 확정 하단 도크 — 가운데 주 조작 + 오른쪽 다음 */
   .dock { display:flex; align-items:center; gap:12px; width:100%; }
 .activity-frame .dock .main { flex:1; min-width:0; display:flex; justify-content:center; }

@@ -5,7 +5,6 @@ import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
 	ActivityFooter,
-	IconClose,
 	IconVolume,
 	PrimaryButton,
 	RoleplayLayout,
@@ -67,29 +66,13 @@ function diffChars(
 	return result;
 }
 
-/** i18n 언어에 맞는 번역 텍스트 반환 */
-function getMeaning(turn: RoleplayTurn, lang: string): string {
-	switch (lang) {
-		case "ja":
-			return turn.jp || turn.en;
-		case "zh":
-			return turn.cn || turn.en;
-		case "vi":
-			return turn.vi || turn.en;
-		case "ko":
-			return turn.ko;
-		default:
-			return turn.en;
-	}
-}
-
 export default function AiRoleplay({
 	bookId,
 	chapterSeq,
 	chapterLabel,
 }: AiRoleplayProps) {
 	const router = useRouter();
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 	const sharedAudio = useSharedAudio();
 	const sound = useSoundEffects();
 
@@ -309,6 +292,42 @@ export default function AiRoleplay({
 
 	const [evaluating, setEvaluating] = useState(false);
 
+	/**
+	 * 현재 연습 턴을 마치고 다음 대사로 이동한다.
+	 * STT 판정은 진행을 막는 자격시험이 아니다. 정답이면 자동으로, 인식 결과가
+	 * 다르면 학습자가 [다음 대사]를 눌렀을 때 이 길을 탄다.
+	 */
+	const advanceAfterTurn = useCallback(
+		(turnIdx: number) => {
+			const nextIdx = turnIdx + 1;
+			if (nextIdx >= turns.length) {
+				setCurrentTurnIdx(turnIdx);
+				setPlayState("done");
+				if (bookId && chapterSeq && turns.length > 0) {
+					saveLearningRecord({
+						bookId,
+						chapterSeq,
+						menuType: "roleplay",
+						questionId: turns[0].id,
+						selectedAnswer: "completed",
+						isCorrect: true,
+					});
+					setCompletedScenarios((prev) => new Set(prev).add(turns[0].id));
+				}
+				return;
+			}
+
+			const nextTurn = turns[nextIdx];
+			if (!isPracticeTurn(nextTurn.turn_seq)) {
+				playModelTurn(nextIdx);
+			} else {
+				setCurrentTurnIdx(nextIdx);
+				setPlayState("practice-turn");
+			}
+		},
+		[turns, bookId, chapterSeq, isPracticeTurn, playModelTurn],
+	);
+
 	/** 사용자 녹음 완료 → OpenAI API로 발화 판정 */
 	const handleRecordResult = useCallback(
 		async (_isCorrect: boolean, resultWord: string, audioUrl: string) => {
@@ -338,46 +357,13 @@ export default function AiRoleplay({
 			if (correct) {
 				// 정답 효과음 + 애니메이션
 				sound.playCorrect();
-				// 정상 → 다음 턴으로
-				const nextIdx = currentTurnIdx + 1;
-				if (nextIdx >= turns.length) {
-					setPlayState("done");
-					if (bookId && chapterSeq && turns.length > 0) {
-						saveLearningRecord({
-							bookId,
-							chapterSeq,
-							menuType: "roleplay",
-							questionId: turns[0].id,
-							selectedAnswer: "completed",
-							isCorrect: true,
-						});
-						setCompletedScenarios((prev) => new Set(prev).add(turns[0].id));
-					}
-					return;
-				}
-				const nextTurn = turns[nextIdx];
-				if (!isPracticeTurn(nextTurn.turn_seq)) {
-					// 다음은 모델 턴 → TTS 재생
-					playModelTurn(nextIdx);
-				} else {
-					// 다음도 연습 턴
-					setCurrentTurnIdx(nextIdx);
-					setPlayState("practice-turn");
-				}
+				advanceAfterTurn(currentTurnIdx);
 			} else {
-				// 틀림 → 다시 녹음 가능
+				// 다르게 인식됨 → 다시 녹음 또는 다음 대사를 학습자가 고른다
 				setPlayState("practice-turn");
 			}
 		},
-		[
-			currentTurnIdx,
-			turns,
-			playModelTurn,
-			isPracticeTurn,
-			sound,
-			bookId,
-			chapterSeq,
-		],
+		[currentTurnIdx, turns, sound, advanceAfterTurn],
 	);
 
 	/**
@@ -522,9 +508,11 @@ export default function AiRoleplay({
 				const isFuture = idx > currentTurnIdx;
 				const record = userRecords[idx];
 				const isPractice = isPracticeTurn(turn.turn_seq);
-				// 정답 처리된 녹음만 다시 듣기 대상 (교정 중인 오답은 제외)
-				const myRecordUrl =
-					record?.isCorrect && record.audioUrl ? record.audioUrl : undefined;
+				// 현재 턴은 아래 결과 카드가 재생 버튼을 가진다. 지난 턴만 대본 줄의
+				// 작은 스피커로 다시 듣는다 — 한 화면에 같은 기능을 두 번 두지 않는다.
+				const myRecordUrl = !isCurrent
+					? record?.audioUrl || undefined
+					: undefined;
 
 				return (
 					<Fragment key={turn.id}>
@@ -546,8 +534,12 @@ export default function AiRoleplay({
 							<UserRecordCard
 								turn={turn}
 								record={record}
-								onClear={() => handleClearRecord(idx)}
-								lang={i18n.language}
+								onReplay={() => handleReplayMyVoice(record.audioUrl)}
+								onRetry={() => handleClearRecord(idx)}
+								onContinue={() => advanceAfterTurn(idx)}
+								canChooseNext={
+									!record.isCorrect && playState === "practice-turn"
+								}
 							/>
 						)}
 					</Fragment>
@@ -574,7 +566,7 @@ function TurnLine({
 	isFuture: boolean;
 	playState: PlayState;
 	isPractice: boolean;
-	/** 정답 처리된 내 녹음 URL — 있을 때만 연습 턴에 스피커를 노출 */
+	/** 분석을 마친 내 녹음 URL — 판정과 무관하게 다시 들을 수 있다 */
 	myRecordUrl?: string;
 	onReplay: () => void;
 }) {
@@ -596,8 +588,7 @@ function TurnLine({
 	// 스피커 버튼 노출 규칙
 	// - AI 턴: 발화가 끝난 문장에 회색 → 그 문장 다시 듣기
 	//          (아직 안 나온 턴은 미리 들려주지 않는다)
-	// - 연습 턴: 정답 처리된 녹음이 있을 때만 파란색 → 내 목소리 다시 듣기
-	//          (녹음 전·교정 중에는 들려줄 게 없으므로 숨긴다)
+	// - 연습 턴: 분석을 마친 녹음이 있으면 파란색 → 내 목소리 다시 듣기
 	const showAiReplay = !isPractice && !isFuture && !showSpeakerIcon;
 	const showMyReplay = isPractice && !isFuture && Boolean(myRecordUrl);
 	const showReplay = showAiReplay || showMyReplay;
@@ -637,32 +628,75 @@ function TurnLine({
 function UserRecordCard({
 	turn,
 	record,
-	onClear,
-	lang,
+	onReplay,
+	onRetry,
+	onContinue,
+	canChooseNext,
 }: {
 	turn: RoleplayTurn;
 	record: UserRecordResult;
-	onClear: () => void;
-	lang: string;
+	onReplay: () => void;
+	onRetry: () => void;
+	onContinue: () => void;
+	canChooseNext: boolean;
 }) {
+	const { t } = useTranslation();
 	const charDiff = diffChars(turn.ko, record.sttText);
+	const recognized = record.sttText.trim();
 
 	return (
 		<div className="record-card">
-			<div className="meta">
-				{getMeaning(turn, lang)} · [{turn.ko}]
+			<div className="record-result-head">
+				<span className="record-result-label">
+					{t("activity.roleRecognized")}
+				</span>
+				<span
+					className={`record-verdict ${record.isCorrect ? "match" : "different"}`}
+				>
+					{t(
+						record.isCorrect
+							? "activity.roleMatched"
+							: "activity.roleDifferent",
+					)}
+				</span>
 			</div>
 			<div className="heard">
-				{/* 틀린 글자만 붉게 — 어디를 고쳐야 하는지가 글자 단위로 보인다 */}
-				{charDiff.map((c, i) => (
-					<span key={`${i}-${c.char}`} className={c.correct ? "" : "miss"}>
-						{c.char}
-					</span>
-				))}
-				{!record.isCorrect && (
-					<button type="button" className="clear" onClick={onClear}>
-						<IconClose />
-					</button>
+				{recognized
+					? charDiff.map((c, i) => (
+							<span
+								key={`${i}-${c.char}`}
+								className={record.isCorrect || c.correct ? "" : "miss"}
+							>
+								{c.char}
+							</span>
+						))
+					: t("activity.roleNotRecognized")}
+			</div>
+			<p className="record-result-help">
+				{t(
+					record.isCorrect
+						? "activity.roleMatchedHelp"
+						: "activity.roleDifferentHelp",
+				)}
+			</p>
+			<div className="record-result-actions">
+				<button type="button" className="record-replay" onClick={onReplay}>
+					<IconVolume />
+					{t("activity.roleReplayMine")}
+				</button>
+				{canChooseNext && (
+					<>
+						<button type="button" className="record-retry" onClick={onRetry}>
+							{t("activity.roleRetry")}
+						</button>
+						<button
+							type="button"
+							className="record-continue"
+							onClick={onContinue}
+						>
+							{t("activity.roleNextTurn")}
+						</button>
+					</>
 				)}
 			</div>
 		</div>

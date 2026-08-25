@@ -13,7 +13,6 @@ import {
 } from "@/components/main/activity";
 import { env } from "@/config/env";
 import { Mic, Trash2, Upload, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { useToast } from "../toast/toast-context";
 import CircularProgress from "../ui/circular-progress";
 
@@ -50,7 +49,6 @@ const AudioRecorder = (props: Props) => {
 	// const API_ENDPOINT = `${env.KOREAN_API_URL}/stt/convert`
 
 	const { addToast } = useToast();
-	const { t } = useTranslation();
 	const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>("idle");
 	/** 마이크가 막혀 알림을 띄운 상태 */
 	const [micBlocked, setMicBlocked] = useState(false);
@@ -66,17 +64,6 @@ const AudioRecorder = (props: Props) => {
 		isRecording,
 		mediaRecorder,
 	} = recorderControls;
-
-	useEffect(() => {
-		if (recordingBlob) {
-			const url = URL.createObjectURL(recordingBlob);
-			setAudioUrl(url);
-			if (audioRef.current) {
-				audioRef.current.src = url;
-			}
-			setRecorderStatus("done");
-		}
-	}, [recordingBlob]);
 
 	/** 준비·마무리 타이머. 화면을 떠나면 걷어 낸다 */
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -142,14 +129,17 @@ const AudioRecorder = (props: Props) => {
 		}
 	};
 
-	const handleUpload = async () => {
-		if (recordingBlob) {
+	const handleUpload = async (
+		blob: Blob | undefined = recordingBlob,
+		url: string | null = audioUrl,
+	) => {
+		if (blob) {
 			setRecorderStatus("sending");
 			try {
-				const resultMsg = await postSpeaking(recordingBlob);
+				const resultMsg = await postSpeaking(blob);
 
 				console.log("resultMsg=>", resultMsg);
-				props.setResult(true, resultMsg ?? "", audioUrl ?? "");
+				props.setResult(true, resultMsg ?? "", url ?? "");
 			} catch (error) {
 				console.error("API 호출 중 오류 발생:", error);
 				addToast("분석에 실패했습니다. 다시시도해 주세요");
@@ -158,6 +148,23 @@ const AudioRecorder = (props: Props) => {
 			}
 		}
 	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: recordingBlob 하나가 한 번의 제출이다. handleUpload 를 넣으면 함수 재생성 때 같은 파일을 또 보낸다
+	useEffect(() => {
+		if (!recordingBlob) return;
+		const url = URL.createObjectURL(recordingBlob);
+		setAudioUrl(url);
+		if (audioRef.current) audioRef.current.src = url;
+
+		if (props.dock) {
+			// 확정 인터랙션: 종료 뒤 1초 꼬리 녹음이 끝나면 별도 제출 버튼 없이
+			// 자동으로 저장·분석한다. "녹음 완료 / 누르면 확인" 중간 상태를 두면
+			// 저장인지 재생인지 알 수 없고, 같은 버튼을 두 번 눌러야 하기 때문이다.
+			void handleUpload(recordingBlob, url);
+		} else {
+			setRecorderStatus("done");
+		}
+	}, [recordingBlob]);
 
 	// 재생 시간과 전체 길이를 추적하기 위한 상태 추가
 	const [currentTime, setCurrentTime] = useState(0);
@@ -178,8 +185,6 @@ const AudioRecorder = (props: Props) => {
 	};
 
 	if (props.dock) {
-		// done 은 다시 녹음이 아니라 발음을 확인하러 보내는 상태다 —
-		// 다시 녹음이 아니라 발음을 확인하러 보낸다. 그래서 글을 갈아 끼운다.
 		return (
 			<>
 				{micBlocked && (
@@ -198,7 +203,6 @@ const AudioRecorder = (props: Props) => {
 				<RecordControl
 					mode={recorderStatus}
 					action="srec"
-					doneHint={t("activity.recordCheckSub")}
 					onPress={props.disabled ? undefined : handlePrimaryAction}
 				/>
 				{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}

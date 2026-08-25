@@ -191,12 +191,12 @@ export function RoleplayScreen({
 						</div>
 						{row.mine && i === current && heard && (
 							<div className="record-card">
-								<div className="meta">
-									{row.en} · [{row.ko}]
+								<div className="record-result-head">
+									<span className="record-result-label">
+										{t("activity.roleRecognized")}
+									</span>
 								</div>
-								<div className="heard">
-									{t("activity.myPronunciation")} · {heard}
-								</div>
+								<div className="heard">{heard}</div>
 							</div>
 						)}
 					</Fragment>
