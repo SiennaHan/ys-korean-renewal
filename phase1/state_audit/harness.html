@@ -1,0 +1,39 @@
+<!doctype html><meta charset="utf-8">
+<title>상태 감사 캡처 하네스</title>
+<!--
+  Storybook 스토리를 **정해진 폭**으로 그려 캡처하기 위한 껍데기다.
+
+  왜 필요한가 — 이 기기의 Chrome 헤드리스는 `--window-size` 를 무시하고
+  레이아웃을 늘 500x693 으로 잡는다(확인함). 그러면 360 폭 화면을 잴 수 없다.
+  그래서 폭을 iframe 에 직접 주고, 창은 그보다 크게 둔 뒤 이미지를 잘라 낸다.
+
+  제품 코드·CSS 는 건드리지 않는다. 이 파일은 감사용 도구다.
+-->
+<style>
+  /* 문서 크기를 iframe 과 같게 못 박는다 — 안 그러면 헤드리스가 찍는 그림의
+     높이가 내용에 따라 들쭉날쭉해진다(실제로 693 대신 469 로 찍혔다). */
+  html, body { margin: 0; padding: 0; background: #fff; overflow: hidden; }
+  iframe { border: 0; display: block; }
+</style>
+<iframe id="f"></iframe>
+<script>
+  const p = new URLSearchParams(location.search);
+  const f = document.getElementById("f");
+  const W = p.get("w") || 360;
+  const H = p.get("h") || 693;
+  f.style.width = W + "px";
+  f.style.height = H + "px";
+  document.documentElement.style.width = document.body.style.width = W + "px";
+  document.documentElement.style.height = document.body.style.height = H + "px";
+  /*
+   * 이 기기의 헤드리스는 그림 표면이 756x469 로 고정이라 693 짜리 화면이
+   * 한 번에 안 담긴다. 그래서 `off` 만큼 위로 밀어 여러 번 찍고 이어 붙인다.
+   * 스토리는 값이 고정된 정적 구성이라 여러 번 찍어도 같은 그림이 나온다.
+   */
+  f.style.marginTop = "-" + (p.get("off") || 0) + "px";
+  f.src =
+    "http://127.0.0.1:6006/iframe.html?id=" +
+    encodeURIComponent(p.get("id")) +
+    "&viewMode=story" +
+    (p.get("globals") ? "&globals=" + encodeURIComponent(p.get("globals")) : "");
+</script>

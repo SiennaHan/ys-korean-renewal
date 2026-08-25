@@ -1,0 +1,456 @@
+{
+	"_설명": "상태 감사 명세. 캡처 ID → 스토리 이름과 메타데이터. capture-all.py 가 읽는다.",
+	"_주의": "'정본존재' 는 app/src/mockups/ 에 같은 상태의 캡처가 있는지다. 승격 여부가 아니다.",
+	"항목": [
+		{
+			"id": "activity__wordQuiz_correct",
+			"story": "어휘문제 정답",
+			"활동": "어휘 문제",
+			"상태": "정답을 고른 직후",
+			"경로": "/learn/word?level=1&lesson=4",
+			"구현": "components/learn/word-learning.tsx",
+			"정본": "activity__wordQuiz(풀기 전만)"
+		},
+		{
+			"id": "activity__wordQuiz_wrong",
+			"story": "어휘문제 오답",
+			"활동": "어휘 문제",
+			"상태": "오답을 고른 직후",
+			"경로": "/learn/word?level=1&lesson=4",
+			"구현": "components/learn/word-learning.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__wordQuiz_last",
+			"story": "어휘문제 마지막문항",
+			"활동": "어휘 문제",
+			"상태": "마지막 문항을 맞힌 뒤",
+			"경로": "/learn/word?level=1&lesson=4",
+			"구현": "components/learn/word-learning.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__wordQuiz_before",
+			"story": "어휘문제 풀기전",
+			"활동": "어휘 문제",
+			"상태": "고르기 전",
+			"경로": "/learn/word?level=1&lesson=4",
+			"구현": "components/learn/word-learning.tsx",
+			"정본": "activity__wordQuiz"
+		},
+		{
+			"id": "activity__grammar_before",
+			"story": "문법빈칸 풀기전",
+			"활동": "문법 빈칸",
+			"상태": "고르기 전",
+			"경로": "/learn/grammar?level=1&lesson=4",
+			"구현": "components/learn/fill-blank.tsx",
+			"정본": "activity__grammar"
+		},
+		{
+			"id": "activity__grammar_selected",
+			"story": "문법빈칸 고른상태",
+			"활동": "문법 빈칸",
+			"상태": "고르기만 하고 채점 전",
+			"경로": "/learn/grammar?level=1&lesson=4",
+			"구현": "components/learn/fill-blank.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__grammar_graded",
+			"story": "문법빈칸 채점후",
+			"활동": "문법 빈칸",
+			"상태": "채점한 뒤",
+			"경로": "/learn/grammar?level=1&lesson=4",
+			"구현": "components/learn/fill-blank.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__result",
+			"story": "결과",
+			"활동": "결과",
+			"상태": "채점 있는 결과",
+			"경로": "활동 끝",
+			"구현": "components/main/activity/result-screen.tsx",
+			"정본": "activity__result"
+		},
+		{
+			"id": "activity__result_ungraded",
+			"story": "결과 채점없음",
+			"활동": "결과",
+			"상태": "채점 없는 활동의 결과",
+			"경로": "활동 끝",
+			"구현": "components/main/activity/result-screen.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__progress_many",
+			"story": "진행막대 16칸이상",
+			"활동": "공통 진행 표시",
+			"상태": "16칸 이상",
+			"경로": "모든 활동",
+			"구현": "components/main/activity/shell.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__flash_front",
+			"story": "플래시카드 앞면",
+			"활동": "플래시카드",
+			"상태": "앞면",
+			"경로": "/learn/flashcard?level=1&lesson=4",
+			"구현": "components/main/activity/flashcard.tsx",
+			"정본": "activity__flash"
+		},
+		{
+			"id": "activity__flash_back",
+			"story": "플래시카드 뒷면",
+			"활동": "플래시카드",
+			"상태": "뒤집은 뒷면",
+			"경로": "/learn/flashcard?level=1&lesson=4",
+			"구현": "components/main/activity/flashcard.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__chat",
+			"story": "미션대화",
+			"활동": "미션대화",
+			"상태": "기본",
+			"경로": "/learn/mission-chat?level=1&lesson=4",
+			"구현": "components/main/activity/chat.tsx",
+			"정본": "activity__chat"
+		},
+		{
+			"id": "activity__chat_feedback",
+			"story": "미션대화 고칠곳",
+			"활동": "미션대화",
+			"상태": "고칠 곳 피드백",
+			"경로": "/learn/mission-chat?level=1&lesson=4",
+			"구현": "components/main/activity/chat.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__chat_done",
+			"story": "미션대화 끝",
+			"활동": "미션대화",
+			"상태": "미션 완료",
+			"경로": "/learn/mission-chat?level=1&lesson=4",
+			"구현": "components/main/activity/chat.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__role",
+			"story": "롤플레잉",
+			"활동": "롤플레잉",
+			"상태": "기본",
+			"경로": "/learn/roleplay?level=1&lesson=4",
+			"구현": "components/learn/ai-roleplay.tsx",
+			"정본": "activity__role"
+		},
+		{
+			"id": "activity__role_recorded",
+			"story": "롤플레잉 녹음완료",
+			"활동": "롤플레잉",
+			"상태": "내 녹음 완료",
+			"경로": "/learn/roleplay?level=1&lesson=4",
+			"구현": "components/learn/ai-roleplay.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__role_ai_turn",
+			"story": "롤플레잉 AI차례",
+			"활동": "롤플레잉",
+			"상태": "AI 차례",
+			"경로": "/learn/roleplay?level=1&lesson=4",
+			"구현": "components/learn/ai-roleplay.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__listen_ox",
+			"story": "듣기 OX",
+			"활동": "듣기 문제",
+			"상태": "O/X 고르기 전",
+			"경로": "/learn/listen?level=1&lesson=4",
+			"구현": "components/learn/listen-answer.tsx",
+			"정본": "activity__listen"
+		},
+		{
+			"id": "activity__jamoListen",
+			"story": "자모듣기",
+			"활동": "자모 듣고 고르기",
+			"상태": "고르기 전",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=3",
+			"구현": "components/learn/jamo/choose.tsx",
+			"정본": "activity__jamoListen"
+		},
+		{
+			"id": "activity__reading",
+			"story": "읽기지문",
+			"활동": "읽기 문제",
+			"상태": "고르기 전",
+			"경로": "/learn/read?level=1&lesson=4",
+			"구현": "components/learn/read-answer.tsx",
+			"정본": "activity__reading"
+		},
+		{
+			"id": "activity__wordPreview",
+			"story": "어휘미리보기",
+			"활동": "어휘 미리보기",
+			"상태": "기본",
+			"경로": "/learn/word?level=1&lesson=4",
+			"구현": "components/main/activity/word-preview.tsx",
+			"정본": "activity__wordPreview"
+		},
+		{
+			"id": "activity__write_2",
+			"story": "자모조합 2단",
+			"활동": "자모 조합",
+			"상태": "2단 조합",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=1",
+			"구현": "components/learn/jamo/combine.tsx",
+			"정본": "activity__write"
+		},
+		{
+			"id": "activity__write3_3",
+			"story": "자모조합 3단받침",
+			"활동": "자모 조합",
+			"상태": "3단(받침) 조합",
+			"경로": "/learn/jamo?level=0&lesson=1&group=3&sub=1",
+			"구현": "components/learn/jamo/combine3.tsx",
+			"정본": "activity__write3"
+		},
+		{
+			"id": "activity__write_canvas_empty",
+			"story": "따라쓰기 빈판",
+			"활동": "따라쓰기 모달",
+			"상태": "빈 판",
+			"경로": "/learn/jamo?…",
+			"구현": "components/draw/HangulCanvas.tsx",
+			"정본": "activity__write_canvas"
+		},
+		{
+			"id": "activity__speak",
+			"story": "자모발음",
+			"활동": "자모 발음",
+			"상태": "녹음 전",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"구현": "components/problem/audio-recorder.tsx",
+			"정본": "activity__speak"
+		},
+		{
+			"id": "activity__speak_recorded",
+			"story": "자모발음 녹음완료",
+			"활동": "자모 발음",
+			"상태": "녹음 완료",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"구현": "components/problem/audio-recorder.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__speak_recording",
+			"story": "녹음중",
+			"활동": "자모 발음",
+			"상태": "녹음 중",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"구현": "components/main/activity/record.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__wordrep",
+			"story": "단어따라말하기",
+			"활동": "단어 듣고 따라 말하기",
+			"상태": "기본",
+			"경로": "/learn/listen-answer?level=1&lesson=4",
+			"구현": "components/problem/audio-recorder.tsx",
+			"정본": "activity__wordrep"
+		},
+		{
+			"id": "activity__readwrite",
+			"story": "단어읽고쓰기",
+			"활동": "단어 읽고 쓰기",
+			"상태": "기본",
+			"경로": "/learn/jamo?level=0&lesson=1&group=4&sub=1",
+			"구현": "components/learn/jamo/word-write.tsx",
+			"정본": "activity__readwrite"
+		},
+		{
+			"id": "activity__report",
+			"story": "대화리포트",
+			"활동": "대화 리포트",
+			"상태": "기본",
+			"경로": "미션대화 끝",
+			"구현": "components/main/activity/report-screen.tsx",
+			"정본": "activity__report"
+		},
+		{
+			"id": "activity__briefing",
+			"story": "미션브리핑",
+			"활동": "미션 브리핑",
+			"상태": "기본",
+			"경로": "미션대화 시작",
+			"구현": "components/main/activity/briefing-screen.tsx",
+			"정본": "activity__briefing"
+		},
+		{
+			"id": "activity__loading",
+			"story": "로딩",
+			"활동": "예외",
+			"상태": "불러오는 중",
+			"경로": "모든 활동",
+			"구현": "components/main/activity/state-screens.tsx",
+			"정본": "activity__loading"
+		},
+		{
+			"id": "activity__failed",
+			"story": "로드실패",
+			"활동": "예외",
+			"상태": "불러오기 실패",
+			"경로": "모든 활동",
+			"구현": "components/main/activity/state-screens.tsx",
+			"정본": "activity__failed"
+		},
+		{
+			"id": "activity__micdenied",
+			"story": "마이크거부",
+			"활동": "예외",
+			"상태": "마이크 권한 거부",
+			"경로": "녹음 활동",
+			"구현": "components/main/activity/state-screens.tsx",
+			"정본": "activity__micdenied"
+		},
+		{
+			"id": "activity__listen_wrong",
+			"story": "듣기 오답",
+			"활동": "듣기 문제",
+			"상태": "오답을 고른 직후",
+			"경로": "/learn/listen?level=1&lesson=4",
+			"구현": "components/learn/listen-answer.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__reading_wrong",
+			"story": "읽기 오답",
+			"활동": "읽기 문제",
+			"상태": "오답을 고른 직후",
+			"경로": "/learn/read?level=1&lesson=4",
+			"구현": "components/learn/read-answer.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__reading_long",
+			"story": "읽기 긴선택지",
+			"활동": "읽기 문제",
+			"상태": "긴 지문 + 두 줄 넘는 선택지",
+			"경로": "/learn/read?level=3&lesson=9",
+			"구현": "components/learn/read-answer.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__jamoListen_correct",
+			"story": "자모듣기 정답",
+			"활동": "자모 듣고 고르기",
+			"상태": "정답",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=3",
+			"구현": "components/learn/jamo/choose.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__jamoListen_wrong",
+			"story": "자모듣기 오답",
+			"활동": "자모 듣고 고르기",
+			"상태": "오답",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=3",
+			"구현": "components/learn/jamo/choose.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__write_selected",
+			"story": "자모조합 일부만고름",
+			"활동": "자모 조합",
+			"상태": "첫 줄만 고름",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=1",
+			"구현": "components/learn/jamo/combine.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__write3_selected",
+			"story": "자모조합3단 받침전",
+			"활동": "자모 조합",
+			"상태": "받침만 아직 안 고름",
+			"경로": "/learn/jamo?level=0&lesson=1&group=3&sub=1",
+			"구현": "components/learn/jamo/combine3.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__write_canvas_drawn",
+			"story": "따라쓰기 그린판",
+			"활동": "따라쓰기 모달",
+			"상태": "획이 있는 판",
+			"경로": "/learn/jamo?…",
+			"구현": "components/draw/HangulCanvas.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__write_canvas_wrong",
+			"story": "따라쓰기 틀린판",
+			"활동": "따라쓰기 모달",
+			"상태": "틀린 판정",
+			"경로": "/learn/jamo?…",
+			"구현": "components/draw/HangulCanvas.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__speak_preparing",
+			"story": "녹음 준비중",
+			"활동": "자모 발음",
+			"상태": "준비 중(2초)",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"구현": "components/problem/audio-recorder.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__speak_finishing",
+			"story": "녹음 마무리중",
+			"활동": "자모 발음",
+			"상태": "마무리 중(1초)",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"구현": "components/problem/audio-recorder.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__speak_uploading",
+			"story": "녹음 보내는중",
+			"활동": "자모 발음",
+			"상태": "서버로 보내는 중",
+			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"구현": "components/problem/audio-recorder.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__chat_recording",
+			"story": "미션대화 녹음중",
+			"활동": "미션대화",
+			"상태": "녹음 중",
+			"경로": "/learn/mission-chat?level=1&lesson=4",
+			"구현": "components/learn/mission-dialog.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__chat_uploading",
+			"story": "미션대화 보내는중",
+			"활동": "미션대화",
+			"상태": "보내는 중",
+			"경로": "/learn/mission-chat?level=1&lesson=4",
+			"구현": "components/learn/mission-dialog.tsx",
+			"정본": "없음"
+		},
+		{
+			"id": "activity__chat_recorded",
+			"story": "미션대화 녹음완료",
+			"활동": "미션대화",
+			"상태": "녹음 완료",
+			"경로": "/learn/mission-chat?level=1&lesson=4",
+			"구현": "components/learn/mission-dialog.tsx",
+			"정본": "없음"
+		}
+	]
+}

@@ -1,0 +1,272 @@
+{
+	"activity__wordQuiz_before": [
+		"MATCH",
+		"고르기 전. 다음 버튼 비활성(회색).",
+		"아니오"
+	],
+	"activity__wordQuiz_correct": [
+		"UNSPECIFIED",
+		"고른 것만 연두 + ✓, 나머지는 그대로. 알약 「아주 잘 했어요!」, 다음 버튼 활성.",
+		"아니오"
+	],
+	"activity__wordQuiz_wrong": [
+		"UNSPECIFIED",
+		"고른 것만 분홍 + ✕, **정답은 안 밝힌다**. 알약 「다시 해보세요」. 다음 버튼은 활성이라 틀려도 넘어간다.",
+		"예"
+	],
+	"activity__wordQuiz_wrong_after": [
+		"UNSPECIFIED",
+		"2초 뒤 — 선택지 색·✕·알약이 **모두 거둬진다**. 남는 단서는 다음 버튼이 켜진 것뿐이다.",
+		"예"
+	],
+	"activity__wordQuiz_last": [
+		"UNSPECIFIED",
+		"마지막 문항이면 버튼 글자가 「결과 보기」로 바뀐다. 나머지는 정답 상태와 같다.",
+		"아니오"
+	],
+	"activity__grammar_before": [
+		"MATCH",
+		"고르기 전. 확인 버튼 비활성.",
+		"아니오"
+	],
+	"activity__grammar_selected": [
+		"UNSPECIFIED",
+		"고른 칩만 연한 파랑(on), 확인 버튼 활성. **채점 전과 후가 색으로 갈린다.**",
+		"아니오"
+	],
+	"activity__grammar_graded": [
+		"DRIFT",
+		"고른 오답은 빨강(no) **과 동시에 정답을 초록(ok)으로 밝힌다**. 그리고 시간이 지나도 안 거둬진다 — 어휘·듣기·읽기의 Choice 규칙과 반대다.",
+		"예"
+	],
+	"activity__result": [
+		"MATCH",
+		"「다 했어요!」 + 문항 3/4 + 정답률 67% + [다시 풀기][다음 활동].",
+		"아니오"
+	],
+	"activity__result_ungraded": [
+		"DRIFT",
+		"채점이 없는데 **정답률 카드가 「—」로 그대로 남는다.** 머리글도 「4개 중 0개 풀었어요」라 푼 게 없다는 뜻으로 읽힌다.",
+		"예"
+	],
+	"activity__progress_many": [
+		"UNSPECIFIED",
+		"16칸 이상이면 눈금을 포기하고 연속 막대 + 「8 / 20」이 된다. 320에서도 숫자와 안 겹친다.",
+		"아니오"
+	],
+	"activity__flash_front": [
+		"MATCH",
+		"앞면 — 단어·품사·그림 자리. 아래 [몰라요][알아요] 둘 다 활성.",
+		"아니오"
+	],
+	"activity__flash_back": [
+		"UNSPECIFIED",
+		"뒷면 — 뜻만 크게. **버튼 자리가 앞면과 같아 카드만 바뀐다.** 알아요 쪽에 센 수가 붙는다.",
+		"아니오"
+	],
+	"activity__chat": [
+		"MATCH",
+		"기본. 미션 칩 ✓/○, 말풍선, 아래 「눌러서 녹음」.",
+		"아니오"
+	],
+	"activity__chat_feedback": [
+		"UNSPECIFIED",
+		"내 말 아래에 교정 한 줄이 붙는다. 말풍선과 색으로 갈린다.",
+		"아니오"
+	],
+	"activity__chat_done": [
+		"UNSPECIFIED",
+		"미션이 다 차면 아래가 「결과 보기」 한 개로 바뀐다 — 주 조작이 하나라 뚜렷하다.",
+		"아니오"
+	],
+	"activity__chat_recording": [
+		"UNSPECIFIED",
+		"「녹음 중 · 한 번 더 누르면 완료」. 자모 발음과 같은 RecordControl 문구다.",
+		"아니오"
+	],
+	"activity__chat_recorded": [
+		"UNSPECIFIED",
+		"「녹음 완료 · 한 번 더 누르면 다시 녹음」 + ✓ 동그라미.",
+		"아니오"
+	],
+	"activity__chat_uploading": [
+		"DRIFT",
+		"「확인 중 · 잠시만 기다려 주세요」인데 **아이콘이 녹음 완료와 같은 ✓ 동그라미**다. 보내는 중인지 끝난 것인지 아이콘만으로는 안 갈린다.",
+		"예"
+	],
+	"activity__role": [
+		"MATCH",
+		"기본 — 아래 「눌러서 녹음」.",
+		"아니오"
+	],
+	"activity__role_recorded": [
+		"UNSPECIFIED",
+		"「녹음 완료 · 누르면 다시 녹음」 + **오른쪽에 다음(>) 화살표**. 다시 듣기는 말풍선 안 스피커로 간다.",
+		"아니오"
+	],
+	"activity__role_ai_turn": [
+		"UNSPECIFIED",
+		"AI 차례면 같은 자리가 「AI 말 듣기 · 대사를 듣고 확인하세요」로 바뀐다 — **녹음 버튼과 자리를 공유한다.**",
+		"아니오"
+	],
+	"activity__listen_ox": [
+		"MATCH",
+		"O/X 이지선다. 목업 캡처는 정답 상태를 담고 있다.",
+		"아니오"
+	],
+	"activity__listen_wrong": [
+		"UNSPECIFIED",
+		"고른 X만 분홍 + ✕, O 는 그대로. Choice 규칙과 같다.",
+		"아니오"
+	],
+	"activity__listen_wrong_after": [
+		"UNSPECIFIED",
+		"2초 뒤 표시가 거둬진다.",
+		"아니오"
+	],
+	"activity__reading": [
+		"MATCH",
+		"지문 + 질문 + 선택지. 짧은 답은 왼쪽 정렬이다(중앙 정렬이 아니다).",
+		"예"
+	],
+	"activity__reading_wrong": [
+		"UNSPECIFIED",
+		"고른 것만 분홍 + ✕. Choice 규칙과 같다.",
+		"아니오"
+	],
+	"activity__reading_long": [
+		"UNSPECIFIED",
+		"긴 지문 + 두 줄 선택지. **도크가 가리지 않는다** — 안쪽 `.scroll-area`(501px 창에 754px 내용)가 굴러 마지막 선택지에 닿는다. 다만 첫 화면에 선택지가 1.5개만 보인다.",
+		"예"
+	],
+	"activity__jamoListen": [
+		"MATCH",
+		"글자 두 개 이지선다. 짧은 글자는 큰 칸이다.",
+		"아니오"
+	],
+	"activity__jamoListen_correct": [
+		"UNSPECIFIED",
+		"연두 + ✓. 일반 선택지와 같은 문법에 칸만 다르다.",
+		"아니오"
+	],
+	"activity__jamoListen_wrong": [
+		"UNSPECIFIED",
+		"분홍 + ✕. 같은 문법.",
+		"아니오"
+	],
+	"activity__write_2": [
+		"MATCH",
+		"2단 조합 — 목표 글자 「가」와 두 줄 모두 고른 상태. 확인 활성.",
+		"아니오"
+	],
+	"activity__write_selected": [
+		"UNSPECIFIED",
+		"첫 줄만 고른 상태 — 고른 낱자만 파랑, 확인 비활성. **일부만 고른 것과 다 고른 것이 갈린다.**",
+		"아니오"
+	],
+	"activity__write3_3": [
+		"MATCH",
+		"3단(받침) — 세 줄 모두 고름.",
+		"아니오"
+	],
+	"activity__write3_selected": [
+		"UNSPECIFIED",
+		"받침 줄만 안 고른 상태. 확인 비활성.",
+		"아니오"
+	],
+	"activity__write_canvas_empty": [
+		"MATCH",
+		"빈 판 — 되돌리기·전체 지우기는 보이고 확인은 비활성.",
+		"아니오"
+	],
+	"activity__write_canvas_drawn": [
+		"UNSPECIFIED",
+		"획이 있으면 확인이 활성된다. 되돌리기·전체 지우기 자리는 그대로.",
+		"아니오"
+	],
+	"activity__write_canvas_wrong": [
+		"UNSPECIFIED",
+		"틀리면 판 테두리가 빨강이 된다. **선택지의 ✕ 표시와 달리 판에는 표가 없다** — 색만으로 알린다.",
+		"예"
+	],
+	"activity__readwrite": [
+		"MATCH",
+		"단어 그림 + 음절 칸. 다음 비활성. **칸을 눌렀을 때의 모달은 스토리가 없어 못 담았다.**",
+		"예"
+	],
+	"activity__speak": [
+		"MATCH",
+		"녹음 전 — 「눌러서 녹음 · 문장을 말해 보세요」.",
+		"아니오"
+	],
+	"activity__speak_preparing": [
+		"UNSPECIFIED",
+		"「준비 중 · 곧 시작해요」. 2초 동안만 보인다.",
+		"아니오"
+	],
+	"activity__speak_recording": [
+		"UNSPECIFIED",
+		"「녹음 중 · 한 번 더 누르면 완료」 + 파형.",
+		"아니오"
+	],
+	"activity__speak_finishing": [
+		"UNSPECIFIED",
+		"「마무리 중 · 끝까지 말해 보세요」. 1초 동안만 보인다.",
+		"아니오"
+	],
+	"activity__speak_recorded": [
+		"UNSPECIFIED",
+		"「녹음 완료 · 누르면 다시 녹음」 + ✓. 내 녹음 재생 칩이 켜진다.",
+		"아니오"
+	],
+	"activity__speak_uploading": [
+		"DRIFT",
+		"「확인 중 · 잠시만 기다려 주세요」인데 **아이콘이 녹음 완료와 같은 ✓** 다(미션대화와 같은 문제).",
+		"예"
+	],
+	"activity__wordrep": [
+		"MATCH",
+		"그림 + 원음/내 녹음 짝. 녹음 전.",
+		"아니오"
+	],
+	"activity__loading": [
+		"MATCH",
+		"골격만 회색으로 남긴 대기 화면.",
+		"아니오"
+	],
+	"activity__failed": [
+		"MATCH",
+		"「활동을 불러오지 못했어요.」 + 다시 시도.",
+		"아니오"
+	],
+	"activity__micdenied": [
+		"MATCH",
+		"제품 안 안내 화면 — 「마이크가 꺼져 있어요 / 브라우저 설정에서 켤 수 있어요」 + 이 활동 건너뛰기.",
+		"아니오"
+	],
+	"activity__report": [
+		"MATCH",
+		"AI 대화 리포트 — 오각형 그래프 + 평가/피드백 탭.",
+		"아니오"
+	],
+	"activity__briefing": [
+		"MATCH",
+		"미션 브리핑 — 상황 그림 자리 + 미션 키워드.",
+		"아니오"
+	],
+	"activity__wordPreview": [
+		"MATCH",
+		"과 어휘 미리보기 목록 + 「문제 풀기」.",
+		"아니오"
+	],
+	"activity__jamoListen_wrong_after": [
+		"UNSPECIFIED",
+		"2초 뒤 표시가 거둬진다 — 자모 칸도 일반 선택지와 같다.",
+		"아니오"
+	],
+	"activity__reading_wrong_after": [
+		"UNSPECIFIED",
+		"2초 뒤 표시가 거둬진다.",
+		"아니오"
+	]
+}
