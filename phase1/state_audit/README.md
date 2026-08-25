@@ -53,7 +53,7 @@
 | 새로 뜬 상태 | **54** (360폭·한국어 기준) |
 | 추가 캡처 | 320폭 7 · 영어 7 |
 | 파일 | `.png` · `.html`(활동 뿌리 outerHTML) · `.md`(상태 설명) 세 벌 |
-| 분류 | `MATCH` 22 · `UNSPECIFIED` 27 · `DRIFT` 5 |
+| 분류 | 표시 컴포넌트 `MATCH` 24 · `UNSPECIFIED` 27 · `DRIFT` 3 · 실제 라우트 `MATCH` 13 · `DRIFT` 5 · `UNSPECIFIED` 3 |
 | 디자인 결정이 먼저 필요 | 10 |
 
 ## 어떻게 떴나 — 지어내지 않았다
@@ -116,7 +116,7 @@
 | `activity__chat_feedback` | 미션대화 | 고칠 곳 피드백 | `/learn/mission-chat?level=1&lesson=4` | 기존 | 없음 | — | — | 아니오 | `UNSPECIFIED` |
 | `activity__chat_recorded` | 미션대화 | 녹음 완료 | `/learn/mission-chat?level=1&lesson=4` | 감사 | 없음 | — | — | 아니오 | `UNSPECIFIED` |
 | `activity__chat_recording` | 미션대화 | 녹음 중 | `/learn/mission-chat?level=1&lesson=4` | 감사 | 없음 | ✓ | — | 아니오 | `UNSPECIFIED` |
-| `activity__chat_uploading` | 미션대화 | 보내는 중 | `/learn/mission-chat?level=1&lesson=4` | 감사 | 없음 | — | — | **예** | `DRIFT` |
+| `activity__chat_uploading` | 미션대화 | 보내는 중 | `/learn/mission-chat?level=1&lesson=4` | 감사 | 없음 | — | — | 아니오 | `MATCH` |
 | `activity__failed` | 예외 | 불러오기 실패 | `모든 활동` | 기존 | activity__failed | — | — | 아니오 | `MATCH` |
 | `activity__flash_back` | 플래시카드 | 뒤집은 뒷면 | `/learn/flashcard?level=1&lesson=4` | 기존 | 없음 | — | — | 아니오 | `UNSPECIFIED` |
 | `activity__flash_front` | 플래시카드 | 앞면 | `/learn/flashcard?level=1&lesson=4` | 기존 | activity__flash | — | — | 아니오 | `MATCH` |
@@ -149,7 +149,7 @@
 | `activity__speak_preparing` | 자모 발음 | 준비 중(2초) | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | 감사 | 없음 | — | ✓ | 아니오 | `UNSPECIFIED` |
 | `activity__speak_recorded` | 자모 발음 | 녹음 완료 | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | 기존 | 없음 | ✓ | ✓ | 아니오 | `UNSPECIFIED` |
 | `activity__speak_recording` | 자모 발음 | 녹음 중 | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | 기존 | 없음 | — | — | 아니오 | `UNSPECIFIED` |
-| `activity__speak_uploading` | 자모 발음 | 서버로 보내는 중 | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | 감사 | 없음 | — | — | **예** | `DRIFT` |
+| `activity__speak_uploading` | 자모 발음 | 서버로 보내는 중 | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | 감사 | 없음 | — | — | 아니오 | `MATCH` |
 | `activity__wordPreview` | 어휘 미리보기 | 기본 | `/learn/word?level=1&lesson=4` | 기존 | activity__wordPreview | — | — | 아니오 | `MATCH` |
 | `activity__wordQuiz_before` | 어휘 문제 | 고르기 전 | `/learn/word?level=1&lesson=4` | 기존 | activity__wordQuiz | — | — | 아니오 | `MATCH` |
 | `activity__wordQuiz_correct` | 어휘 문제 | 정답을 고른 직후 | `/learn/word?level=1&lesson=4` | 기존 | activity__wordQuiz(풀기 전만) | — | — | 아니오 | `UNSPECIFIED` |
@@ -164,7 +164,6 @@
 | `activity__write_canvas_empty` | 따라쓰기 모달 | 빈 판 | `조합 화면(sub=2 · sub=6) 안에서 열리는 모달` | 기존 | activity__write_canvas | — | — | 아니오 | `MATCH` |
 | `activity__write_canvas_wrong` | 따라쓰기 모달 | 틀린 판정 | `조합 화면(sub=2 · sub=6) 안에서 열리는 모달` | 감사 | 없음 | — | — | **예** | `UNSPECIFIED` |
 | `activity__write_selected` | 자모 조합 | 첫 줄만 고름 | `/learn/jamo?level=1&lesson=1&group=1&sub=2` | 감사 | 없음 | — | — | 아니오 | `UNSPECIFIED` |
-## 확정 규칙과 어긋난 곳 (`DRIFT` 5)
 
 | 캡처 | 어긋남 | 고칠 곳 |
 |---|---|---|
@@ -242,17 +241,17 @@
 
 | 캡처 ID | 활동 | 실제 라우트 | 정본 짝 | 분류 |
 |---|---|---|---|---|
-| `real__jamo_speak` | 자모 발음 | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | `activity__speak` | `DRIFT` |
-| `real__jamo_combine` | 자모 2단 조합 | `/learn/jamo?level=1&lesson=1&group=1&sub=2` | `activity__write_2` | `DRIFT` |
+| `real__jamo_speak` | 자모 발음 | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | `activity__speak` | `MATCH` |
+| `real__jamo_combine` | 자모 2단 조합 | `/learn/jamo?level=1&lesson=1&group=1&sub=2` | `activity__write_2` | `MATCH` |
 | `real__jamo_wordrep` | 단어 듣고 따라 말하기 | `/learn/jamo?level=1&lesson=1&group=1&sub=3` | `activity__wordrep` | `MATCH` |
 | `real__jamo_readwrite` | 단어 읽고 쓰기 | `/learn/jamo?level=1&lesson=1&group=1&sub=4` | `activity__readwrite` | `MATCH` |
-| `real__jamo_listen` | 자모 듣고 고르기 | `/learn/jamo?level=1&lesson=1&group=1&sub=5` | `activity__jamoListen` | `DRIFT` |
+| `real__jamo_listen` | 자모 듣고 고르기 | `/learn/jamo?level=1&lesson=1&group=1&sub=5` | `activity__jamoListen` | `MATCH` |
 | `real__jamo_combine3` | 자모 3단·받침 조합 | `/learn/jamo?level=1&lesson=3&group=1&sub=6` | `activity__write3_3` | `DRIFT` |
 | `real__chat_briefing` | 미션대화 브리핑 | `/learn/mission-chat?level=1&lesson=4` | `activity__briefing` | `DRIFT` |
-| `real__role` | 롤플레잉 | `/learn/roleplay?level=1&lesson=4` | `activity__role` | `DRIFT` |
+| `real__role` | 롤플레잉 | `/learn/roleplay?level=1&lesson=4` | `activity__role` | `MATCH` |
 | `real__flash` | 플래시카드 | `/learn/flashcard?level=1&lesson=4` | `activity__flash_front` | `DRIFT` |
 | `real__word` | 어휘 미리보기 | `/learn/word?level=1&lesson=4` | `activity__wordPreview` | `MATCH` |
-| `real__read` | 읽기 문제 | `/learn/read?level=1&lesson=4` | `activity__reading` | `DRIFT` |
+| `real__read` | 읽기 문제 | `/learn/read?level=1&lesson=4` | `activity__reading` | `MATCH` |
 | `real__listen` | 듣기 문제 | `/learn/listen?level=1&lesson=4` | `activity__listen_ox` | `MATCH` |
 | `real__grammar` | 문법 빈칸 | `/learn/grammar?level=1&lesson=4` | `activity__grammar_before` | `MATCH` |
 | `real__jamo_readwrite__320` | 단어 읽고 쓰기 (320) | `/learn/jamo?level=1&lesson=1&group=1&sub=4` | `activity__readwrite__320__ko` | `MATCH` |
@@ -262,6 +261,7 @@
 | `real__readwrite_modal_empty` | 단어 읽고 쓰기 모달 | `/learn/jamo?level=1&lesson=1&group=1&sub=4 → 글자 칸` | `activity__write_canvas_empty` | `MATCH` |
 | `real__readwrite_modal_drawn` | 단어 읽고 쓰기 모달 | `같음 → 획 긋기` | `activity__write_canvas_drawn` | `MATCH` |
 | `real__readwrite_modal_wrong` | 단어 읽고 쓰기 모달 | `같음 → 확인(틀린 글씨)` | `activity__write_canvas_wrong` | `DRIFT` |
+| `real__role_me_to_ai` | 롤플레잉 연습 순서 바꿈 | `/learn/roleplay?level=1&lesson=4 → Me → AI` | `없음` | `UNSPECIFIED` |
 
 ### 자모 매핑이 실제 화면으로 확인됐다
 
@@ -371,7 +371,8 @@ Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'm
 |---|---|
 | 미션대화 **진행·미션 펼침·텍스트 입력** | **담았다**(위 절) |
 | 미션대화 녹음·피드백·종료·리포트 | 녹음은 마이크 권한이 필요하고(브라우저가 막는다) 피드백·종료는 목이 판정을 더 내야 한다 |
-| 롤플레잉 AI 차례 · 녹음 완료 | 상호작용이 필요하다. 첫 화면만 담았다 |
+| 롤플레잉 **기본 · 연습 순서 바꿈** | **담았다**(재작성 뒤 다시 떴다) |
+| 롤플레잉 AI 차례 · 녹음 완료 | TTS 서버와 마이크가 있어야 들어간다 |
 | 플래시카드 뒷면 · 판정 후 · 결과 | **탭으로 안 뒤집힌다.** 실제는 `transition-transform` 카루셀이고 「1/27」로 진행을 센다 — 확정 `FlashcardScreen`(탭 플립)과 **구조가 다르다.** 스와이프를 넣어야 담긴다 |
 | 단어 읽고 쓰기 모달 **빈판·그린 상태·틀린 판정** | **담았다**(위 절) |
 | 단어 읽고 쓰기 **완료** | 손글씨가 맞아야 나온다. 낙서로는 늘 틀린 판정이 된다 |
@@ -380,6 +381,61 @@ Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'm
 
 정지 캡처로는 여기까지다. 다음은 **상호작용을 넣는 캡처 하네스**(누른 뒤 뜨기)가
 필요하다.
+
+## 2026-08-25 저녁 — 다시 재고 갱신했다
+
+`d0044a6`·`49f48c2` 로 채점·녹음·진행바가 정리됐다. **감사 캡처를 전부 다시 떴고**
+(표시 컴포넌트 50 + 실제 라우트 14) 아래 결과가 그 뒤 기준이다. 기준 커밋은
+`49f48c2` 이고 개별 `.md` 에도 적었다.
+
+### 고쳐진 것
+
+| | 전 | 지금 |
+|---|---|---|
+| `sending` 아이콘 | 녹음 완료와 같은 ✓ | **회전 스피너** — 자모·미션대화 둘 다 |
+| 녹음 상태 머신 | `useRecording` 이 ready·converting·recorded | **`RecordState = RecordMode`** — 여섯 상태로 하나 |
+| 오답 표시 거둠 | `Choice` 만 2초 뒤 거둠 | **`ChipOption` 도** 같은 흔들림·2초 타이머 |
+| 진행 표시 | 화면마다 들쭉날쭉 | **정책 확정 + 실제 14화면 전부 일치** |
+
+**진행 표시는 정책과 하나하나 맞춰 봤다** — `shell_spec_v1` 의 2026-08-25 표
+기준으로 실제 라우트 14화면을 재니 **어긋남 0** 이다. 자모 발음·단어 따라 말하기·
+단어 읽고 쓰기·어휘 미리보기·브리핑·미션대화는 숨김, 나머지는 선형 문항 표시다.
+전에 내가 "들쭉날쭉하다" 고 적은 것은 해소됐다.
+
+### 아직 남은 것
+
+**① 문법 채점이 절반만 고쳐졌다.** 타이머는 붙었는데 —
+
+```tsx
+// components/learn/fill-blank.tsx
+state={chosen ? (sel === question.answer ? "ok" : …) : ""}
+```
+
+**오답을 골라도 정답 칩이 초록으로 드러난다.** 확정 규칙은 정답 공개 금지다.
+그리고 오답 칩에 **`✕` 표가 없다** — 선택지에는 있어서 같은 오답인데 표식이 다르다.
+
+**② 채점 없는 결과에 정답률 카드가 그대로다.** `result_ungraded` 는 여전히
+「—」 카드를 두고 머리글이 「4개 중 0개 풀었어요」다.
+
+**③ 읽기 짧은 답이 왼쪽 정렬이다.** 확정 규칙은 짧은 답 가운데 정렬이고,
+글자 수 자동판단이 아니라 화면에서 명시 지정이다.
+
+**④ 단어 읽고 쓰기 틀린 판정이 규칙과 반대다.** 빨간 외곽선이 아니라 원형 ✕ 알약을
+쓰고 획이 지워진다. 알약만 영어다.
+
+**⑤ 플래시카드가 확정 셸 밖이다.** 진행 표시는 정책대로 붙었지만
+`.activity-frame` 을 안 쓰고, 카드가 탭 플립이 아니라 카루셀이다.
+
+### 롤플레잉 — 다시 떴다
+
+`ai-roleplay.tsx` 재작성이 끝나 다시 떴다. **진행 표시가 정책대로 붙어 있고**
+버튼에 이름이 다 생겼다(Exit · Skip · AI → me · Tap to record · Next).
+정본 목업(`activity__role.html`)에는 아직 진행 표시가 없어 **목업이 낡은 쪽**이다.
+연습 순서를 바꾼 상태(`real__role_me_to_ai`)도 새로 담았다.
+
+**AI 차례는 여전히 못 담았다.** `playState` 가 `model-speaking` 으로 가려면
+TTS 재생이 끝나거나 연습 턴 녹음이 끝나야 하는데, 로컬에 TTS 서버가 없고
+마이크는 브라우저가 막는다. 대사 줄을 눌러도 도크는 「Tap to record」 그대로다.
 
 ## 승격은 보류다
 
