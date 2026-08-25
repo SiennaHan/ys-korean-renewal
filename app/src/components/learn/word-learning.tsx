@@ -28,7 +28,14 @@ import {
 	Square,
 	X,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import WordQuizCard from "./word-quiz-card";
 
@@ -361,7 +368,7 @@ export default function WordLearning({
 						const pronunciation = getPronunciationDisplay(w);
 
 						return (
-							<div key={w.id}>
+							<Fragment key={w.id}>
 								<PreviewRow
 									word={w.word}
 									meaning={getMeaning(w, i18n.language)}
@@ -375,84 +382,76 @@ export default function WordLearning({
 										)
 									}
 								/>
-								{/* 펼친 줄에만 붙는 그림과 녹음 — 목업 미리보기에는 없는 자리다 */}
+								{/* 펼친 줄에만 붙는 그림과 녹음 — 목업 미리보기에는 없는 자리다.
+								    .word-preview-list 의 형제로 그대로 붙어야 :last-child 기반
+								    구분선·모서리 라운딩이 목록 진짜 끝에 맞게 작동한다. */}
 								{isSelected && (
 									<div className="preview-extra">
-										{/* Word image — only when selected and image exists */}
-										{isSelected && w.image && (
-											<div className="flex items-center justify-center border-[#f0f0f0] border-t bg-white px-[12px] py-[10px]">
-												<img
-													src={`/textbook/${w.book_id}/${w.image}`}
-													alt={w.word}
-													className="h-[120px] w-auto rounded-[8px] object-contain"
-												/>
-											</div>
+										{w.image && (
+											<img
+												src={`/textbook/${w.book_id}/${w.image}`}
+												alt={w.word}
+											/>
 										)}
 
-										{/* Expanded recording area — only when selected */}
-										{isSelected && (
-											<div className="flex items-center gap-[8px] border-[#f0f0f0] border-t bg-white px-[12px] py-[10px]">
-												{/* X button — only after recording */}
-												<div className="w-[28px]">
-													{recording && (
+										<div className="preview-record">
+											<div className="preview-record-side">
+												{recording && (
+													<button
+														type="button"
+														onClick={() => handleClearRecording(w.id)}
+														className="preview-record-clear"
+													>
+														<X className="size-[14px]" />
+													</button>
+												)}
+											</div>
+
+											<div className="preview-record-center">
+												{recording ? (
+													<span className="preview-record-result">
+														{recording.resultWord}
+													</span>
+												) : (
+													<>
+														<span className="preview-record-pron">
+															{pronunciation.text}
+														</span>
+														{pronunciation.bracket && (
+															<span className="preview-record-bracket">
+																{pronunciation.bracket}
+															</span>
+														)}
+													</>
+												)}
+											</div>
+
+											<div className="preview-record-side preview-record-side--right">
+												{recording && (
+													<>
+														<span className="preview-record-timer">
+															{formatTime(isPlaying ? playTime : 0)}
+														</span>
 														<button
 															type="button"
-															onClick={() => handleClearRecording(w.id)}
-															className="flex size-[28px] cursor-pointer items-center justify-center rounded-full bg-[#E5E8EC]"
+															onClick={() =>
+																handleTogglePlay(w.id, recording.audioUrl)
+															}
+															className="preview-record-play"
 														>
-															<X className="size-[14px] text-[#878787]" />
-														</button>
-													)}
-												</div>
-
-												{/* Center: pronunciation text + recorded word */}
-												<div className="flex flex-1 flex-col items-center gap-[2px]">
-													{recording ? (
-														<span className="text-[#4396F4] text-[14px]">
-															{recording.resultWord}
-														</span>
-													) : (
-														<>
-															<span className="text-[#B0B0B0] text-[14px]">
-																{pronunciation.text}
-															</span>
-															{pronunciation.bracket && (
-																<span className="text-[#C8C8C8] text-[12px]">
-																	{pronunciation.bracket}
-																</span>
+															{isPlaying ? (
+																<Square className="size-[12px] text-white" />
+															) : (
+																<Play className="ml-[2px] size-[12px] text-white" />
 															)}
-														</>
-													)}
-												</div>
-
-												{/* Right: play/stop button + timer — only after recording */}
-												<div className="flex w-[60px] items-center justify-end gap-[4px]">
-													{recording && (
-														<>
-															<span className="text-[#878787] text-[12px]">
-																{formatTime(isPlaying ? playTime : 0)}
-															</span>
-															<button
-																type="button"
-																onClick={() =>
-																	handleTogglePlay(w.id, recording.audioUrl)
-																}
-																className="flex size-[28px] cursor-pointer items-center justify-center rounded-full bg-[#0180FF]"
-															>
-																{isPlaying ? (
-																	<Square className="size-[12px] text-white" />
-																) : (
-																	<Play className="ml-[2px] size-[12px] text-white" />
-																)}
-															</button>
-														</>
-													)}
-												</div>
+														</button>
+													</>
+												)}
 											</div>
-										)}
+										</div>
 									</div>
 								)}
-							</div>
+							</Fragment>
 						);
 					})}
 				</WordPreviewList>
