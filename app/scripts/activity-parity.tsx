@@ -9,7 +9,7 @@
  */
 import "./parity-shim";
 
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { AudioRow } from "@/components/main/activity/audio";
@@ -83,7 +83,13 @@ import {
 	SpPuzzleView,
 	SpTravelHeader,
 } from "@/components/main/game/seoul-puzzle-view";
-import { C as SP_C, SP_KEYFRAMES_CSS } from "@/components/main/game/seoul-puzzle";
+import {
+	C as SP_C,
+	type Location as SpLocation,
+	type Puzzle as SpRawPuzzle,
+	resolveToken,
+	SP_KEYFRAMES_CSS,
+} from "@/components/main/game/seoul-puzzle";
 import {
 	PcGameView,
 	type PcQuestion,
@@ -1305,17 +1311,47 @@ function SpFrame({ children }: { children: ReactElement | ReactElement[] }) {
 }
 
 /* 서울 퍼즐 지도 — 10 장소 전부(games_spec_v1 §서울 퍼즐 확정 데이터), 새 플레이어(완료 0) */
-const SP_LOCATIONS = [
-	{ id: "hongdae", name: "홍대", num: 1, x: 119, y: 97, unit: "4–5과", desc: "카페·음료 주문", grammar: ["이에요/예요", "은/는"], entryMessages: [] },
-	{ id: "myeongdong", name: "명동", num: 2, x: 181, y: 92, unit: "5–6과", desc: "쇼핑·물건 고르기", grammar: ["이/가 아니에요", "이/그/저"], entryMessages: [] },
-	{ id: "gyeongbokgung", name: "경복궁", num: 3, x: 0, y: 0, unit: "7과", desc: "한복 대여·위치 확인", grammar: ["에 있어요", "도"], entryMessages: [] },
-	{ id: "hangang", name: "한강공원", num: 4, x: 0, y: 0, unit: "8과", desc: "치킨·자리 잡기", grammar: ["아요/어요/여요", "을/를"], entryMessages: [] },
-	{ id: "gwangjang", name: "광장시장", num: 5, x: 0, y: 0, unit: "9과", desc: "음식 고르기", grammar: ["-지 않다", "ㅂ동사"], entryMessages: [] },
-	{ id: "seongsu", name: "성수동", num: 6, x: 0, y: 0, unit: "10–11과", desc: "식당 주문", grammar: ["-을까요?", "하고"], entryMessages: [] },
-	{ id: "museum", name: "국립중앙박물관", num: 7, x: 0, y: 0, unit: "11–12과", desc: "전시 관람", grammar: ["-으세요", "부터 까지"], entryMessages: [] },
-	{ id: "bukchon", name: "북촌한옥마을", num: 8, x: 0, y: 0, unit: "13–14과", desc: "길 묻기", grammar: ["-고 싶다", "에서"], entryMessages: [] },
-	{ id: "ddp", name: "DDP", num: 9, x: 0, y: 0, unit: "14–15과", desc: "야경·쇼핑", grammar: ["과/와", "에2"], entryMessages: [] },
-	{ id: "bukhansan", name: "북한산", num: 10, x: 0, y: 0, unit: "15과", desc: "등산 대화", grammar: ["에게"], entryMessages: [] },
+/*
+ * 서울 퍼즐 값은 **씨드에서 그대로 읽는다**. 전에는 손으로 적었고, 그래서
+ * 좌표 여덟 곳이 `x:0, y:0` 이고 경복궁 id 가 `gyeongbokgung`(씨드는 `gyeongbok`)
+ * 이었다 — 핀 자리는 이름 표(PIN_FULL)가 덮어써서 목업 대조엔 안 보였다.
+ * 읽어 오면 지어낼 수가 없다.
+ */
+const SEOUL = JSON.parse(
+	readFileSync(
+		join(dirname(fileURLToPath(import.meta.url)), "..", "..", "api", "seed_data", "seoul_puzzles.json"),
+		"utf8",
+	),
+) as {
+	locations: SpLocation[];
+	puzzles: Record<string, SpRawPuzzle[]>;
+};
+const SP_LOCATIONS = SEOUL.locations;
+
+/* 홍대 첫 문제를 playerName "수현"(받침 있음)으로 푼 것 — 화면이 하는 것과 같다 */
+const SP_RAW = SEOUL.puzzles.hongdae[0];
+const SP_RT = (t: string) => resolveToken(t, "수현");
+const SP_PUZZLE = {
+	...SP_RAW,
+	friendMsg: SP_RT(SP_RAW.friendMsg),
+	friendMsg2: SP_RAW.friendMsg2 ? SP_RT(SP_RAW.friendMsg2) : null,
+	selfMsg: SP_RAW.selfMsg ? SP_RT(SP_RAW.selfMsg) : null,
+	hintText: SP_RT(SP_RAW.hintText),
+	answer: SP_RAW.answer.map(SP_RT),
+	distractors: SP_RAW.distractors.map(SP_RT),
+};
+
+/*
+ * 칩은 답 두 조각 + 오답 세 조각을 섞은 것이다. **낱말은 씨드에서 오고**, 차례만
+ * 목업 캡처가 잡아 둔 것이다(실제로는 컨테이너가 섞는다).
+ * 아래 차례는 [오답3, 답1, 오답1, 오답2, 답2] 이다.
+ */
+const SP_CHIPS = [
+	SP_PUZZLE.distractors[2],
+	SP_PUZZLE.answer[0],
+	SP_PUZZLE.distractors[0],
+	SP_PUZZLE.distractors[1],
+	SP_PUZZLE.answer[1],
 ];
 
 SCREENS.game__sp_map = (
@@ -1333,14 +1369,7 @@ SCREENS.game__sp_map = (
 );
 
 /* 서울 퍼즐 입장 — 홍대(1번), 아직 시작 전이라 XP 0. entryMessages 는 seoul_puzzles.json "홍대" 그대로 */
-const SP_HONGDAE = fromData("seoul_puzzle.location", {
-	...SP_LOCATIONS[0],
-	entryMessages: [
-		{ type: "friend", text: "안녕하세요! 저는 김연세예요. 😊" },
-		{ type: "self", text: "안녕하세요! 저는 [이름]이에요." },
-		{ type: "friend", text: "반가워요! 같이 카페 가요!" },
-	],
-});
+const SP_HONGDAE = SP_LOCATIONS[0];
 
 SCREENS.game__sp_entry = (
 	<SpFrame>
@@ -1369,21 +1398,9 @@ SCREENS.game__sp_puzzle = (
 			streak={0}
 			puzzleIdx={0}
 			totalPuzzles={4}
-			resolvedPuzzle={{
-				friendMsg: "안녕하세요! 저는 김연세예요. 😊",
-				friendMsgT: "Hello! I'm Kim Yonsei. 😊",
-				selfMsg: null,
-				selfMsgT: null,
-				friendMsg2: "이름이 뭐예요?",
-				friendMsg2T: "What is your name?",
-				hintText: "처음 만난 자리에서 이름을 소개하는 상황이에요",
-				answer: ["저는", "수현이에요."],
-				distractors: ["저가", "수현예요.", "이름이에요."],
-				grammar: "이에요/예요",
-				tip: "<strong>저는 N이에요/예요</strong><br>자음 끝: 학생<strong>이에요</strong><br>모음 끝: 유리<strong>예요</strong>",
-			}}
+			resolvedPuzzle={SP_PUZZLE}
 			slotWords={[]}
-			shuffledChips={["이름이에요.", "저는", "저가", "수현예요.", "수현이에요."]}
+			shuffledChips={SP_CHIPS}
 			trayUsed={new Set()}
 			answered={null}
 			hintsLeft={3}

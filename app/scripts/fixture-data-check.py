@@ -25,8 +25,17 @@
 **안 보는 것** — 값이 그럴듯한지는 안 본다. 이 검사가 통과해도 "픽스처가 옳다" 는
 뜻이 아니라 **"모양이 데이터와 어긋나지는 않는다"** 는 뜻뿐이다.
 
-씨드는 서버 초기화용이고 앱은 API 에서 받는다. 씨드가 서버와 어긋나면 이 검사도
-어긋난 것을 기준으로 삼는다 — `--live` 로 서버와 씨드의 모양을 맞춰 볼 수 있다.
+**씨드는 스냅숏이지 정본이 아니다.** 정본은 어드민이고, 게임 콘텐츠는 **사람이
+어드민에서 고친다.** 앱은 그 내용을 API 에서 받는다. 씨드가 뒤처지면 이 검사도
+뒤처진 것을 기준으로 삼는다 — 2026-08-25 에 실제로 7개 중 4개가 갈려 있었고,
+`마흔셋→마흔세` · `강아지 ___→강아지가 ___` 같은 **사람이 고친 자리**가 씨드에는
+없었다.
+
+    python3 scripts/fixture-data-check.py --live
+
+이 그것을 확인한다. 서버(`koreanapi-live`)의 게임 콘텐츠 여덟 갈래를 받아 씨드와
+견주고, 다르면 실패한다. 네트워크가 필요해서 평소 검사에는 안 붙였다 —
+**씨드를 손대거나 어드민에서 콘텐츠를 고친 뒤에는 이것을 돌려라.**
 """
 
 import json
@@ -38,8 +47,76 @@ SEED = ROOT / "api" / "seed_data"
 FIXTURES = ROOT / "app" / ".parity-out" / "_fixtures.json"
 
 
+# ─── 서버(어드민 정본) ↔ 씨드 ────────────────────────────────────────
+#
+# 앱이 실제로 부르는 엔드포인트 그대로다(`app/src/api/game-content.ts`).
+# `pick` 은 한 씨드 파일이 두 엔드포인트로 갈려 나가는 자리를 고른다.
+LIVE = "https://koreanapi-live.pulleyai.co.kr"
+ENDPOINTS = [
+	("/game-content/spring-picnic/friends", "spring_picnic_friends.json", None),
+	("/game-content/spring-picnic/questions", "spring_picnic_questions.json", None),
+	("/game-content/particle-sniper/levels", "particle_sniper_levels.json", None),
+	("/game-content/particle-sniper/sentences", "sentences_lv*.json", "sentences"),
+	("/game-content/card-sort/categories", "card_sort_categories.json", None),
+	("/game-content/card-sort/vocab", "vocab.json", "vocab"),
+	("/game-content/card-sort/rare", "vocab.json", "rare"),
+	("/game-content/seoul-puzzle", "seoul_puzzles.json", None),
+]
+
+
 def seed(name):
 	return json.loads((SEED / name).read_text(encoding="utf-8"))
+
+
+def canon(obj):
+	return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def local_for(name, pick):
+	if pick == "sentences":
+		return {
+			f.name.replace("sentences_lv", "").replace(".json", "") + "급": json.loads(
+				f.read_text(encoding="utf-8")
+			)
+			for f in sorted(SEED.glob(name))
+		}
+	data = seed(name)
+	if pick == "vocab":
+		return {k: v for k, v in data.items() if k != "rare"}
+	if pick == "rare":
+		return data.get("rare", {})
+	return data
+
+
+def check_live():
+	"""서버가 내려주는 게임 콘텐츠와 씨드가 같은지 본다."""
+	import urllib.request
+
+	fails = 0
+	for path, name, pick in ENDPOINTS:
+		try:
+			with urllib.request.urlopen(LIVE + path, timeout=30) as r:
+				body = json.load(r)
+		except Exception as e:  # noqa: BLE001 — 네트워크 사정은 다 실패로 친다
+			print(f"★ {path} — 서버를 못 읽었다: {e}")
+			fails += 1
+			continue
+		live = body.get("data", body) if isinstance(body, dict) else body
+		mine = local_for(name, pick)
+		if pick == "rare":
+			# 서버가 안 내려주는 키(설명 같은 것)는 씨드가 지킨다 — 비교에서 뺀다
+			mine = {k: v for k, v in mine.items() if k in live}
+		if canon(live) != canon(mine):
+			print(f"★ {path} — 씨드({name})가 서버와 다르다")
+			fails += 1
+		else:
+			print(f"  · {path} 같음")
+	print()
+	if fails:
+		print(f"{fails}갈래가 서버와 갈렸다 — 씨드는 스냅숏이고 정본은 어드민이다")
+		return 1
+	print(f"{len(ENDPOINTS)}갈래 모두 서버와 같다")
+	return 0
 
 
 # ─── 픽스처 ↔ 진짜 레코드 짝짓기 ──────────────────────────────────────
@@ -137,13 +214,8 @@ ENTRIES = {
 		"records": lambda: seed("spring_picnic_questions.json"),
 		"exempt": {},
 	},
-	"seoul_puzzle.location": {
-		"출처": "seoul_puzzles.json → locations[]",
-		"records": lambda: seed("seoul_puzzles.json")["locations"],
-		"exempt": {
-			"entryMessages": "장소 레코드에 없는 필드다 — 픽스처가 화면에 필요해서 덧붙였다",
-		},
-	},
+	# 서울 퍼즐은 표에 없다 — 픽스처가 씨드를 **직접 읽어** 쓰기 때문이다.
+	# 지어낼 수가 없으니 대조할 것도 없다. 손으로 적는 픽스처만 여기 온다.
 }
 
 
@@ -268,6 +340,9 @@ def check(key, fixture, spec):
 
 
 def main():
+	if "--live" in sys.argv:
+		return check_live()
+
 	if not FIXTURES.exists():
 		print(f"★ {FIXTURES} 가 없다 — `pnpm parity:activity` 를 먼저 돌려라")
 		return 1

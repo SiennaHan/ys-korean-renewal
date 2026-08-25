@@ -118,6 +118,7 @@ cd app && python3 scripts/build-content.py --check   # 콘텐츠 — 원장과 J
 | `pnpm typecheck` | 타입 | 실행 시점의 동작 전부 |
 | `pnpm parity:activity` | 정적 마크업 구조 | **`useEffect` 가 아예 실행되지 않는다**(`react-dom/server`). 훅 재실행·타이머·초점. 그리고 **픽스처 값이 실제 데이터와 같은 규약인지** |
 | `fixture-data-check.py` | 픽스처가 씨드 레코드와 같은 **모양**인지 | 값이 **그럴듯한지**. 씨드가 서버와 어긋나면 어긋난 것을 기준으로 삼는다 |
+| `fixture-data-check.py --live` | 씨드가 **서버(어드민 정본)와 같은지** | 네트워크가 필요해 평소 게이트엔 없다 — 씨드나 어드민을 건드린 뒤 직접 돌려라 |
 | `pnpm build` | 빌드 가능성 | 위 전부 |
 | `check_docs.py` | 문서의 참조·숫자 | 문서가 **맞는 말인지** |
 
