@@ -215,7 +215,10 @@ DROP_ATTRS = {"type", "disabled", "aria-hidden", "role",
               "data-lv", "data-lang", "data-mode", "data-pick", "id",
               # 목업이 정답 선택지에 박아 둔 디자인 시점 힌트다(game__ps_play).
               # 앱은 정답을 DOM 에 노출하지 않는다 — 채점은 handleAnswer 안에서 한다
-              "data-correct"}
+              "data-correct",
+              # React 는 제어 입력에 늘 value 를 붙여 내보낸다(빈 칸이면 value="").
+              # 목업은 그냥 <input> 이다 — 디자인 차이가 아니라 렌더러 차이다.
+              "value"}
 VOID = {"img", "input", "br", "hr", "rect", "path", "circle", "line", "polygon", "use"}
 
 

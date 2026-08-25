@@ -817,6 +817,51 @@ SCREENS.vocashot__play = (
 		onResolve={() => {}}
 	/>
 );
+/*
+ * 직접 입력 모드 — 목업 캡처(vocashot__play_type)가 잡아 둔 상태 그대로.
+ * 4개 중 고르기만 캡처돼 있어서 이 갈래는 **한 번도 견줘진 적이 없었다** —
+ * 그래서 `.typed` 라는 없는 이름이 오래 남아 있었다(BLOCKERS).
+ */
+SCREENS.vocashot__play_type = (
+	<VocashotPlayView
+		level={2}
+		mode="hard"
+		lang="en"
+		hearts={5}
+		heartsMax={5}
+		score={0}
+		meteor={{ meaning: "to bloom (flowers)", dur: 10, choices: [] }}
+		feedback={null}
+		typed=""
+		onTyped={() => {}}
+		onResolve={() => {}}
+	/>
+);
+
+/*
+ * 결과 — **신기록이고 놓친 단어가 있는** 상태. 목업 캡처(vocashot__result_best).
+ * 기존 캡처는 0점·놓친 단어 없음이라 `.r-new` 와 `.r-row` 를 못 견줬다.
+ */
+SCREENS.vocashot__result_best = (
+	<VocashotResultView
+		level={2}
+		mode="easy"
+		best={10}
+		isBest={true}
+		score={10}
+		correct={2}
+		asked={7}
+		hearts={0}
+		missed={[
+			{ w: "의사", m: "doctor", got: true },
+			{ w: "춤", m: "dance", got: false },
+			{ w: "세일", m: "sale, discount", got: false },
+		]}
+		onAgain={() => {}}
+		onExit={() => {}}
+	/>
+);
+
 SCREENS.vocashot__result = (
 	<VocashotResultView
 		level={2}

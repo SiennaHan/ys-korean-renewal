@@ -512,7 +512,9 @@ export function VocashotPlayView({
 							<input
 								value={typed}
 								onChange={(e) => onTyped(e.target.value)}
-								placeholder="한국어로 입력"
+								// 정본에 있다 — 모바일에서 첫 글자가 대문자로 바뀌지 않게 한다
+								autoCapitalize="off"
+								placeholder="한국어 단어를 입력하세요"
 								autoComplete="off"
 							/>
 							{/*
@@ -520,7 +522,7 @@ export function VocashotPlayView({
 							 * `g-go` 는 4지선다 쪽 전폭 버튼이라 `width:100%` 가 붙어 있어서,
 							 * 여기 쓰면 입력 칸을 34px 로 찌그러뜨리고 줄이 넘쳤다.
 							 */}
-							<button type="submit">쏘기</button>
+							<button type="submit">발사!</button>
 						</form>
 					)}
 				</div>
@@ -613,11 +615,20 @@ export function VocashotResultView({
 				</div>
 
 				<div className="r-body">
-					<h2 className={`r-ttl${cleared ? " ok" : ""}`}>
+					{/*
+					 * 정본은 완주/게임오버로 색과 문구를 가른다 —
+					 * `r-ttl ${hearts>0?'ok':'no'}` 이고, 하트가 0이면 문항 수를 세지
+					 * 않고 "하트가 0이 되어 끝났습니다." 라고 적는다. 전에는 `no` 를
+					 * 아예 안 붙여 제목이 회색이었고 문구도 늘 완주 쪽이었다.
+					 * 새로 뜬 캡처(vocashot__result_best)가 잡았다.
+					 */}
+					<h2 className={`r-ttl ${cleared ? "ok" : "no"}`}>
 						{cleared ? "완주" : "게임 오버"}
 					</h2>
 					<p className="r-desc">
-						{asked}문항을 하트 {hearts}개 남기고 끝냈습니다.
+						{cleared
+							? `${asked}문항을 하트 ${hearts}개 남기고 끝냈습니다.`
+							: "하트가 0이 되어 끝났습니다."}
 					</p>
 
 					<div className="r-score">
