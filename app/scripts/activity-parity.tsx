@@ -858,7 +858,11 @@ SCREENS.game__ps_lesson = (
 SCREENS.game__ps_play = (
 	<ParticleSniperPlayView
 		question={{
-			sentence: "저는 한국어___공부해요",
+			// 목업은 문장에 ___ 를 쓰지만 **실제 데이터는 blank 의 [?]** 다.
+			// 화면이 쓰는 것은 blank 이므로 여기도 그것으로 준다 — 그려지는 결과는
+			// 목업과 같다(앞 "저는 한국어" · 빈칸 · 뒤 " 공부해요").
+			sentence: "저는 한국어를 공부해요",
+			blank: "저는 한국어[?] 공부해요",
 			answer: "를",
 			choices: ["을", "를", "이", "가"],
 			sourceLesson: "8과",

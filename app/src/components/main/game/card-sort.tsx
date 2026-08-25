@@ -96,6 +96,7 @@ export default function CardSort() {
 	const nav = useNavigate();
 	const sound = useSoundEffects();
 	const rootRef = useRef<HTMLDivElement>(null);
+
 	// 이 급·과의 최고 점수. 목업 결과 화면에 자리가 있다.
 	const [bestScore, setBestScore] = useState<number | null>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -104,6 +105,18 @@ export default function CardSort() {
 	const cardTimerRef = useRef<number>(Date.now());
 
 	const [gameState, setGameState] = useState<GameState>("level-select");
+
+	/*
+	 * 화면이 바뀌면 초점을 프레임으로 옮긴다 — SPA 라 아무도 안 옮겨 준다.
+	 * 누른 버튼이 사라지면 초점이 <body> 로 떨어져서, 스크린리더는 화면이 바뀐 줄
+	 * 모르고 다음 Tab 은 문서 맨 처음으로 간다.
+	 * 프레임에 붙이는 것은 목업 대조 때문이다 — tabIndex 는 비교기가 무시하지
+	 * 않는데, 게임 캡처의 껍데기(프레임 포함)는 비교 전에 벗겨진다.
+	 */
+	useEffect(() => {
+		rootRef.current?.focus();
+	}, [gameState]);
+
 	const [selectedGrade, setSelectedGrade] = useState<Grade>("2급");
 	const [selectedLesson, setSelectedLesson] = useState<number>(5);
 
@@ -453,6 +466,8 @@ export default function CardSort() {
 	return (
 		<div
 			ref={rootRef}
+			tabIndex={-1}
+			aria-label="어휘 카드 마스터"
 			className="game-frame ux-dark-stage"
 			data-screen={screenId}
 			style={{

@@ -1,30 +1,195 @@
 {
-  "14과": {
-    "new_particles": ["이라든가", "라든가"],
-    "cumulative_particles": ["이라든가", "라든가"],
-    "note": "이라든가/라든가 = such as, things like (예시 나열 조사)",
-    "questions": [
-      {
-        "sentence": "노래방이라든가 카페에 가요",
-        "blank": "노래방[?] 카페에 가요",
-        "answer": "이라든가",
-        "choices": ["이라든가", "라든가", "이나"],
-        "sourceLesson": "6급 14과"
-      },
-      {
-        "sentence": "영화라든가 드라마를 좋아해요",
-        "blank": "영화[?] 드라마를 좋아해요",
-        "answer": "라든가",
-        "choices": ["이라든가", "라든가", "나"],
-        "sourceLesson": "6급 14과"
-      },
-      {
-        "sentence": "책이라든가 잡지를 읽어요",
-        "blank": "책[?] 잡지를 읽어요",
-        "answer": "이라든가",
-        "choices": ["이라든가", "라든가", "이나"],
-        "sourceLesson": "6급 14과"
-      }
-    ]
-  }
+	"14과": {
+		"new_particles": [
+			"이라든가",
+			"라든가"
+		],
+		"cumulative_particles": [
+			"랑",
+			"이랑",
+			"대신에",
+			"이라든가",
+			"라든가"
+		],
+		"questions": [
+			{
+				"sentence": "노래방이라든가 카페에 가요",
+				"blank": "노래방[?] 카페에 가요",
+				"answer": "이라든가",
+				"choices": [
+					"라든가",
+					"이라든가",
+					"나"
+				],
+				"sourceLesson": "6급 14과"
+			},
+			{
+				"sentence": "영화라든가 드라마를 좋아해요",
+				"blank": "영화[?] 드라마를 좋아해요",
+				"answer": "라든가",
+				"choices": [
+					"이라든가",
+					"라든가",
+					"도"
+				],
+				"sourceLesson": "6급 14과"
+			},
+			{
+				"sentence": "책이라든가 잡지를 읽어요",
+				"blank": "책[?] 잡지를 읽어요",
+				"answer": "이라든가",
+				"choices": [
+					"이라든가",
+					"에게",
+					"한테서"
+				],
+				"sourceLesson": "6급 14과"
+			},
+			{
+				"sentence": "주말이라든가 공휴일 같은 쉬는 날에는 외출을 해요",
+				"blank": "주말[?] 공휴일 같은 쉬는 날에는 외출을 해요",
+				"answer": "이라든가",
+				"choices": [
+					"나",
+					"라든가",
+					"이라든가"
+				],
+				"sourceLesson": "6급 14과"
+			},
+			{
+				"sentence": "인삼차라든가 대추차같은 전통차를 즐겨 마셔요",
+				"blank": "인삼차[?] 대추차같은 전통차를 즐겨 마셔요",
+				"answer": "라든가",
+				"choices": [
+					"라든가",
+					"에다가",
+					"한테서"
+				],
+				"sourceLesson": "6급 14과"
+			}
+		]
+	},
+	"1과": {
+		"new_particles": [
+			"랑",
+			"이랑"
+		],
+		"cumulative_particles": [
+			"랑",
+			"이랑"
+		],
+		"questions": [
+			{
+				"sentence": "어제 엄마랑 마트에서 과일을 샀어요",
+				"blank": "어제 엄마[?] 마트에서 과일을 샀어요",
+				"answer": "랑",
+				"choices": [
+					"랑",
+					"이랑",
+					"이라든가"
+				],
+				"sourceLesson": "6급 1과"
+			},
+			{
+				"sentence": "주말에 동생이랑 영화를 보기로 했어",
+				"blank": "주말에 동생[?] 영화를 보기로 했어",
+				"answer": "이랑",
+				"choices": [
+					"랑",
+					"이랑",
+					"한테서"
+				],
+				"sourceLesson": "6급 1과"
+			},
+			{
+				"sentence": "비 오는 날에는 파전이랑 따뜻한 국물이 생각나 ",
+				"blank": "비 오는 날에는 파전[?] 따뜻한 국물이 생각나",
+				"answer": "이랑",
+				"choices": [
+					"랑",
+					"이랑",
+					"밖에"
+				],
+				"sourceLesson": "6급 1과"
+			},
+			{
+				"sentence": "아침에 커피랑 빵을 같이 먹어요",
+				"blank": "아침에 커피[?] 빵을 같이 먹어요",
+				"answer": "랑",
+				"choices": [
+					"뿐",
+					"랑",
+					"이랑"
+				],
+				"sourceLesson": "6급 1과"
+			}
+		]
+	},
+	"5과 ": {
+		"new_particles": [
+			"대신에"
+		],
+		"cumulative_particles": [
+			"랑",
+			"이랑",
+			"대신에"
+		],
+		"questions": [
+			{
+				"sentence": "밥 대신에 빵을 먹었어요",
+				"blank": "밥[?] 빵을 먹었어요",
+				"answer": "대신에",
+				"choices": [
+					"만",
+					"밖에",
+					"대신에"
+				],
+				"sourceLesson": "6급 5과"
+			},
+			{
+				"sentence": "커피 대신에 따뜻한 녹차를 마실게요",
+				"blank": "커피[?] 따뜻한 녹차를 마실게요",
+				"answer": "대신에",
+				"choices": [
+					"대신에",
+					"에다가",
+					"를"
+				],
+				"sourceLesson": "6급 5과"
+			},
+			{
+				"sentence": "버스 대신에 지하철을 타는 게 빠를 거예요",
+				"blank": "버스[?] 지하철을 타는 게 빠를 거예요?",
+				"answer": "대신에",
+				"choices": [
+					"부터",
+					"대신에",
+					"에"
+				],
+				"sourceLesson": "6급 5과"
+			},
+			{
+				"sentence": "영화관 대신에 집에서 영화를 보려고 해요",
+				"blank": "영화관[?] 집에서 영화를 보려고 해요",
+				"answer": "대신에",
+				"choices": [
+					"대신에",
+					"만큼",
+					"뿐"
+				],
+				"sourceLesson": "6급 5과"
+			},
+			{
+				"sentence": "어버이날에 부모님께 편지를 드렸다",
+				"blank": "어버이날에 부모님[?] 편지를 드렸다",
+				"answer": "께",
+				"choices": [
+					"께",
+					"은",
+					"에 비해서"
+				],
+				"sourceLesson": "5급 13과"
+			}
+		]
+	}
 }

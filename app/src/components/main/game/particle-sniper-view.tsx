@@ -220,7 +220,10 @@ export function ParticleSniperLessonView({
 }
 
 export interface PsQuestion {
+	/** 완성된 문장. 채점·기록용이고 **문제 화면에는 쓰지 않는다** — 정답이 들어 있다 */
 	sentence: string;
+	/** 문제로 보여 줄 꼴. 빈칸을 `[?]` 로 표시한다 — 예: `누[?] 왔어요` */
+	blank: string;
 	answer: string;
 	choices: string[];
 	sourceLesson: string;
@@ -262,7 +265,14 @@ export function ParticleSniperPlayView({
 	// 목업의 상태 클래스 — 쏘면 is-shot 이 붙고 결과에 따라 is-hit / is-miss 가 따라온다
 	const shot = shotResult !== null;
 	const targetState = shot ? `is-shot is-${shotResult}` : "";
-	const [before, after] = question.sentence.split("___");
+	/*
+	 * 문제 화면은 `blank` 를 쓴다. 전에는 `sentence` 를 `"___"` 로 잘랐는데 —
+	 * 데이터에 `___` 를 쓰는 문항이 **하나도 없고**(79문항 전부 `blank` 의 `[?]` 다)
+	 * `sentence` 는 **정답이 들어 있는 완성 문장**이다. 그래서 자를 것이 없어
+	 * 문장이 통째로 나오고 빈칸이 뒤에 붙었다 — "누가 왔어요 ?" 처럼 정답 `가` 가
+	 * 이미 보이는 채로. (2026-08-24 기획자 지적)
+	 */
+	const [before, after] = question.blank.split("[?]");
 
 	return (
 		<div className="ps-game-shell">

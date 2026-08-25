@@ -820,6 +820,19 @@ function Confetti({ show }: { show: boolean }) {
 export default function SeoulPuzzle() {
 	const nav = useNavigate();
 	const [screen, setScreen] = useState<Screen>("name");
+
+	const frameRef = useRef<HTMLDivElement>(null);
+	/*
+	 * 화면이 바뀌면 초점을 프레임으로 옮긴다 — SPA 라 아무도 안 옮겨 준다.
+	 * 누른 버튼이 사라지면 초점이 <body> 로 떨어져서, 스크린리더는 화면이 바뀐 줄
+	 * 모르고 다음 Tab 은 문서 맨 처음으로 간다.
+	 * 프레임에 붙이는 것은 목업 대조 때문이다 — tabIndex 는 비교기가 무시하지
+	 * 않는데, 게임 캡처의 껍데기(프레임 포함)는 비교 전에 벗겨진다.
+	 */
+	useEffect(() => {
+		frameRef.current?.focus();
+	}, [screen]);
+
 	const [navDir, setNavDir] = useState<NavDir>("forward");
 	const [playerName, setPlayerName] = useState("");
 	const [nameInput, setNameInput] = useState("");
@@ -1244,7 +1257,13 @@ export default function SeoulPuzzle() {
 		// complete 화면은 예외다 — 목업(game__sp_complete)엔 ux-seoul·헤더가 전혀 없다.
 		// 장소 하나를 다 끝낸 순간의 독립된 전면 화면이라 그대로 따랐다(particle-sniper 의
 		// ps_result 도 같은 이유로 자기 화면의 shell 없이 혼자 선다).
-		<div className="game-frame" data-screen={screenId}>
+		<div
+			ref={frameRef}
+			tabIndex={-1}
+			aria-label="서울 여행 퍼즐"
+			className="game-frame"
+			data-screen={screenId}
+		>
 			{/* XP Toast */}
 			{xpToast && (
 				<div
