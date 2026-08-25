@@ -276,9 +276,9 @@ export default function WordLearning({
 					onSkip={handleSkip}
 				/>
 				<ActivityProgress
-					current={currentPage}
-					total={totalPages}
-					onJump={setCurrentPage}
+					current={quizIndex}
+					total={quizzes.length}
+					onJump={(index) => setCurrentPage(index + 1)}
 				/>
 
 				<ActivityBody
@@ -352,12 +352,6 @@ export default function WordLearning({
 				onExit={() => router.history.back()}
 				onSkip={handleSkip}
 			/>
-			<ActivityProgress
-				current={currentPage}
-				total={totalPages}
-				onJump={setCurrentPage}
-			/>
-
 			<ActivityBody>
 				<ProblemCard instruction={t("activity.instrWordPreview")} />
 				<WordPreviewList words={[]}>
