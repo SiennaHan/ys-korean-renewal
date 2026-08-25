@@ -209,6 +209,91 @@
 - 채점 없는 활동의 실제 결과
 - 나가기 · 미션 건너뛰기 확인 — **구현한 뒤에**
 
+## 실제 제품 라우트 감사 (2026-08-25 추가)
+
+**비로그인 둘러보기로 12개 라우트가 다 열렸다.** 앞 절의 상태 캡처는 표시
+컴포넌트 층이고, 이 절은 **제품이 실제로 그리는 화면**이다.
+
+> **언어는 영어다.** 앱은 `localStorage` 에 값이 없으면 영어로 뜬다
+> (`src/i18n/index.ts` — `|| "en"`). 신규 방문자가 보는 것이 그것이다.
+> 한국어 캡처는 앱 안 언어 설정을 거쳐야 하고 헤드리스는 매번 새 프로필이라
+> 이번에는 못 했다.
+
+| 캡처 ID | 활동 | 실제 라우트 | 정본 짝 | 분류 |
+|---|---|---|---|---|
+| `real__jamo_speak` | 자모 발음 | `/learn/jamo?level=1&lesson=1&group=1&sub=1` | `activity__speak` | `DRIFT` |
+| `real__jamo_combine` | 자모 2단 조합 | `/learn/jamo?level=1&lesson=1&group=1&sub=2` | `activity__write_2` | `DRIFT` |
+| `real__jamo_wordrep` | 단어 듣고 따라 말하기 | `/learn/jamo?level=1&lesson=1&group=1&sub=3` | `activity__wordrep` | `MATCH` |
+| `real__jamo_readwrite` | 단어 읽고 쓰기 | `/learn/jamo?level=1&lesson=1&group=1&sub=4` | `activity__readwrite` | `MATCH` |
+| `real__jamo_listen` | 자모 듣고 고르기 | `/learn/jamo?level=1&lesson=1&group=1&sub=5` | `activity__jamoListen` | `DRIFT` |
+| `real__jamo_combine3` | 자모 3단·받침 조합 | `/learn/jamo?level=1&lesson=3&group=1&sub=6` | `activity__write3_3` | `DRIFT` |
+| `real__chat_briefing` | 미션대화 브리핑 | `/learn/mission-chat?level=1&lesson=4` | `activity__briefing` | `DRIFT` |
+| `real__role` | 롤플레잉 | `/learn/roleplay?level=1&lesson=4` | `activity__role` | `DRIFT` |
+| `real__flash` | 플래시카드 | `/learn/flashcard?level=1&lesson=4` | `activity__flash_front` | `DRIFT` |
+| `real__word` | 어휘 미리보기 | `/learn/word?level=1&lesson=4` | `activity__wordPreview` | `MATCH` |
+| `real__read` | 읽기 문제 | `/learn/read?level=1&lesson=4` | `activity__reading` | `DRIFT` |
+| `real__listen` | 듣기 문제 | `/learn/listen?level=1&lesson=4` | `activity__listen_ox` | `MATCH` |
+| `real__grammar` | 문법 빈칸 | `/learn/grammar?level=1&lesson=4` | `activity__grammar_before` | `MATCH` |
+| `real__jamo_readwrite__320` | 단어 읽고 쓰기 (320) | `/learn/jamo?level=1&lesson=1&group=1&sub=4` | `activity__readwrite__320__ko` | `MATCH` |
+
+### 자모 매핑이 실제 화면으로 확인됐다
+
+정정한 주소로 실제 라우트를 열어 문구를 맞춰 봤다 — 여섯이 다 맞는다.
+
+| sub | 실제 화면 문구 |
+|---|---|
+| 1 | Listen and repeat. (발음) |
+| 2 | Listen, then build the letter. (2단 조합) |
+| 3 | Listen to the word and repeat it. (단어 듣고 따라 말하기) |
+| 4 | Read the word and write it. (단어 읽고 쓰기) |
+| 5 | Listen and choose the right one. (듣고 고르기) |
+| 6 | Lesson 3 · 받침 — Listen, then build the letter. (3단·받침) |
+
+### 셸을 쓰는지 세어 봤다
+
+눈이 아니라 뜬 HTML 에서 셌다.
+
+| 화면 | `.activity-frame` | 진행 표시 | 건너뛰기 |
+|---|---|---|---|
+| 자모 발음 | 있음 | **없음**(정본엔 있음) | 있음 |
+| 자모 2단 조합 | 있음 | **없음** | 있음 |
+| 자모 듣고 고르기 | 있음 | 있음 | 있음 |
+| 롤플레잉 | 있음 | **있음**(정본엔 없음) | 있음 |
+| 미션대화 브리핑 | **없음** | 없음 | 없음 |
+| 플래시카드 | **없음** | **없음** | **없음** |
+
+**진행 표시가 화면마다 들쭉날쭉하다.** 같은 자모 안에서도 갈린다.
+
+### 미션대화 대화 화면은 지금 열리지 않는다
+
+브리핑에서 「시작하기」를 누르면 대화 화면이 **빈 채로 남는다.** 콘솔에
+
+```
+Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'map')
+```
+
+`components/learn/mission-dialog.tsx:225` 의 `feedbacks.map(...)` 이다.
+`getMsgList()` 응답을 `if (!msgResponse) return` 으로만 막고 **`feedbacks` 가 없는
+응답은 안 막는다.** 로컬에는 대화 서버가 없어 그 길로 들어간다.
+
+그래서 요청받은 **미션대화 진행·텍스트 입력·녹음·피드백·종료·리포트**는 못 담았다.
+캡처하려면 대화 API fixture 가 먼저 있어야 한다. (`?? []` 한 줄이면 크래시는
+막히지만 **제품 코드는 이번 감사에서 건드리지 않았다.**)
+
+### 이 절에서 아직 못 담은 것
+
+| | 왜 |
+|---|---|
+| 미션대화 진행·입력·녹음·피드백·종료·리포트 | 위 크래시 |
+| 롤플레잉 AI 차례 · 녹음 완료 | 상호작용이 필요하다. 첫 화면만 담았다 |
+| 플래시카드 뒷면 · 판정 후 · 결과 | 상호작용이 필요하다 |
+| 단어 읽고 쓰기 모달 빈판 · 그린 상태 · 완료 | 글자 칸을 눌러야 열린다 |
+| 채점 없는 활동의 실제 결과 | 활동을 끝까지 풀어야 나온다 |
+| 나가기 · 미션 건너뛰기 확인 | **아직 구현이 없다** |
+
+정지 캡처로는 여기까지다. 다음은 **상호작용을 넣는 캡처 하네스**(누른 뒤 뜨기)가
+필요하다.
+
 ## 승격은 보류다
 
 처음 판에 승격 후보 21개를 적었는데 **지금은 전부 보류**다. 확정 컴포넌트 여섯을

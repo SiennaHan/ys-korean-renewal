@@ -20,6 +20,8 @@ import sys
 import urllib.parse
 
 HERE = pathlib.Path(__file__).resolve().parent
+# 실제 라우트에서 뜬 것은 표시 컴포넌트와 갈라서 둔다 — 섞으면 무엇이 제품
+# 화면인지 다시 헷갈린다
 OUT = HERE / "activity"
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 # 헤드리스가 실제로 잡는 레이아웃 크기 — 이 안에 iframe 을 앉히고 잘라 낸다
@@ -49,14 +51,15 @@ def dump_dom(url: str, budget: int = 6000) -> str:
 
 
 def shoot_tall(story_id: str, w: int, h: int, out: pathlib.Path,
-               budget: int = 6000, lang: str = "") -> tuple[int, int]:
+               budget: int = 6000, lang: str = "", app: str = "") -> tuple[int, int]:
     """한 번에 안 담기는 높이를 여러 번 찍어 이어 붙인다."""
     from PIL import Image
 
     canvas = Image.new("RGB", (w, h), "white")
     off = 0
     while off < h:
-        args = {"id": story_id, "w": w, "h": h, "off": off}
+        args = {"w": w, "h": h, "off": off}
+        args["app" if app else "id"] = app or story_id
         if lang:
             args["globals"] = f"locale:{lang}"
         q = urllib.parse.urlencode(args)
@@ -84,7 +87,8 @@ def crop(png: pathlib.Path, w: int, h: int) -> tuple[int, int]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("cap_id")
-    ap.add_argument("story_id")
+    ap.add_argument("story_id", help="스토리 id, 또는 --app 이면 무시된다")
+    ap.add_argument("--app", default="", help="실제 제품 라우트 경로(/learn/... )")
     ap.add_argument("--w", type=int, default=360)
     ap.add_argument("--h", type=int, default=DEFAULT_H)
     ap.add_argument("--budget", type=int, default=6000,
@@ -94,16 +98,20 @@ def main() -> int:
 
     OUT.mkdir(parents=True, exist_ok=True)
     png = OUT / f"{a.cap_id}.png"
-    got = shoot_tall(a.story_id, a.w, a.h, png, a.budget, a.lang)
+    got = shoot_tall(a.story_id, a.w, a.h, png, a.budget, a.lang, a.app)
 
     # outerHTML 은 스토리 iframe 을 직접 떠서 **활동 뿌리**만 남긴다
-    story = (f"http://127.0.0.1:6006/iframe.html?"
+    story = (f"http://127.0.0.1:3000{a.app}" if a.app else
+             f"http://127.0.0.1:6006/iframe.html?"
              f"id={urllib.parse.quote(a.story_id)}&viewMode=story"
              + (f"&globals=locale:{a.lang}" if a.lang else ""))
     dom = dump_dom(story, a.budget)
-    i = dom.find('<div class="activity-frame')
-    if i < 0:
-        i = dom.find('<div id="storybook-root">')
+    # 활동 뿌리를 찾는다. 실제 라우트는 프레임이 없을 수 있어 앱 루트로 물러선다.
+    for probe in ('<div class="activity-frame', '<div id="storybook-root">',
+                  '<div id="root"', '<body'):
+        i = dom.find(probe)
+        if i >= 0:
+            break
     j = dom.rfind("</body>")
     (OUT / f"{a.cap_id}.html").write_text(dom[i:j].strip(), encoding="utf-8")
 

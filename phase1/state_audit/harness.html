@@ -31,9 +31,15 @@
    * 스토리는 값이 고정된 정적 구성이라 여러 번 찍어도 같은 그림이 나온다.
    */
   f.style.marginTop = "-" + (p.get("off") || 0) + "px";
-  f.src =
-    "http://127.0.0.1:6006/iframe.html?id=" +
-    encodeURIComponent(p.get("id")) +
-    "&viewMode=story" +
-    (p.get("globals") ? "&globals=" + encodeURIComponent(p.get("globals")) : "");
+  /*
+   * `id` 를 주면 Storybook 스토리를, `app` 을 주면 **실제 제품 라우트**를 띄운다.
+   * 실제 라우트는 로그인 없이 둘러보기로 열리는 것만 담는다.
+   */
+  const app = p.get("app");
+  f.src = app
+    ? "http://127.0.0.1:3000" + app
+    : "http://127.0.0.1:6006/iframe.html?id=" +
+      encodeURIComponent(p.get("id")) +
+      "&viewMode=story" +
+      (p.get("globals") ? "&globals=" + encodeURIComponent(p.get("globals")) : "");
 </script>
