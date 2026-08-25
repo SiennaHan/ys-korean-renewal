@@ -10,6 +10,7 @@ import {
 } from "@/components/main/game/seoul-puzzle-view";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useScreenFocus } from "./use-screen-focus";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type Screen = "name" | "map" | "entry" | "puzzle" | "complete";
@@ -821,18 +822,6 @@ export default function SeoulPuzzle() {
 	const nav = useNavigate();
 	const [screen, setScreen] = useState<Screen>("name");
 
-	const frameRef = useRef<HTMLDivElement>(null);
-	/*
-	 * 화면이 바뀌면 초점을 프레임으로 옮긴다 — SPA 라 아무도 안 옮겨 준다.
-	 * 누른 버튼이 사라지면 초점이 <body> 로 떨어져서, 스크린리더는 화면이 바뀐 줄
-	 * 모르고 다음 Tab 은 문서 맨 처음으로 간다.
-	 * 프레임에 붙이는 것은 목업 대조 때문이다 — tabIndex 는 비교기가 무시하지
-	 * 않는데, 게임 캡처의 껍데기(프레임 포함)는 비교 전에 벗겨진다.
-	 */
-	useEffect(() => {
-		frameRef.current?.focus();
-	}, [screen]);
-
 	const [navDir, setNavDir] = useState<NavDir>("forward");
 	const [playerName, setPlayerName] = useState("");
 	const [nameInput, setNameInput] = useState("");
@@ -860,6 +849,12 @@ export default function SeoulPuzzle() {
 	const [locations, setLocations] = useState<Location[]>([]);
 	const [puzzlesMap, setPuzzlesMap] = useState<Record<string, Puzzle[]>>({});
 	const [contentLoading, setContentLoading] = useState(true);
+	/*
+	 * 화면이 바뀌면 초점을 프레임으로 옮긴다. 왜 필요한지·왜 첫 마운트에도
+	 * 옮기는지·왜 프레임에 붙이는지는 `use-screen-focus.ts` 에 적어 뒀다.
+	 * 콘텐츠를 받는 동안은 참는다 — 로딩 칸에 줬다가 도로 잃는다.
+	 */
+	const frameRef = useScreenFocus(screen, !contentLoading);
 
 	useEffect(() => {
 		let cancelled = false;

@@ -8,6 +8,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useScreenFocus } from "./use-screen-focus";
 
 type GameState =
 	| "level-select"
@@ -118,7 +119,6 @@ const buildQuestionSet = (lessons: LevelData, lesson: string): Question[] => {
 const ParticleSniper: React.FC = () => {
 	const nav = useNavigate();
 	const sound = useSoundEffects();
-	const rootRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const animationFrameRef = useRef<number>();
 	const timerIntervalRef = useRef<NodeJS.Timeout>();
@@ -153,25 +153,12 @@ const ParticleSniper: React.FC = () => {
 	const [levelMeta, setLevelMeta] = useState<Record<string, LevelMeta>>({});
 	const [levelData, setLevelData] = useState<Record<string, LevelData>>({});
 	const [contentLoading, setContentLoading] = useState(true);
-
 	/*
-	 * 화면이 바뀌면 초점을 이 프레임으로 옮긴다 — SPA 라 아무도 안 옮겨 준다.
-	 * 누른 버튼이 사라지면 초점이 <body> 로 떨어져서, 스크린리더는 화면이 바뀐 줄
-	 * 모르고 다음 Tab 은 문서 맨 처음으로 간다.
-	 *
-	 * 붙이는 자리가 .game-frame 인 것은 목업 대조 때문이다 — tabIndex 는 비교기가
-	 * 무시하지 않아서 대조가 보는 자리에 붙이면 화면이 갈린다. SCREEN_ROOT 가
-	 * 화면별 뿌리(ps-level-shell 등)부터 자르므로 그 바깥인 프레임은 안전하다.
-	 *
-	 * 첫 마운트에도 옮긴다. 이 화면이 마운트되는 것은 곧 **사람이 게임으로
-	 * 이동했다**는 뜻이라, 보통 웹에서 페이지가 새로 로드되며 초점이 옮겨지는
-	 * 것과 같은 자리다. contentLoading 도 같이 본다 — 로딩 칸에 초점을 줬다가
-	 * 진짜 화면으로 바뀌면 다시 잃기 때문이다.
+	 * 화면이 바뀌면 초점을 프레임으로 옮긴다. 왜 필요한지·왜 첫 마운트에도
+	 * 옮기는지·왜 프레임에 붙이는지는 `use-screen-focus.ts` 에 적어 뒀다.
+	 * 콘텐츠를 받는 동안은 참는다 — 로딩 칸에 줬다가 도로 잃는다.
 	 */
-	useEffect(() => {
-		if (contentLoading) return;
-		rootRef.current?.focus();
-	}, [gameState, contentLoading]);
+	const rootRef = useScreenFocus(gameState, !contentLoading);
 
 	// 이 급·과의 최고 점수. 목업 결과 화면에 자리가 있다.
 	const [bestScore, setBestScore] = useState<number | null>(null);
