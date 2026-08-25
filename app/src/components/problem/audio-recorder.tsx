@@ -137,8 +137,6 @@ const AudioRecorder = (props: Props) => {
 			setRecorderStatus("sending");
 			try {
 				const resultMsg = await postSpeaking(blob);
-
-				console.log("resultMsg=>", resultMsg);
 				props.setResult(true, resultMsg ?? "", url ?? "");
 			} catch (error) {
 				console.error("API 호출 중 오류 발생:", error);

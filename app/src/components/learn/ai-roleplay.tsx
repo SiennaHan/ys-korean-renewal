@@ -641,8 +641,10 @@ function UserRecordCard({
 	canChooseNext: boolean;
 }) {
 	const { t } = useTranslation();
-	const charDiff = diffChars(turn.ko, record.sttText);
-	const recognized = record.sttText.trim();
+	// 이전 버전이나 비정상 목 응답이 객체를 남겨도 결과 화면 전체가 죽지 않는다.
+	const recognized =
+		typeof record.sttText === "string" ? record.sttText.trim() : "";
+	const charDiff = diffChars(turn.ko, recognized);
 
 	return (
 		<div className="record-card">
