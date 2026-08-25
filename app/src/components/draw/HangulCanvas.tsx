@@ -218,8 +218,15 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 					className="mx-auto cursor-crosshair rounded-lg border-4 border-gray-300 border-dashed bg-white shadow-inner"
 					style={{ width: `${CANVAS_SIZE}px`, height: `${CANVAS_SIZE}px` }}
 				>
+					{/*
+					  * 손으로 긋는 판이라 키보드로는 대신할 수 없다. 이름이라도 붙여
+					  * 보조기술이 "여기가 쓰는 자리" 라고 읽게 한다. 넘어갈 길은
+					  * 상단 바의 건너뛰기다(word-write.tsx 의 onSkip).
+					  */}
 					<canvas
 						ref={canvasRef}
+						role="img"
+						aria-label="글자를 손으로 쓰는 판"
 						// 마우스 이벤트
 						onMouseDown={startDrawing}
 						onMouseUp={stopDrawing}
@@ -238,6 +245,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 				<div className="flex items-center justify-between space-x-3 p-2">
 					<button
 						type="button"
+						aria-label="다시 쓰기"
 						onClick={clearCanvas}
 						className="transform cursor-pointer rounded-lg border-1 bg-white px-4 py-3 font-bold text-[#4396f4] shadow-md transition duration-300 hover:scale-[1.02] hover:bg-gray-100 focus:outline-none active:scale-[0.98]"
 					>
@@ -262,6 +270,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 					</div>
 					<button
 						type="button"
+						aria-label="쓴 글자 제출"
 						onClick={saveSignature}
 						className="transform cursor-pointer rounded-lg bg-[#4396f4] px-4 py-3 font-semibold text-white shadow-md transition duration-300 hover:scale-[1.02] hover:bg-blue-500 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-white disabled:text-gray-300 disabled:opacity-70 disabled:shadow-none disabled:hover:bg-white"
 						disabled={!hasLine || isUploading}

@@ -294,7 +294,17 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 
 	return (
 		<ActivityFrame>
-			<ActivityAppBar lesson={lesson} onExit={exit} />
+			{/*
+			  * 건너뛰기 — 목업(activity__write · write3 · wordrep · jamoListen)에는
+			  * 처음부터 있었는데 실제 자모 화면에는 없었다. 목업 대조가 못 잡은 이유는
+			  * activity-parity 가 learn/jamo 를 하나도 import 하지 않고 셸을 손으로
+			  * 조립해 보기 때문이다(BLOCKERS §2).
+			  *
+			  * 이 화면에서는 특히 필요하다. 다음으로 가는 유일한 길이 "칸을 손으로 써서
+			  * 채우는 것" 이라, 손으로 쓸 수 없는 사람은 갇힌다. 쓰기 연습 자체를
+			  * 키보드로 대신할 수는 없으니 **넘어갈 길**을 주는 것이 맞다.
+			  */}
+			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={next} />
 
 			<ActivityBody>
 				<ProblemCard
