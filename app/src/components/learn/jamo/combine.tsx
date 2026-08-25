@@ -33,8 +33,8 @@ import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
 import { combineHangul } from "@/lib/hangul-utils";
 import { chapters } from "@/shared/data/chapter";
+import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
-import { problems } from "@/shared/data/problem";
 import { units } from "@/shared/data/unit";
 import type { ModuleType, ProblemType } from "@/types/book.types";
 import clsx from "clsx";
@@ -65,7 +65,7 @@ export default function JamoCombine({ moduleCode }: { moduleCode: string }) {
 	);
 	const unit = units.find((item) => item.id === module?.unit_id);
 	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
-	const problemList = problems.filter(
+	const problemList = jamoProblems.filter(
 		(item) => item.module_code === code && item.scene_num === 1,
 	);
 
@@ -96,9 +96,12 @@ export default function JamoCombine({ moduleCode }: { moduleCode: string }) {
 		setHintOn(true);
 		hintTimer.current = setTimeout(() => setHintOn(false), 1000);
 	};
-	useEffect(() => () => {
-		if (hintTimer.current) clearTimeout(hintTimer.current);
-	}, []);
+	useEffect(
+		() => () => {
+			if (hintTimer.current) clearTimeout(hintTimer.current);
+		},
+		[],
+	);
 	const [isLastPage, setIsLastPage] = useState(false);
 	const [isExit, setIsExit] = useState(false);
 
@@ -162,7 +165,7 @@ export default function JamoCombine({ moduleCode }: { moduleCode: string }) {
 	 * 문항이 바뀔 때만 도는 효과다. 빠졌다는 셋 다 넣으면 안 된다:
 	 * - init 은 컴포넌트 안에서 매 렌더 새로 만들어지는 함수이고, 이 효과는 몸통에서
 	 *   setState 를 부른다 — 넣으면 매 렌더마다 다시 돌아 무한 렌더가 된다
-	 * - problemList 는 모듈 상수 problems 를 걸러 만든 목록이라 code 가 그대로면
+	 * - problemList 는 모듈 상수 jamoProblems 를 걸러 만든 목록이라 code 가 그대로면
 	 *   내용도 그대로다. 방아쇠는 problemIndex 하나가 맞다
 	 */
 	// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — 문항 전환 1회, init 은 매 렌더 새 함수
@@ -214,9 +217,7 @@ export default function JamoCombine({ moduleCode }: { moduleCode: string }) {
 							onPlay={playAudio}
 						/>
 						<ComboTarget
-							syllable={
-								hintOn ? (problem?.content ?? "?") : combined || "?"
-							}
+							syllable={hintOn ? (problem?.content ?? "?") : combined || "?"}
 							parts={consonant && vowel ? `${consonant} + ${vowel}` : ""}
 							onHint={showHint}
 							hintOn={hintOn}

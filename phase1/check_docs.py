@@ -23,6 +23,8 @@
   [고아]         아무 문서도, 문(README·BLOCKERS·CLAUDE)도 가리키지 않는 문서
   [숫자 주장]    문서가 적어 놓은 수를 실제로 세어 보고 다른 경우
   [색인]         정본이 phase1/INDEX.md 에 빠졌거나 한 문서가 두 줄인 경우
+  [원장 버전]    문서가 원장 정본 버전을 못박았는데 지금 것과 다른 경우
+  [데이터 정본]  문서가 말하는 데이터 출처와 코드의 import 가 다른 경우
   [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
   [목업 쌍둥이]  phase1/captured/ 와 app/src/mockups/ 가 갈라진 경우
 
@@ -42,6 +44,7 @@ from __future__ import annotations
 
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -553,6 +556,56 @@ def cross_anchors() -> list[str]:
     return out
 
 
+def ledger_claims(text: dict[str, str]) -> list[str]:
+    """문서가 원장 정본 버전을 못박아 두면 잡는다.
+
+    생성기(build-content.py)는 루트의 v*.xlsx 중 가장 높은 번호를 고른다.
+    즉 정본은 기계가 아는 값인데, BLOCKERS 가 "원장 정본은 v28 이다" 라고
+    산문에 적어 두었다가 v29·v30 이 나오며 그 문서만 낡았다.
+    번호를 적으려면 지금 것과 같아야 한다.
+    """
+    best, name = -1, None
+    for p in ROOT.glob("*.xlsx"):
+        m = re.match(r"글로벌_교재기반_콘텐츠_v(\d+)\.xlsx$",
+                     unicodedata.normalize("NFC", p.name))
+        if m and int(m.group(1)) > best:
+            best, name = int(m.group(1)), p.name
+    if name is None:
+        return []
+    out: list[str] = []
+    pat = re.compile(r"원장[^\n]{0,12}정본[^\n]{0,40}?v(\d+)|정본[^\n]{0,12}원장[^\n]{0,40}?v(\d+)")
+    for src, body in text.items():
+        for m in pat.finditer(re.sub(r"\s+", " ", body)):
+            got = int(m.group(1) or m.group(2))
+            if got != best:
+                out.append(
+                    f"[원장 버전] {src} 가 정본을 v{got} 이라 적었는데 지금은 v{best} 다\n"
+                    f"           번호를 적지 말고 '가장 높은 번호' 라고 써라"
+                )
+    return out
+
+
+def data_source_claims() -> list[str]:
+    """문서가 "화면이 X 를 읽는다" 고 하면 실제 import 를 센다.
+
+    8/24 에 자모 라우트만 원장으로 옮기고 "화면이 n8_jamo 를 읽는다" 고 적었는데
+    화면 여섯은 그대로 problem.ts 를 읽고 있었다. 라우트까지만 보고 화면 안을
+    안 열어 본 것이다. 그 축을 기계가 본다.
+    """
+    jamo = APP / "src" / "components" / "learn" / "jamo"
+    if not jamo.is_dir():
+        return []
+    old = [f.name for f in jamo.glob("*.tsx")
+           if 'from "@/shared/data/problem"' in f.read_text(encoding="utf-8", errors="replace")]
+    if not old:
+        return []
+    return [
+        "[데이터 정본] 자모 화면이 아직 problem.ts 를 읽는다 — "
+        f"{', '.join(sorted(old))}\n"
+        "           문서는 원장(n8_jamo)이 정본이라고 말한다. 둘 중 하나가 틀렸다"
+    ]
+
+
 def index_covers(live: set[str]) -> list[str]:
     """색인이 정본 전부를 담고 있는지 본다.
 
@@ -761,6 +814,10 @@ def main() -> int:
 
     # ── 5. 숫자 주장
     problems += claims(live, text)
+
+    # ── 원장 버전 · 데이터 정본
+    problems += ledger_claims(text)
+    problems += data_source_claims()
 
     # ── 7. 색인 정합성
     problems += index_covers(live)

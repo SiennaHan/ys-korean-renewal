@@ -27,8 +27,8 @@ import { JamoHeader, ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
 import { chapters } from "@/shared/data/chapter";
+import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
-import { problems } from "@/shared/data/problem";
 import { wordgroup } from "@/shared/data/problem_wordgroup";
 import { wordgroup_choice } from "@/shared/data/problem_wordgroup_choice";
 import { units } from "@/shared/data/unit";
@@ -52,7 +52,7 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 	const module = modules.find((item) => item.code === code);
 	const unit = units.find((item) => item.id === module?.unit_id);
 	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
-	const problemList = problems.filter((item) => item.module_code === code);
+	const problemList = jamoProblems.filter((item) => item.module_code === code);
 
 	const [problemIndex, setProblemIndex] = useState(0);
 	const [selectedWord, setSelectedWord] = useState<undefined | ProblemType>(

@@ -31,8 +31,8 @@ import { ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
 import { chapters } from "@/shared/data/chapter";
+import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
-import { problems } from "@/shared/data/problem";
 import { units } from "@/shared/data/unit";
 import type { ModuleType, ProblemType } from "@/types/book.types";
 import clsx from "clsx";
@@ -61,7 +61,7 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	);
 	const unit = units.find((item) => item.id === module?.unit_id);
 	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
-	const problemList = problems.filter(
+	const problemList = jamoProblems.filter(
 		(item) => item.module_code === code && item.scene_num === 1,
 	);
 
@@ -163,7 +163,7 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	 * - init 은 컴포넌트 안에서 매 렌더 새로 만들어지는 함수이고, 이 효과는 몸통에서
 	 *   setState 를 부른다 — 넣으면 매 렌더마다 다시 돌아 무한 렌더가 되고
 	 *   자동 재생도 매 렌더마다 다시 걸린다
-	 * - problemList 는 모듈 상수 problems 를 걸러 만든 목록이라 code 가 그대로면
+	 * - problemList 는 모듈 상수 jamoProblems 를 걸러 만든 목록이라 code 가 그대로면
 	 *   내용도 그대로다. 방아쇠는 problemIndex 하나가 맞다
 	 */
 	// biome-ignore lint/correctness/useExhaustiveDependencies: 위 주석 — 문항 전환 1회 + 자동 재생, init 은 매 렌더 새 함수

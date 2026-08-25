@@ -31,8 +31,8 @@ import { ModuleTitle } from "@/components/problem/scene/title";
 import Dialog from "@/components/ui/dialog";
 import { env } from "@/config/env";
 import { chapters } from "@/shared/data/chapter";
+import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
-import { problems } from "@/shared/data/problem";
 import { wordgroup } from "@/shared/data/problem_wordgroup";
 import { wordgroup_choice } from "@/shared/data/problem_wordgroup_choice";
 import { units } from "@/shared/data/unit";
@@ -58,7 +58,7 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 	);
 	const unit = units.find((item) => item.id === module?.unit_id);
 	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
-	const problemList = problems.filter(
+	const problemList = jamoProblems.filter(
 		(item) => item.module_code === code && item.scene_num === 1,
 	);
 
@@ -267,7 +267,7 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 
 	// 마운트 1회 — 첫 낱말을 골라 둔다. selectWord 는 매 렌더 새로 만들어지는
 	// 함수이고 안에서 setState 를 부르므로, 넣으면 매 렌더마다 첫 낱말로 되돌아가며
-	// 무한 렌더가 된다. problemList 는 모듈 상수 problems 를 걸러 만든 목록이라
+	// 무한 렌더가 된다. problemList 는 모듈 상수 jamoProblems 를 걸러 만든 목록이라
 	// 마운트 뒤 달라지지 않는다.
 	// biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 1회 첫 낱말 선택 — 위 주석 참고
 	useEffect(() => {
@@ -295,15 +295,15 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 	return (
 		<ActivityFrame>
 			{/*
-			  * 건너뛰기 — 목업(activity__write · write3 · wordrep · jamoListen)에는
-			  * 처음부터 있었는데 실제 자모 화면에는 없었다. 목업 대조가 못 잡은 이유는
-			  * activity-parity 가 learn/jamo 를 하나도 import 하지 않고 셸을 손으로
-			  * 조립해 보기 때문이다(BLOCKERS §2).
-			  *
-			  * 이 화면에서는 특히 필요하다. 다음으로 가는 유일한 길이 "칸을 손으로 써서
-			  * 채우는 것" 이라, 손으로 쓸 수 없는 사람은 갇힌다. 쓰기 연습 자체를
-			  * 키보드로 대신할 수는 없으니 **넘어갈 길**을 주는 것이 맞다.
-			  */}
+			 * 건너뛰기 — 목업(activity__write · write3 · wordrep · jamoListen)에는
+			 * 처음부터 있었는데 실제 자모 화면에는 없었다. 목업 대조가 못 잡은 이유는
+			 * activity-parity 가 learn/jamo 를 하나도 import 하지 않고 셸을 손으로
+			 * 조립해 보기 때문이다(BLOCKERS §2).
+			 *
+			 * 이 화면에서는 특히 필요하다. 다음으로 가는 유일한 길이 "칸을 손으로 써서
+			 * 채우는 것" 이라, 손으로 쓸 수 없는 사람은 갇힌다. 쓰기 연습 자체를
+			 * 키보드로 대신할 수는 없으니 **넘어갈 길**을 주는 것이 맞다.
+			 */}
 			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={next} />
 
 			<ActivityBody>

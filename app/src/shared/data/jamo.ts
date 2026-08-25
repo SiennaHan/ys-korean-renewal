@@ -17,6 +17,7 @@
  */
 import raw from "@/shared/data/n8_jamo.json";
 import { units } from "@/shared/data/unit";
+import type { ProblemType } from "@/types/book.types";
 
 export interface JamoItem {
 	item_id: string;
@@ -149,3 +150,47 @@ export function subsInGroup(lesson: number, group: number): number[] {
 	}
 	return out;
 }
+
+/**
+ * 원장 행을 화면이 쓰는 모양(ProblemType)으로 바꾼다.
+ *
+ * 화면 여섯은 원래 problem.ts(구 앱 덤프)의 `problems` 를 module_code 로 걸러
+ * 썼다. 그 배열과 필드 이름이 몇 개 다를 뿐 값은 같으므로(둘 다 같은 529항목),
+ * 여기서 이름만 맞춰 주면 화면 코드를 건드리지 않고 정본을 원장으로 옮길 수 있다.
+ *
+ *   problem.ts        n8_jamo
+ *   id             ←  legacy_id
+ *   instructions   ←  instruction
+ *   content        ←  target_jamo 또는 target_word (글자 수로 갈려 있다)
+ *   type           ←  problem_type
+ *   나머지는 이름이 같다
+ *
+ * scene_num 은 원장이 문자열로 들고 있어 숫자로 되돌린다.
+ */
+function toProblem(it: JamoItem): ProblemType {
+	return {
+		id: it.legacy_id,
+		module_code: it.module_code,
+		scene_num: Number(it.scene_num) || 0,
+		instructions: it.instruction,
+		content: it.target_jamo || it.target_word,
+		content_img: it.content_img,
+		content_vid: it.content_vid,
+		content_sound: it.content_sound,
+		type: it.problem_type,
+		choice_1: it.choice_1,
+		answer_1: it.answer_1,
+		choice_2: it.choice_2,
+		answer_2: it.answer_2,
+		choice_3: it.choice_3,
+		answer_3: it.answer_3,
+	};
+}
+
+/**
+ * 자모 문항 — 화면이 쓰는 모양. `problems` 를 그대로 대신한다.
+ *
+ * 화면은 `jamoProblems.filter((x) => x.module_code === code)` 로 쓰면 되고,
+ * 이제 그 값의 정본은 원장(n8_jamo)이다. problem.ts 는 자모에서 떨어진다.
+ */
+export const jamoProblems: ProblemType[] = jamoItems.map(toProblem);

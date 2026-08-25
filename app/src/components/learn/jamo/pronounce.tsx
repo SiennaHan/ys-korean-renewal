@@ -27,8 +27,8 @@ import { JamoHeader, ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
 import { chapters } from "@/shared/data/chapter";
+import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
-import { problems } from "@/shared/data/problem";
 import { wordgroup } from "@/shared/data/problem_wordgroup";
 import { wordgroup_choice } from "@/shared/data/problem_wordgroup_choice";
 import { units } from "@/shared/data/unit";
@@ -52,7 +52,7 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 	);
 	const unit = units.find((item) => item.id === module?.unit_id);
 	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
-	const problemList = problems.filter((item) => item.module_code === code);
+	const problemList = jamoProblems.filter((item) => item.module_code === code);
 
 	const [problemId, setProblemId] = useState("");
 	const [selectedWord, setSelectedWord] = useState<undefined | ProblemType>(
@@ -191,7 +191,7 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 	// 마운트 1회 — 첫 낱말을 골라 소리를 걸어 둔다. selectWord 는 매 렌더 새로
 	// 만들어지는 함수이고 안에서 setState 와 setTimeout 재생을 부르므로, 넣으면
 	// 매 렌더마다 첫 낱말로 되돌아가며 무한 렌더가 된다. problemList 는 모듈 상수
-	// problems 를 걸러 만든 목록이라 마운트 뒤 달라지지 않는다.
+	// jamoProblems 를 걸러 만든 목록이라 마운트 뒤 달라지지 않는다.
 	// biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 1회 첫 낱말 선택 — 위 주석 참고
 	useEffect(() => {
 		if (problemList.length > 0) {
