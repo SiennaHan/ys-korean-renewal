@@ -235,6 +235,9 @@
 | `real__listen` | 듣기 문제 | `/learn/listen?level=1&lesson=4` | `activity__listen_ox` | `MATCH` |
 | `real__grammar` | 문법 빈칸 | `/learn/grammar?level=1&lesson=4` | `activity__grammar_before` | `MATCH` |
 | `real__jamo_readwrite__320` | 단어 읽고 쓰기 (320) | `/learn/jamo?level=1&lesson=1&group=1&sub=4` | `activity__readwrite__320__ko` | `MATCH` |
+| `real__chat_progress` | 미션대화 진행 | `/learn/mission-chat?level=1&lesson=4 → 시작하기` | `activity__chat` | `DRIFT` |
+| `real__chat_missions` | 미션대화 미션 펼침 | `같음 → 미션 보기` | `없음` | `UNSPECIFIED` |
+| `real__chat_text_input` | 미션대화 텍스트 입력 | `같음 → 키보드 버튼` | `없음` | `UNSPECIFIED` |
 
 ### 자모 매핑이 실제 화면으로 확인됐다
 
@@ -264,32 +267,58 @@
 
 **진행 표시가 화면마다 들쭉날쭉하다.** 같은 자모 안에서도 갈린다.
 
-### 미션대화 대화 화면은 지금 열리지 않는다
+### 미션대화 크래시 — 양쪽을 함께 맞췄다 (2026-08-25)
 
-브리핑에서 「시작하기」를 누르면 대화 화면이 **빈 채로 남는다.** 콘솔에
+브리핑에서 「시작하기」를 누르면 화면이 **빈 채로 남았다.**
 
 ```
 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'map')
+    at fetchInitialData (components/learn/mission-dialog.tsx:225)
 ```
 
-`components/learn/mission-dialog.tsx:225` 의 `feedbacks.map(...)` 이다.
-`getMsgList()` 응답을 `if (!msgResponse) return` 으로만 막고 **`feedbacks` 가 없는
-응답은 안 막는다.** 로컬에는 대화 서버가 없어 그 길로 들어간다.
+**원인은 데이터 계약이다.** `apiType.ts` 의 `MsgResponse` 는 `msgs`·`feedbacks` 를
+배열로 약속하는데, 로컬 목 API 는 **모르는 경로에 `data: {}` 를 냈다.**
+`getMsgList` 는 `!msgResponse` 만 보므로 `{}` 를 통과시키고, 바로 다음 줄
+`feedbacks.map` 에서 죽는다.
 
-그래서 요청받은 **미션대화 진행·텍스트 입력·녹음·피드백·종료·리포트**는 못 담았다.
-캡처하려면 대화 API fixture 가 먼저 있어야 한다. (`?? []` 한 줄이면 크래시는
-막히지만 **제품 코드는 이번 감사에서 건드리지 않았다.**)
+**한쪽만 고치면 안 된다.** 목만 고치면 실서버의 비정상 응답에 그대로 취약하고,
+제품만 고치면 로컬 계약 오류가 숨는다. 그래서 둘 다 했다.
+
+| | 무엇 |
+|---|---|
+| 목 (`phase1/game_mockapi.py`) | `/chat/<id>/msgs` 를 계약대로 `{msgs: [], feedbacks: []}` 로 낸다 |
+| 제품 (`mission-dialog.tsx`) | `const { msgs: serverChats = [], feedbacks = [] } = msgResponse` |
+
+고친 뒤 크래시가 사라졌다(콘솔 오류 0). 다만 그것만으로는 화면이 **비어 있어서**,
+대화가 실제로 도는 것을 보려고 목에 계약 셋을 더 채웠다 — `/chat/<id>/user`
+(첫 대사·미션), `/chat/json`(사람 말 저장 + 봇 대사), `/chat/check/mission`
+(미션 완료 판정). **앱 코드가 아니라 목이다.**
+
+### 미션대화 실제 화면 — 확정 디자인과 다른 화면이다
+
+| | 확정 `ChatScreen` | 실제 `mission-dialog` |
+|---|---|---|
+| 시나리오 | 접히는 카드 | **파란 큰 띠 + `>`** |
+| 미션 | 상단 칩 줄 | 회색 줄 + **「미션 보기」 접힘/펼침** |
+| 하단 | 「눌러서 녹음」 한 줄 | **키보드 버튼 + 마이크 버튼 둘** |
+| 텍스트 입력 | **없다** | 있다 — 「내용을 입력해주세요」 |
+| 앱바 | 「1급 4과」 | 「4과」 |
+| 건너뛰기 | 화살표 | **번역 안 된 `skip` 키 글자** |
+
+**말풍선 안 아이콘 8개에 이름이 없다**(`aria-label`·글자 둘 다 없음).
 
 ### 이 절에서 아직 못 담은 것
 
+
 | | 왜 |
 |---|---|
-| 미션대화 진행·입력·녹음·피드백·종료·리포트 | 위 크래시 |
+| 미션대화 **진행·미션 펼침·텍스트 입력** | **담았다**(위 절) |
+| 미션대화 녹음·피드백·종료·리포트 | 녹음은 마이크 권한이 필요하고(브라우저가 막는다) 피드백·종료는 목이 판정을 더 내야 한다 |
 | 롤플레잉 AI 차례 · 녹음 완료 | 상호작용이 필요하다. 첫 화면만 담았다 |
-| 플래시카드 뒷면 · 판정 후 · 결과 | 상호작용이 필요하다 |
+| 플래시카드 뒷면 · 판정 후 · 결과 | **탭으로 안 뒤집힌다.** 실제는 `transition-transform` 카루셀이고 「1/27」로 진행을 센다 — 확정 `FlashcardScreen`(탭 플립)과 **구조가 다르다.** 스와이프를 넣어야 담긴다 |
 | 단어 읽고 쓰기 모달 빈판 · 그린 상태 · 완료 | 글자 칸을 눌러야 열린다 |
 | 채점 없는 활동의 실제 결과 | 활동을 끝까지 풀어야 나온다 |
-| 나가기 · 미션 건너뛰기 확인 | **아직 구현이 없다** |
+| 나가기 · 미션 건너뛰기 확인 | **아직 구현이 없다** — 캡처 대상이 아니라 설계·구현 대상이다 |
 
 정지 캡처로는 여기까지다. 다음은 **상호작용을 넣는 캡처 하네스**(누른 뒤 뜨기)가
 필요하다.

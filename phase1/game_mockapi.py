@@ -10,6 +10,19 @@ SEED = _p.join(_p.dirname(_p.abspath(__file__)), '..', 'api', 'seed_data')
 # 게임 진행 — 서버는 upsert 에서 max() 로 최고 점수를 유지한다. 같게 흉내낸다.
 # {game_name: {stage_id: row}}
 GAME_PROGRESS = {}
+# ── 대화(미션대화) ────────────────────────────────────────────────────
+# 실서버가 없으면 이 화면은 아무것도 못 그린다. 계약(apiType.ts 의
+# KoChatMissionResponse · MsgResponse · ChatResponse · CheckMission)대로
+# 최소한만 낸다 — 감사 캡처를 위해서다. 대화 내용은 앱의 dialog 데이터가 아니라
+# 여기 고정 문장이다.
+CHAT_MSGS = {}          # {dialog_id: {'msgs': [...], 'feedbacks': [...]}}
+CHAT_SEQ = {'id': 100}  # 메시지 id 발번
+CHAT_FIRST = '안녕하세요. 저는 영주예요.'
+CHAT_REPLIES = [
+    '반가워요! 이름이 뭐예요?',
+    '아, 그렇군요. 무슨 일을 하세요?',
+    '멋지네요. 오늘 만나서 반가웠어요.',
+]
 def load(n): return json.load(open(os.path.join(SEED,n),encoding='utf-8'))
 
 def sniper_sentences():
@@ -68,6 +81,47 @@ class H(BaseHTTPRequestHandler):
             }
             return self._send({'result':True,'code':200,'message':None,'data':rows[stage]})
 
+        # 대화 — 사람이 한 말을 담고 다음 봇 대사를 낸다
+        if self.path.rstrip('/') == '/chat/json':
+            n = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(n) or b'{}')
+            did = body.get('dialogId') or body.get('dialog_id') or 'd'
+            box = CHAT_MSGS.setdefault(did, {'msgs': [], 'feedbacks': []})
+            CHAT_SEQ['id'] += 1
+            box['msgs'].append({'id': CHAT_SEQ['id'], 'chat_id': 1, 'is_bot': False,
+                                'msg': body.get('msg', ''), 'user_id': 'local'})
+            reply = CHAT_REPLIES[min(len(box['msgs']) // 2, len(CHAT_REPLIES) - 1)]
+            CHAT_SEQ['id'] += 1
+            box['msgs'].append({'id': CHAT_SEQ['id'], 'chat_id': 1, 'is_bot': True,
+                                'msg': reply, 'user_id': 'bot'})
+            return self._send({'result':True,'code':200,'message':None,
+                               'data': {'chat_id': 1, 'answer': reply}})
+        # 미션 판정 — 말할 때마다 하나씩 채운다. 셋을 다 채우면 종료로 넘어간다
+        if self.path.rstrip('/') == '/chat/check/mission':
+            n = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(n) or b'{}')
+            did = body.get('dialogId') or 'd'
+            done = CHAT_MSGS.setdefault(did, {'msgs': [], 'feedbacks': []})
+            k = len([m for m in done['msgs'] if not m['is_bot']])
+            order = ['인사', '이름', '직업']
+            return self._send({'result':True,'code':200,'message':None, 'data': {
+                'is_logic_valid': True, 'completed_missions': order[:k],
+                'status': 'ok', 'is_context_natural': True,
+                'is_vocabulary_natural': True, 'is_grammar_correct': True,
+                'is_pronunciation_correct': True,
+            }})
+        # 상태 감사용 저장 — 살아 있는 화면의 DOM 을 파일로 받는다.
+        # **정본 captured/ 가 아니라 state_audit/activity/ 에 쓴다.**
+        if self.path.startswith('/audit/'):
+            name = re.sub(r'[^A-Za-z0-9_.-]', '_', self.path[len('/audit/'):]) or 'unnamed'
+            n = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(n) if n else b''
+            d = os.path.join('state_audit', 'activity')
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, name), 'wb') as f:
+                f.write(raw)
+            return self._send({'result':True,'code':200,'message':None,
+                               'data':{'saved':name,'bytes':len(raw)}})
         if self.path.startswith('/capture/'):
             name = re.sub(r'[^A-Za-z0-9_.-]', '_', self.path[len('/capture/'):]) or 'unnamed'
             n = int(self.headers.get('Content-Length', 0))
@@ -96,6 +150,24 @@ class H(BaseHTTPRequestHandler):
             from urllib.parse import unquote
             rows = list(GAME_PROGRESS.get(unquote(game), {}).values())
             return self._send({'result':True,'code':200,'message':None,'data':rows})
+        # 대화 — 계약대로 배열 둘을 낸다. 전에는 알 수 없는 경로라 {} 를 냈고,
+        # 그래서 mission-dialog 의 feedbacks.map 이 죽어 대화 화면이 빈 채로 남았다.
+        # 타입(MsgResponse)은 msgs·feedbacks 를 배열로 약속한다 — 목도 그것을 지킨다.
+        m = re.match(r'^/chat/([^/]+)/msgs$', path)
+        if m:
+            return self._send({'result':True,'code':200,'message':None,
+                               'data': CHAT_MSGS.get(m.group(1), {'msgs': [], 'feedbacks': []})})
+        m = re.match(r'^/chat/([^/]+)/user$', path)
+        if m:
+            did = m.group(1)
+            return self._send({'result':True,'code':200,'message':None, 'data': {
+                'chat': {'id': 1, 'user_id': 'local', 'book_id': 1, 'dialog_id': did,
+                         'idx': 0, 'is_deleted': False},
+                'first_msg': CHAT_FIRST,
+                'mission': [{'mission': '인사', 'descr': 'Say hello.'},
+                            {'mission': '이름', 'descr': 'Say what your name is.'},
+                            {'mission': '직업', 'descr': 'Say what your job is.'}],
+            }})
         fn=ROUTES.get(path)
         # 목록을 기대하는 곳에 {} 를 주면 화면이 "records is not iterable" 로 죽는다.
         # 진짜 오류를 가리므로, 배열을 기대하는 경로는 빈 배열로 답한다.

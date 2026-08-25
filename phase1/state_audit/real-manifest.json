@@ -1,19 +1,142 @@
 {
-  "_설명": "실제 제품 라우트에서 뜬 캡처. 비로그인 둘러보기로 열리는 것만 담았다. 언어는 앱 기본값(en).",
-  "항목": [
-    {"id":"real__jamo_speak","활동":"자모 발음","경로":"/learn/jamo?level=1&lesson=1&group=1&sub=1","정본짝":"activity__speak","분류":"DRIFT","관찰":"확정 셸(`.activity-frame`)을 쓴다. **진행 표시가 없다**(정본에는 있다). 정본이 재생 버튼을 두는 자리에 **입 모양 영상**이 큰 검정 상자로 들어간다. 학습 목록에 1·2·3 페이지 탭이 없다."},
-    {"id":"real__jamo_combine","활동":"자모 2단 조합","경로":"/learn/jamo?level=1&lesson=1&group=1&sub=2","정본짝":"activity__write_2","분류":"DRIFT","관찰":"**진행 표시가 없다.** 그리고 정본이 목표 글자를 그대로 보여 주는 자리에, 실제는 **`?` 로 감추고 「힌트」 버튼**을 둔다 — 소리를 듣고 만들라는 뜻이다. 이쪽은 **정본 목업이 낡았다**(BLOCKERS 의 2026-08-24 변경)."},
-    {"id":"real__jamo_wordrep","활동":"단어 듣고 따라 말하기","경로":"/learn/jamo?level=1&lesson=1&group=1&sub=3","정본짝":"activity__wordrep","분류":"MATCH","관찰":"구조가 같다 — 그림 + 원음/내 녹음 + 녹음 도크."},
-    {"id":"real__jamo_readwrite","활동":"단어 읽고 쓰기","경로":"/learn/jamo?level=1&lesson=1&group=1&sub=4","정본짝":"activity__readwrite","분류":"MATCH","관찰":"구조가 같다. 낱말이 한 글자라 칸이 하나다(정본은 두 글자). **글자 칸을 누르면 뜨는 모달은 이 정지 캡처로는 못 담는다.**"},
-    {"id":"real__jamo_listen","활동":"자모 듣고 고르기","경로":"/learn/jamo?level=1&lesson=1&group=1&sub=5","정본짝":"activity__jamoListen","분류":"DRIFT","관찰":"진행 표시는 있다. **선택지가 넷(2x2)인데 정본 목업은 둘(한 줄)만 담았다.**"},
-    {"id":"real__jamo_combine3","활동":"자모 3단·받침 조합","경로":"/learn/jamo?level=1&lesson=3&group=1&sub=6","정본짝":"activity__write3_3","분류":"DRIFT","관찰":"2단과 같은 차이 — 목표 글자를 `?` 로 감추고 힌트 버튼을 둔다. 앱바가 「Lesson 3 · 받침」이다."},
-    {"id":"real__chat_briefing","활동":"미션대화 브리핑","경로":"/learn/mission-chat?level=1&lesson=4","정본짝":"activity__briefing","분류":"DRIFT","관찰":"**확정 셸(`.activity-frame`)을 아예 안 쓴다.** 제목이 「상황에 맞는 대화를 연습하세요.」로 활동 이름이 아니고, 정본에 있는 **상황 그림 자리가 없다**. 미션 키워드 설명이 영문이다. 버튼이 「시작하기」(정본 「대화 시작하기」)."},
-    {"id":"real__role","활동":"롤플레잉","경로":"/learn/roleplay?level=1&lesson=4","정본짝":"activity__role","분류":"DRIFT","관찰":"확정 셸을 쓴다. 구조는 정본과 거의 같다 — 연습 순서 토글·대사 목록·녹음 도크·오른쪽 다음 화살표. **다른 것은 진행 표시가 있다는 것**(정본에는 없다)과 문구뿐이다. **확정 구조로 옮기기 가장 쉬운 화면이다.**"},
-    {"id":"real__flash","활동":"플래시카드","경로":"/learn/flashcard?level=1&lesson=4","정본짝":"activity__flash_front","분류":"DRIFT","관찰":"**확정 셸을 통째로 안 쓴다** — 프레임·진행 표시·건너뛰기가 다 없다. 앱바 제목이 「4과 - 제 이름은 유리예요」다. 진행을 **카드 안 「1/27」** 로 알린다(정본은 상단 막대). 카드에 「발음듣기」 버튼이 있다."},
-    {"id":"real__word","활동":"어휘 미리보기","경로":"/learn/word?level=1&lesson=4","정본짝":"activity__wordPreview","분류":"MATCH","관찰":"확정 셸·진행 표시·목록·「문제 풀기」 버튼까지 같다."},
-    {"id":"real__read","활동":"읽기 문제","경로":"/learn/read?level=1&lesson=4","정본짝":"activity__reading","분류":"DRIFT","관찰":"**문제 유형이 다르다** — 실제는 지문 + O/X 이지선다인데 정본 목업은 4지선다다. 정본이 담은 유형이 이 과에 없거나, 목업이 다른 유형을 그린 것이다. 확인이 필요하다."},
-    {"id":"real__listen","활동":"듣기 문제","경로":"/learn/listen?level=1&lesson=4","정본짝":"activity__listen_ox","분류":"MATCH","관찰":"지문 + 재생 바 + O/X. 정본과 같은 구조다."},
-    {"id":"real__grammar","활동":"문법 빈칸","경로":"/learn/grammar?level=1&lesson=4","정본짝":"activity__grammar_before","분류":"MATCH","관찰":"빈칸 카드 + 칩. 구조가 같다. **채점 뒤 상태는 정지 캡처로 못 담는다** — 확정 규칙과 어긋나는 곳이 거기다."},
-    {"id":"real__jamo_readwrite__320","활동":"단어 읽고 쓰기 (320)","경로":"/learn/jamo?level=1&lesson=1&group=1&sub=4","정본짝":"activity__readwrite__320__ko","분류":"MATCH","관찰":"320폭에서 글자 칸과 도크가 안 잘린다."}
-  ]
+	"_설명": "실제 제품 라우트에서 뜬 캡처. 비로그인 둘러보기로 열리는 것만 담았다. 언어는 앱 기본값(en).",
+	"항목": [
+		{
+			"id": "real__jamo_speak",
+			"활동": "자모 발음",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=1",
+			"정본짝": "activity__speak",
+			"분류": "DRIFT",
+			"관찰": "확정 셸(`.activity-frame`)을 쓴다. **진행 표시가 없다**(정본에는 있다). 정본이 재생 버튼을 두는 자리에 **입 모양 영상**이 큰 검정 상자로 들어간다. 학습 목록에 1·2·3 페이지 탭이 없다."
+		},
+		{
+			"id": "real__jamo_combine",
+			"활동": "자모 2단 조합",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=2",
+			"정본짝": "activity__write_2",
+			"분류": "DRIFT",
+			"관찰": "**진행 표시가 없다.** 그리고 정본이 목표 글자를 그대로 보여 주는 자리에, 실제는 **`?` 로 감추고 「힌트」 버튼**을 둔다 — 소리를 듣고 만들라는 뜻이다. 이쪽은 **정본 목업이 낡았다**(BLOCKERS 의 2026-08-24 변경)."
+		},
+		{
+			"id": "real__jamo_wordrep",
+			"활동": "단어 듣고 따라 말하기",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=3",
+			"정본짝": "activity__wordrep",
+			"분류": "MATCH",
+			"관찰": "구조가 같다 — 그림 + 원음/내 녹음 + 녹음 도크."
+		},
+		{
+			"id": "real__jamo_readwrite",
+			"활동": "단어 읽고 쓰기",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=4",
+			"정본짝": "activity__readwrite",
+			"분류": "MATCH",
+			"관찰": "구조가 같다. 낱말이 한 글자라 칸이 하나다(정본은 두 글자). **글자 칸을 누르면 뜨는 모달은 이 정지 캡처로는 못 담는다.**"
+		},
+		{
+			"id": "real__jamo_listen",
+			"활동": "자모 듣고 고르기",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=5",
+			"정본짝": "activity__jamoListen",
+			"분류": "DRIFT",
+			"관찰": "진행 표시는 있다. **선택지가 넷(2x2)인데 정본 목업은 둘(한 줄)만 담았다.**"
+		},
+		{
+			"id": "real__jamo_combine3",
+			"활동": "자모 3단·받침 조합",
+			"경로": "/learn/jamo?level=1&lesson=3&group=1&sub=6",
+			"정본짝": "activity__write3_3",
+			"분류": "DRIFT",
+			"관찰": "2단과 같은 차이 — 목표 글자를 `?` 로 감추고 힌트 버튼을 둔다. 앱바가 「Lesson 3 · 받침」이다."
+		},
+		{
+			"id": "real__chat_briefing",
+			"활동": "미션대화 브리핑",
+			"경로": "/learn/mission-chat?level=1&lesson=4",
+			"정본짝": "activity__briefing",
+			"분류": "DRIFT",
+			"관찰": "**확정 셸(`.activity-frame`)을 아예 안 쓴다.** 제목이 「상황에 맞는 대화를 연습하세요.」로 활동 이름이 아니고, 정본에 있는 **상황 그림 자리가 없다**. 미션 키워드 설명이 영문이다. 버튼이 「시작하기」(정본 「대화 시작하기」)."
+		},
+		{
+			"id": "real__role",
+			"활동": "롤플레잉",
+			"경로": "/learn/roleplay?level=1&lesson=4",
+			"정본짝": "activity__role",
+			"분류": "DRIFT",
+			"관찰": "확정 셸을 쓴다. 구조는 정본과 거의 같다 — 연습 순서 토글·대사 목록·녹음 도크·오른쪽 다음 화살표. **다른 것은 진행 표시가 있다는 것**(정본에는 없다)과 문구뿐이다. **확정 구조로 옮기기 가장 쉬운 화면이다.**"
+		},
+		{
+			"id": "real__flash",
+			"활동": "플래시카드",
+			"경로": "/learn/flashcard?level=1&lesson=4",
+			"정본짝": "activity__flash_front",
+			"분류": "DRIFT",
+			"관찰": "**확정 셸을 통째로 안 쓴다** — 프레임·진행 표시·건너뛰기가 다 없다. 앱바 제목이 「4과 - 제 이름은 유리예요」다. 진행을 **카드 안 「1/27」** 로 알린다(정본은 상단 막대). 카드에 「발음듣기」 버튼이 있다."
+		},
+		{
+			"id": "real__word",
+			"활동": "어휘 미리보기",
+			"경로": "/learn/word?level=1&lesson=4",
+			"정본짝": "activity__wordPreview",
+			"분류": "MATCH",
+			"관찰": "확정 셸·진행 표시·목록·「문제 풀기」 버튼까지 같다."
+		},
+		{
+			"id": "real__read",
+			"활동": "읽기 문제",
+			"경로": "/learn/read?level=1&lesson=4",
+			"정본짝": "activity__reading",
+			"분류": "DRIFT",
+			"관찰": "**문제 유형이 다르다** — 실제는 지문 + O/X 이지선다인데 정본 목업은 4지선다다. 정본이 담은 유형이 이 과에 없거나, 목업이 다른 유형을 그린 것이다. 확인이 필요하다."
+		},
+		{
+			"id": "real__listen",
+			"활동": "듣기 문제",
+			"경로": "/learn/listen?level=1&lesson=4",
+			"정본짝": "activity__listen_ox",
+			"분류": "MATCH",
+			"관찰": "지문 + 재생 바 + O/X. 정본과 같은 구조다."
+		},
+		{
+			"id": "real__grammar",
+			"활동": "문법 빈칸",
+			"경로": "/learn/grammar?level=1&lesson=4",
+			"정본짝": "activity__grammar_before",
+			"분류": "MATCH",
+			"관찰": "빈칸 카드 + 칩. 구조가 같다. **채점 뒤 상태는 정지 캡처로 못 담는다** — 확정 규칙과 어긋나는 곳이 거기다."
+		},
+		{
+			"id": "real__jamo_readwrite__320",
+			"활동": "단어 읽고 쓰기 (320)",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=4",
+			"정본짝": "activity__readwrite__320__ko",
+			"분류": "MATCH",
+			"관찰": "320폭에서 글자 칸과 도크가 안 잘린다."
+		},
+		{
+			"id": "real__chat_progress",
+			"활동": "미션대화 진행",
+			"경로": "/learn/mission-chat?level=1&lesson=4 → 시작하기",
+			"정본짝": "activity__chat",
+			"분류": "DRIFT",
+			"관찰": "확정 `ChatScreen` 과 **완전히 다른 화면**이다. 시나리오가 접히는 카드가 아니라 **파란 큰 띠 + `>`** 이고, 미션 칩이 그 아래 회색 줄이며 오른쪽에 「미션 보기」가 있다. 하단이 **키보드 버튼 + 마이크 버튼 두 개**다(확정은 「눌러서 녹음」 한 줄). 앱바 제목이 「4과」이고 건너뛰기가 **번역 안 된 `skip` 키** 그대로다. **말풍선 안 아이콘 8개에 이름이 없다.**"
+		},
+		{
+			"id": "real__chat_missions",
+			"활동": "미션대화 미션 펼침",
+			"경로": "같음 → 미션 보기",
+			"정본짝": "없음",
+			"분류": "UNSPECIFIED",
+			"관찰": "「미션 보기」를 누르면 미션 설명이 펼쳐지고 버튼이 「미션 숨기기」로 바뀐다. 확정 디자인에 이 접힘/펼침이 없다."
+		},
+		{
+			"id": "real__chat_text_input",
+			"활동": "미션대화 텍스트 입력",
+			"경로": "같음 → 키보드 버튼",
+			"정본짝": "없음",
+			"분류": "UNSPECIFIED",
+			"관찰": "키보드 버튼을 누르면 하단이 **입력 칸(「내용을 입력해주세요」)** 으로 바뀐다. 확정 디자인에 텍스트 입력 갈래가 아예 없다 — `ChatScreen` 은 `recordMode` 만 받는다."
+		}
+	],
+	"_스냅숏": "brief 뒤 단계는 URL 이 없어 정지 로드로 못 간다. 살아 있는 화면에서 DOM 을 떠 앱 스타일시트로 다시 그렸다(harness 의 snap 모드). **실제 화면의 사진이 아니라 재현이다.**"
 }

@@ -220,7 +220,13 @@ export default function MissionDialog({
 			const msgResponse = await getMsgList(dialogId);
 			if (!msgResponse || !isMounted) return;
 
-			const { msgs: serverChats, feedbacks } = msgResponse;
+			/*
+			 * 타입상 `msgs`·`feedbacks` 는 배열이지만 **응답이 늘 그 계약을 지키지는
+			 * 않는다.** 빠져 있으면 바로 아래 `.map` 에서 죽고 대화 화면이 빈 채로
+			 * 남는다 — `!msgResponse` 검사는 그 경우를 못 막는다(2026-08-25 확인).
+			 * 계약이 깨진 것 자체는 서버·목 쪽에서 고치고, 화면은 죽지 않게 막는다.
+			 */
+			const { msgs: serverChats = [], feedbacks = [] } = msgResponse;
 
 			const convertedFeedback: FeedbackItem[] = feedbacks.map((item) => ({
 				...item,

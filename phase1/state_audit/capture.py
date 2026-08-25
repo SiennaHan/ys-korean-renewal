@@ -51,7 +51,8 @@ def dump_dom(url: str, budget: int = 6000) -> str:
 
 
 def shoot_tall(story_id: str, w: int, h: int, out: pathlib.Path,
-               budget: int = 6000, lang: str = "", app: str = "") -> tuple[int, int]:
+               budget: int = 6000, lang: str = "", app: str = "",
+               snap: str = "") -> tuple[int, int]:
     """한 번에 안 담기는 높이를 여러 번 찍어 이어 붙인다."""
     from PIL import Image
 
@@ -59,7 +60,7 @@ def shoot_tall(story_id: str, w: int, h: int, out: pathlib.Path,
     off = 0
     while off < h:
         args = {"w": w, "h": h, "off": off}
-        args["app" if app else "id"] = app or story_id
+        args["snap" if snap else ("app" if app else "id")] = snap or app or story_id
         if lang:
             args["globals"] = f"locale:{lang}"
         q = urllib.parse.urlencode(args)
@@ -89,6 +90,7 @@ def main() -> int:
     ap.add_argument("cap_id")
     ap.add_argument("story_id", help="스토리 id, 또는 --app 이면 무시된다")
     ap.add_argument("--app", default="", help="실제 제품 라우트 경로(/learn/... )")
+    ap.add_argument("--snap", default="", help="activity/ 안의 DOM 스냅숏 파일명")
     ap.add_argument("--w", type=int, default=360)
     ap.add_argument("--h", type=int, default=DEFAULT_H)
     ap.add_argument("--budget", type=int, default=6000,
@@ -98,9 +100,14 @@ def main() -> int:
 
     OUT.mkdir(parents=True, exist_ok=True)
     png = OUT / f"{a.cap_id}.png"
-    got = shoot_tall(a.story_id, a.w, a.h, png, a.budget, a.lang, a.app)
+    got = shoot_tall(a.story_id, a.w, a.h, png, a.budget, a.lang, a.app, a.snap)
 
     # outerHTML 은 스토리 iframe 을 직접 떠서 **활동 뿌리**만 남긴다
+    if a.snap:                       # 스냅숏은 이미 HTML 이 있다 — 다시 안 뜬다
+        (OUT / f"{a.cap_id}.html").write_text(
+            (OUT / a.snap).read_text(encoding="utf-8"), encoding="utf-8")
+        print(f"  ✓ {a.cap_id}  png {got[0]}x{got[1]}  (스냅숏 재현)")
+        return 0
     story = (f"http://127.0.0.1:3000{a.app}" if a.app else
              f"http://127.0.0.1:6006/iframe.html?"
              f"id={urllib.parse.quote(a.story_id)}&viewMode=story"

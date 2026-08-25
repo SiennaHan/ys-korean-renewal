@@ -35,8 +35,16 @@
    * `id` 를 주면 Storybook 스토리를, `app` 을 주면 **실제 제품 라우트**를 띄운다.
    * 실제 라우트는 로그인 없이 둘러보기로 열리는 것만 담는다.
    */
+  /*
+   * `snap` 은 **살아 있는 화면에서 뜬 DOM 스냅숏**이다. 브리핑에서 버튼을 눌러야
+   * 들어가는 단계처럼 URL 이 없는 상태를 담기 위한 길이다. 앱 스타일시트를
+   * 그대로 링크해 다시 그린다 — 실제 화면의 사진이 아니라 **재현**이다.
+   */
+  const snap = p.get("snap");
   const app = p.get("app");
-  f.src = app
+  f.src = snap
+    ? "http://127.0.0.1:8741/phase1/state_audit/activity/" + snap
+    : app
     ? "http://127.0.0.1:3000" + app
     : "http://127.0.0.1:6006/iframe.html?id=" +
       encodeURIComponent(p.get("id")) +
