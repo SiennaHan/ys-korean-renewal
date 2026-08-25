@@ -16,7 +16,7 @@
 		"typecheck": "tsc --noEmit",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
-		"parity:activity": "npx tsx scripts/activity-parity.tsx && python3 scripts/activity-parity-diff.py"
+		"parity:activity": "npx tsx scripts/activity-parity.tsx && python3 scripts/activity-parity-diff.py && python3 scripts/fixture-data-check.py"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

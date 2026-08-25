@@ -205,6 +205,29 @@ const ROLE_TURNS = [
 	en: en as string,
 }));
 
+/*
+ * ─── 픽스처가 실제 데이터를 흉내 낸 자리 ─────────────────────────────
+ *
+ * 이 파일의 값은 **내가 목업을 보고 손으로 적은 것**이다. 그래서 목업과는
+ * 맞는데 **실제 데이터와는 규약이 다른** 값이 들어갈 수 있고, 그러면 대조는
+ * 통과하면서 실제 화면만 깨진다. 실제로 겪었다 — 조사 스나이퍼 픽스처는
+ * 목업을 따라 `저는 한국어___공부해요` 를 적었는데, 진짜 데이터는 `___` 를
+ * 한 번도 안 쓰고 `blank` 의 `[?]` 를 쓴다. 대조는 계속 "모두 같다" 였고
+ * 화면에는 정답이 그대로 보였다(BLOCKERS.md).
+ *
+ * 그래서 **데이터를 흉내 낸 값은 여기에 등록한다.** 등록하면
+ * `.parity-out/_fixtures.json` 으로 나가고, `fixture-data-check.py` 가
+ * 진짜 데이터에서 캔 불변식과 맞춰 본다.
+ *
+ * 등록 대상은 **씨드 JSON 의 레코드를 흉내 낸 값**뿐이다. 점수·HP·진행률처럼
+ * 화면이 만들어 내는 값은 대조할 원본이 없으니 등록하지 않는다.
+ */
+const DATA_FIXTURES: Record<string, unknown[]> = {};
+function fromData<T>(key: string, value: T): T {
+	(DATA_FIXTURES[key] ??= []).push(value);
+	return value;
+}
+
 const SCREENS: Record<string, ReactElement> = {
 	grammar: (
 		<Screen
@@ -810,7 +833,7 @@ SCREENS.vocashot__result = (
 /* 조사 스나이퍼 급 선택 — levelMeta 는 서버에서 오므로 캡처가 잡아 둔 값을 넘긴다 */
 SCREENS.game__ps_level = (
 	<ParticleSniperLevelView
-		levelMeta={{
+		levelMeta={fromData("particle_sniper.level_meta", {
 			"1급": {
 				color: "#4ade80",
 				summary: "은/는 · 이/가 · 을/를 · 에 · 에서 · 하고 · 과/와 · 에게…",
@@ -822,7 +845,7 @@ SCREENS.game__ps_level = (
 			"6급": { color: "#a78bfa", summary: "랑/이랑 · 이라든가/라든가" },
 			"7급": { color: "#22d3ee", summary: "고급 조사 연습" },
 			"8급": { color: "#facc15", summary: "심화 조사 연습" },
-		}}
+		})}
 		onPick={() => {}}
 		onBack={() => {}}
 	/>
@@ -837,7 +860,7 @@ SCREENS.game__ps_lesson = (
 	<ParticleSniperLessonView
 		level="1급"
 		meta={{ color: "#4ade80", summary: "은/는 · 이/가 · 을/를 · 에 · 에서 · 하고 · 과/와 · 에게…" }}
-		lessons={{
+		lessons={fromData("particle_sniper.lesson", {
 		"4과": { new_particles: ["은", "는"], questions: new Array(8).fill({}) },
 		"6과": { new_particles: ["이", "가"], questions: new Array(8).fill({}) },
 		"7과": { new_particles: ["에", "도"], questions: new Array(4).fill({}) },
@@ -847,7 +870,7 @@ SCREENS.game__ps_lesson = (
 		"13과": { new_particles: ["에서"], questions: new Array(8).fill({}) },
 		"14과": { new_particles: ["과", "와"], questions: new Array(8).fill({}) },
 		"15과": { new_particles: ["에게"], questions: new Array(8).fill({}) },
-		}}
+		})}
 		maxPerGame={20}
 		onPick={() => {}}
 		onBack={() => {}}
@@ -857,7 +880,7 @@ SCREENS.game__ps_lesson = (
 /* 조사 스나이퍼 플레이 — 값은 목업 캡처(game__ps_play)가 잡아 둔 상태 그대로. */
 SCREENS.game__ps_play = (
 	<ParticleSniperPlayView
-		question={{
+		question={fromData("particle_sniper.question", {
 			// 목업은 문장에 ___ 를 쓰지만 **실제 데이터는 blank 의 [?]** 다.
 			// 화면이 쓰는 것은 blank 이므로 여기도 그것으로 준다 — 그려지는 결과는
 			// 목업과 같다(앞 "저는 한국어" · 빈칸 · 뒤 " 공부해요").
@@ -866,7 +889,7 @@ SCREENS.game__ps_play = (
 			answer: "를",
 			choices: ["을", "를", "이", "가"],
 			sourceLesson: "8과",
-		}}
+		})}
 		questionIndex={3}
 		totalQuestions={20}
 		hp={3}
@@ -972,13 +995,13 @@ SCREENS.game__cs_play = (
 	<CardSortPlayView
 		categoryColors={CS_CATEGORY_COLORS}
 		activeCategories={["직업", "교통수단", "위치", "날씨"]}
-		currentCard={{
+		currentCard={fromData("card_sort.card", {
 			word: "아래",
 			category: "위치",
 			grade: "2급",
 			lesson: "3과",
 			isRare: false,
-		}}
+		})}
 		cardIndex={0}
 		deckLength={32}
 		timeLeft={60}
@@ -1085,31 +1108,49 @@ SCREENS.game__pc_select = (
 SCREENS.game__pc_game = (
 	<PcGameView
 		game={{
-			friend: {
-				id: "sol",
-				face: "🐰",
-				name: "솔이",
-				bg: "#AFA9EC",
-				cats: ["age", "price"],
-				mission: "나이 · 가격",
-				desc: "",
-				desc2: "",
-			},
+			// 값은 spring_picnic_friends.json 의 somi 레코드 그대로다.
+			// 전에는 id·cats·desc2 를 내가 지어냈다 — 화면에 안 그려지는 필드라
+			// 목업 대조는 통과했다(fixture-data-check.py 가 잡았다).
+			friend: fromData("spring_picnic.friend", {
+							"id": "somi",
+							"face": "🐰",
+							"name": "솔이",
+							"bg": "#AFA9EC",
+							"cats": [
+											"나이",
+											"가격"
+							],
+							"mission": "나이 · 가격",
+							"desc": "~살, ~원 읽기",
+							"desc2": "~세/년생, 큰 금액"
+						}),
 			level: 1,
 			// 나머지 아홉은 g-dots 진행 점만 그린다 — 내용은 안 읽으므로 빈 자리표다
 			rounds: [
-				{
-					id: "q-age-19",
-					cat: "age",
-					level: 1,
-					il: "🎂",
-					hint: { en: "How old?" },
-					num: "19살",
-					tmpl: "오빠는 ___ 살이에요.",
-					tts: "오빠는 열아홉 살이에요.",
-					correct: "열아홉",
-					wrong: ["스물", "십구"],
-				},
+				// 값은 spring_picnic_questions.json 의 age02 레코드 그대로다.
+				// 목업이 그리는 19살·"오빠는 ___ 살이에요."·열아홉 이 그 레코드다.
+				// 칩 차례는 이 wrong 이 아니라 아래 choices 가 정한다(컨테이너가 섞는다).
+				fromData("spring_picnic.round", {
+									"id": "age02",
+									"cat": "나이",
+									"level": 1,
+									"il": "🎂",
+									"hint": {
+														"ko": "몇 살이에요?",
+														"en": "How old?",
+														"zh": "多少岁？",
+														"ja": "何歳ですか？",
+														"vi": "Bao nhiêu tuổi?"
+									},
+									"num": "19살",
+									"tmpl": "오빠는 ___ 살이에요.",
+									"tts": "오빠는 열아홉 살이에요.",
+									"correct": "열아홉",
+									"wrong": [
+														"십구",
+														"스물"
+									]
+								}),
 				...(new Array(9).fill({}) as unknown as PcQuestion[]),
 			],
 			cur: 0,
@@ -1292,14 +1333,14 @@ SCREENS.game__sp_map = (
 );
 
 /* 서울 퍼즐 입장 — 홍대(1번), 아직 시작 전이라 XP 0. entryMessages 는 seoul_puzzles.json "홍대" 그대로 */
-const SP_HONGDAE = {
+const SP_HONGDAE = fromData("seoul_puzzle.location", {
 	...SP_LOCATIONS[0],
 	entryMessages: [
 		{ type: "friend", text: "안녕하세요! 저는 김연세예요. 😊" },
 		{ type: "self", text: "안녕하세요! 저는 [이름]이에요." },
 		{ type: "friend", text: "반가워요! 같이 카페 가요!" },
 	],
-};
+});
 
 SCREENS.game__sp_entry = (
 	<SpFrame>
@@ -1439,4 +1480,8 @@ for (const [name, element] of Object.entries(SCREENS)) {
 		.replace(/<\/div>$/, "");
 	writeFileSync(join(outDir, `${name}.html`), inner);
 }
+writeFileSync(
+	join(outDir, "_fixtures.json"),
+	JSON.stringify(DATA_FIXTURES, null, "\t"),
+);
 console.log(`${Object.keys(SCREENS).length}개 화면을 ${outDir} 에 그렸다`);

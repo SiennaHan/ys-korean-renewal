@@ -2,7 +2,10 @@
 import json, os, re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-SEED='../koreanapi-master/koreanapi-master/seed_data'
+# 저장소가 추적하는 씨드를 읽는다. 전에는 추적되지 않는 사본을 가리켰고,
+# 그쪽은 6급에 멈춰 있어서 **이 목 API 를 띄운 사람만 6급까지 보였다**.
+import os.path as _p
+SEED = _p.join(_p.dirname(_p.abspath(__file__)), '..', 'api', 'seed_data')
 
 # 게임 진행 — 서버는 upsert 에서 max() 로 최고 점수를 유지한다. 같게 흉내낸다.
 # {game_name: {stage_id: row}}
