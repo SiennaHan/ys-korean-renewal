@@ -63,7 +63,7 @@ export const JAMO_SUBS = [
 	"listen-repeat2", // 3 단어 듣고 따라하기
 	"read-write", // 4 단어 쓰기
 	"listen", // 5 듣고 고르기
-	"write3", // 6 받침까지 조합하고 쓰기
+	"write3", // 6 조합하기 — 받침이 붙는 판(화면 이름은 sub 2 와 같다. BLOCKERS §2)
 ] as const;
 
 export type JamoSub = (typeof JAMO_SUBS)[number];
