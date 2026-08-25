@@ -238,6 +238,9 @@
 | `real__chat_progress` | 미션대화 진행 | `/learn/mission-chat?level=1&lesson=4 → 시작하기` | `activity__chat` | `DRIFT` |
 | `real__chat_missions` | 미션대화 미션 펼침 | `같음 → 미션 보기` | `없음` | `UNSPECIFIED` |
 | `real__chat_text_input` | 미션대화 텍스트 입력 | `같음 → 키보드 버튼` | `없음` | `UNSPECIFIED` |
+| `real__readwrite_modal_empty` | 단어 읽고 쓰기 모달 | `/learn/jamo?level=1&lesson=1&group=1&sub=4 → 글자 칸` | `activity__write_canvas_empty` | `MATCH` |
+| `real__readwrite_modal_drawn` | 단어 읽고 쓰기 모달 | `같음 → 획 긋기` | `activity__write_canvas_drawn` | `MATCH` |
+| `real__readwrite_modal_wrong` | 단어 읽고 쓰기 모달 | `같음 → 확인(틀린 글씨)` | `activity__write_canvas_wrong` | `DRIFT` |
 
 ### 자모 매핑이 실제 화면으로 확인됐다
 
@@ -307,6 +310,39 @@ Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'm
 
 **말풍선 안 아이콘 8개에 이름이 없다**(`aria-label`·글자 둘 다 없음).
 
+### 단어 읽고 쓰기 모달 — 확정 규칙과 반대다
+
+세 상태를 실제 화면에서 담았다. 앞의 둘은 확정 캡처와 같다.
+
+| | 실제 |
+|---|---|
+| 빈판 | 점선 판 · 되돌리기·전체 지우기 · **확인 비활성** |
+| 그린 상태 | 획이 남고 **확인 활성** |
+| 틀린 판정 | **획이 지워지고 원형 ✕ 알약**이 뜬다. 외곽선은 안 변한다 |
+
+**확정 규칙은 「캔버스에 선택지용 원형 ✕는 쓰지 않음. 빨간 외곽선 + 다시 써
+보세요」 다.** 실제는 정확히 그 반대다. 확정 컴포넌트(`activity__write_canvas_wrong`)
+쪽은 빨간 외곽선을 쓰고 있어 **제품만 어긋나 있다.**
+
+그리고 **한 모달에 두 언어가 섞인다** — 안내는 「여기에 손가락으로 쓰세요.」로
+한국어가 박혀 있고(`HangulCanvas.tsx`), 알약만 앱 언어를 따라 「Try again」이다.
+
+> **캔버스는 DOM 스냅숏으로 못 담는다.** 획은 캔버스 비트맵이라 `outerHTML` 에
+> 안 들어온다. 그래서 그린 상태는 `toDataURL()` 로 뽑아 같은 자리에 `<img>` 로
+> 박아 재현했다. 획을 긋는 것도 **진짜 드래그**여야 한다 — 합성 포인터 이벤트로는
+> 아무것도 안 그려졌다.
+
+### 롤플레잉은 지금 뜨지 않았다
+
+`components/learn/ai-roleplay.tsx` 가 **다른 세션에서 크게 고쳐지는 중**이다
+(캡처 시점 `-120/+78`). 반쯤 바뀐 화면을 뜨면 **없던 상태를 정본 후보로 기록하게
+된다.** 그 작업이 끝난 뒤에 뜬다.
+
+같은 이유로 `choice.tsx`·`record.tsx`·`useRecording.ts`·`audio-recorder.tsx`·
+`activity.css` 도 열려 있다 — 채점 규칙 통일(§3)과 녹음 상태 머신(§4)이 진행 중으로
+보인다. `activity.css` 변경은 `.record-spinner` 추가뿐이라 쓰기 모달 캡처에는
+영향이 없음을 확인하고 진행했다.
+
 ### 이 절에서 아직 못 담은 것
 
 
@@ -316,7 +352,8 @@ Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'm
 | 미션대화 녹음·피드백·종료·리포트 | 녹음은 마이크 권한이 필요하고(브라우저가 막는다) 피드백·종료는 목이 판정을 더 내야 한다 |
 | 롤플레잉 AI 차례 · 녹음 완료 | 상호작용이 필요하다. 첫 화면만 담았다 |
 | 플래시카드 뒷면 · 판정 후 · 결과 | **탭으로 안 뒤집힌다.** 실제는 `transition-transform` 카루셀이고 「1/27」로 진행을 센다 — 확정 `FlashcardScreen`(탭 플립)과 **구조가 다르다.** 스와이프를 넣어야 담긴다 |
-| 단어 읽고 쓰기 모달 빈판 · 그린 상태 · 완료 | 글자 칸을 눌러야 열린다 |
+| 단어 읽고 쓰기 모달 **빈판·그린 상태·틀린 판정** | **담았다**(위 절) |
+| 단어 읽고 쓰기 **완료** | 손글씨가 맞아야 나온다. 낙서로는 늘 틀린 판정이 된다 |
 | 채점 없는 활동의 실제 결과 | 활동을 끝까지 풀어야 나온다 |
 | 나가기 · 미션 건너뛰기 확인 | **아직 구현이 없다** — 캡처 대상이 아니라 설계·구현 대상이다 |
 
