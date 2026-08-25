@@ -161,6 +161,16 @@ def parity_screens() -> dict[str, int]:
     return out
 
 
+def mockup_captures() -> int:
+    """app/src/mockups/*.html — 목업에서 뜬 캡처 파일 수.
+
+    문서가 "캡처 N개" 라고 자주 적는데 세는 축이 없어서 낡아도 몰랐다.
+    2026-08-24 검증에서 이 표현이 다섯 곳에 손으로 적혀 있는 것을 찾았다.
+    """
+    d = APP / "src" / "mockups"
+    return len(list(d.glob("*.html"))) if d.is_dir() else 0
+
+
 def data_counts() -> dict[str, int]:
     """앱 데이터에서 직접 세는 값.
 
@@ -213,8 +223,19 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     # 주인을 고르는 기준은 "그 수로 무언가를 판단하는 곳". 화면 수는 인계에서
     # "이것이 통과한다" 를 말하는 README, 문서·폐기본·메모 수는 목록을 쥔 INDEX 다.
     # 나머지 문서는 숫자를 적지 말고 질적으로 쓴다("목업 캡처 전부가 일치한다").
+    # 시점 기록과 인용은 봐준다. "그때는 30화면이었다" 는 지금도 참이고,
+    # 다른 문서의 옛 문장을 따옴표로 옮긴 것도 고치면 안 된다.
+    # 정규식으로는 이 둘을 현재 주장과 가를 수 없어서, TWIN_ALLOW 처럼
+    # **문구 조각과 이유를 손으로 적어** 봐준다. 새로 넣을 때는 그 문장이
+    # 정말 "그때" 를 말하는지 보고 넣어라 — 현재 주장을 여기 넣으면 안 잡힌다.
+    CLAIM_ALLOW = [
+        ("대조가 30화면 (2026-08-24)", "VocaShot 셋을 넣던 시점의 기록. 지금 수가 아니다"),
+        ("대조 밖에 캡처 20개가 서 있다", "masterplan_v3 §9 의 옛 문장을 그대로 인용한 것"),
+    ]
+
     OWNER = {
         "목업 대조 화면 수": "(문) README.md",
+        "목업 캡처 수": "(문) README.md",
         "phase1 정본 문서 수": "(문) INDEX.md",
         "_superseded 문서 수": "(문) INDEX.md",
         "인계 메모 수": "(문) INDEX.md",
@@ -240,6 +261,15 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             r"parity:activity\s*(\d+)화면",
             r"(\d+)화면이\s*일치",
             r"목업\s*대조\s*(\d+)화면",
+            # 2026-08-24 검증에서 또 찾은 꼴. 패턴 목록은 늘 부족하다고 보고,
+            # 숫자를 새 문구로 쓰면 여기 같이 넣어라
+            r"대조가\s*(\d+)화면",
+            r"지금은\s*\*?\*?(\d+)\*?\*?\s*이다",
+        ]),
+        ("목업 캡처 수", mockup_captures(), [
+            r"캡처\s*(\d+)개(?:는|가|를|만)",
+            r"캡처\s*(\d+)개가\s*곧",
+            r"목업\s*캡처\s*(\d+)",
         ]),
         ("phase1 정본 문서 수", len(live), [
             r"문서가\s*(\d+)개",
@@ -299,15 +329,24 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             if src == keeper or src.startswith("(메모) "):
                 continue
             flat = re.sub(r"\s+", " ", body)
+            # finditer 로 **모든** 자리를 본다. re.search 로 첫 자리만 보면,
+            # 그 첫 자리가 CLAIM_ALLOW 에 걸릴 때 뒤의 진짜 위반을 놓친다 —
+            # 2026-08-24 검증에서 실제로 BLOCKERS 의 두 곳을 그렇게 놓쳤다.
+            hit = None
             for pat in pats:
-                m = re.search(pat, flat)
-                if m:
-                    ctx = flat[max(0, m.start() - 32):m.end() + 14].strip()
-                    out.append(
-                        f"[사실 중복] {src} 가 {label} 을 적었다 — 그 수의 주인은 {keeper} 다\n"
-                        f"           숫자를 빼고 질적으로 쓰거나 주인을 가리켜라 …{ctx}…"
-                    )
+                for m in re.finditer(pat, flat):
+                    wide = flat[max(0, m.start() - 70):m.end() + 40]
+                    if any(frag in wide for frag, _why in CLAIM_ALLOW):
+                        continue
+                    hit = flat[max(0, m.start() - 32):m.end() + 14].strip()
                     break
+                if hit:
+                    break
+            if hit:
+                out.append(
+                    f"[사실 중복] {src} 가 {label} 을 적었다 — 그 수의 주인은 {keeper} 다\n"
+                    f"           숫자를 빼고 질적으로 쓰거나 주인을 가리켜라 …{hit}…"
+                )
 
     for label, real, pats in specs:
         if real == 0:
@@ -324,6 +363,8 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
                         got = int(tok)
                     if got != real:
                         ctx = flat[max(0, m.start() - 45):m.end() + 35].strip()
+                        if any(frag in ctx for frag, _why in CLAIM_ALLOW):
+                            continue
                         out.append(
                             f"[숫자 주장] {src} → {label} 을 {tok} 이라 적었는데 실제는 {real}\n"
                             f"           …{ctx}…"
