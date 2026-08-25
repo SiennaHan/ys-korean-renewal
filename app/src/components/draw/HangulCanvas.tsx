@@ -261,7 +261,17 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 			} else {
 				sound.playIncorrect();
 			}
-			setHasLine(false);
+			/*
+			 * 틀렸을 때는 hasLine 을 내리지 않는다.
+			 *
+			 * 전에는 정답·오답 가리지 않고 내려서, "Try again" 이 떴는데 **획은 화면에
+			 * 그대로 남고 되돌리기·전체 지우기만 잠기는** 상태가 됐다. 고칠 수도
+			 * 지울 수도 없으니 사실상 갇힌다.
+			 *
+			 * 맞았을 때는 1초 뒤 returnImage 로 슬롯에 넣고 모달을 닫으므로 그때
+			 * 내려도 된다 — 닫히는 동안 다시 누르는 것을 막는 값이기도 하다.
+			 */
+			if (_isCorrect) setHasLine(false);
 			setIsUploading(false);
 		}
 	};
@@ -332,9 +342,12 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 				{/*
 				  * 채점 표시는 다른 화면과 같은 **피드백 알약**을 쓴다
 				  * (components/main/activity/feedback.tsx). 손으로 만들면 또
-				  * 이 화면만 달라진다 — 자리(.feedback-slot)까지 같이 쓴다.
+				  * 이 화면만 달라진다. 다만 **자리는 .feedback-slot 을 쓰지 않는다** —
+				  * 그것은 활동 화면 바닥에 깔리는 띠라 회색 배경을 갖고, 흰 모달
+				  * 안에서는 회색 박스로 보인다. flex:0 0 44px 도 모달이 flex 열이
+				  * 아니라 안 먹어서 알약이 뜰 때마다 높이가 들쭉날쭉했다.
 				  */}
-				<div className="feedback-slot" aria-live="polite">
+				<div className="canvas-feedback" aria-live="polite">
 					{isUploading && <span className="canvas-busy">분석중…</span>}
 					{!isUploading && isCorrect === true && <FeedbackMessage kind="correct" />}
 					{!isUploading && isCorrect === false && <FeedbackMessage kind="wrong" />}
