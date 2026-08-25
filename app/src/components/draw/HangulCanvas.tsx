@@ -2,6 +2,7 @@ import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { uploadWriting } from "@/api/analyzeApi";
+import { FeedbackMessage } from "@/components/main/activity";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import clsx from "clsx";
 import { Check, RotateCcw, Upload } from "lucide-react";
@@ -96,6 +97,55 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 		};
 	}, []);
 
+	/*
+	 * 획을 쌓아 둔다 — 되돌리기 때문이다.
+	 *
+	 * 이 판은 캔버스에 바로 그리므로(베지어로 이어 붙인다) 한 획만 물러나려면
+	 * **다시 그리는 수밖에 없다.** 그래서 획마다 점들을 모아 두고, 되돌릴 때
+	 * 마지막 획을 빼고 남은 것을 처음부터 다시 그린다.
+	 *
+	 * 따라쓰기(HangulTracingCanvas)의 undo 는 여기 쓸 수 없다 — 그쪽은 목표 글자의
+	 * **정해진 획 순서**를 되감는 것이라 자유 필기와 뜻이 다르다.
+	 */
+	const strokesRef = useRef<Point[][]>([]);
+	const currentStrokeRef = useRef<Point[]>([]);
+
+	/** 보관한 획을 처음부터 다시 그린다. 지우기·되돌리기가 같이 쓴다 */
+	const repaint = useCallback((): void => {
+		const canvas = canvasRef.current;
+		const context = contextRef.current;
+		if (!canvas || !context) return;
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		for (const stroke of strokesRef.current) {
+			if (stroke.length === 0) continue;
+			context.beginPath();
+			context.moveTo(stroke[0].x, stroke[0].y);
+			let last = stroke[0];
+			for (const pt of stroke.slice(1)) {
+				// 그릴 때와 같은 곡선식이라야 되돌린 뒤 모양이 안 바뀐다
+				context.quadraticCurveTo(
+					last.x,
+					last.y,
+					last.x + (pt.x - last.x) * 0.5,
+					last.y + (pt.y - last.y) * 0.5,
+				);
+				last = pt;
+			}
+			context.stroke();
+			context.closePath();
+		}
+	}, []);
+
+	/** 마지막 획 하나만 물린다 */
+	const undoLast = useCallback((): void => {
+		strokesRef.current = strokesRef.current.slice(0, -1);
+		currentStrokeRef.current = [];
+		lastPointRef.current = null;
+		repaint();
+		setHasLine(strokesRef.current.length > 0);
+		setIsCorrect(null);
+	}, [repaint]);
+
 	/**
 	 * 그리기 시작 (경로 시작)
 	 */
@@ -113,6 +163,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 				setIsDrawing(true);
 				// ⭐️ 마지막 기록점을 현재 위치로 초기화합니다.
 				lastPointRef.current = currentPoint;
+				currentStrokeRef.current = [currentPoint];
 			}
 		},
 		[getCoordinates],
@@ -147,6 +198,8 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 
 				// ⭐️ 다음 세그먼트의 제어점 역할을 할 '마지막 기록점'을 현재 위치로 업데이트합니다.
 				lastPointRef.current = currentPoint;
+				// 되돌리기용 — 이 획의 점을 모아 둔다(위 strokesRef 주석)
+				currentStrokeRef.current.push(currentPoint);
 			}
 		},
 		[getCoordinates, isDrawing],
@@ -162,6 +215,10 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 		}
 		setIsDrawing(false);
 		lastPointRef.current = null; // 종료 시 마지막 기록점 초기화
+		if (currentStrokeRef.current.length > 0) {
+			strokesRef.current = [...strokesRef.current, currentStrokeRef.current];
+			currentStrokeRef.current = [];
+		}
 	}, []);
 
 	/**
@@ -176,6 +233,8 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 			// setSignatureData(''); // 저장된 데이터도 초기화
 			lastPointRef.current = null; // 마지막 기록점 초기화
 		}
+		strokesRef.current = [];
+		currentStrokeRef.current = [];
 		setHasLine(false);
 		setIsCorrect(null);
 	}, []);
@@ -241,46 +300,57 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 					/>
 				</div>
 
-				{/* Control Buttons */}
-				<div className="flex items-center justify-between space-x-3 p-2">
+				{/*
+				  * 따라쓰기 화면(combine.tsx 의 trace 단계)과 **같은 꼴**로 맞춘다.
+				  * 목업(activity__write_canvas)이 정한 모양이 이것이다 — 캔버스 아래
+				  * 오른쪽에 글자 도구 버튼(.tools > .tool), 확정은 아래쪽 .primary.
+				  * 전에는 여기만 둥근 아이콘 버튼 둘이 좌우로 갈라져 있어서 같은
+				  * "손으로 쓰는 판" 인데 다르게 보였다.
+				  *
+				  * 도구 둘도 따라쓰기와 같은 순서다 — 되돌리기, 전체 지우기.
+				  * 되돌리기는 이 판에 없던 기능이라 새로 넣었다(위 strokesRef 주석).
+				  */}
+				<div className="tools">
 					<button
 						type="button"
-						aria-label="다시 쓰기"
-						onClick={clearCanvas}
-						className="transform cursor-pointer rounded-lg border-1 bg-white px-4 py-3 font-bold text-[#4396f4] shadow-md transition duration-300 hover:scale-[1.02] hover:bg-gray-100 focus:outline-none active:scale-[0.98]"
-					>
-						<RotateCcw />
-					</button>
-					<div className="flex items-center font-bold text-white">
-						{isCorrect === true && (
-							<div className="rounded-[10px] bg-green-400 pr-2 pl-2 text-[20px]">
-								Correct
-							</div>
-						)}
-						{isCorrect === false && (
-							<div className="rounded-[10px] bg-red-400 pr-2 pl-2 text-[20px]">
-								Incorrect
-							</div>
-						)}
-						{isUploading === true && (
-							<div className="!text-gray-400 !font-normal rounded-[5px] bg-gray-white pr-2 pl-2 text-[14px]">
-								분석중...
-							</div>
-						)}
-					</div>
-					<button
-						type="button"
-						aria-label="쓴 글자 제출"
-						onClick={saveSignature}
-						className="transform cursor-pointer rounded-lg bg-[#4396f4] px-4 py-3 font-semibold text-white shadow-md transition duration-300 hover:scale-[1.02] hover:bg-blue-500 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-white disabled:text-gray-300 disabled:opacity-70 disabled:shadow-none disabled:hover:bg-white"
+						className="tool"
+						onClick={undoLast}
 						disabled={!hasLine || isUploading}
 					>
-						{isUploading ? (
-							<div className="h-6 w-6 animate-spin rounded-full border-[#4396f4] border-b-2" />
-						) : (
-							<Upload />
-						)}
+						되돌리기
 					</button>
+					<button
+						type="button"
+						className="tool"
+						onClick={clearCanvas}
+						disabled={!hasLine || isUploading}
+					>
+						전체 지우기
+					</button>
+				</div>
+
+				{/*
+				  * 채점 표시는 다른 화면과 같은 **피드백 알약**을 쓴다
+				  * (components/main/activity/feedback.tsx). 손으로 만들면 또
+				  * 이 화면만 달라진다 — 자리(.feedback-slot)까지 같이 쓴다.
+				  */}
+				<div className="feedback-slot" aria-live="polite">
+					{isUploading && <span className="canvas-busy">분석중…</span>}
+					{!isUploading && isCorrect === true && <FeedbackMessage kind="correct" />}
+					{!isUploading && isCorrect === false && <FeedbackMessage kind="wrong" />}
+				</div>
+
+				<div className="dock">
+					<div className="main">
+						<button
+							type="button"
+							className={`primary ${hasLine && !isUploading ? "on" : ""}`}
+							onClick={saveSignature}
+							disabled={!hasLine || isUploading}
+						>
+							확인
+						</button>
+					</div>
 				</div>
 
 				{/* Signature Data Output */}
