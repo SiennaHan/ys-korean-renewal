@@ -1429,8 +1429,10 @@ VocaShot   lv{급}           ← <b>새로 붙인다</b></pre>
      (<code>word-quiz-card.tsx</code> · <code>word-learning.tsx</code>).</p>
 </div>
 <div class="callout stop">
-  <div class="t">쓰지 않는 것 — <code>components/main/game/data/vocab.json</code></div>
-  <p>급·과·카테고리별 단어 목록이 들어 있는데 <b>아무 데서도 import 하지 않는다</b>.
+  <div class="t">쓰지 않는 것 — 카드마스터의 <code>vocab.json</code></div>
+  <p>급·과·카테고리별 단어 목록이 들어 있는데 <b>보카샷은 이것을 쓰지 않는다</b>.
+     (여기 적혀 있던 <code>components/main/game/data/vocab.json</code> 사본은 아무도 안 읽어서
+     2026-08-25 에 지웠다. 카드마스터가 쓰는 것은 서버의 <code>/game-content/card-sort/vocab</code> 이다.)
      그리고 <b>영어 뜻도 이미지도 없다</b> — 한국어 단어만 있다.</p>
   <p>이 게임은 <b>뜻이나 그림을 보고 단어를 떠올리는</b> 것이므로 <b>단서가 있어야 한다</b>.
      단어만 있으면 낼 문제가 만들어지지 않는다. <b>쓰지 않는다.</b></p>

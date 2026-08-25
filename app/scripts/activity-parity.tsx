@@ -1283,7 +1283,7 @@ SCREENS.game__pc_result = (
  * complete 는 그 셋과 달리 헤더가 없는 독립 화면이라 SpCompleteView 하나로 끝난다.
  *
  * 값은 목업 캡처(game__sp_map·sp_entry·sp_puzzle·sp_complete)를 직접 열어서
- * 읽은 것과 src/components/main/game/data/seoul_puzzles.json 의 "홍대"
+ * 읽은 것과 api/seed_data/seoul_puzzles.json 의 "홍대"
  * 항목(고정 표본)을 그대로 옮겼다 — 추측한 숫자·글자는 없다.
  */
 function SpFrame({ children }: { children: ReactElement | ReactElement[] }) {

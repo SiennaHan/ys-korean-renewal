@@ -932,8 +932,10 @@ pnpm build            # 통과 — §1 에서 고쳤다
 제외한 곳은 셋이고 전부 코드가 아니라 데이터·자산이다.
 
     src/shared/data                        원장 산출물 + 구 앱에서 온 데이터표
-    src/components/main/game/data          게임 씨드 데이터
     src/assets/complete_mission_ani.json   Lottie(After Effects) 내보내기
+
+`src/components/main/game/data` 도 여기 있었는데, **아무도 안 읽는 사본이라
+2026-08-25 에 지웠다**(앱은 게임 콘텐츠를 서버에서 받는다). 제외 목록에서도 뺐다.
 
 `src/mockups/screens.ts` 가 이미 같은 이유로 제외돼 있었다.
 
@@ -1283,8 +1285,7 @@ biome 은 **"몸통에서 읽지 않는다"** 만 본다. 그런데 이 저장�
 
 ### 게임·자모를 실제로 돌려서 본 것 (2026-08-24) — 정적 마크업이 못 보는 쪽
 
-목 API 를 띄우고(`phase1/game_mockapi.py` 의 `SEED` 를 `app/src/components/main/game/data`
-로 바꾼 사본) 게스트로 들어가 손으로 조작했다. **`useEffect` 가 실제로 도는 상태**라
+목 API 를 띄우고 게스트로 들어가 손으로 조작했다. **`useEffect` 가 실제로 도는 상태**라
 목업 대조로는 볼 수 없던 것들이 나왔다.
 
 #### 진짜로 막히는 것
@@ -1331,10 +1332,8 @@ biome 은 **"몸통에서 읽지 않는다"** 만 본다. 그런데 이 저장�
 #### 다시 돌리려면
 
 ```bash
-python3 -c "import pathlib;p=pathlib.Path('phase1/game_mockapi.py');s=p.read_text();\
-open('/tmp/mockapi.py','w').write(s.replace(\"SEED='../koreanapi-master/koreanapi-master/seed_data'\",\
-\"SEED='$PWD/app/src/components/main/game/data'\"))"
-python3 /tmp/mockapi.py &          # 8799 — 앱의 .env 가 보는 주소
+python3 phase1/game_mockapi.py &   # 8799 — 앱의 .env 가 보는 주소. api/seed_data 를 낸다
+                                   # (씨드가 서버와 같은지는 --live 로 먼저 보라)
 cd app && pnpm dev                 # 3000
 ```
 로그인 화면에서 **Browse without signing in** 을 누르면 게스트 토큰이 나온다.
@@ -1529,7 +1528,8 @@ cd app && python3 scripts/fixture-data-check.py --live
 | 전 (씨드) | 6 | 24 | 79 |
 | 후 (서버) | **8** | **32** | **173** |
 
-`api/seed_data/` 와 `app/src/components/main/game/data/` 양쪽을 같이 갱신했다.
+`api/seed_data/` 를 갱신했다. **`app/src/components/main/game/data/` 도 같이 갱신했는데
+그건 헛수고였다** — 아무도 안 읽는 사본이었고 2026-08-25 에 지웠다.
 
 **주의 — 앱은 씨드 파일을 읽지 않는다.** `getParticleSniperSentences()` 로 서버에서
 받는다. 6급까지만 보였던 것은 **로컬 확인용 목 API**(`phase1/game_mockapi.py`)가

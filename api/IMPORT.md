@@ -28,6 +28,13 @@
 
 ## 앱과 겹치는 것
 
-`seed_data/` 의 게임 시드가 `app/src/components/main/game/data/` 와 이름이 같다.
-지금은 양쪽이 각자 사본을 들고 있다 — 어느 쪽이 정본인지는 게임 콘텐츠를
-서버에서 내려받게 만들 때 정한다.
+**정해졌다(2026-08-25).** 앱은 게임 콘텐츠를 **서버에서 내려받는다**
+(`app/src/api/game-content.ts`). `app/src/components/main/game/data/` 는 아무도
+읽지 않는 사본이라 지웠다. 남은 것은 `seed_data/` 하나다.
+
+그 `seed_data/` 도 **정본이 아니라 스냅숏**이다 — 게임 콘텐츠의 정본은 어드민이고,
+사람이 거기서 고친다. 뒤처졌는지는 이것으로 본다.
+
+```
+cd app && python3 scripts/fixture-data-check.py --live
+```

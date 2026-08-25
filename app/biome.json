@@ -15,7 +15,6 @@
 			"src/styles/vocashot.css",
 			"src/mockups/screens.ts",
 			"src/shared/data",
-			"src/components/main/game/data",
 			"src/assets/complete_mission_ani.json"
 		]
 	},
