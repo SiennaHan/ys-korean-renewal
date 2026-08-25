@@ -16,13 +16,16 @@ export function ActivityFrame({
 	children,
 	className,
 	style,
+	id,
 }: {
 	children: ReactNode;
 	className?: string;
 	style?: CSSProperties;
+	id?: string;
 }) {
 	return (
 		<div
+			id={id}
 			className={className ? `activity-frame ${className}` : "activity-frame"}
 			style={style}
 		>
@@ -102,7 +105,11 @@ export function ActivityProgress({
 			<div className="progress">
 				{Array.from({ length: total }, (_, i) => {
 					const bar = (
-						<i className={i < current ? "done" : i === current ? "now" : ""} />
+						<i
+							// biome-ignore lint/suspicious/noArrayIndexKey: 진행 칸은 위치가 정체성이고 순서가 바뀌지 않는다
+							key={i}
+							className={i < current ? "done" : i === current ? "now" : ""}
+						/>
 					);
 					return onJump ? (
 						<button

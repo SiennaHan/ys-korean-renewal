@@ -1,15 +1,14 @@
-import { MicIcon } from "@/assets/icons";
 import {
-	chatBaseButton,
-	chatBaseRedButton,
-	chatBaseWhiteButton,
-} from "@/components/chat/chat-text";
+	IconClose,
+	IconKeyboard,
+	RecordControl,
+} from "@/components/main/activity";
 import CircularProgress from "@/components/ui/circular-progress";
 import type { RecordState } from "@/hooks/useRecording";
-import clsx from "clsx";
-import { Keyboard, Square, Trash2, Upload, X } from "lucide-react";
+import { Send, Trash2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { LiveAudioVisualizer } from "react-audio-visualize";
+import { useTranslation } from "react-i18next";
 
 interface DialogInputProps {
 	// Recording state
@@ -49,6 +48,7 @@ export function DialogInput({
 	stopRecording,
 	unlock,
 }: DialogInputProps) {
+	const { t } = useTranslation();
 	const recordedMsgRef = useRef<HTMLTextAreaElement>(null);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -81,10 +81,10 @@ export function DialogInput({
 	}, [isShowInputBox]);
 
 	return (
-		<div className="absolute bottom-0 z-10 w-full bg-[linear-gradient(180deg,rgba(255,255,255,0)0%,#FFF_50%)]">
+		<div className="chat-compose">
 			{/* Audio visualizer */}
 			{mediaRecorder && (
-				<div className="mx-auto mb-5 flex h-12 w-full max-w-[300px] items-center justify-center rounded-lg bg-[linear-gradient(98deg,_#E3F9F5_-6.59%,_#DBEDFF_80.75%)]">
+				<div className="chat-visualizer" aria-label="녹음 중인 소리">
 					<LiveAudioVisualizer
 						mediaRecorder={mediaRecorder}
 						width={120}
@@ -98,103 +98,96 @@ export function DialogInput({
 
 			{/* Recorded message preview */}
 			{recordedMsg && (
-				<div className="mb-5 px-[10px]">
+				<div className="chat-transcript">
 					<textarea
 						ref={recordedMsgRef}
 						value={recordedMsg}
 						rows={1}
 						onChange={(e) => onRecordedMsgChange(e.target.value)}
-						className="scrollbar-hide w-full rounded-[5px] bg-[#DBEDFF] px-[10px] py-[10px] text-[#383A3F] text-sm"
+						className="scrollbar-hide"
+						aria-label={t("missionChat.transcript")}
 					/>
 				</div>
 			)}
 
 			{/* Text input mode */}
 			{isShowInputBox ? (
-				<div className="flex flex-row items-end gap-1 py-[5px] pr-2 pl-[3px]">
+				<div className="chat-text-entry">
 					<button
 						type="button"
 						onClick={() => setIsShowInputBox(false)}
-						className="mb-[5px] cursor-pointer"
+						className="keyboard"
+						aria-label={t("missionChat.closeInput")}
 					>
-						<X strokeWidth={1} color="#4396F4" />
+						<IconClose />
 					</button>
 					<textarea
 						ref={textareaRef}
 						value={textareaValue}
 						onChange={(e) => setTextareaValue(e.target.value)}
 						rows={2}
-						placeholder="내용을 입력해주세요"
-						className="scrollbar-hide flex-1 rounded-[5px] border border-[#4396f4] bg-white px-[10px] py-[5px] text-[#4396f4] text-base"
+						placeholder={t("missionChat.inputPlaceholder")}
+						className="scrollbar-hide chat-textarea"
 					/>
 					<button
 						type="button"
-						className={clsx(chatBaseButton, "!size-[34px] !rounded-[5px]")}
+						className="chat-send"
 						onPointerDown={() => unlock()}
 						onTouchStart={() => unlock()}
 						onClick={onSendText}
 						disabled={textareaValue.trim().length < 2}
 					>
-						<Upload />
+						<Send />
 					</button>
 				</div>
 			) : (
 				/* Voice recording mode */
-				<div className="mb-[10px] flex items-center justify-center gap-2">
-					{recordState === "idle" ? (
-						<button
-							type="button"
-							className={chatBaseWhiteButton}
-							onClick={() => {
-								unlock();
-								setIsShowInputBox(true);
-							}}
-						>
-							<Keyboard color="#4396F4" />
-						</button>
-					) : (
-						<button
-							type="button"
-							className={chatBaseRedButton}
-							onClick={onTerminate}
-							disabled={recordState === "sending"}
-						>
-							<Trash2 color="#F15F49" size={20} />
-						</button>
-					)}
+				<div className="chat-footer">
+					<div className="dock">
+						{recordState === "idle" ? (
+							<button
+								type="button"
+								className="keyboard"
+								aria-label={t("missionChat.keyboard")}
+								onClick={() => {
+									unlock();
+									setIsShowInputBox(true);
+								}}
+							>
+								<IconKeyboard />
+							</button>
+						) : (
+							<button
+								type="button"
+								className="keyboard discard"
+								aria-label={t("missionChat.discard")}
+								onClick={onTerminate}
+								disabled={recordState === "sending"}
+							>
+								<Trash2 size={20} />
+							</button>
+						)}
 
-					<div className="relative">
-						<CircularProgress
-							sqSize={66}
-							isStart={
-								recordState === "recording" || recordState === "finishing"
-							}
-							onEnd={stopRecording}
-						/>
-						<button
-							type="button"
-							className={clsx(
-								chatBaseButton,
-								"absolute top-[3px] left-[3px] z-10",
-							)}
-							onClick={onRecord}
-							disabled={
-								recordState === "preparing" ||
-								recordState === "finishing" ||
-								recordState === "sending"
-							}
-						>
-							{recordState === "idle" && <MicIcon color="#fff" />}
-							{(recordState === "recording" || recordState === "finishing") && (
-								<Square fill="#fff" strokeWidth={0} />
-							)}
-							{recordState === "done" && <Upload />}
-							{(recordState === "preparing" || recordState === "sending") && (
-								<div className="h-6 w-6 animate-spin rounded-full border-white border-b-2" />
-							)}
-						</button>
+						<div className="main">
+							<RecordControl
+								mode={recordState}
+								action="chatRecord"
+								doneHint={t("missionChat.sendRecorded")}
+								onPress={onRecord}
+							/>
+							{/* 30초 자동 종료 규칙은 시각 컴포넌트를 바꿔도 유지한다. */}
+							<div className="record-limit" aria-hidden="true">
+								<CircularProgress
+									sqSize={1}
+									isStart={
+										recordState === "recording" || recordState === "finishing"
+									}
+									onEnd={stopRecording}
+								/>
+							</div>
+						</div>
+						<span className="slot" aria-hidden="true" />
 					</div>
-					<div className="size-[44px]" />
 				</div>
 			)}
 		</div>

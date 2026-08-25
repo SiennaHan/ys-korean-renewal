@@ -2,10 +2,10 @@ import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { uploadWriting } from "@/api/analyzeApi";
-import { FeedbackMessage } from "@/components/main/activity";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import { FeedbackMessage, IconClose } from "@/components/main/activity";
 import clsx from "clsx";
-import { Check, RotateCcw, Upload } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Tailwind CSS is assumed to be available.
 
@@ -24,6 +24,7 @@ interface Props {
 }
 
 export default function HangulCanvas({ text, returnImage, onClose }: Props) {
+	const { t } = useTranslation();
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 	const sound = useSoundEffects();
@@ -43,8 +44,10 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 		// 고해상도(Retina) 디스플레이를 위한 설정
 		canvas.width = CANVAS_SIZE * 2;
 		canvas.height = CANVAS_SIZE * 2;
-		canvas.style.width = `${CANVAS_SIZE}px`;
-		canvas.style.height = `${CANVAS_SIZE}px`;
+		/* 모달이 320폭에서 줄어들 수 있게 표시 크기는 부모를 따른다.
+		 * 내부 비트맵은 계속 600×600이라 선명도는 유지된다. */
+		canvas.style.width = "100%";
+		canvas.style.height = "100%";
 
 		const context = canvas.getContext("2d");
 		if (context) {
@@ -278,24 +281,30 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 
 	return (
 		<div className="flex flex-col items-center justify-center">
-			<div className="w-full max-w-sm rounded-xl bg-white transition-all hover:shadow-3xl">
+			<div className="w-full max-w-sm rounded-xl bg-white">
 				{/* Signature Canvas Area */}
-				<div className="mb-[10px] w-full text-center">
-					여기에 손가락으로 쓰세요.
+				<div className="canvas-dialog-head">
+					<span>{t("player.drawWithFinger")}</span>
+					<button type="button" onClick={onClose} aria-label={t("player.exit")}>
+						<IconClose />
+					</button>
 				</div>
 				<div
-					className="mx-auto cursor-crosshair rounded-lg border-4 border-gray-300 border-dashed bg-white shadow-inner"
-					style={{ width: `${CANVAS_SIZE}px`, height: `${CANVAS_SIZE}px` }}
+					className={clsx(
+						"hangul-canvas-surface",
+						isCorrect === false && "wrong",
+						isCorrect === true && "correct",
+					)}
 				>
 					{/*
-					  * 손으로 긋는 판이라 키보드로는 대신할 수 없다. 이름이라도 붙여
-					  * 보조기술이 "여기가 쓰는 자리" 라고 읽게 한다. 넘어갈 길은
-					  * 상단 바의 건너뛰기다(word-write.tsx 의 onSkip).
-					  */}
+					 * 손으로 긋는 판이라 키보드로는 대신할 수 없다. 이름이라도 붙여
+					 * 보조기술이 "여기가 쓰는 자리" 라고 읽게 한다. 넘어갈 길은
+					 * 상단 바의 건너뛰기다(word-write.tsx 의 onSkip).
+					 */}
 					<canvas
 						ref={canvasRef}
 						role="img"
-						aria-label="글자를 손으로 쓰는 판"
+						aria-label={t("activity.canvasLabel")}
 						// 마우스 이벤트
 						onMouseDown={startDrawing}
 						onMouseUp={stopDrawing}
@@ -311,15 +320,15 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 				</div>
 
 				{/*
-				  * 따라쓰기 화면(combine.tsx 의 trace 단계)과 **같은 꼴**로 맞춘다.
-				  * 목업(activity__write_canvas)이 정한 모양이 이것이다 — 캔버스 아래
-				  * 오른쪽에 글자 도구 버튼(.tools > .tool), 확정은 아래쪽 .primary.
-				  * 전에는 여기만 둥근 아이콘 버튼 둘이 좌우로 갈라져 있어서 같은
-				  * "손으로 쓰는 판" 인데 다르게 보였다.
-				  *
-				  * 도구 둘도 따라쓰기와 같은 순서다 — 되돌리기, 전체 지우기.
-				  * 되돌리기는 이 판에 없던 기능이라 새로 넣었다(위 strokesRef 주석).
-				  */}
+				 * 따라쓰기 화면(combine.tsx 의 trace 단계)과 **같은 꼴**로 맞춘다.
+				 * 목업(activity__write_canvas)이 정한 모양이 이것이다 — 캔버스 아래
+				 * 오른쪽에 글자 도구 버튼(.tools > .tool), 확정은 아래쪽 .primary.
+				 * 전에는 여기만 둥근 아이콘 버튼 둘이 좌우로 갈라져 있어서 같은
+				 * "손으로 쓰는 판" 인데 다르게 보였다.
+				 *
+				 * 도구 둘도 따라쓰기와 같은 순서다 — 되돌리기, 전체 지우기.
+				 * 되돌리기는 이 판에 없던 기능이라 새로 넣었다(위 strokesRef 주석).
+				 */}
 				<div className="tools">
 					<button
 						type="button"
@@ -327,7 +336,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 						onClick={undoLast}
 						disabled={!hasLine || isUploading}
 					>
-						되돌리기
+						{t("player.undo")}
 					</button>
 					<button
 						type="button"
@@ -335,22 +344,28 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 						onClick={clearCanvas}
 						disabled={!hasLine || isUploading}
 					>
-						전체 지우기
+						{t("player.eraseAll")}
 					</button>
 				</div>
 
 				{/*
-				  * 채점 표시는 다른 화면과 같은 **피드백 알약**을 쓴다
-				  * (components/main/activity/feedback.tsx). 손으로 만들면 또
-				  * 이 화면만 달라진다. 다만 **자리는 .feedback-slot 을 쓰지 않는다** —
-				  * 그것은 활동 화면 바닥에 깔리는 띠라 회색 배경을 갖고, 흰 모달
-				  * 안에서는 회색 박스로 보인다. flex:0 0 44px 도 모달이 flex 열이
-				  * 아니라 안 먹어서 알약이 뜰 때마다 높이가 들쭉날쭉했다.
-				  */}
+				 * 채점 표시는 다른 화면과 같은 **피드백 알약**을 쓴다
+				 * (components/main/activity/feedback.tsx). 손으로 만들면 또
+				 * 이 화면만 달라진다. 다만 **자리는 .feedback-slot 을 쓰지 않는다** —
+				 * 그것은 활동 화면 바닥에 깔리는 띠라 회색 배경을 갖고, 흰 모달
+				 * 안에서는 회색 박스로 보인다. flex:0 0 44px 도 모달이 flex 열이
+				 * 아니라 안 먹어서 알약이 뜰 때마다 높이가 들쭉날쭉했다.
+				 */}
 				<div className="canvas-feedback" aria-live="polite">
-					{isUploading && <span className="canvas-busy">분석중…</span>}
-					{!isUploading && isCorrect === true && <FeedbackMessage kind="correct" />}
-					{!isUploading && isCorrect === false && <FeedbackMessage kind="wrong" />}
+					{isUploading && (
+						<span className="canvas-busy">{t("state.loading")}</span>
+					)}
+					{!isUploading && isCorrect === true && (
+						<FeedbackMessage kind="correct" />
+					)}
+					{!isUploading && isCorrect === false && (
+						<span className="canvas-wrong-copy">{t("player.tryAgain")}</span>
+					)}
 				</div>
 
 				<div className="dock">
@@ -361,7 +376,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 							onClick={saveSignature}
 							disabled={!hasLine || isUploading}
 						>
-							확인
+							{t("player.confirm")}
 						</button>
 					</div>
 				</div>

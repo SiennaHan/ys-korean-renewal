@@ -157,12 +157,12 @@
 .activity-frame .canvas::before, .activity-frame .canvas::after { content:""; position:absolute; z-index:1; background:var(--blue-gray-200); }
 .activity-frame .canvas::before { left:0; right:0; top:50%; height:1px; }
 .activity-frame .canvas::after { top:0; bottom:0; left:50%; width:1px; }
-.activity-frame .canvas.wrong { border-color:var(--color-fill-wrong); }
+.activity-frame .canvas.wrong { border-color:color-mix(in srgb,var(--color-fill-wrong) 62%,white); background:color-mix(in srgb,var(--color-background-wrong) 34%,white); }
 .activity-frame .canvas.correct { border-color:var(--color-fill-correct); }
 .activity-frame .guide { position:absolute; inset:12px; z-index:2; background:center/contain no-repeat; opacity:.48; }
 .activity-frame .ink { position:absolute; inset:12px; z-index:3; width:calc(100% - 24px); height:calc(100% - 24px); }
 .activity-frame .ink path { fill:none; stroke:var(--color-fill-primary); stroke-width:34; stroke-linecap:round; stroke-linejoin:round; }
-.activity-frame .canvas.wrong .ink path { stroke:var(--color-fill-wrong); }
+.activity-frame .canvas.wrong .ink path { stroke:var(--color-fill-primary); }
 .activity-frame .canvas.correct .ink path { stroke:var(--color-fill-correct); }
 /* 목업에 없는 것 — 획을 받는 판은 기존 컴포넌트(HangulTracingCanvas)를 그대로 쓴다.
    목업 canvas 와 같은 자리·모양만 맞춰 준다 */
@@ -183,7 +183,15 @@
    자리가 빗나가던 것도 같이 없어진다). */
 .activity-frame .canvas-feedback { height:44px; display:flex; align-items:center;
   justify-content:center; }
+.activity-frame .canvas-dialog-head { min-height:40px; display:grid; grid-template-columns:40px 1fr 40px; align-items:center; color:var(--color-text-strong); font-size:14px; line-height:20px; font-weight:600; text-align:center; }
+.activity-frame .canvas-dialog-head::before { content:""; }
+.activity-frame .canvas-dialog-head button { width:40px; height:40px; border:0; background:transparent; color:var(--color-text-sub); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .canvas-dialog-head svg { width:20px; height:20px; }
 .activity-frame .canvas-busy { color:var(--color-text-sub); font-size:13px; font-weight:500; }
+.activity-frame .hangul-canvas-surface { width:min(300px,100%); aspect-ratio:1; margin:0 auto; overflow:hidden; cursor:crosshair; border:1px dashed var(--color-line-control); border-radius:12px; background:var(--color-background-surface); transition:border-color .16s ease,background-color .16s ease; }
+.activity-frame .hangul-canvas-surface.wrong { border:1px solid color-mix(in srgb,var(--color-fill-wrong) 68%,white); background:color-mix(in srgb,var(--color-background-wrong) 34%,white); }
+.activity-frame .hangul-canvas-surface.correct { border:2px solid var(--color-fill-correct); background:var(--color-background-correct); }
+.activity-frame .canvas-wrong-copy { color:var(--color-fill-wrong); font-size:13px; line-height:18px; font-weight:600; }
 .activity-frame .feedback-slot { flex:0 0 44px; display:flex; align-items:center; justify-content:center; padding:4px 16px; background:var(--color-background-base); }
 .activity-frame .feedback-message { min-height:34px; padding:7px 13px; border-radius:99px; background:var(--color-text-strong); color:var(--color-background-surface); display:flex; align-items:center; gap:7px; font-size:12px; line-height:18px; font-weight:600; }
 .activity-frame .feedback-message i { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; color:var(--color-background-surface); font-style:normal; font-size:10px; }
@@ -224,11 +232,21 @@
 .activity-frame .scenario .en { margin-top:2px; color:var(--color-background-choice); font-size:13px; line-height:18px; }
 .activity-frame .scenario .fold { width:28px; height:28px; border:0; background:transparent; color:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
 .activity-frame .scenario .fold svg { width:20px; height:20px; }
+.activity-frame .scenario-image { width:100%; max-height:148px; margin-top:10px; border-radius:10px; object-fit:contain; background:rgba(255,255,255,.12); }
 .activity-frame .missions { flex:0 0 50px; display:flex; align-items:center; gap:9px; overflow-x:auto; padding:0 14px; background:var(--color-background-surface); border-bottom:0; }
-.activity-frame .mission-title { flex:0 0 auto; padding:4px 9px; border-radius:12px; background:var(--color-background-base); color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; }
+.activity-frame .mission-title { flex:0 0 auto; padding:4px 9px; border:0; border-radius:12px; background:var(--color-background-base); color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; cursor:pointer; }
+.activity-frame .mission-title.on { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .mission-list { min-width:0; display:flex; align-items:center; gap:9px; overflow-x:auto; }
 .activity-frame .mission { flex:0 0 auto; display:flex; gap:4px; align-items:center; color:var(--blue-gray-400); font-size:12px; line-height:18px; font-weight:600; white-space:nowrap; }
 .activity-frame .mission.done { color:var(--color-fill-correct); }
+.activity-frame .mission-panel { flex:0 0 auto; padding:0 14px 12px; background:var(--color-background-surface); }
+.activity-frame .mission-panel-list { display:grid; gap:7px; padding:11px; border-radius:10px; background:var(--color-background-choice); }
+.activity-frame .mission-detail { min-width:0; display:grid; grid-template-columns:minmax(58px,auto) 1fr; align-items:start; gap:8px; }
+.activity-frame .mission-detail b { padding:3px 7px; border-radius:6px; background:var(--color-background-surface); color:var(--color-fill-primary-pressed); font-size:12px; line-height:18px; text-align:center; }
+.activity-frame .mission-detail span { padding-top:3px; color:var(--color-text-sub); font-size:12px; line-height:18px; }
 .activity-frame .thread { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding:14px; }
+.activity-frame .mission-chat-header { flex:0 0 auto; min-height:0; }
+.activity-frame .chat-end-anchor { flex:0 0 1px; }
 .activity-frame .msg { display:flex; gap:8px; align-items:flex-start; }
 .activity-frame .avatar { width:34px; height:34px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; background:var(--color-background-choice); font-size:16px; }
 .activity-frame .bubble-wrap { max-width:248px; }
@@ -239,7 +257,34 @@
 .activity-frame .tip { margin-top:6px; padding:7px 9px; border-radius:8px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:12px; line-height:18px; }
 .activity-frame .typing { width:54px; height:36px; display:flex; align-items:center; justify-content:center; gap:5px; border-radius:12px; background:var(--color-background-surface); }
 .activity-frame .typing i { width:5px; height:5px; border-radius:50%; background:var(--blue-gray-400); }
+.activity-frame .thread .mission-msg { margin:0; padding:0; }
+.activity-frame .thread .mission-msg-bot { align-items:flex-start; }
+.activity-frame .thread .mission-avatar { width:34px; height:34px; overflow:hidden; border-radius:50%; background:var(--color-background-choice); }
+.activity-frame .thread .mission-avatar img { width:30px; height:30px; }
+.activity-frame .thread .mission-bubble { max-width:248px; margin-left:8px; padding:9px 11px; border-radius:12px; box-shadow:none; font-size:14px; line-height:20px; }
+.activity-frame .thread .mission-msg-bot .mission-bubble { background:var(--color-background-surface); color:var(--color-text-strong); }
+.activity-frame .thread .mission-msg-me { margin-left:42px; }
+.activity-frame .thread .mission-msg-me .mission-bubble { margin-left:0; background:var(--color-fill-primary); color:var(--color-background-surface); }
+.activity-frame .thread .mission-msg-tip .mission-bubble { background:var(--color-background-choice); color:var(--color-text-strong); }
+.activity-frame .thread .mission-msg-wrong .mission-bubble { background:var(--color-background-wrong); color:var(--color-text-strong); }
+.activity-frame .thread .mission-feedback { padding:7px 9px; border-radius:8px; background:rgba(255,255,255,.8); }
+.activity-frame .thread .mission-complete { padding:0; }
+.activity-frame .thread .mission-complete > div { border:1px solid var(--color-line-control); border-radius:12px; background:var(--color-background-surface); box-shadow:none; }
 .activity-frame .chat-footer, .activity-frame .role-footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--color-background-surface); border-top:1px solid var(--color-line-control); }
+.activity-frame .chat-compose { flex:0 0 auto; position:relative; background:var(--color-background-surface); }
+.activity-frame .chat-compose .chat-footer { width:100%; }
+.activity-frame .chat-visualizer { height:34px; margin:0 16px 8px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:var(--color-background-choice); }
+.activity-frame .chat-transcript { padding:0 16px 8px; }
+.activity-frame .chat-transcript textarea { width:100%; max-height:78px; resize:none; border:1px solid var(--color-line-control); border-radius:10px; outline:0; background:var(--color-background-choice); padding:9px 11px; color:var(--color-text-strong); font:inherit; font-size:14px; line-height:20px; }
+.activity-frame .chat-transcript textarea:focus { border-color:var(--blue-300); }
+.activity-frame .chat-text-entry { min-height:89px; display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:end; gap:8px; padding:12px 16px; border-top:1px solid var(--color-line-control); }
+.activity-frame .chat-textarea { width:100%; min-height:48px; max-height:112px; resize:none; border:1px solid var(--color-line-control); border-radius:12px; outline:0; background:var(--color-background-surface); padding:11px 12px; color:var(--color-text-strong); font:inherit; font-size:14px; line-height:20px; }
+.activity-frame .chat-textarea:focus { border-color:var(--color-fill-primary); }
+.activity-frame .chat-send { width:44px; height:44px; border:0; border-radius:50%; display:grid; place-items:center; background:var(--color-fill-primary); color:var(--color-background-surface); cursor:pointer; }
+.activity-frame .chat-send:disabled { background:var(--color-background-disable); color:var(--color-text-disable); cursor:default; }
+.activity-frame .chat-send svg { width:20px; height:20px; }
+.activity-frame .keyboard.discard { color:var(--color-fill-wrong); }
+.activity-frame .record-limit { position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none; }
 .activity-frame .keyboard { width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--color-text-sub); display:grid; place-items:center; cursor:pointer; }
 .activity-frame .keyboard svg { width:22px; height:22px; }
 .activity-frame .record-core { width:210px; display:grid; grid-template-columns:56px 1fr; align-items:center; gap:11px; }
@@ -410,6 +455,7 @@
 .activity-frame .result-head h2 { margin:0; font-size:24px; line-height:1.4; }
 .activity-frame .result-head p { margin:2px 0 14px; font-size:14px; color:var(--blue-100); }
 .activity-frame .stat-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.activity-frame .stat-row.single { grid-template-columns:1fr; }
 .activity-frame .stat-row div { background:#fff; border-radius:12px; padding:12px; text-align:center; }
 .activity-frame .stat-row span { display:block; font-size:12px; color:var(--color-text-sub); }
 .activity-frame .stat-row strong { font-size:24px; color:var(--color-text-strong); }
@@ -432,8 +478,16 @@
 .activity-frame .rep-head h2 { margin:0; font-size:20px; }
 .activity-frame .rep-head p { margin:0; font-size:14px; color:var(--blue-100); }
 .activity-frame .rep-tabs { display:grid; grid-template-columns:1fr 1fr; height:46px; background:#fff; }
-.activity-frame .rep-tabs div { display:grid; place-items:center; font-size:14px; font-weight:600; color:var(--color-text-sub); border-bottom:2px solid var(--color-line-control); }
-.activity-frame .rep-tabs div.on { color:var(--color-fill-primary); border-bottom-color:var(--color-fill-primary); }
+.activity-frame .rep-tabs button { border:0; border-bottom:2px solid var(--color-line-control); background:transparent; display:grid; place-items:center; color:var(--color-text-sub); font-size:14px; font-weight:600; cursor:pointer; }
+.activity-frame .rep-tabs button.on { color:var(--color-fill-primary); border-bottom-color:var(--color-fill-primary); }
+.activity-frame .report-card { padding:10px; border-radius:10px; background:var(--color-background-surface); }
+.activity-frame .report-rows { margin-top:20px; display:flex; flex-direction:column; gap:12px; }
+.activity-frame .report-feedback-list { display:flex; flex-direction:column; gap:10px; }
+.activity-frame .report-sentence { margin:8px 0 10px; color:var(--color-text-strong); font-size:15px; line-height:22px; }
+.activity-frame .report-explanation { margin:8px 0 0; color:var(--color-text-sub); font-size:14px; line-height:21px; }
+.activity-frame .report-empty { min-height:160px; display:grid; place-items:center; border-radius:12px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:14px; }
+.activity-frame .report-loading { position:absolute; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(246,247,248,.88); color:var(--color-text-strong); font-size:14px; font-weight:600; }
+.activity-frame .report-loading::before { content:""; width:34px; height:34px; border:3px solid var(--color-line-normal); border-top-color:var(--color-fill-primary); border-radius:50%; animation:record-spin .8s linear infinite; }
 .activity-frame .as-row { border-radius:12px; background:#f9fafc; padding:12px; font-size:14px; }
 .activity-frame .as-row span.k { display:inline-block; border-radius:5px; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); padding:2px 8px; font-weight:600; font-size:13px; }
 .activity-frame .as-row p { margin:8px 0 0; line-height:1.6; color:var(--color-text-strong); }
@@ -443,7 +497,8 @@
 .activity-frame .brief-sec { padding:0 16px; margin-top:15px; }
 .activity-frame .brief-sec > h3 { margin:0 0 8px; font-size:16px; font-weight:600; color:var(--color-text-strong); }
 .activity-frame .brief-card { background:#fff; border-radius:10px; padding:12px; }
-.activity-frame .scene-img { height:132px; border-radius:8px; background:var(--color-background-base); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; margin-bottom:16px; }
+.activity-frame .scene-img { height:132px; border-radius:8px; overflow:hidden; background:var(--color-background-base); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; margin-bottom:16px; }
+.activity-frame .scene-img img { width:100%; height:100%; display:block; object-fit:contain; }
 .activity-frame .scene-text { background:#f9fafc; border-radius:6px; padding:16px; text-align:center; font-size:14px; }
 .activity-frame .kw-line { display:flex; align-items:center; gap:7px; }
 .activity-frame .kw-line b { width:100px; flex:none; text-align:center; font-size:14px; font-weight:700; color:var(--color-fill-primary-pressed); background:var(--color-background-choice); border-radius:5px; padding:4px 0; }
@@ -452,6 +507,14 @@
 .activity-frame .word-strip div { min-width:100px; background:var(--color-background-base); border-radius:6px; padding:8px; text-align:center; }
 .activity-frame .word-strip b { display:block; font-size:14px; color:var(--color-text-strong); }
 .activity-frame .word-strip span { display:block; font-size:12px; color:var(--blue-gray-400); }
+.activity-frame .activity-confirm-backdrop { position:absolute; inset:0; z-index:50; display:flex; align-items:flex-end; background:rgba(15,31,49,.36); }
+.activity-frame .activity-confirm { width:100%; padding:22px 20px max(22px,env(safe-area-inset-bottom)); border-radius:20px 20px 0 0; background:var(--color-background-surface); }
+.activity-frame .activity-confirm h2 { margin:0; color:var(--color-text-heading); font-size:18px; line-height:26px; font-weight:600; }
+.activity-frame .activity-confirm p { margin:6px 0 0; color:var(--color-text-sub); font-size:14px; line-height:20px; }
+.activity-frame .activity-confirm-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:20px; }
+.activity-frame .activity-confirm-actions button { min-height:48px; border:0; border-radius:12px; font-size:15px; line-height:22px; font-weight:600; cursor:pointer; }
+.activity-frame .activity-confirm-actions .secondary { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .activity-confirm-actions .confirm { background:var(--color-fill-primary); color:var(--color-background-surface); }
 .activity-frame .state-view { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:0 32px; text-align:center; }
 .activity-frame .state-view p { margin:0; font-size:16px; line-height:1.5; color:var(--color-text-strong); }
 .activity-frame .skeleton { width:100%; display:flex; flex-direction:column; gap:12px; }

@@ -1,42 +1,34 @@
-import clsx from "clsx";
-
-const skipButtonWhite =
-	"h-8 w-1/2 text-base font-bold rounded-full cursor-pointer hover:bg-gray-100 active:bg-gray-200";
-const skipButtonBlue =
-	"h-8 w-1/2 text-base font-bold rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-500";
+import { useTranslation } from "react-i18next";
 
 interface DialogSkipModalProps {
 	onClose: () => void;
-	onGoReport: () => void;
+	onConfirm: () => void;
+	variant?: "finish" | "exit";
 }
 
-export function DialogSkipModal({ onClose, onGoReport }: DialogSkipModalProps) {
+export function DialogSkipModal({
+	onClose,
+	onConfirm,
+	variant = "finish",
+}: DialogSkipModalProps) {
+	const { t } = useTranslation();
+	const isExit = variant === "exit";
 	return (
-		<div className="absolute top-0 bottom-0 flex h-full w-full items-end bg-black/30">
-			<div className="z-20 mt-auto w-full rounded-t-[10px] bg-white px-[25px] py-[23px]">
-				<div className="font-bold text-base leading-[130%]">
-					미션을 끝까지 해보세요!
-					<br />더 좋은 점수를 받을 수 있어요!
-				</div>
-				<div className="mt-[10px] text-[#8d8d8d] text-[11px] leading-[130%]">
-					Try to finish all the missions.
-					<br />
-					You can get a better score!
-				</div>
-				<div className="mt-5 flex justify-between gap-2">
-					<button
-						type="button"
-						onClick={onGoReport}
-						className={clsx(skipButtonWhite, "bg-white text-[#4396F4]")}
-					>
-						끝내기
+		<div className="activity-confirm-backdrop" role="presentation">
+			{/* biome-ignore lint/a11y/useSemanticElements: ActivityFrame 안에 붙는 조건부 시트라 native dialog.showModal 수명주기를 따로 만들지 않는다 */}
+			<div className="activity-confirm" role="dialog" aria-modal="true">
+				<h2>
+					{isExit ? t("missionChat.exitTitle") : t("missionChat.finishTitle")}
+				</h2>
+				<p>
+					{isExit ? t("missionChat.exitBody") : t("missionChat.finishBody")}
+				</p>
+				<div className="activity-confirm-actions">
+					<button type="button" onClick={onClose} className="secondary">
+						{t("missionChat.continue")}
 					</button>
-					<button
-						type="button"
-						onClick={onClose}
-						className={clsx(skipButtonBlue, "bg-[#4396F4] text-white")}
-					>
-						계속하기
+					<button type="button" onClick={onConfirm} className="confirm">
+						{isExit ? t("missionChat.exit") : t("missionChat.viewReport")}
 					</button>
 				</div>
 			</div>

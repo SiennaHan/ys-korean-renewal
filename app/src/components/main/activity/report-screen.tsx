@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	ActivityAppBar,
@@ -36,6 +37,12 @@ export interface ReportRow {
 	axis: ReportAxis;
 	/** 학생에게 보일 문장. 이미 학생 언어로 온 것이어야 한다 */
 	text: string;
+}
+
+export interface SentenceFeedback {
+	id: string | number;
+	sentence: string;
+	feedback: string;
 }
 
 const CX = 110;
@@ -145,6 +152,10 @@ export function ReportScreen({
 	missions,
 	values,
 	rows,
+	sentenceFeedback = [],
+	loading,
+	retryLabel,
+	nextLabel,
 	onExit,
 	onRetry,
 	onNext,
@@ -155,12 +166,17 @@ export function ReportScreen({
 	missions: number;
 	values: RadarValues;
 	rows: ReportRow[];
+	sentenceFeedback?: SentenceFeedback[];
+	loading?: boolean;
+	retryLabel?: string;
+	nextLabel?: string;
 	onExit?: () => void;
 	onRetry?: () => void;
 	onNext?: () => void;
 }) {
 	const { t } = useTranslation();
-	const percent = Math.floor((hits / missions) * 100);
+	const [tab, setTab] = useState<"evaluation" | "sentences">("evaluation");
+	const percent = missions > 0 ? Math.floor((hits / missions) * 100) : 0;
 
 	return (
 		<ActivityFrame>
@@ -182,41 +198,78 @@ export function ReportScreen({
 						</div>
 					</div>
 				</div>
-				<div className="rep-tabs">
-					<div className="on">{t("report.tabEvaluation")}</div>
-					<div>{t("report.tabSentences")}</div>
+				<div className="rep-tabs" role="tablist">
+					<button
+						type="button"
+						className={tab === "evaluation" ? "on" : ""}
+						aria-selected={tab === "evaluation"}
+						onClick={() => setTab("evaluation")}
+					>
+						{t("report.tabEvaluation")}
+					</button>
+					<button
+						type="button"
+						className={tab === "sentences" ? "on" : ""}
+						aria-selected={tab === "sentences"}
+						onClick={() => setTab("sentences")}
+					>
+						{t("report.tabSentences")}
+					</button>
 				</div>
 				<div className="scroll-area" style={{ padding: 12 }}>
-					<div style={{ background: "#fff", borderRadius: 10, padding: 10 }}>
-						<Radar values={values} />
-						<div
-							style={{
-								marginTop: 20,
-								display: "flex",
-								flexDirection: "column",
-								gap: 12,
-							}}
-						>
-							{rows.map((row) => (
-								<div className="as-row" key={row.axis}>
-									<span className="k">{t(AXIS_KEY[row.axis])}</span>
-									<p>{row.text}</p>
-								</div>
-							))}
+					{tab === "evaluation" ? (
+						<div className="report-card">
+							<Radar values={values} />
+							<div className="report-rows">
+								{rows.map((row) => (
+									<div className="as-row" key={row.axis}>
+										<span className="k">{t(AXIS_KEY[row.axis])}</span>
+										<p>{row.text}</p>
+									</div>
+								))}
+							</div>
 						</div>
-					</div>
+					) : (
+						<div className="report-feedback-list">
+							{sentenceFeedback.length > 0 ? (
+								sentenceFeedback.map((item, index) => (
+									<div className="wrong-card" key={item.id}>
+										<span className="tag w">
+											{t("result.wrongItem", { index: index + 1 })}
+										</span>
+										<p className="report-sentence">{item.sentence}</p>
+										<span className="tag e">
+											{t("result.explanation", { index: index + 1 })}
+										</span>
+										<p className="report-explanation">{item.feedback}</p>
+									</div>
+								))
+							) : (
+								<div className="report-empty">{t("report.emptySentences")}</div>
+							)}
+						</div>
+					)}
 				</div>
 			</main>
 			<ActivityFooter>
 				<Dock mainStyle={{ gap: 12 }}>
 					<PrimaryButton
-						label={t("result.practiceAgain")}
+						label={retryLabel ?? t("result.practiceAgain")}
 						on
 						onClick={onRetry}
 					/>
-					<PrimaryButton label={t("result.nextActivity")} on onClick={onNext} />
+					<PrimaryButton
+						label={nextLabel ?? t("result.nextActivity")}
+						on
+						onClick={onNext}
+					/>
 				</Dock>
 			</ActivityFooter>
+			{loading && (
+				<div className="report-loading" aria-live="polite">
+					{t("report.loading")}
+				</div>
+			)}
 		</ActivityFrame>
 	);
 }

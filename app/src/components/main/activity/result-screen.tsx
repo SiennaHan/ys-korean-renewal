@@ -25,6 +25,7 @@ export function ResultScreen({
 	lesson,
 	total,
 	answered,
+	grading = "graded",
 	graded,
 	correct,
 	wrongs,
@@ -35,8 +36,10 @@ export function ResultScreen({
 	lesson: string;
 	total: number;
 	answered: number;
+	/** 채점이 없는 활동은 완료 수만 보여 준다. 정답률 빈 카드를 만들지 않는다 */
+	grading?: "graded" | "completion";
 	/** 채점된 문항 수. 0 이면 정답률을 낼 수 없어 — 로 둔다 */
-	graded: number;
+	graded?: number;
 	correct: number;
 	wrongs: WrongItem[];
 	onExit?: () => void;
@@ -45,6 +48,7 @@ export function ResultScreen({
 }) {
 	const { t } = useTranslation();
 	const accuracy = graded ? `${Math.round((correct / graded) * 100)}%` : "—";
+	const completionOnly = grading === "completion";
 
 	return (
 		<ActivityFrame>
@@ -53,17 +57,19 @@ export function ResultScreen({
 				<div className="result-head">
 					<h2>{t("result.title")}</h2>
 					<p>{t("result.answered", { total, answered })}</p>
-					<div className="stat-row">
+					<div className={`stat-row ${completionOnly ? "single" : ""}`}>
 						<div>
 							<span>{t("result.kAnswered")}</span>
 							<strong>
 								{answered} / {total}
 							</strong>
 						</div>
-						<div>
-							<span>{t("result.kAccuracy")}</span>
-							<strong>{accuracy}</strong>
-						</div>
+						{!completionOnly && (
+							<div>
+								<span>{t("result.kAccuracy")}</span>
+								<strong>{accuracy}</strong>
+							</div>
+						)}
 					</div>
 				</div>
 				<div className="scroll-area" style={{ padding: 16 }}>

@@ -68,7 +68,7 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, children }) => {
 				// biome-ignore lint/a11y/useSemanticElements: native <dialog> 로 가려면 showModal() 을 부르는 구조 변경이 필요하다 — 위 주석의 "아직 없는 것" 참고
 				role="dialog"
 				aria-modal="true"
-				className="max-w-sm rounded-[20px] bg-white p-4 shadow-2xl outline-none"
+				className="max-w-sm rounded-[20px] border border-[#eef0f3] bg-white p-2 outline-none"
 			>
 				{children}
 			</div>

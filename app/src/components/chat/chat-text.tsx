@@ -103,13 +103,13 @@ export const BotMsgBox = ({
 		}
 	};
 	return (
-		<div className="mt-[10px] mr-[15px] flex flex-row px-[12px]">
+		<div className="mission-msg mission-msg-bot mt-[10px] mr-[15px] flex flex-row px-[12px]">
 			<div>
-				<div className="flex size-[40px] flex-shrink-0 items-center justify-center">
+				<div className="mission-avatar flex size-[40px] flex-shrink-0 items-center justify-center">
 					<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />
 				</div>
 			</div>
-			<div className="relative ml-[10px] rounded-[15px] bg-[#F6F7F8] p-[10px] text-[14px]">
+			<div className="mission-bubble relative ml-[10px] rounded-[15px] bg-[#F6F7F8] p-[10px] text-[14px]">
 				<p>{msg}</p>
 				{replayAudio && (
 					<div className="mt-[5px] flex flex-row gap-[6px]">
@@ -142,9 +142,9 @@ export const BotMsgBox = ({
 
 export const UserMsgBox = ({ msg }: ChatInterface) => {
 	return (
-		<div className="mt-[10px] px-[12px]">
+		<div className="mission-msg mission-msg-me mt-[10px] px-[12px]">
 			<div className="flex justify-end">
-				<div className="relative rounded-[15px] bg-[#DBEDFF] p-[10px] text-[#24425F] text-[14px]">
+				<div className="mission-bubble relative rounded-[15px] bg-[#DBEDFF] p-[10px] text-[#24425F] text-[14px]">
 					<div className="-mr-2 -translate-y-1/3 absolute top-[15px] right-0 h-0 w-0 transform border-y-[3px] border-y-transparent border-l-[#DBEDFF] border-l-[10px] border-solid" />
 					<p>{msg} </p>
 				</div>
@@ -164,7 +164,7 @@ const FeedbackBox = ({
 	icon: React.ReactNode;
 }) => {
 	return (
-		<div className="mt-[5px] rounded-[8px] bg-white px-[7px] py-[3px]">
+		<div className="mission-feedback mt-[5px] rounded-[8px] bg-white px-[7px] py-[3px]">
 			<div className="flex items-start">
 				<div className="size-[20px] flex-shrink-0">{icon}</div>
 				<div className="ml-[5px] flex-1 text-[12px]" style={{ color }}>
@@ -177,9 +177,9 @@ const FeedbackBox = ({
 
 export const AlertUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
 	return (
-		<div className="mt-[10px] ml-[50px] px-[12px]">
+		<div className="mission-msg mission-msg-me mission-msg-wrong mt-[10px] ml-[50px] px-[12px]">
 			<div className="flex justify-end">
-				<div className="relative rounded-[15px] bg-[#FFE8E8] p-[10px] text-[#383A3F] text-[14px]">
+				<div className="mission-bubble relative rounded-[15px] bg-[#FFE8E8] p-[10px] text-[#383A3F] text-[14px]">
 					<div className="-mr-2 -translate-y-1/3 absolute top-[15px] right-0 h-0 w-0 transform border-y-[3px] border-y-transparent border-l-[#FFE8E8] border-l-[10px] border-solid" />
 					<div>{msg} </div>
 					{alertMsg && (
@@ -199,9 +199,9 @@ export const AlertUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
 
 export const TipUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
 	return (
-		<div className="mt-[10px] ml-[50px] px-[12px]">
+		<div className="mission-msg mission-msg-me mission-msg-tip mt-[10px] ml-[50px] px-[12px]">
 			<div className="flex justify-end">
-				<div className="relative rounded-[15px] bg-[#DBEDFF] p-[10px] text-[#383A3F] text-[14px]">
+				<div className="mission-bubble relative rounded-[15px] bg-[#DBEDFF] p-[10px] text-[#383A3F] text-[14px]">
 					<div className="-mr-2 -translate-y-1/3 absolute top-[15px] right-0 h-0 w-0 transform border-y-[3px] border-y-transparent border-l-[#DBEDFF] border-l-[10px] border-solid" />
 					<div>{msg} </div>
 					{alertMsg && (
@@ -219,13 +219,13 @@ export const TipUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
 
 export const BotMsgProgress = () => {
 	return (
-		<div className="mt-[10px] mr-[15px] flex flex-row px-[12px]">
+		<div className="mission-msg mission-msg-bot mt-[10px] mr-[15px] flex flex-row px-[12px]">
 			<div>
-				<div className="flex size-[40px] flex-shrink-0 items-center justify-center">
+				<div className="mission-avatar flex size-[40px] flex-shrink-0 items-center justify-center">
 					<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />
 				</div>
 			</div>
-			<div className="relative ml-[10px] h-[40px] w-[60px] rounded-[15px] bg-[#F6F7F8] p-[10px]">
+			<div className="mission-bubble relative ml-[10px] h-[40px] w-[60px] rounded-[15px] bg-[#F6F7F8] p-[10px]">
 				<div className="mt-[9px] flex justify-center">
 					<TypingIndicator />
 				</div>
@@ -252,7 +252,7 @@ export const UserMsgProgress = () => {
 
 export const CompletedMsgBox = (props: CompleteBoxInterface) => {
 	return (
-		<div className="w-full p-[10px] px-[12px]">
+		<div className="mission-complete w-full p-[10px] px-[12px]">
 			<div className="rounded-[10px] bg-[#F9FAFC] px-[20px] py-[14px]">
 				<div className="text-center font-bold text-[16px]">
 					{"축하해요! 모든 미션을 완료했어요"} <br />

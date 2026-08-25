@@ -14,10 +14,13 @@ export { FeedbackMessage } from "./feedback";
 export {
 	IconCheck,
 	IconClose,
+	IconDown,
+	IconKeyboard,
 	IconMic,
 	IconNext,
 	IconSpinner,
 	IconStop,
+	IconUp,
 	IconVolume,
 } from "./icons";
 export { MicBlockedDialog } from "./mic-blocked";
@@ -27,6 +30,7 @@ export {
 	type RadarValues,
 	type ReportAxis,
 	type ReportRow,
+	type SentenceFeedback,
 	ReportScreen,
 } from "./report-screen";
 export { ResultScreen, type WrongItem } from "./result-screen";

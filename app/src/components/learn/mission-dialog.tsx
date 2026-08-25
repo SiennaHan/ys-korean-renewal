@@ -1,4 +1,3 @@
-import { postSpeaking } from "@/api/analyzeApi";
 import type { CheckMission, FeedbackItem } from "@/api/apiType";
 import {
 	getChatDialog,
@@ -7,8 +6,6 @@ import {
 	postCompleteDialog,
 } from "@/api/chat";
 import { useSharedAudio } from "@/components/audio/audio-provider";
-import { useMicPermission } from "@/components/audio/mic-permission-provider";
-import { ChatHeader } from "@/components/chat/chat-header";
 import ChatMessage, {
 	type ChatMsgProps,
 	type MessageType,
@@ -17,14 +14,12 @@ import { DialogInput } from "@/components/dialog/dialog-input";
 import { DialogScenario } from "@/components/dialog/dialog-scenario";
 import { DialogSkipModal } from "@/components/dialog/dialog-skip-modal";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
+import { ActivityAppBar, ActivityFrame } from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { env } from "@/config/env";
 import { useRecording } from "@/hooks/useRecording";
-import { chapters } from "@/shared/data/chapter";
 import { dialogs } from "@/shared/data/dialog";
 import { dialog_keywords } from "@/shared/data/dialog_keyword";
-import { modules } from "@/shared/data/module";
-import { units } from "@/shared/data/unit";
 import { getTTSAudio } from "@/shared/tts-cache";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -37,10 +32,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
  */
 export default function MissionDialog({
 	dialogId,
+	lesson,
 	onClose,
 	onReport,
 }: {
 	dialogId: string;
+	lesson: string;
 	/** 대화를 그만두고 나간다 */
 	onClose: () => void;
 	/** 리포트 단계로 */
@@ -58,9 +55,6 @@ export default function MissionDialog({
 	const missionList = dialog_keywords.filter(
 		(item) => item.dialog_id === dialogId,
 	);
-	const module = modules.find((item) => item.code === dialog.module_code);
-	const unit = units.find((item) => item.id === module?.unit_id);
-	const chapter = chapters.find((item) => item.id === unit?.chapter_id);
 	const scenarioImgUrl = `${env.RES_URL_ROOT}/${dialog.content_img}`;
 
 	// --- State ---
@@ -69,7 +63,9 @@ export default function MissionDialog({
 	const [isResponding, setResponding] = useState(false);
 	const [completedList, setCompletedList] = useState<string[]>([]);
 	const [msgList, setMsgList] = useState<ChatMsgProps[]>([]);
-	const [isSkip, setIsSkip] = useState(false);
+	const [confirmKind, setConfirmKind] = useState<"finish" | "exit" | null>(
+		null,
+	);
 	const [isShowInputBox, setIsShowInputBox] = useState(false);
 	const [textareaValue, setTextareaValue] = useState("");
 
@@ -203,6 +199,19 @@ export default function MissionDialog({
 	}, [textareaValue, unlock, uploadMsg]);
 
 	const goReport = onReport;
+	const hasUserProgress =
+		completedList.length > 0 ||
+		msgList.some((item) =>
+			["user", "tip", "alert", "request", "completed"].includes(item.msgType),
+		) ||
+		recording.recordState !== "idle" ||
+		Boolean(recording.recordedMsg) ||
+		textareaValue.trim().length > 0;
+
+	const requestExit = () => {
+		if (hasUserProgress) setConfirmKind("exit");
+		else onClose();
+	};
 
 	// --- Effects ---
 
@@ -353,16 +362,13 @@ export default function MissionDialog({
 	}, []);
 
 	return (
-		<div id="main-chat-container" className="flex h-full flex-col">
-			{/* Header & Scenario */}
-			<div>
-				<ChatHeader
-					chapterSeq={dialog.chapter}
-					unitTitle={dialog.scenario}
-					skip={() => setIsSkip(true)}
-					isCompleted={isCompleted}
-					goResult={goReport}
-				/>
+		<ActivityFrame id="main-chat-container">
+			<ActivityAppBar
+				lesson={lesson}
+				onExit={requestExit}
+				onSkip={() => (isCompleted ? goReport() : setConfirmKind("finish"))}
+			/>
+			<div className="mission-chat-header">
 				<DialogScenario
 					scenario={dialog.scenario}
 					scenarioEng={dialog.scenario_eng}
@@ -373,11 +379,11 @@ export default function MissionDialog({
 			</div>
 
 			{/* Chat Messages */}
-			<div className="scrollbar-hide relative flex-1 overflow-y-auto">
+			<div className="thread scrollbar-hide">
 				{msgList.map((item) => (
 					<ChatMessage key={item.idx} {...item} />
 				))}
-				<div className="h-[90px] w-full" ref={scrollEndRef} />
+				<div className="chat-end-anchor" ref={scrollEndRef} />
 			</div>
 
 			{/* Input Area */}
@@ -398,12 +404,13 @@ export default function MissionDialog({
 			/>
 
 			{/* Skip Confirmation Modal */}
-			{isSkip && (
+			{confirmKind && (
 				<DialogSkipModal
-					onClose={() => setIsSkip(false)}
-					onGoReport={goReport}
+					variant={confirmKind}
+					onClose={() => setConfirmKind(null)}
+					onConfirm={confirmKind === "exit" ? onClose : goReport}
 				/>
 			)}
-		</div>
+		</ActivityFrame>
 	);
 }

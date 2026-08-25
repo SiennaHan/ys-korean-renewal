@@ -18,6 +18,8 @@ export interface BriefingContent {
 	keywords: [string, string][];
 	/** 미리 볼 낱말 — [한국어, 뜻] */
 	words: [string, string][];
+	/** 원장에 있는 실제 상황 이미지. 없을 때만 빈 이미지 자리를 쓴다 */
+	sceneImageUrl?: string;
 }
 
 /**
@@ -52,7 +54,13 @@ export function BriefingScreen({
 					<div className="brief-sec">
 						<h3>{t("briefing.scenario")}</h3>
 						<div className="brief-card">
-							<div className="scene-img">상황 이미지</div>
+							<div className="scene-img">
+								{content.sceneImageUrl ? (
+									<img src={content.sceneImageUrl} alt="" />
+								) : (
+									<span aria-hidden="true">상황 이미지</span>
+								)}
+							</div>
 							<div className="scene-text">
 								{content.scene}
 								<div style={{ color: "var(--blue-gray-400)" }}>
@@ -73,14 +81,16 @@ export function BriefingScreen({
 									</div>
 								))}
 							</div>
-							<div className="word-strip">
-								{content.words.map(([word, meaning]) => (
-									<div key={word}>
-										<b>{word}</b>
-										<span>{meaning}</span>
-									</div>
-								))}
-							</div>
+							{content.words.length > 0 && (
+								<div className="word-strip">
+									{content.words.map(([word, meaning]) => (
+										<div key={word}>
+											<b>{word}</b>
+											<span>{meaning}</span>
+										</div>
+									))}
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
