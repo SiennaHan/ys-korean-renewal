@@ -391,6 +391,9 @@ TWIN_ALLOW = {
     " 그 뒤 한 번 더 고쳤다 — 흉내 내지 말고 다른 화면과 같은 AudioRow 컴포넌트를"
     " 쓰고, 풀어야 할 글자는 점선 박스(.combo-target)로 줄을 나눴다",
     "activity__write3.html": "같음",
+    "nav__jamo__resume.html": "활동 이름을 기획자가 다시 정했다(08-24) —"
+    " \"자음-모음 조합하고 쓰기\" → \"자음-모음 조합하기\". 앱이 쓰는 module.ts 와"
+    " mockups 를 같이 바꿨고, captured/ 는 그때 뜬 날것이라 그대로 둔다",
 }
 
 

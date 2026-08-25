@@ -59,7 +59,7 @@ export const jamoItems = raw as JamoItem[];
  */
 export const JAMO_SUBS = [
 	"listen-repeat", // 1 발음 듣고 따라하기
-	"write", // 2 자음·모음 조합하고 쓰기
+	"write", // 2 자음·모음 조합하기
 	"listen-repeat2", // 3 단어 듣고 따라하기
 	"read-write", // 4 단어 쓰기
 	"listen", // 5 듣고 고르기
