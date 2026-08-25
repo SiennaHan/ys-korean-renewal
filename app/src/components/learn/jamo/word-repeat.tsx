@@ -103,6 +103,22 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 		if (myAudioRef.current) myAudioRef.current.play();
 	};
 
+	/*
+	 * 건너뛰기 — 이 화면은 하단 CTA 가 없고 연습 목록에서 낱말을 골라 진행한다.
+	 * 그래서 "다음" 은 목록의 다음 낱말이다. 마지막이면 화면을 나간다.
+	 * 목업 모든 활동 화면에 건너뛰기가 있는데 실제 자모 화면엔 없었다 —
+	 * 대조가 못 잡는 자리다(activity-parity 는 learn/jamo 를 안 본다).
+	 */
+	const skip = () => {
+		const nextIndex = problemIndex + 1;
+		if (nextIndex >= problemList.length) {
+			router.history.back();
+			return;
+		}
+		setProblemIndex(nextIndex);
+		selectWord(nextIndex);
+	};
+
 	const selectWord = (index: number) => {
 		init();
 		sound.playClick();
@@ -213,7 +229,11 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 
 	return (
 		<ActivityFrame>
-			<ActivityAppBar lesson={lesson} onExit={() => router.history.back()} />
+			<ActivityAppBar
+				lesson={lesson}
+				onExit={() => router.history.back()}
+				onSkip={skip}
+			/>
 
 			<ActivityBody>
 				<ProblemCard

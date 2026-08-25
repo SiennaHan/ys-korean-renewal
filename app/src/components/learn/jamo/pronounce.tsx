@@ -105,6 +105,21 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 		if (myAudioRef.current) myAudioRef.current.play();
 	};
 
+	/*
+	 * 건너뛰기 — word-repeat 과 같은 사정이다. 하단 CTA 가 없고 연습 목록에서
+	 * 낱말을 골라 진행하므로 "다음" 은 목록의 다음 낱말이고, 마지막이면 나간다.
+	 * 여기는 낱말을 id 로 고르므로 지금 낱말의 자리를 찾아 다음 것을 넘긴다.
+	 */
+	const skip = () => {
+		const here = problemList.findIndex((pr) => pr.id === selectedWord?.id);
+		const nextItem = problemList[here + 1];
+		if (!nextItem) {
+			router.history.back();
+			return;
+		}
+		selectWord(nextItem.id);
+	};
+
 	const selectWord = (problemId: string) => {
 		init();
 		sound.playClick();
@@ -205,7 +220,11 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 
 	return (
 		<ActivityFrame>
-			<ActivityAppBar lesson={lesson} onExit={() => router.history.back()} />
+			<ActivityAppBar
+				lesson={lesson}
+				onExit={() => router.history.back()}
+				onSkip={skip}
+			/>
 
 			<ActivityBody>
 				<ProblemCard

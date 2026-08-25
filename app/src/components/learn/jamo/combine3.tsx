@@ -111,6 +111,20 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 
 	const [stage, setStage] = useState<"select" | "write">("select");
 
+	/*
+	 * 건너뛰기는 next() 를 쓰지 않는다. next() 는 조합 단계에서 **정답 소리를 내고**
+	 * 따라쓰기 단계로 넘기는 것이라 "잘했다" 는 신호가 된다 — 건너뛸 때 낼 소리가
+	 * 아니다. 셸의 건너뛰기는 "이 문항을 건너뛴다" 는 뜻이므로 단계와 상관없이
+	 * 다음 문항으로 보낸다(problemIndex 가 바뀌면 init() 이 단계도 되돌린다).
+	 */
+	const skip = () => {
+		if (problemIndex < problemList.length - 1) {
+			setProblemIndex(problemIndex + 1);
+		} else {
+			setIsExit(true);
+		}
+	};
+
 	const next = () => {
 		sound.playCorrect();
 		if (stage === "select") {
@@ -196,7 +210,9 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 
 	return (
 		<ActivityFrame>
-			<ActivityAppBar lesson={lesson} onExit={exit} />
+			{/* 건너뛰기 — 목업 모든 활동 화면에 있는데 실제 자모 화면엔 없었다.
+			    대조가 못 잡는 자리다(activity-parity 는 learn/jamo 를 안 본다). */}
+			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={skip} />
 
 			{stage === "select" ? (
 				<ActivityBody>

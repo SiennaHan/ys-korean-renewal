@@ -89,6 +89,19 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 		router.history.back();
 	};
 
+	/*
+	 * 건너뛰기는 next() 를 쓰지 않는다. next() 는 "정답 표시 후 1초 딜레이" 용이라
+	 * 선택지를 잠그고 1초를 기다린다 — 건너뛸 때는 그 1초가 멈춘 것처럼 보인다.
+	 * 그래서 바로 넘긴다.
+	 */
+	const skip = () => {
+		if (problemIndex < problemList.length - 1) {
+			setProblemIndex(problemIndex + 1);
+		} else {
+			setIsExit(true);
+		}
+	};
+
 	const next = () => {
 		// 맞았습니다 출력 후 1초 딜레이 후
 
@@ -183,7 +196,9 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 
 	return (
 		<ActivityFrame>
-			<ActivityAppBar lesson={lesson} onExit={exit} />
+			{/* 건너뛰기 — 목업 모든 활동 화면에 있는데 실제 자모 화면엔 없었다.
+			    대조가 못 잡는 자리다(activity-parity 는 learn/jamo 를 안 본다). */}
+			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={skip} />
 			<ActivityProgress
 				current={problemIndex}
 				total={problemList.length}
