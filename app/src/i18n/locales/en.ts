@@ -292,6 +292,7 @@ const en = {
 		canvasLabel: "Writing area",
 		audioOf: "Play {{word}}",
 		audioPlay: "Play sound",
+		comboTarget: "Letter to build",
 		hintPeek: "Hint",
 		hintPeekLabel: "Hint — briefly shows the letter to build",
 	},

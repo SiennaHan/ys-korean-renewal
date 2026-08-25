@@ -291,6 +291,7 @@ const ko = {
 		canvasLabel: "글자 쓰기 영역",
 		audioOf: "{{word}} 발음 듣기",
 		audioPlay: "소리 듣기",
+		comboTarget: "만들 글자",
 		hintPeek: "힌트",
 		hintPeekLabel: "힌트 — 만들 글자를 잠깐 보여 줍니다",
 	},

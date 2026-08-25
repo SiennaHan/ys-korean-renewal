@@ -292,6 +292,7 @@ const ja = {
 		canvasLabel: "文字を書く領域",
 		audioOf: "{{word}} の発音を聞く",
 		audioPlay: "音を聞く",
+		comboTarget: "作る文字",
 		hintPeek: "ヒント",
 		hintPeekLabel: "ヒント — 作る文字を少しだけ表示します",
 	},

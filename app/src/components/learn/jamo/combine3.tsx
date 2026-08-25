@@ -13,7 +13,8 @@ import {
 	ActivityBody,
 	ActivityFooter,
 	ActivityFrame,
-	ComboResult,
+	AudioRow,
+	ComboTarget,
 	Dock,
 	JamoSection,
 	PrimaryButton,
@@ -200,9 +201,12 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 			{stage === "select" ? (
 				<ActivityBody>
 					<ProblemCard instruction={t("activity.instrWriteSelect")}>
-						<ComboResult
-							/* 힌트를 누른 1초 동안만 정답을 보여 준다. 그 밖에는 지금 조합한
-							   글자를, 아직 안 골랐으면 "?" 를 보여 준다 */
+						<AudioRow
+							label={t("player.playAudio")}
+							sub={t("activity.audioSub")}
+							onPlay={playAudio}
+						/>
+						<ComboTarget
 							syllable={
 								hintOn ? (problem?.content ?? "?") : combined || "?"
 							}
@@ -213,7 +217,6 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 											.join(" + ")
 									: ""
 							}
-							onPlay={playAudio}
 							onHint={showHint}
 							hintOn={hintOn}
 						/>

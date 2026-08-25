@@ -288,6 +288,7 @@ const zh = {
 		canvasLabel: "书写区域",
 		audioOf: "播放 {{word}} 的发音",
 		audioPlay: "播放声音",
+		comboTarget: "要组合的字",
 		hintPeek: "提示",
 		hintPeekLabel: "提示 — 短暂显示要组合的字",
 	},

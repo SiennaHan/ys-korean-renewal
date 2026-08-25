@@ -53,7 +53,7 @@ export {
 	AudioBar,
 	AudioPair,
 	BlankCard,
-	ComboResult,
+	ComboTarget,
 	HeardRow,
 	ListenCopy,
 	MeaningFocus,

@@ -26,7 +26,7 @@ import { FailedScreen, LoadingScreen, MicDeniedScreen } from "./state-screens";
 import {
 	AudioBar,
 	AudioPair,
-	ComboResult,
+	ComboTarget,
 	MouthVideo,
 	Passage,
 	QuestionText,
@@ -502,7 +502,7 @@ export const 자모조합_2단: Story = {
 			body={
 				<>
 					<ProblemCard instruction="글자를 만들고 써 보세요.">
-						<ComboResult syllable="가" parts="ㄱ + ㅏ" />
+						<ComboTarget syllable="가" parts="ㄱ + ㅏ" />
 					</ProblemCard>
 					<JamoSection
 						step={1}
@@ -527,7 +527,7 @@ export const 자모조합_3단받침: Story = {
 			body={
 				<>
 					<ProblemCard instruction="글자를 만들고 써 보세요.">
-						<ComboResult syllable="산" parts="ㅅ + ㅏ + ㄴ" />
+						<ComboTarget syllable="산" parts="ㅅ + ㅏ + ㄴ" />
 					</ProblemCard>
 					<JamoSection
 						step={1}

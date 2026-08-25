@@ -291,6 +291,7 @@ const vi = {
 		canvasLabel: "Vùng viết chữ",
 		audioOf: "Nghe phát âm {{word}}",
 		audioPlay: "Phát âm thanh",
+		comboTarget: "Chữ cần ghép",
 		hintPeek: "Gợi ý",
 		hintPeekLabel: "Gợi ý — hiện nhanh chữ cần ghép",
 	},

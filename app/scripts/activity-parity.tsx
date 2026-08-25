@@ -53,7 +53,7 @@ import {
 import {
 	AudioBar,
 	AudioPair,
-	ComboResult,
+	ComboTarget,
 	ListenCopy,
 	MouthVideo,
 	Passage,
@@ -404,7 +404,11 @@ const SCREENS: Record<string, ReactElement> = {
 			body={
 				<>
 					<ProblemCard instruction={T("activity.instrWriteSelect")}>
-						<ComboResult syllable="가" parts="ㄱ + ㅏ" onHint={() => {}} />
+						<AudioRow
+							label={T("player.playAudio")}
+							sub={T("activity.audioSub")}
+						/>
+						<ComboTarget syllable="가" parts="ㄱ + ㅏ" onHint={() => {}} />
 					</ProblemCard>
 					<JamoSection
 						step={1}
@@ -426,7 +430,11 @@ const SCREENS: Record<string, ReactElement> = {
 			body={
 				<>
 					<ProblemCard instruction={T("activity.instrWriteSelect")}>
-						<ComboResult syllable="산" parts="ㅅ + ㅏ + ㄴ" onHint={() => {}} />
+						<AudioRow
+							label={T("player.playAudio")}
+							sub={T("activity.audioSub")}
+						/>
+						<ComboTarget syllable="산" parts="ㅅ + ㅏ + ㄴ" onHint={() => {}} />
 					</ProblemCard>
 					<JamoSection
 						step={1}
