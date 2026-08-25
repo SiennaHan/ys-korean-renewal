@@ -578,13 +578,29 @@ def ledger_claims(text: dict[str, str]) -> list[str]:
         return []
     out: list[str] = []
     pat = re.compile(r"원장[^\n]{0,12}정본[^\n]{0,40}?v(\d+)|정본[^\n]{0,12}원장[^\n]{0,40}?v(\d+)")
+    # 파일명으로 못박는 것도 잡는다 — README 가 표 머리에 `…_v30.xlsx` 라 적어 두고
+    # 낡았는데 위 패턴은 "정본은 vN" 꼴만 봐서 놓쳤다(2026-08-25).
+    # 다만 시점 기록은 옛 판을 정당하게 부른다("v24 가 400행을 날렸다") — 그래서
+    # 같은 줄에서 40자 안에 '정본' 이 있을 때만 본다.
+    fname = re.compile(
+        r"글로벌_교재기반_콘텐츠_v(\d+)(?:_[^\s`]*)?\.xlsx[^\n]{0,40}?정본"
+        r"|정본[^\n]{0,40}?글로벌_교재기반_콘텐츠_v(\d+)(?:_[^\s`]*)?\.xlsx"
+    )
     for src, body in text.items():
-        for m in pat.finditer(re.sub(r"\s+", " ", body)):
+        flat = re.sub(r"\s+", " ", body)
+        for m in pat.finditer(flat):
             got = int(m.group(1) or m.group(2))
             if got != best:
                 out.append(
                     f"[원장 버전] {src} 가 정본을 v{got} 이라 적었는데 지금은 v{best} 다\n"
                     f"           번호를 적지 말고 '가장 높은 번호' 라고 써라"
+                )
+        for m in fname.finditer(flat):
+            got = int(m.group(1) or m.group(2))
+            if got != best:
+                out.append(
+                    f"[원장 버전] {src} 가 정본을 파일명 v{got} 으로 못박았는데 지금은 v{best} 다\n"
+                    f"           `글로벌_교재기반_콘텐츠_v*.xlsx` 로 적어라"
                 )
     return out
 
