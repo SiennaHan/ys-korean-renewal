@@ -53,7 +53,7 @@
 | 새로 뜬 상태 | **54** (360폭·한국어 기준) |
 | 추가 캡처 | 320폭 7 · 영어 7 |
 | 파일 | `.png` · `.html`(활동 뿌리 outerHTML) · `.md`(상태 설명) 세 벌 |
-| 분류 | 표시 컴포넌트 `MATCH` 24 · `UNSPECIFIED` 27 · `DRIFT` 3 · 실제 라우트 `MATCH` 13 · `DRIFT` 5 · `UNSPECIFIED` 3 |
+| 분류 | 표시 컴포넌트 `MATCH` 24 · `UNSPECIFIED` 27 · `DRIFT` 3 · 실제 라우트 `MATCH` 16 · `DRIFT` 3 · `UNSPECIFIED` 3 |
 | 디자인 결정이 먼저 필요 | 10 |
 
 ## 어떻게 떴나 — 지어내지 않았다
@@ -247,9 +247,9 @@
 | `real__jamo_readwrite` | 단어 읽고 쓰기 | `/learn/jamo?level=1&lesson=1&group=1&sub=4` | `activity__readwrite` | `MATCH` |
 | `real__jamo_listen` | 자모 듣고 고르기 | `/learn/jamo?level=1&lesson=1&group=1&sub=5` | `activity__jamoListen` | `MATCH` |
 | `real__jamo_combine3` | 자모 3단·받침 조합 | `/learn/jamo?level=1&lesson=3&group=1&sub=6` | `activity__write3_3` | `DRIFT` |
-| `real__chat_briefing` | 미션대화 브리핑 | `/learn/mission-chat?level=1&lesson=4` | `activity__briefing` | `DRIFT` |
+| `real__chat_briefing` | 미션대화 브리핑 | `/learn/mission-chat?level=1&lesson=4` | `activity__briefing` | `MATCH` |
 | `real__role` | 롤플레잉 | `/learn/roleplay?level=1&lesson=4` | `activity__role` | `MATCH` |
-| `real__flash` | 플래시카드 | `/learn/flashcard?level=1&lesson=4` | `activity__flash_front` | `DRIFT` |
+| `real__flash` | 플래시카드 | `/learn/flashcard?level=1&lesson=4` | `activity__flash_front` | `MATCH` |
 | `real__word` | 어휘 미리보기 | `/learn/word?level=1&lesson=4` | `activity__wordPreview` | `MATCH` |
 | `real__read` | 읽기 문제 | `/learn/read?level=1&lesson=4` | `activity__reading` | `MATCH` |
 | `real__listen` | 듣기 문제 | `/learn/listen?level=1&lesson=4` | `activity__listen_ox` | `MATCH` |
@@ -260,8 +260,9 @@
 | `real__chat_text_input` | 미션대화 텍스트 입력 | `같음 → 키보드 버튼` | `없음` | `UNSPECIFIED` |
 | `real__readwrite_modal_empty` | 단어 읽고 쓰기 모달 | `/learn/jamo?level=1&lesson=1&group=1&sub=4 → 글자 칸` | `activity__write_canvas_empty` | `MATCH` |
 | `real__readwrite_modal_drawn` | 단어 읽고 쓰기 모달 | `같음 → 획 긋기` | `activity__write_canvas_drawn` | `MATCH` |
-| `real__readwrite_modal_wrong` | 단어 읽고 쓰기 모달 | `같음 → 확인(틀린 글씨)` | `activity__write_canvas_wrong` | `DRIFT` |
+| `real__readwrite_modal_wrong` | 단어 읽고 쓰기 모달 | `같음 → 확인(틀린 글씨)` | `activity__write_canvas_wrong` | `MATCH` |
 | `real__role_me_to_ai` | 롤플레잉 연습 순서 바꿈 | `/learn/roleplay?level=1&lesson=4 → Me → AI` | `없음` | `UNSPECIFIED` |
+| `real__flash_nodata` | 플래시카드 — 데이터 없는 급·과 | `/learn/flashcard?level=2&lesson=4` | `없음` | `DRIFT` |
 
 ### 자모 매핑이 실제 화면으로 확인됐다
 
@@ -436,6 +437,64 @@ state={chosen ? (sel === question.answer ? "ok" : …) : ""}
 **AI 차례는 여전히 못 담았다.** `playState` 가 `model-speaking` 으로 가려면
 TTS 재생이 끝나거나 연습 턴 녹음이 끝나야 하는데, 로컬에 TTS 서버가 없고
 마이크는 브라우저가 막는다. 대사 줄을 눌러도 도크는 「Tap to record」 그대로다.
+
+## 2026-08-25 밤 — `2ec44ff` 뒤 다시 쟀다
+
+미션대화·쓰기 예외를 공통 디자인으로 맞춘 커밋이 들어와 **또 전부 다시 떴다.**
+
+### 고쳐진 것
+
+| | 전 | 지금 |
+|---|---|---|
+| 쓰기 틀린 판정 | 원형 ✕ 알약 + **획이 지워짐** | **빨간 외곽선·배경 + 획 유지**, 원형 ✕ 없음 — 확정 규칙 그대로 |
+| 쓰기 모달 문구 | 한국어가 박혀 있음 | **i18n** — Undo · Erase all · Check · 닫기 ✕ |
+| 플래시카드 셸 | `.activity-frame` 없음 | **쓴다** + 진행 표시도 정책대로 |
+| 미션대화 브리핑 셸 | `.activity-frame` 없음 | **쓴다** |
+| 통짜 컴포넌트 | 여섯 다 제품이 안 씀 | **`BriefingScreen`·`ReportScreen` 둘이 실제 화면에 연결됐다** |
+
+### 아직 남은 것
+
+**① 문법 채점 — 정답 공개가 그대로다.**
+`fill-blank.tsx` 가 `sel === question.answer ? "ok"` 라 **오답을 골라도 정답 칩이
+초록**이다. 오답 칩에 `✕` 표가 없는 것도 그대로다.
+
+**② 결과 화면 — 고쳤는데 아무도 안 쓴다.**
+`ResultScreen` 에 `grading="completion"` 이 생겨 정답률 카드를 지울 수 있게 됐지만,
+**그 props 를 넘기는 곳이 스토리에도 제품에도 없다.** 그리고 `ResultScreen` 자체를
+제품이 안 쓰는 것도 그대로다.
+
+**③ 읽기 짧은 답이 왼쪽 정렬이다.**
+
+**④ 플래시카드가 카루셀이다.** 셸은 맞췄지만 카드가 탭 플립이 아니라
+`transition-transform` 카루셀이라 뒷면·판정 후는 아직 못 담는다.
+
+**⑤ 통짜 컴포넌트 넷이 남았다** — `ResultScreen` · `FlashcardScreen` ·
+`RoleplayScreen` · `ChatScreen`.
+
+### 새로 찾은 것 — 플래시카드는 1급에만 있다
+
+**데이터가 1급 4~15과에만 있다** — `flashcard.ts` 12행 · 328단어이고
+`module.ts` 의 flashcard 모듈도 같은 12개다. 활동 목록에는 2~8급에 안 뜨므로
+정상 경로로는 안 닿는다.
+
+**문제는 주소로 바로 들어갔을 때다.** 빈 상태가 아니라 **「이번 학습을 마쳤어요」
+완료 화면**이 뜬다 — 모르는 단어 0 · 아는 단어 0 · 0%. 제목도 과 번호가 비어
+「과 · 플래시카드」다. 구 링크(QR·북마크)를 Phase 1 동안 받는다는 방침이라
+닿을 수 있다. 캡처는 `real__flash_nodata` 다.
+
+### 인계 — 목업 대조가 지금 깨져 있다
+
+`pnpm parity:activity` 가 `briefing` 과 `report` 에서 실패한다. `2ec44ff` 가
+컴포넌트를 고치면서 **목업을 하나도 안 고쳤기 때문**이다(그 커밋의 목업·캡처 변경 0건).
+
+| 화면 | 구현이 바뀐 것 |
+|---|---|
+| `briefing` | `.scene-img` 안이 글자에서 `<span>` 으로 |
+| `report` | 탭이 `<div>` 에서 **`<button aria-selected>`** 로, 인라인 style 이 `.report-card`·`.report-rows` 클래스로 |
+
+둘 다 **접근성·구조 개선**이라 되돌릴 것이 아니라 **목업을 따라오게 하는 것**이 맞다
+(`game__pc_result` 가 같은 길을 갔다 — `TWIN_ALLOW`). 이 감사는 정본을 안 건드리므로
+그 작업은 남긴다.
 
 ## 승격은 보류다
 
