@@ -505,7 +505,9 @@ const ParticleSniper: React.FC = () => {
 
 	// ── Render: Countdown ─────────────────────────────────────────────
 	const renderCountdown = () => (
-		<div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+		<div /* Tailwind v4 에는 `bg-opacity-*` 가 없다 — 규칙이 안 실려 덮개가
+			   75% 가 아니라 새까맣게 나왔다. v4 문법은 `bg-black/75` 다. */
+			className="absolute inset-0 z-50 flex items-center justify-center bg-black/75">
 			<div
 				className="font-bold text-8xl text-[#FFE500]"
 				style={{ fontFamily: "Exo 2, sans-serif" }}

@@ -4,19 +4,20 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "rsbuild dev --port 3000",
 		"build": "tsc --noEmit && rsbuild build",
-		"start": "rsbuild preview",
-		"preview": "rsbuild build && rsbuild preview",
+		"build-storybook": "storybook build",
 		"check": "biome check",
+		"check:css": "python3 scripts/css-class-check.py",
+		"dev": "rsbuild dev --port 3000",
+		"format:check": "biome format",
+		"format:write": "biome format --write",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
-		"format:write": "biome format --write",
-		"format:check": "biome format",
-		"typecheck": "tsc --noEmit",
+		"parity:activity": "npx tsx scripts/activity-parity.tsx && python3 scripts/activity-parity-diff.py && python3 scripts/fixture-data-check.py",
+		"preview": "rsbuild build && rsbuild preview",
+		"start": "rsbuild preview",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build",
-		"parity:activity": "npx tsx scripts/activity-parity.tsx && python3 scripts/activity-parity-diff.py && python3 scripts/fixture-data-check.py"
+		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

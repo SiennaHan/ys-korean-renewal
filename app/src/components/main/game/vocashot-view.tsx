@@ -402,7 +402,13 @@ export function VocashotPlayView({
 						</div>
 					) : (
 						<form
-							className="typed"
+							/*
+							 * 정본(`phase1/screens_uiux.html`)의 이름은 `typerow` 다.
+							 * 전에 `typed` 라고 적어 두었는데 **그 이름의 규칙은 어디에도
+							 * 없어서** 직접 입력 칸이 아무것도 안 입고 나왔다.
+							 * `.r-row` 와 같은 부류다 — `css-class-check.py` 가 잡았다.
+							 */
+							className="typerow"
 							onSubmit={(e) => {
 								e.preventDefault();
 								onResolve(typed);
@@ -414,7 +420,12 @@ export function VocashotPlayView({
 								placeholder="한국어로 입력"
 								autoComplete="off"
 							/>
-							<button type="submit" className="g-go">
+							{/*
+							 * 클래스를 안 준다 — `.typerow button` 이 맡는다(정본도 그렇다).
+							 * `g-go` 는 4지선다 쪽 전폭 버튼이라 `width:100%` 가 붙어 있어서,
+							 * 여기 쓰면 입력 칸을 34px 로 찌그러뜨리고 줄이 넘쳤다.
+							 */}
+							<button type="submit">
 								쏘기
 							</button>
 						</form>
