@@ -8,6 +8,7 @@ import {
 	IconVolume,
 	PrimaryButton,
 	RoleplayLayout,
+	RoleplayRecordResult,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { type RoleplayTurn, getScenarios } from "@/shared/data/roleplay";
@@ -49,21 +50,6 @@ interface UserRecordResult {
 	sttText: string;
 	audioUrl: string;
 	isCorrect: boolean;
-}
-
-/** 두 문자열 비교 → 글자별 맞음/틀림 배열 */
-function diffChars(
-	expected: string,
-	actual: string,
-): { char: string; correct: boolean }[] {
-	const result: { char: string; correct: boolean }[] = [];
-	for (let i = 0; i < actual.length; i++) {
-		result.push({
-			char: actual[i],
-			correct: i < expected.length && actual[i] === expected[i],
-		});
-	}
-	return result;
 }
 
 export default function AiRoleplay({
@@ -432,23 +418,6 @@ export default function AiRoleplay({
 	const hasPrev = scenarioIdx > 0;
 	const hasNext = scenarioIdx < scenarios.length - 1;
 
-	/** 상태 메시지 */
-	const statusMessage = useMemo(() => {
-		if (evaluating) return "발화를 평가하는 중입니다...";
-		if (playState === "model-speaking") {
-			// 자동재생이 막힌 상태 — 아무 곳이나 탭하면 unlock 되어 재생된다
-			if (audioBlocked) return "화면을 탭하면 음성이 재생됩니다";
-			return "AI가 말하는 중입니다";
-		}
-		if (playState === "practice-turn") {
-			const record = userRecords[currentTurnIdx];
-			if (record && !record.isCorrect) return "다시 말해 보세요";
-			return "지금 말하세요.";
-		}
-		if (playState === "done") return "대화가 완료되었습니다";
-		return "대화를 시작합니다";
-	}, [playState, evaluating, userRecords, currentTurnIdx, audioBlocked]);
-
 	if (!scenario) {
 		return (
 			<div className="flex h-full flex-col items-center justify-center bg-white">
@@ -456,6 +425,11 @@ export default function AiRoleplay({
 			</div>
 		);
 	}
+
+	const activeRecord = userRecords[currentTurnIdx];
+	const choosingAfterResult = Boolean(
+		playState === "practice-turn" && activeRecord && !activeRecord.isCorrect,
+	);
 
 	return (
 		<RoleplayLayout
@@ -471,8 +445,8 @@ export default function AiRoleplay({
 				setActiveTab(direction === "ai" ? "ai-to-me" : "me-to-ai");
 			}}
 			footer={
-				<ActivityFooter>
-					{playState === "done" ? (
+				playState === "done" ? (
+					<ActivityFooter>
 						<div className="dock">
 							<div className="main">
 								<PrimaryButton
@@ -487,7 +461,9 @@ export default function AiRoleplay({
 								/>
 							</div>
 						</div>
-					) : (
+					</ActivityFooter>
+				) : choosingAfterResult ? null : (
+					<ActivityFooter>
 						<div className="dock">
 							<div className="main">
 								<AudioRecorder
@@ -498,8 +474,8 @@ export default function AiRoleplay({
 								/>
 							</div>
 						</div>
-					)}
-				</ActivityFooter>
+					</ActivityFooter>
+				)
 			}
 		>
 			{turns.map((turn, idx) => {
@@ -531,9 +507,10 @@ export default function AiRoleplay({
 							}
 						/>
 						{isPractice && record && isCurrent && (
-							<UserRecordCard
-								turn={turn}
-								record={record}
+							<RoleplayRecordResult
+								expected={turn.ko}
+								recognized={record.sttText}
+								matched={record.isCorrect}
 								onReplay={() => handleReplayMyVoice(record.audioUrl)}
 								onRetry={() => handleClearRecord(idx)}
 								onContinue={() => advanceAfterTurn(idx)}
@@ -620,87 +597,6 @@ function TurnLine({
 					</button>
 				) : null}
 			</span>
-		</div>
-	);
-}
-
-/** 유저 녹음 결과 카드 (Figma: 3101-30881) */
-function UserRecordCard({
-	turn,
-	record,
-	onReplay,
-	onRetry,
-	onContinue,
-	canChooseNext,
-}: {
-	turn: RoleplayTurn;
-	record: UserRecordResult;
-	onReplay: () => void;
-	onRetry: () => void;
-	onContinue: () => void;
-	canChooseNext: boolean;
-}) {
-	const { t } = useTranslation();
-	// 이전 버전이나 비정상 목 응답이 객체를 남겨도 결과 화면 전체가 죽지 않는다.
-	const recognized =
-		typeof record.sttText === "string" ? record.sttText.trim() : "";
-	const charDiff = diffChars(turn.ko, recognized);
-
-	return (
-		<div className="record-card">
-			<div className="record-result-head">
-				<span className="record-result-label">
-					{t("activity.roleRecognized")}
-				</span>
-				<span
-					className={`record-verdict ${record.isCorrect ? "match" : "different"}`}
-				>
-					{t(
-						record.isCorrect
-							? "activity.roleMatched"
-							: "activity.roleDifferent",
-					)}
-				</span>
-			</div>
-			<div className="heard">
-				{recognized
-					? charDiff.map((c, i) => (
-							<span
-								key={`${i}-${c.char}`}
-								className={record.isCorrect || c.correct ? "" : "miss"}
-							>
-								{c.char}
-							</span>
-						))
-					: t("activity.roleNotRecognized")}
-			</div>
-			<p className="record-result-help">
-				{t(
-					record.isCorrect
-						? "activity.roleMatchedHelp"
-						: "activity.roleDifferentHelp",
-				)}
-			</p>
-			<div className="record-result-actions">
-				<button type="button" className="record-replay" onClick={onReplay}>
-					<IconVolume />
-					{t("activity.roleReplayMine")}
-				</button>
-				{canChooseNext && (
-					<>
-						<button type="button" className="record-retry" onClick={onRetry}>
-							{t("activity.roleRetry")}
-						</button>
-						<button
-							type="button"
-							className="record-continue"
-							onClick={onContinue}
-						>
-							{t("activity.roleNextTurn")}
-						</button>
-					</>
-				)}
-			</div>
 		</div>
 	);
 }

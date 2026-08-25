@@ -809,7 +809,7 @@ export const 롤플레잉: Story = {
 	),
 };
 
-/** 내 차례에 녹음을 마치면 그 줄 밑에 확인 카드가 붙고 다음이 열린다 */
+/** 분석 결과 카드에서 내 녹음을 듣고, 다시 녹음하거나 다음 대사로 갈 수 있다 */
 export const 롤플레잉_녹음완료: Story = {
 	render: () => (
 		<div style={{ height: 720 }}>
@@ -818,8 +818,9 @@ export const 롤플레잉_녹음완료: Story = {
 				turns={ROLE_TURNS}
 				current={1}
 				direction="ai"
-				recordMode="done"
-				heard="커피 한 잔 주세요"
+				recordMode="idle"
+				heard="커피 한 잔 주새요"
+				heardMatched={false}
 				onSkip={() => {}}
 			/>
 		</div>

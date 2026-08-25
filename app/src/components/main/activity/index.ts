@@ -60,7 +60,12 @@ export {
 	RECORD_TAIL_MS,
 	type RecordMode,
 } from "./record";
-export { RoleplayLayout, type RoleTurn, RoleplayScreen } from "./roleplay";
+export {
+	RoleplayLayout,
+	RoleplayRecordResult,
+	type RoleTurn,
+	RoleplayScreen,
+} from "./roleplay";
 export {
 	AudioBar,
 	AudioPair,

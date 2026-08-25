@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { IconNext, IconVolume } from "./icons";
+import { IconVolume } from "./icons";
 import { ListenControl, RecordControl, type RecordMode } from "./record";
 import {
 	ActivityAppBar,
@@ -15,6 +15,92 @@ export interface RoleTurn {
 	mine: boolean;
 	ko: string;
 	en: string;
+}
+
+function diffChars(
+	expected: string,
+	actual: string,
+): { char: string; correct: boolean }[] {
+	return Array.from(actual, (char, i) => ({
+		char,
+		correct: i < expected.length && char === expected[i],
+	}));
+}
+
+/**
+ * 롤플레잉의 녹음 분석 결과. 목표 문장은 바로 위 대본 줄에 있으므로 반복하지
+ * 않고, STT가 들은 문장과 그다음에 할 수 있는 행동만 한 카드로 묶는다.
+ */
+export function RoleplayRecordResult({
+	expected,
+	recognized,
+	matched,
+	onReplay,
+	onRetry,
+	onContinue,
+	canChooseNext = false,
+}: {
+	expected: string;
+	recognized: unknown;
+	matched: boolean;
+	onReplay?: () => void;
+	onRetry?: () => void;
+	onContinue?: () => void;
+	canChooseNext?: boolean;
+}) {
+	const { t } = useTranslation();
+	const safeRecognized =
+		typeof recognized === "string" ? recognized.trim() : "";
+	const charDiff = diffChars(expected, safeRecognized);
+
+	return (
+		<div className="record-card">
+			<div className="record-result-head">
+				<span className="record-result-label">
+					{t("activity.roleRecognized")}
+				</span>
+				<span className={`record-verdict ${matched ? "match" : "different"}`}>
+					{t(matched ? "activity.roleMatched" : "activity.roleDifferent")}
+				</span>
+			</div>
+			<div className="heard">
+				{safeRecognized
+					? charDiff.map((item, i) => (
+							<span
+								// biome-ignore lint/suspicious/noArrayIndexKey: 글자의 위치가 비교 결과의 정체성이다
+								key={i}
+								className={matched || item.correct ? "" : "miss"}
+							>
+								{item.char}
+							</span>
+						))
+					: t("activity.roleNotRecognized")}
+			</div>
+			<p className="record-result-help">
+				{t(matched ? "activity.roleMatchedHelp" : "activity.roleDifferentHelp")}
+			</p>
+			<div className="record-result-actions">
+				<button type="button" className="record-replay" onClick={onReplay}>
+					<IconVolume />
+					{t("activity.roleReplayMine")}
+				</button>
+				{canChooseNext && (
+					<>
+						<button type="button" className="record-retry" onClick={onRetry}>
+							{t("activity.roleRetry")}
+						</button>
+						<button
+							type="button"
+							className="record-continue"
+							onClick={onContinue}
+						>
+							{t("activity.roleNextTurn")}
+						</button>
+					</>
+				)}
+			</div>
+		</div>
+	);
 }
 
 /**
@@ -109,11 +195,14 @@ export function RoleplayScreen({
 	recordMode,
 	/** 녹음을 마친 뒤 지금 줄 아래 붙는 확인 카드 */
 	heard,
+	heardMatched = false,
 	onExit,
 	onSkip,
 	onJump,
 	onDirection,
 	onRecord,
+	onReplay,
+	onRetry,
 	onNext,
 }: {
 	lesson: string;
@@ -122,22 +211,25 @@ export function RoleplayScreen({
 	direction: "ai" | "me";
 	recordMode: RecordMode;
 	heard?: string;
+	heardMatched?: boolean;
 	onExit?: () => void;
 	onSkip?: () => void;
 	onJump?: (index: number) => void;
 	onDirection?: (direction: "ai" | "me") => void;
 	onRecord?: () => void;
+	onReplay?: () => void;
+	onRetry?: () => void;
 	onNext?: () => void;
 }) {
 	const { t } = useTranslation();
 	const turn = turns[current];
 	const mine = turn?.mine ?? false;
-	// 내 차례면 녹음을 마쳐야 넘어간다. AI 차례면 언제든 넘어간다
-	const ready = !mine || recordMode === "done";
+	const choosingAfterResult = Boolean(mine && heard && !heardMatched);
 
 	return (
 		<ActivityFrame>
 			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			<ActivityProgress current={0} total={2} />
 
 			<section className="role-intro">
 				<div className="role-title">{t("activity.roleIntro")}</div>
@@ -190,46 +282,37 @@ export function RoleplayScreen({
 							</span>
 						</div>
 						{row.mine && i === current && heard && (
-							<div className="record-card">
-								<div className="record-result-head">
-									<span className="record-result-label">
-										{t("activity.roleRecognized")}
-									</span>
-								</div>
-								<div className="heard">{heard}</div>
-							</div>
+							<RoleplayRecordResult
+								expected={row.ko}
+								recognized={heard}
+								matched={heardMatched}
+								onReplay={onReplay}
+								onRetry={onRetry ?? onRecord}
+								onContinue={onNext}
+								canChooseNext={!heardMatched}
+							/>
 						)}
 					</Fragment>
 				))}
 			</div>
 
-			<ActivityFooter>
-				<div className="dock">
-					{/* 오른쪽 다음 버튼과 폭을 맞춰 주 조작을 가운데 세운다 */}
-					<span className="slot" aria-hidden="true" />
-					<div className="main">
-						{mine ? (
-							<RecordControl
-								mode={recordMode}
-								action="roleRecord"
-								onPress={onRecord}
-							/>
-						) : (
-							<ListenControl />
-						)}
+			{!choosingAfterResult && (
+				<ActivityFooter>
+					<div className="dock">
+						<div className="main">
+							{mine ? (
+								<RecordControl
+									mode={recordMode}
+									action="roleRecord"
+									onPress={onRecord}
+								/>
+							) : (
+								<ListenControl />
+							)}
+						</div>
 					</div>
-					<button
-						type="button"
-						className="slot"
-						data-action="roleNext"
-						aria-label={t("player.next")}
-						disabled={!ready}
-						onClick={onNext}
-					>
-						<IconNext />
-					</button>
-				</div>
-			</ActivityFooter>
+				</ActivityFooter>
+			)}
 		</ActivityFrame>
 	);
 }

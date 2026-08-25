@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>연세 한국어 · 녹음 인터랙션 시안</title>
+  <meta name="uiux-version" content="2.5">
+  <title>연세 한국어 · 녹음 인터랙션 시안 v2.5</title>
   <style>
     :root {
       --blue-50:#edf6ff;
@@ -117,6 +118,19 @@
     .review-audio { display:flex; justify-content:flex-end; margin-top:13px; }
     .review-audio button { display:flex; align-items:center; gap:7px; min-height:36px; padding:0 11px; border:0; border-radius:10px; background:var(--blue-50); color:var(--blue-600); font-size:11px; font-weight:750; cursor:pointer; }
     .review-audio svg { width:16px; height:16px; flex:0 0 auto; }
+    .role-result { margin-top:12px; padding:11px 12px 12px; border-top:1px solid var(--line); background:#fff; }
+    .role-result-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .role-result-head b { color:#687584; font-size:11px; }
+    .role-verdict { padding:3px 7px; border-radius:999px; background:#fff8e1; color:#4a535d; font-size:10px; font-weight:800; }
+    .role-heard { margin-top:7px; color:#343b43; font-size:14px; line-height:21px; }
+    .role-heard .miss { color:var(--coral); text-decoration:underline; text-underline-offset:3px; }
+    .role-help { margin:5px 0 0; color:#89919a; font-size:11px; line-height:17px; }
+    .role-result-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:10px; }
+    .role-result-actions button { min-height:36px; border:0; border-radius:9px; font-size:11px; font-weight:800; cursor:pointer; }
+    .role-result-actions .replay { grid-column:1/-1; display:flex; align-items:center; justify-content:center; gap:6px; background:var(--blue-50); color:var(--blue-600); }
+    .role-result-actions .replay svg { width:15px; height:15px; }
+    .role-result-actions .retry { background:#f2f5f7; color:#596673; }
+    .role-result-actions .continue { background:var(--blue-500); color:#fff; }
 
     .mission-card { margin-bottom:12px; padding:12px 13px; border-radius:13px; background:#f6f8fa; }
     .mission-card b { display:block; margin-bottom:4px; color:#365069; font-size:13px; }
@@ -198,7 +212,7 @@
   <div class="page">
     <header class="intro">
       <div>
-        <p class="eyebrow">RECORDING INTERACTION · UIUX</p>
+        <p class="eyebrow">RECORDING INTERACTION · UIUX · v2.5</p>
         <h1>녹음은 여유 있게,<br>진행은 한 자리에서</h1>
       </div>
       <p>사용자가 버튼과 동시에 말하거나 끝음을 다 말하기 전에 종료해도 잘리지 않도록, 시작 전 2초와 종료 후 1초를 한 흐름으로 설계한 시안입니다.</p>
@@ -232,7 +246,7 @@
         </div>
         <div class="rule">
           <span class="rule-no">03</span>
-          <div><b>긴 문구는 도크 위에 둡니다</b><p>하단은 44 / 중앙 / 44의 고정 그리드입니다. 따라 말하기와 롤플레잉은 오른쪽 다음, 미션 대화는 왼쪽 키보드만 사용합니다.</p></div>
+          <div><b>활동 의미에 따라 다음의 자리를 나눕니다</b><p>따라 말하기는 하단 오른쪽 다음, 미션 대화는 왼쪽 키보드를 씁니다. 롤플레잉은 분석 뒤 결과 카드 안에서 다시 녹음과 다음 대사를 함께 고릅니다.</p></div>
         </div>
         <div class="state-jump">
           <strong>검수용 상태 바로 보기</strong>
@@ -429,7 +443,7 @@
               <div class="turn"><span class="speaker">AI</span><div class="bubble">어떤 영화였어요?</div></div>
               <div class="turn me"><span class="speaker mine">나</span><div class="bubble">아주 재미있는 영화였어요.</div></div>
             </div>
-            ${app.state === "done" ? `<div class="review-audio"><button data-action="audio">${icons.volume}<span>내 녹음 듣기</span></button></div>` : ""}
+            ${app.state === "done" ? `<div class="role-result"><div class="role-result-head"><b>인식된 문장</b><span class="role-verdict">일부 다르게 인식됨</span></div><div class="role-heard">친구하고 영화를 <span class="miss">바써요</span>.</div><p class="role-help">다시 말하거나 다음 대사로 넘어갈 수 있어요.</p><div class="role-result-actions"><button class="replay" data-action="audio">${icons.volume}<span>내 녹음 듣기</span></button><button class="retry" data-action="redo">다시 녹음</button><button class="continue" data-action="next">다음 대사</button></div></div>` : ""}
           </div>
         </section>`;
     }
@@ -456,7 +470,7 @@
       const left = app.mode === "mission"
         ? `<button class="side-action" data-action="keyboard" aria-label="키보드로 입력">${icons.keyboard}</button>`
         : `<span aria-hidden="true"></span>`;
-      const right = app.mode === "mission"
+      const right = app.mode === "mission" || app.mode === "role"
         ? `<span aria-hidden="true"></span>`
         : `<button class="side-action next" data-action="next" aria-label="다음" ${app.state === "done" ? "" : "disabled"}>${icons.chevron}</button>`;
       return `<div class="dock">${left}<div class="record-zone">${recordButton()}</div>${right}</div>`;
@@ -467,12 +481,13 @@
       const copy = statusCopy();
       const segmented = app.mode !== "mission";
       device.className = `device ${app.width === 320 ? "w320" : ""} ${app.mode === "mission" ? "mission" : ""}`;
+      const roleResult = app.mode === "role" && app.state === "done";
       device.innerHTML = `
         <header class="appbar"><button aria-label="나가기">${icons.x}</button><div class="lesson">1급 4과</div><button aria-label="건너뛰기">${icons.chevron}</button></header>
         ${segmented?`<div class="progress-row"><div class="progress"><i class="on"></i><i class="${app.item>1?"on":""}"></i><i class="${app.item>2?"on":""}"></i></div></div>`:""}
         <main class="activity">${content()}</main>
-        <div class="record-status" aria-live="polite"><div class="status-copy ${app.state}"><b>${copy[0]}</b><span>${copy[1]}</span></div>${app.state === "done" && app.mode !== "mission"?`<button class="redo" data-action="redo">다시 녹음</button>`:""}</div>
-        <footer class="footer">${dock()}</footer>`;
+        ${roleResult?"":`<div class="record-status" aria-live="polite"><div class="status-copy ${app.state}"><b>${copy[0]}</b><span>${copy[1]}</span></div>${app.state === "done" && app.mode !== "mission"?`<button class="redo" data-action="redo">다시 녹음</button>`:""}</div>`}
+        ${roleResult?"":`<footer class="footer">${dock()}</footer>`}`;
     }
 
     function renderControls() {
