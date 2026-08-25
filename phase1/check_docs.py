@@ -384,6 +384,11 @@ TWIN_ALLOW = {
     "game__sp_entry.html": "위 sp_map 과 같은 사정 — .sp-loc-card 의 버튼 기본값 되돌림"
     "(text-align·font·color)이 공유 <style> 블록에 들어갔다",
     "game__sp_puzzle.html": "같음",
+    "activity__write.html": "조합 문제의 머리를 고쳤다(08-24) — 작은 동그란 버튼 하나뿐이라"
+    " 소리를 들어야 하는 문제인 줄 몰랐다. 다른 듣기 문제(AudioRow)처럼 큰 재생 버튼 +"
+    " 파형으로 바꾸고 힌트 버튼을 더했다. 재생 버튼 라벨도 바꿨다 — 전에는"
+    " \"가 발음 듣기\" 라 스크린리더에 정답이 그냥 읽혔다",
+    "activity__write3.html": "같음",
 }
 
 

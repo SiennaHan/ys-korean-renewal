@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { Wave } from "./audio";
 import { IconVolume } from "./icons";
 
 /**
@@ -73,35 +74,61 @@ export function ListenCopy({
 }
 
 /** 자모를 골라 만든 글자와 그 조합 */
+/**
+ * 조합 문제의 머리 — 소리를 듣고 만들 글자를 맞히는 자리다.
+ *
+ * 전에는 오른쪽에 작은 동그란 버튼 하나뿐이었다. 다른 듣기 문제(AudioRow)는
+ * 큰 재생 버튼과 파형 막대를 두는데 여기만 달라서 "소리를 들어야 한다" 는 것이
+ * 눈에 안 들어왔다 — 그래서 같은 꼴로 맞췄다.
+ *
+ * **정답을 라벨에 넣지 않는다.** 전에는 재생 버튼이
+ * aria-label="가 발음 듣기" 라 스크린리더에는 답이 그냥 읽혔다. 듣고 맞히는
+ * 문제에서 그건 문제를 없애는 것이다. 이제 라벨은 "소리 듣기" 고, 답을 보고
+ * 싶으면 힌트를 누른다.
+ */
 export function ComboResult({
 	syllable,
 	parts,
-	/** 소리로 읽어 줄 낱말. 조합 중인 글자가 아니라 목표 낱말이다 */
-	word,
 	onPlay,
+	onHint,
+	/** 힌트를 누른 직후 잠깐만 true — 그동안 syllable 자리에 답이 보인다 */
+	hintOn,
 }: {
 	syllable: string;
 	/** "ㄱ + ㅏ" 처럼 */
 	parts: string;
-	word: string;
 	onPlay?: () => void;
+	onHint?: () => void;
+	hintOn?: boolean;
 }) {
 	const { t } = useTranslation();
 	return (
 		<div className="combo-result">
-			<div className="combo-left">
-				<strong>{syllable}</strong>
-				<span>{parts}</span>
-			</div>
 			<button
 				type="button"
-				className="sound-icon"
+				className="audio-play"
 				data-action="audio"
-				aria-label={t("activity.audioOf", { word })}
+				aria-label={t("activity.audioPlay")}
 				onClick={onPlay}
 			>
 				<IconVolume />
 			</button>
+			<span className={`combo-left${hintOn ? " is-hint" : ""}`}>
+				<strong>{syllable}</strong>
+				<span>{parts}</span>
+			</span>
+			<Wave />
+			{onHint && (
+				<button
+					type="button"
+					className="combo-hint"
+					data-action="hint"
+					aria-label={t("activity.hintPeekLabel")}
+					onClick={onHint}
+				>
+					{t("activity.hintPeek")}
+				</button>
+			)}
 		</div>
 	);
 }

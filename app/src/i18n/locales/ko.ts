@@ -250,7 +250,7 @@ const ko = {
 		instrJamoListen: "듣고 맞는 것을 고르세요.",
 		instrGrammar: "빈칸에 알맞은 것을 고르세요.",
 		instrReading: "읽고 질문에 답하세요.",
-		instrWriteSelect: "글자를 만들고 써 보세요.",
+		instrWriteSelect: "소리를 듣고 글자를 만들어 보세요.",
 		instrWriteTrace: "글자를 순서에 맞게 써 보세요.",
 		instrSpeak: "듣고 따라 말해 보세요.",
 		instrWordRep: "단어를 듣고 따라 말해 보세요.",
@@ -290,6 +290,9 @@ const ko = {
 		scenarioFold: "시나리오 접기",
 		canvasLabel: "글자 쓰기 영역",
 		audioOf: "{{word}} 발음 듣기",
+		audioPlay: "소리 듣기",
+		hintPeek: "힌트",
+		hintPeekLabel: "힌트 — 만들 글자를 잠깐 보여 줍니다",
 	},
 	result: {
 		title: "다 했어요!",

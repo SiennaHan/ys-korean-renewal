@@ -247,7 +247,7 @@ const zh = {
 		instrJamoListen: "听后选择正确的一项。",
 		instrGrammar: "请选择适合填入空格的选项。",
 		instrReading: "阅读后回答问题。",
-		instrWriteSelect: "组成字并写一写。",
+		instrWriteSelect: "听声音，然后组合出这个字。",
 		instrWriteTrace: "按笔顺写这个字。",
 		instrSpeak: "听后跟读。",
 		instrWordRep: "听单词并跟读。",
@@ -287,6 +287,9 @@ const zh = {
 		scenarioFold: "收起情景",
 		canvasLabel: "书写区域",
 		audioOf: "播放 {{word}} 的发音",
+		audioPlay: "播放声音",
+		hintPeek: "提示",
+		hintPeekLabel: "提示 — 短暂显示要组合的字",
 	},
 	result: {
 		title: "完成了！",

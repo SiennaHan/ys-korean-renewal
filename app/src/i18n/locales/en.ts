@@ -251,7 +251,7 @@ const en = {
 		instrJamoListen: "Listen and choose the right one.",
 		instrGrammar: "Choose what fits the blank.",
 		instrReading: "Read and answer the question.",
-		instrWriteSelect: "Build the letter, then write it.",
+		instrWriteSelect: "Listen, then build the letter.",
 		instrWriteTrace: "Write the letter in stroke order.",
 		instrSpeak: "Listen and repeat.",
 		instrWordRep: "Listen to the word and repeat it.",
@@ -291,6 +291,9 @@ const en = {
 		scenarioFold: "Collapse the scenario",
 		canvasLabel: "Writing area",
 		audioOf: "Play {{word}}",
+		audioPlay: "Play sound",
+		hintPeek: "Hint",
+		hintPeekLabel: "Hint — briefly shows the letter to build",
 	},
 	result: {
 		title: "Done!",

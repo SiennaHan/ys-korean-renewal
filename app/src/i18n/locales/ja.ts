@@ -251,7 +251,7 @@ const ja = {
 		instrJamoListen: "聞いて正しいものを選んでください。",
 		instrGrammar: "空欄に合うものを選んでください。",
 		instrReading: "読んで質問に答えてください。",
-		instrWriteSelect: "文字を作って書いてみましょう。",
+		instrWriteSelect: "音を聞いて文字を作りましょう。",
 		instrWriteTrace: "文字を筆順どおりに書いてみましょう。",
 		instrSpeak: "聞いて続けて言ってみましょう。",
 		instrWordRep: "単語を聞いて続けて言ってみましょう。",
@@ -291,6 +291,9 @@ const ja = {
 		scenarioFold: "シナリオを閉じる",
 		canvasLabel: "文字を書く領域",
 		audioOf: "{{word}} の発音を聞く",
+		audioPlay: "音を聞く",
+		hintPeek: "ヒント",
+		hintPeekLabel: "ヒント — 作る文字を少しだけ表示します",
 	},
 	result: {
 		title: "終わりました！",

@@ -88,6 +88,21 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 	const [audioSrc, setAudioSrc] = useState<undefined | string>(undefined);
 
 	const [isSucceed, setIsSucceed] = useState(false);
+	/*
+	 * 힌트 — 누르면 만들 글자가 1초만 보인다. 듣고 맞히는 문제라 답을 늘
+	 * 보여 주면 문제가 없어지고, 아예 못 보면 무엇을 만들지 알 길이 없다.
+	 * 타이머는 언마운트·재클릭 때 반드시 지운다(안 지우면 새 문항에서 터진다).
+	 */
+	const [hintOn, setHintOn] = useState(false);
+	const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const showHint = () => {
+		if (hintTimer.current) clearTimeout(hintTimer.current);
+		setHintOn(true);
+		hintTimer.current = setTimeout(() => setHintOn(false), 1000);
+	};
+	useEffect(() => () => {
+		if (hintTimer.current) clearTimeout(hintTimer.current);
+	}, []);
 	const [isLastPage, setIsLastPage] = useState(false);
 	const [isExit, setIsExit] = useState(false);
 
@@ -186,7 +201,11 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 				<ActivityBody>
 					<ProblemCard instruction={t("activity.instrWriteSelect")}>
 						<ComboResult
-							syllable={combined || "?"}
+							/* 힌트를 누른 1초 동안만 정답을 보여 준다. 그 밖에는 지금 조합한
+							   글자를, 아직 안 골랐으면 "?" 를 보여 준다 */
+							syllable={
+								hintOn ? (problem?.content ?? "?") : combined || "?"
+							}
 							parts={
 								consonant && vowel
 									? [consonant, vowel, finalConsonant]
@@ -194,8 +213,9 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 											.join(" + ")
 									: ""
 							}
-							word={problem?.content ?? ""}
 							onPlay={playAudio}
+							onHint={showHint}
+							hintOn={hintOn}
 						/>
 					</ProblemCard>
 					<JamoSection

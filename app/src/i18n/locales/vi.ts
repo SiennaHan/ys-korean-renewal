@@ -250,7 +250,7 @@ const vi = {
 		instrJamoListen: "Nghe và chọn đáp án đúng.",
 		instrGrammar: "Hãy chọn từ phù hợp với chỗ trống.",
 		instrReading: "Đọc và trả lời câu hỏi.",
-		instrWriteSelect: "Hãy ghép chữ rồi viết.",
+		instrWriteSelect: "Nghe âm thanh rồi ghép chữ.",
 		instrWriteTrace: "Hãy viết chữ theo đúng thứ tự nét.",
 		instrSpeak: "Nghe và lặp lại.",
 		instrWordRep: "Nghe từ và lặp lại.",
@@ -290,6 +290,9 @@ const vi = {
 		scenarioFold: "Thu gọn tình huống",
 		canvasLabel: "Vùng viết chữ",
 		audioOf: "Nghe phát âm {{word}}",
+		audioPlay: "Phát âm thanh",
+		hintPeek: "Gợi ý",
+		hintPeekLabel: "Gợi ý — hiện nhanh chữ cần ghép",
 	},
 	result: {
 		title: "Hoàn thành!",
