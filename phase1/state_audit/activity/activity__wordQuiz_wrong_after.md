@@ -9,6 +9,6 @@
 - 정본 존재: 없음
 - 구현 경로: components/learn/word-learning.tsx
 - Storybook: 감사용(state-audit.stories.tsx) · 「어휘문제 오답」
-- 관찰: 2초 뒤 — 선택지 색·✕·알약이 **모두 거둬진다**. 남는 단서는 다음 버튼이 켜진 것뿐이다.
-- 디자인 검토 필요: 예
-- 분류: UNSPECIFIED
+- 관찰: 2초 뒤 선택지 색·✕·알약이 모두 거둬진다 — **확정 규칙이 그렇게 정해져 있다.**
+- 디자인 검토 필요: 아니오
+- 분류: MATCH

@@ -2,7 +2,7 @@
 
 - 활동: 단어 읽고 쓰기
 - 상태: 기본
-- 경로: /learn/jamo?level=0&lesson=1&group=4&sub=1
+- 경로: /learn/jamo?level=1&lesson=1&group=1&sub=4
 - 화면 폭: 360 (높이 693)
 - 언어: ko
 - 재현: Storybook 「단어읽고쓰기」 를 harness.html 로 360폭에 앉혀 캡처

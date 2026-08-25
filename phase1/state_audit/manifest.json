@@ -178,7 +178,7 @@
 			"story": "자모듣기",
 			"활동": "자모 듣고 고르기",
 			"상태": "고르기 전",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=3",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=5",
 			"구현": "components/learn/jamo/choose.tsx",
 			"정본": "activity__jamoListen"
 		},
@@ -205,7 +205,7 @@
 			"story": "자모조합 2단",
 			"활동": "자모 조합",
 			"상태": "2단 조합",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=1",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=2",
 			"구현": "components/learn/jamo/combine.tsx",
 			"정본": "activity__write"
 		},
@@ -214,7 +214,7 @@
 			"story": "자모조합 3단받침",
 			"활동": "자모 조합",
 			"상태": "3단(받침) 조합",
-			"경로": "/learn/jamo?level=0&lesson=1&group=3&sub=1",
+			"경로": "/learn/jamo?level=1&lesson=3&group=1&sub=6",
 			"구현": "components/learn/jamo/combine3.tsx",
 			"정본": "activity__write3"
 		},
@@ -223,7 +223,7 @@
 			"story": "따라쓰기 빈판",
 			"활동": "따라쓰기 모달",
 			"상태": "빈 판",
-			"경로": "/learn/jamo?…",
+			"경로": "조합 화면(sub=2 · sub=6) 안에서 열리는 모달",
 			"구현": "components/draw/HangulCanvas.tsx",
 			"정본": "activity__write_canvas"
 		},
@@ -232,7 +232,7 @@
 			"story": "자모발음",
 			"활동": "자모 발음",
 			"상태": "녹음 전",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=1",
 			"구현": "components/problem/audio-recorder.tsx",
 			"정본": "activity__speak"
 		},
@@ -241,7 +241,7 @@
 			"story": "자모발음 녹음완료",
 			"활동": "자모 발음",
 			"상태": "녹음 완료",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=1",
 			"구현": "components/problem/audio-recorder.tsx",
 			"정본": "없음"
 		},
@@ -250,7 +250,7 @@
 			"story": "녹음중",
 			"활동": "자모 발음",
 			"상태": "녹음 중",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=1",
 			"구현": "components/main/activity/record.tsx",
 			"정본": "없음"
 		},
@@ -259,7 +259,7 @@
 			"story": "단어따라말하기",
 			"활동": "단어 듣고 따라 말하기",
 			"상태": "기본",
-			"경로": "/learn/listen-answer?level=1&lesson=4",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=3",
 			"구현": "components/problem/audio-recorder.tsx",
 			"정본": "activity__wordrep"
 		},
@@ -268,7 +268,7 @@
 			"story": "단어읽고쓰기",
 			"활동": "단어 읽고 쓰기",
 			"상태": "기본",
-			"경로": "/learn/jamo?level=0&lesson=1&group=4&sub=1",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=4",
 			"구현": "components/learn/jamo/word-write.tsx",
 			"정본": "activity__readwrite"
 		},
@@ -349,7 +349,7 @@
 			"story": "자모듣기 정답",
 			"활동": "자모 듣고 고르기",
 			"상태": "정답",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=3",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=5",
 			"구현": "components/learn/jamo/choose.tsx",
 			"정본": "없음"
 		},
@@ -358,7 +358,7 @@
 			"story": "자모듣기 오답",
 			"활동": "자모 듣고 고르기",
 			"상태": "오답",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=3",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=5",
 			"구현": "components/learn/jamo/choose.tsx",
 			"정본": "없음"
 		},
@@ -367,7 +367,7 @@
 			"story": "자모조합 일부만고름",
 			"활동": "자모 조합",
 			"상태": "첫 줄만 고름",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=1",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=2",
 			"구현": "components/learn/jamo/combine.tsx",
 			"정본": "없음"
 		},
@@ -376,7 +376,7 @@
 			"story": "자모조합3단 받침전",
 			"활동": "자모 조합",
 			"상태": "받침만 아직 안 고름",
-			"경로": "/learn/jamo?level=0&lesson=1&group=3&sub=1",
+			"경로": "/learn/jamo?level=1&lesson=3&group=1&sub=6",
 			"구현": "components/learn/jamo/combine3.tsx",
 			"정본": "없음"
 		},
@@ -385,7 +385,7 @@
 			"story": "따라쓰기 그린판",
 			"활동": "따라쓰기 모달",
 			"상태": "획이 있는 판",
-			"경로": "/learn/jamo?…",
+			"경로": "조합 화면(sub=2 · sub=6) 안에서 열리는 모달",
 			"구현": "components/draw/HangulCanvas.tsx",
 			"정본": "없음"
 		},
@@ -394,7 +394,7 @@
 			"story": "따라쓰기 틀린판",
 			"활동": "따라쓰기 모달",
 			"상태": "틀린 판정",
-			"경로": "/learn/jamo?…",
+			"경로": "조합 화면(sub=2 · sub=6) 안에서 열리는 모달",
 			"구현": "components/draw/HangulCanvas.tsx",
 			"정본": "없음"
 		},
@@ -403,7 +403,7 @@
 			"story": "녹음 준비중",
 			"활동": "자모 발음",
 			"상태": "준비 중(2초)",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=1",
 			"구현": "components/problem/audio-recorder.tsx",
 			"정본": "없음"
 		},
@@ -412,7 +412,7 @@
 			"story": "녹음 마무리중",
 			"활동": "자모 발음",
 			"상태": "마무리 중(1초)",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=1",
 			"구현": "components/problem/audio-recorder.tsx",
 			"정본": "없음"
 		},
@@ -421,7 +421,7 @@
 			"story": "녹음 보내는중",
 			"활동": "자모 발음",
 			"상태": "서버로 보내는 중",
-			"경로": "/learn/jamo?level=0&lesson=1&group=1&sub=2",
+			"경로": "/learn/jamo?level=1&lesson=1&group=1&sub=1",
 			"구현": "components/problem/audio-recorder.tsx",
 			"정본": "없음"
 		},
@@ -452,5 +452,6 @@
 			"구현": "components/learn/mission-dialog.tsx",
 			"정본": "없음"
 		}
-	]
+	],
+	"_주의2": "자모 경로는 shared/data/jamo.ts 의 JAMO_SUBS 와 unit.ts 의 (chapter, seq) 가 정본이다. 한글은 1급 안이고(level=1), 3과의 받침은 group=1 이다. sub 은 1 발음 · 2 2단조합 · 3 단어따라말하기 · 4 단어읽고쓰기 · 5 듣고고르기 · 6 3단받침조합."
 }

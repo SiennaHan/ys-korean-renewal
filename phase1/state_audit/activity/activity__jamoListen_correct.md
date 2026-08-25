@@ -2,7 +2,7 @@
 
 - 활동: 자모 듣고 고르기
 - 상태: 정답
-- 경로: /learn/jamo?level=0&lesson=1&group=1&sub=3
+- 경로: /learn/jamo?level=1&lesson=1&group=1&sub=5
 - 화면 폭: 360 (높이 693)
 - 언어: ko
 - 재현: Storybook 「자모듣기 정답」 를 harness.html 로 360폭에 앉혀 캡처

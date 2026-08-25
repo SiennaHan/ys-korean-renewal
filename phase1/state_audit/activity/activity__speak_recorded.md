@@ -2,7 +2,7 @@
 
 - 활동: 자모 발음
 - 상태: 녹음 완료
-- 경로: /learn/jamo?level=0&lesson=1&group=1&sub=2
+- 경로: /learn/jamo?level=1&lesson=1&group=1&sub=1
 - 화면 폭: 360 (높이 693)
 - 언어: ko
 - 재현: Storybook 「자모발음 녹음완료」 를 harness.html 로 360폭에 앉혀 캡처

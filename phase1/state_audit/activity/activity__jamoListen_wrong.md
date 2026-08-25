@@ -2,7 +2,7 @@
 
 - 활동: 자모 듣고 고르기
 - 상태: 오답
-- 경로: /learn/jamo?level=0&lesson=1&group=1&sub=3
+- 경로: /learn/jamo?level=1&lesson=1&group=1&sub=5
 - 화면 폭: 360 (높이 693)
 - 언어: ko
 - 재현: 같은 스토리를 가상 시간 1200ms 로 뜬다 — 2초가 지나면 표시가 사라진다
