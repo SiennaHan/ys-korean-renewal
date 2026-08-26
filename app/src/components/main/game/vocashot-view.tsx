@@ -336,7 +336,7 @@ export function VocashotPlayView({
 }: PlayViewProps) {
 	/*
 	 * 요격 연출 — 정답을 맞히면 방어선에서 운석까지 광선이 뻗고, 맞은 자리에
-	 * 불꽃이 터지고, 운석이 부서진다. 정본(`screens_uiux.html`)의 `playHitEffect()`
+	 * 불꽃이 터지고, 운석이 부서진다. 정본(`screens_SOT.html`)의 `playHitEffect()`
 	 * 와 같은 계산이다. 광선은 **두 요소의 실제 좌표**를 이어야 해서 그릴 때
 	 * 재 봐야 한다 — 화면 폭이나 낙하 위치가 달라도 같은 자리를 잇는다.
 	 *
@@ -498,7 +498,7 @@ export function VocashotPlayView({
 					) : (
 						<form
 							/*
-							 * 정본(`phase1/screens_uiux.html`)의 이름은 `typerow` 다.
+							 * 정본(`phase1/screens_SOT.html`)의 이름은 `typerow` 다.
 							 * 전에 `typed` 라고 적어 두었는데 **그 이름의 규칙은 어디에도
 							 * 없어서** 직접 입력 칸이 아무것도 안 입고 나왔다.
 							 * `.r-row` 와 같은 부류다 — `css-class-check.py` 가 잡았다.
@@ -635,7 +635,7 @@ export function VocashotResultView({
 						<div className="r-k">내 점수</div>
 						<p className="big">{score.toLocaleString("ko-KR")}</p>
 						{/*
-						 * 정본(`phase1/screens_uiux.html`)은 신기록이면 이전 최고 점수
+						 * 정본(`phase1/screens_SOT.html`)은 신기록이면 이전 최고 점수
 						 * 대신 배지를 띄운다. 이 자리가 비어 있어서 `.r-new` 규칙이
 						 * 아무도 안 쓰는 채로 남아 있었다(`pnpm check:css` 가 잡았다).
 						 */}
@@ -666,7 +666,7 @@ export function VocashotResultView({
 
 					{missed.length > 0 ? (
 						/*
-						 * 정본은 `phase1/screens_uiux.html` 이다. 전에는 여기를
+						 * 정본은 `phase1/screens_SOT.html` 이다. 전에는 여기를
 						 * `r-missed` · `r-miss` · `<b>` 로 적어 두었는데, **그 이름에는
 						 * 규칙이 하나도 없어서** 단어와 뜻이 붙어 나왔다
 						 * (`녹차green tea다시 맞힘`). 쓸 CSS 는 `.r-wrong` · `.r-row` ·

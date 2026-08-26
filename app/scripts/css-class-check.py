@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CSS 와 코드가 서로를 안 부르는 자리를 찾는다.
 
-**왜 필요한가** — 이 앱의 CSS 는 정본 프로토타입(`phase1/screens_uiux.html`)과
+**왜 필요한가** — 이 앱의 CSS 는 정본 프로토타입(`phase1/screens_SOT.html`)과
 목업에서 **통째로 이관해 왔고**, 컴포넌트는 그것을 보고 **손으로 다시 적었다.**
 그러다 보니 이름이 어긋난 자리가 생긴다. 그러면 규칙은 있는데 아무것도 안 입고,
 화면만 깨진다. 실제로 두 번 겪었다.
@@ -55,7 +55,7 @@ UNUSED_ALLOW = {
 	"ps-width-shell": "목업 캡처의 바깥 폭 껍데기 — 앱은 app-layout 이 폭을 잡는다",
 	"ux-list-tabbar": "목업 게임 목록의 아래 탭바 — 앱은 자체 내비를 쓴다",
 	# 정본 문서 자신의 도구 UI — 앱 화면이 아니다
-	"focus-note": "정본 문서(screens_uiux.html)가 화면마다 초점 설명을 붙이는 칸",
+	"focus-note": "정본 문서(screens_SOT.html)가 화면마다 초점 설명을 붙이는 칸",
 	"overview": "정본 문서의 '전체 화면 검토' 판 — 앱에 없는 것이 맞다",
 	"modal-canvas": "정본 문서의 손글씨 모달 — 앱은 HangulCanvas 를 쓴다",
 	# 죽은 규칙

@@ -1,5 +1,5 @@
 /**
- * 게임 화면 CSS — game_screens_uiux.html 의 UIUX_CSS 에서 이관 (2026-08-19)
+ * 게임 화면 CSS — game_screens_SOT.html 의 UIUX_CSS 에서 이관 (2026-08-19)
  *
  * 게임은 토큰 팔레트 밖이다. 무대가 검정이고 게임마다 자기 팔레트를
  * body[data-screen^="ps_"] 같은 블록에서 스스로 정의한다 — 자기완결적이라

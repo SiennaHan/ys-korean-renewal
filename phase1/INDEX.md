@@ -37,14 +37,15 @@
 
 ## 2. 시각 정본 — 목업
 
-**구현이 목업과 다르면 목업이 기준이다.** `_uiux` 가 붙은 것이 확정본이다.
+**구현이 목업과 다르면 목업이 기준이다.** 이름 앞이 무엇인지를 말한다 —
+접두사가 없는 것이 정본, `draft_` 는 확인용 시안, `legacy_` 는 옛 세대다.
 
 | 문서 | 무엇의 시각 정본 |
 |---|---|
-| `screens_uiux.html` | **시각 정본 v2.6** — 활동 화면 20종(`#mk-act` · **목업 대조 단위로는 22**) · 홈·교재학습·자모 목록(`#mk-nav`) ·<br>VocaShot 혼자 하기(`#mk-voca`, **문항 1143개로 실제로 도는 시제품**) ·<br>게임 넷 17화면(`#mk-game`, 배포 화면의 DOM 캡처를 iframe 안에 그린다).<br>같은 하네스·같은 디자인 시스템으로 합쳤고, **57개 상태를 원본과 하나씩 대조**했다. 버전 운영은 `mockup_version_history.md`를 따른다 |
-| `shell_mockup_uiux.html` | 셸의 상태별 화면. **합치지 않았다** — CSS 세대가 한 판 달라서<br>위와 공유 변수가 0개이고 겹치는 규칙 21개가 전부 값이 다르다 |
-| `activity_controls_uiux.html` | **확인용 시안** — 활동 하단 도크·주/보조 조작·선택지 상태를 비교한다. 제품 정본을 대체하지 않는다 |
-| `recording_interaction_uiux.html` | **확인용 시안** — 녹음 6상태와 2초 준비·1초 마무리, 둥근 스피커 아이콘만 검증한다. 학습목록 등 주변 화면은 정본이 아니다 |
+| `screens_SOT.html` | **시각 정본 v2.6** — 활동 화면 20종(`#mk-act` · **목업 대조 단위로는 22**) · 홈·교재학습·자모 목록(`#mk-nav`) ·<br>VocaShot 혼자 하기(`#mk-voca`, **문항 1143개로 실제로 도는 시제품**) ·<br>게임 넷 17화면(`#mk-game`, 배포 화면의 DOM 캡처를 iframe 안에 그린다).<br>같은 하네스·같은 디자인 시스템으로 합쳤고, **57개 상태를 원본과 하나씩 대조**했다. 버전 운영은 `mockup_version_history.md`를 따른다 |
+| `legacy_shell_mockup.html` | 셸의 상태별 화면. **합치지 않았다** — CSS 세대가 한 판 달라서<br>위와 공유 변수가 0개이고 겹치는 규칙 21개가 전부 값이 다르다 |
+| `draft_activity_controls.html` | **확인용 시안** — 활동 하단 도크·주/보조 조작·선택지 상태를 비교한다. 제품 정본을 대체하지 않는다 |
+| `draft_recording_interaction.html` | **확인용 시안** — 녹음 6상태와 2초 준비·1초 마무리, 둥근 스피커 아이콘만 검증한다. 학습목록 등 주변 화면은 정본이 아니다 |
 
 > 목업을 열면 **삽화가 깨져 보인다.** `illust/images/` · `handwriting/` 은 교재 파생이라
 > `.gitignore` 가 막는다 — 고장이 아니다.
@@ -78,8 +79,8 @@
 | `my_learning_summary_v1.html` | MY 누적 학습 기록에 필요한 데이터 |
 | `jamo_authoring_spec_v1.html` | 자모 콘텐츠 저작 · `n8_jamo` 스키마. **맨 위의 실측 정정을 먼저 읽어라** |
 | `games_spec_v1.html` | **둘을 합쳤다** — §1~§10 게임 넷에서 손볼 것(서울 퍼즐 38단계 문장 검수 포함) ·<br>§11~§20 VocaShot 혼자 하기 설계. **구현됐다** — `/main/game/vocashot-solo` |
-| `auth_uiux.html` | **로그인·회원가입·비밀번호 재설정 시안.** 로그인은 구현을 보고 옮겼고 가입은 새 제안이다(구현이 없다).<br>**재설정은 지금 메일이 안 나가는데 "보내드렸습니다" 라고 말한다** — 그래서 솔직한 판을 같이 뒀다. `BLOCKERS.md` §7 |
-| `paywall_uiux.html` | **결제 안내(페이월) 시안.** 구독 확정(2026-08-26)으로 필요해진 화면 — 게스트 · 개인 미구독 · 구독 만료 · 기관 학생 넷과 목록의 자물쇠.<br>**기관 학생에게는 결제 버튼을 두지 않는다** — `textbook_tab_spec_v1` §06 의 규칙 |
+| `draft_auth.html` | **로그인·회원가입·비밀번호 재설정 시안.** 로그인은 구현을 보고 옮겼고 가입은 새 제안이다(구현이 없다).<br>**재설정은 지금 메일이 안 나가는데 "보내드렸습니다" 라고 말한다** — 그래서 솔직한 판을 같이 뒀다. `BLOCKERS.md` §7 |
+| `draft_paywall.html` | **결제 안내(페이월) 시안.** 구독 확정(2026-08-26)으로 필요해진 화면 — 게스트 · 개인 미구독 · 구독 만료 · 기관 학생 넷과 목록의 자물쇠.<br>**기관 학생에게는 결제 버튼을 두지 않는다** — `textbook_tab_spec_v1` §06 의 규칙 |
 | `G1_content_gate_v1.html` | **G1 게이트가 확정한 것 둘.** 활동 8종을 어떻게 정했나·저작 물량(§1~5) · 문항 스키마 공통 컬럼 규약(§6~11). 전에는 두 문서였고 한쪽만 낡았다 |
 
 ---
@@ -108,6 +109,33 @@
 외부 API 는 이미 붙어 있는 것과 새로 붙일 것이 갈린다 —
 붙어 있는 것은 `api/TUTORUS_INTEGRATION.md`(발음평가·비원어민 STT) · OpenAI · Gemini TTS,
 새로 필요한 것은 **메일 발송(SES 등)** 과 **결제**다(둘 다 BLOCKERS §7 · §6).
+
+---
+
+## 옛 이름 — 2026-08-26 에 바꾼 것
+
+`_uiux` 는 정본에도 시안에도 폐기 예정에도 똑같이 붙어 있어서 이름만으로는
+아무것도 알 수 없었다. 하는 일을 이름 앞에 적는 것으로 바꿨다.
+**`_superseded/` 와 `state_audit/` 안의 옛 이름은 시점 기록이라 그대로 둔다** —
+거기서 옛 이름을 만나면 이 표로 찾으면 된다.
+
+| 옛 이름 | 지금 | 무엇 |
+|---|---|---|
+| `screens_uiux.html` | `screens_SOT.html` | 시각 정본 |
+| `shell_mockup_uiux.html` | `legacy_shell_mockup.html` | 옛 세대 셸 목업. **폐기본이 아니다** — masterplan §이 살아 있는 출처로 부른다 |
+| `activity_controls_uiux.html` | `draft_activity_controls.html` | 확인용 시안 |
+| `recording_interaction_uiux.html` | `draft_recording_interaction.html` | 확인용 시안 |
+| `auth_uiux.html` | `draft_auth.html` | 확인용 시안 |
+| `paywall_uiux.html` | `draft_paywall.html` | 확인용 시안 |
+
+폴더 둘도 같은 날 바꿨다 — 이름이 역할과 반대였다.
+
+| 옛 이름 | 지금 | 무엇 |
+|---|---|---|
+| `app/src/mockups/` | `app/src/screens_ref/` | **대조의 기준.** parity 가 이것과 견준다 |
+| `phase1/captured/` | `phase1/_snapshots/` | **시점 기록.** 처음 떴을 때의 날것, 덮어쓰지 않는다 |
+
+둘이 갈라진 곳은 `screen_promotions.md` 가 적는다.
 
 ---
 

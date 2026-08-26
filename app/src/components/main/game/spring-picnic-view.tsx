@@ -131,7 +131,7 @@ export function speakQuestion(
 }
 
 /* ══════════════════════════
-   장식 배너 — 목업(screens_uiux 의 게임 절)이 봄소풍 장면마다 넣던 것이다.
+   장식 배너 — 목업(screens_SOT 의 게임 절)이 봄소풍 장면마다 넣던 것이다.
    목업은 캡처한 DOM 에 런타임으로 append 했지만(polishFrame, scene.append(sun,petals[,basket]))
    앱에서는 마크업에 둔다 — 그래서 해·꽃잎(·바구니)이 장면의 **맨 뒤**에 와야
    목업과 순서가 같다. 해와 꽃잎은 모든 장면에, 바구니는 t-illo 장면에만 들어간다.

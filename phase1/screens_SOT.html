@@ -876,7 +876,7 @@ button { font:inherit; }
   .log .t { color:#87909d; } .log .s { font-weight:700; }
   .log .s.ok { color:#0a8f5b; } .log .s.no { color:#b3392a; }
 
-/* ───────── game_screens_uiux.html 에서 그대로 ───────── */
+/* ───────── game_screens_SOT.html 에서 그대로 ───────── */
 #mk-game{
     --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
     --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
@@ -902,7 +902,7 @@ button { font:inherit; }
   <p><b>구현이 이 목업과 다르면 이 목업이 기준이다.</b>
      <b>네 문서를 합친 것이다</b> — <code>_superseded/activity_mockups_uiux</code> ·
      <code>_superseded/nav_mockup_uiux</code> · <code>_superseded/vocashot_play_uiux</code> ·
-     <code>_superseded/game_screens_uiux</code>.
+     <code>_superseded/game_screens_SOT</code>.
      넷이 같은 하네스에 같은 디자인 시스템이다 — <code>:root</code> 공유 변수 39개가
      값이 하나도 다르지 않다. 아래 버튼으로 절을 고르고, 각 절 안의 버튼으로 화면을 고른다.</p>
   <p><b>v2.6 · 2026-08-26</b> — 롤플레잉의 AI 차례·내 차례·발음 확인 상태를 서로 다른 조작으로 분리했다. 미래 대본 대비, 다시 듣기 터치 영역, 결과 행동 버튼을 모바일 기준으로 보정했다.</p>
@@ -913,7 +913,7 @@ button { font:inherit; }
 <tr><td><b>게임 넷</b></td><td>게임 넷 — 17화면</td><td>배포된 화면을 렌더된 DOM 그대로 뽑은 것. 화면은 iframe 안에서 그린다.</td></tr>
   </tbody></table>
   <p style="margin-top:12px">목업이 <b>하나 더 있고 합치지 않았다</b> —
-     <code>shell_mockup_uiux</code>(플레이어 공통 셸). CSS 세대가 한 판 달라서 공유 변수가
+     <code>legacy_shell_mockup</code>(플레이어 공통 셸). CSS 세대가 한 판 달라서 공유 변수가
      0개이고 겹치는 규칙 24개가 전부 값이 다르며, 화면이 iframe 밖에 있어서 클래스 이름이
      활동 화면과 부딪힌다. 그건 그대로 열어라.</p>
   <p><b>게임 절은 다른 셋과 만드는 방식이 다르다</b> — 배포된 화면을 렌더된 DOM 그대로
@@ -1114,7 +1114,7 @@ button { font:inherit; }
   </section>
 
 </section>
-<!-- ═══════ 게임 넷 — 17화면 — game_screens_uiux.html 을 그대로 옮겼다 ═══════ -->
+<!-- ═══════ 게임 넷 — 17화면 — game_screens_SOT.html 을 그대로 옮겼다 ═══════ -->
 <!-- 게임 다섯 — 배포된 화면을 **렌더된 DOM 그대로** 뽑은 목업.
      앱을 로컬에서 띄우고 각 화면에서 outerHTML + 스타일시트를 통째로 캡처했다.
      내가 옮겨 적은 값은 하나도 없다. CSS 일러스트(벚나무·서울 지도)도 그대로다.
@@ -4752,7 +4752,7 @@ probeImages().then(ok=>{ IMAGES_OK=ok;
   render(); });
 
 })();
-/* ═══════ 게임 넷 — 17화면 — game_screens_uiux.html 의 스크립트 원본 ═══════ */
+/* ═══════ 게임 넷 — 17화면 — game_screens_SOT.html 의 스크립트 원본 ═══════ */
 (function () {
 /* 이 절 안으로 가두는 document.
    원본은 document.querySelectorAll('.option') 처럼 문서 전체를 뒤진다. 합치면

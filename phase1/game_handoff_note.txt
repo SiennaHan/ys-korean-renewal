@@ -3,9 +3,9 @@
 당시 상태를 그대로 남긴다. 아래 파일들은 그 뒤 옮겨졌으니 본문을 읽을 때 이 표로
 바꿔 읽어라. 본문은 고치지 않는다 — 고치면 기록이 아니게 된다.
 
-    game_screens_v1.html     → _superseded/   game_screens_uiux.html 로 대체됐다
+    game_screens_v1.html     → _superseded/   game_screens_SOT.html 로 대체됐다
     gamelist_mockup_v1.html  → _superseded/   진행 표시 제안의 근거로만 남는다
-    game_screens_uiux.html → _superseded/   screens_uiux.html 의 게임 절로 합쳤다
+    game_screens_SOT.html → _superseded/   screens_SOT.html 의 게임 절로 합쳤다
     games_polish_v1.html → _superseded/       games_spec_v1.html 로 합쳤다 (§1~§10 그대로)
     vocashot_solo_spec_v1.html → _superseded/  games_spec_v1.html §11~§20 으로
 

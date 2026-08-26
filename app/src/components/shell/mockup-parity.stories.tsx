@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
  * 여기서 목업과 같아 보이면 CSS 이관이 맞은 것이고, 다르면 이관이 틀린 것이다.
  * 컴포넌트로 쪼갤 때는 이 화면이 기준이 된다.
  *
- * 게임 넷(screens_uiux 의 게임 절)만 여기 없다. 기준은 게임이냐 아니냐가 아니라
+ * 게임 넷(screens_SOT 의 게임 절)만 여기 없다. 기준은 게임이냐 아니냐가 아니라
  * 목업이 자기완결적이냐 앱 DOM 캡처냐다.
  *
  *  · 활동 · 내비 · VocaShot — 손으로 짠 목업이다. 자기 클래스(g-dark · g-body · choice)와

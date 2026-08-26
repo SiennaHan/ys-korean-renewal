@@ -769,7 +769,7 @@ def cross_anchors() -> list[str]:
     """href="다른문서.html#앵커" 의 앵커가 그 문서에 있나.
 
     같은 파일 안의 #sN 만 보면 이 축이 빈다 — shell_spec_v1 이
-    screens_uiux.html#act 를 셋 걸어 두었는데 그 문서의 id 는 mk-act 였다.
+    screens_SOT.html#act 를 셋 걸어 두었는데 그 문서의 id 는 mk-act 였다.
     눌러도 문서 맨 위로 갈 뿐이라 사람이 조용히 길을 잃는다.
     """
     ids: dict[str, set[str]] = {}
@@ -873,9 +873,21 @@ def index_covers(live: set[str]) -> list[str]:
             out.append(
                 f"[색인] {n} 이 INDEX.md 에 없다 — 문서를 만들었으면 색인에 한 줄 넣어라"
             )
+    # 이름을 바꾼 기록은 부르는 것이 아니다 — `옛이름.html` | `새이름.html` 꼴의
+    # 줄을 대응표로 읽는다. 옛 이름은 _superseded/ 와 state_audit/ 안에 시점
+    # 기록으로 남아 있으므로, 거기서 만난 사람이 찾아올 자리가 있어야 한다.
+    renamed: set[str] = set()
+    for line in body.splitlines():
+        m = re.match(
+            r"\s*\|\s*`([A-Za-z0-9_.가-힣/-]+\.html)`\s*\|\s*`([A-Za-z0-9_.가-힣/-]+\.html)`\s*\|",
+            line,
+        )
+        if m:
+            renamed.add(m.group(1)[:-5])
+
     # 색인이 없는 파일을 부르는 경우
     for m in re.finditer(r"`([A-Za-z0-9_.가-힣-]+)\.html`", body):
-        if m.group(1) not in live:
+        if m.group(1) not in live and m.group(1) not in renamed:
             out.append(f"[색인] INDEX.md 가 없는 문서 {m.group(1)} 을 가리킨다")
 
     # 표의 같은 칸에 같은 문서가 두 줄. 문서를 합치면 두 줄이 남는다 —

@@ -109,7 +109,7 @@
 <header class="mergehead">
   <div class="kick">셸 명세 · 세 층을 한 문서로</div>
   <h1>플레이어 공통 셸 — 행동 · 구조 · 값</h1>
-  <p>셸 명세 셋을 합친 것이다. <b>층이 다른 셋</b>이었는데 하나만 보고 판단하는 일이 잦았다 — 행동(무엇이 언제 일어나나) · 구조(어느 컴포넌트가 어떤 상태를 갖나) · 값(치수 · 색 · 채점 수치). 세 층이 한 곳에 있으니 이제 위아래로 훑으면 된다. 화면은 <code>shell_mockup_uiux.html</code> 에 있다.</p>
+  <p>셸 명세 셋을 합친 것이다. <b>층이 다른 셋</b>이었는데 하나만 보고 판단하는 일이 잦았다 — 행동(무엇이 언제 일어나나) · 구조(어느 컴포넌트가 어떤 상태를 갖나) · 값(치수 · 색 · 채점 수치). 세 층이 한 곳에 있으니 이제 위아래로 훑으면 된다. 화면은 <code>legacy_shell_mockup.html</code> 에 있다.</p>
   <table><tbody>
 <tr><td><b>행동</b></td><td>상태 머신 · 라우트 통일 · 정상 흐름 밖의 화면 · 접근성 · 용어. <b>가장 많이 인용된다</b></td><td>그대로</td></tr>
 <tr><td><b>구조</b></td><td>컴포넌트별 상태와 슬롯 · 320 폭 실측 · 활동 8종이 어느 슬롯에 무엇을 넣나. 셸 결정 S1~S3 의 정의처</td><td>§11~§20</td></tr>
@@ -279,7 +279,7 @@
   <div class="t">시각 기준이 바뀌었다 <span class="pill new">v2.4</span></div>
   <p>초안은 <b>Figma 스타일 가이드</b>를 시각 기준(SoT)으로 삼았다(§3.5). <b>피그마에 새로 그리지 않기로 하면서</b> 기준이 다음 둘로 옮겨갔다.</p>
   <ul>
-    <li><b><a href="screens_uiux.html#mk-act">활동 UI/UX 목업</a></b> — 상태별 화면의 정본. 구현이 다르면 목업이 기준</li>
+    <li><b><a href="screens_SOT.html#mk-act">활동 UI/UX 목업</a></b> — 상태별 화면의 정본. 구현이 다르면 목업이 기준</li>
     <li><b><code>tokens.css</code></b> — 색·타이포의 유일한 기준. primitive 52 + semantic 33 + 타이포 23</li>
   </ul>
   <p>기준 폭도 <b>360 → 390</b>으로 올렸고, 세로는 <b>고정 픽셀 대신 고정 블록 + 가변 밴드</b>로 바꿨다 — 모바일 웹은 주소창 때문에 실제 높이가 기기 스펙보다 작다. 상세는 <b>이 문서 구조 §16.1</b>.</p>
@@ -567,12 +567,12 @@
 <header class="doc">
   <div class="eyebrow">Phase 1 · UI/UX 대안 확정</div>
   <h1>플레이어 공통 셸 — UI/UX 컴포넌트 명세</h1>
-  <div class="meta">2026-08-17 · <b>기존 v1과 별도로 관리하는 구조 변경안</b> · 구현 기준은 <b>이 문서 값 §21~§34</b>, 셸 화면은 <a href="shell_mockup_uiux.html">셸 목업 UI/UX</a>, 활동 예시는 <a href="screens_uiux.html#mk-act">활동 확정 목업</a></div>
+  <div class="meta">2026-08-17 · <b>기존 v1과 별도로 관리하는 구조 변경안</b> · 구현 기준은 <b>이 문서 값 §21~§34</b>, 셸 화면은 <a href="legacy_shell_mockup.html">셸 목업 UI/UX</a>, 활동 예시는 <a href="screens_SOT.html#mk-act">활동 확정 목업</a></div>
 </header>
 
 <div class="callout good">
   <div class="t">활동 목업 확정 — 시안 2 · Functional Clarity</div>
-  <p>최종 시각 기준은 <a href="screens_uiux.html#mk-act"><b>활동 UI/UX 확정 목업</b></a>이다. 문제·음성·응답·녹음의 기능 구분을 우선하며, 에디토리얼형과 비교 목업은 검토 이력으로만 남긴다.</p>
+  <p>최종 시각 기준은 <a href="screens_SOT.html#mk-act"><b>활동 UI/UX 확정 목업</b></a>이다. 문제·음성·응답·녹음의 기능 구분을 우선하며, 에디토리얼형과 비교 목업은 검토 이력으로만 남긴다.</p>
 </div>
 
 <div class="callout good">
@@ -1508,7 +1508,7 @@ y=648  마이크 영역                  360×92
 </header>
 <div class="rule">
   <div class="t">디자인 방향 확정 — 시안 2 · Functional Clarity</div>
-  <p>어휘·듣기·자모·플래시카드·미션 대화·롤플레잉의 최종 시각 기준은 <a href="screens_uiux.html"><b>활동 UI/UX 확정 목업</b></a>이다. 지시문과 문제 자극을 콘텐츠 단위로 묶고, 조작과 진행 상태가 먼저 읽히는 시안 2를 따른다.</p>
+  <p>어휘·듣기·자모·플래시카드·미션 대화·롤플레잉의 최종 시각 기준은 <a href="screens_SOT.html"><b>활동 UI/UX 확정 목업</b></a>이다. 지시문과 문제 자극을 콘텐츠 단위로 묶고, 조작과 진행 상태가 먼저 읽히는 시안 2를 따른다.</p>
   <p><code>_superseded/activity_mockups_uiux_editorial.html</code>과 <code>_superseded/activity_mockups_uiux_extended_compare.html</code>은 비교 이력으로만 보관하며 구현 기준으로 사용하지 않는다.</p>
 </div>
 <nav class="toc">
@@ -1660,7 +1660,7 @@ y=648  마이크 영역                  360×92
 </table></div>
 <p class="qa"><b>이 표는 2026-08-19 에 확정 목업 실측으로 고쳤다.</b>
    예전 판은 "세로 1열 · gap 10 · <code>line-normal</code> · radius 14 · min-height 68 · padding 16" 한 종류였는데,
-   목업과 <b>여섯 군데가 달랐다</b>. 시각 정본은 <code>screens_uiux.html</code>(활동 절) 이다.</p>
+   목업과 <b>여섯 군데가 달랐다</b>. 시각 정본은 <code>screens_SOT.html</code>(활동 절) 이다.</p>
 <div class="tablewrap"><table>
   <tr><th>콘텐츠</th><th>글자</th><th><code>contentAlign</code></th></tr>
   <tr><td>자모</td><td>24 / 32 · 600</td><td><b>center</b></td></tr>
@@ -1987,7 +1987,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
 <h2 id="s30"><span class="n">30</span>활동 8종</h2>
 <div class="rule">
   <div class="t">어휘·듣기·자모 쓰기 완성 화면</div>
-  <p><a href="screens_uiux.html">활동 UI/UX 목업</a>을 구현 기준으로 쓴다. <b>기존 셸 목업의 문항 데이터·콘텐츠 구조·치수는 유지</b>하고, ChoiceList와 채점 상태만 UI/UX안으로 교체한다.</p>
+  <p><a href="screens_SOT.html">활동 UI/UX 목업</a>을 구현 기준으로 쓴다. <b>기존 셸 목업의 문항 데이터·콘텐츠 구조·치수는 유지</b>하고, ChoiceList와 채점 상태만 UI/UX안으로 교체한다.</p>
 </div>
 <div class="tablewrap"><table>
   <tr><th>활동</th><th><code>menuType</code></th><th>밴드에 들어가는 것</th><th>선택지</th></tr>

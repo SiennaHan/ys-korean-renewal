@@ -2,7 +2,7 @@
 
 ## 운영 규칙
 
-- 시각 정본 파일명은 `screens_uiux.html`처럼 `_uiux`를 유지한다.
+- 시각 정본 파일명은 `screens_SOT.html`처럼 `_uiux`를 유지한다.
 - 같은 정본의 수정마다 `v2`, `v3` 파일을 복제하지 않는다. 문서 안의 버전과 Git 이력으로 관리한다.
 - `state_audit/`와 `captured/`는 당시 제품 상태를 남긴 감사 자료다. 정본이 바뀌어도 과거 캡처를 덮어쓰지 않는다.
 - 프로토타입에서 확정한 공통 컴포넌트·상태 문법은 같은 작업에서 정본 목업과 기획 문서에도 반영한다.
@@ -11,7 +11,7 @@
 
 ### 반영 파일
 
-- `screens_uiux.html` — 전체 시각 정본
+- `screens_SOT.html` — 전체 시각 정본
 - `app/src/screens_ref/activity__failed.html` · `activity__micdenied.html` — 목업 재캡처
 - `app/src/components/main/activity/state-screens.tsx` · `icons.tsx` · `mic-blocked.tsx`
 - `app/src/styles/activity.css` — `.state-icon` 추가, `.state-view` 정렬
@@ -20,7 +20,7 @@
 ### 변경 내용
 
 - 로드 실패·마이크 거부가 한 줄 문장만 떠 있던 것을 **아이콘 + 제목 + 설명**으로 바꿨다.
-  `activity_controls_uiux.html` 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다.
+  `draft_activity_controls.html` 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다.
 - 마이크 문구를 정본대로 고쳤다 — "마이크가 꺼져 있어요" → "마이크를 사용할 수 없어요" + 설명.
   전체 화면과 알림(`MicBlockedDialog`)이 **같은 키**를 쓰므로 둘이 함께 바뀐다.
 - 제목과 설명을 키로 갈랐다. 전에는 한 키를 `\n` 으로 쪼개 제목을 만들었다.
@@ -34,8 +34,8 @@
 
 ### 반영 파일
 
-- `screens_uiux.html` — 전체 시각 정본
-- `recording_interaction_uiux.html` — 녹음 상태 확인용 시안
+- `screens_SOT.html` — 전체 시각 정본
+- `draft_recording_interaction.html` — 녹음 상태 확인용 시안
 - `app/src/components/main/activity/record.tsx` — 공통 녹음·듣기 조작
 - `app/src/components/learn/ai-roleplay.tsx` — 실제 롤플레잉 상태 연결
 
@@ -51,8 +51,8 @@
 
 ### 반영 파일
 
-- `screens_uiux.html` — 전체 시각 정본
-- `recording_interaction_uiux.html` — 녹음 상태 확인용 시안
+- `screens_SOT.html` — 전체 시각 정본
+- `draft_recording_interaction.html` — 녹음 상태 확인용 시안
 - `shell_spec_v1.html` — 활동 셸·조작 규칙
 - `dev_spec_v1.html` — 진행·다시 풀기 규칙
 

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { IconClose, IconNext, IconPrev } from "./icons";
 
 /**
- * 활동 화면의 공통 골격 — screens_uiux.html(활동 절) 의 gapFrame·gapAppbar·
+ * 활동 화면의 공통 골격 — screens_SOT.html(활동 절) 의 gapFrame·gapAppbar·
  * gapProgress·gapDock·gapPrimary 를 컴포넌트로 옮긴 것이다.
  *
  * 클래스 이름은 목업 그대로 두고 수치는 activity.css 가 쥔다. 여기서

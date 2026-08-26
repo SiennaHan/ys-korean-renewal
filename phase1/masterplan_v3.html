@@ -209,16 +209,16 @@
 <table>
   <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
   <tbody>
-    <tr><td><b>활동 셸</b></td><td>shell_spec_v1 §1·3</td><td>shell_spec_v1 §11~§34</td><td>shell_mockup_uiux</td><td>dev_spec_v1 §2·5</td></tr>
-    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>_superseded/mockup_read_v1 <span class="pill stop">폐기</span><br>규격은 <code>parity:activity</code> 가 지킨다</td><td>screens_uiux(활동)</td><td>dev_spec_v1 §11</td></tr>
-    <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>jamo_authoring_spec_v1 §3·4</td><td>screens_uiux(활동)</td><td>dev_spec_v1 §4 <span class="pill ok">통합했다 2026-08-24</span></td></tr>
-    <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>screens_uiux(홈·목록)</td><td>dev_spec_v1 §14</td></tr>
-    <tr><td><b>교재학습</b></td><td>asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>screens_uiux(홈·목록)</td><td>textbook_tab_spec_v1 §06</td></tr>
-    <tr><td><b>게임 5종</b></td><td>asis_v1 §4</td><td>games_spec_v1</td><td>screens_uiux(게임)</td><td>기존 API 로 충분</td></tr>
-    <tr><td><b>VocaShot</b></td><td>games_spec_v1</td><td>games_spec_v1 §16</td><td>screens_uiux(VocaShot)</td><td>기존 API 로 충분</td></tr>
+    <tr><td><b>활동 셸</b></td><td>shell_spec_v1 §1·3</td><td>shell_spec_v1 §11~§34</td><td>legacy_shell_mockup</td><td>dev_spec_v1 §2·5</td></tr>
+    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>_superseded/mockup_read_v1 <span class="pill stop">폐기</span><br>규격은 <code>parity:activity</code> 가 지킨다</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §11</td></tr>
+    <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>jamo_authoring_spec_v1 §3·4</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §4 <span class="pill ok">통합했다 2026-08-24</span></td></tr>
+    <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>screens_SOT(홈·목록)</td><td>dev_spec_v1 §14</td></tr>
+    <tr><td><b>교재학습</b></td><td>asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>screens_SOT(홈·목록)</td><td>textbook_tab_spec_v1 §06</td></tr>
+    <tr><td><b>게임 5종</b></td><td>asis_v1 §4</td><td>games_spec_v1</td><td>screens_SOT(게임)</td><td>기존 API 로 충분</td></tr>
+    <tr><td><b>VocaShot</b></td><td>games_spec_v1</td><td>games_spec_v1 §16</td><td>screens_SOT(VocaShot)</td><td>기존 API 로 충분</td></tr>
     <tr><td><b>표현클립</b></td><td>asis_v1 §5</td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td><td><span class="pill open">없음</span></td></tr>
     <tr><td><b>MY</b></td><td>my_learning_summary_v1</td><td>my_learning_summary_v1 §4</td><td><span class="pill stop">없음</span></td><td>my_learning_summary_v1 §4</td></tr>
-    <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>access_and_pricing_v1 §04·05</td><td><span class="pill done">paywall_uiux</span> 결제 안내 넷 (2026-08-26).<br><span class="pill stop">없음</span> 로그인·가입·재설정 화면</td><td>access_and_pricing_v1 §05</td></tr>
+    <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>access_and_pricing_v1 §04·05</td><td><span class="pill done">draft_paywall</span> 결제 안내 넷 (2026-08-26).<br><span class="pill stop">없음</span> 로그인·가입·재설정 화면</td><td>access_and_pricing_v1 §05</td></tr>
     <tr><td><b>콘텐츠 파이프</b></td><td>G1_content_gate_v1 §6~11</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
     <tr><td><b>다국어</b></td><td><span class="pill open">없음</span></td><td>shell_spec_v1 §4 · dev_spec_v1 §6</td><td>—</td><td>—</td></tr>
     <tr><td><b>접근성</b></td><td>—</td><td>shell_spec_v1 §7</td><td>—</td><td>—</td></tr>
@@ -238,7 +238,7 @@
   ① <b>표현클립</b>은 실측(games_asis §2)만 있고 명세도 목업도 없다 —
   329편을 무료로 열기로 한 지금 유입의 첫 화면인데 그렇다.
   ② <b>MY 화면의 목업이 없다.</b> 설계는 있고 그림이 없다.<br>
-  결제는 2026-08-26 에 <span class="file">paywall_uiux</span> 로 채웠다 — 결제 안내 넷과 목록의 자물쇠.
+  결제는 2026-08-26 에 <span class="file">draft_paywall</span> 로 채웠다 — 결제 안내 넷과 목록의 자물쇠.
   <b>로그인·가입·재설정 화면은 여전히 없다.</b></p>
   <p class="qa">교재학습은 2026-08-21 에 채웠다 — <span class="file">textbook_tab_spec_v1</span>.
   화면은 이미 다 있었고 비어 있던 것은 <b>적어 둔 규칙</b>이었다. 쓰면서
@@ -495,11 +495,11 @@
 <h2 id="s9"><span class="no">9</span>확정 디자인이 앱에 얼마나 들어갔나</h2>
 <div class="tablewrap"><table>
   <tr><th>목업</th><th>담당 범위</th><th class="n">CSS 규칙</th><th class="n">클래스</th><th>앱 반영</th></tr>
-  <tr><td><code>screens_uiux</code> <b>활동 절</b></td><td>활동 20화면 — 기본 8 · 자모 6 · 문항 밖 3 · 예외 3</td>
+  <tr><td><code>screens_SOT</code> <b>활동 절</b></td><td>활동 20화면 — 기본 8 · 자모 6 · 문항 밖 3 · 예외 3</td>
       <td class="n">342</td><td class="n">168</td><td><span class="pill ok">대조 22</span></td></tr>
   <tr><td>같은 문서 <b>게임 절</b></td><td>게임 17화면</td>
       <td class="n">315</td><td class="n">98</td><td>구현됨 · 대조 밖</td></tr>
-  <tr><td><code>shell_mockup_uiux</code></td><td>공통 셸</td>
+  <tr><td><code>legacy_shell_mockup</code></td><td>공통 셸</td>
       <td class="n">169</td><td class="n">84</td><td><span class="pill stop">0</span></td></tr>
   <tr><td>같은 문서 <b>VocaShot 절</b></td><td>VocaShot 플레이</td>
       <td class="n">156</td><td class="n">71</td><td>구현됨 · <b>시작 화면은 대조 안</b></td></tr>
@@ -510,7 +510,7 @@
 </table></div>
 <p><b>합쳐서 CSS 규칙 1,229개 · 클래스 545개.</b>
    <b>이 절은 2026-08-19 실측이었고 그 뒤 뒤집혔다</b> — 그때는 앱 소스에 이 클래스가
-   하나도 없었다. 2026-08-21 다시 세면 <code>screens_uiux</code> 의 클래스 283개 중
+   하나도 없었다. 2026-08-21 다시 세면 <code>screens_SOT</code> 의 클래스 283개 중
    <b>224개(79%)</b>가 앱 소스에 있다.
    기계가 판정하는 것은 <code>pnpm parity:activity</code> 뿐이고 <b>목업 캡처 전부가
    일치한다</b>. 지금 수와 갈래별 분해는 <code>README.md</code> 에 있다(숫자의 주인).</p>
@@ -538,7 +538,7 @@
 
 <div class="card stop">
   <div class="t">이게 두 번째다</div>
-  <p>게임에서 같은 일이 먼저 있었다 — 게임 목업(지금은 <code>screens_uiux</code> 의 게임 절)을 검증용 산출물로만 다루고
+  <p>게임에서 같은 일이 먼저 있었다 — 게임 목업(지금은 <code>screens_SOT</code> 의 게임 절)을 검증용 산출물로만 다루고
      <b>앱에 옮기는 일을 구현 목록에 넣지 않았다</b>. 그때 원인을 "목업이 덧씌우는 층이라서"로 적었는데,
      이번엔 <b>목업을 아예 열지 않았다</b>. 원인이 다르고, 둘 다 같은 결과를 냈다.</p>
   <p class="qa">그래서 아래 계획의 1순위는 컴포넌트가 아니라 <b>목업을 읽는 일</b>이다.</p>
@@ -588,7 +588,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <h3>0단계 — 읽기 <span class="pill">코드 쓰기 전</span></h3>
 <ol>
   <li><b>활동 20화면</b>을 화면별로 DOM 구조·실측 수치로 정리한다. 소스 빌더 함수를 읽는다(브라우저 순회는 느리다).</li>
-  <li><b>나머지 목업</b>(screens_uiux 의 홈·목록·VocaShot 절 · shell · game)도 같은 방식으로 훑는다.</li>
+  <li><b>나머지 목업</b>(screens_SOT 의 홈·목록·VocaShot 절 · shell · game)도 같은 방식으로 훑는다.</li>
   <li>정리 결과를 <b>먼저 보여 드린다</b> — 구조를 제대로 이해했는지 확인받고 나서 코드를 쓴다.</li>
   <li>§3 의 <b>어긋남 목록</b>을 확정한다. 특히 진행바 정오답 표시 여부.</li>
 </ol>
@@ -680,11 +680,11 @@ footer / dock   primary "다음" | "결과 보기"</pre>
   <thead><tr><th>묶음</th><th>결과</th><th>근거 — 실측</th></tr></thead>
   <tbody>
   <tr><td><b>확정 목업 넷</b><br>activity · nav · vocashot · game_screens</td>
-      <td><span class="pill done">합쳤다</span><br><code>screens_uiux</code></td>
+      <td><span class="pill done">합쳤다</span><br><code>screens_SOT</code></td>
       <td>같은 하네스에 <code>:root</code> 공유 변수 39개가 값이 하나도 다르지 않다 ·
           <code>@keyframes</code> 이름 충돌 0 · 클래스 누출 여섯 방향 0.
           <b>37 + 20 = 57개 상태를 원본과 하나씩 대조</b>했다</td></tr>
-  <tr><td><code>shell_mockup_uiux</code></td>
+  <tr><td><code>legacy_shell_mockup</code></td>
       <td><span class="pill stop">안 합쳤다</span></td>
       <td>공유 변수 <b>0개</b> · 겹치는 규칙 24개가 <b>전부 값이 다르다</b> ·
           화면이 iframe 밖이라 클래스 이름이 활동 화면과 부딪힌다</td></tr>

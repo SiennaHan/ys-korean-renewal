@@ -244,7 +244,7 @@ export interface PlayViewProps {
 }
 
 /**
- * 조사 스나이퍼 플레이 — 확정 목업(screens_uiux 게임 절 · game__ps_play)의 과녁 구조다.
+ * 조사 스나이퍼 플레이 — 확정 목업(screens_SOT 게임 절 · game__ps_play)의 과녁 구조다.
  * 예전 판은 문항이 위에서 아래로 떨어지고 바닥에 GROUND 선이 있었는데, 낙하는 남은
  * 시간을 그리는 한 가지 방법일 뿐이었다. 지금은 ps-timer 가 그 일을 하고, 조준·명중·
  * 빗나감이 과녁에서 일어난다.

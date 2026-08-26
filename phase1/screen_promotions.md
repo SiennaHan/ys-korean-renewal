@@ -32,7 +32,7 @@
 | `activity__readwrite` | 목업 캡처가 정본보다 낡았다(2026-08-26 재캡처). shell_spec 이 2026-08-25 에 '자모 발음·단어 듣고 따라 말하기·단어 읽고 쓰기 = 진행바 숨김(내부 탐색)' 으로 확정했고 정본 프로토타입도 이미 진행바를 안 그린다 — 캡처만 그 전 것이었다. _snapshots/ 는 그때 뜬 날것이라 그대로 둔다 |
 | `activity__listen` | 목업 v2.9 승격(2026-08-26). 둘 다 앱이 먼저 정한 것을 정본이 따라갔다 — ① O/X 카드 라벨 '들은 문장' → '제시 문장'(f8bd0aa 08-20). 들은 것은 오디오뿐이고 그 글자는 맞는지 가릴 대상이라 뜻이 달랐다. ② 선택지를 .listen-response 로 한 겹 감싸 위 여백을 줬다(66b0e94 08-25). _snapshots/ 는 그때 뜬 날것이라 그대로 둔다 같은 판에 진행바 칸도 눌러 갈 수 있는 button 이 됐다(35589a2 승격). |
 | `activity__grammar` | 목업 v2.9 승격(2026-08-26). 빈칸을 <u> </u> 에서 <span class=blank-slot> 으로 — 앱이 66b0e94 '빈칸 표기를 통일한다'(08-25)에서 먼저 정한 것을 정본이 따라갔다. 폭이 고정이고 보조기술이 투명한 전각 공백을 읽지 않는다. _snapshots/ 는 그때 뜬 날것이라 그대로 둔다 같은 판에 진행바 칸도 눌러 갈 수 있는 button 이 됐다(35589a2 승격). |
-| `activity__failed` | 목업 v2.8 승격(2026-08-26). 한 줄 문장만 떠 있던 것을 아이콘 + 제목 + 설명으로 바꿨다 — activity_controls_uiux 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다. _snapshots/ 는 v2.7 시점 기록이라 그대로 둔다 |
+| `activity__failed` | 목업 v2.8 승격(2026-08-26). 한 줄 문장만 떠 있던 것을 아이콘 + 제목 + 설명으로 바꿨다 — draft_activity_controls 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다. _snapshots/ 는 v2.7 시점 기록이라 그대로 둔다 |
 | `activity__micdenied` | 위 activity__failed 와 같은 승격. 문구도 정본을 따라 바뀌었다 — '마이크가 꺼져 있어요' → '마이크를 사용할 수 없어요' + 설명. _snapshots/ 는 v2.7 시점 기록이라 그대로 둔다 |
 | `activity__report` | 목업 v2.7 승격(2026-08-26). 탭을 <div> 에서 진짜 <button role=tablist·aria-selected> 로 바꾸고, 카드·평가 행의 인라인 style 을 .report-card·.report-rows 로 뺐다. _snapshots/ 는 v2.6 시점 기록이라 그대로 둔다 |
 | `activity__briefing` | 목업 v2.7 승격(2026-08-26). 상황 이미지 자리 글자를 <span aria-hidden> 로 감쌌다 — 그림이 없을 때의 자리표라 보조기술이 읽을 것이 아니다. _snapshots/ 는 v2.6 시점 기록이라 그대로 둔다 |

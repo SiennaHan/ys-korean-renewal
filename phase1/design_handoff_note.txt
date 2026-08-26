@@ -5,7 +5,7 @@
 
     activity_mockups_gaps.html → _superseded/   activity_mockups_uiux.html 로 흡수됐다
     build_spec_v1.html         → _superseded/   build_spec_uiux.html 로 대체됐다
-    activity_mockups_uiux.html → _superseded/   screens_uiux.html 의 활동 절로 합쳤다
+    activity_mockups_uiux.html → _superseded/   screens_SOT.html 의 활동 절로 합쳤다
     app_asis_mockup_v1.html → _superseded/    폐기. 글로 정리한 것은 asis_v1.html
     build_spec_uiux.html → _superseded/       shell_spec_v1.html §21~§34 (값 층)
 
