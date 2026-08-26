@@ -1,0 +1,342 @@
+<meta charset="utf-8">
+<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ dc437fa -->
+<!-- 왜: §02 의 착지점과 §05 의 "막힘" 은 전부 이 파일들을 읽고 적은 관찰이다 -->
+<title>유저 플로우 — 진입에서 결제까지 한 장</title>
+<style>
+  :root {
+    --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f7;
+    --ink:#181c24; --ink-2:#4e5666; --ink-3:#89909f;
+    --line:#e2e6ed; --accent:#1f5fd6; --accent-soft:#e8f0ff;
+    --bad:#b3261e; --bad-soft:#fdecea; --good:#1c6b42; --good-soft:#e8f5ee;
+    --warn:#8a5a00; --warn-soft:#fdf4e3;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 10px 26px rgba(16,24,40,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+      --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+      --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+      --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+      --warn:#e0ab52; --warn-soft:#2c2417;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+    --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+    --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+    --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+    --warn:#e0ab52; --warn-soft:#2c2417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    font-size:15.5px; line-height:1.74; }
+  main { max-width:860px; margin:0 auto; padding:52px 22px 100px; }
+
+  header.doc { padding-bottom:26px; border-bottom:2px solid var(--ink); margin-bottom:34px; }
+  .eyebrow { font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent); font-weight:800; margin-bottom:10px; }
+  h1 { font-size:30px; line-height:1.28; margin:0 0 12px; font-weight:800;
+    letter-spacing:-.015em; text-wrap:balance; }
+  .lead { color:var(--ink-2); font-size:15.5px; max-width:64ch; margin:0; }
+  .lead b { color:var(--ink); }
+
+  h2 { font-size:20px; font-weight:800; margin:56px 0 4px; letter-spacing:-.01em;
+    display:flex; align-items:baseline; gap:10px; }
+  h2 .n { font-size:13px; font-weight:800; color:var(--accent);
+    font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+  h3 { font-size:15.5px; font-weight:700; margin:26px 0 4px; }
+  p { margin:10px 0; }
+  .qa { color:var(--ink-3); font-size:13.5px; }
+
+  code { font-family:ui-monospace,Menlo,monospace; font-size:.85em;
+    background:var(--surface-2); padding:1.5px 6px; border-radius:5px; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin:14px 0 6px; font-size:13.5px; }
+  th { text-align:left; font-size:11.5px; letter-spacing:.05em; color:var(--ink-3);
+    font-weight:700; padding:8px 10px 6px; border-bottom:2px solid var(--line); white-space:nowrap; }
+  td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td code { white-space:nowrap; }
+
+  .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:12px; padding:16px 20px; margin:18px 0;
+    box-shadow:var(--shadow); }
+  .callout.bad { border-left-color:var(--bad); }
+  .callout.good { border-left-color:var(--good); }
+  .callout.warn { border-left-color:var(--warn); }
+  .callout .t { font-weight:800; font-size:14px; margin-bottom:6px; }
+  .callout.bad .t { color:var(--bad); }
+  .callout.good .t { color:var(--good); }
+  .callout.warn .t { color:var(--warn); }
+  .callout p { font-size:14.5px; margin:7px 0; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px; margin:16px 0 6px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:5px; }
+  .card .k { font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:800; color:var(--ink-3); }
+  .card .nm { font-size:15px; font-weight:700; line-height:1.4; }
+  .card .nm a { text-decoration:none; }
+  .card .nm a:hover { text-decoration:underline; }
+  .card .d { font-size:13px; color:var(--ink-2); line-height:1.6; }
+
+  ol.path { list-style:none; counter-reset:step; padding:0; margin:16px 0 6px;
+    display:flex; flex-direction:column; gap:10px; }
+  ol.path li { counter-increment:step; display:grid; grid-template-columns:30px 1fr;
+    gap:12px; align-items:start; }
+  ol.path li::before { content:counter(step); grid-column:1;
+    width:30px; height:30px; border-radius:50%; background:var(--accent-soft);
+    color:var(--accent); font-size:13px; font-weight:800; display:grid; place-items:center;
+    font-variant-numeric:tabular-nums; }
+  ol.path .h { font-weight:700; }
+  ol.path .d { color:var(--ink-2); font-size:14px; }
+
+  ul { padding-left:22px; margin:10px 0; }
+  li { margin:6px 0; }
+  li::marker { color:var(--ink-3); }
+
+  .pill { display:inline-block; font-size:11px; font-weight:800; border-radius:99px;
+    padding:1.5px 9px; white-space:nowrap; }
+  .pill.done { background:var(--good-soft); color:var(--good); }
+  .pill.open { background:var(--warn-soft); color:var(--warn); }
+  .pill.stop { background:var(--bad-soft); color:var(--bad); }
+  .pill.file { background:var(--accent-soft); color:var(--accent); }
+</style><style>
+  .flow { background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:18px 14px; margin:18px 0 6px; box-shadow:var(--shadow); overflow-x:auto; }
+  .flow svg { display:block; margin:0 auto; max-width:100%; height:auto; }
+  .lg { display:flex; flex-wrap:wrap; gap:14px; margin:10px 0 0; font-size:12.5px; color:var(--ink-2); }
+  .lg span { display:flex; align-items:center; gap:6px; }
+  .lg i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+</style>
+<main>
+<header class="doc">
+  <div class="eyebrow">Phase 1 · 기획 · 2026-08-26</div>
+  <h1>유저 플로우 — 진입에서 결제까지 한 장</h1>
+  <p class="lead">규칙은 이미 정해져 있다. 흩어져 있어서 <b>걸어 보면 어디서 멈추는지</b>가 안 보였다.
+  이 문서는 <b>순서만</b> 본다 — 진입 넷에서 시작해 무료 둘러보기 · 벽 · 가입 · 결제까지
+  한 줄로 잇고, 그 위에 <b>지금 실제로 막힌 자리</b>를 표시한다.</p>
+</header>
+
+<div class="callout warn">
+  <div class="t">이 문서는 아무것도 새로 정하지 않는다</div>
+  <p>규칙의 주인은 <span class="pill file">access_and_pricing_v1</span> 이다 —
+  판정은 <span class="file">access_and_pricing_v1</span> §04, 신설 목록은 <span class="file">access_and_pricing_v1</span> §05, 갈래별 잠금은 <span class="file">access_and_pricing_v1</span> §06, 만드는 순서는 <span class="file">access_and_pricing_v1</span> §09.
+  화면의 주인은 <span class="pill file">draft_auth</span> 와
+  <span class="pill file">draft_paywall</span> 이다.</p>
+  <p><b>여기에 같은 규칙을 다시 적지 마라.</b> 이 저장소에서 가장 자주 어긋난 것이
+  같은 사실을 두 곳에 적어 둔 자리다. 이 문서가 드는 것은 <b>순서와 막힘</b>뿐이고,
+  그 둘은 다른 어느 문서도 들고 있지 않다.</p>
+</div>
+
+<h2><span class="n">01</span>진입점은 넷이다</h2>
+<p>이 넷 말고 앱으로 들어오는 길은 없다. 셋은 같은 자리에 떨어진다.</p>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>어디서</th><th>어디에 떨어지나</th><th>지금 상태</th></tr></thead>
+  <tbody>
+    <tr><td><b>책의 QR</b></td>
+      <td><code>/qr</code> → 스캔 기록 → <code>PUBLIC_QR_WEB_REDIRECT_URL</code>(비어 있으면 <code>/</code>)</td>
+      <td><span class="pill open">책 신원이 없다</span> <code>/qr/scan</code> 이 받는 것은 <code>accessUrl</code> 하나다.
+        어느 급·과의 QR 이었는지 아무도 읽지 않는다 — 아래 05</td></tr>
+    <tr><td><b>직접 방문</b></td><td><code>/</code></td><td><span class="pill done">된다</span></td></tr>
+    <tr><td><b>어학당 학생</b></td>
+      <td><code>/login</code></td>
+      <td><span class="pill done">된다</span> 계정은 학교가 만든다(<code>POST /student/batch</code> · <code>/upload</code>, 둘 다 관리자 전용)</td></tr>
+    <tr><td><b>비밀번호 재설정 메일</b></td>
+      <td><code>/reset-password</code> → <code>/new-password</code></td>
+      <td><span class="pill stop">메일이 안 나간다</span> 화면은 "보내드렸습니다" 라고 말한다 — <span class="pill file">BLOCKERS.md</span> §7</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">02</span>한 장</h2>
+<div class="flow">
+<svg viewBox="0 0 840 726" role="img" aria-labelledby="flowtitle flowdesc">
+  <title id="flowtitle">진입에서 결제까지의 유저 플로우</title>
+  <desc id="flowdesc">진입 넷이 무료 둘러보기로 모이고, 잠긴 과를 누르면 누구인지에 따라 셋으로 갈린다.
+  게스트는 로그인으로, 로그인만 한 사람은 결제로, 기관 학생은 학교 문의로 간다.
+  가입과 결제 두 단계는 지금 코드에 없어서 길이 끊긴다.</desc>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-3)"/>
+    </marker>
+    <marker id="arStop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--bad)"/>
+    </marker>
+  </defs>
+  <style>
+    .bx { fill:var(--surface-2); stroke:var(--line); stroke-width:1.2; }
+    .bxOk { fill:var(--good-soft); stroke:var(--good); stroke-width:1.2; }
+    .bxStop { fill:var(--bad-soft); stroke:var(--bad); stroke-width:1.4; }
+    .bxWarn { fill:var(--warn-soft); stroke:var(--warn); stroke-width:1.2; }
+    .t1 { font:700 13px "Pretendard","Apple SD Gothic Neo",sans-serif; fill:var(--ink); }
+    .t2 { font:400 11px "Pretendard","Apple SD Gothic Neo",sans-serif; fill:var(--ink-2); }
+    .tS { font:800 10.5px "Pretendard",sans-serif; fill:var(--bad); letter-spacing:.04em; }
+    .ln { stroke:var(--ink-3); stroke-width:1.3; fill:none; marker-end:url(#ar); }
+    .lnStop { stroke:var(--bad); stroke-width:1.6; fill:none; marker-end:url(#arStop); stroke-dasharray:5 4; }
+    .ln0 { stroke:var(--ink-3); stroke-width:1.3; fill:none; }
+    .cap { font:800 10px "Pretendard",sans-serif; fill:var(--ink-3); letter-spacing:.12em; }
+  </style>
+
+  <!-- 진입 -->
+  <text class="cap" x="16" y="20">진입</text>
+  <rect class="bx" x="16" y="30" width="176" height="34" rx="8"/>
+  <text class="t1" x="28" y="52">책의 QR → <tspan class="t2">/qr</tspan></text>
+  <rect class="bx" x="212" y="30" width="150" height="34" rx="8"/>
+  <text class="t1" x="224" y="52">직접 방문</text>
+  <rect class="bx" x="382" y="30" width="200" height="34" rx="8"/>
+  <text class="t1" x="394" y="52">어학당 학생 <tspan class="t2">(학교가 계정 발급)</tspan></text>
+  <rect class="bxStop" x="602" y="30" width="222" height="34" rx="8"/>
+  <text class="t1" x="614" y="52">재설정 메일 <tspan class="tS">메일 안 나감</tspan></text>
+
+  <path class="ln0" d="M104 64 L104 92"/>
+  <path class="ln0" d="M287 64 L287 92"/>
+  <path class="ln0" d="M482 64 L482 92"/>
+  <path class="ln0" d="M104 92 L482 92"/>
+  <path class="ln" d="M300 92 L300 112"/>
+
+  <!-- 무료 -->
+  <text class="cap" x="16" y="132">누구나 · 로그인 없이</text>
+  <rect class="bxOk" x="150" y="112" width="540" height="58" rx="10"/>
+  <text class="t1" x="166" y="136">무료 둘러보기</text>
+  <text class="t2" x="166" y="156">한글 1급 1과 · 교재 1급 4과 · 2급 1과 · 3급 1과 · 게임 둘(보카샷·봄소풍) · 표현클립 329편 전부</text>
+
+  <path class="ln" d="M420 170 L420 204"/>
+  <!-- 벽 -->
+  <rect class="bxWarn" x="252" y="204" width="336" height="44" rx="10"/>
+  <text class="t1" x="268" y="223">잠긴 과를 누른다 <tspan class="t2">— 보이되 잠근다</tspan></text>
+  <text class="t2" x="268" y="240">지금은 잠금이 없어서 이 벽이 아예 안 선다</text>
+
+  <path class="ln" d="M330 248 L330 276 L128 276 L128 300"/>
+  <path class="ln" d="M420 248 L420 300"/>
+  <path class="ln" d="M510 248 L510 276 L712 276 L712 300"/>
+
+  <!-- 갈림 셋 -->
+  <text class="cap" x="16" y="296">누구냐에 따라</text>
+  <rect class="bx" x="16" y="300" width="224" height="52" rx="9"/>
+  <text class="t1" x="30" y="321">게스트</text>
+  <text class="t2" x="30" y="339">→ 「먼저 로그인해 주세요」</text>
+
+  <rect class="bx" x="308" y="300" width="224" height="52" rx="9"/>
+  <text class="t1" x="322" y="321">로그인만 한 사람</text>
+  <text class="t2" x="322" y="339">→ 결제 안내</text>
+
+  <rect class="bx" x="600" y="300" width="224" height="52" rx="9"/>
+  <text class="t1" x="614" y="321">기관 학생</text>
+  <text class="t2" x="614" y="339">→ 「학교에 문의」 · 결제 금지</text>
+
+  <path class="ln" d="M128 352 L128 386 L300 386 L300 410"/>
+  <path class="ln" d="M420 352 L420 380 L630 380 L630 522 L602 522"/>
+
+  <!-- 가입 (막힘) -->
+  <rect class="bxStop" x="150" y="410" width="452" height="52" rx="10"/>
+  <text class="t1" x="166" y="431">회원가입 <tspan class="tS">막힘 — 학생이 스스로 만들 길이 없다</tspan></text>
+  <text class="t2" x="166" y="449">/auth/signup 은 role=school_admin · is_approved=False 로 만든다</text>
+
+  <path class="lnStop" d="M376 462 L376 496"/>
+
+  <!-- 결제 (없음) -->
+  <rect class="bxStop" x="150" y="496" width="452" height="52" rx="10"/>
+  <text class="t1" x="166" y="517">결제 <tspan class="tS">없음 — 코드 0줄 · PG 미정 · 가격 미정</tspan></text>
+  <text class="t2" x="166" y="535">ko_purchase · POST /purchase/webhook · ko_entitlement 전부 미착수</text>
+
+  <path class="lnStop" d="M376 548 L376 582"/>
+
+  <!-- 열림 -->
+  <rect class="bx" x="150" y="582" width="452" height="52" rx="10"/>
+  <text class="t1" x="166" y="603">전 급 · 전 과가 열린다 <tspan class="t2">— 구독 · 월 단위</tspan></text>
+  <text class="t2" x="166" y="621">expires_at = 결제일 + 1개월. 만료되면 다시 벽으로</text>
+
+
+  <!-- 기기 변경 -->
+  <rect class="bx" x="16" y="660" width="808" height="46" rx="9"/>
+  <text class="t1" x="32" y="681">기기를 바꿔도 잃지 않는다 <tspan class="t2">— 권한이 계정에 붙어 있으므로 로그인만 하면 복원된다</tspan></text>
+  <text class="t2" x="32" y="698">그래서 access_and_pricing_v1 §09 는 회원가입을 결제보다 먼저 둔다. 계정 없이 결제하면 기기를 바꿀 때 잃는다</text>
+</svg>
+<div class="lg">
+  <span><i style="background:var(--good-soft);border:1px solid var(--good)"></i>지금 도는 것</span>
+  <span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>규칙은 정해졌고 코드가 없다</span>
+  <span><i style="background:var(--bad-soft);border:1px solid var(--bad)"></i>길이 끊긴다</span>
+</div>
+</div>
+
+<h2><span class="n">03</span>단계마다 있는 것과 없는 것</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>단계</th><th>화면</th><th>서버</th><th>상태</th></tr></thead>
+  <tbody>
+    <tr><td>진입 · 추적</td><td><code>routes/qr.tsx</code></td><td><code>/qr/scan</code> · <code>ko_qr_scan</code></td><td><span class="pill done">된다</span></td></tr>
+    <tr><td>무료 둘러보기</td><td>홈 · 교재학습 · 게임 · 클립</td><td>콘텐츠는 번들의 <code>n*.json</code> — 서버가 필요 없다</td><td><span class="pill done">된다</span></td></tr>
+    <tr><td>무료 경계 판정</td><td>—</td><td><code>GET /entitlement</code> · <code>ko_chapter.is_free</code></td><td><span class="pill stop">0곳</span> <span class="file">access_and_pricing_v1</span> §05 의 1·2번</td></tr>
+    <tr><td>잠금 표시</td><td><span class="pill file">draft_paywall</span> 넷 + 목록 자물쇠</td><td>위 응답만 믿는다</td><td><span class="pill open">그림만</span></td></tr>
+    <tr><td>로그인</td><td><code>routes/login.tsx</code></td><td><code>POST /sign/login</code></td><td><span class="pill done">된다</span></td></tr>
+    <tr><td>회원가입</td><td><span class="pill file">draft_auth</span> 의 가입</td><td><code>POST /user/sign/up</code></td><td><span class="pill stop">막힘</span> <span class="file">access_and_pricing_v1</span> §08 의 1번</td></tr>
+    <tr><td>비밀번호 재설정</td><td><code>reset-password</code> · <code>new-password</code></td><td>메일 발송 수단</td><td><span class="pill stop">껍데기</span></td></tr>
+    <tr><td>결제</td><td><span class="pill file">draft_paywall</span> 의 구독 안내</td><td><code>ko_purchase</code> · <code>POST /purchase/webhook</code></td><td><span class="pill stop">0곳</span></td></tr>
+    <tr><td>권한 부여</td><td>—</td><td><code>ko_entitlement</code></td><td><span class="pill stop">표가 없다</span></td></tr>
+    <tr><td>복원 · 기기 변경</td><td>로그인 하나로 끝난다</td><td>권한이 계정에 붙으므로 별도 화면이 없다</td><td><span class="pill open">권한이 생기면 저절로</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">04</span>걸어 보면 여기서 멈춘다 — 막힘 다섯</h2>
+<ol class="path">
+  <li><div><div class="h">학생이 스스로 계정을 만들 길이 없다</div>
+    <div class="d"><code>POST /auth/signup</code> 은 <code>role="school_admin"</code> · <code>is_approved=False</code> 로 만든다 —
+    어학당 관리자 콘솔용이다. 학생 계정은 <code>POST /student/batch</code>(관리자 전용)로만 생긴다.
+    <b>QR 로 들어온 사람은 벽을 만나도 구독자가 될 수 없다.</b> 이것이 이 플로우의 유일한 완전 단절이다</div></div></li>
+  <li><div><div class="h">잠금이 없어서 벽이 아예 안 선다</div>
+    <div class="d"><code>entitlement</code> 라는 낱말이 코드에 0곳이다. 지금은 무료·유료 구분 없이 전부 열려 있다 —
+    페이월 화면을 붙일 자리가 없다는 뜻도 된다</div></div></li>
+  <li><div><div class="h">결제가 없다</div>
+    <div class="d"><code>payment</code>·<code>subscription</code>·PG 이름 어느 것도 <code>api/</code> 와 <code>app/src</code> 에 없다.
+    가격과 PG 도 아직 안 정했다 — 아래 05</div></div></li>
+  <li><div><div class="h">메일이 안 나간다</div>
+    <div class="d">보낼 수단이 아예 없다(<code>boto3</code> 는 S3 전용). 재설정이 껍데기인 것도, 영수증을 못 보내는 것도 같은 뿌리다.
+    보낼 것은 넷뿐이고 5개 언어 템플릿이 필요하다</div></div></li>
+  <li><div><div class="h">잠가도 게임 콘텐츠는 주소로 새 나간다</div>
+    <div class="d">콘텐츠를 내주는 여섯 라우트에 인증이 없다 — <span class="file">access_and_pricing_v1</span> §08 의 3번.
+    화면만 잠그면 <b>화면에만 있는 잠금</b>이 된다</div></div></li>
+</ol>
+
+<h2><span class="n">05</span>아직 정하지 않은 것 셋</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>물음</th><th>상태</th></tr></thead>
+  <tbody>
+    <tr><td><b>가격</b></td><td><span class="pill open">미정</span> 구독·월 단위까지는 정해졌다(2026-08-26). 남은 것은 금액 하나</td></tr>
+    <tr><td><b>PG</b></td><td><span class="pill open">뒤로 밀기로 정했다 (2026-08-26)</span> <span class="file">access_and_pricing_v1</span> §09 의 1~4단계는 PG 없이 다 된다.
+      권고는 <span class="file">access_and_pricing_v1</span> §08 에 있다 — 국내는 토스페이먼츠·포트원, 해외는 Stripe</td></tr>
+    <tr><td><b>QR 을 어디에 떨어뜨리나</b></td>
+      <td><span class="pill open">미정</span> 지금은 <code>/</code> 다. <b>QR 이 결제와 무관한 것은 이미 정해졌지만</b>(라이선스 키 안은 폐기),
+      <b>어디에 착지시킬지는 정해진 적이 없다.</b> 그 과로 보내려면 QR 에 급·과를 박고 <code>/qr</code> 이 읽어
+      <code>/learn/*</code> 로 넘겨야 한다 — 지금 <code>/qr/scan</code> 이 받는 것은 <code>accessUrl</code> 하나다</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="qa">셋 다 <span class="file">access_and_pricing_v1</span> §09 의 1~4단계를 막지 않는다. QR 착지점만은 <b>1~3단계와 같이 정하면 싸다</b> —
+무료 과를 데이터로 표시하는 그 작업이 "어느 과로 보낼 수 있나" 를 이미 알기 때문이다.</p>
+
+<h2><span class="n">06</span>순서 — 기획자 확정 2026-08-26</h2>
+<ol class="path">
+  <li><div><div class="h">이 문서 (한 장으로 그리기)</div><div class="d">지금 것</div></div></li>
+  <li><div><div class="h"><span class="file">access_and_pricing_v1</span> §09 의 1~3단계 — 경계와 자물쇠</div>
+    <div class="d"><code>ko_chapter.is_free</code> 값 채우기 → <code>GET /entitlement</code>(늘 무료 범위만 낸다) →
+    앱에 잠금 붙이기 + 문구 넷을 5개 언어로. <b>결제 없이도 온전한 제품이다</b> —
+    <span class="pill file">draft_paywall</span> 이 진짜 화면이 되는 단계이기도 하다</div></div></li>
+  <li><div><div class="h"><span class="file">access_and_pricing_v1</span> §09 의 4단계 — 학생 자체 회원가입</div>
+    <div class="d"><code>POST /user/sign/up</code> 신설 + 개인 가입은 승인 없이 활성.
+    여기까지 오면 위 <b>막힘 1</b> 이 풀리고 QR 유입자가 계정을 가질 수 있다</div></div></li>
+</ol>
+<p class="qa">결제(그 뒤)는 가격과 PG 가 정해진 다음이다. 메일(5단계)은 결제와 무관하게
+재설정 때문에 이미 필요하다 — <span class="pill file">BLOCKERS.md</span> §7.</p>
+
+</main>
