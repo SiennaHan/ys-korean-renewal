@@ -6,6 +6,7 @@ const vi = {
 		password: "Mật khẩu",
 		passwordPlaceholder: "Nhập mật khẩu",
 		resetPassword: "Đặt lại mật khẩu",
+		rememberEmail: "Ghi nhớ email",
 		loginButton: "Đăng nhập",
 		guestButton: "Xem trước mà không đăng nhập",
 		guestFailed: "Không thể bắt đầu xem. Vui lòng thử lại sau.",

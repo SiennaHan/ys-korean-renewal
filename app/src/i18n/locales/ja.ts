@@ -6,6 +6,7 @@ const ja = {
 		password: "パスワード",
 		passwordPlaceholder: "パスワードを入力してください",
 		resetPassword: "パスワードを再設定",
+		rememberEmail: "メールアドレスを保存",
 		loginButton: "ログイン",
 		guestButton: "ログインせずに見てみる",
 		guestFailed:

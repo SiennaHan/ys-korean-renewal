@@ -6,6 +6,7 @@ const zh = {
 		password: "密码",
 		passwordPlaceholder: "请输入密码",
 		resetPassword: "重置密码",
+		rememberEmail: "记住邮箱",
 		loginButton: "登录",
 		guestButton: "不登录先浏览",
 		guestFailed: "无法开始浏览。请稍后再试。",

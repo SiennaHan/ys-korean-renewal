@@ -1,3 +1,4 @@
+import { getSavedEmail, removeSavedEmail, setSavedEmail } from "@/api/api";
 import { useAuth } from "@/components/sign/sign-provider";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/ui/language-selector";
@@ -14,7 +15,15 @@ function LoginPage() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { isLoggedInUser, login, guestSign } = useAuth();
-	const [email, setEmail] = useState("");
+	/*
+	 * 아이디 저장 — 웹앱이라 학습자가 앱을 띄워 두지 않는다. 토큰은 30일이지만
+	 * (dev_spec_v1 "JWT 30일, 갱신 없음") 그보다 오래 쉬면 다시 타이핑해야 한다.
+	 * 저장된 것이 있으면 그 자리에서 켜진 채로 시작한다 — 저장한 사람은 계속
+	 * 저장하고 싶다는 뜻이다. **비밀번호는 저장하지 않는다.**
+	 */
+	const savedEmail = getSavedEmail();
+	const [email, setEmail] = useState(savedEmail ?? "");
+	const [rememberEmail, setRememberEmail] = useState(savedEmail !== null);
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
@@ -41,7 +50,14 @@ function LoginPage() {
 
 		const result = await login(email, password);
 
-		if (!result.success) {
+		if (result.success) {
+			// 성공했을 때만 저장한다 — 틀린 주소를 기억해 두면 매번 지워야 한다
+			if (rememberEmail) {
+				setSavedEmail(email);
+			} else {
+				removeSavedEmail();
+			}
+		} else {
 			setError(result.error || t("login.loginFailed"));
 		}
 
@@ -141,15 +157,28 @@ function LoginPage() {
 							</div>
 						</div>
 
-						{/* Reset password link */}
-						<div className="text-right">
-							<button
-								type="button"
-								onClick={() => navigate({ to: "/reset-password" })}
-								className="text-blue-600 text-sm hover:underline"
-							>
-								{t("login.resetPassword")}
-							</button>
+						{/* 아이디 저장 · 비밀번호 재설정 — 한 줄에 좌우로 */}
+						<div className="flex items-center justify-between">
+							<label className="flex cursor-pointer items-center gap-2">
+								<input
+									type="checkbox"
+									checked={rememberEmail}
+									onChange={(e) => setRememberEmail(e.target.checked)}
+									className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/20"
+								/>
+								<span className="text-gray-600 text-sm">
+									{t("login.rememberEmail")}
+								</span>
+							</label>
+							<div>
+								<button
+									type="button"
+									onClick={() => navigate({ to: "/reset-password" })}
+									className="text-blue-600 text-sm hover:underline"
+								>
+									{t("login.resetPassword")}
+								</button>
+							</div>
 						</div>
 
 						{/* Error */}

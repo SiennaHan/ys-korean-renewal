@@ -9,6 +9,22 @@ export interface LoginCredentials {
 }
 
 const ACCESS_TOKEN_KEY = "koreanAccessToken";
+const USER_KEY = "koreanUser";
+const SAVED_EMAIL_KEY = "koreanSavedEmail";
+
+/**
+ * 세션이 서버에서 거절돼 지웠다는 알림.
+ *
+ * 전에는 401 이 오면 토큰만 지우고 끝냈다. 그런데 `koreanUser` 가 남아서
+ * SignProvider 의 `user !== null` 이 참으로 유지됐고, 라우트 가드
+ * (`main.tsx` 의 `!isSignedIn`)도 React 상태를 안 보므로 돌지 않았다.
+ * 결과는 **토큰 없이 로그인 상태로 믿는 앱**이고, 이후 모든 요청이 헤더 없이
+ * 나가 401 을 반복했다(2026-08-26 에 실제로 관측했다).
+ *
+ * 그래서 저장소를 정리하고 이 이벤트를 쏜다. SignProvider 가 받아 상태를
+ * 내리면 가드가 조용히 로그인으로 보낸다 — 만료 안내 화면은 두지 않기로 했다.
+ */
+export const SESSION_CLEARED_EVENT = "auth:session-cleared";
 const KOREAN_GUEST_ID = "koreanGuestId";
 
 /*
@@ -53,6 +69,25 @@ export function removeAccessToken(): void {
 	localStorage.removeItem(ACCESS_TOKEN_KEY);
 }
 
+/**
+ * 아이디 저장 — 로그인 화면에 이메일을 미리 채우기 위한 것.
+ *
+ * 웹앱이라 학습자가 앱을 띄워 두지 않는다. 토큰은 30일이지만
+ * (`signJwt` 의 exp, `dev_spec_v1`) 그보다 오래 쉬면 다시 타이핑해야 한다.
+ * **비밀번호는 저장하지 않는다** — 이메일만이다.
+ */
+export function getSavedEmail(): string | null {
+	return readClean(SAVED_EMAIL_KEY);
+}
+
+export function setSavedEmail(email: string): void {
+	writeClean(SAVED_EMAIL_KEY, email);
+}
+
+export function removeSavedEmail(): void {
+	localStorage.removeItem(SAVED_EMAIL_KEY);
+}
+
 export function getGuestId(): string | null {
 	return readClean(KOREAN_GUEST_ID);
 }
@@ -88,7 +123,12 @@ export async function authFetch(
 	const response = await fetch(url, { ...init, headers });
 
 	if (response.status === 401 || response.status === 403) {
+		// 토큰과 사용자를 **같이** 지운다. 하나만 지우면 앱이 반쪽 상태가 된다.
+		// guestId 는 남긴다 — 게스트의 서버 기록을 가리키는 이름이라,
+		// 지우면 나중에 계정으로 옮길 길이 끊긴다(BLOCKERS §6-d).
 		removeAccessToken();
+		localStorage.removeItem(USER_KEY);
+		window.dispatchEvent(new Event(SESSION_CLEARED_EVENT));
 	}
 
 	return response;

@@ -1,4 +1,5 @@
 import {
+	SESSION_CLEARED_EVENT,
 	getAccessToken,
 	getGuestId,
 	removeAccessToken,
@@ -121,6 +122,24 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		localStorage.removeItem("koreanUser");
 		setUser(null);
 		setIsSignedIn(false);
+	}, []);
+
+	/*
+	 * 서버가 세션을 거절하면(401·403) api.ts 가 저장소를 정리하고 알린다.
+	 * 여기서 상태를 내려야 라우트 가드(main.tsx)가 돌아 로그인으로 간다 —
+	 * 저장소만 지우면 이 상태가 그대로 남아 앱이 로그인된 줄로 믿는다.
+	 *
+	 * signOut 을 그대로 쓰지 않는 이유는 guestId 다. signOut 은 그것까지 지우는데,
+	 * 게스트 토큰이 만료돼 여기 온 경우 guestId 를 지우면 서버에 쌓인 그 사람의
+	 * 기록을 나중에 계정으로 옮길 길이 끊긴다.
+	 */
+	useEffect(() => {
+		const onCleared = () => {
+			setUser(null);
+			setIsSignedIn(false);
+		};
+		window.addEventListener(SESSION_CLEARED_EVENT, onCleared);
+		return () => window.removeEventListener(SESSION_CLEARED_EVENT, onCleared);
 	}, []);
 
 	// 초기 마운트 시에만 인증 상태 확인 (로그인/로그아웃은 직접 상태를 관리).

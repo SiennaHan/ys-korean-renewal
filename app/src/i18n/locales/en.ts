@@ -6,6 +6,7 @@ const en = {
 		password: "Password",
 		passwordPlaceholder: "Enter your password",
 		resetPassword: "Reset Password",
+		rememberEmail: "Remember my email",
 		loginButton: "Login",
 		guestButton: "Browse without signing in",
 		guestFailed: "Couldn't start browsing. Please try again in a moment.",

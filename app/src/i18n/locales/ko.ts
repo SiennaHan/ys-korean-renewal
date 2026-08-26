@@ -6,6 +6,13 @@ const ko = {
 		password: "비밀번호",
 		passwordPlaceholder: "비밀번호를 입력하세요",
 		resetPassword: "비밀번호 재설정",
+		/**
+		 * 같은 화면의 입력칸이 "이메일" 이므로 "아이디" 라 부르지 않는다 —
+		 * 한 화면에서 같은 것을 두 이름으로 부르면 안 된다.
+		 * 다른 넷도 각자 칸 이름과 맞춰 두었다(メールアドレス · Email · 邮箱).
+		 * 비밀번호는 저장하지 않는다.
+		 */
+		rememberEmail: "이메일 저장",
 		loginButton: "로그인",
 		guestButton: "로그인하지 않고 둘러보기",
 		guestFailed: "둘러보기를 시작하지 못했습니다. 잠시 뒤 다시 시도해 주세요.",
