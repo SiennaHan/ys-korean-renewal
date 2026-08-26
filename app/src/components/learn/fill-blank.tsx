@@ -14,11 +14,13 @@ import {
 	FeedbackMessage,
 	PrimaryButton,
 	ProblemCard,
+	ResultScreen,
 	WRONG_VISIBLE_MS,
 } from "@/components/main/activity";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import blankQuestions from "@/shared/data/n4_blank_question.json";
-import { useRouter } from "@tanstack/react-router";
+import { nextLessonActivity } from "@/shared/lesson-flow";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
@@ -66,20 +68,37 @@ export default function FillBlank({
 	chapterLabel,
 }: FillBlankProps) {
 	const router = useRouter();
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const sound = useSoundEffects();
 
+	/** 다시 풀기로 좁힌 문항. null 이면 과 전체다 */
+	const [retryOnly, setRetryOnly] = useState<number[] | null>(null);
 	const questions = useMemo(() => {
-		return (blankQuestions as BlankItem[]).filter(
+		const all = (blankQuestions as BlankItem[]).filter(
 			(q) =>
 				(bookId == null || q.book_id === bookId) &&
 				(chapterSeq == null || q.chapter === chapterSeq),
 		);
-	}, [bookId, chapterSeq]);
+		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
+		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
+	}, [bookId, chapterSeq, retryOnly]);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 	const [answerState, setAnswerState] = useState<AnswerState>("idle");
+	/** 마지막 문항을 넘기면 결과 화면. 미션대화가 브리핑·대화·리포트를 넘기는 것과 같은 꼴이다 */
+	const [phase, setPhase] = useState<"solving" | "result">("solving");
+	/**
+	 * 첫 시도에 틀린 문항 → 그때 고른 답.
+	 *
+	 * 결과 화면의 오답 목록이 이걸 쓴다. 서버로도 보내지만(아래) 다시 읽어 오지는
+	 * 않는다 — `getLearningRecords` 를 받는 자리가 `is_correct` 인 것만 복원한다.
+	 * 그래서 **새로고침하면 이 목록이 빈다.** BLOCKERS §9-c 에 적었다.
+	 */
+	const [firstWrong, setFirstWrong] = useState<Record<number, string>>({});
+	/** 이미 한 번 답한 문항 — "첫 시도" 를 가리려고 둔다 */
+	const tried = useRef<Set<number>>(new Set());
 	const wrongResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	/** questionId → { selectedAnswer, isCorrect } from server */
 	const [savedAnswers, setSavedAnswers] = useState<
@@ -170,6 +189,9 @@ export default function FillBlank({
 
 			setSelectedAnswer(sel);
 
+			const isFirstTry = !tried.current.has(question.id);
+			tried.current.add(question.id);
+
 			if (sel === question.answer) {
 				setAnswerState("correct");
 				sound.playCorrect();
@@ -190,6 +212,22 @@ export default function FillBlank({
 			} else {
 				setAnswerState("wrong");
 				sound.playIncorrect();
+				if (isFirstTry) {
+					setFirstWrong((prev) => ({ ...prev, [question.id]: sel }));
+					// 형제 셋(읽기·듣기·어휘)은 오답도 보내는데 이 화면만 안 보내고 있었다.
+					// dev_spec §2.1·§16 은 첫 시도 오답을 남기라고 한다 — 복습 큐가 그걸로 찬다.
+					// 서버가 첫 행을 덮지 않게 고쳐졌으므로(7f8d63d) 이제 그대로 남는다.
+					if (bookId && chapterSeq) {
+						saveLearningRecord({
+							bookId,
+							chapterSeq,
+							menuType: "fill-blank",
+							questionId: question.id,
+							selectedAnswer: sel,
+							isCorrect: false,
+						});
+					}
+				}
 				wrongResetTimer.current = setTimeout(() => {
 					setSelectedAnswer(null);
 					setAnswerState("idle");
@@ -255,6 +293,62 @@ export default function FillBlank({
 
 	const hasPrev = currentIndex > 0;
 	const hasNext = currentIndex < totalSteps - 1;
+
+	if (phase === "result") {
+		const wrongIds = questions.filter((q) => firstWrong[q.id]).map((q) => q.id);
+		return (
+			<ResultScreen
+				lesson={chapterLabel}
+				total={questions.length}
+				answered={questions.filter((q) => savedAnswers[q.id]?.correct).length}
+				graded={questions.length}
+				correct={questions.length - wrongIds.length}
+				wrongs={questions
+					.filter((q) => firstWrong[q.id])
+					.map((q) => ({
+						picked: firstWrong[q.id],
+						// 저작용 기호식(grammar_focus)이 아니라 문장 쪽을 쓴다 — 위 타입 주석 참고.
+						// 836행 중 한 행만 비어 있어 그때만 기호식으로 돌아간다
+						explanation: q.grammar_focus_revised || q.grammar_focus,
+					}))}
+				onExit={() => router.history.back()}
+				onRetry={
+					wrongIds.length > 0
+						? () => {
+								// 틀렸던 문항만 다시. 그 문항의 정답 기록을 지워야 다시 풀린다
+								setSavedAnswers((prev) => {
+									const next = { ...prev };
+									for (const id of wrongIds) delete next[id];
+									return next;
+								});
+								setFirstWrong({});
+								for (const id of wrongIds) tried.current.delete(id);
+								setRetryOnly(wrongIds);
+								setCurrentIndex(0);
+								setPhase("solving");
+							}
+						: undefined
+				}
+				onNext={() => {
+					const next =
+						bookId && chapterSeq
+							? nextLessonActivity("fill-blank", bookId, chapterSeq)
+							: null;
+					// 과의 마지막 활동이면 갈 다음이 없다 — 목업 정본이 이 버튼을
+					// 늘 켜 두고 그리므로, 눌러도 아무 일 없는 버튼을 만들지 않으려고
+					// 과 목록으로 보낸다
+					navigate(
+						next
+							? {
+									to: next.route,
+									search: { level: bookId, lesson: chapterSeq },
+								}
+							: { to: "/main/textbook" },
+					);
+				}}
+			/>
+		);
+	}
 
 	if (!question) {
 		return (
@@ -368,7 +462,7 @@ export default function FillBlank({
 						label={hasNext ? t("player.next") : t("player.showResult")}
 						on={hasNext ? solved : allSolved}
 						action="next"
-						onClick={hasNext ? handleNext : () => router.history.back()}
+						onClick={hasNext ? handleNext : () => setPhase("result")}
 					/>
 				</Dock>
 			</ActivityFooter>

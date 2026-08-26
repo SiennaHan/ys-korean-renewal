@@ -849,7 +849,7 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ fe30d4d -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 7f8d63d -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1137,6 +1137,9 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 | 게임·자모 피드백 `aria-live` | 5파일. 게임은 `particle-sniper` 하나뿐, 자모는 `HangulCanvas` 경유 |
 | 복습 큐 자동 제거 | `dev_spec_v1` §16 의 2번 — **권고는 확정**(한 트랜잭션, `DELETE` 는 어드민 수동용). 개발 판단 대기 |
 | 진행 저장 방식 | 같은 §16 의 3번 — **권고는 확정**(매 문항 + `keepalive`). 실측까지 있다 |
+| 결과 화면 | **뜬다**(2026-08-26). 문법·읽기·듣기·어휘 넷이 `ResultScreen` 을 쓴다.<br>전에는 「결과 보기」 가 `router.history.back()` 이었다. 남은 것은 아래 두 줄 |
+| 결과 화면 새로고침 | 오답 목록이 **화면 안 상태로만 산다.** 네 활동 다 첫 시도 오답을 서버로 보내지만(`fill-blank` 는 2026-08-26 에 마지막으로 붙었다),<br>받는 쪽 `getLearningRecords` 처리는 `is_correct` 인 것만 복원한다. 되살리려면 그 자리를 고쳐야 한다 |
+| 오답 해설 원장 | 문법만 `grammar_focus_revised` 를 들고 온다(836행 중 835행).<br>읽기·듣기·어휘 원장에는 해설 칸이 없어 결과 화면이 `player.answerIs`("정답은 X예요")로 대신한다 |
 
 ### 9-d. 아직 아무것도 없는 것
 

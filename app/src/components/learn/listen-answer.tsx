@@ -19,6 +19,7 @@ import {
 	PrimaryButton,
 	ProblemCard,
 	QuestionText,
+	ResultScreen,
 } from "@/components/main/activity";
 import { useInstruction } from "@/shared/data/instruction";
 import {
@@ -27,7 +28,8 @@ import {
 	getQuestionImagePath,
 	getScriptLines,
 } from "@/shared/data/listen-answer";
-import { useRouter } from "@tanstack/react-router";
+import { nextLessonActivity } from "@/shared/lesson-flow";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -45,6 +47,7 @@ export default function ListenAnswer({
 	chapterLabel,
 }: ListenAnswerProps) {
 	const router = useRouter();
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const sharedAudio = useSharedAudio();
 	const sound = useSoundEffects();
@@ -54,10 +57,17 @@ export default function ListenAnswer({
 		return () => sharedAudio.stop();
 	}, [sharedAudio]);
 
-	const questions = useMemo(
-		() => (bookId && chapterSeq ? getListenQuestions(bookId, chapterSeq) : []),
-		[bookId, chapterSeq],
-	);
+	/** 마지막 문항을 넘기면 결과 화면 */
+	const [phase, setPhase] = useState<"solving" | "result">("solving");
+	/** 다시 풀기로 좁힌 문항. null 이면 과 전체다 */
+	const [retryOnly, setRetryOnly] = useState<number[] | null>(null);
+
+	const questions = useMemo(() => {
+		const all =
+			bookId && chapterSeq ? getListenQuestions(bookId, chapterSeq) : [];
+		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
+		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
+	}, [bookId, chapterSeq, retryOnly]);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -238,6 +248,66 @@ export default function ListenAnswer({
 		}
 	};
 
+	if (phase === "result") {
+		// wrongAttempts 는 틀린 인덱스를 넣은 차례대로 담는 Set 이라 첫 원소가 첫 시도 오답이다
+		const firstWrongOf = (id: number) => {
+			const set = wrongAttempts[id];
+			return !set || set.size === 0 ? null : [...set][0];
+		};
+		const pick = (q: ListenQuestion, idx: number) =>
+			[q.selection1, q.selection2, q.selection3, q.selection4][idx] ?? "";
+		const missed = questions.filter((q) => firstWrongOf(q.id) !== null);
+		const wrongIds = missed.map((q) => q.id);
+		return (
+			<ResultScreen
+				lesson={chapterLabel}
+				total={questions.length}
+				answered={
+					questions.filter((q) => savedAnswers[q.id] !== undefined).length
+				}
+				graded={questions.length}
+				correct={questions.length - wrongIds.length}
+				wrongs={missed.map((q) => ({
+					picked: pick(q, firstWrongOf(q.id) as number),
+					// 이 원장에는 해설이 없다 — 빈 칸을 그리느니 정답을 말해 준다
+					explanation: t("player.answerIs", {
+						answer: pick(q, q.answer_index),
+					}),
+				}))}
+				onExit={() => router.history.back()}
+				onRetry={
+					wrongIds.length > 0
+						? () => {
+								setSavedAnswers((prev) => {
+									const next = { ...prev };
+									for (const id of wrongIds) delete next[id];
+									return next;
+								});
+								setWrongAttempts({});
+								setRetryOnly(wrongIds);
+								setCurrentIndex(0);
+								setPhase("solving");
+							}
+						: undefined
+				}
+				onNext={() => {
+					const next =
+						bookId && chapterSeq
+							? nextLessonActivity("listen-answer", bookId, chapterSeq)
+							: null;
+					navigate(
+						next
+							? {
+									to: next.route,
+									search: { level: bookId, lesson: chapterSeq },
+								}
+							: { to: "/main/textbook" },
+					);
+				}}
+			/>
+		);
+	}
+
 	if (!question) {
 		return (
 			<FailedScreen
@@ -363,7 +433,7 @@ export default function ListenAnswer({
 						onClick={
 							currentIndex < totalSteps - 1
 								? handleNext
-								: () => router.history.back()
+								: () => setPhase("result")
 						}
 					/>
 				</Dock>

@@ -15,11 +15,13 @@ import {
 	PrimaryButton,
 	ProblemCard,
 	QuestionText,
+	ResultScreen,
 } from "@/components/main/activity";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import readQuestions from "@/shared/data/n5_read_answer_questions.json";
 import readTexts from "@/shared/data/n5_read_answer_text.json";
-import { useRouter } from "@tanstack/react-router";
+import { nextLessonActivity } from "@/shared/lesson-flow";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -59,6 +61,7 @@ export default function ReadAnswer({
 	chapterLabel,
 }: ReadAnswerProps) {
 	const router = useRouter();
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const sound = useSoundEffects();
 
@@ -73,12 +76,19 @@ export default function ReadAnswer({
 
 	const textIds = useMemo(() => texts.map((t) => t.id), [texts]);
 
+	/** 마지막 문항을 넘기면 결과 화면 */
+	const [phase, setPhase] = useState<"solving" | "result">("solving");
+	/** 다시 풀기로 좁힌 문항. null 이면 과 전체다 */
+	const [retryOnly, setRetryOnly] = useState<number[] | null>(null);
+
 	/** 해당 지문의 질문들 */
 	const questions = useMemo(() => {
-		return (readQuestions as ReadItem[])
+		const all = (readQuestions as ReadItem[])
 			.filter((q) => textIds.includes(q.text_id))
 			.sort((a, b) => a.seq - b.seq);
-	}, [textIds]);
+		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
+		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
+	}, [textIds, retryOnly]);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -209,6 +219,68 @@ export default function ReadAnswer({
 	const hasPrev = currentIndex > 0;
 	const hasNext = currentIndex < totalSteps - 1;
 
+	if (phase === "result") {
+		// wrongAttempts 는 틀린 인덱스를 **넣은 차례대로** 담는 Set 이라
+		// 첫 원소가 곧 첫 시도 오답이다. 따로 상태를 두지 않는다.
+		const firstWrongOf = (id: number) => {
+			const set = wrongAttempts[id];
+			return !set || set.size === 0 ? null : [...set][0];
+		};
+		const pick = (q: ReadItem, idx: number) =>
+			[q.selection1, q.selection2, q.selection3, q.selection4][idx] ?? "";
+		const missed = questions.filter((q) => firstWrongOf(q.id) !== null);
+		const wrongIds = missed.map((q) => q.id);
+		return (
+			<ResultScreen
+				lesson={chapterLabel}
+				total={questions.length}
+				answered={
+					questions.filter((q) => savedAnswers[q.id] !== undefined).length
+				}
+				graded={questions.length}
+				correct={questions.length - wrongIds.length}
+				wrongs={missed.map((q) => ({
+					picked: pick(q, firstWrongOf(q.id) as number),
+					// 이 원장에는 해설이 없다 — 문법만 grammar_focus_revised 를 들고 온다.
+					// 빈 칸을 그리느니 정답을 말해 준다(player.answerIs 는 이미 있는 문구다)
+					explanation: t("player.answerIs", {
+						answer: pick(q, q.answer_index),
+					}),
+				}))}
+				onExit={() => router.history.back()}
+				onRetry={
+					wrongIds.length > 0
+						? () => {
+								setSavedAnswers((prev) => {
+									const next = { ...prev };
+									for (const id of wrongIds) delete next[id];
+									return next;
+								});
+								setWrongAttempts({});
+								setRetryOnly(wrongIds);
+								setCurrentIndex(0);
+								setPhase("solving");
+							}
+						: undefined
+				}
+				onNext={() => {
+					const next =
+						bookId && chapterSeq
+							? nextLessonActivity("read-answer", bookId, chapterSeq)
+							: null;
+					navigate(
+						next
+							? {
+									to: next.route,
+									search: { level: bookId, lesson: chapterSeq },
+								}
+							: { to: "/main/textbook" },
+					);
+				}}
+			/>
+		);
+	}
+
 	if (!question || !passage) {
 		return (
 			<FailedScreen
@@ -299,7 +371,7 @@ export default function ReadAnswer({
 						label={hasNext ? t("player.next") : t("player.showResult")}
 						on={hasNext ? isSolved : allSolved}
 						action="next"
-						onClick={hasNext ? handleNext : () => router.history.back()}
+						onClick={hasNext ? handleNext : () => setPhase("result")}
 					/>
 				</Dock>
 			</ActivityFooter>

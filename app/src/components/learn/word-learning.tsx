@@ -12,13 +12,15 @@ import {
 	PreviewRow,
 	PrimaryButton,
 	ProblemCard,
+	ResultScreen,
 	WordPreviewList,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { type WordItem, wordList } from "@/shared/data/word-list";
 import { wordQuizList } from "@/shared/data/word-quiz";
+import { nextLessonActivity } from "@/shared/lesson-flow";
 import { getWordTTSAudio } from "@/shared/tts-cache";
-import { useRouter } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import {
 	Check,
@@ -94,6 +96,7 @@ export default function WordLearning({
 	chapterLabel,
 }: WordLearningProps) {
 	const router = useRouter();
+	const navigate = useNavigate();
 	const { t, i18n } = useTranslation();
 	const [selectedWordId, setSelectedWordId] = useState<number | null>(null);
 	const [recordings, setRecordings] = useState<Record<number, RecordingResult>>(
@@ -139,13 +142,28 @@ export default function WordLearning({
 		);
 	}, [bookId, chapterSeq]);
 
+	/** 마지막 퀴즈를 넘기면 결과 화면 */
+	const [phase, setPhase] = useState<"solving" | "result">("solving");
+	/** 다시 풀기로 좁힌 퀴즈. null 이면 과 전체다 */
+	const [retryOnly, setRetryOnly] = useState<number[] | null>(null);
+	/**
+	 * 첫 시도에 틀린 퀴즈 → 그때 고른 보기 번호.
+	 * 이 화면은 오답도 서버로 보내지만(`saveLearningRecord` 의 isCorrect)
+	 * 로컬 상태에는 정답만 남겨 왔다. 결과 화면의 오답 목록은 이걸 쓴다.
+	 */
+	const [firstWrong, setFirstWrong] = useState<Record<number, number>>({});
+	/** 이미 한 번 답한 퀴즈 — "첫 시도" 를 가리려고 둔다 */
+	const tried = useRef<Set<number>>(new Set());
+
 	const quizzes = useMemo(() => {
-		return wordQuizList.filter(
+		const all = wordQuizList.filter(
 			(q) =>
 				(bookId == null || q.book_id === bookId) &&
 				(chapterSeq == null || q.chapter === chapterSeq),
 		);
-	}, [bookId, chapterSeq]);
+		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
+		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
+	}, [bookId, chapterSeq, retryOnly]);
 
 	/** Fetch existing records on mount — 정답만 복원 + 첫 미풀이 문제로 이동 */
 	useEffect(() => {
@@ -270,6 +288,63 @@ export default function WordLearning({
 		return () => audio.removeEventListener("ended", onEnded);
 	}, []);
 
+	if (phase === "result") {
+		const pick = (q: (typeof quizzes)[number], idx: number) =>
+			[q.selection1, q.selection2, q.selection3, q.selection4][idx] ?? "";
+		const missed = quizzes.filter((q) => firstWrong[q.id] !== undefined);
+		const wrongIds = missed.map((q) => q.id);
+		return (
+			<ResultScreen
+				lesson={chapterLabel}
+				total={quizzes.length}
+				answered={
+					quizzes.filter((q) => savedAnswers[q.id] !== undefined).length
+				}
+				graded={quizzes.length}
+				correct={quizzes.length - wrongIds.length}
+				wrongs={missed.map((q) => ({
+					picked: pick(q, firstWrong[q.id]),
+					// 이 원장에는 해설이 없다 — 빈 칸을 그리느니 정답을 말해 준다
+					explanation: t("player.answerIs", {
+						answer: pick(q, q.answer_index),
+					}),
+				}))}
+				onExit={() => router.history.back()}
+				onRetry={
+					wrongIds.length > 0
+						? () => {
+								setSavedAnswers((prev) => {
+									const next = { ...prev };
+									for (const id of wrongIds) delete next[id];
+									return next;
+								});
+								setFirstWrong({});
+								for (const id of wrongIds) tried.current.delete(id);
+								setRetryOnly(wrongIds);
+								// 0 은 단어 목록이라 퀴즈 첫 장은 1 이다
+								setCurrentPage(1);
+								setPhase("solving");
+							}
+						: undefined
+				}
+				onNext={() => {
+					const next =
+						bookId && chapterSeq
+							? nextLessonActivity("word", bookId, chapterSeq)
+							: null;
+					navigate(
+						next
+							? {
+									to: next.route,
+									search: { level: bookId, lesson: chapterSeq },
+								}
+							: { to: "/main/textbook" },
+					);
+				}}
+			/>
+		);
+	}
+
 	// Quiz page (page > 0)
 	if (currentPage > 0) {
 		const quizIndex = currentPage - 1;
@@ -301,6 +376,15 @@ export default function WordLearning({
 							quiz={quiz}
 							savedSelectedIndex={savedAnswers[quiz.id] ?? null}
 							onAnswered={(questionId, selectedAnswer, isCorrect) => {
+								if (!tried.current.has(questionId)) {
+									tried.current.add(questionId);
+									if (!isCorrect) {
+										setFirstWrong((prev) => ({
+											...prev,
+											[questionId]: Number.parseInt(selectedAnswer, 10),
+										}));
+									}
+								}
 								if (bookId && chapterSeq) {
 									saveLearningRecord({
 										bookId,
@@ -342,7 +426,7 @@ export default function WordLearning({
 							onClick={
 								hasNext
 									? () => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-									: () => router.history.back()
+									: () => setPhase("result")
 							}
 						/>
 					</Dock>
