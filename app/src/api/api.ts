@@ -249,3 +249,27 @@ export const api = {
 export function asArray<T>(data: unknown): T[] {
 	return Array.isArray(data) ? (data as T[]) : [];
 }
+
+/**
+ * 응답이 **객체인데 그 안의 필드가 배열이라고 약속한 자리**에서 모양을 확인한다.
+ *
+ * `asArray` 로는 안 되는 갈래다 — 겉은 객체이고 안의 한두 필드만 배열이라,
+ * 서버가 `{}` 를 주면 겉은 통과하고 **필드가 undefined 로 흘러간다.**
+ * 2026-08-26 에 미션대화가 `feedbacks.map` 으로, 복습 큐가 `items.map` 으로 터졌다.
+ *
+ * `Record<string, T>` 꼴은 여기 넣지 않는다 — `{}` 가 **정상적인 빈 맵**이라
+ * 도는 쪽이 터지지 않는다.
+ */
+export function withArrays<T extends object>(
+	data: unknown,
+	fields: (keyof T)[],
+): T | null {
+	if (!data || typeof data !== "object") return null;
+	const out = { ...(data as T) };
+	for (const f of fields) {
+		if (!Array.isArray(out[f])) {
+			(out as Record<string, unknown>)[f as string] = [];
+		}
+	}
+	return out;
+}

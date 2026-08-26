@@ -1,4 +1,4 @@
-import { api, asArray } from "./api";
+import { api, asArray, withArrays } from "./api";
 
 export interface SpringPicnicFriend {
 	id: string;
@@ -159,7 +159,10 @@ export async function getCardSortRare(): Promise<CardSortRare> {
 			"/game-content/card-sort/rare",
 		);
 		if (!response.result || !response.data) return { examples: [] };
-		return response.data;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return (
+			withArrays<CardSortRare>(response.data, ["examples"]) ?? { examples: [] }
+		);
 	} catch (error) {
 		console.error("getCardSortRare failed:", error);
 		return { examples: [] };
@@ -198,7 +201,13 @@ export async function getSeoulPuzzleContent(): Promise<SeoulPuzzleContent> {
 		if (!response.result || !response.data) {
 			return { locations: [], puzzles: {} };
 		}
-		return response.data;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return (
+			withArrays<SeoulPuzzleContent>(response.data, ["locations"]) ?? {
+				locations: [],
+				puzzles: {},
+			}
+		);
 	} catch (error) {
 		console.error("getSeoulPuzzleContent failed:", error);
 		return { locations: [], puzzles: {} };

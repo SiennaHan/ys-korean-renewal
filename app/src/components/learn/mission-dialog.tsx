@@ -246,10 +246,12 @@ export default function MissionDialog({
 			if (!msgResponse || !isMounted) return;
 
 			/*
-			 * 타입상 `msgs`·`feedbacks` 는 배열이지만 **응답이 늘 그 계약을 지키지는
-			 * 않는다.** 빠져 있으면 바로 아래 `.map` 에서 죽고 대화 화면이 빈 채로
-			 * 남는다 — `!msgResponse` 검사는 그 경우를 못 막는다(2026-08-25 확인).
-			 * 계약이 깨진 것 자체는 서버·목 쪽에서 고치고, 화면은 죽지 않게 막는다.
+			 * 타입상 `msgs`·`feedbacks` 는 배열이지만 응답이 늘 그 계약을 지키지는
+			 * 않는다 — 빠져 있으면 아래 `.map` 에서 죽는다(2026-08-25 확인).
+			 *
+			 * **계약은 이제 래퍼가 지킨다** — `api/chat.ts` 의 `getMsgList` 가
+			 * `withArrays` 로 두 필드를 배열로 맞춰 준다(2026-08-26). 아래 기본값은
+			 * 그래도 두는 겹옷이다. 새로 부르는 곳은 래퍼만 믿으면 된다.
 			 */
 			const { msgs: serverChats = [], feedbacks = [] } = msgResponse;
 

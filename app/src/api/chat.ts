@@ -1,5 +1,5 @@
 import i18n from "@/i18n";
-import { api, asArray, authFetch } from "./api";
+import { api, asArray, authFetch, withArrays } from "./api";
 import type {
 	ChatResponse,
 	CheckMission,
@@ -20,7 +20,8 @@ export async function getChatDialog(
 			`/chat/${dialogId}/user`,
 		);
 		if (!response.result || !response.data) return null;
-		return response.data;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return withArrays<KoChatMissionResponse>(response.data, ["mission"]);
 	} catch (error) {
 		console.error("getChatDialog failed:", error);
 		return null;
@@ -33,7 +34,8 @@ export async function getMsgList(
 	try {
 		const response = await api.get<MsgResponse>(`/chat/${dialogId}/msgs`);
 		if (!response.result || !response.data) return null;
-		return response.data;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return withArrays<MsgResponse>(response.data, ["msgs", "feedbacks"]);
 	} catch (error) {
 		console.error("getMsgList failed:", error);
 		return null;
@@ -184,7 +186,8 @@ export async function postCheckMission(
 			lang: request.lang ?? localeToLang(i18n.language),
 		});
 		if (!response.result || !response.data) return null;
-		return response.data;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return withArrays<CheckMission>(response.data, ["completed_missions"]);
 	} catch (error) {
 		console.error("postCheckMission failed:", error);
 		return null;
@@ -200,7 +203,8 @@ export async function postCompleteDialog(
 			`/dialog/${dialogId}/completed/${chatId}`,
 		);
 		if (!response.result || !response.data) return null;
-		return response.data;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return withArrays<KoChat>(response.data, ["completed_missions"]);
 	} catch (error) {
 		console.error("postCompleteDialog failed:", error);
 		return null;
@@ -210,7 +214,8 @@ export async function postCompleteDialog(
 export async function resetDialog(dialogId: string): Promise<KoChat | null> {
 	try {
 		const response = await api.post<KoChat>(`/dialog/${dialogId}/reset`);
-		return response.data ?? null;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return withArrays<KoChat>(response.data, ["completed_missions"]);
 	} catch (error) {
 		console.error("resetDialog failed:", error);
 		return null;
@@ -226,7 +231,8 @@ export async function getReport(
 		const response = await api.get<ReportResponse>(
 			`/dialog/${dialogId}/report?lang=${lang}`,
 		);
-		return response.data ?? null;
+		// 안의 배열 필드까지 본다 — api.ts 의 withArrays 주석 참고
+		return withArrays<ReportResponse>(response.data, ["feedbacks"]);
 	} catch (error) {
 		console.error("getReport failed:", error);
 		return null;
