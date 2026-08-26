@@ -198,6 +198,8 @@ const ko = {
 		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
 		statusFallback: "학습 중",
 		chartTitle: "주간 학습 시간",
+		/** 막대 위에 적는 값. 단위는 분(分)이다 */
+		chartMinutes: "{{count}}분",
 		todayActivities: "오늘 활동 수",
 		weeklyActivities: "주간 활동 수",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */

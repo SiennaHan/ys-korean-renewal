@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useWeekDays } from "./week-days";
 
 /** 가장 높은 막대가 차지하는 높이 */
@@ -26,6 +27,7 @@ export default function WeeklyChart({
 	data: number[];
 	todayIndex: number;
 }) {
+	const { t } = useTranslation();
 	const days = useWeekDays();
 	const max = Math.max(...data, 1);
 
@@ -34,6 +36,12 @@ export default function WeeklyChart({
 			{data.map((value, i) => (
 				<div className="col" key={days[i]}>
 					<div className="bx">
+						{/* 0인 날은 안 적는다 — 빈 막대가 이미 말해 준다 */}
+						{value ? (
+							<div className={`vl ${i === todayIndex ? "today" : ""}`}>
+								{t("home.chartMinutes", { count: value })}
+							</div>
+						) : null}
 						<div
 							className={`bar ${value ? "" : "empty"}`}
 							style={{

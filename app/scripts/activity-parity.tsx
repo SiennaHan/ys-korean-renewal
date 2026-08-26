@@ -779,7 +779,8 @@ const HOME_BASE = {
 		todayActivities: 4,
 		weeklyActivities: 14,
 	},
-	weeklyChart: { data: [3, 5, 2, 4, 0, 0, 0] },
+	/** 단위는 분(分)이다 — 활동 건수가 아니다. 목업의 D.chart 와 같은 값 */
+	weeklyChart: { data: [18, 32, 14, 25, 0, 0, 0] },
 	onContinue: () => {},
 	onStartLearning: () => {},
 };

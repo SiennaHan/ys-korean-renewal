@@ -192,6 +192,8 @@ const vi = {
 		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
 		statusFallback: "Đang học",
 		chartTitle: "Thời gian học trong tuần",
+		/** 막대 위에 적는 값. 단위는 분(分)이다 */
+		chartMinutes: "{{count}}p",
 		todayActivities: "Hôm nay",
 		weeklyActivities: "Trong tuần",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
