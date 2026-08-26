@@ -532,9 +532,17 @@ TTS 재생이 끝나거나 연습 턴 녹음이 끝나야 하는데, 로컬에 T
 `binary`·`jamo` 변형에만 있다. 확정 규칙의 "짧은 답 가운데 · 화면에서 명시 지정"
 을 담을 변형이 아직 없다.
 
-**④ 미션대화 헤더가 영문 리터럴이다.**
-`chat-header.tsx` 가 `skip` · `finish` 를 **글자 그대로 박아** 뒀다.
-`ko.ts` 에 `player.skip: "건너뛰기"` 가 이미 있는데 안 쓴다.
+**④ 미션대화 헤더가 영문 리터럴이다 — 이 지적은 틀렸다 (2026-08-26 정정).**
+근거로 든 `chat-header.tsx` 는 2026-08-25 `2ec44ff` 에서 공통 셸 `ActivityAppBar`
+로 갈아치워진 **죽은 파일**이었다. 화면을 열어 보지 않고 파일을 읽어서 나온
+지적이다 — 실제 헤더는 아이콘 둘에 `t("player.exit")` · `t("player.skip")` 이
+붙어 있다. 죽은 파일은 지웠다.
+
+같은 화면에 **진짜** 영문 리터럴이 따로 있었다 — `mission-dialog.tsx` 가
+대화 데이터를 못 찾으면 `<>Loading dialog</>` 를 냈다. 정적 데이터라 기다린다고
+생기지 않으니 뜻도 틀렸다. 공용 `FailedScreen`(`state.loadFailed`)으로 바꿨고,
+목업 정본(`activity__failed`)이 다시 시도 버튼을 켜 둔 채 그리므로
+`__root.tsx` 와 같은 새로고침을 물렸다.
 
 **그리고 통짜 컴포넌트 넷이 남았다** — `ResultScreen` · `FlashcardScreen` ·
 `RoleplayScreen` · `ChatScreen` 은 여전히 제품이 안 쓴다.

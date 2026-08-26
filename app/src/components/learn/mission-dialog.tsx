@@ -14,7 +14,11 @@ import { DialogInput } from "@/components/dialog/dialog-input";
 import { DialogScenario } from "@/components/dialog/dialog-scenario";
 import { DialogSkipModal } from "@/components/dialog/dialog-skip-modal";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
-import { ActivityAppBar, ActivityFrame } from "@/components/main/activity";
+import {
+	ActivityAppBar,
+	ActivityFrame,
+	FailedScreen,
+} from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { env } from "@/config/env";
 import { useRecording } from "@/hooks/useRecording";
@@ -49,7 +53,19 @@ export default function MissionDialog({
 
 	// --- Data lookups ---
 	const dialog = dialogs.find((item) => item.id === dialogId);
-	if (!dialog) return <>Loading dialog</>;
+	// dialogs 는 정적 데이터라 여기 없는 id 는 기다린다고 생기지 않는다 —
+	// "Loading dialog" 라는 영문 리터럴이 박혀 있었는데 뜻도 틀렸다.
+	// 공용 실패 화면(state.loadFailed)으로 보낸다. 목업 정본(activity__failed)이
+	// 다시 시도 버튼을 켜 둔 채로 그리므로 __root.tsx 의 에러 경계와 같은
+	// 새로고침을 물린다 — 안 물리면 눌리는데 아무 일도 안 하는 버튼이 된다.
+	if (!dialog)
+		return (
+			<FailedScreen
+				lesson={lesson}
+				onExit={onClose}
+				onRetry={() => window.location.reload()}
+			/>
+		);
 
 	const gender = dialog.ai_gender;
 	const missionList = dialog_keywords.filter(
