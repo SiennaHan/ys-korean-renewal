@@ -854,12 +854,12 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 1b0e81f -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ f45a49f -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
-다만 여덟 묶음을 하나씩 찍어 보니 **셋은 이미 있고 둘은 절반**이다.
-남은 요청은 생각보다 훨씬 작다.
+다만 여덟 묶음을 하나씩 찍어 보니 **셋은 이미 있고 둘은 절반**이었다.
+그 뒤 2026-08-26 에 넷을 더 채웠다 — 아래 표의 ✅ 가 지금 상태다.
 
 | 리뷰가 요구한 것 | 실제 |
 |---|---|
@@ -868,10 +868,10 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 | 외부 STT·TTS·AI 없이 켜지는 개발 모드 | ❌ **아니다. 둘이 막는다** — 아래 6-b-1 을 봐라.<br>처음에 `os.getenv()` 만 보고 "없어도 뜬다" 고 적었는데 **틀렸다.** 클라이언트를 모듈 로드 때 만드는 곳이 둘 있다 |
 | 서버 상태 확인 주소 | ⚠️ 절반 — `/health` 가 `accepter/tutorus_accepter.py` 에만 있다. 앱 전체용은 없다 |
 | 초기 데이터 | ⚠️ 절반 — **학습 콘텐츠는 DB 가 필요 없다.** 프런트 번들의 `n*.json` 이다.<br>**게임만** DB 를 쓰고(`ko_particle_sniper_*` 등 11표) 넣는 법은 `api/DEPLOY_GAME_CONTENT.md` 에 있다 |
-| 비밀값 없는 `.env.example` | ❌ 없다 |
-| 로컬 MySQL 만드는 법 | ❌ 없다. `api/README.md` 는 "`.env` 의 `DB_*` 로 접속" 까지만 적는다 |
-| 프런트와 API 를 함께 실행하는 절차 | ❌ 없다 (`docker-compose` 도 없다) |
-| 최소 연동 검사 | ❌ 없다 |
+| 비밀값 없는 `.env.example` | ✅ **있다**(2026-08-26) — `api/.env.example` · `app/.env.example` 둘 |
+| 로컬 MySQL 만드는 법 | ✅ **있다**(2026-08-26) — `api/README.md` 가 `brew install mysql` 부터 적는다 |
+| 프런트와 API 를 함께 실행하는 절차 | ⚠️ 절반 — `api/README.md` 가 둘을 순서대로 적는다. `docker-compose` 는 여전히 없다 |
+| 최소 연동 검사 | ✅ **있다**(2026-08-26) — `api/smoke_test.py` |
 
 ### 6-b-1. 막힘을 하나씩 없앴다 — 이제 DB 둘만 남았다 (2026-08-26)
 
@@ -1273,7 +1273,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 1b0e81f -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ f45a49f -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -1290,10 +1290,11 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 | 무엇 | 찍어 본 것 |
 |---|---|
-| 활동 진입·진행·완료 저장 | `ko_activity_state` 0곳 · `/activity/*` 호출 0곳 |
-| 오답·복습 큐 | `ko_review_queue` 0곳. `components/main/home/view.tsx` 가 직접 적어 뒀다 — "원천이 `GET /review-queue` 인데 그 API 가 없다" |
-| 다른 기기 이어하기 · 마지막 문항 복구 | 없다 |
+| 활동 진입·진행·완료 저장 | **됐다**(2026-08-26 · 아래 9-a-1). `ko_activity_state` 5곳 · 학습 화면 넷이 `useActivityState` 로 붙었다 |
+| 오답·복습 큐 | **서버는 됐다**(`ko_review_queue` · `GET /review-queue`). **앱은 아직 안 붙었다** — `home/view.tsx` 와 `home/index.tsx` 가 여전히 "원천이 없다" 고 적어 두고 `reviewCount` 를 안 넘긴다 |
+| 다른 기기 이어하기 · 마지막 문항 복구 | **마지막 문항 복구는 됐다** — 서버가 `current_item_index` 를 준다(9-a-1). 기기 간 이어하기는 그 위에 얹으면 된다 |
 | 중복 전송 처리 | `idempotency` 0곳 |
+| 재시도 세션의 헛 전송 | 「다시 풀기」는 `activity/progress`·`complete` 를 안 보낸다(확인함). 그런데 `learning-record` 는 계속 보낸다 —<br>6문항 재시도에 12번. 서버가 첫 행을 안 덮으니(§6-c) 해롭진 않지만 **보낼 필요가 없는 것**이다. 화면이 `retry` 를 알므로 막을 수 있다 |
 | 로컬 보관 후 재전송 | `navigator.onLine` · 재전송 큐 0곳 |
 | 페이월 · 구매 복원 · 환불 · 만료 | 0곳. **2026-08-26 에 정책이 확정됐다** — 구독 · 기간 단위 · 무료는 1급 1과(한글)+1급 4과+2급 1과+3급 1과 · 게임 둘 · 클립 전부(§07 의 1번·6번).<br>이제 막는 것은 결정이 아니라 **결제 계약과 코드**다. 결제 안내 화면도 목업이 없다 |
 | 유료 API 접근 제한 | `entitlement` 0곳 (`access_and_pricing_v1` 의 "코드에 권한 개념이 하나도 없다" 가 지금도 참) |

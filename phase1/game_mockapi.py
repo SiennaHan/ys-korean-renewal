@@ -59,6 +59,24 @@ class H(BaseHTTPRequestHandler):
         self.send_header('Content-Length',str(len(b)))
         self.end_headers(); self.wfile.write(b)
     def do_OPTIONS(self): self._send({})
+
+    # PATCH·DELETE 가 없으면 파이썬 기본 핸들러가 501 을 내고 CORS 머리말도
+    # 안 붙어서 브라우저에는 "Failed to fetch" 로만 보인다. 실제로 활동
+    # 진행 저장(PATCH /activity/progress)이 그렇게 조용히 죽고 있었다.
+    # 본문을 읽어 버리고(안 읽으면 다음 요청이 밀린다) 빈 성공을 돌려준다.
+    def _drain(self):
+        n = int(self.headers.get('Content-Length', 0))
+        if n:
+            self.rfile.read(n)
+
+    def do_PATCH(self):
+        self._drain(); self._send({})
+
+    def do_PUT(self):
+        self._drain(); self._send({})
+
+    def do_DELETE(self):
+        self._drain(); self._send({})
     def do_POST(self):
         # /capture/<name> : 목업에서 렌더된 마크업을 파일로 받는다.
         # 마크업을 손으로 옮겨 적다 틀리는 일을 없애기 위한 통로다.
