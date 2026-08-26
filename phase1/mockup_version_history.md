@@ -12,7 +12,7 @@
 ### 반영 파일
 
 - `screens_uiux.html` — 전체 시각 정본
-- `app/src/mockups/activity__failed.html` · `activity__micdenied.html` — 목업 재캡처
+- `app/src/screens_ref/activity__failed.html` · `activity__micdenied.html` — 목업 재캡처
 - `app/src/components/main/activity/state-screens.tsx` · `icons.tsx` · `mic-blocked.tsx`
 - `app/src/styles/activity.css` — `.state-icon` 추가, `.state-view` 정렬
 - `app/src/i18n/locales/*.ts` — 다섯 로케일에 `loadFailedBody` · `micDeniedBody` 추가

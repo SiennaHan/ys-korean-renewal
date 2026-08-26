@@ -28,7 +28,7 @@
   [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
   [문구 지뢰]    한 번 거짓이라 밝혀진 표현이 남아 있거나 되살아난 경우 — STALE_PHRASES
   [관찰 기준]    문서가 선언한 관찰 경로가 기준 커밋 이후 바뀐 경우 — <!-- 관찰: … @ 커밋 -->
-  [목업 쌍둥이]  phase1/captured/ 와 app/src/mockups/ 가 갈라진 경우
+  [화면 승격]    _snapshots/ 와 screens_ref/ 가 갈라졌는데 이력 문서에 없는 경우
 
 [옛 경로] 는 인계 메모(*.txt)까지 본다.
 
@@ -173,7 +173,7 @@ def mockup_captures() -> int:
     문서가 "캡처 N개" 라고 자주 적는데 세는 축이 없어서 낡아도 몰랐다.
     2026-08-24 검증에서 이 표현이 다섯 곳에 손으로 적혀 있는 것을 찾았다.
     """
-    d = APP / "src" / "mockups"
+    d = APP / "src" / "screens_ref"
     return len(list(d.glob("*.html"))) if d.is_dir() else 0
 
 
@@ -593,161 +593,81 @@ def stale_phrases(text: dict[str, str]) -> list[str]:
     return out
 
 
-TWIN_ALLOW = {
-    "activity__wordQuiz_image.html":
-    "새 화면이다(2026-08-26) — captured/ 에 짝이 없는 것이 맞다."
-    " 원장의 어휘 문제는 갈래가 둘인데(meaning-to-word 950 · image-to-word 196)"
-    " 정본은 그림 갈래를 그리지 않았고, 대신 원장에 0건인 낱말+발음듣기 갈래를"
-    " 그리고 있었다. 그 갈래를 빼고 그림 갈래를 넣으면서 화면이 하나 늘었다",
-    "activity__jamoListen.html":
-    "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
-    " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
-    " 지키느라 앞 문항으로 돌아갈 길이 없어서 그 길을 진행바로 옮긴 것이다."
-    " 그 커밋이 '대조는 영향을 받지 않는다' 고 적어 둔 자리라 여태 안 보였다."
-    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__reading.html":
-    "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
-    " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
-    " 지키느라 앞 문항으로 돌아갈 길이 없어서 그 길을 진행바로 옮긴 것이다."
-    " 그 커밋이 '대조는 영향을 받지 않는다' 고 적어 둔 자리라 여태 안 보였다."
-    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__role.html":
-    "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
-    " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
-    " 지키느라 앞 문항으로 돌아갈 길이 없어서 그 길을 진행바로 옮긴 것이다."
-    " 그 커밋이 '대조는 영향을 받지 않는다' 고 적어 둔 자리라 여태 안 보였다."
-    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__wordQuiz.html":
-    "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
-    " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
-    " 지키느라 앞 문항으로 돌아갈 길이 없어서 그 길을 진행바로 옮긴 것이다."
-    " 그 커밋이 '대조는 영향을 받지 않는다' 고 적어 둔 자리라 여태 안 보였다."
-    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다"
-    " 같은 판에 표본을 낱말+발음듣기 갈래에서 뜻 갈래로 바꿨다 — 원장에 있는 갈래다.",
-    "activity__write3_canvas.html":
-    "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
-    " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
-    " 지키느라 앞 문항으로 돌아갈 길이 없어서 그 길을 진행바로 옮긴 것이다."
-    " 그 커밋이 '대조는 영향을 받지 않는다' 고 적어 둔 자리라 여태 안 보였다."
-    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__write_canvas.html":
-    "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
-    " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
-    " 지키느라 앞 문항으로 돌아갈 길이 없어서 그 길을 진행바로 옮긴 것이다."
-    " 그 커밋이 '대조는 영향을 받지 않는다' 고 적어 둔 자리라 여태 안 보였다."
-    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__wordrep.html":
-    "목업 캡처가 정본보다 낡았다(2026-08-26 재캡처). shell_spec 이 2026-08-25 에"
-    " '자모 발음·단어 듣고 따라 말하기·단어 읽고 쓰기 = 진행바 숨김(내부 탐색)' 으로"
-    " 확정했고 정본 프로토타입도 이미 진행바를 안 그린다 — 캡처만 그 전 것이었다."
-    " captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__speak.html":
-    "목업 캡처가 정본보다 낡았다(2026-08-26 재캡처). shell_spec 이 2026-08-25 에"
-    " '자모 발음·단어 듣고 따라 말하기·단어 읽고 쓰기 = 진행바 숨김(내부 탐색)' 으로"
-    " 확정했고 정본 프로토타입도 이미 진행바를 안 그린다 — 캡처만 그 전 것이었다."
-    " captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__readwrite.html":
-    "목업 캡처가 정본보다 낡았다(2026-08-26 재캡처). shell_spec 이 2026-08-25 에"
-    " '자모 발음·단어 듣고 따라 말하기·단어 읽고 쓰기 = 진행바 숨김(내부 탐색)' 으로"
-    " 확정했고 정본 프로토타입도 이미 진행바를 안 그린다 — 캡처만 그 전 것이었다."
-    " captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "activity__listen.html":
-    "목업 v2.9 승격(2026-08-26). 둘 다 앱이 먼저 정한 것을 정본이 따라갔다 —"
-    " ① O/X 카드 라벨 '들은 문장' → '제시 문장'(f8bd0aa 08-20)."
-    " 들은 것은 오디오뿐이고 그 글자는 맞는지 가릴 대상이라 뜻이 달랐다."
-    " ② 선택지를 .listen-response 로 한 겹 감싸 위 여백을 줬다(66b0e94 08-25)."
-    " captured/ 는 그때 뜬 날것이라 그대로 둔다"
-    " 같은 판에 진행바 칸도 눌러 갈 수 있는 button 이 됐다(35589a2 승격).",
-    "activity__grammar.html":
-    "목업 v2.9 승격(2026-08-26). 빈칸을 <u>　</u> 에서 <span class=blank-slot> 으로 —"
-    " 앱이 66b0e94 '빈칸 표기를 통일한다'(08-25)에서 먼저 정한 것을 정본이 따라갔다."
-    " 폭이 고정이고 보조기술이 투명한 전각 공백을 읽지 않는다."
-    " captured/ 는 그때 뜬 날것이라 그대로 둔다"
-    " 같은 판에 진행바 칸도 눌러 갈 수 있는 button 이 됐다(35589a2 승격).",
-    "activity__failed.html":
-    "목업 v2.8 승격(2026-08-26). 한 줄 문장만 떠 있던 것을 아이콘 + 제목 + 설명으로 바꿨다 —"
-    " activity_controls_uiux 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다."
-    " captured/ 는 v2.7 시점 기록이라 그대로 둔다",
-    "activity__micdenied.html":
-    "위 activity__failed 와 같은 승격. 문구도 정본을 따라 바뀌었다 —"
-    " '마이크가 꺼져 있어요' → '마이크를 사용할 수 없어요' + 설명."
-    " captured/ 는 v2.7 시점 기록이라 그대로 둔다",
-    "activity__report.html":
-    "목업 v2.7 승격(2026-08-26). 탭을 <div> 에서 진짜 <button role=tablist·aria-selected>"
-    " 로 바꾸고, 카드·평가 행의 인라인 style 을 .report-card·.report-rows 로 뺐다."
-    " captured/ 는 v2.6 시점 기록이라 그대로 둔다",
-    "activity__briefing.html":
-    "목업 v2.7 승격(2026-08-26). 상황 이미지 자리 글자를 <span aria-hidden> 로 감쌌다 —"
-    " 그림이 없을 때의 자리표라 보조기술이 읽을 것이 아니다."
-    " captured/ 는 v2.6 시점 기록이라 그대로 둔다",
-    "vocashot__play_type.html":
-    "직접 입력 줄을 <div> 대신 <form> 으로 감쌌다 — Enter 로 제출된다."
-    " 정본은 <div> 라 키보드만 쓰면 버튼까지 Tab 해야 했다."
-    " captured/ 는 그때 뜬 날것이라 그대로 둔다",
-    "nav__book__resume.html": "활동 이름을 기획자가 확정했다(2026-08-25, 66b0e94 '빈칸 표기를 통일한다') —"
-    " '빈칸 채워 말하기' → '빈칸 채우기'. 앱이 쓰는 i18n(ko.ts 'fill-blank')과 mockups 를 같이 바꿨고,"
-    " captured/ 는 그때 뜬 날것이라 그대로 둔다. 차이는 이 한 줄뿐이다",
-    "nav__home__none.html": "캡처는 탭바가 위·홈 비활성. mockups 가 아래·활성으로 고친 판(08-20)",
-    "nav__home__resume.html": "같음",
-    "nav__home__review.html": "같음",
-    "game__pc_result.html": "캡처는 🔊 가 맨 글자. mockups 는 aria-label 붙은 button 으로 감쌌다 — 접근성 개선(2026-08-24)",
-    "game__sp_map.html": "장소 카드 10개가 캡처에는 div 였다 — 장소로 들어가는 유일한 경로인데"
-    " 키보드로 닿지 않아 mockups 를 button 으로 고친 판(08-24). 지도 핀은 SVG <g> 라 초점을 못 받는다",
-    "game__sp_entry.html": "위 sp_map 과 같은 사정 — .sp-loc-card 의 버튼 기본값 되돌림"
-    "(text-align·font·color)이 공유 <style> 블록에 들어갔다",
-    "game__sp_puzzle.html": "같음",
-    "activity__write.html": "조합 문제의 머리를 고쳤다(08-24) — 작은 동그란 버튼 하나뿐이라"
-    " 소리를 들어야 하는 문제인 줄 몰랐다. 다른 듣기 문제(AudioRow)처럼 큰 재생 버튼 +"
-    " 파형으로 바꾸고 힌트 버튼을 더했다. 재생 버튼 라벨도 바꿨다 — 전에는"
-    " \"가 발음 듣기\" 라 스크린리더에 정답이 그냥 읽혔다."
-    " 그 뒤 한 번 더 고쳤다 — 흉내 내지 말고 다른 화면과 같은 AudioRow 컴포넌트를"
-    " 쓰고, 풀어야 할 글자는 점선 박스(.combo-target)로 줄을 나눴다",
-    "activity__write3.html": "같음",
-    "nav__jamo__resume.html": "활동 이름을 기획자가 다시 정했다(08-24) —"
-    " \"자음-모음 조합하고 쓰기\" → \"자음-모음 조합하기\". 앱이 쓰는 module.ts 와"
-    " mockups 를 같이 바꿨고, captured/ 는 그때 뜬 날것이라 그대로 둔다",
-}
+# ── 화면 승격 이력 ──────────────────────────────────────────────────
+# `_snapshots/`(시점 기록)와 `screens_ref/`(대조 기준)가 갈라진 곳은
+# **파이썬 사전이 아니라 문서**에 적는다 — phase1/screen_promotions.md.
+#
+# 전에는 여기 TWIN_ALLOW 라는 사전이 있었고 검사 이름도 [목업 쌍둥이] 였다.
+# "둘이 같아야 한다" 는 뜻이었는데, 정본이 앞으로 나갈 때마다 항목이 하나씩
+# 느는 **장부**로 성격이 바뀌었다(28화면 — 50 중 절반이 넘는다).
+# 걸리는 것이 정상인 검사는 신호가 아니므로 2026-08-26 에 이름과 자리를
+# 하는 일에 맞췄다. 읽을 사람이 파이썬을 열지 않아도 된다.
+PROMOTIONS = HERE / "screen_promotions.md"
+
+
+def promoted_screens() -> dict[str, str]:
+    """승격 이력 문서의 표 → {화면 파일 이름: 왜 갈라졌나}"""
+    if not PROMOTIONS.exists():
+        return {}
+    out: dict[str, str] = {}
+    for line in PROMOTIONS.read_text(encoding="utf-8").splitlines():
+        m = re.match(r"\|\s*`([A-Za-z0-9_]+)`\s*\|\s*(.+?)\s*\|\s*$", line)
+        if m:
+            out[m.group(1) + ".html"] = m.group(2)
+    return out
+
 
 
 def mockup_twins() -> tuple[list[str], list[str]]:
-    """phase1/captured/ 와 app/src/mockups/ 가 갈라졌는지 본다.
+    """`phase1/_snapshots/` 와 `app/src/screens_ref/` 가 갈라진 곳을 본다.
 
-    captured/ 는 목업에서 뜬 날것이고 app/src/mockups/ 가 정본이다
-    (parity 가 읽는 것이 후자뿐이다). 둘은 47개 중 44개가 바이트까지
-    같아서, 갈라지면 아무 경고 없이 통과한다 — 실제로 홈 셋이 그랬다.
+    `_snapshots/` 는 처음 목업을 떴을 때의 날것이고 **덮어쓰지 않는다.**
+    `screens_ref/` 는 대조의 기준이라 정본이 앞으로 나가면 다시 뜬다.
+    그래서 둘은 앞으로 영원히 갈라진다 — 갈라지는 것이 잘못이 아니라
+    **왜 갈라졌는지 적히지 않은 것**이 잘못이다.
 
-    돌려주는 것은 (문제, 눈감아 준 것) 둘이다.
+    적는 곳은 `phase1/screen_promotions.md` 다.
+    돌려주는 것은 (표에 없는 것, 표가 설명한 것) 둘이다.
     """
-    a, b = HERE / "captured", APP / "src" / "mockups"
-    if not a.is_dir() or not b.is_dir():
-        return ([], [])
+    a, b = HERE / "_snapshots", APP / "src" / "screens_ref"
     bad: list[str] = []
     ok: list[str] = []
+    # 폴더가 없으면 **조용히 꺼지지 않는다.** 전에는 return 이라 이름을 바꾸면
+    # 검사가 통째로 사라졌고, 그 사실이 통과로 보였다(2026-08-26 에 겪었다).
+    for d in (a, b):
+        if not d.is_dir():
+            return ([f"[화면 승격] {d} 가 없다 — 경로가 바뀌었으면 검사도 같이 고쳐라"], [])
+    known = promoted_screens()
     an = {p.name for p in a.glob("*.html")}
     bn = {p.name for p in b.glob("*.html")}
-    # 한쪽에만 있는 것도 TWIN_ALLOW 로 재울 수 있다 — 캡처 뒤에 생긴 화면이 그렇다.
-    # 이유 없이 한쪽에만 있으면 여전히 걸린다.
-    for only, where in ((an - bn, "captured/ 에만"), (bn - an, "app/src/mockups/ 에만")):
+
+    def noted(n: str) -> bool:
+        if n in known:
+            ok.append(f"{n} — {known[n]}")
+            return True
+        return False
+
+    # 한쪽에만 있는 것 — 처음 캡처한 뒤에 생긴 화면이 그렇다
+    for only, where in ((an - bn, "_snapshots/ 에만"), (bn - an, "screens_ref/ 에만")):
         for n in sorted(only):
-            if n in TWIN_ALLOW:
-                ok.append(f"{n} — {TWIN_ALLOW[n]}")
-            else:
-                bad.append(f"[목업 쌍둥이] {n} 이 {where} 있다")
+            if not noted(n):
+                bad.append(
+                    f"[화면 승격] {n} 이 {where} 있다 —\n"
+                    f"           일부러라면 screen_promotions.md 표에 줄을 적어라"
+                )
     for n in sorted(an & bn):
         if (a / n).read_bytes() == (b / n).read_bytes():
             continue
-        if n in TWIN_ALLOW:
-            ok.append(f"{n} — {TWIN_ALLOW[n]}")
-        else:
+        if not noted(n):
             bad.append(
-                f"[목업 쌍둥이] {n} 의 내용이 갈렸다 — parity 는 app/src/mockups/ 만 본다.\n"
-                f"           일부러라면 TWIN_ALLOW 에 이유를 적어라"
+                f"[화면 승격] {n} 이 갈라졌다 — parity 는 screens_ref/ 만 본다.\n"
+                f"           일부러라면 screen_promotions.md 표에 줄을 적어라"
             )
-    for n in sorted(TWIN_ALLOW):
+    # 죽은 줄 — 이제 같아진 화면이 표에 남아 있으면 표가 거짓말을 한다
+    for n in sorted(known):
         if n in an & bn and (a / n).read_bytes() == (b / n).read_bytes():
-            bad.append(f"[목업 쌍둥이] {n} 은 이제 같다 — TWIN_ALLOW 에서 빼라")
+            bad.append(f"[화면 승격] {n} 은 이제 같다 — screen_promotions.md 에서 빼라")
     return (bad, ok)
-
 
 def subsections(body: str) -> dict[str, str]:
     """그 문서가 가진 하위절 번호 → 제목.

@@ -78,7 +78,7 @@ export function VocashotStartView({
 						<button type="button" className="back" onClick={() => onBack()}>
 							<i>
 								{/* 목업이 기준이다 — 글자 화살표가 아니라 svg 다
-								    (src/mockups/vocashot__start.html) */}
+								    (src/screens_ref/vocashot__start.html) */}
 								<svg
 									viewBox="0 0 24 24"
 									fill="none"
@@ -168,7 +168,7 @@ export function VocashotStartView({
 }
 
 /* ── 플레이 ───────────────────────────────────────────────
- * 마크업은 목업(src/mockups/vocashot__play.html)을 그대로 따른다.
+ * 마크업은 목업(src/screens_ref/vocashot__play.html)을 그대로 따른다.
  * 운석 그림 · 지구 · 발사대는 vocashot.css 에 규칙이 있는데 그리지 않고
  * 있었다 — 대조에 넣으면서 드러났고 여기서 채웠다.
  */

@@ -13,7 +13,7 @@
 			"src/styles/game.css",
 			"src/styles/nav.css",
 			"src/styles/vocashot.css",
-			"src/mockups/screens.ts",
+			"src/screens_ref/screens.ts",
 			"src/shared/data",
 			"src/assets/complete_mission_ani.json"
 		]

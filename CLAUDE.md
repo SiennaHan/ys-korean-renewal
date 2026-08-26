@@ -38,7 +38,7 @@
 | | 정본 | 뜻 |
 |---|---|---|
 | **콘텐츠** | 원장 `글로벌_교재기반_콘텐츠_v*.xlsx` | `app/src/shared/data/n*.json` 은 **산출물이다. 손으로 고치지 마라** — 고칠 것은 원장이고, `app/scripts/build-content.py` 로 다시 만든다 |
-| **화면** | `app/src/mockups/*.html` (목업 캡처) | **구현이 목업과 다르면 목업이 기준이다.** 일부러 벗어난 여섯 곳은 `phase1/masterplan_v3.html` §16 에 이유까지 있다 |
+| **화면** | `app/src/screens_ref/*.html` (목업 캡처) | **구현이 목업과 다르면 목업이 기준이다.** 일부러 벗어난 여섯 곳은 `phase1/masterplan_v3.html` §16 에 이유까지 있다 |
 | **문서 목록** | `phase1/INDEX.md` | 목록을 **다른 곳에 새로 만들지 마라.** 전에 두 곳에 있어서 계속 어긋났다 |
 | **결정의 이유** | 커밋 메시지 | `git log --format='%h %s%n%b' -- <경로>` |
 
@@ -82,8 +82,8 @@ cd app && python3 scripts/build-content.py --check   # 콘텐츠 — 원장과 J
 `[문구 지뢰]` 가 걸리면 그 자리에 적힌 "지금 참인 것" 을 읽고 고쳐라. 시점 기록이라
 일부러 남기는 것이면 `STALE_PHRASES` 의 `allow` 에 문서 이름과 이유를 적는다.
 
-일부러 어긋나게 두는 것은 **이유를 적어야** 통과한다 — 목업 쌍둥이는
-`check_docs.py` 의 `TWIN_ALLOW`, 시점 기록의 옛 이름은 문서 안에
+일부러 어긋나게 두는 것은 **이유를 적어야** 통과한다 — 화면 승격은
+`phase1/screen_promotions.md` 표, 시점 기록의 옛 이름은 문서 안에
 `옛이름.html → _superseded/` 줄.
 
 ## 한 단계 더 가면 알 수 있는 것을, 가서 확인해라

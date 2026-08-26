@@ -786,7 +786,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <h2 id="s16"><span class="n">16</span>목업을 일부러 벗어난 여섯 곳</h2>
 <div class="callout"><div class="t">시각 정본은 목업이다</div>
   <p><b>구현이 목업과 다르면 목업이 기준이다.</b> 이 규칙이 이 저장소의 시각 판단을
-  전부 지배한다 — 판단이 갈릴 때 코드가 아니라 <span class="file">app/src/mockups/</span> 를 본다.
+  전부 지배한다 — 판단이 갈릴 때 코드가 아니라 <span class="file">app/src/screens_ref/</span> 를 본다.
   <span class="file">pnpm parity:activity</span> 가 <b>목업 캡처 전부</b>를 자동으로 대조한다.</p>
   <p class="qa">원래 <span class="file">_superseded/handoff_v1</span> §03 에 있던 규칙을
   여기로 옮겼다. 다른 문서가 그 옛 판을 인용하고 있어서 옮길 수 없던 것을 끊었다.</p>
@@ -842,10 +842,10 @@ footer / dock   primary "다음" | "결과 보기"</pre>
         <td><code>.sp-loc-card</code> 에 <code>text-align</code>·<code>font</code>·<code>color</code></td></tr>
     </tbody>
   </table></div>
-  <p>셋 다 <code>phase1/captured/</code> 의 날것 캡처와 갈라지므로
+  <p>셋 다 <code>phase1/_snapshots/</code> 의 날것 캡처와 갈라지므로
      <code>check_docs.py</code> 의 <code>TWIN_ALLOW</code> 에 이유를 적었다.
      <b>홈 셋이 08-20 에 이미 같은 길을 갔다</b> — 캡처는 시점 기록으로 남기고
-     <code>app/src/mockups/</code> 를 고치는 것이 이 저장소의 방식이다.</p>
+     <code>app/src/screens_ref/</code> 를 고치는 것이 이 저장소의 방식이다.</p>
 </div>
 
 <div class="callout stop">
@@ -1003,7 +1003,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <table>
   <thead><tr><th>대상</th><th>왜</th></tr></thead>
   <tbody>
-    <tr><td><span class="file">app/src/mockups/</span></td>
+    <tr><td><span class="file">app/src/screens_ref/</span></td>
       <td>목업에서 캡처한 마크업이다. 목업 대조의 <b>기준</b>이므로 손으로 고치면 검사가 의미를 잃는다.
         그 안의 screens.ts 가 스토리가 읽는 쪽이고 낱개 .html 은 사본이다 — <b>둘을 같이</b> 고쳐야 한다</td></tr>
     <tr><td><span class="file">app/src/shared/data/n*.json</span></td>

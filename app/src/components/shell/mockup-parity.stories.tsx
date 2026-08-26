@@ -2,7 +2,7 @@ import {
 	FRAME_CLASS,
 	MOCKUP_SCREENS,
 	type MockupScreen,
-} from "@/mockups/screens";
+} from "@/screens_ref/screens";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useEffect, useRef } from "react";
 

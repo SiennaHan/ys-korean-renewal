@@ -1,7 +1,7 @@
 /**
  * 활동 컴포넌트 ↔ 목업 대조.
  *
- * 컴포넌트를 정적 HTML 로 그려 src/mockups/activity__*.html 과 맞춰 본다.
+ * 컴포넌트를 정적 HTML 로 그려 src/screens_ref/activity__*.html 과 맞춰 본다.
  * 목업 화면은 손으로 짠 것이라 이 대조가 곧 "디자인이 같다"의 증명이 된다.
  * 눈으로 보는 대조는 Storybook 이 하고, 이쪽은 구조가 어긋나면 바로 잡아 준다.
  *

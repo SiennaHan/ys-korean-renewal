@@ -36,8 +36,8 @@ from pathlib import Path
 APP = Path(__file__).resolve().parents[1]
 STYLES = APP / "src" / "styles"
 DIST = APP / "dist" / "static" / "css"
-MOCKUPS = APP / "src" / "mockups"
-CAPTURED = APP.parent / "phase1" / "captured"
+MOCKUPS = APP / "src" / "screens_ref"
+SNAPSHOTS = APP.parent / "phase1" / "_snapshots"
 
 # ─── 봐 주는 자리 ─────────────────────────────────────────────────────
 #
@@ -89,7 +89,7 @@ def marker_names() -> set[str]:
 	"""목업·캡처가 달고 있는 클래스. **규칙이 없어도 있어야 하는 이름**이다 —
 	목업 대조가 클래스 이름을 견주므로 표식만 하는 클래스가 정상적으로 있다."""
 	out: set[str] = set()
-	for d in (MOCKUPS, CAPTURED):
+	for d in (MOCKUPS, SNAPSHOTS):
 		for p in d.glob("*.html"):
 			for m in re.finditer(r'class="([^"]*)"', p.read_text(encoding="utf-8")):
 				out |= {c for c in m.group(1).split() if re.fullmatch(r"-?[_a-zA-Z][\w-]*", c)}
@@ -106,7 +106,7 @@ def inline_style_classes(code: str) -> set[str]:
 
 def code_files():
 	for p in (APP / "src").rglob("*"):
-		if p.suffix in (".ts", ".tsx") and "mockups" not in p.parts:
+		if p.suffix in (".ts", ".tsx") and "screens_ref" not in p.parts:
 			yield p
 
 

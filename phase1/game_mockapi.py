@@ -122,12 +122,17 @@ class H(BaseHTTPRequestHandler):
                 f.write(raw)
             return self._send({'result':True,'code':200,'message':None,
                                'data':{'saved':name,'bytes':len(raw)}})
+        # 목업 재캡처 — 정본 프로토타입에서 뜬 마크업을 대조 기준으로 넣는다.
+        # **얼어붙은 phase1/_snapshots/ 가 아니라 app/src/screens_ref/ 에 쓴다.**
+        # 전에는 captured/(지금의 _snapshots/)에 썼는데, 그 폴더는 시점 기록이라
+        # 덮어쓰면 안 되는 곳이 됐다.
         if self.path.startswith('/capture/'):
             name = re.sub(r'[^A-Za-z0-9_.-]', '_', self.path[len('/capture/'):]) or 'unnamed'
             n = int(self.headers.get('Content-Length', 0))
             raw = self.rfile.read(n) if n else b''
-            os.makedirs('captured', exist_ok=True)
-            with open(os.path.join('captured', name), 'wb') as f:
+            d = os.path.join('..', 'app', 'src', 'screens_ref')
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, name), 'wb') as f:
                 f.write(raw)
             return self._send({'result':True,'code':200,'message':None,
                                'data':{'saved':name,'bytes':len(raw)}})

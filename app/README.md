@@ -66,7 +66,7 @@ pnpm dev            # http://localhost:3000
 
 ```
 scripts/activity-parity.tsx      컴포넌트를 react-dom/server 로 정적 HTML 로 렌더
-scripts/activity-parity-diff.py  src/mockups/ 의 캡처와 구조를 비교 · 22개 화면
+scripts/activity-parity-diff.py  src/screens_ref/ 의 캡처와 구조를 비교 · 22개 화면
 ```
 
 일부러 봐주는 차이(색 별칭, 한 칸짜리 진행막대 등)는 **실행할 때마다 목록으로 출력**한다.

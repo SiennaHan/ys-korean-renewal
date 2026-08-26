@@ -450,7 +450,7 @@ def strip_app_wrapper(html):
 
 here = os.path.dirname(os.path.abspath(__file__))
 out = os.path.join(here, "..", ".parity-out")
-mock = os.path.join(here, "..", "src", "mockups")
+mock = os.path.join(here, "..", "src", "screens_ref")
 
 print("봐주는 차이 —")
 for k, why in IGNORED.items():
