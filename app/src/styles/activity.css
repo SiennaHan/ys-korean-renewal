@@ -246,7 +246,11 @@
 .activity-frame .mission-detail b { padding:3px 7px; border-radius:6px; background:var(--color-background-surface); color:var(--color-fill-primary-pressed); font-size:12px; line-height:18px; text-align:center; }
 .activity-frame .mission-detail span { padding-top:3px; color:var(--color-text-sub); font-size:12px; line-height:18px; }
 .activity-frame .thread { flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding:14px; }
-.activity-frame .mission-chat-header { flex:0 0 auto; min-height:0; }
+/* 목업에서는 시나리오 <section> 과 .missions 가 프레임의 직계 flex 자식이다.
+   앱은 둘을 DialogScenario 로 묶느라 이 칸으로 감쌌는데, 그냥 block 이라
+   .missions 의 `flex:0 0 50px` 이 죽어 알약 높이(26px)로 쭈그러들었다 —
+   회색 알약이 흰 칸을 꽉 채워 겹쳐 보였다. 세로 flex 로 만들어 목업 배치를 되돌린다. */
+.activity-frame .mission-chat-header { flex:0 0 auto; min-height:0; display:flex; flex-direction:column; }
 .activity-frame .chat-end-anchor { flex:0 0 1px; }
 .activity-frame .msg { display:flex; gap:8px; align-items:flex-start; }
 .activity-frame .avatar { width:34px; height:34px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; background:var(--color-background-choice); font-size:16px; }
