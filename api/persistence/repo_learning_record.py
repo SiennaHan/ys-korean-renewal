@@ -28,12 +28,20 @@ async def findOne(userId: str, bookId: int, chapterSeq: int, menuType: str, ques
 
 
 async def upsert(userId: str, bookId: int, chapterSeq: int, menuType: str, questionId: int, selectedAnswer: str, isCorrect: bool, db: Session):
+    """첫 시도만 기록한다. 두 번째 이후 시도는 기존 행을 그대로 둔다.
+
+    dev_spec_v1 §2.1 이 확정한 규칙이다 — "correct_count · ko_learning_record ·
+    진행바 칸 상태 전부 첫 시도 기준. 두 번째 이후 시도는 기록하지 않는다."
+    선택지 활동이 재시도형이라(오답이어도 정답을 공개하지 않고 맞힐 때까지 다시
+    고르게 한다) 덮어쓰면 **정답률이 전부 100% 로 왜곡된다.** 2026-08-26 까지
+    이 함수는 덮어쓰고 있었다.
+
+    (행, 새로 만들었나) 를 돌려준다. 호출부가 "첫 시도일 때만" 할 일을 가른다 —
+    학습 단어 수 같은 누적값이 재시도마다 늘어나면 안 된다.
+    """
     existing = await findOne(userId, bookId, chapterSeq, menuType, questionId, db)
     if existing:
-        existing.selected_answer = selectedAnswer
-        existing.is_correct = isCorrect
-        db.flush()
-        return existing
+        return existing, False
 
     record = model.KoLearningRecord()
     record.user_id = userId
@@ -48,15 +56,13 @@ async def upsert(userId: str, bookId: int, chapterSeq: int, menuType: str, quest
         db.flush()
         db.refresh(record)
     except IntegrityError:
+        # 같은 순간에 다른 요청이 먼저 넣었다. 그쪽이 첫 시도다 — 덮지 않는다.
         db.rollback()
         existing = await findOne(userId, bookId, chapterSeq, menuType, questionId, db)
         if existing:
-            existing.selected_answer = selectedAnswer
-            existing.is_correct = isCorrect
-            db.flush()
-            return existing
+            return existing, False
         raise
-    return record
+    return record, True
 
 
 async def getProgress(userId: str, bookId: int, chapterSeq: int, db: Session):
