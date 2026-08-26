@@ -75,7 +75,13 @@ def main() -> int:
     # 4. 재조회 — 방금 넣은 것이 보이나
     code, after = call("GET", f"/learning-record/list{q}", token)
     rows = (after.get("data") or []) or []
-    found = any(str(r.get("questionId")) == str(QID) for r in rows if isinstance(r, dict))
+    # POST 는 카멜(questionId)로 받는데 GET 은 스네이크(question_id)로 준다 —
+    # 같은 자원의 이름이 방향마다 다르다. 둘 다 본다.
+    found = any(
+        str(r.get("question_id", r.get("questionId"))) == str(QID)
+        for r in rows
+        if isinstance(r, dict)
+    )
     if not step(4, "재조회", code == 200 and found,
                 f"HTTP {code} · {n_before} → {len(rows)}행"):
         return 1

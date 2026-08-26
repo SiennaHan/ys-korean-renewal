@@ -64,51 +64,29 @@ cd app && pnpm install && pnpm dev
 ⚠️ **`npm install` 을 하지 마라.** `package-lock.json` 이 다시 생기면
 프로덕션 빌드가 깨진다 — 한 번 겪었다. [BLOCKERS.md](BLOCKERS.md) §1.
 
-### API 서버는 아직 로컬에서 한 번도 안 떴다
+### API 서버 — 로컬에서 떴다 (2026-08-26)
 
-**앱만 띄우면 로그인부터 막힌다.** 앱은 켜지면 `POST /user/sign/guest` 를
-부르는데 그 서버가 없어 `ERR_CONNECTION_REFUSED` 가 나고, 홈이 오류 경계
-("오류가 발생했습니다")로 바뀐다. **화면이 없는 게 아니라 데이터를 못 받는 것이다** —
-목업 대조 49화면이 통과하므로 홈·탭바·게임 화면은 다 그려진다.
-
-**2026-08-26 에 필요한 것이 줄었다.** 전에는 외부 자격증명 넷이 모듈 로드 때
-필요해서 하나만 없어도 서버가 안 떴는데, 전부 요청 시점으로 옮겼다 —
-`BLOCKERS.md` §6-b. 이제 **DB 값 다섯과 MySQL 하나면 뜬다.**
-
-| | 상태 | 무엇 |
-|---|---|---|
-| 1 파이썬 의존성 | **깔았다** — `api/.venv` (2026-08-24) | `requirements.txt` 는 불완전했다 — `httpx` 가 빠져 있어 넣었다 |
-| 2 `api/.env` | **없다 — 받아야 한다** | **`DB_*` 다섯과 `JWT_SECRET` 뿐이다.**<br>본보기는 만들어 두었다 — `api/.env.example` 이 무엇이 필수인지 넷으로 갈라 적는다.<br>외부 키(OpenAI·Gemini·Tutorus·리턴제로)는 **없어도 뜬다.** 그 기능만 실패한다 |
-| 3 MySQL | **없다 — 깔아야 한다** | 이 기계에 `mysql` 도 도커도 없다. 스키마는 안 넣어도 된다 —<br>`createAllTables()` 가 28개를 스스로 만든다(`model.py` 28 = 코드가 부르는 28) |
-
-띄운 뒤에는 `api/smoke_test.py` 가 학습 흐름을 끝까지 확인한다 —
-게스트 토큰 → 조회 → 저장 → 재조회. **키 없이 여기까지 돌아야 한다.**
-
-`server.py` 는 켜질 때 `createAllTables()` 를 부르고 그것이
-`mysql+mysqlconnector://{DB_USER}:…@{DB_HOST}:{DB_PORT}/{DB_NAME}` 로 붙는다.
-**DB 없이는 프로세스가 아예 안 뜬다.** 지금 상태로 `import server` 를 하면 이렇게 죽는다.
+**외부 API 키를 하나도 넣지 않고 학습 흐름이 끝까지 돌았다.**
 
 ```
-ValueError: invalid literal for int() with base 10: 'None'
-   ← DB_PORT 가 None. api/.env 가 없다
+게스트 토큰 → 저장 전 조회 → POST /learning-record → 재조회      통과
 ```
 
-**돌리는 법** — 가상환경을 쓴다. 시스템 파이썬을 건드리지 않는다.
+`api/smoke_test.py` 가 그 넷을 검사한다. 세 번 돌려 세 번 다 0 이 나왔고
+`ko_learning_record` 에 실제로 쌓였다.
 
-```bash
-cd api
-.venv/bin/python server.py          # 개발 (.env 의 SERVER_ADDRESS/PORT)
-```
+띄우는 법은 `api/README.md` 의 **"로컬에서 처음 띄우기"** 에 있다. 요약하면 —
 
-없으면 먼저 만든다 — `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`.
-`api/.gitignore` 가 `.venv/` 와 `.env*` 를 막으므로 저장소에 들어가지 않는다.
+| | 무엇 |
+|---|---|
+| 1 파이썬 의존성 | `api/.venv`. `requirements.txt` 에 `httpx` 가 빠져 있어 넣었다 |
+| 2 `api/.env` | **`DB_*` 다섯과 `JWT_SECRET` 뿐.** 본보기가 `api/.env.example` 이다.<br>**`JWT_SECRET` 은 base64 여야 한다** — `auth.py:38` 이 `b64decode` 한다. 아무 문자열이면 로그인이 500 이다 |
+| 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**스키마는 안 넣는다** — `createAllTables()` 가 28개를 스스로 만들었다 |
+| 4 외부 키 | **하나도 없어도 된다.** 2026-08-26 에 로드 때 자격증명을 요구하던 다섯 곳을<br>요청 시점으로 옮겼다 — `BLOCKERS.md` §6-b |
 
-⚠️ **포트가 어긋나 있다.** 앱의 `.env` 는 서버를 `127.0.0.1:8799` 로 가리키고
-`start.sh` 는 `8000` 에 띄운다. **둘 중 하나를 맞춰야 한다.**
-
-> `BLOCKERS.md` §6 의 "서버 작업이 시작되지 않았다" 는 **리뉴얼용 API 6종**
-> (`/activity/enter` 등)이 없다는 뜻이고, 여기 적은 것은 그보다 **앞 단계**다.
-> 앱과 서버 코드는 양쪽 다 있고 사이에 연결이 없는 상태다.
+**앱과 이어 보지는 않았다.** 확인한 것은 API 쪽 왕복까지다.
+앱은 `PUBLIC_KOREAN_API_URL` 을 `http://127.0.0.1:8000` 으로 두면 붙는다
+(`app/.env.example`).
 
 ## 이 저장소가 쓰는 세 장치
 
