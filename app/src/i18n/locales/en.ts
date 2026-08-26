@@ -58,6 +58,7 @@ const en = {
 		},
 	},
 	mypage: {
+		back: "Back",
 		title: "My Page",
 		language: "Language",
 		languageSetting: "Language Settings",

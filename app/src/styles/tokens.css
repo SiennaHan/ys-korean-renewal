@@ -149,6 +149,7 @@
 	--color-icon-correct: var(--color-primitive-positive); /* ✓ */
 	--color-icon-wrong: var(--color-primitive-destructive); /* ✕ */
 	--color-icon-inverse: var(--color-primitive-white-100); /* 채운 배경 위 */
+	--color-icon-faint: var(--color-primitive-blue-gray-300); /* 목록 행 끝의 > 처럼 눌러도 되는지만 알리는 장식 아이콘 */
 
 	/* ══════════ typography ══════════ */
 	--font-sans: "Pretendard", "Apple SD Gothic Neo", -apple-system,

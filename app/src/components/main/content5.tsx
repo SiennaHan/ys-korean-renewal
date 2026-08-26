@@ -53,7 +53,7 @@ export default function Content5() {
 					<span className="font-semibold text-[14px] text-text-strong leading-[20px]">
 						{t("mypage.editProfile")}
 					</span>
-					<ChevronRight className="ml-auto size-[20px] text-[#C4C9D0]" />
+					<ChevronRight className="ml-auto size-[20px] text-icon-faint" />
 				</button>
 				<div className="mx-[16px] h-[1px] bg-line-normal" />
 				<button
@@ -64,7 +64,7 @@ export default function Content5() {
 					<span className="font-semibold text-[14px] text-text-strong leading-[20px]">
 						{t("mypage.changePassword")}
 					</span>
-					<ChevronRight className="ml-auto size-[20px] text-[#C4C9D0]" />
+					<ChevronRight className="ml-auto size-[20px] text-icon-faint" />
 				</button>
 			</div>
 

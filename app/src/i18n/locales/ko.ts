@@ -58,6 +58,7 @@ const ko = {
 		},
 	},
 	mypage: {
+		back: "뒤로 가기",
 		title: "마이 페이지",
 		language: "언어",
 		languageSetting: "언어 설정하기",

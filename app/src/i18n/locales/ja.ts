@@ -59,6 +59,7 @@ const ja = {
 		},
 	},
 	mypage: {
+		back: "戻る",
 		title: "マイページ",
 		language: "言語",
 		languageSetting: "言語設定",

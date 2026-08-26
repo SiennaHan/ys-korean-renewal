@@ -56,6 +56,7 @@ const zh = {
 		},
 	},
 	mypage: {
+		back: "返回",
 		title: "我的页面",
 		language: "语言",
 		languageSetting: "语言设置",

@@ -58,6 +58,7 @@ const vi = {
 		},
 	},
 	mypage: {
+		back: "Quay lại",
 		title: "Trang cá nhân",
 		language: "Ngôn ngữ",
 		languageSetting: "Cài đặt ngôn ngữ",

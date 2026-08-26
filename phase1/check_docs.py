@@ -174,6 +174,36 @@ def mockup_captures() -> int:
     return len(list(d.glob("*.html"))) if d.is_dir() else 0
 
 
+def token_counts() -> dict[str, int]:
+    """tokens.css 의 토큰을 층별로 센다.
+
+    문서가 "primitive 51 + semantic 30 + 타이포 23" 이라고 적어 두는데,
+    토큰은 작업하다 하나씩 는다. 실제로 `line-control` 이 늘어난 뒤에도
+    문서는 둘 다 옛 수로 남아 있었고 — 세는 검사가 없어서 조용히 통과했다.
+
+    타이포는 눈금 하나가 `--text-x` · `--text-x--line-height` ·
+    `--text-x--font-weight` 셋으로 적히므로 접미가 없는 것만 센다.
+    """
+    f = ROOT / "app" / "src" / "styles" / "tokens.css"
+    if not f.exists():
+        return {}
+    s = f.read_text(encoding="utf-8")
+    cut = s.find("semantic — 어디에 쓰나")
+    if cut < 0:
+        return {}
+    color = r"^\t--color-[a-z0-9-]+:"
+    return {
+        "primitive 색 토큰": len(re.findall(color, s[:cut], re.M)),
+        "semantic 색 토큰": len(re.findall(color, s[cut:], re.M)),
+        # `--text-x--line-height` 처럼 눈금 하나가 세 줄로 적히므로 이름에 `--` 가
+        # 없는 것만 센다. 처음엔 줄 뒤를 보는 lookahead 로 걸렀는데 이름 쪽을
+        # 안 봐서 69 가 나왔다 — 검사가 스스로를 잡아 줬다.
+        "타이포 눈금": sum(
+            1 for n in re.findall(r"^\t--text-([a-z0-9-]+):", s, re.M) if "--" not in n
+        ),
+    }
+
+
 def data_counts() -> dict[str, int]:
     """앱 데이터에서 직접 세는 값.
 
@@ -247,6 +277,11 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         "i18n 로케일 수": "(문) BLOCKERS.md",
         "VocaShot 문항 은행": "games_spec_v1",
         "n1_word_quiz 행": "games_spec_v1",
+        # 토큰 수는 셋 다 shell_spec §3.5 가 쥔다. dev_spec 이 같은 줄을
+        # 베껴 두었다가 둘 다 낡았다(2026-08-26).
+        "primitive 색 토큰": "shell_spec_v1",
+        "semantic 색 토큰": "shell_spec_v1",
+        "타이포 눈금": "shell_spec_v1",
     }
 
     # (이름, 실제, 문서가 그 수를 말할 때 쓰는 문구들)
@@ -305,6 +340,14 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     if "n1 어휘퀴즈 문항" in dc:
         specs.append(("n1_word_quiz 행", dc["n1 어휘퀴즈 문항"],
                       [r"n1_word_quiz\.json.{0,14}?(\d{3,5})\s*(?:행|문항|건)"]))
+
+    tc = token_counts()
+    if tc:
+        specs += [
+            ("primitive 색 토큰", tc["primitive 색 토큰"], [r"primitive\s*(\d+)"]),
+            ("semantic 색 토큰", tc["semantic 색 토큰"], [r"semantic\s*(\d+)\s*\+"]),
+            ("타이포 눈금", tc["타이포 눈금"], [r"타이포\s*(\d+)"]),
+        ]
 
     out: list[str] = []
 
