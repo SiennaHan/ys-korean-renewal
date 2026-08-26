@@ -856,7 +856,8 @@
 <div class="tablewrap"><table>
   <tr><th>code</th><th>상황</th><th>클라이언트 처리</th></tr>
   <tr><td><code>400</code></td><td>필수 필드 누락 · <code>menuType</code> 허용값 밖</td><td>버그. 재시도하지 않음</td></tr>
-  <tr><td><code>401</code></td><td>토큰 없음 · 만료 <span class="qa">(JWT 30일, 갱신 없음)</span></td><td>로그인으로</td></tr>
+  <tr><td><code>401</code></td><td>토큰 없음 · 만료 <span class="qa">(JWT 30일, 갱신 없음)</span></td><td><b>조용히 로그인으로</b> — 만료 안내 화면은 두지 않는다(2026-08-26 기획 확정).<br>앱은 토큰과 <code>koreanUser</code> 를 같이 지우고 <code>auth:session-cleared</code> 를 쏜다 (<code>BLOCKERS.md</code> §7-c)</td></tr>
+  <tr><td><b>비밀번호 재설정 링크</b></td><td><b>24시간</b> 유효 (2026-08-26 확정). 한 번 쓰면 죽는다</td><td>만들 것 — <code>POST /user/sign/reset-password</code> · <code>POST /user/sign/new-password</code> · 토큰을 담을 자리.<br>비밀번호 규칙은 <b>8자 이상 · 대문자 1개 · 숫자 1개</b>이고 지금은 클라이언트만 본다 — <b>서버도 같은 규칙을 걸어야 한다</b>. 메일 수단이 먼저 필요하다(<code>BLOCKERS.md</code> §7)</td></tr>
   <tr><td><code>404</code></td><td>대상 활동·문항 없음 — 콘텐츠 개정으로 사라진 경우 포함</td><td>다시 풀기 항목이면 <b>조용히 목록에서 제거</b>하고 다음 항목으로</td></tr>
   <tr><td><code>500</code></td><td>서버 오류</td><td>진행 저장 실패는 <b>로컬에 두었다가 재시도</b> — 학습자가 푼 것을 잃지 않게</td></tr>
 </table></div>

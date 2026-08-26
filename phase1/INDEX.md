@@ -103,7 +103,7 @@
 |---|---|---|
 | 1 | [`../BLOCKERS.md`](../BLOCKERS.md) **§6 · §7** | 서버 작업이 시작되지 않았다 · 메일 발송 수단이 없다. **여기가 실제 작업 목록이다** |
 | 2 | `dev_spec_v1.html` | DB 신설 2종(`ko_activity_state` · `ko_review_queue`) · API · 검증 기준 ·<br>요청·응답 필드(§10~§16). **§16 의 남은 둘에 답을 받아야 한다**(나머지 둘은 정해졌다) |
-| 3 | `access_and_pricing_v1.html` | 권한 판정 · 결제. **§07 여섯 물음이 다 해소됐다 (2026-08-26)** — 구독으로 정했고 `ko_entitlement` 는 기간 단위다.<br>**남은 것은 가격과 주기**(월/연) · PG 계약 · B2C 라이선스다 |
+| 3 | `access_and_pricing_v1.html` | 권한 판정 · 결제. **§07 여섯 물음이 다 해소됐다 (2026-08-26)** — 구독으로 정했고 `ko_entitlement` 는 기간 단위다.<br>**남은 것은 가격 하나** · PG 계약 · B2C 라이선스다 — 주기는 **월**로 정했다(2026-08-26) |
 
 외부 API 는 이미 붙어 있는 것과 새로 붙일 것이 갈린다 —
 붙어 있는 것은 `api/TUTORUS_INTEGRATION.md`(발음평가·비원어민 STT) · OpenAI · Gemini TTS,
