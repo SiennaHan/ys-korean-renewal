@@ -582,11 +582,8 @@ export default function Content4() {
 	const hasResults = results.length > 0;
 	const hasSearchWord = searchWord.trim().length >= 2;
 
-	// 배경 #f9fafc 는 게임 목록(목업 정본)이 쓰는 목록 화면 배경과 같은 값이다.
-	// semantic 의 background-base 는 #f6f7f8 라 여기만 바꾸면 두 목록이 갈린다 —
-	// 두 값 중 무엇이 목록 배경인지는 셸 명세가 정할 일이라 그대로 둔다.
 	return (
-		<div className="flex h-full w-full flex-col bg-[#f9fafc]">
+		<div className="flex h-full w-full flex-col bg-background-base">
 			{/* 타이틀 */}
 			<div className="mt-[20px] flex h-[48px] items-center px-[16px]">
 				<span className="font-bold text-[20px] text-text-strong leading-[32px]">
