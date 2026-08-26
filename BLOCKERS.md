@@ -167,14 +167,14 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 쪽이었다 — 그 규칙은 시각(레이아웃·치수·색)에 대한 것이고 어긋남은 **콘텐츠**였다.
 콘텐츠 정본은 원장이므로 앱을 되돌리지 않고 목업을 고쳤다.
 
-## 3. 라우트 통합 — 자모만 남았다 (2026-08-21 갱신)
+## 3. 라우트 통합 — 다 했다. 죽은 옛 라우트만 남았다 (2026-08-24 갱신)
 
 | 명세가 요구하는 것 | 지금 |
 |---|---|
 | `/learn/word` · `grammar` · `listen` · `read` · `roleplay` | ✔ 옮겼다 |
 | `/learn/flashcard?level=&lesson=` | ✔ **옮겼다** |
 | `/learn/mission-chat?level=&lesson=` | ✔ **옮겼다** |
-| `/learn/jamo` | △ 6개로 쪼개짐 — §2 |
+| `/learn/jamo` | ✔ **옮겼다 (2026-08-24)** — 6개 → 하나. `?level&lesson&group&sub` — §2-c |
 
 **플래시카드·미션대화가 끝났다.** 교재학습 목록
 (`app/src/components/main/textbook/index.tsx`)이 `/learn/flashcard` ·
@@ -196,8 +196,8 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 grep -rn 'to: "/book/chapter/unit/' app/src --include='*.tsx' | grep -v routeTree
 ```
 
-지우기 전에 확인할 것 — `/book/list` 처럼 아직 쓰이는 것이 섞여 있고, 자모 6화면은
-§2 의 라우트 통합을 기다린다. **자모(§2)가 끝난 뒤에 한꺼번에 걷어내는 것이 싸다.**
+지우기 전에 확인할 것 — `/book/list` 처럼 아직 쓰이는 것이 섞여 있다.
+**자모(§2-c)가 2026-08-24 에 끝났으므로 기다릴 것은 이제 없다** — 한꺼번에 걷어내면 된다.
 
 ---
 
@@ -679,7 +679,7 @@ vs `ux-control ps-result-retry`), 게임 캡처의 `<div id="app">` 껍데기를
 
 | 무엇 | 실측 | 문서 |
 |---|---|---|
-| 자모 라우트 6→1 통합 | `routes/learn/jamo/` 에 6개 그대로 | §2 — 검수 대기. 순서가 맞다 |
+| ~~자모 라우트 6→1 통합~~ | **했다 (2026-08-24)** — `routes/learn/jamo.tsx` 하나, 화면 여섯은 `components/learn/jamo/` | §2-c |
 | 표현클립 · MY 목업 이식 | `clip.tsx` 15줄 · `my.tsx` 26줄, 구 `Content4`·`Content5` 껍데기 | `masterplan_v3` §15 "목업 없음" — 목업부터 없다 |
 | 권한·결제 | `ko_entitlement` 0곳 · `entitlement` 0곳 | `access_and_pricing_v1` — "코드에 권한 개념이 하나도 없다" 가 지금도 참 |
 | 메일 발송 | `api/` 에 SMTP·SES·SendGrid 어느 것도 없다 | §7 |
