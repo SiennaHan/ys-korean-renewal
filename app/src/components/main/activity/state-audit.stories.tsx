@@ -1,3 +1,5 @@
+import { BotMsgBox, UserMsgBox } from "@/components/chat/chat-text";
+import { DialogInput } from "@/components/dialog/dialog-input";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactElement } from "react";
 import { AudioRow } from "./audio";
@@ -404,19 +406,46 @@ const CHAT = {
 	lesson: "1급 4과",
 	scenario: "카페에서 음료를 주문해 보세요",
 	scenarioTranslated: "Order a drink at the cafe",
-	missions: ["주문하기", "가격 묻기", "인사하기"],
-	hits: new Set([0, 1]),
-	turns: [
-		{ who: "bot" as const, text: "어서 오세요. 무엇을 드릴까요?" },
-		{ who: "me" as const, text: "커피 주세요." },
-		{ who: "bot" as const, text: "네, 아메리카노요? 따뜻한 걸로 드릴까요?" },
+	scenarioImgUrl: "",
+	missions: [
+		{ id: 1, keyword: "주문하기" },
+		{ id: 2, keyword: "가격 묻기" },
+		{ id: 3, keyword: "인사하기" },
 	],
+	completed: ["주문하기", "가격 묻기"],
+	children: (
+		<>
+			<BotMsgBox msg="어서 오세요. 무엇을 드릴까요?" />
+			<UserMsgBox msg="커피 주세요." />
+			<BotMsgBox msg="네, 아메리카노요? 따뜻한 걸로 드릴까요?" />
+		</>
+	),
+};
+
+/** 하단 입력의 기본 상태 — 녹음 상태만 이야기마다 바꿔 준다 */
+const COMPOSE = {
+	recordedMsg: null,
+	mediaRecorder: null,
+	textareaValue: "",
+	setTextareaValue: () => {},
+	isShowInputBox: false,
+	setIsShowInputBox: () => {},
+	onRecord: () => {},
+	onTerminate: () => {},
+	onSendText: () => {},
+	onRecordedMsgChange: () => {},
+	stopRecording: () => {},
+	unlock: () => {},
 };
 
 export const 미션대화_녹음중: Story = {
 	render: () => (
 		<div style={{ height: 720 }}>
-			<ChatScreen {...CHAT} recordMode="recording" onSkip={() => {}} />
+			<ChatScreen
+				{...CHAT}
+				compose={<DialogInput {...COMPOSE} recordState="recording" />}
+				onSkip={() => {}}
+			/>
 		</div>
 	),
 };
@@ -424,7 +453,11 @@ export const 미션대화_녹음중: Story = {
 export const 미션대화_보내는중: Story = {
 	render: () => (
 		<div style={{ height: 720 }}>
-			<ChatScreen {...CHAT} recordMode="sending" onSkip={() => {}} />
+			<ChatScreen
+				{...CHAT}
+				compose={<DialogInput {...COMPOSE} recordState="sending" />}
+				onSkip={() => {}}
+			/>
 		</div>
 	),
 };
@@ -432,7 +465,17 @@ export const 미션대화_보내는중: Story = {
 export const 미션대화_녹음완료: Story = {
 	render: () => (
 		<div style={{ height: 720 }}>
-			<ChatScreen {...CHAT} recordMode="done" onSkip={() => {}} />
+			<ChatScreen
+				{...CHAT}
+				compose={
+					<DialogInput
+						{...COMPOSE}
+						recordState="done"
+						recordedMsg="커피 한 잔 주세요"
+					/>
+				}
+				onSkip={() => {}}
+			/>
 		</div>
 	),
 };

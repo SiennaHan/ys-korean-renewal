@@ -351,6 +351,11 @@ const ja = {
 		loading: "レポートを読み込み中…",
 	},
 	missionChat: {
+		completeTitle:
+			"축하해요! 모든 미션을 완료했어요\n계속 대화하거나, 여기서 마칠 수 있어요!",
+		completeSub:
+			"おめでとうございます！ミッションをすべて達成しました 🎉\nこのまま会話を続けても、ここで終えても大丈夫です。",
+		endChat: "会話を終える",
 		showMissions: "ミッション",
 		hideMissions: "ミッションを隠す",
 		showImage: "場面の画像を表示",

@@ -227,7 +227,6 @@
 .activity-frame .judge .label { text-align:center; }
 .activity-frame /* 미션 대화 */
   .scenario { flex:0 0 auto; min-height:76px; padding:13px 16px; display:flex; align-items:flex-start; gap:10px; background:var(--color-fill-primary); color:var(--color-background-surface); }
-.activity-frame .scenario.folded { min-height:44px; padding-top:10px; padding-bottom:10px; }
 .activity-frame .scenario-copy { flex:1; }
 .activity-frame .scenario .ko { font-size:16px; line-height:24px; font-weight:600; }
 .activity-frame .scenario .en { margin-top:2px; color:var(--color-background-choice); font-size:13px; line-height:18px; }
@@ -250,31 +249,44 @@
    앱은 둘을 DialogScenario 로 묶느라 이 칸으로 감쌌는데, 그냥 block 이라
    .missions 의 `flex:0 0 50px` 이 죽어 알약 높이(26px)로 쭈그러들었다 —
    회색 알약이 흰 칸을 꽉 채워 겹쳐 보였다. 세로 flex 로 만들어 목업 배치를 되돌린다. */
+/* 여기 있던 `.msg` · `.avatar` · `.bubble` · `.tip` · `.scenario.folded` 는
+   지웠다(2026-08-26). 옛 ChatScreen 이 쓰던 이름인데 제품은 한 번도 그 이름으로
+   말풍선을 그린 적이 없다 — 제품은 `.mission-*` 이고, 접기도 `.folded` 가 아니라
+   `.expanded`(상황 그림 펼침)다. 대조가 아무도 안 보는 화면을 보고 있던 흔적이다. */
 .activity-frame .mission-chat-header { flex:0 0 auto; min-height:0; display:flex; flex-direction:column; }
 .activity-frame .chat-end-anchor { flex:0 0 1px; }
-.activity-frame .msg { display:flex; gap:8px; align-items:flex-start; }
-.activity-frame .avatar { width:34px; height:34px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; background:var(--color-background-choice); font-size:16px; }
-.activity-frame .bubble-wrap { max-width:248px; }
-.activity-frame .bubble { padding:9px 11px; border-radius:12px; background:var(--color-background-surface); color:var(--color-text-strong); font-size:14px; line-height:20px; }
-.activity-frame .msg.me { justify-content:flex-end; }
-.activity-frame .msg.me .bubble { color:var(--color-background-surface); background:var(--color-fill-primary); }
-.activity-frame .msg.me.bad .bubble { color:var(--color-text-strong); background:var(--color-background-wrong); }
-.activity-frame .tip { margin-top:6px; padding:7px 9px; border-radius:8px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:12px; line-height:18px; }
 .activity-frame .typing { width:54px; height:36px; display:flex; align-items:center; justify-content:center; gap:5px; border-radius:12px; background:var(--color-background-surface); }
 .activity-frame .typing i { width:5px; height:5px; border-radius:50%; background:var(--blue-gray-400); }
-.activity-frame .thread .mission-msg { margin:0; padding:0; }
-.activity-frame .thread .mission-msg-bot { align-items:flex-start; }
-.activity-frame .thread .mission-avatar { width:34px; height:34px; overflow:hidden; border-radius:50%; background:var(--color-background-choice); }
+/* 미션대화 말풍선 — 2026-08-26 에 tailwind 를 걷고 이름으로 옮겼다.
+   전에는 rounded-[15px]·bg-[#F6F7F8] 같은 유틸이 붙어 있었는데 아래 규칙이
+   전부 덮고 있어서 **죽은 글자**였다. 죽은 채로 두면 목업 정본이 이 화면을
+   적을 수가 없다 — 정본에는 tailwind 가 없다. */
+.activity-frame .thread .mission-msg { display:flex; flex-direction:row; align-items:flex-start; margin:0; padding:0; }
+.activity-frame .thread .mission-avatar { width:34px; height:34px; flex:0 0 auto; overflow:hidden; display:grid; place-items:center; border-radius:50%; background:var(--color-background-choice); }
 .activity-frame .thread .mission-avatar img { width:30px; height:30px; }
 .activity-frame .thread .mission-bubble { max-width:248px; margin-left:8px; padding:9px 11px; border-radius:12px; box-shadow:none; font-size:14px; line-height:20px; }
+.activity-frame .thread .mission-bubble p { margin:0; }
 .activity-frame .thread .mission-msg-bot .mission-bubble { background:var(--color-background-surface); color:var(--color-text-strong); }
-.activity-frame .thread .mission-msg-me { margin-left:42px; }
+.activity-frame .thread .mission-msg-me { justify-content:flex-end; margin-left:42px; }
 .activity-frame .thread .mission-msg-me .mission-bubble { margin-left:0; background:var(--color-fill-primary); color:var(--color-background-surface); }
 .activity-frame .thread .mission-msg-tip .mission-bubble { background:var(--color-background-choice); color:var(--color-text-strong); }
 .activity-frame .thread .mission-msg-wrong .mission-bubble { background:var(--color-background-wrong); color:var(--color-text-strong); }
-.activity-frame .thread .mission-feedback { padding:7px 9px; border-radius:8px; background:rgba(255,255,255,.8); }
+/* 말풍선 아래 붙는 소리·번역 버튼 */
+.activity-frame .thread .mission-tools { margin-top:5px; display:flex; flex-direction:row; gap:6px; }
+.activity-frame .thread .mission-tool { width:24px; height:24px; padding:0; border:0; border-radius:8px; background:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
+.activity-frame .thread .mission-tool:disabled { cursor:not-allowed; }
+.activity-frame .thread .mission-tool .record-spinner { width:14px; height:14px; color:var(--color-fill-primary); }
+.activity-frame .thread .mission-trans { margin-top:5px; padding:4px 8px; border-radius:5px; background:var(--color-background-base); color:var(--color-text-sub); font-size:12px; line-height:18px; }
+/* 내 말에 붙는 해설 — 글자색은 tip/오류에 따라 컴포넌트가 인라인으로 준다 */
+.activity-frame .thread .mission-feedback { margin-top:5px; padding:3px 7px; border-radius:8px; background:var(--color-background-surface); display:flex; align-items:flex-start; gap:5px; }
+.activity-frame .thread .mission-feedback-icon { width:20px; height:20px; flex:0 0 auto; }
+.activity-frame .thread .mission-feedback-text { flex:1 1 auto; font-size:12px; line-height:18px; }
+/* 미션을 다 채웠을 때 실 안에 뜨는 안내 */
 .activity-frame .thread .mission-complete { padding:0; }
-.activity-frame .thread .mission-complete > div { border:1px solid var(--color-line-control); border-radius:12px; background:var(--color-background-surface); box-shadow:none; }
+.activity-frame .thread .mission-complete-card { padding:14px 20px; border:1px solid var(--color-line-control); border-radius:12px; background:var(--color-background-surface); box-shadow:none; display:grid; gap:5px; }
+.activity-frame .thread .mission-complete-card strong { color:var(--color-text-strong); font-size:16px; line-height:24px; font-weight:700; text-align:center; }
+.activity-frame .thread .mission-complete-card span { color:var(--color-text-sub); font-size:11px; line-height:17px; text-align:center; }
+.activity-frame .thread .mission-complete-card button { height:32px; margin-top:15px; border:0; border-radius:10px; background:var(--color-background-choice); color:var(--color-fill-primary); cursor:pointer; }
 .activity-frame .chat-footer, .activity-frame .role-footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--color-background-surface); border-top:1px solid var(--color-line-control); }
 .activity-frame .chat-compose { flex:0 0 auto; position:relative; background:var(--color-background-surface); }
 .activity-frame .chat-compose .chat-footer { width:100%; }

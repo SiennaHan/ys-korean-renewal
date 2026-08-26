@@ -37,6 +37,9 @@ IGNORED = {
     "채움 막대 진행률": "위 '운석 낙하 시간' 과 같은 사정이다 — <i style=\"width:NN%\">"
     " 는 남은 시간·점수 같은 실시간 값이라 CSS 에 못 박고 앱이 인라인으로 준다."
     " 목업은 캡처 뒤 스크립트가 넣으므로 마크업엔 없다 (game__ps_play, 나중엔 cs_play도)",
+    "녹음 시간 고리": "미션대화 도크의 .record-limit 은 녹음 제한시간을 도는 고리다."
+    " 대화 화면에서는 CSS 가 1x1 · opacity 0 으로 숨긴다(activity.css) — 보이지 않으므로"
+    " 목업이 그리지 않는다. 앱은 같은 DialogInput 을 다른 자리에서도 쓰기 때문에 마크업은 낸다",
     "cs-stat-row 인라인 style": "어휘 카드 마스터 결과(game__cs_result)의 다섯 스탯 행 중"
     " '맞힌 카드' 한 행만 목업 캡처에 인라인 style 이 빠져 있다. 그런데 그 인라인 style"
     " (display:flex · justify-content:space-between · align-items:center)은"
@@ -316,6 +319,28 @@ def drop_tabbar(rows):
     return out
 
 
+def drop_record_limit(rows):
+    """<div class="record-limit"> 블록을 통째로 지운다 — 보이지 않는 고리다.
+
+    미션대화 도크에서는 CSS 가 1x1 · opacity 0 으로 숨긴다. 앱은 같은
+    DialogInput 을 다른 자리에서도 쓰기 때문에 마크업을 내지만, 이 화면에서는
+    그려지는 것이 없으므로 목업도 그리지 않는다.
+    """
+    out, i = [], 0
+    while i < len(rows):
+        line = rows[i]
+        if line.strip().startswith('<div class="record-limit"'):
+            indent = len(line) - len(line.lstrip())
+            j = i + 1
+            while j < len(rows) and (len(rows[j]) - len(rows[j].lstrip())) > indent:
+                j += 1
+            i = j
+            continue
+        out.append(line)
+        i += 1
+    return out
+
+
 def drop_single_progress(rows):
     """칸이 하나뿐인 진행막대 블록을 통째로 지운다"""
     out, i = [], 0
@@ -476,7 +501,7 @@ for f in sorted(glob.glob(os.path.join(out, "*.html"))):
     def prep(html):
         rows = flat(strip_app_wrapper(html))
         rows = drop_above_root(rows, root) if root else drop_game_wrapper(rows)
-        return drop_single_progress(drop_tabbar(rows))
+        return drop_record_limit(drop_single_progress(drop_tabbar(rows)))
 
     a = prep(open(ref, encoding="utf-8").read())
     b = prep(open(f, encoding="utf-8").read())

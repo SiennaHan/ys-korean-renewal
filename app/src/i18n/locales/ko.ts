@@ -356,6 +356,11 @@ const ko = {
 		loading: "리포트를 불러오는 중이에요.",
 	},
 	missionChat: {
+		completeTitle:
+			"축하해요! 모든 미션을 완료했어요\n계속 대화하거나, 여기서 마칠 수 있어요!",
+		completeSub:
+			"Congrats! You finished all the missions! 🎉\nYou can keep talking, or end the chat here.",
+		endChat: "대화 끝내기",
 		showMissions: "미션 보기",
 		hideMissions: "미션 숨기기",
 		showImage: "상황 이미지 보기",

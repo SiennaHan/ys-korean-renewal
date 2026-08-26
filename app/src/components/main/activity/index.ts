@@ -44,7 +44,7 @@ export {
 	PrimaryButton,
 } from "./shell";
 export { FailedScreen, LoadingScreen, MicDeniedScreen } from "./state-screens";
-export { ChatScreen, type ChatTurn } from "./chat";
+export { type ChatMission, ChatScreen } from "./chat";
 export { type Flashcard, FlashcardScreen } from "./flashcard";
 export {
 	JamoCombineSelectView,

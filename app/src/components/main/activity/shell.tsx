@@ -24,9 +24,14 @@ export function ActivityFrame({
 	id?: string;
 }) {
 	return (
+		/*
+		 * **`className` 이 첫 속성이어야 한다.** 대조가 프레임 껍데기를
+		 * `^<div class="activity-frame"` 로 벗기므로, `id` 를 앞에 두면 껍데기가
+		 * 안 벗겨지고 화면이 통째로 갈린다(미션대화에서 실제로 겪었다).
+		 */
 		<div
-			id={id}
 			className={className ? `activity-frame ${className}` : "activity-frame"}
+			id={id}
 			style={style}
 		>
 			{children}

@@ -11,14 +11,9 @@ import ChatMessage, {
 	type MessageType,
 } from "@/components/chat/chat-message";
 import { DialogInput } from "@/components/dialog/dialog-input";
-import { DialogScenario } from "@/components/dialog/dialog-scenario";
 import { DialogSkipModal } from "@/components/dialog/dialog-skip-modal";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
-import {
-	ActivityAppBar,
-	ActivityFrame,
-	FailedScreen,
-} from "@/components/main/activity";
+import { ChatScreen, FailedScreen } from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { env } from "@/config/env";
 import { useRecording } from "@/hooks/useRecording";
@@ -380,48 +375,38 @@ export default function MissionDialog({
 	}, []);
 
 	return (
-		<ActivityFrame id="main-chat-container">
-			<ActivityAppBar
-				lesson={lesson}
-				onExit={requestExit}
-				onSkip={() => (isCompleted ? goReport() : setConfirmKind("finish"))}
-			/>
-			<div className="mission-chat-header">
-				<DialogScenario
-					scenario={dialog.scenario}
-					scenarioEng={dialog.scenario_eng}
-					scenarioImgUrl={scenarioImgUrl}
-					missionList={missionList}
-					completedList={completedList}
+		<ChatScreen
+			lesson={lesson}
+			scenario={dialog.scenario}
+			scenarioTranslated={dialog.scenario_eng}
+			scenarioImgUrl={scenarioImgUrl}
+			missions={missionList}
+			completed={completedList}
+			threadEndRef={scrollEndRef}
+			onExit={requestExit}
+			onSkip={() => (isCompleted ? goReport() : setConfirmKind("finish"))}
+			compose={
+				<DialogInput
+					recordState={recording.recordState}
+					recordedMsg={recording.recordedMsg}
+					mediaRecorder={recording.mediaRecorder}
+					textareaValue={textareaValue}
+					setTextareaValue={setTextareaValue}
+					isShowInputBox={isShowInputBox}
+					setIsShowInputBox={setIsShowInputBox}
+					onRecord={() => void handleRecord()}
+					onTerminate={recording.terminate}
+					onSendText={() => void handleSendText()}
+					onRecordedMsgChange={(v) => recording.setRecordedMsg(v)}
+					stopRecording={recording.stopRecording}
+					unlock={unlock}
 				/>
-			</div>
-
-			{/* Chat Messages */}
-			<div className="thread scrollbar-hide">
-				{msgList.map((item) => (
-					<ChatMessage key={item.idx} {...item} />
-				))}
-				<div className="chat-end-anchor" ref={scrollEndRef} />
-			</div>
-
-			{/* Input Area */}
-			<DialogInput
-				recordState={recording.recordState}
-				recordedMsg={recording.recordedMsg}
-				mediaRecorder={recording.mediaRecorder}
-				textareaValue={textareaValue}
-				setTextareaValue={setTextareaValue}
-				isShowInputBox={isShowInputBox}
-				setIsShowInputBox={setIsShowInputBox}
-				onRecord={() => void handleRecord()}
-				onTerminate={recording.terminate}
-				onSendText={() => void handleSendText()}
-				onRecordedMsgChange={(v) => recording.setRecordedMsg(v)}
-				stopRecording={recording.stopRecording}
-				unlock={unlock}
-			/>
-
-			{/* Skip Confirmation Modal */}
+			}
+		>
+			{msgList.map((item) => (
+				<ChatMessage key={item.idx} {...item} />
+			))}
+			{/* 그만둘지 묻는 창은 실 안이 아니라 화면 위에 뜬다 */}
 			{confirmKind && (
 				<DialogSkipModal
 					variant={confirmKind}
@@ -429,6 +414,6 @@ export default function MissionDialog({
 					onConfirm={confirmKind === "exit" ? onClose : goReport}
 				/>
 			)}
-		</ActivityFrame>
+		</ChatScreen>
 	);
 }

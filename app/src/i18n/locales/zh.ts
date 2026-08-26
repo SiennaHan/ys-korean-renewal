@@ -347,6 +347,10 @@ const zh = {
 		loading: "正在加载报告…",
 	},
 	missionChat: {
+		completeTitle:
+			"축하해요! 모든 미션을 완료했어요\n계속 대화하거나, 여기서 마칠 수 있어요!",
+		completeSub: "恭喜！你完成了所有任务 🎉\n可以继续对话，也可以在这里结束。",
+		endChat: "结束对话",
 		showMissions: "查看任务",
 		hideMissions: "隐藏任务",
 		showImage: "查看情景图片",

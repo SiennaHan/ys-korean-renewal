@@ -350,6 +350,11 @@ const vi = {
 		loading: "Đang tải báo cáo…",
 	},
 	missionChat: {
+		completeTitle:
+			"축하해요! 모든 미션을 완료했어요\n계속 대화하거나, 여기서 마칠 수 있어요!",
+		completeSub:
+			"Chúc mừng! Bạn đã hoàn thành tất cả nhiệm vụ 🎉\nBạn có thể tiếp tục trò chuyện hoặc kết thúc tại đây.",
+		endChat: "Kết thúc trò chuyện",
 		showMissions: "Xem nhiệm vụ",
 		hideMissions: "Ẩn nhiệm vụ",
 		showImage: "Xem ảnh tình huống",

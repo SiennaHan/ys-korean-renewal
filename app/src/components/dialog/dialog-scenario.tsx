@@ -2,18 +2,13 @@ import { IconDown, IconUp } from "@/components/main/activity";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-interface DialogKeywordItem {
-	id: number | string;
-	keyword: string;
-	content?: string;
-	dialog_id: string;
-}
+import type { ChatMission } from "@/components/main/activity";
 
 interface DialogScenarioProps {
 	scenario: string;
 	scenarioEng: string;
 	scenarioImgUrl: string;
-	missionList: DialogKeywordItem[];
+	missionList: ChatMission[];
 	completedList: string[];
 }
 
@@ -41,6 +36,7 @@ export function DialogScenario({
 				<button
 					type="button"
 					className="fold"
+					data-action="chatFold"
 					aria-label={
 						isShowImage
 							? t("missionChat.hideImage")
@@ -57,6 +53,7 @@ export function DialogScenario({
 				<button
 					type="button"
 					className={`mission-title ${isShowMissions ? "on" : ""}`}
+					data-action="chatMissions"
 					onClick={() => setIsShowMissions((prev) => !prev)}
 				>
 					{isShowMissions

@@ -18,6 +18,12 @@ import { ToastProvider } from "@/components/toast/toast-context";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+	BotMsgBox,
+	BotMsgProgress,
+	UserMsgBox,
+} from "@/components/chat/chat-text";
+import { DialogInput } from "@/components/dialog/dialog-input";
 import { FillBlankView } from "@/components/learn/fill-blank";
 import { JamoChooseView } from "@/components/learn/jamo/choose";
 import { JamoPronounceView } from "@/components/learn/jamo/pronounce";
@@ -273,6 +279,30 @@ const THINGS = [
 	image: image as string,
 	done: done as boolean,
 }));
+/** 미션대화 표본 — 미션 셋 중 둘을 채운 상태 */
+const CHAT_MISSIONS = [
+	{ id: 1, keyword: "주문하기", content: "마실 것을 골라 주문해요" },
+	{ id: 2, keyword: "가격 묻기", content: "얼마인지 물어봐요" },
+	{ id: 3, keyword: "인사하기", content: "헤어질 때 인사해요" },
+];
+
+/** 하단 입력의 기본 상태 — 녹음 전, 키보드 칸은 닫혀 있다 */
+const CHAT_COMPOSE = {
+	recordState: "idle" as const,
+	recordedMsg: null,
+	mediaRecorder: null,
+	textareaValue: "",
+	setTextareaValue: () => {},
+	isShowInputBox: false,
+	setIsShowInputBox: () => {},
+	onRecord: () => {},
+	onTerminate: () => {},
+	onSendText: () => {},
+	onRecordedMsgChange: () => {},
+	stopRecording: () => {},
+	unlock: () => {},
+};
+
 const ROLE_TURNS = [
 	["AI", false, "어서 오세요. 뭘 도와드릴까요?"],
 	["나", true, "커피 한 잔 주세요."],
@@ -610,22 +640,32 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	chat: (
+		/*
+		 * 실 안의 말과 하단 입력은 제품이 넣는 것을 그대로 넣는다 —
+		 * `BotMsgBox`/`UserMsgBox`/`TipUserMsgBox` 와 `DialogInput` 이다.
+		 * 여기서 흉내만 내면 대조가 또 아무도 안 보는 쪽을 보게 된다.
+		 * `ChatMessage` 를 통째로 쓰지 않는 것은 그것이 마운트하며 서버를
+		 * 부르기 때문이다 — 그 아래 말풍선들이 화면이다.
+		 */
 		<ChatScreen
 			lesson={LESSON}
 			scenario="카페에서 음료를 주문해 보세요"
 			scenarioTranslated="Order a drink at the cafe"
-			missions={["주문하기", "가격 묻기", "인사하기"]}
-			hits={new Set([0, 1])}
-			turns={[
-				{ who: "bot", text: "어서 오세요. 무엇을 드릴까요?" },
-				{ who: "me", text: "커피 주세요." },
-				{ who: "bot", text: "네, 아메리카노요? 따뜻한 걸로 드릴까요?" },
-				{ who: "me", text: "얼마예요?" },
-			]}
-			waiting
-			recordMode="idle"
+			scenarioImgUrl=""
+			missions={CHAT_MISSIONS}
+			completed={["주문하기", "가격 묻기"]}
+			compose={<DialogInput {...CHAT_COMPOSE} />}
 			onSkip={() => {}}
-		/>
+		>
+			<BotMsgBox msg="어서 오세요. 무엇을 드릴까요?" replayAudio={() => {}} />
+			<UserMsgBox msg="커피 주세요." />
+			<BotMsgBox
+				msg="네, 아메리카노요? 따뜻한 걸로 드릴까요?"
+				replayAudio={() => {}}
+			/>
+			<UserMsgBox msg="얼마예요?" />
+			<BotMsgProgress />
+		</ChatScreen>
 	),
 
 	role: (

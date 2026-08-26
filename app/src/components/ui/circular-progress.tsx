@@ -9,7 +9,13 @@ const CircularProgress = ({
 	progressColor = "stroke-blue-400",
 	onEnd = () => {},
 }) => {
-	const radius = (sqSize - strokeWidth) / 2;
+	/*
+	 * 반지름은 음수가 될 수 없다. 미션대화 도크는 이 컴포넌트를 **30초 타이머**로만
+	 * 쓰느라 `sqSize={1}` 로 줄여 두는데, 그러면 (1-2)/2 = -0.5 가 나와서 화면을
+	 * 열 때마다 브라우저가 `<circle> attribute r: A negative value is not valid` 를
+	 * 던졌다. 보이지도 않는 고리가 콘솔을 채우면 진짜 오류가 묻힌다.
+	 */
+	const radius = Math.max(0, (sqSize - strokeWidth) / 2);
 	const viewBox = `0 0 ${sqSize} ${sqSize}`;
 	const circumference = radius * 2 * Math.PI;
 

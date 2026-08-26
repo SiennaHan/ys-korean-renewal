@@ -351,6 +351,11 @@ const en = {
 		loading: "Loading report…",
 	},
 	missionChat: {
+		completeTitle:
+			"축하해요! 모든 미션을 완료했어요\n계속 대화하거나, 여기서 마칠 수 있어요!",
+		completeSub:
+			"Congrats! You finished all the missions! 🎉\nYou can keep talking, or end the chat here.",
+		endChat: "End the chat",
 		showMissions: "Missions",
 		hideMissions: "Hide missions",
 		showImage: "Show scenario image",
