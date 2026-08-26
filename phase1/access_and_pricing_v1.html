@@ -131,7 +131,7 @@ DB 값이라 바꾸지 않는다.</p>
   <tbody>
     <tr><td><b>무료 경계</b></td>
       <td>과 단위 맛보기. 표현클립은 전부 무료, 게임은 <b>VocaShot · 봄소풍만</b> 무료,
-        자모는 <b>첫 과만</b> 무료, 교재는 <b>각 급 한 과만</b> 무료</td></tr>
+        한글은 <b>1급 1과만</b> 무료, 교재는 <b>1급 4과 · 2급 1과 · 3급 1과</b> 무료 (2026-08-26 확정)</td></tr>
     <tr><td><b>유료분 여는 법</b></td>
       <td><b>앱 내 결제.</b> 책값과 앱 사용료는 별도다 — 책을 샀다는 사실이 앱을 열어 주지 않는다</td></tr>
     <tr><td><b>권한 출처</b></td>
@@ -174,23 +174,29 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
       <td>어휘 사격. 교재에 묶이지 않아 아무 급이나 즐길 수 있다</td></tr>
     <tr><td><b>게임 — 봄소풍</b></td><td>전부</td>
       <td>친구 12 · 문항 세트. 역시 교재 비연동</td></tr>
-    <tr><td><b>자모</b></td><td><b>첫 과만</b></td>
+    <tr><td><b>한글(자모)</b></td><td><b>1급 1과만</b></td>
       <td>원장 <span class="file">n8_jamo</span> 의 <span class="file">chapter 1</span> =
-        <b>190문항</b> (전체 529 중 <b>36%</b>). §07 의 4번을 보라 — 맛보기치고 크다</td></tr>
-    <tr><td><b>교재</b></td><td><b>각 급 한 과만</b></td>
-      <td>8급 × 1과 = <b>8과 / 전체 120과 = 6.7%</b>. 과 단위로 적는다 — 문항 수는 콘텐츠가 늘 때마다 움직여서 여기 적으면 낡는다(세려면 <code>build-content.py --check</code>)</td></tr>
+        <b>190문항</b> (전체 529 중 <b>36%</b>). §07 의 4번을 보라 — 맛보기치고 크다.<br>
+        <b>1급 1~3과가 한글 파트다</b> — 그래서 교재학습 탭에서 1급의 과 칩이 4과부터 시작한다.
+        <span class="file">n4</span> 같은 교재 시트에는 1급 1~3과가 없다(실측)</td></tr>
+    <tr><td><b>교재</b></td><td><b>세 과만</b> — 1급 4과 · 2급 1과 · 3급 1과</td>
+      <td><b>3과 / 전체 120과 = 2.5%</b> (2026-08-26 기획 확정). 전에는 "각 급 한 과" 로 8과였다 —
+        <b>4급 이상은 맛보기가 없다.</b> 초급에서 값을 보여 주고 그 위는 구독으로 여는 쪽을 골랐다.<br>
+        과 단위로 적는다 — 문항 수는 콘텐츠가 늘 때마다 움직여서 여기 적으면 낡는다(세려면 <code>build-content.py --check</code>)</td></tr>
   </tbody>
 </table>
 </div>
 
-<h3>맛보기 과의 실측 — 급마다 무엇이 몇 개 열리나</h3>
+<h3>급마다 첫 과에 무엇이 몇 개 있나 — 실측</h3>
+<p class="qa"><b>2026-08-26 부터 무료는 위의 셋뿐이다</b>(1급 4과 · 2급 1과 · 3급 1과).
+4급 이하 행은 <b>무료가 아니고</b> 참고용 실측으로 남긴다 — 급별 물량을 견주는 데 쓴다.</p>
 <div class="tablewrap">
 <table>
   <thead><tr><th>급</th><th>맛보기 과</th><th>어휘</th><th>어휘퀴즈</th><th>역할극</th><th>듣고답</th><th>듣기지문</th><th>빈칸</th><th>읽고답</th></tr></thead>
   <tbody>
-    <tr><td>1급</td><td><b>4과</b> 제 이름은 유리예요</td><td>15</td><td>9</td><td>9</td><td>3</td><td>4</td><td>6</td><td>5</td></tr>
-    <tr><td>2급</td><td>1과 저는 회사원입니다</td><td>17</td><td>10</td><td>9</td><td>5</td><td>3</td><td>9</td><td>4</td></tr>
-    <tr><td>3급</td><td>1과 한국에 오기 전에…</td><td>19</td><td>8</td><td>6</td><td>5</td><td>3</td><td>7</td><td>4</td></tr>
+    <tr><td>1급 <span class="pill done">무료</span></td><td><b>4과</b> 제 이름은 유리예요</td><td>15</td><td>9</td><td>9</td><td>3</td><td>4</td><td>6</td><td>5</td></tr>
+    <tr><td>2급 <span class="pill done">무료</span></td><td>1과 저는 회사원입니다</td><td>17</td><td>10</td><td>9</td><td>5</td><td>3</td><td>9</td><td>4</td></tr>
+    <tr><td>3급 <span class="pill done">무료</span></td><td>1과 한국에 오기 전에…</td><td>19</td><td>8</td><td>6</td><td>5</td><td>3</td><td>7</td><td>4</td></tr>
     <tr><td>4급</td><td>1과 한국말을 배운 지 6개월…</td><td>22</td><td>7</td><td>6</td><td>9</td><td>4</td><td>7</td><td>3</td></tr>
     <tr><td>5급</td><td>1과 한국 대학교에서…</td><td>16</td><td>10</td><td>16</td><td>6</td><td>3</td><td>7</td><td>3</td></tr>
     <tr><td>6급</td><td>1과 전망은 이 방만 못하지만…</td><td>14</td><td>9</td><td>6</td><td>4</td><td>4</td><td>7</td><td>3</td></tr>
@@ -313,14 +319,16 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
 
 <h2><span class="n">07</span>아직 정해야 할 것</h2>
 <ol class="path">
-  <li><div><div class="h">구독인가, 급별로 한 번 사는 것인가 <span class="pill stop">가장 큰 것</span></div>
-    <div class="d"><b>"앱 사용료" 라는 말은 구독처럼 읽힌다.</b> 하지만 책이 8권으로 나뉘어 팔리니
-    급별 구매도 자연스럽다. 이건 §04 의 <span class="file">expires_at</span> 이 쓰이는지 여부,
-    §05 의 <span class="file">ko_entitlement</span> 가 급 단위인지 기간 단위인지,
-    그리고 환불·복원 규칙 전부를 바꾼다.
-    <b>내 권고 — 급별 구매.</b> 책 한 권을 떼는 사람의 리듬과 맞고, 구독은
-    한 권 끝내고 쉬는 사람에게 벌을 준다. 다만 8급을 다 사면 비싸 보이므로
-    <b>전 급 묶음</b>을 같이 둔다.</div></div></li>
+  <li><div><div class="h">구독인가, 급별로 한 번 사는 것인가 <span class="pill done">구독으로 확정 2026-08-26</span></div>
+    <div class="d"><b>기획이 구독으로 정했다.</b> 구독하면 <b>전 급·전 과</b>를 다 본다 —
+    급별 칸막이가 없다.<br>
+    <b>이 문서의 권고는 급별 구매였다</b>(책 한 권을 떼는 리듬과 맞고, 구독은 한 권 끝내고
+    쉬는 사람에게 벌을 준다는 것). 기획이 반대로 정했으므로 그 권고는 채택되지 않았다 —
+    근거를 지우지 않고 남겨 둔다.<br>
+    <b>이것이 정한 것</b> — §04 의 <span class="file">expires_at</span> 은 <b>쓰인다</b>(기간이 있다).
+    §05 의 <span class="file">ko_entitlement</span> 는 <b>기간 단위</b>다(급 단위가 아니다).
+    환불·복원도 구독 규칙을 따른다.<br>
+    <b>아직 안 정한 것 — 가격과 주기</b>(월/연). 그건 별개 물음이다.</div></div></li>
   <li><div><div class="h">게스트 진행을 서버에 남기나</div>
     <div class="d">남기면 로그인할 때 <span class="file">migrateGuestData</span> 가 실제로 돌아야 한다 —
     <b>그 경로는 한 번도 실행된 적이 없다.</b> 기기에만 두면 옮길 것이 없어 간단하지만
@@ -345,6 +353,17 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
     <b>번호는 그대로 둔다</b> — 다른 문서가 "§07 의 5번" 으로 가리킨다. 세트·장 수도 여기
     적지 않는다(콘텐츠가 늘면 낡는다) — <code>build-content.py --check</code> 의
     <code>n6_flashcard</code>·<code>n6_flashcard_card</code> 를 봐라</div></div></li>
+  <li><div><div class="h">무료·유료 경계와 안내 <span class="pill done">확정 2026-08-26</span></div>
+    <div class="d"><b>무료분은 로그인 없이 보인다.</b> §02 의 것 그대로 —
+    교재 <b>1급 1과(한글) · 1급 4과 · 2급 1과 · 3급 1과</b>, 게임 <b>VocaShot · 봄소풍</b>,
+    <b>표현클립 전부</b>.<br>
+    로그인하면 무료분은 당연히 보이고, <b>유료 구간에 닿으면 "결제가 필요하다" 는 안내 화면</b>이 뜬다.
+    막는 것이 아니라 다음 걸음을 알려 주는 자리다.<br>
+    <b>그래서 필요한 화면이 하나 생겼다 — 결제 안내(페이월).</b> 지금 목업이 없다
+    (<span class="file">masterplan_v3</span> §2 의 덮개 지도에서 비어 있는 칸이다).
+    권한 판정도 코드에 아직 하나도 없다 — 이 절 맨 위에 적어 두었다.<br>
+    <b>번호가 맨 뒤인 이유</b> — 다른 문서가 "§07 의 4번"(자모) · "5번"(플래시카드) 으로
+    가리킨다. 중간에 끼우면 그 인용이 어긋난다.</div></div></li>
 </ol>
 
 <h2><span class="n">08</span>지금 코드가 이 결정을 못 받는 곳</h2>
