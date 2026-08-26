@@ -378,6 +378,14 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
 # captured/ 와 mockups/ 가 일부러 다른 곳. 이유를 적어야 넣을 수 있고,
 # 눈감아 준 것은 실행할 때마다 같이 찍는다 — parity 스크립트와 같은 규칙이다.
 TWIN_ALLOW = {
+    "activity__report.html":
+    "목업 v2.7 승격(2026-08-26). 탭을 <div> 에서 진짜 <button role=tablist·aria-selected>"
+    " 로 바꾸고, 카드·평가 행의 인라인 style 을 .report-card·.report-rows 로 뺐다."
+    " captured/ 는 v2.6 시점 기록이라 그대로 둔다",
+    "activity__briefing.html":
+    "목업 v2.7 승격(2026-08-26). 상황 이미지 자리 글자를 <span aria-hidden> 로 감쌌다 —"
+    " 그림이 없을 때의 자리표라 보조기술이 읽을 것이 아니다."
+    " captured/ 는 v2.6 시점 기록이라 그대로 둔다",
     "vocashot__play_type.html":
     "직접 입력 줄을 <div> 대신 <form> 으로 감쌌다 — Enter 로 제출된다."
     " 정본은 <div> 라 키보드만 쓰면 버튼까지 Tab 해야 했다."
