@@ -18,6 +18,7 @@ import {
 	PracticeBrowser,
 	PrimaryButton,
 	ProblemCard,
+	SyllableRow,
 	ThumbWordCards,
 	WordPicture,
 } from "@/components/main/activity";
@@ -39,6 +40,7 @@ import { units } from "@/shared/data/unit";
 import type { ModuleType, ProblemType } from "@/types/book.types";
 import clsx from "clsx";
 import { Volume2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 const baseButton =
@@ -47,6 +49,89 @@ const baseButton =
 									  disabled:text-[#ADB3BE] disabled:shadow-none disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-[#E5E8EC] disabled:hover:bg-[#bbb]";
 const baseButtonClasses =
 	"flex rounded-[5px] items-center justify-center cursor-pointer hover:bg-gray-200 active:bg-gray-300";
+
+/**
+ * 단어 읽고 쓰기 — **표시만** 한다.
+ * 진행바가 없는 것은 shell_spec "활동별 진행 표시 정책"(2026-08-25) 대로다.
+ */
+export function JamoWordWriteView({
+	lesson,
+	onExit,
+	onSkip,
+	instruction,
+	word,
+	image,
+	onPlay,
+	syllables,
+	syllableImage,
+	onOpenSyllable,
+	tabs,
+	currentTab,
+	onTab,
+	cards,
+	onPick,
+	primary,
+	after,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	instruction: ReactNode;
+	word: string;
+	image: string;
+	onPlay?: () => void;
+	syllables: string[];
+	/** 음절마다 캔버스가 낸 그림 */
+	syllableImage?: (index: number) => string | null | undefined;
+	onOpenSyllable?: (index: number) => void;
+	tabs: string[];
+	currentTab: string;
+	onTab?: (name: string) => void;
+	cards: { word: string; image: string; done: boolean }[];
+	onPick?: (word: string) => void;
+	primary: { label: string; on: boolean; onClick: () => void };
+	after?: ReactNode;
+}) {
+	return (
+		<ActivityFrame>
+			{/*
+			 * 건너뛰기 — 목업에는 처음부터 있었는데 실제 자모 화면에는 없었다.
+			 * 이 화면에서는 특히 필요하다. 다음으로 가는 유일한 길이 "칸을 손으로 써서
+			 * 채우는 것" 이라, 손으로 쓸 수 없는 사람은 갇힌다.
+			 */}
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+
+			<ActivityBody>
+				<ProblemCard instruction={instruction} stimulusStyle={{ gap: 20 }}>
+					<WordPicture word={word} image={image} small />
+					<AudioBar label={word} onPlay={onPlay} />
+					{/* 음절을 눌러 쓰기 판을 연다 — 낱말 전체를 한 판에 쓰면 획이 뭉갠다 */}
+					<SyllableRow
+						syllables={syllables}
+						image={syllableImage}
+						onOpen={onOpenSyllable}
+					/>
+				</ProblemCard>
+
+				<PracticeBrowser tabs={tabs} current={currentTab} onTab={onTab}>
+					<ThumbWordCards cards={cards} current={word} onPick={onPick} />
+				</PracticeBrowser>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={primary.label}
+						on={primary.on}
+						action="next"
+						onClick={primary.onClick}
+					/>
+				</Dock>
+			</ActivityFooter>
+			{after}
+		</ActivityFrame>
+	);
+}
 
 export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 	const code = moduleCode;
@@ -293,95 +378,55 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 			: problemList;
 
 	return (
-		<ActivityFrame>
-			{/*
-			 * 건너뛰기 — 목업(activity__write · write3 · wordrep · jamoListen)에는
-			 * 처음부터 있었는데 실제 자모 화면에는 없었다. 목업 대조가 못 잡은 이유는
-			 * activity-parity 가 learn/jamo 를 하나도 import 하지 않고 셸을 손으로
-			 * 조립해 보기 때문이다(BLOCKERS §2).
-			 *
-			 * 이 화면에서는 특히 필요하다. 다음으로 가는 유일한 길이 "칸을 손으로 써서
-			 * 채우는 것" 이라, 손으로 쓸 수 없는 사람은 갇힌다. 쓰기 연습 자체를
-			 * 키보드로 대신할 수는 없으니 **넘어갈 길**을 주는 것이 맞다.
-			 */}
-			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={next} />
-
-			<ActivityBody>
-				<ProblemCard
-					instruction={t("activity.instrReadWrite")}
-					stimulusStyle={{ gap: 20 }}
-				>
-					<WordPicture
-						word={selectedWord?.content ?? ""}
-						image={`${env.RES_URL_ROOT}/${selectedWord?.content_img}`}
-						small
-					/>
-					<AudioBar label={selectedWord?.content ?? ""} onPlay={playAudio} />
-					{/* 음절을 눌러 쓰기 판을 연다 — 낱말 전체를 한 판에 쓰면 획이 뭉갠다 */}
-					<div className="syl-row">
-						{(selectedWord?.content ?? "").split("").map((ch, idx) => (
-							<button
-								type="button"
-								key={`${ch}-${idx}`}
-								className="syl"
-								data-action="openCanvas"
-								data-index={idx}
-								onClick={() => openCanvas(idx, ch)}
-							>
-								<span>{ch}</span>
-								{imageSlots[idx] && <img src={imageSlots[idx] ?? ""} alt="" />}
-							</button>
-						))}
-					</div>
-				</ProblemCard>
-
-				<PracticeBrowser
-					tabs={(tabList ?? []).map((x) => x.tab_name)}
-					current={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
-					onTab={(name) => {
-						const hit = tabList?.find((x) => x.tab_name === name);
-						if (hit) onTabClick(hit.id);
-					}}
-				>
-					<ThumbWordCards
-						cards={shown.map((x) => ({
-							word: x.content,
-							image: `${env.RES_URL_ROOT}/${x.content_img}`,
-							done: false,
-						}))}
-						current={selectedWord?.content ?? ""}
-						onPick={(word) => {
-							const hit = problemList.find((x) => x.content === word);
-							if (hit) {
-								setProblemId(hit.id);
-								selectWord(hit);
-							}
-						}}
-					/>
-				</PracticeBrowser>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<PrimaryButton
-						label={isExit ? t("player.showResult") : t("player.next")}
-						on={isExit || isSucceed}
-						action="next"
-						onClick={isExit ? exit : next}
-					/>
-				</Dock>
-			</ActivityFooter>
-
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
-			<audio className="hidden" src={audioSrc} ref={audioRef} />
-
-			<Dialog isOpen={isOpenCanvas} onClose={() => setIsOpenCanvas(false)}>
-				<HangulCanvas
-					text={canvasText}
-					returnImage={returnImage}
-					onClose={() => setIsOpenCanvas(false)}
-				/>
-			</Dialog>
-		</ActivityFrame>
+		<JamoWordWriteView
+			lesson={lesson}
+			onExit={exit}
+			onSkip={next}
+			instruction={t("activity.instrReadWrite")}
+			word={selectedWord?.content ?? ""}
+			image={`${env.RES_URL_ROOT}/${selectedWord?.content_img}`}
+			onPlay={playAudio}
+			syllables={(selectedWord?.content ?? "").split("")}
+			syllableImage={(idx) => imageSlots[idx]}
+			onOpenSyllable={(idx) =>
+				openCanvas(idx, (selectedWord?.content ?? "")[idx] ?? "")
+			}
+			tabs={(tabList ?? []).map((x) => x.tab_name)}
+			currentTab={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
+			onTab={(name) => {
+				const hit = tabList?.find((x) => x.tab_name === name);
+				if (hit) onTabClick(hit.id);
+			}}
+			cards={shown.map((x) => ({
+				word: x.content,
+				image: `${env.RES_URL_ROOT}/${x.content_img}`,
+				done: false,
+			}))}
+			onPick={(word) => {
+				const hit = problemList.find((x) => x.content === word);
+				if (hit) {
+					setProblemId(hit.id);
+					selectWord(hit);
+				}
+			}}
+			primary={{
+				label: isExit ? t("player.showResult") : t("player.next"),
+				on: isExit || isSucceed,
+				onClick: isExit ? exit : next,
+			}}
+			after={
+				<>
+					{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+					<audio className="hidden" src={audioSrc} ref={audioRef} />
+					<Dialog isOpen={isOpenCanvas} onClose={() => setIsOpenCanvas(false)}>
+						<HangulCanvas
+							text={canvasText}
+							returnImage={returnImage}
+							onClose={() => setIsOpenCanvas(false)}
+						/>
+					</Dialog>
+				</>
+			}
+		/>
 	);
 }

@@ -14,7 +14,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FillBlankView } from "@/components/learn/fill-blank";
 import { JamoChooseView } from "@/components/learn/jamo/choose";
+import { JamoPronounceView } from "@/components/learn/jamo/pronounce";
 import { JamoWordRepeatView } from "@/components/learn/jamo/word-repeat";
+import { JamoWordWriteView } from "@/components/learn/jamo/word-write";
 import { ListenAnswerView } from "@/components/learn/listen-answer";
 import { ReadAnswerView } from "@/components/learn/read-answer";
 import { AudioRow } from "@/components/main/activity/audio";
@@ -488,28 +490,17 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	speak: (
-		<Screen
+		<JamoPronounceView
 			lesson="1급 1과"
-			noFeedback
-			body={
-				<>
-					<ProblemCard
-						instruction={T("activity.instrSpeak")}
-						stimulusStyle={{ gap: 16 }}
-					>
-						<MouthVideo>입모양 영상</MouthVideo>
-						<AudioPair source="어" mine="" />
-					</ProblemCard>
-					<PracticeBrowser tabs={TABS} current="1">
-						<WordCards
-							words={JAMO_WORDS}
-							current="어"
-							done={(w) => JAMO_WORDS.indexOf(w) < 3}
-						/>
-					</PracticeBrowser>
-				</>
-			}
-			dockRight={{ enabled: false }}
+			onExit={() => {}}
+			onSkip={() => {}}
+			instruction={T("activity.instrSpeak")}
+			video="입모양 영상"
+			word="어"
+			tabs={TABS}
+			currentTab="1"
+			words={JAMO_WORDS}
+			isDone={(w) => JAMO_WORDS.indexOf(w) < 3}
 			footer={<RecordControl mode="idle" action="srec" />}
 		/>
 	),
@@ -530,25 +521,18 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	readwrite: (
-		<Screen
+		<JamoWordWriteView
 			lesson="1급 1과"
-			noFeedback
-			body={
-				<>
-					<ProblemCard
-						instruction={T("activity.instrReadWrite")}
-						stimulusStyle={{ gap: 20 }}
-					>
-						<WordPicture word="바지" image={THINGS[0].image} small />
-						<AudioBar label="바지" />
-						<SyllableRow syllables={["바", "지"]} />
-					</ProblemCard>
-					<PracticeBrowser tabs={TABS} current="1">
-						<ThumbWordCards cards={THINGS} current="바지" />
-					</PracticeBrowser>
-				</>
-			}
-			footer={NEXT}
+			onExit={() => {}}
+			onSkip={() => {}}
+			instruction={T("activity.instrReadWrite")}
+			word="바지"
+			image={THINGS[0].image}
+			syllables={["바", "지"]}
+			tabs={TABS}
+			currentTab="1"
+			cards={THINGS}
+			primary={{ label: T("player.next"), on: false, onClick: () => {} }}
 		/>
 	),
 

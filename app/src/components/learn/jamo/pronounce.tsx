@@ -36,10 +36,89 @@ import type { ModuleType, ProblemType } from "@/types/book.types";
 import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Volume2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const wordGridClassName = "px-[16px] grid grid-cols-5 gap-[12px]";
+
+/**
+ * 자모 발음 — **표시만** 한다.
+ * 진행바가 없는 것은 shell_spec "활동별 진행 표시 정책"(2026-08-25) 대로다.
+ */
+export function JamoPronounceView({
+	lesson,
+	onExit,
+	onSkip,
+	instruction,
+	video,
+	word,
+	mine,
+	onPlaySource,
+	onPlayMine,
+	tabs,
+	currentTab,
+	onTab,
+	words,
+	onPick,
+	isDone,
+	footer,
+	next,
+	after,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	instruction: ReactNode;
+	/** 입모양. 자리표 글자만 줄 수도 있다(목업) */
+	video: ReactNode;
+	word: string;
+	mine?: "" | "ok" | "no";
+	onPlaySource?: () => void;
+	onPlayMine?: () => void;
+	tabs: string[];
+	currentTab: string;
+	onTab?: (name: string) => void;
+	words: string[];
+	onPick?: (word: string) => void;
+	isDone?: (word: string) => boolean;
+	footer: ReactNode;
+	/** shell_spec §26 — 첫 녹음을 마치면 [다음]이 활성 */
+	next?: { enabled: boolean; onClick?: () => void };
+	after?: ReactNode;
+}) {
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+
+			<ActivityBody>
+				<ProblemCard instruction={instruction} stimulusStyle={{ gap: 16 }}>
+					<MouthVideo>{video}</MouthVideo>
+					<AudioPair
+						source={word}
+						mine={mine ?? ""}
+						onPlaySource={onPlaySource}
+						onPlayMine={onPlayMine}
+					/>
+				</ProblemCard>
+
+				<PracticeBrowser tabs={tabs} current={currentTab} onTab={onTab}>
+					<WordCards
+						words={words}
+						current={word}
+						done={isDone ?? (() => false)}
+						onPick={onPick}
+					/>
+				</PracticeBrowser>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock right={next ?? { enabled: false }}>{footer}</Dock>
+			</ActivityFooter>
+			{after}
+		</ActivityFrame>
+	);
+}
 
 export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 	const code = moduleCode;
@@ -219,60 +298,41 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 			: problemList;
 
 	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={lesson}
-				onExit={() => router.history.back()}
-				onSkip={skip}
-			/>
-
-			<ActivityBody>
-				<ProblemCard
-					instruction={t("activity.instrSpeak")}
-					stimulusStyle={{ gap: 16 }}
-				>
-					<MouthVideo>
-						{/* biome-ignore lint/a11y/useMediaCaption: 입모양 영상 — 말이 없다 */}
-						<video controls src={videoSrc} />
-					</MouthVideo>
-					<AudioPair
-						source={selectedWord?.content ?? ""}
-						mine={resultWord ? (isSucceed ? "ok" : "no") : ""}
-						onPlaySource={playAudio}
-						onPlayMine={playMyAudio}
-					/>
-				</ProblemCard>
-
-				<PracticeBrowser
-					tabs={(tabList ?? []).map((x) => x.tab_name)}
-					current={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
-					onTab={(name) => {
-						const hit = tabList?.find((x) => x.tab_name === name);
-						if (hit) onTabClick(hit.id);
-					}}
-				>
-					<WordCards
-						words={shown.map((x) => x.content)}
-						current={selectedWord?.content ?? ""}
-						done={() => false}
-						onPick={(word) => {
-							const hit = shown.find((x) => x.content === word);
-							if (hit) selectWord(hit.id);
-						}}
-					/>
-				</PracticeBrowser>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<AudioRecorder dock setResult={setResult} />
-				</Dock>
-			</ActivityFooter>
-
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
-			<audio className="hidden" ref={audioRef} src={audioSrc} />
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
-			<audio className="hidden" ref={myAudioRef} src={myAudioSrc} />
-		</ActivityFrame>
+		<JamoPronounceView
+			lesson={lesson}
+			onExit={() => router.history.back()}
+			onSkip={skip}
+			instruction={t("activity.instrSpeak")}
+			video={
+				// biome-ignore lint/a11y/useMediaCaption: 입모양 영상 — 말이 없다
+				<video controls src={videoSrc} />
+			}
+			word={selectedWord?.content ?? ""}
+			mine={resultWord ? (isSucceed ? "ok" : "no") : ""}
+			onPlaySource={playAudio}
+			onPlayMine={playMyAudio}
+			tabs={(tabList ?? []).map((x) => x.tab_name)}
+			currentTab={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
+			onTab={(name) => {
+				const hit = tabList?.find((x) => x.tab_name === name);
+				if (hit) onTabClick(hit.id);
+			}}
+			words={shown.map((x) => x.content)}
+			onPick={(word) => {
+				const hit = shown.find((x) => x.content === word);
+				if (hit) selectWord(hit.id);
+			}}
+			footer={<AudioRecorder dock setResult={setResult} />}
+			// 녹음을 마치면 다음으로 — 명세 §26
+			next={{ enabled: !!resultWord, onClick: skip }}
+			after={
+				<>
+					{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+					<audio className="hidden" ref={audioRef} src={audioSrc} />
+					{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+					<audio className="hidden" ref={myAudioRef} src={myAudioSrc} />
+				</>
+			}
+		/>
 	);
 }

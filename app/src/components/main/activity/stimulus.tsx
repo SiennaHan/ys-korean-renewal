@@ -234,10 +234,16 @@ export function SyllableRow({
 	syllables,
 	/** 음절마다 지금까지 그린 획 */
 	ink,
+	/**
+	 * 획 대신 그림으로 채우는 갈래. 실제 쓰기 화면은 캔버스가 낸 이미지를 넣는다 —
+	 * 목업은 SVG 획으로 그리므로 둘 다 받는다(빈 칸일 때의 마크업은 같다).
+	 */
+	image,
 	onOpen,
 }: {
 	syllables: string[];
 	ink?: (index: number) => string[];
+	image?: (index: number) => string | null | undefined;
 	onOpen?: (index: number) => void;
 }) {
 	return (
@@ -254,6 +260,7 @@ export function SyllableRow({
 						onClick={() => onOpen?.(i)}
 					>
 						<span>{syllable}</span>
+						{image?.(i) && <img src={image(i) ?? ""} alt="" />}
 						{strokes.length > 0 && (
 							<svg viewBox="0 0 918 918" aria-hidden="true">
 								{strokes.map((d) => (
