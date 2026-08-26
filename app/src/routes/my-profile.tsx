@@ -81,7 +81,7 @@ function MyProfilePage() {
 	const classes = ["1", "2", "3", "4", "5"];
 
 	return (
-		<div className="flex min-h-full flex-col bg-[#f6f7f8]">
+		<div className="flex min-h-full flex-col bg-background-base">
 			{/* 앱바 */}
 			<div className="flex h-[58px] items-center px-[16px]">
 				<button
@@ -90,9 +90,9 @@ function MyProfilePage() {
 					className="flex size-[24px] items-center justify-center"
 					aria-label="뒤로가기"
 				>
-					<ChevronLeft className="size-[24px] stroke-[2] text-[#383A3F]" />
+					<ChevronLeft className="size-[24px] stroke-[2] text-text-strong" />
 				</button>
-				<span className="-translate-x-1/2 absolute left-1/2 font-semibold text-[#383A3F] text-[17px] leading-[26px]">
+				<span className="-translate-x-1/2 absolute left-1/2 font-semibold text-[17px] text-text-strong leading-[26px]">
 					{t("mypage.profileInfo.title")}
 				</span>
 			</div>
@@ -100,7 +100,7 @@ function MyProfilePage() {
 			<div className="flex flex-1 flex-col gap-[16px] px-[16px] pb-[24px]">
 				{/* 안내 박스 */}
 				<div className="rounded-[12px] bg-[#e9ecf0] p-[12px]">
-					<p className="font-bold text-[#0180FF] text-[14px] leading-[20px]">
+					<p className="font-bold text-[14px] text-text-primary leading-[20px]">
 						{t("mypage.profileInfo.notice")}
 					</p>
 					<p className="mt-[8px] font-semibold text-[#4B505A] text-[12px] leading-[18px]">
@@ -110,17 +110,17 @@ function MyProfilePage() {
 
 				{/* 이메일 (읽기 전용) */}
 				<div className="flex h-[52px] items-center gap-[20px] rounded-[12px] bg-white px-[16px]">
-					<span className="shrink-0 font-medium text-[#7F848D] text-[14px] leading-[20px]">
+					<span className="shrink-0 font-medium text-[14px] text-text-sub leading-[20px]">
 						Email
 					</span>
-					<span className="truncate font-medium text-[#383A3F] text-[14px] leading-[20px]">
+					<span className="truncate font-medium text-[14px] text-text-strong leading-[20px]">
 						{user?.email ?? ""}
 					</span>
 				</div>
 
 				{/* 국적 설정 */}
 				<div className="flex flex-col gap-[8px]">
-					<span className="font-bold text-[#383A3F] text-[16px] leading-[24px]">
+					<span className="font-bold text-[16px] text-text-strong leading-[24px]">
 						{t("mypage.profileInfo.nationality")}
 					</span>
 					<div ref={nationalityRef} className="relative">
@@ -129,12 +129,12 @@ function MyProfilePage() {
 							onClick={() => setNationalityOpen((v) => !v)}
 							className="flex h-[52px] w-full items-center justify-between rounded-[12px] bg-white px-[16px]"
 						>
-							<span className="font-semibold text-[#383A3F] text-[16px] leading-[24px]">
+							<span className="font-semibold text-[16px] text-text-strong leading-[24px]">
 								{nationality}
 							</span>
 							<ChevronDown
 								className={cn(
-									"size-[20px] text-[#7F848D] transition-transform",
+									"size-[20px] text-text-sub transition-transform",
 									nationalityOpen && "rotate-180",
 								)}
 							/>
@@ -152,8 +152,8 @@ function MyProfilePage() {
 										className={cn(
 											"flex h-[40px] w-full items-center px-[16px] font-semibold text-[16px] leading-[24px]",
 											item === nationality
-												? "bg-[#f6f7f8] text-[#383A3F]"
-												: "text-[#383A3F] hover:bg-[#f6f7f8]",
+												? "bg-background-base text-text-strong"
+												: "text-text-strong hover:bg-background-base",
 										)}
 									>
 										{item}
@@ -166,13 +166,13 @@ function MyProfilePage() {
 
 				{/* 급/반 변경 */}
 				<div className="flex flex-col gap-[8px]">
-					<span className="font-bold text-[#383A3F] text-[16px] leading-[24px]">
+					<span className="font-bold text-[16px] text-text-strong leading-[24px]">
 						{t("mypage.profileInfo.classLevel")}
 					</span>
 					<div className="flex gap-[12px]">
 						{/* 급 */}
 						<div ref={levelRef} className="relative flex-1">
-							<div className="mb-[4px] font-semibold text-[#7F848D] text-[12px] leading-[18px]">
+							<div className="mb-[4px] font-semibold text-[12px] text-text-sub leading-[18px]">
 								{t("mypage.profileInfo.level")}
 							</div>
 							<button
@@ -183,13 +183,13 @@ function MyProfilePage() {
 									levelOpen && "ring-1 ring-[#0180FF]",
 								)}
 							>
-								<span className="font-semibold text-[#383A3F] text-[16px] leading-[24px]">
+								<span className="font-semibold text-[16px] text-text-strong leading-[24px]">
 									{level}
 									{t("mypage.profileInfo.level")}
 								</span>
 								<ChevronDown
 									className={cn(
-										"size-[20px] text-[#7F848D] transition-transform",
+										"size-[20px] text-text-sub transition-transform",
 										levelOpen && "rotate-180",
 									)}
 								/>
@@ -207,8 +207,8 @@ function MyProfilePage() {
 											className={cn(
 												"flex h-[40px] w-full items-center px-[16px] font-semibold text-[16px] leading-[24px]",
 												item === level
-													? "bg-[#f6f7f8] text-[#383A3F]"
-													: "text-[#383A3F] hover:bg-[#f6f7f8]",
+													? "bg-background-base text-text-strong"
+													: "text-text-strong hover:bg-background-base",
 											)}
 										>
 											{item}
@@ -221,7 +221,7 @@ function MyProfilePage() {
 
 						{/* 반 */}
 						<div ref={classRef} className="relative flex-1">
-							<div className="mb-[4px] font-semibold text-[#7F848D] text-[12px] leading-[18px]">
+							<div className="mb-[4px] font-semibold text-[12px] text-text-sub leading-[18px]">
 								{t("mypage.profileInfo.class")}
 							</div>
 							<button
@@ -232,13 +232,13 @@ function MyProfilePage() {
 									classOpen && "ring-1 ring-[#0180FF]",
 								)}
 							>
-								<span className="font-semibold text-[#383A3F] text-[16px] leading-[24px]">
+								<span className="font-semibold text-[16px] text-text-strong leading-[24px]">
 									{classNum}
 									{t("mypage.profileInfo.class")}
 								</span>
 								<ChevronDown
 									className={cn(
-										"size-[20px] text-[#7F848D] transition-transform",
+										"size-[20px] text-text-sub transition-transform",
 										classOpen && "rotate-180",
 									)}
 								/>
@@ -256,8 +256,8 @@ function MyProfilePage() {
 											className={cn(
 												"flex h-[40px] w-full items-center px-[16px] font-semibold text-[16px] leading-[24px]",
 												item === classNum
-													? "bg-[#f6f7f8] text-[#383A3F]"
-													: "text-[#383A3F] hover:bg-[#f6f7f8]",
+													? "bg-background-base text-text-strong"
+													: "text-text-strong hover:bg-background-base",
 											)}
 										>
 											{item}
@@ -281,7 +281,7 @@ function MyProfilePage() {
 					type="button"
 					onClick={handleSubmit}
 					disabled={isLoading}
-					className="flex h-[56px] w-full items-center justify-center rounded-[10px] bg-[#0180FF] font-bold text-[16px] text-white leading-[24px] disabled:bg-[#E5E8EC] disabled:text-[#ACB3BD]"
+					className="flex h-[56px] w-full items-center justify-center rounded-[10px] bg-fill-primary font-bold text-[16px] text-white leading-[24px] disabled:bg-line-normal disabled:text-[#ACB3BD]"
 				>
 					{isLoading
 						? t("mypage.profileInfo.submitting")

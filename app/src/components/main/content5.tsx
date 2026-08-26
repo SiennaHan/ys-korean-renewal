@@ -16,9 +16,9 @@ export default function Content5() {
 	};
 
 	return (
-		<div className="flex min-h-full flex-col bg-[#f6f7f8] px-[16px] pb-[24px]">
+		<div className="flex min-h-full flex-col bg-background-base px-[16px] pb-[24px]">
 			{/* 헤더 */}
-			<div className="pt-[20px] pb-[20px] font-bold text-[#383A3F] text-[20px] leading-[32px]">
+			<div className="pt-[20px] pb-[20px] font-bold text-[20px] text-text-strong leading-[32px]">
 				{t("mypage.title")}
 			</div>
 
@@ -26,19 +26,19 @@ export default function Content5() {
 			<div className="mb-[16px] flex items-center gap-[12px]">
 				<div className="relative shrink-0">
 					<div className="flex size-[64px] items-center justify-center rounded-full bg-white">
-						<User className="size-[32px] text-[#7F848D]" />
+						<User className="size-[32px] text-text-sub" />
 					</div>
 					{user && (
 						<button
 							type="button"
 							aria-label={t("mypage.changePhoto")}
-							className="absolute right-0 bottom-0 flex size-[24px] items-center justify-center rounded-full bg-[#383A3F]"
+							className="absolute right-0 bottom-0 flex size-[24px] items-center justify-center rounded-full bg-icon-strong"
 						>
 							<Pencil className="size-[10px] text-white" />
 						</button>
 					)}
 				</div>
-				<div className="line-clamp-2 font-semibold text-[#383A3F] text-[16px] leading-[24px]">
+				<div className="line-clamp-2 font-semibold text-[16px] text-text-strong leading-[24px]">
 					{user?.name}
 				</div>
 			</div>
@@ -48,20 +48,20 @@ export default function Content5() {
 				<button
 					type="button"
 					onClick={() => navigate({ to: "/my-profile" })}
-					className="flex h-[52px] w-full items-center px-[16px] active:bg-[#f6f7f8]"
+					className="flex h-[52px] w-full items-center px-[16px] active:bg-background-base"
 				>
-					<span className="font-semibold text-[#383A3F] text-[14px] leading-[20px]">
+					<span className="font-semibold text-[14px] text-text-strong leading-[20px]">
 						{t("mypage.editProfile")}
 					</span>
 					<ChevronRight className="ml-auto size-[20px] text-[#C4C9D0]" />
 				</button>
-				<div className="mx-[16px] h-[1px] bg-[#E5E8EC]" />
+				<div className="mx-[16px] h-[1px] bg-line-normal" />
 				<button
 					type="button"
 					onClick={() => navigate({ to: "/my-password" })}
-					className="flex h-[52px] w-full items-center px-[16px] active:bg-[#f6f7f8]"
+					className="flex h-[52px] w-full items-center px-[16px] active:bg-background-base"
 				>
-					<span className="font-semibold text-[#383A3F] text-[14px] leading-[20px]">
+					<span className="font-semibold text-[14px] text-text-strong leading-[20px]">
 						{t("mypage.changePassword")}
 					</span>
 					<ChevronRight className="ml-auto size-[20px] text-[#C4C9D0]" />
@@ -71,10 +71,10 @@ export default function Content5() {
 			{user && (
 				<div className="mb-[12px] overflow-hidden rounded-[12px] bg-white">
 					<div className="flex h-[52px] items-center gap-[20px] px-[16px]">
-						<span className="shrink-0 font-medium text-[#7F848D] text-[14px] leading-[20px]">
+						<span className="shrink-0 font-medium text-[14px] text-text-sub leading-[20px]">
 							{t("mypage.email")}
 						</span>
-						<span className="truncate font-medium text-[#383A3F] text-[14px] leading-[20px]">
+						<span className="truncate font-medium text-[14px] text-text-strong leading-[20px]">
 							{user.email}
 						</span>
 					</div>
@@ -84,7 +84,7 @@ export default function Content5() {
 			{/* 언어 설정 카드 */}
 			<div className="mb-[12px] rounded-[12px] bg-white">
 				<div className="flex h-[52px] items-center px-[16px]">
-					<span className="flex-1 font-semibold text-[#383A3F] text-[14px] leading-[20px]">
+					<span className="flex-1 font-semibold text-[14px] text-text-strong leading-[20px]">
 						{t("mypage.languageSetting")}
 					</span>
 					<LanguageSelector />
@@ -94,10 +94,10 @@ export default function Content5() {
 			<button
 				type="button"
 				onClick={handleSignOut}
-				className="flex h-[52px] w-full items-center justify-center gap-[8px] rounded-[12px] bg-white active:bg-[#F6F7F8]"
+				className="flex h-[52px] w-full items-center justify-center gap-[8px] rounded-[12px] bg-white active:bg-background-base"
 			>
-				<LogOut className="size-[18px] text-[#7F848D]" />
-				<span className="font-semibold text-[#7F848D] text-[14px] leading-[20px]">
+				<LogOut className="size-[18px] text-text-sub" />
+				<span className="font-semibold text-[14px] text-text-sub leading-[20px]">
 					{t("mypage.signOut")}
 				</span>
 			</button>
