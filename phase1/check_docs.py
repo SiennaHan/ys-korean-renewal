@@ -26,6 +26,7 @@
   [원장 버전]    문서가 원장 정본 버전을 못박았는데 지금 것과 다른 경우
   [데이터 정본]  문서가 말하는 데이터 출처와 코드의 import 가 다른 경우
   [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
+  [문구 지뢰]    한 번 거짓이라 밝혀진 표현이 남아 있거나 되살아난 경우 — STALE_PHRASES
   [목업 쌍둥이]  phase1/captured/ 와 app/src/mockups/ 가 갈라진 경우
 
 [옛 경로] 는 인계 메모(*.txt)까지 본다.
@@ -420,6 +421,96 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
 
 # captured/ 와 mockups/ 가 일부러 다른 곳. 이유를 적어야 넣을 수 있고,
 # 눈감아 준 것은 실행할 때마다 같이 찍는다 — parity 스크립트와 같은 규칙이다.
+# ── 문구 지뢰 ────────────────────────────────────────────────────────
+# 한 번 거짓이라고 밝혀진 표현. 같은 복사본이 안 훑은 문서에 남아 있거나
+# 나중에 되살아나면 잡는다. 손으로 훑은 것을 영구히 남기는 장치다.
+#
+# 왜 있나 — 2026-08-26 에 플래시카드가 1~8급으로 넓어지자 "2~8급은 플래시카드가
+# 없다" 가 문서 다섯에 남았고 검사 셋은 전부 0 이었다. 숫자가 아니라 문장이라
+# [숫자 주장] 에 안 걸린다. 그날 고친 열다섯 곳 중 다섯이 같은 문장의 복사본이었다.
+#
+# 넣을 때 —
+#   pat    그 표현만 잡는다. 넓게 쓰면 시점 기록을 헛집는다
+#   why    지금 무엇이 참인가. 걸린 사람이 이 줄만 읽고 고칠 수 있어야 한다
+#   allow  일부러 남긴 문서 → 이유. 이유 없이 넣지 마라
+#
+# 한계 — allow 는 문서 단위다. 눈감아 준 문서에 같은 거짓말이 새로 생기면
+# 못 잡는다(TWIN_ALLOW 와 같은 성질이다). 그래서 allow 는 아껴 써라.
+STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
+    (
+        r"2~8급(?:은|에는|을)[^\n]{0,24}(?:플래시카드[^\n]{0,12}없|늘 잠겨|늘 <?span?[^\n]{0,20}off)",
+        "플래시카드는 1~8급 전부에 있다 (2026-08-26 · 2abf726)",
+        {
+            "textbook_tab_spec_v1": "§07 의 6번 제목을 남기고 '해소' 를 달았다 — 물음이 있었다는 기록",
+        },
+    ),
+    (
+        r"(?:최대|세트당|과당)[^\n]{0,8}45장|45칸",
+        "세트당 최대는 44장이다. G1 심의에서 중복 '씻다' 를 뺀 뒤(328→327) 1급 8과가 45→44 가 됐다",
+        {
+            "asis_v1": "리뉴얼 전 앱의 실측이다 — 중복 제거는 그 뒤 원장 심의에서 했으니 그 앱은 45가 맞다",
+            "G1_content_gate_v1": "'내가 본 문제 / G2의 기존 해법 / 결론' 심의 표다 — 그때 검토한 논거",
+        },
+    ),
+    (
+        r"12세트 327장|327장이 전부 1급|플래시카드가 1급에만 있다(?![^\n]{0,40}해소)",
+        "플래시카드 수는 문서에 적지 않는다 — build-content.py --check 의 n6_flashcard",
+        {
+        },
+    ),
+    (
+        r"자모[^\n]{0,20}(?:라우트 통합 대기|6개로 쪼개|6개 그대로|6종 라우트)"
+        r"|라우트 통합[^\n]{0,12}자모만 남았다",
+        "자모 라우트는 2026-08-24 에 하나로 합쳤다 — /learn/jamo?level&lesson&group&sub (BLOCKERS §2-c)",
+        {},
+    ),
+    (
+        r"앱 JSON[^\n]{0,20}자모[^\n]{0,20}안 (?:받|들어)|자모[^\n]{0,16}검수 대기",
+        "화면 여섯이 원장 n8_jamo 를 읽는다 (2026-08-24). 남은 검수는 받침·겹받침 낱자 목록뿐이고 배관을 막지 않는다",
+        {},
+    ),
+    (
+        r"미션대화[^\n]{0,30}앱 JSON[^\n]{0,16}안 (?:들어|받)",
+        "브리핑 화면은 원장 n7_mission_chat 을 읽는다. 실제 AI 대화만 구 데이터(ko_chat_dialog)를 쓴다 — BLOCKERS §8",
+        {},
+    ),
+]
+
+
+def stale_phrases(text: dict[str, str]) -> list[str]:
+    """한 번 거짓이라 밝혀진 표현이 남아 있거나 되살아났는지 본다.
+
+    눈감아 준 곳이 실제로는 아무것도 막지 않는 경우도 잡는다. 죽은 allow 는
+    값 없이 그 문서를 면제해 주므로 해롭다 — 나중에 같은 거짓말이 그 문서에
+    새로 생기면 조용히 통과한다. TWIN_ALLOW 의 "이제 같다, 빼라" 와 같은 사정이다.
+    """
+    out: list[str] = []
+    for pat, why, allow in STALE_PHRASES:
+        rx = re.compile(pat)
+        guarded: set[str] = set()
+        for src, body in text.items():
+            name = src.replace("(문) ", "").replace(".md", "").replace(".html", "")
+            flat = re.sub(r"[ \t]+", " ", body)
+            if name in allow:
+                if rx.search(flat):
+                    guarded.add(name)
+                continue
+            for m in rx.finditer(flat):
+                line = body[: m.start()].count("\n") + 1
+                out.append(
+                    f"[문구 지뢰] {src}:{line} 에 {m.group(0)[:44]!r}\n"
+                    f"           지금 참인 것 — {why}\n"
+                    f"           일부러 남기는 것이면 STALE_PHRASES 의 allow 에 이유를 적어라"
+                )
+        for name in allow:
+            if name not in guarded:
+                out.append(
+                    f"[문구 지뢰] allow 의 {name} 이 아무것도 막지 않는다 — {pat[:40]!r}\n"
+                    f"           STALE_PHRASES 에서 빼라. 죽은 allow 는 그 문서를 조용히 면제한다"
+                )
+    return out
+
+
 TWIN_ALLOW = {
     "activity__report.html":
     "목업 v2.7 승격(2026-08-26). 탭을 <div> 에서 진짜 <button role=tablist·aria-selected>"
@@ -888,6 +979,9 @@ def main() -> int:
 
     # ── 5. 숫자 주장
     problems += claims(live, text)
+
+    # ── 문구 지뢰
+    problems += stale_phrases(text)
 
     # ── 원장 버전 · 데이터 정본
     problems += ledger_claims(text)
