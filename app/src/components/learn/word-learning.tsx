@@ -51,10 +51,17 @@ interface RecordingResult {
 	audioUrl: string;
 }
 
-/** 현재 i18n 언어에 맞는 뜻 반환 */
+/**
+ * 현재 i18n 언어에 맞는 뜻 반환.
+ *
+ * i18n 코드와 데이터 열 이름이 갈린다 — ja↔jp · zh↔cn. vi 는 같다.
+ * 베트남어가 오래 빠져 있었다(2026-08-26 추가). 원장에 vi 가 100% 차 있는데도
+ * 화면이 안 읽어서 베트남어 사용자에게 영어가 나왔다.
+ */
 function getMeaning(word: WordItem, lang: string): string {
 	if (lang === "ja") return word.jp || word.en;
 	if (lang === "zh") return word.cn || word.en;
+	if (lang === "vi") return word.vi || word.en;
 	return word.en;
 }
 

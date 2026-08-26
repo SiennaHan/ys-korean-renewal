@@ -17,7 +17,11 @@ import {
 } from "@/components/main/activity";
 import { env } from "@/config/env";
 import { flashcards } from "@/shared/data/flashcard";
-import { flashcard_words } from "@/shared/data/flashcard_word";
+import {
+	type FlashcardWord,
+	flashcard_words,
+	meaningFor,
+} from "@/shared/data/flashcard_word";
 import {
 	useFlashcardBookIdStore,
 	useSelectedCardTypeStore,
@@ -37,6 +41,7 @@ import {
 } from "framer-motion";
 import type { MouseEvent as ReactMouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { type LearnSearch, parseLearnSearch } from "./-search";
 
 /**
@@ -50,17 +55,6 @@ export const Route = createFileRoute("/learn/flashcard")({
 		parseLearnSearch(search),
 	component: RouteComponent,
 });
-
-interface FlashcardData {
-	flashcard_id: number;
-	module_code: string;
-	id: string;
-	word: string;
-	meaning: string;
-	image: string;
-	sound_kor: string;
-	sound_eng: string;
-}
 
 /** 스와이프로 판정하는 최소 이동 거리(px)와 속도(px/s) */
 const SWIPE_OFFSET_THRESHOLD = 100;
@@ -76,19 +70,30 @@ const FLY_OUT_DISTANCE = 500;
 function FlashcardCard({
 	card,
 	cardType,
+	lang,
 	isFlipped,
 	isAudioPlaying,
 	onPlay,
 }: {
-	card: FlashcardData;
+	card: FlashcardWord;
 	cardType: string;
+	lang: string;
 	isFlipped: boolean;
 	isAudioPlaying?: boolean;
 	onPlay?: (e: ReactMouseEvent) => void;
 }) {
-	const frontText = cardType === "wm" ? card.word : card.meaning;
-	const backTop = cardType === "wm" ? card.word : card.meaning;
-	const backBottom = cardType === "wm" ? card.meaning : card.word;
+	// 뜻은 화면 언어를 따른다 — 아직 안 채워진 언어는 영어로 되돌아간다
+	const meaning = meaningFor(card, lang);
+	/*
+	 * 앞면은 문제, 뒷면은 **답이 크게**다 — 목업의 뒷면 <strong> 이 'apple'(뜻)이고
+	 * 작은 줄이 부가 정보다. 전에는 backTop 이 앞면과 같은 값이라 뒤집어도 큰 글자가
+	 * 그대로여서, 무엇이 답인지가 흐렸다. cardType 이 방향을 정한다:
+	 *   wm = 한국어를 보고 뜻을 맞힌다 -> 뒷면 큰 글자는 뜻
+	 *   mw = 뜻을 보고 한국어를 맞힌다 -> 뒷면 큰 글자는 한국어
+	 */
+	const frontText = cardType === "wm" ? card.word : meaning;
+	const backTop = cardType === "wm" ? meaning : card.word;
+	const backBottom = cardType === "wm" ? card.word : meaning;
 
 	return (
 		<div className={`flash-card ${isFlipped ? "flipped" : ""}`}>
@@ -129,6 +134,7 @@ function FlashcardCard({
 }
 
 function RouteComponent() {
+	const { i18n } = useTranslation();
 	const { level, lesson } = Route.useSearch();
 	const flashcardId = Number(
 		flashcards.find((f) => f.book_id === level && f.chapter === lesson)?.id ??
@@ -153,7 +159,7 @@ function RouteComponent() {
 	const [repeatStatus, setRepeatStatus] = useState<
 		"new" | "repeat" | "complete"
 	>("new");
-	const [cardData, setCardData] = useState<FlashcardData[]>([]);
+	const [cardData, setCardData] = useState<FlashcardWord[]>([]);
 
 	const flashcardModule = flashcards.find((item) => item.id === flashcardId);
 
@@ -367,6 +373,7 @@ function RouteComponent() {
 							<FlashcardCard
 								card={currentCard}
 								cardType={cardType}
+								lang={i18n.language}
 								isFlipped={isFlipped}
 								isAudioPlaying={isAudioPlaying}
 								onPlay={(e) => {

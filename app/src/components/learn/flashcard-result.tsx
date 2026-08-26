@@ -14,9 +14,11 @@ import { flashcards } from "@/shared/data/flashcard";
 import {
 	type FlashcardWord,
 	flashcard_words,
+	meaningFor,
 } from "@/shared/data/flashcard_word";
 import { useSelectedCardTypeStore } from "@/shared/store/menu-store";
 import { type CSSProperties, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * 플래시카드 결과 — 명세 §4
@@ -41,6 +43,7 @@ export default function FlashcardResult({
 	/** 모르는 단어만 다시 — 카드 화면으로 되돌린다 */
 	onRetry: () => void;
 }) {
+	const { i18n } = useTranslation();
 	const { cardType } = useSelectedCardTypeStore();
 
 	const [sheetStatus, setSheetStatus] = useState<"known" | "unknown">(
@@ -194,7 +197,7 @@ export default function FlashcardResult({
 								className="flex h-[56px] items-center justify-between rounded-[8px] bg-[#F9FAFC] px-4"
 							>
 								<div>{item.word}</div>
-								<div>{item.meaning}</div>
+								<div>{meaningFor(item, i18n.language)}</div>
 							</div>
 						))}
 					</div>

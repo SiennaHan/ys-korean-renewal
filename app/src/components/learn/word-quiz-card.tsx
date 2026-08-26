@@ -24,6 +24,8 @@ function getLocalizedMeaning(
 	if (!item) return fallback || word;
 	if (lang === "ja") return item.jp || item.en || fallback;
 	if (lang === "zh") return item.cn || item.en || fallback;
+	// 같은 파일의 getLocalizedPrompt·getQuizMeaning 은 vi 를 보는데 여기만 빠져 있었다
+	if (lang === "vi") return item.vi || item.en || fallback;
 	return item.en || fallback;
 }
 
