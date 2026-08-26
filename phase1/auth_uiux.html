@@ -140,6 +140,12 @@
     .spin { display:inline-block; width:13px; height:13px; border:2px solid rgba(255,255,255,.45);
       border-top-color:#fff; border-radius:50%; vertical-align:-2px; margin-right:6px; }
     .primary[disabled] { background:var(--blue-100); color:var(--blue-600); cursor:default; }
+    .reqs { margin:2px 0 16px; padding:0; list-style:none; display:grid; gap:5px; }
+    .reqs li { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); }
+    .reqs li.met { color:var(--green); }
+    .reqs .tick { width:15px; height:15px; border-radius:50%; display:grid; place-items:center;
+      font-size:9px; border:1px solid var(--line-strong); color:var(--muted); }
+    .reqs li.met .tick { background:var(--green); border-color:var(--green); color:#fff; }
   </style>
 </head>
 <body>
@@ -149,9 +155,11 @@
         <p class="eyebrow">AUTH · UIUX · v1.0</p>
         <h1>들어오는 길 셋,<br>그리고 지금 못 하는 것 하나</h1>
       </div>
-      <p>로그인·회원가입·비밀번호 재설정 시안입니다. 셋 중 <b>로그인과 재설정은 구현이 있고</b>
-        회원가입은 코드 어디에도 없습니다. 그리고 재설정은 <b>지금 메일이 나가지 않는데
-        "보내드렸습니다" 라고 말합니다</b> — 그것을 고치는 상태를 같이 두었습니다.</p>
+      <p>로그인·회원가입·비밀번호 재설정 시안입니다. <b>재설정은 네 단계</b>입니다 —
+        요청 → 메일 확인 → (링크) → 새 비밀번호. 로그인과 재설정 네 화면은 <b>구현이 이미 있고</b>,
+        자체 회원가입은 <b>클라이언트도 서버도 없습니다</b>(지금은 학교 관리자가 일괄 등록합니다).<br>
+        그리고 재설정 흐름에서 <b>두 화면이 거짓을 말합니다</b> — 메일을 안 보내고 "보냈다" 하고,
+        비밀번호를 안 바꾸고 바꾼 것처럼 합니다. 그것을 고치는 상태를 같이 두었습니다.</p>
     </header>
 
     <div class="bench-controls" aria-label="시안 설정">
@@ -166,15 +174,17 @@
 
     <main class="workspace">
       <section class="notes" aria-label="설계 원칙">
-        <h2>규칙 넷</h2>
+        <h2>규칙 다섯 — 코드를 읽고 정한 것입니다</h2>
 
         <div class="rule">
           <span class="rule-no">01</span>
           <div><b>못 하는 것을 할 수 있는 것처럼 말하지 않습니다</b>
-            <p>지금 <code>reset-password.tsx</code> 는 API 호출이 주석 처리된 채
-              <code>/check-email</code> 로 보냅니다. 그 화면은 <b>"이메일로 보내드렸습니다"</b> 라고
-              말하는데 <b>아무것도 보내지 않습니다.</b> 메일 수단이 붙기 전에는
-              <b>솔직한 상태</b>를 보여 줍니다 — <code>BLOCKERS.md</code> §7.</p></div>
+            <p><b>지금 두 화면이 거짓을 말합니다.</b>
+              <code>reset-password.tsx</code> 는 API 호출이 주석 처리된 채 <code>/check-email</code> 로
+              보내고, 그 화면은 <b>"이메일로 보내드렸습니다"</b> 라고 말합니다 — 아무것도 안 보냈는데요.
+              <code>new-password.tsx</code> 도 같습니다. 토큰을 읽는 줄과 API 호출이 둘 다 주석이고
+              그냥 <code>/login</code> 으로 보냅니다 — <b>비밀번호가 바뀌지 않았는데 바뀐 것처럼 됩니다.</b><br>
+              메일 수단이 붙기 전에는 <b>솔직한 상태</b>를 보여 줍니다 — <code>BLOCKERS.md</code> §7.</p></div>
         </div>
 
         <div class="rule">
@@ -183,6 +193,16 @@
             <p>게스트 진행을 서버에 남기기로 정했으므로(<code>access_and_pricing_v1</code> §07 의 2번),
               가입 화면은 <b>"지금까지 푼 것이 그대로 옮겨집니다"</b> 를 앞에 둡니다.
               실제로 옮겨집니다 — <code>BLOCKERS.md</code> §6-d.</p></div>
+        </div>
+
+        <div class="rule">
+          <span class="rule-no">05</span>
+          <div><b>계정 만드는 길이 둘이 됩니다</b>
+            <p>지금 학생 계정은 <b>본인이 만들지 않습니다.</b> 학교 관리자가 일괄 등록합니다 —
+              <code>POST /student/batch</code> · <code>/upload</code>(둘 다 <code>AdminRequired</code>).
+              서버의 <code>sign</code> 라우트는 <b>guest · login · migrate 셋뿐</b>이고 가입이 없습니다.<br>
+              그래서 B2C 자체 가입은 <b>빠진 화면이 아니라 새 계정 모델</b>입니다. 기존 기관 학생(관리자가
+              만든다)과 개인 구독자(스스로 만든다)가 <b>같이 존재</b>해야 합니다.</p></div>
         </div>
 
         <div class="rule">
@@ -266,7 +286,12 @@
             <div class="box"><span class="ph">test@gmail.com</span></div>
             <p class="hint">비밀번호를 잊으면 이 주소로 재설정 링크를 보냅니다</p></div>
           <div class="field"><label>비밀번호</label>
-            <div class="box"><span class="ph">8자 이상</span><span class="eye">👁</span></div></div>
+            <div class="box"><span class="ph">비밀번호를 입력하세요</span><span class="eye">👁</span></div></div>
+          <ul class="reqs">
+            <li><span class="tick"></span>8자 이상</li>
+            <li><span class="tick"></span>대문자 1개 이상 포함</li>
+            <li><span class="tick"></span>숫자 1개 이상 포함</li>
+          </ul>
           <div class="field"><label>이름</label>
             <div class="box"><span class="ph">학습 화면에 표시됩니다</span></div></div>
           <div class="agree"><span class="cb on">✓</span>
@@ -330,9 +355,32 @@
           </div>
         </div>`,
       },
+
+      newPassword: {
+        label: '새 비밀번호 설정',
+        note: '메일 링크로 들어오는 마지막 단계. 구현이 이미 있다(new-password.tsx 194줄) — 요구 조건 셋을 실시간으로 표시한다.',
+        html: `<div class="auth">
+          ${topBar()}
+          <h3>새 비밀번호 설정</h3>
+          <p class="lead">링크로 들어오셨습니다. 새 비밀번호를 정해 주세요.</p>
+          <div class="field"><label>새 비밀번호</label>
+            <div class="box"><span class="val">••••••••</span><span class="eye">👁</span></div></div>
+          <ul class="reqs">
+            <li class="met"><span class="tick">✓</span>8자 이상</li>
+            <li class="met"><span class="tick">✓</span>대문자 1개 이상 포함</li>
+            <li><span class="tick"></span>숫자 1개 이상 포함</li>
+          </ul>
+          <div class="field"><label>비밀번호 확인</label>
+            <div class="box"><span class="ph">비밀번호를 다시 입력하세요</span><span class="eye">👁</span></div></div>
+          <div class="dock">
+            <button class="primary" disabled>비밀번호 재설정</button>
+            <p class="dockhint">세 조건을 다 채우면 눌릴 수 있게 됩니다</p>
+          </div>
+        </div>`,
+      },
     };
 
-    const order = ['login','loginError','signup','resetBlocked','resetReady','resetSent'];
+    const order = ['login','loginError','signup','resetBlocked','resetReady','resetSent','newPassword'];
     let current = 'login';
     let width = 375;
     const device = document.getElementById('device');

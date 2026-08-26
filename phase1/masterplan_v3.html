@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/learn/jamo.tsx, app/src/components/learn/jamo @ b87c1e7 -->
+<!-- 관찰: app/src/routes/learn/jamo.tsx, app/src/components/learn/jamo @ bc0cdcf -->
 <!-- 왜: 자모 라우트 통합 상태를 적어 두었다 — 전에 여섯 곳이 낡았다 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>리뉴얼 정본 기획서 — 지도 · 게이트 · 현재 상태 · 인계</title>
@@ -926,7 +926,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
       <td><span class="file">/book/chapter/unit/{scene}/{code}</span> →
         <span class="file">/learn/jamo/*</span>. 이름도 바꿨다 — <span class="file">listen-repeat2</span> 는
         2판이 아니라 다른 활동이고 <span class="file">read-write</span> 는 단어 쓰기다.
-        <b>아직 명세 §4 의 한 라우트 + sub 꼴이 아니다 — 자모 검수 뒤에 합친다. BLOCKERS §2</b></td></tr>
+        <b>2026-08-24 에 명세 §4 의 꼴로 합쳤다</b> — <span class="file">/learn/jamo?level&amp;lesson&amp;group&amp;sub</span> 하나이고 화면 여섯은 <span class="file">components/learn/jamo/</span> 에 있다. 검수를 기다리지 않았다 — 내용이 전에 화면이 쓰던 것과 같아서 배관을 막지 않았다(<code>BLOCKERS.md</code> §2-c)</td></tr>
     <tr><td><b>자모 콘텐츠를 원장으로</b></td>
       <td>자모는 원장 밖(<span class="file">problem.ts</span>)에만 있어 <b>검수 이력이 없고</b>
         한국어·영어뿐이었다 — 다른 활동은 5개 언어다. 529문항을
