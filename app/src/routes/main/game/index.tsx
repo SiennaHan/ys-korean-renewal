@@ -1,8 +1,11 @@
+import { isGameOpen } from "@/api/entitlement";
 import { getGameProgress } from "@/api/game-progress";
 import { GAMES, GameListView } from "@/components/main/game/list-view";
 import { useScreenFocus } from "@/components/main/game/use-screen-focus";
+import PaywallPanel from "@/components/main/textbook/paywall-panel";
+import { useEntitlement } from "@/shared/store/entitlement-store";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/main/game/")({
 	component: GamePage,
@@ -17,6 +20,22 @@ function GamePage() {
 	 * 화면이 하나뿐이라 키는 고정이고, 마운트될 때 한 번 옮기는 것이 하는 일이다.
 	 */
 	const frameRef = useScreenFocus("list");
+
+	/* 열린 범위 — 서버가 정한다(access_and_pricing_v1 §04) */
+	const { entitlement, ready } = useEntitlement();
+	/** 잠긴 게임을 눌렀을 때 띄우는 안내. null 이면 목록을 그린다 */
+	const [lockedShown, setLockedShown] = useState<string | null>(null);
+
+	/*
+	 * 답이 오기 전에는 비운다 — 무료 게임까지 잠긴 것처럼 번쩍이지 않게.
+	 * 목업 대조도 서버 없이 그리므로 여기서 비워 두면 지금 그림이 그대로다.
+	 */
+	const lockedGames = useMemo(() => {
+		if (!ready) return new Set<string>();
+		return new Set(
+			GAMES.filter((g) => !isGameOpen(entitlement, g.key)).map((g) => g.key),
+		);
+	}, [ready, entitlement]);
 
 	// 다섯 게임 다 점수를 저장하므로 목록 둘째 줄을 진행으로 채울 수 있다
 	useEffect(() => {
@@ -35,11 +54,23 @@ function GamePage() {
 		};
 	}, []);
 
+	if (lockedShown) {
+		return (
+			<PaywallPanel
+				entitlement={entitlement}
+				onBack={() => setLockedShown(null)}
+				onSignIn={() => navigate({ to: "/login" })}
+			/>
+		);
+	}
+
 	return (
 		<GameListView
 			frameRef={frameRef}
 			progress={progress}
 			onOpen={(to) => navigate({ to })}
+			lockedGames={lockedGames}
+			onLocked={setLockedShown}
 		/>
 	);
 }

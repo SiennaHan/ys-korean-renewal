@@ -200,6 +200,41 @@ const ja = {
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
 		days: ["月", "火", "水", "木", "金", "土", "日"],
 	},
+	paywall: {
+		freeTag: "無料",
+		lockedWhy: "定期購読で開きます",
+		lockedAria: "ロック中の課",
+		close: "閉じる",
+		freeListTitle: "今すぐ見られるもの",
+		freeJamo: "ハングル — 1級 1課",
+		freeBooks: "教材 — 1級 4課 · 2級 1課 · 3級 1課",
+		freeGames: "ゲーム — {{games}}",
+		freeClips: "表現クリップ — すべて",
+		priceTitle: "定期購読で全級・全課が開きます",
+		priceBody: "月単位です。価格はまだ決まっていません。",
+		restore: "すでに購読しています",
+		guestTitle: "まずログインしてください",
+		guestBody:
+			"学習記録をアカウントに残すにはログインが必要です。これまで解いたものはそのまま引き継がれます — もう一度解く必要はありません。",
+		guestCta: "ログイン / 会員登録",
+		guestBack: "無料のまま見て回る",
+		memberTitle: "この課は定期購読で開きます",
+		memberBody:
+			"{{level}}級 {{lesson}}課は無料範囲の外です。定期購読すればハングルから8級まですべて見られます — 級ごとに買う必要はありません。",
+		memberBodyGeneric:
+			"無料範囲の外です。定期購読すればハングルから8級まですべて見られます — 級ごとに買う必要はありません。",
+		memberCta: "定期購読を見る",
+		memberBack: "無料の課に戻る",
+		expiredTitle: "定期購読が終了しました",
+		expiredBody:
+			"学習記録はそのまま残っています。もう一度購読すれば止まったところから続きます — 最初からにはなりません。",
+		expiredCta: "購読を再開",
+		schoolTitle: "学校が契約した範囲ではありません",
+		schoolBody:
+			"このアカウントは学校に所属しています。範囲を広げるには学校にお問い合わせください。",
+		schoolNote: "個人の定期購読は機関アカウントでは使えません",
+		schoolBack: "無料の課に戻る",
+	},
 	nav: {
 		home: "ホーム",
 		textbook: "教材学習",

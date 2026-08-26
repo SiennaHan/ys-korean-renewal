@@ -271,9 +271,17 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
       <td>PG 거래 id · 결제수단 · 상품 id · 금액·통화 · 상태(정상/환불) · 웹훅 원본.
         환불 추적과 대조에 필요하다</td></tr>
     <tr><td>DB</td><td><span class="file">ko_chapter.is_free</span></td>
-      <td>무료 과를 데이터로. §02 의 1급 예외가 이 칸에 들어간다</td></tr>
+      <td>무료 과를 데이터로. §02 의 1급 예외가 이 칸에 들어간다.<br>
+      <b>실제로는 이 칸이 아니라 <span class="file">api/shared/free_scope.py</span> 로 갔다</b>(2026-08-26) —
+      <span class="file">ko_chapter</span> 라는 표가 저장소에 없다(확인함). 과 목록 120개는 프런트 번들의
+      <span class="file">app/src/shared/data/chapter.ts</span> 에 있고 서버는 과를 값(<span class="file">chapter_seq</span>)으로만
+      들고 있다. 이 항목의 뜻은 "예외를 코드가 아니라 데이터로" 였으므로 없는 표를 만드는 대신 데이터 파일 하나로 지켰다.
+      나중에 과 표를 서버로 옮기면 그때 이 파일이 그 표로 이사한다</td></tr>
     <tr><td>API</td><td><span class="file">GET /entitlement</span></td>
-      <td>§04. 게스트 토큰도 받는다</td></tr>
+      <td>§04. 게스트 토큰도 받는다. <b>됐다</b>(2026-08-26) — <span class="file">business/entitlement.py</span>.
+      <b>지금은 늘 무료 범위만 낸다</b>(§09 의 2번). 다만 <span class="file">source</span> 는 이미 가른다 —
+      로그인한 학생에게 <span class="file">school_code</span> 가 있으면 <span class="file">school</span> 을 내서
+      앱이 결제 대신 「학교에 문의」를 띄운다(§06). 여기서 뭉개면 그 규칙이 첫날부터 깨진다</td></tr>
     <tr><td>API</td><td><span class="file">POST /purchase/webhook</span></td>
       <td>PG 가 결제 완료를 서버로 알린다. 그때 <span class="file">ko_entitlement</span> 를 채운다.
         <b>앱이 "샀다" 고 말하는 것을 믿으면 안 된다</b> — 판정은 웹훅과 서버 조회로만 한다.
@@ -428,13 +436,15 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
 
 <h2><span class="n">09</span>만드는 순서</h2>
 <div class="cards">
-  <div class="card"><div class="k">1</div><div class="nm">경계를 데이터로</div>
-    <div class="d"><span class="file">ko_chapter.is_free</span> 를 더하고 8과(1급은 4과)를 표시.
-      아직 잠그지 않는다 — 값만 채운다</div></div>
-  <div class="card"><div class="k">2</div><div class="nm">GET /entitlement</div>
-    <div class="d">게스트·로그인 둘 다 받는다. 이 단계에서는 늘 무료 범위만 낸다</div></div>
-  <div class="card"><div class="k">3</div><div class="nm">앱에 잠금 붙이기</div>
-    <div class="d">보이되 잠근다. 문구 넷을 5개 언어로. 결제 없이도 여기까지가 온전한 제품이다</div></div>
+  <div class="card"><div class="k">1</div><div class="nm">경계를 데이터로 <span class="pill done">됐다</span></div>
+    <div class="d">무료 과를 데이터로. 2026-08-26 — <span class="file">api/shared/free_scope.py</span>
+      (칸이 아니라 파일로 갔다. §05 를 보라)</div></div>
+  <div class="card"><div class="k">2</div><div class="nm">GET /entitlement <span class="pill done">됐다</span></div>
+    <div class="d">게스트·로그인 둘 다 받는다. 늘 무료 범위만 낸다. 2026-08-26 —
+      다섯 경우를 실제로 불러 확인했다(게스트 · 기관 학생 · 개인 · 없는 계정 · 토큰 없음 401)</div></div>
+  <div class="card"><div class="k">3</div><div class="nm">앱에 잠금 붙이기 <span class="pill done">됐다</span></div>
+    <div class="d">보이되 잠근다. 2026-08-26 — 교재·자모 칩과 게임 카드에 자물쇠, 잠긴 과를 고르면 안내 넷,
+      문구는 5개 언어. <b>남은 것은 콘텐츠 라우트의 권한이다</b>(§08 의 3번) — 잠금이 아직 표시일 뿐이다</div></div>
   <div class="card"><div class="k">4</div><div class="nm">학생 자체 회원가입</div>
     <div class="d">§08 의 1번. 결제보다 먼저다 — 계정 없이 결제하면 기기를 바꿀 때 잃는다</div></div>
   <div class="card"><div class="k">5</div><div class="nm">메일 발송</div>

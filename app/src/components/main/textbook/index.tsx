@@ -1,5 +1,6 @@
 import type { LearningProgress } from "@/api/apiType";
 import { getChatListByBookId } from "@/api/chat";
+import { isChapterOpen, isJamoChapterOpen } from "@/api/entitlement";
 import { listUserFlashcardWord } from "@/api/flashcard";
 import { getLearningProgress } from "@/api/learning-record";
 import { books } from "@/shared/data/book";
@@ -21,6 +22,7 @@ import {
 } from "@/shared/data/learn-data-check";
 import { modules } from "@/shared/data/module";
 import { units } from "@/shared/data/unit";
+import { useEntitlement } from "@/shared/store/entitlement-store";
 import { useTextbookSelectionStore } from "@/shared/store/menu-store";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -33,6 +35,7 @@ import ModuleList, {
 	type ModuleState,
 	ChapterHead,
 } from "./module-list";
+import PaywallPanel from "./paywall-panel";
 
 export default function TextbookContent() {
 	const navigate = useNavigate();
@@ -82,6 +85,41 @@ export default function TextbookContent() {
 	const selectedChapter = useMemo(() => {
 		return filteredChapters.find((ch) => ch.id === selectedChapterId);
 	}, [filteredChapters, selectedChapterId]);
+
+	/*
+	 * 열린 범위 — 서버가 정한다. 앱은 계산하지 않고 이 답만 본다
+	 * (access_and_pricing_v1 §04).
+	 */
+	const { entitlement, ready } = useEntitlement();
+
+	/**
+	 * 잠긴 과의 칩 id.
+	 *
+	 * **답이 오기 전에는 비운다.** 아직 null 인데 잠금을 그리면 무료 과까지
+	 * 잠긴 것처럼 한 번 번쩍인다. 목업 대조도 서버 없이 그리므로 여기서
+	 * 비워 두면 대조가 지금 그림을 그대로 본다.
+	 */
+	const lockedChipIds = useMemo(() => {
+		if (!ready) return new Set<number>();
+		const locked = new Set<number>();
+		for (const ch of filteredChapters) {
+			const open =
+				ch.type === "jamo"
+					? isJamoChapterOpen(entitlement, ch.seq)
+					: isChapterOpen(entitlement, ch.book_id, ch.seq);
+			if (!open) locked.add(ch.id);
+		}
+		return locked;
+	}, [ready, entitlement, filteredChapters]);
+
+	const selectedLocked =
+		selectedChapter != null && lockedChipIds.has(selectedChapter.id);
+
+	/** 무료 과로 돌려보낸다 — 이 급에 무료가 없으면 첫 과로 */
+	const goToFreeChapter = useCallback(() => {
+		const free = filteredChapters.find((ch) => !lockedChipIds.has(ch.id));
+		if (free) setChapterId(free.id);
+	}, [filteredChapters, lockedChipIds, setChapterId]);
 
 	// Find module code by scene_type for the current chapter
 	const findModuleCode = useCallback(
@@ -369,6 +407,7 @@ export default function TextbookContent() {
 						chips={chapterChips}
 						activeId={selectedChapterId}
 						onSelect={handleChapterSelect}
+						lockedIds={lockedChipIds}
 					/>
 				)}
 			</div>
@@ -380,13 +419,26 @@ export default function TextbookContent() {
 						title={selectedChapter.title}
 					/>
 				)}
-				{selectedChapter && moduleSections.length > 0 && (
+				{/*
+				 * 잠긴 과는 활동 목록 자리에 안내가 들어온다 — 제목과 자물쇠는
+				 * 그대로 보인다(§06 "숨기지 않고 보이되 잠근다").
+				 */}
+				{selectedChapter && selectedLocked && (
+					<PaywallPanel
+						level={selectedChapter.book_id}
+						lesson={selectedChapter.seq}
+						entitlement={entitlement}
+						onBack={goToFreeChapter}
+						onSignIn={() => navigate({ to: "/login" })}
+					/>
+				)}
+				{selectedChapter && !selectedLocked && moduleSections.length > 0 && (
 					<ModuleList
 						sections={moduleSections}
 						onModuleClick={handleModuleClick}
 					/>
 				)}
-				{selectedChapter && moduleSections.length === 0 && (
+				{selectedChapter && !selectedLocked && moduleSections.length === 0 && (
 					<div className="catalog-empty">{t("catalog.noModules")}</div>
 				)}
 			</div>

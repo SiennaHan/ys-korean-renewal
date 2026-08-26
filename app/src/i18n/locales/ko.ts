@@ -205,6 +205,47 @@ const ko = {
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
 		days: ["월", "화", "수", "목", "금", "토", "일"],
 	},
+	/**
+	 * 결제 안내(페이월) — access_and_pricing_v1 §06 의 문구 넷.
+	 * 목업은 phase1/draft_paywall.html 이고 문구를 그대로 옮겼다.
+	 * 게임 이름은 앱의 game.* 를 끼워 넣는다 — 목업의 "낱말맞추기" 대신
+	 * 앱이 실제로 부르는 이름을 쓴다(VocaShot).
+	 */
+	paywall: {
+		freeTag: "무료",
+		lockedWhy: "구독하면 열립니다",
+		lockedAria: "잠긴 과",
+		close: "닫기",
+		freeListTitle: "지금 바로 볼 수 있는 것",
+		freeJamo: "한글 — 1급 1과",
+		freeBooks: "교재 — 1급 4과 · 2급 1과 · 3급 1과",
+		freeGames: "게임 — {{games}}",
+		freeClips: "표현클립 — 전부",
+		priceTitle: "구독하면 전 급·전 과가 열립니다",
+		priceBody: "월 단위입니다. 가격은 아직 정해지지 않았습니다.",
+		restore: "이미 구독했어요",
+		guestTitle: "먼저 로그인해 주세요",
+		guestBody:
+			"학습 기록을 계정에 남기려면 로그인이 필요합니다. 지금까지 푼 것은 그대로 옮겨집니다 — 다시 풀지 않아도 됩니다.",
+		guestCta: "로그인 / 회원가입",
+		guestBack: "무료로 계속 둘러보기",
+		memberTitle: "이 과는 구독하면 열립니다",
+		memberBody:
+			"{{level}}급 {{lesson}}과는 무료 범위 밖입니다. 구독하면 한글부터 8급까지 전부 볼 수 있습니다 — 급을 따로 사지 않습니다.",
+		memberBodyGeneric:
+			"무료 범위 밖입니다. 구독하면 한글부터 8급까지 전부 볼 수 있습니다 — 급을 따로 사지 않습니다.",
+		memberCta: "구독 알아보기",
+		memberBack: "무료 과로 돌아가기",
+		expiredTitle: "구독이 끝났습니다",
+		expiredBody:
+			"학습 기록은 그대로 있습니다. 다시 구독하면 멈춘 자리에서 이어집니다 — 처음부터 하지 않습니다.",
+		expiredCta: "구독 다시 시작",
+		schoolTitle: "학교에서 계약한 범위가 아닙니다",
+		schoolBody:
+			"지금 계정은 학교 소속입니다. 범위를 넓히려면 학교에 문의해 주세요.",
+		schoolNote: "개인 구독은 기관 계정에서 쓸 수 없습니다",
+		schoolBack: "무료 과로 돌아가기",
+	},
 	nav: {
 		home: "홈",
 		textbook: "교재학습",

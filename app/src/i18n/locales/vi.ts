@@ -199,6 +199,41 @@ const vi = {
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
 		days: ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
 	},
+	paywall: {
+		freeTag: "Miễn phí",
+		lockedWhy: "Mở khi đăng ký",
+		lockedAria: "Bài đang khoá",
+		close: "Đóng",
+		freeListTitle: "Những gì bạn xem được ngay",
+		freeJamo: "Hangul — Cấp 1 Bài 1",
+		freeBooks: "Giáo trình — C1 Bài 4 · C2 Bài 1 · C3 Bài 1",
+		freeGames: "Trò chơi — {{games}}",
+		freeClips: "Clip biểu đạt — tất cả",
+		priceTitle: "Đăng ký mở toàn bộ cấp và bài",
+		priceBody: "Tính theo tháng. Giá vẫn chưa được quyết định.",
+		restore: "Tôi đã đăng ký rồi",
+		guestTitle: "Vui lòng đăng nhập trước",
+		guestBody:
+			"Đăng nhập để lưu tiến độ vào tài khoản của bạn. Những gì bạn đã làm sẽ được chuyển sang — bạn không phải làm lại.",
+		guestCta: "Đăng nhập / Đăng ký",
+		guestBack: "Tiếp tục xem miễn phí",
+		memberTitle: "Bài này mở khi đăng ký",
+		memberBody:
+			"Cấp {{level}} Bài {{lesson}} nằm ngoài phạm vi miễn phí. Đăng ký sẽ mở từ Hangul đến cấp 8 — bạn không phải mua từng cấp.",
+		memberBodyGeneric:
+			"Nội dung này nằm ngoài phạm vi miễn phí. Đăng ký sẽ mở từ Hangul đến cấp 8 — bạn không phải mua từng cấp.",
+		memberCta: "Tìm hiểu đăng ký",
+		memberBack: "Trở về bài miễn phí",
+		expiredTitle: "Đăng ký đã kết thúc",
+		expiredBody:
+			"Tiến độ của bạn vẫn còn. Đăng ký lại sẽ tiếp tục từ nơi bạn dừng — không phải bắt đầu lại.",
+		expiredCta: "Đăng ký lại",
+		schoolTitle: "Ngoài phạm vi hợp đồng của trường",
+		schoolBody:
+			"Tài khoản này thuộc một trường. Vui lòng liên hệ trường để mở rộng phạm vi.",
+		schoolNote: "Không thể dùng đăng ký cá nhân trên tài khoản của tổ chức",
+		schoolBack: "Trở về bài miễn phí",
+	},
 	nav: {
 		home: "Trang chủ",
 		textbook: "Học giáo trình",

@@ -5,6 +5,7 @@ import {
 	Crosshair,
 	Gamepad2,
 	Layers,
+	Lock,
 	Map,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -129,12 +130,21 @@ export interface GameListViewProps {
 	 * 만드는 쪽은 `routes/main/game/index.tsx` 의 `useScreenFocus("list")` 다.
 	 */
 	frameRef?: React.Ref<HTMLDivElement>;
+	/**
+	 * 잠긴 게임의 key. **누를 수는 있다** — 눌러야 왜 잠겼는지 안내가 나온다
+	 * (access_and_pricing_v1 §06). 열린 범위를 아직 못 받았으면 비운다.
+	 */
+	lockedGames?: ReadonlySet<string>;
+	/** 잠긴 게임을 눌렀다. 부르는 쪽이 안내를 띄운다 */
+	onLocked?: (key: string) => void;
 }
 
 export function GameListView({
 	progress,
 	onOpen,
 	frameRef,
+	lockedGames,
+	onLocked,
 }: GameListViewProps) {
 	const { t } = useTranslation();
 
@@ -168,17 +178,21 @@ export function GameListView({
 					<div className="ux-game-list flex flex-col gap-[12px] px-[16px] pt-[8px]">
 						{GAMES.map(({ key, to, i18nKey, Icon, iconBg, iconColor }) => {
 							const name = t(`game.list.${i18nKey}.name`);
-							// 진행이 있으면 그것을, 없으면 설명을 보여 준다
+							const locked = lockedGames?.has(key) ?? false;
+							// 진행이 있으면 그것을, 없으면 설명을 보여 준다.
+							// 잠겼으면 왜 잠겼는지가 먼저다 — 설명은 그 뒤에 알아도 된다
 							const done = progress[key];
-							const sub = done ?? t(`game.list.${i18nKey}.description`);
+							const sub = locked
+								? t("paywall.lockedWhy")
+								: (done ?? t(`game.list.${i18nKey}.description`));
 
 							return (
 								<button
 									key={key}
 									type="button"
 									aria-label={`${name} · ${sub}`}
-									onClick={() => onOpen(to)}
-									className="ux-control ux-game-card flex w-full cursor-pointer items-center gap-[14px] rounded-[16px] bg-white p-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition-colors active:bg-[#F6F7F8]"
+									onClick={() => (locked ? onLocked?.(key) : onOpen(to))}
+									className={`ux-control ux-game-card flex w-full cursor-pointer items-center gap-[14px] rounded-[16px] bg-white p-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition-colors active:bg-[#F6F7F8] ${locked ? "is-locked" : ""}`}
 								>
 									<div
 										className={`ux-game-icon flex size-[48px] shrink-0 items-center justify-center rounded-[12px] ${iconBg}`}
@@ -203,7 +217,15 @@ export function GameListView({
 											{sub}
 										</p>
 									</div>
-									<ChevronRight className="ux-game-chevron size-[20px] shrink-0 text-[#C8CCD3]" />
+									{locked ? (
+										<Lock
+											className="ux-game-lock size-[18px] shrink-0 text-[#0180FF]"
+											aria-label={t("paywall.lockedAria")}
+											role="img"
+										/>
+									) : (
+										<ChevronRight className="ux-game-chevron size-[20px] shrink-0 text-[#C8CCD3]" />
+									)}
 								</button>
 							);
 						})}

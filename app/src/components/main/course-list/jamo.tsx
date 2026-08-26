@@ -1,12 +1,15 @@
+import { isJamoChapterOpen } from "@/api/entitlement";
 import BookTabs from "@/components/main/textbook/book-tabs";
 import ChapterChips from "@/components/main/textbook/chapter-chips";
 import { buildBookTabs } from "@/components/main/textbook/labels";
 import { ActRow, ChapterHead } from "@/components/main/textbook/module-list";
+import PaywallPanel from "@/components/main/textbook/paywall-panel";
 import { books } from "@/shared/data/book";
 import { chapters } from "@/shared/data/chapter";
 import { addressOfModule } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
 import { units } from "@/shared/data/unit";
+import { useEntitlement } from "@/shared/store/entitlement-store";
 import {
 	useJamoChapterIdStore,
 	useTextbookSelectionStore,
@@ -66,6 +69,31 @@ export default function Jamo() {
 		return filteredChapters.find((ch) => ch.seq === effectiveChapterSeq);
 	}, [filteredChapters, effectiveChapterSeq]);
 
+	/*
+	 * 열린 범위 — 서버가 정한다(access_and_pricing_v1 §04). 자모는 1급 1~3과이고
+	 * 무료는 1과뿐이다. **이 화면의 칩 id 는 chapter.id 가 아니라 seq 다** —
+	 * 교재학습 쪽과 다르므로 잠긴 집합도 seq 로 만든다
+	 */
+	const { entitlement, ready } = useEntitlement();
+
+	const lockedChipSeqs = useMemo(() => {
+		if (!ready) return new Set<number>();
+		return new Set(
+			filteredChapters
+				.filter((ch) => !isJamoChapterOpen(entitlement, ch.seq))
+				.map((ch) => ch.seq),
+		);
+	}, [ready, entitlement, filteredChapters]);
+
+	const selectedLocked =
+		selectedChapter != null && lockedChipSeqs.has(selectedChapter.seq);
+
+	/** 무료 자모 과로 돌려보낸다 */
+	const goToFreeJamo = useCallback(() => {
+		const free = filteredChapters.find((ch) => !lockedChipSeqs.has(ch.seq));
+		if (free) setActiveChapterSeq(free.seq);
+	}, [filteredChapters, lockedChipSeqs, setActiveChapterSeq]);
+
 	// Units + modules for the selected chapter
 	const chapterUnits = useMemo(() => {
 		if (!selectedChapter) return [];
@@ -118,6 +146,7 @@ export default function Jamo() {
 						chips={chapterChips}
 						activeId={effectiveChapterSeq}
 						onSelect={handleChapterSelect}
+						lockedIds={lockedChipSeqs}
 					/>
 				)}
 			</div>
@@ -127,7 +156,15 @@ export default function Jamo() {
 					<div className="catalog-empty">{t("catalog.noModules")}</div>
 				)}
 
-				{selectedChapter && (
+				{selectedChapter && selectedLocked && (
+					<PaywallPanel
+						entitlement={entitlement}
+						onBack={goToFreeJamo}
+						onSignIn={() => navigate({ to: "/login" })}
+					/>
+				)}
+
+				{selectedChapter && !selectedLocked && (
 					<>
 						<ChapterHead
 							seq={selectedChapter.seq}

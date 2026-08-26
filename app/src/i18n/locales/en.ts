@@ -199,6 +199,42 @@ const en = {
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
 		days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
 	},
+	paywall: {
+		freeTag: "Free",
+		lockedWhy: "Opens with a subscription",
+		lockedAria: "Locked lesson",
+		close: "Close",
+		freeListTitle: "What you can open right now",
+		freeJamo: "Hangul — Level 1, Lesson 1",
+		freeBooks: "Textbook — L1 Lesson 4 · L2 Lesson 1 · L3 Lesson 1",
+		freeGames: "Games — {{games}}",
+		freeClips: "Expression clips — all of them",
+		priceTitle: "A subscription opens every level and lesson",
+		priceBody: "Billed monthly. The price is not set yet.",
+		restore: "I already subscribed",
+		guestTitle: "Please sign in first",
+		guestBody:
+			"Signing in keeps your progress on your account. Everything you have answered so far comes with you — you will not redo it.",
+		guestCta: "Sign in / Sign up",
+		guestBack: "Keep browsing for free",
+		memberTitle: "This lesson opens with a subscription",
+		memberBody:
+			"Level {{level}}, Lesson {{lesson}} is outside the free range. A subscription opens everything from Hangul through Level 8 — you do not buy levels separately.",
+		memberBodyGeneric:
+			"This is outside the free range. A subscription opens everything from Hangul through Level 8 — you do not buy levels separately.",
+		memberCta: "See subscription",
+		memberBack: "Back to a free lesson",
+		expiredTitle: "Your subscription has ended",
+		expiredBody:
+			"Your progress is still here. Subscribing again picks up where you stopped — you will not start over.",
+		expiredCta: "Subscribe again",
+		schoolTitle: "This is outside your school's contract",
+		schoolBody:
+			"This account belongs to a school. Please ask your school to widen the range.",
+		schoolNote:
+			"A personal subscription cannot be used on an institutional account",
+		schoolBack: "Back to a free lesson",
+	},
 	nav: {
 		home: "Home",
 		textbook: "Textbook",
