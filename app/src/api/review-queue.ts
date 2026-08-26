@@ -28,12 +28,29 @@ export type ReviewQueue = {
 const EMPTY: ReviewQueue = { items: [], total: 0 };
 
 /**
+ * 응답의 모양을 믿지 않는다.
+ *
+ * `res.data` 가 `{}` 여도 truthy 라 그대로 돌려주면 받는 쪽에서 `items` 가
+ * undefined 가 되고, 다섯 자리가 한꺼번에 `.map` 으로 터진다 — 실제로 그랬다
+ * (2026-08-26, 로컬 목이 `data:{}` 를 준다). 화면은 조용히 죽고 콘솔에만 남는다.
+ *
+ * 같은 날 미션대화의 `feedbacks.map` 도 같은 꼴이었다. 계약은 **받는 자리 한 곳에서**
+ * 지킨다 — 부르는 쪽마다 `?? []` 를 흩뿌리면 새로 부르는 곳이 또 빠뜨린다.
+ */
+function asQueue(data: unknown): ReviewQueue {
+	if (!data || typeof data !== "object") return EMPTY;
+	const d = data as Partial<ReviewQueue>;
+	if (!Array.isArray(d.items)) return EMPTY;
+	return { items: d.items, total: d.total ?? d.items.length };
+}
+
+/**
  * 홈 목록 — `available_at` 이 지난 것만. 홈 카드의 수와 "어디로 보낼지" 를 같이 얻는다.
  */
 export async function getHomeReviewQueue(): Promise<ReviewQueue> {
 	try {
 		const res = await api.get<ReviewQueue>("/review-queue?scope=home");
-		return res.result && res.data ? res.data : EMPTY;
+		return res.result ? asQueue(res.data) : EMPTY;
 	} catch {
 		return EMPTY;
 	}
@@ -58,7 +75,7 @@ export async function getActivityReviewQueue(key: {
 	});
 	try {
 		const res = await api.get<ReviewQueue>(`/review-queue?${q}`);
-		return res.result && res.data ? res.data : EMPTY;
+		return res.result ? asQueue(res.data) : EMPTY;
 	} catch {
 		return EMPTY;
 	}

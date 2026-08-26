@@ -854,7 +854,7 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 976ec63 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 218cfa9 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1273,7 +1273,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 976ec63 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 218cfa9 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -1586,6 +1586,7 @@ elif created or (review and not isCorrect):     # ← isCorrect 를 안 본다
 | 목업 대조 사각지대 | **닫혔다**(2026-08-26). 대조가 화면 조합을 손으로 다시 짜고 있어서 `components/learn/*` 를 하나도 안 봤다.<br>표시/배선을 갈라 제품 컴포넌트를 그리게 했다. 대조 화면 50 |
 | ㄴ 어휘 퀴즈 | **닫혔다.** 정본이 그리던 낱말+발음듣기 갈래는 원장에 0건이라 뺐고, 그림 갈래(image-to-word 196)를 정본·목업에 넣었다.<br>대조 화면이 하나 늘었다(activity__wordQuiz_image) |
 | ㄴ 진행바 prop 층 | **닫혔다**(2026-08-26). 목업 10개를 승격해 칸이 `<button class="seg">` 가 됐다.<br>flash·loading 은 제품도 안 넘기므로 그대로다. 쌍둥이 `RoleplayScreen` 이 점프를 안 넘기던 것도 같이 고쳤다 |
+| 응답 모양을 안 보는 API 여덟 | 대부분의 래퍼가 `if (!res.result || !res.data) return 기본값; return res.data;` 꼴이다. **없는 것은 막지만 모양이 틀린 것은 못 막는다** — `data:{}` 를 받으면 그대로 흘러가고 받는 쪽 `.map` 이 터진다.<br>2026-08-26 에 `review-queue` 가 실제로 그렇게 터졌다(다섯 자리 동시에). 그건 `asQueue()` 로 막았다.<br>**배열을 약속하면서 모양을 안 보는 함수가 여덟 남았다** — `flashcard.ts` 셋 · `game-content.ts` 둘 · `game-progress.ts` · `learning-record.ts` · `report.ts`.<br>고칠 자리는 **부르는 쪽이 아니라 래퍼** 다 — 부르는 곳마다 `?? []` 를 흩뿌리면 새로 부르는 곳이 또 빠뜨린다 |
 | 눌러 보지 못한 곳 둘 | 2026-08-26 에 활동 열셋을 표시/배선으로 가르고 **화면을 열어 확인했는데 둘은 못 했다.**<br>① `SyllableRow` 의 **그림 갈래** — 캔버스에 실제로 획을 그어야 `<img>` 가 붙는데 합성 이벤트로는 캔버스가 반응하지 않는다. 코드 경로만 봤다.<br>② `LoadingScreen` — 제품이 아직 아무 데서도 안 쓴다(위 “제품에 그 경로가 없다” 와 같은 건) |
 | 오답 해설 원장 | 문법만 `grammar_focus_revised` 를 들고 온다(836행 중 835행).<br>읽기·듣기·어휘 원장에는 해설 칸이 없어 결과 화면이 `player.answerIs`("정답은 X예요")로 대신한다 |
 
