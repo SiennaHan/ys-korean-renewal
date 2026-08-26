@@ -126,6 +126,37 @@ HANGUL_NUM = {"하나": 1, "둘": 2, "셋": 3, "넷": 4, "다섯": 5, "여섯": 
               "일곱": 7, "여덟": 8, "아홉": 9, "열": 10}
 
 
+def ported_screens() -> int | None:
+    """masterplan §15 「화면 — 다 됐다」 표의 수 칸을 더한다.
+
+    CLAUDE.md 가 "이식한 화면 25" 라고 적으면서 **그 표의 합계**라고 말한다.
+    그런데 둘은 서로 다른 문서라 한쪽만 고쳐지면 조용히 갈린다 — 실제로 갈렸다
+    (masterplan 이 `/learn/*` 를 7 로 올렸는데 CLAUDE.md 는 6·24 로 남았다,
+    2026-08-26). 그래서 표를 세어 CLAUDE.md 의 수와 견준다.
+
+    수 칸이 아닌 행(— 을 넣어 주인을 가리킨 행)은 건너뛴다.
+    """
+    f = HERE / "masterplan_v3.html"
+    if not f.exists():
+        return None
+    body = f.read_text(encoding="utf-8", errors="replace")
+    i = body.find("화면 — 다 됐다")
+    if i < 0:
+        return None
+    m = re.search(r"<table.*?</table>", body[i:], re.S)
+    if not m:
+        return None
+    total = 0
+    for row in re.findall(r"<tr>(.*?)</tr>", m.group(), re.S):
+        cells = re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", row, re.S)
+        if len(cells) < 2:
+            continue
+        num = re.sub(r"<[^>]+>", "", cells[1]).strip()
+        if num.isdigit():
+            total += int(num)
+    return total or None
+
+
 def parity_screens() -> dict[str, int]:
     """목업 대조가 그리는 화면 수를 스크립트에서 센다 — 갈래별로.
 
@@ -275,6 +306,7 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         # 활동 갈래만 따로 세는 수. CLAUDE.md 의 "화면 수가 넷이다" 표가 주인이다 —
         # 그 표가 이 숫자로 무엇을 판단할지 가르쳐 준다
         "활동 컴포넌트 수": "(문) CLAUDE.md",
+        "이식한 화면 수": "(문) CLAUDE.md",
         "phase1 정본 문서 수": "(문) INDEX.md",
         "_superseded 문서 수": "(문) INDEX.md",
         "인계 메모 수": "(문) INDEX.md",
@@ -318,6 +350,13 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             r"활동\s*컴포넌트\s*(\d+)\s*종",
             r"\|\s*\*\*(\d+)\*\*\s*\|\s*\*\*활동 컴포넌트\*\*",
         ]),
+        # masterplan §15 표를 더한 수. CLAUDE.md 가 "그 표의 합계" 라고 말하므로
+        # 둘이 갈리면 CLAUDE.md 가 거짓말을 한다
+        *(
+            [("이식한 화면 수", ported_screens(), [r"\|\s*\*\*(\d+)\*\*\s*\|\s*\*\*이식한 화면\*\*"])]
+            if ported_screens()
+            else []
+        ),
         ("목업 캡처 수", mockup_captures(), [
             r"캡처\s*(\d+)개(?:는|가|를|만)",
             r"캡처\s*(\d+)개가\s*곧",

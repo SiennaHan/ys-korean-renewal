@@ -185,9 +185,9 @@
   <tr><td>방향 설정</td><td><span class="pill done">완료</span></td><td>코어 루프 목업 v1 · 리뉴얼 기획서 v0.2.1 (결정 D1~D7 권고안)</td></tr>
   <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). <b>구독·월 단위로 정해졌다 (2026-08-26)</b> — 남은 큰 물음은 <b>가격</b></td></tr>
   <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>루트의 <code>글로벌_교재기반_콘텐츠_v*.xlsx</code> 중 가장 높은 번호</b>다 — 번호를 여기 적지 않는다(적었다가 이 문서만 낡았다). 앱에 반영된 문항 수는 <b>여기 적지 않는다</b> — 시트마다 계속 늘어난다. 세려면 <code>python3 app/scripts/build-content.py --check</code> 가 시트별 행 수를 찍는다.<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비)이고 <b>브리핑 화면까지 배선됐다</b> — 실제 AI 대화만 아직 구 데이터(<code>ko_chat_dialog</code>)를 쓴다(BLOCKERS §8). 자모 529 는 <span class="pill done">배선 완료</span>(2026-08-24) — 화면 여섯이 <code>n8_jamo</code> 를 읽는다. 남은 검수는 받침·겹받침 낱자 목록뿐이고 배관을 막지 않는다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b · §2-c)</td></tr>
-  <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업 · CSS 규칙 1,229개. <b>목업이 시각 정본</b>이고 Figma 를 대체했다</td></tr>
-  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 <b>24개 이식</b>(handoff §02 의 표 합계) · 활동 컴포넌트 전부으로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
-  <tr><td>개발 — 서버</td><td><span class="pill risk">막힘</span></td><td>DB 2종 · API 7종 미착수. <b>이것이 지금 임계 경로다</b>(§8) — 화면은 다 됐고 상태만 붙이면 된다</td></tr>
+  <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업. <b>목업이 시각 정본</b>이고 Figma 를 대체했다<br><span class="note">CSS 규칙 수는 §9 가 쥔다 — 손으로 센 시점 기록이라 여기 또 적으면 갈린다(실제로 1,229 로 남아 있었다).</span></td></tr>
+  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 이식 <b>완료</b> — 수는 <code>CLAUDE.md</code> 표가 쥔다(§15 의 합계다. 여기 “24개 · handoff §02” 로 적혀 있었는데 둘 다 낡았다) · 활동 컴포넌트 전부로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
+  <tr><td>개발 — 서버</td><td><span class="pill ok">절반</span></td><td><b>DB 2종 · API 6종을 만들었고 화면 넷에 붙였다</b>(2026-08-26 · BLOCKERS §9-a-1) — <code>ko_activity_state</code> · <code>ko_review_queue</code>, <code>/activity/enter·progress·complete</code> · <code>/review-queue</code> 셋.<br><span class="note">여기 “API 7종 미착수 · 이것이 지금 임계 경로다” 로 남아 있었다(2026-08-26 정정). 남은 것은 복습 큐를 홈에 붙이는 일과 결제·권한이다 — BLOCKERS §9.</span></td></tr>
   <tr><td>B2C·결제</td><td><span class="pill now">설계 완료</span></td><td>경계·권한 판정·신설 DB·API 는 정해졌다(<span class="file">access_and_pricing_v1</span>). 구현 미착수</td></tr>
 </table></div>
 <div class="card ok">
@@ -210,7 +210,7 @@
   <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
   <tbody>
     <tr><td><b>활동 셸</b></td><td>shell_spec_v1 §1·3</td><td>shell_spec_v1 §11~§34</td><td>screens_SOT (활동 절)<br><span class="note">여기 <code>legacy_shell_mockup</code> 을 적어 뒀는데 <b>틀렸다</b>(2026-08-26 정정) — 그 문서는 <b>앱 반영 0</b> 이라고 아래 표가 스스로 적는다. 앱의 활동 셸을 실제로 지키는 것은 <code>pnpm parity:activity</code> 가 견주는 <code>screens_SOT</code> 의 활동 절이다.</span></td><td>dev_spec_v1 §2·5</td></tr>
-    <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>_superseded/mockup_read_v1 <span class="pill stop">폐기</span><br>규격은 <code>parity:activity</code> 가 지킨다</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §11</td></tr>
+    <tr><td><b>활동 8종</b></td><td>G1_content_gate_v1</td><td>_superseded/mockup_read_v1 <span class="pill stop">폐기</span><br>규격은 <code>parity:activity</code> 가 지킨다</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §11</td></tr>
     <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>jamo_authoring_spec_v1 §3·4</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §4 <span class="pill ok">통합했다 2026-08-24</span></td></tr>
     <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>screens_SOT(홈·목록)</td><td>dev_spec_v1 §14</td></tr>
     <tr><td><b>교재학습</b></td><td>asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>screens_SOT(홈·목록)</td><td>textbook_tab_spec_v1 §06</td></tr>
@@ -218,11 +218,11 @@
     <tr><td><b>VocaShot</b></td><td>games_spec_v1</td><td>games_spec_v1 §16</td><td>screens_SOT(VocaShot)</td><td>기존 API 로 충분</td></tr>
     <tr><td><b>표현클립</b></td><td>asis_v1 §5</td><td><span class="pill stop">없음</span></td><td><span class="pill stop">없음</span></td><td><span class="pill open">없음</span></td></tr>
     <tr><td><b>MY</b></td><td>my_learning_summary_v1</td><td>my_learning_summary_v1 §4</td><td><span class="pill stop">없음</span></td><td>my_learning_summary_v1 §4</td></tr>
-    <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>access_and_pricing_v1 §04·05</td><td><span class="pill done">draft_paywall</span> 결제 안내 넷 (2026-08-26).<br><span class="pill stop">없음</span> 로그인·가입·재설정 화면</td><td>access_and_pricing_v1 §05</td></tr>
+    <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>access_and_pricing_v1 §04·05</td><td><span class="pill done">draft_paywall</span> 결제 안내 넷 · <span class="pill done">draft_auth</span> 로그인·가입·재설정 (둘 다 2026-08-26)<br><span class="note">로그인·가입·재설정이 “없음” 으로 남아 있었다 — 같은 날 <code>draft_auth</code> 가 생겼는데 이 칸만 안 따라왔다(2026-08-26 정정).</span></td><td>access_and_pricing_v1 §05</td></tr>
     <tr><td><b>콘텐츠 파이프</b></td><td>G1_content_gate_v1 §6~11</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
     <tr><td><b>다국어</b></td><td><span class="pill open">없음</span></td><td>shell_spec_v1 §4 · dev_spec_v1 §6</td><td>—</td><td>—</td></tr>
     <tr><td><b>접근성</b></td><td>—</td><td>shell_spec_v1 §7</td><td>—</td><td>—</td></tr>
-    <tr><td><b>오프라인·오류</b></td><td>—</td><td>shell_spec_v1 §6</td><td>shell_spec_v1 §29</td><td>dev_spec_v1 §15</td></tr>
+    <tr><td><b>오프라인·오류</b></td><td>—</td><td>shell_spec_v1 §6</td><td>screens_SOT (상태 화면) — <code>activity__loading</code> · <code>activity__failed</code> · <code>activity__micdenied</code><br><span class="note">여기 <code>shell_spec_v1 §29</code> 만 적혀 있었는데 그건 명세 절이지 목업이 아니다(2026-08-26 정정). 목업 셋이 있고 <code>parity:activity</code> 가 지킨다.</span></td><td>dev_spec_v1 §15</td></tr>
     <tr><td><b>알림·리텐션</b></td><td><span class="pill done">정했다</span> <b>푸시·PWA 를 만들지 않는다</b></td><td colspan="3">밖으로 나가는 것은 <b>메일 넷만</b>(재설정 · 영수증 · 환불 · 구독 만료). 재방문 유도는 앱 안의 연속 학습일로 한다 — <span class="file">BLOCKERS.md</span> §7</td></tr>
     <tr><td><b>어드민</b></td><td><span class="file">_superseded/renewal_plan_v0.2</span> §7</td><td colspan="3">이번 리뉴얼 <b>범위 밖</b>으로 선언됐다 — 의도된 공백이다</td></tr>
   </tbody>
@@ -493,10 +493,11 @@
 </div>
 
 <h2 id="s9"><span class="no">9</span>확정 디자인이 앱에 얼마나 들어갔나</h2>
+  <p class="note"><b>CSS 규칙·클래스 수는 손으로 센 실측이고 시점 기록이다</b>(2026-08-26 재측 — legacy 행이 169·84 에서 163·100 으로 어긋나 있었다). 검사가 견주지 않으므로 시간이 지나면 낡는다. 다시 세려면 그 문서의 <code>&lt;style&gt;</code> 안에서 <code>{…}</code> 덩어리와 <code>.이름</code> 을 세면 된다.<br>「앱 반영」의 <b>대조 수만 기계가 쥔다</b> — <code>check_docs.py</code> 의 <code>[숫자 주장]</code> 이고 주인은 <code>CLAUDE.md</code> 다.</p>
 <div class="tablewrap"><table>
   <tr><th>목업</th><th>담당 범위</th><th class="n">CSS 규칙</th><th class="n">클래스</th><th>앱 반영</th></tr>
   <tr><td><code>screens_SOT</code> <b>활동 절</b></td><td>활동 20화면 — 기본 8 · 자모 6 · 문항 밖 3 · 예외 3</td>
-      <td class="n">342</td><td class="n">168</td><td><span class="pill ok">대조 22</span></td></tr>
+      <td class="n">342</td><td class="n">168</td><td><span class="pill ok">대조 통과</span> — 수는 <code>CLAUDE.md</code> 의 “화면 수가 넷이다” 표가 쥔다</td></tr>
   <tr><td>같은 문서 <b>게임 절</b></td><td>게임 17화면</td>
       <td class="n">315</td><td class="n">98</td><td>구현됨 · 대조 밖</td></tr>
   <tr><td><code>legacy_shell_mockup</code></td><td>공통 셸</td>
@@ -773,7 +774,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
 <table>
   <thead><tr><th>무엇</th><th>수</th><th>상태</th></tr></thead>
   <tbody>
-    <tr><td>활동 컴포넌트</td><td>22</td><td><span class="pill done">목업 일치</span></td></tr>
+    <tr><td>활동 컴포넌트</td><td>—<br><span class="note">수는 <code>CLAUDE.md</code> 표가 쥔다</span></td><td><span class="pill done">목업 일치</span></td></tr>
     <tr><td><span class="file">/learn/*</span> 학습 화면</td><td>7</td><td><span class="pill done">이식</span> 읽기·듣기·빈칸·단어(학습+어휘문제)·롤플레잉 ·<br><b>플래시카드 · 미션 대화</b>(08-21 심화 2종 이관, 이 표에 빠져 있었다)</td></tr>
     <tr><td><span class="file">/learn/jamo/*</span> 자모</td><td>6</td><td><span class="pill done">이식</span> 경로도 옮겼다 — §17</td></tr>
     <tr><td>게임 + 목록</td><td>6</td><td><span class="pill done">반영</span></td></tr>
