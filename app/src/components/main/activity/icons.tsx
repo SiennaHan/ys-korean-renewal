@@ -114,3 +114,33 @@ export function IconDown() {
 		</svg>
 	);
 }
+
+/** 상태 화면(로드 실패)의 54px 아이콘 — 목업 정본 activity__failed */
+export function IconRetryLarge() {
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			{...line}
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<path d="M19 8a7 7 0 10.5 7M19 4v4h-4" />
+		</svg>
+	);
+}
+
+/** 상태 화면(마이크 거부)의 54px 아이콘 — 목업 정본 activity__micdenied */
+export function IconMicOffLarge() {
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			{...line}
+			strokeWidth={1.9}
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<rect x="9" y="3" width="6" height="11" rx="3" />
+			<path d="M5 11a7 7 0 0011.8 5.1M12 18v3M4 3l16 18" />
+		</svg>
+	);
+}

@@ -7,6 +7,29 @@
 - `state_audit/`와 `captured/`는 당시 제품 상태를 남긴 감사 자료다. 정본이 바뀌어도 과거 캡처를 덮어쓰지 않는다.
 - 프로토타입에서 확정한 공통 컴포넌트·상태 문법은 같은 작업에서 정본 목업과 기획 문서에도 반영한다.
 
+## v2.8 — 2026-08-26
+
+### 반영 파일
+
+- `screens_uiux.html` — 전체 시각 정본
+- `app/src/mockups/activity__failed.html` · `activity__micdenied.html` — 목업 재캡처
+- `app/src/components/main/activity/state-screens.tsx` · `icons.tsx` · `mic-blocked.tsx`
+- `app/src/styles/activity.css` — `.state-icon` 추가, `.state-view` 정렬
+- `app/src/i18n/locales/*.ts` — 다섯 로케일에 `loadFailedBody` · `micDeniedBody` 추가
+
+### 변경 내용
+
+- 로드 실패·마이크 거부가 한 줄 문장만 떠 있던 것을 **아이콘 + 제목 + 설명**으로 바꿨다.
+  `activity_controls_uiux.html` 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다.
+- 마이크 문구를 정본대로 고쳤다 — "마이크가 꺼져 있어요" → "마이크를 사용할 수 없어요" + 설명.
+  전체 화면과 알림(`MicBlockedDialog`)이 **같은 키**를 쓰므로 둘이 함께 바뀐다.
+- 제목과 설명을 키로 갈랐다. 전에는 한 키를 `\n` 으로 쪼개 제목을 만들었다.
+- `.state-view` 가 늘 위에 붙어 있던 것을 가운데로 되돌렸다. `flex:1` 을 적어 두었지만
+  부모 `.scroll-area` 가 `display:block` 이라 아무 일도 하지 않았다 — `min-height:100%` 으로
+  고쳤고, **정본 프로토타입도 같은 증상이라 같이 고쳤다.**
+- 실패 화면을 손으로 짜 두었던 활동 셋(빈칸·읽기·듣기)을 공용 `FailedScreen` 으로 모았다.
+  그 셋은 하단 버튼이 아예 없어 나가기 말고는 길이 없었다 — 정본이 그리는 다시 시도가 생겼다.
+
 ## v2.6 — 2026-08-26
 
 ### 반영 파일

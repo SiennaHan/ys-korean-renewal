@@ -382,11 +382,13 @@ const en = {
 	// 화면 상태 (G2 §7)
 	state: {
 		loading: "Loading…",
-		loadFailed: "Couldn't load this activity.",
+		loadFailed: "Couldn't load this activity",
+		loadFailedBody: "Check your internet connection and try again.",
 		retry: "Try again",
 		audioPreparing: "Audio is being prepared.",
-		micDenied:
-			"Microphone access is off.\nYou can turn it on in your browser settings.",
+		micDenied: "Microphone isn't available",
+		micDeniedBody:
+			"Turn on the microphone in your browser settings,\nthen try again.",
 		micDeniedSkip: "Skip this activity",
 		recordAgain: "Please say that again.",
 		exitConfirmChat: "Your conversation will start over. Leave anyway?",

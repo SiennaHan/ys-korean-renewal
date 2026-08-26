@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
+import { IconMicOffLarge, IconRetryLarge } from "./icons";
 import {
 	ActivityAppBar,
 	ActivityBody,
@@ -68,7 +69,11 @@ export function FailedScreen({
 			<ActivityAppBar lesson={lesson} onExit={onExit} />
 			<ActivityBody>
 				<div className="state-view">
-					<p>{t("state.loadFailed")}</p>
+					<span className="state-icon" aria-hidden="true">
+						<IconRetryLarge />
+					</span>
+					<strong>{t("state.loadFailed")}</strong>
+					<p>{t("state.loadFailedBody")}</p>
 				</div>
 			</ActivityBody>
 			<ActivityFooter>
@@ -99,14 +104,18 @@ export function MicDeniedScreen({
 	onSkipActivity?: () => void;
 }) {
 	const { t } = useTranslation();
-	// 목업은 두 문장을 <br> 로 끊는다. 어디서 끊을지는 언어마다 다르므로
+	// 목업은 설명을 <br> 로 끊는다. 어디서 끊을지는 언어마다 다르므로
 	// 번역문의 \n 을 그대로 따른다 — 여기서 문장부호로 자르지 않는다
-	const lines = t("state.micDenied").split("\n");
+	const lines = t("state.micDeniedBody").split("\n");
 	return (
 		<ActivityFrame>
 			<ActivityAppBar lesson={lesson} onExit={onExit} />
 			<ActivityBody>
 				<div className="state-view">
+					<span className="state-icon" aria-hidden="true">
+						<IconMicOffLarge />
+					</span>
+					<strong>{t("state.micDenied")}</strong>
 					<p>
 						{lines.map((line, i) => (
 							<Fragment key={line}>

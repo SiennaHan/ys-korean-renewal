@@ -10,6 +10,7 @@ import {
 	ChipOption,
 	ChipWrap,
 	Dock,
+	FailedScreen,
 	FeedbackMessage,
 	PrimaryButton,
 	ProblemCard,
@@ -257,17 +258,11 @@ export default function FillBlank({
 
 	if (!question) {
 		return (
-			<ActivityFrame>
-				<ActivityAppBar
-					lesson={chapterLabel}
-					onExit={() => router.history.back()}
-				/>
-				<ActivityBody>
-					<div className="state-view">
-						<p>{t("state.loadFailed")}</p>
-					</div>
-				</ActivityBody>
-			</ActivityFrame>
+			<FailedScreen
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+				onRetry={() => window.location.reload()}
+			/>
 		);
 	}
 

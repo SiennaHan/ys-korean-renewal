@@ -9,6 +9,7 @@ import {
 	Choice,
 	ChoiceList,
 	Dock,
+	FailedScreen,
 	FeedbackMessage,
 	Passage,
 	PrimaryButton,
@@ -210,17 +211,11 @@ export default function ReadAnswer({
 
 	if (!question || !passage) {
 		return (
-			<ActivityFrame>
-				<ActivityAppBar
-					lesson={chapterLabel}
-					onExit={() => router.history.back()}
-				/>
-				<ActivityBody>
-					<div className="state-view">
-						<p>{t("state.loadFailed")}</p>
-					</div>
-				</ActivityBody>
-			</ActivityFrame>
+			<FailedScreen
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+				onRetry={() => window.location.reload()}
+			/>
 		);
 	}
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="uiux-version" content="2.7">
-<title>확정 UI/UX 목업 v2.7 — 활동 · 홈·목록 · VocaShot</title>
+<title>확정 UI/UX 목업 v2.8 — 활동 · 홈·목록 · VocaShot</title>
 <style>
 /* ───────── 합친 문서의 껍데기 (원본에 없던 것은 이것뿐) ───────── */
   .deckhead { max-width:1180px; margin:0 auto; padding:28px 24px 0; }
@@ -396,8 +396,13 @@
   .word-strip div { min-width:100px; background:var(--blue-gray-50); border-radius:6px; padding:8px; text-align:center; }
   .word-strip b { display:block; font-size:14px; color:var(--blue-gray-900); }
   .word-strip span { display:block; font-size:12px; color:var(--blue-gray-400); }
-  .state-view { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:0 32px; text-align:center; }
-  .state-view p { margin:0; font-size:16px; line-height:1.5; color:var(--blue-gray-900); }
+  /* min-height 가 가운데 정렬을 한다. 부모 .scroll-area 는 display:block 이라
+     flex:1 이 아무 일도 하지 않는다 — 넣어 두고도 늘 위에 붙어 있었다. */
+  .state-view { flex:1; min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 32px; text-align:center; }
+  .state-icon { display:grid; place-items:center; width:54px; height:54px; margin-bottom:16px; border-radius:18px; background:#fff; color:var(--blue-gray-600); }
+  .state-icon svg { width:25px; height:25px; }
+  .state-view strong { font-size:16px; line-height:24px; font-weight:600; color:var(--blue-900); }
+  .state-view p { margin:7px 0 0; font-size:13px; line-height:20px; color:var(--blue-gray-600); }
   .skeleton { width:100%; display:flex; flex-direction:column; gap:12px; }
   .skeleton i { display:block; height:64px; border-radius:12px; background:var(--gray-200); }
   .skeleton i.s { height:20px; width:60%; }
@@ -4007,8 +4012,8 @@ function radar(vals){const cx=110,cy=104,R=74,ang=i=>Math.PI/2*i-Math.PI/2,pt=(i
 function reportView(){const r=extra.report,pct=Math.floor(r.hits/r.missions*100);return `${gapAppbar('1급 4과',false)}<main class="activity-content" style="padding:0"><div class="rep-head"><h2>AI 대화 리포트</h2><p>AI Chat Report</p><div class="stat-row" style="margin-top:12px"><div><span>완료한 키워드</span><strong>${r.hits} / ${r.missions}</strong></div><div><span>점수</span><strong>${pct}%</strong></div></div></div><div class="rep-tabs" role="tablist"><button type="button" class="on" aria-selected="true">평가</button><button type="button" class="" aria-selected="false">나의 문장 피드백</button></div><div class="scroll-area" style="padding:12px"><div class="report-card">${radar(r.vals)}<div class="report-rows">${r.rows.map(([k,v])=>`<div class="as-row"><span class="k">${k}</span><p>${v}</p></div>`).join('')}</div></div></div></main><div class="footer"><div class="dock"><div class="main" style="gap:12px"><button class="primary on">다시 풀기</button><button class="primary on">다음 활동</button></div></div></div>`}
 function briefingView(){const b=extra.briefing;return `${gapAppbar('4과',false)}<main class="activity-content" style="padding:0"><div class="scroll-area" style="padding:0"><div class="brief-title"><h2>${b.title}</h2><p>${b.titleEn}</p></div><div class="brief-sec"><h3>Conversation Scenario</h3><div class="brief-card"><div class="scene-img"><span aria-hidden="true">상황 이미지</span></div><div class="scene-text">${b.scene}<div style="color:var(--blue-gray-400)">${b.sceneEn}</div></div></div></div><div class="brief-sec"><h3>Mission Keyword</h3><div class="brief-card"><div style="display:grid;gap:8px">${b.kws.map(([k,v])=>`<div class="kw-line"><b>${k}</b><span>${v}</span></div>`).join('')}</div><div class="word-strip">${b.words.map(([w,e])=>`<div><b>${w}</b><span>${e}</span></div>`).join('')}</div></div></div></div></main><div class="footer">${gapDock(gapPrimary('대화 시작하기',true,'startChat'))}</div>`}
 function loadingView(){return gapFrame(gapAppbar('1급 4과',false),gapProgress(0,4),`<div class="skeleton"><i class="s"></i><i></i><i></i><i></i></div>`,null,gapDock(gapPrimary('다음',false)))}
-function failedView(){return gapFrame(gapAppbar('1급 4과',false),null,`<div class="state-view"><p>활동을 불러오지 못했어요.</p></div>`,null,gapDock(gapPrimary('다시 시도',true,'retry')))}
-function micDeniedView(){return gapFrame(gapAppbar('1급 4과',false),null,`<div class="state-view"><p>마이크가 꺼져 있어요.<br>브라우저 설정에서 켤 수 있어요.</p></div>`,null,gapDock(gapPrimary('이 활동 건너뛰기',true,'nextExtra')))}
+function failedView(){return gapFrame(gapAppbar('1급 4과',false),null,`<div class="state-view"><span class="state-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 8a7 7 0 10.5 7M19 4v4h-4"/></svg></span><strong>활동을 불러오지 못했어요</strong><p>인터넷 연결을 확인하고 다시 시도해 주세요.</p></div>`,null,gapDock(gapPrimary('다시 시도',true,'retry')))}
+function micDeniedView(){return gapFrame(gapAppbar('1급 4과',false),null,`<div class="state-view"><span class="state-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0011.8 5.1M12 18v3M4 3l16 18"/></svg></span><strong>마이크를 사용할 수 없어요</strong><p>브라우저 설정에서 마이크를 켠 뒤<br>다시 시도해 주세요.</p></div>`,null,gapDock(gapPrimary('이 활동 건너뛰기',true,'nextExtra')))}
 
 const SCREEN_ORDER=['wordQuiz','wordPreview','listen','grammar','reading','flash','chat','role','jamoListen','write','write3','speak','wordrep','readwrite','result','report','briefing','loading','failed','micdenied'];
 const SCREEN_NAMES={wordQuiz:'어휘 문제',wordPreview:'어휘 미리보기',listen:'일반 듣기',grammar:'문법 빈칸',reading:'읽기 지문',flash:'플래시카드',chat:'미션 대화',role:'롤플레잉',jamoListen:'자모 듣기',write:'2단 조합·쓰기',write3:'3단 받침·쓰기',speak:'자모 발음',wordrep:'단어 듣고 따라',readwrite:'단어 읽고 쓰기',result:'결과',report:'대화 리포트',briefing:'미션 브리핑',loading:'로딩',failed:'로드 실패',micdenied:'마이크 거부'};

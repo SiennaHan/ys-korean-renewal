@@ -16,8 +16,9 @@ export function MicBlockedDialog({
 	onSkip: () => void;
 }) {
 	const { t } = useTranslation();
-	// 전체 화면 쪽과 같은 문구를 쓴다 — 첫 줄이 무슨 일인지, 둘째 줄이 어떻게 하는지
-	const [title, ...rest] = t("state.micDenied").split("\n");
+	// 전체 화면 쪽과 같은 문구를 쓴다 — 제목이 무슨 일인지, 설명이 어떻게 하는지.
+	// 목업 v2.8 승격으로 둘이 키까지 갈렸다(전에는 한 키를 \n 으로 쪼갰다).
+	const rest = t("state.micDeniedBody").split("\n");
 
 	return (
 		<div className="modal" role="alertdialog" aria-labelledby="mic-blocked">
@@ -36,7 +37,7 @@ export function MicBlockedDialog({
 						<path d="M4 3l16 18" />
 					</svg>
 				</div>
-				<strong id="mic-blocked">{title}</strong>
+				<strong id="mic-blocked">{t("state.micDenied")}</strong>
 				{rest.length > 0 && <p>{rest.join(" ")}</p>}
 				<div className="modal-tools">
 					<button type="button" onClick={onSkip}>

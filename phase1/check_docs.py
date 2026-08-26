@@ -576,6 +576,14 @@ def stale_phrases(text: dict[str, str]) -> list[str]:
 
 
 TWIN_ALLOW = {
+    "activity__failed.html":
+    "목업 v2.8 승격(2026-08-26). 한 줄 문장만 떠 있던 것을 아이콘 + 제목 + 설명으로 바꿨다 —"
+    " activity_controls_uiux 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다."
+    " captured/ 는 v2.7 시점 기록이라 그대로 둔다",
+    "activity__micdenied.html":
+    "위 activity__failed 와 같은 승격. 문구도 정본을 따라 바뀌었다 —"
+    " '마이크가 꺼져 있어요' → '마이크를 사용할 수 없어요' + 설명."
+    " captured/ 는 v2.7 시점 기록이라 그대로 둔다",
     "activity__report.html":
     "목업 v2.7 승격(2026-08-26). 탭을 <div> 에서 진짜 <button role=tablist·aria-selected>"
     " 로 바꾸고, 카드·평가 행의 인라인 style 을 .report-card·.report-rows 로 뺐다."

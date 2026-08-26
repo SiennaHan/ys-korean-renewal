@@ -536,8 +536,15 @@
 .activity-frame .activity-confirm-actions button { min-height:48px; border:0; border-radius:12px; font-size:15px; line-height:22px; font-weight:600; cursor:pointer; }
 .activity-frame .activity-confirm-actions .secondary { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
 .activity-frame .activity-confirm-actions .confirm { background:var(--color-fill-primary); color:var(--color-background-surface); }
-.activity-frame .state-view { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:0 32px; text-align:center; }
-.activity-frame .state-view p { margin:0; font-size:16px; line-height:1.5; color:var(--color-text-strong); }
+/* 상태 화면 — 목업 v2.8 로 승격(2026-08-26). 한 줄 문장만 떠 있던 것을
+   아이콘 + 제목 + 설명으로 바꿨다. 값은 screens_uiux.html 정본 그대로다. */
+/* min-height 가 가운데 정렬을 한다 — 부모 .scroll-area 가 display:block 이라
+   flex:1 은 아무 일도 하지 않는다(정본도 같아서 늘 위에 붙어 있었다) */
+.activity-frame .state-view { flex:1; min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 32px; text-align:center; }
+.activity-frame .state-icon { display:grid; place-items:center; width:54px; height:54px; margin-bottom:16px; border-radius:18px; background:var(--color-background-surface); color:var(--color-text-sub); }
+.activity-frame .state-icon svg { width:25px; height:25px; }
+.activity-frame .state-view strong { font-size:16px; line-height:24px; font-weight:600; color:var(--color-text-heading); }
+.activity-frame .state-view p { margin:7px 0 0; font-size:13px; line-height:20px; color:var(--color-text-sub); }
 .activity-frame .skeleton { width:100%; display:flex; flex-direction:column; gap:12px; }
 .activity-frame .skeleton i { display:block; height:64px; border-radius:12px; background:var(--color-background-disable); }
 .activity-frame .skeleton i.s { height:20px; width:60%; }

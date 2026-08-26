@@ -381,10 +381,13 @@ const ja = {
 	},
 	state: {
 		loading: "読み込み中…",
-		loadFailed: "活動を読み込めませんでした。",
+		loadFailed: "活動を読み込めませんでした",
+		loadFailedBody: "インターネット接続を確認して、もう一度お試しください。",
 		retry: "再試行",
 		audioPreparing: "音声を準備しています。",
-		micDenied: "マイクがオフになっています。\nブラウザの設定でオンにできます。",
+		micDenied: "マイクを使用できません",
+		micDeniedBody:
+			"ブラウザの設定でマイクをオンにしてから\nもう一度お試しください。",
 		micDeniedSkip: "この活動をスキップ",
 		recordAgain: "もう一度話してください。",
 		exitConfirmChat: "会話は最初から始まります。終了しますか？",
