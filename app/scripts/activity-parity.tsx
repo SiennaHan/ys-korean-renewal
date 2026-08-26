@@ -12,6 +12,7 @@ import "./parity-shim";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { FillBlankView } from "@/components/learn/fill-blank";
 import { AudioRow } from "@/components/main/activity/audio";
 import { BriefingScreen } from "@/components/main/activity/briefing-screen";
 import { ChatScreen } from "@/components/main/activity/chat";
@@ -70,12 +71,20 @@ import {
 	CardSortPlayView,
 	CardSortResultView,
 } from "@/components/main/game/card-sort-view";
+import { GameListView } from "@/components/main/game/list-view";
 import {
 	ParticleSniperLessonView,
-	ParticleSniperPlayView,
 	ParticleSniperLevelView,
+	ParticleSniperPlayView,
 	ParticleSniperResultView,
 } from "@/components/main/game/particle-sniper-view";
+import {
+	C as SP_C,
+	SP_KEYFRAMES_CSS,
+	type Location as SpLocation,
+	type Puzzle as SpRawPuzzle,
+	resolveToken,
+} from "@/components/main/game/seoul-puzzle";
 import {
 	SpCompleteView,
 	SpEntryView,
@@ -84,25 +93,17 @@ import {
 	SpTravelHeader,
 } from "@/components/main/game/seoul-puzzle-view";
 import {
-	C as SP_C,
-	type Location as SpLocation,
-	type Puzzle as SpRawPuzzle,
-	resolveToken,
-	SP_KEYFRAMES_CSS,
-} from "@/components/main/game/seoul-puzzle";
-import {
 	PcGameView,
 	type PcQuestion,
 	PcResultView,
 	PcSelectView,
 	PcTitleView,
 } from "@/components/main/game/spring-picnic-view";
+import VocashotSolo from "@/components/main/game/vocashot-solo";
 import {
 	VocashotPlayView,
 	VocashotResultView,
 } from "@/components/main/game/vocashot-view";
-import { GameListView } from "@/components/main/game/list-view";
-import VocashotSolo from "@/components/main/game/vocashot-solo";
 import HomeView from "@/components/main/home/view";
 import BookTabs from "@/components/main/textbook/book-tabs";
 import ChapterChips from "@/components/main/textbook/chapter-chips";
@@ -235,26 +236,26 @@ function fromData<T>(key: string, value: T): T {
 }
 
 const SCREENS: Record<string, ReactElement> = {
+	/*
+	 * 손으로 조립하지 않는다 — **제품이 그리는 그 컴포넌트**를 그린다.
+	 * 값만 목업의 표본을 넣는다. 전에는 여기서 부품을 다시 배치했고,
+	 * 그래서 제품이 목업과 갈라져도 대조가 통과했다(빈칸 표기·문법 줄·진행바).
+	 */
 	grammar: (
-		<Screen
-			progress={[1, 5]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrGrammar")}>
-						<div className="blank-card">
-							오늘 날씨가 <u>　</u> 밖에 나가고 싶어요.
-						</div>
-					</ProblemCard>
-					<ChipWrap>
-						{["좋아서", "좋지만", "좋으면", "좋아도"].map((x) => (
-							<ChipOption key={x} value={x}>
-								{x}
-							</ChipOption>
-						))}
-					</ChipWrap>
-				</>
-			}
-			footer={NEXT}
+		<FillBlankView
+			lesson={LESSON}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={1}
+			total={5}
+			instruction={T("activity.instrGrammar")}
+			answerState="idle"
+			segments={["오늘 날씨가 ", " 밖에 나가고 싶어요."]}
+			selections={["좋아서", "좋지만", "좋으면", "좋아도"]}
+			answer="좋아서"
+			selectedAnswer={null}
+			onSelect={() => {}}
+			primary={{ label: T("player.next"), on: false, onClick: () => {} }}
 		/>
 	),
 
@@ -914,17 +915,23 @@ SCREENS.game__ps_level = (
 SCREENS.game__ps_lesson = (
 	<ParticleSniperLessonView
 		level="1급"
-		meta={{ color: "#4ade80", summary: "은/는 · 이/가 · 을/를 · 에 · 에서 · 하고 · 과/와 · 에게…" }}
+		meta={{
+			color: "#4ade80",
+			summary: "은/는 · 이/가 · 을/를 · 에 · 에서 · 하고 · 과/와 · 에게…",
+		}}
 		lessons={fromData("particle_sniper.lesson", {
-		"4과": { new_particles: ["은", "는"], questions: new Array(8).fill({}) },
-		"6과": { new_particles: ["이", "가"], questions: new Array(8).fill({}) },
-		"7과": { new_particles: ["에", "도"], questions: new Array(4).fill({}) },
-		"8과": { new_particles: ["을", "를"], questions: new Array(4).fill({}) },
-		"11과": { new_particles: ["하고"], questions: new Array(8).fill({}) },
-		"12과": { new_particles: ["부터", "까지"], questions: new Array(8).fill({}) },
-		"13과": { new_particles: ["에서"], questions: new Array(8).fill({}) },
-		"14과": { new_particles: ["과", "와"], questions: new Array(8).fill({}) },
-		"15과": { new_particles: ["에게"], questions: new Array(8).fill({}) },
+			"4과": { new_particles: ["은", "는"], questions: new Array(8).fill({}) },
+			"6과": { new_particles: ["이", "가"], questions: new Array(8).fill({}) },
+			"7과": { new_particles: ["에", "도"], questions: new Array(4).fill({}) },
+			"8과": { new_particles: ["을", "를"], questions: new Array(4).fill({}) },
+			"11과": { new_particles: ["하고"], questions: new Array(8).fill({}) },
+			"12과": {
+				new_particles: ["부터", "까지"],
+				questions: new Array(8).fill({}),
+			},
+			"13과": { new_particles: ["에서"], questions: new Array(8).fill({}) },
+			"14과": { new_particles: ["과", "와"], questions: new Array(8).fill({}) },
+			"15과": { new_particles: ["에게"], questions: new Array(8).fill({}) },
 		})}
 		maxPerGame={20}
 		onPick={() => {}}
@@ -1006,7 +1013,10 @@ SCREENS.game__cs_level = (
 	<CardSortLevelView
 		vocab={{
 			"2급": {
-				"1과": { new_categories: ["직업"], 직업: ["의사", "선생님", "경찰", "요리사"] },
+				"1과": {
+					new_categories: ["직업"],
+					직업: ["의사", "선생님", "경찰", "요리사"],
+				},
 				"2과": {
 					new_categories: ["교통수단"],
 					교통수단: ["버스", "지하철", "택시", "자전거"],
@@ -1167,18 +1177,15 @@ SCREENS.game__pc_game = (
 			// 전에는 id·cats·desc2 를 내가 지어냈다 — 화면에 안 그려지는 필드라
 			// 목업 대조는 통과했다(fixture-data-check.py 가 잡았다).
 			friend: fromData("spring_picnic.friend", {
-							"id": "somi",
-							"face": "🐰",
-							"name": "솔이",
-							"bg": "#AFA9EC",
-							"cats": [
-											"나이",
-											"가격"
-							],
-							"mission": "나이 · 가격",
-							"desc": "~살, ~원 읽기",
-							"desc2": "~세/년생, 큰 금액"
-						}),
+				id: "somi",
+				face: "🐰",
+				name: "솔이",
+				bg: "#AFA9EC",
+				cats: ["나이", "가격"],
+				mission: "나이 · 가격",
+				desc: "~살, ~원 읽기",
+				desc2: "~세/년생, 큰 금액",
+			}),
 			level: 1,
 			// 나머지 아홉은 g-dots 진행 점만 그린다 — 내용은 안 읽으므로 빈 자리표다
 			rounds: [
@@ -1186,26 +1193,23 @@ SCREENS.game__pc_game = (
 				// 목업이 그리는 19살·"오빠는 ___ 살이에요."·열아홉 이 그 레코드다.
 				// 칩 차례는 이 wrong 이 아니라 아래 choices 가 정한다(컨테이너가 섞는다).
 				fromData("spring_picnic.round", {
-									"id": "age02",
-									"cat": "나이",
-									"level": 1,
-									"il": "🎂",
-									"hint": {
-														"ko": "몇 살이에요?",
-														"en": "How old?",
-														"zh": "多少岁？",
-														"ja": "何歳ですか？",
-														"vi": "Bao nhiêu tuổi?"
-									},
-									"num": "19살",
-									"tmpl": "오빠는 ___ 살이에요.",
-									"tts": "오빠는 열아홉 살이에요.",
-									"correct": "열아홉",
-									"wrong": [
-														"십구",
-														"스물"
-									]
-								}),
+					id: "age02",
+					cat: "나이",
+					level: 1,
+					il: "🎂",
+					hint: {
+						ko: "몇 살이에요?",
+						en: "How old?",
+						zh: "多少岁？",
+						ja: "何歳ですか？",
+						vi: "Bao nhiêu tuổi?",
+					},
+					num: "19살",
+					tmpl: "오빠는 ___ 살이에요.",
+					tts: "오빠는 열아홉 살이에요.",
+					correct: "열아홉",
+					wrong: ["십구", "스물"],
+				}),
 				...(new Array(9).fill({}) as unknown as PcQuestion[]),
 			],
 			cur: 0,
@@ -1368,7 +1372,14 @@ function SpFrame({ children }: { children: ReactElement | ReactElement[] }) {
  */
 const SEOUL = JSON.parse(
 	readFileSync(
-		join(dirname(fileURLToPath(import.meta.url)), "..", "..", "api", "seed_data", "seoul_puzzles.json"),
+		join(
+			dirname(fileURLToPath(import.meta.url)),
+			"..",
+			"..",
+			"api",
+			"seed_data",
+			"seoul_puzzles.json",
+		),
 		"utf8",
 	),
 ) as {
@@ -1428,7 +1439,12 @@ SCREENS.game__sp_entry = (
 			completed={new Set()}
 			currentLoc="hongdae"
 			locations={SP_LOCATIONS as any}
-			grammars={["이에요/예요", "은/는", "은/는, 이에요/예요", "이/가 아니에요"]}
+			grammars={[
+				"이에요/예요",
+				"은/는",
+				"은/는, 이에요/예요",
+				"이/가 아니에요",
+			]}
 			navDir="forward"
 			onMapBack={() => {}}
 			onStart={() => {}}

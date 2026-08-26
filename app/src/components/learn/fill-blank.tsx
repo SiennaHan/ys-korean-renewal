@@ -23,6 +23,7 @@ import { nextLessonActivity } from "@/shared/lesson-flow";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
+import type { ReactNode } from "react";
 import {
 	Fragment,
 	useCallback,
@@ -62,6 +63,143 @@ interface FillBlankProps {
 
 type AnswerState = "idle" | "selected" | "correct" | "wrong";
 
+/**
+ * 빈칸 채우기 — **표시만** 한다. 데이터·기록·이동은 아래 FillBlank 가 쥔다.
+ *
+ * 왜 갈랐나 — 목업 대조(`activity-parity.tsx`)가 제품이 실제로 그리는 조합을
+ * 검사하지 못했다. 제품 컴포넌트가 원장을 스스로 읽어서 목업의 표본 값을
+ * 넣을 수 없었고, 그래서 대조는 부품으로 화면을 **손으로 다시 조립**하고 있었다.
+ * 홈이 먼저 같은 이유로 HomeView/HomeContent 로 갈렸다(224fdd4).
+ */
+export function FillBlankView({
+	lesson,
+	onExit,
+	onSkip,
+	current,
+	total,
+	onJump,
+	instruction,
+	answerState,
+	/** 맞힌 뒤 완성된 문장. 없으면 아래 segments 로 그린다 */
+	completion,
+	/** 문장 조각. 조각 사이가 빈칸이다 */
+	segments,
+	/** 빈칸에 들어갈 글자. null 이면 빈 칸을 그린다 */
+	fills,
+	/** 고른 답이 오답이라 빨갛게 보여 줄 때 */
+	fillMissed,
+	grammarNote,
+	selections,
+	answer,
+	selectedAnswer,
+	onSelect,
+	primary,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	current: number;
+	total: number;
+	onJump?: (index: number) => void;
+	instruction: ReactNode;
+	answerState: AnswerState;
+	completion?: {
+		before?: string;
+		filled: string;
+		after?: string;
+	} | null;
+	segments: string[];
+	fills?: (string | undefined)[] | null;
+	fillMissed?: boolean;
+	grammarNote?: string | null;
+	selections: string[];
+	answer: string;
+	selectedAnswer: string | null;
+	onSelect: (value: string) => void;
+	primary: { label: string; on: boolean; onClick: () => void };
+}) {
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			<ActivityProgress current={current} total={total} onJump={onJump} />
+
+			<ActivityBody
+				feedback={
+					answerState === "correct" ? (
+						<FeedbackMessage kind="correct" />
+					) : answerState === "wrong" ? (
+						<FeedbackMessage kind="wrong" />
+					) : null
+				}
+			>
+				<ProblemCard instruction={instruction}>
+					{/* 고른 어미가 문장에 들어간 모습을 그대로 보여 준다 */}
+					<BlankCard>
+						{completion ? (
+							<>
+								{completion.before}
+								<b>{completion.filled}</b>
+								{completion.after}
+							</>
+						) : (
+							segments.map((segment, index) => (
+								<Fragment key={`${index}-${segment}`}>
+									{segment}
+									{index < segments.length - 1 &&
+										(fills ? (
+											<b className={fillMissed ? "miss" : ""}>
+												{fills[index] ?? selectedAnswer}
+											</b>
+										) : (
+											<span className="blank-slot" />
+										))}
+								</Fragment>
+							))
+						)}
+					</BlankCard>
+					{grammarNote && <div className="grammar-note">{grammarNote}</div>}
+				</ProblemCard>
+
+				<ChipWrap>
+					{selections.map((sel) => {
+						const chosen = selectedAnswer === sel;
+						return (
+							<ChipOption
+								key={sel}
+								value={sel}
+								// 칩에는 목록형에 없는 중간 상태가 있다 — 고른 뒤 채점 전
+								state={
+									chosen
+										? sel === answer
+											? "ok"
+											: answerState === "wrong"
+												? "no"
+												: "on"
+										: ""
+								}
+								onClick={() => onSelect(sel)}
+							>
+								{sel}
+							</ChipOption>
+						);
+					})}
+				</ChipWrap>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={primary.label}
+						on={primary.on}
+						action="next"
+						onClick={primary.onClick}
+					/>
+				</Dock>
+			</ActivityFooter>
+		</ActivityFrame>
+	);
+}
+
 export default function FillBlank({
 	bookId,
 	chapterSeq,
@@ -99,6 +237,12 @@ export default function FillBlank({
 	const [firstWrong, setFirstWrong] = useState<Record<number, string>>({});
 	/** 이미 한 번 답한 문항 — "첫 시도" 를 가리려고 둔다 */
 	const tried = useRef<Set<number>>(new Set());
+	/**
+	 * 헤더 → 로 넘긴 문항. shell_spec §23·§28 —
+	 * 건너뛴 문항은 진행바에서 미응답이고 결과에서 **미해결**이다.
+	 * 정답률에도 넣지 않는다(분모에서 뺀다).
+	 */
+	const [skipped, setSkipped] = useState<number[]>([]);
 	const wrongResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	/** questionId → { selectedAnswer, isCorrect } from server */
 	const [savedAnswers, setSavedAnswers] = useState<
@@ -296,13 +440,18 @@ export default function FillBlank({
 
 	if (phase === "result") {
 		const wrongIds = questions.filter((q) => firstWrong[q.id]).map((q) => q.id);
+		// 건너뛴 것은 오답이 아니라 **안 푼 것**이다 — 정답 수에서도 분모에서도 뺀다
+		const skippedIds = questions
+			.filter((q) => skipped.includes(q.id))
+			.map((q) => q.id);
+		const unresolved = [...new Set([...wrongIds, ...skippedIds])];
 		return (
 			<ResultScreen
 				lesson={chapterLabel}
 				total={questions.length}
 				answered={questions.filter((q) => savedAnswers[q.id]?.correct).length}
-				graded={questions.length}
-				correct={questions.length - wrongIds.length}
+				graded={questions.length - skippedIds.length}
+				correct={questions.length - wrongIds.length - skippedIds.length}
 				wrongs={questions
 					.filter((q) => firstWrong[q.id])
 					.map((q) => ({
@@ -313,17 +462,18 @@ export default function FillBlank({
 					}))}
 				onExit={() => router.history.back()}
 				onRetry={
-					wrongIds.length > 0
+					unresolved.length > 0
 						? () => {
 								// 틀렸던 문항만 다시. 그 문항의 정답 기록을 지워야 다시 풀린다
 								setSavedAnswers((prev) => {
 									const next = { ...prev };
-									for (const id of wrongIds) delete next[id];
+									for (const id of unresolved) delete next[id];
 									return next;
 								});
 								setFirstWrong({});
-								for (const id of wrongIds) tried.current.delete(id);
-								setRetryOnly(wrongIds);
+								for (const id of unresolved) tried.current.delete(id);
+								setSkipped([]);
+								setRetryOnly(unresolved);
 								setCurrentIndex(0);
 								setPhase("solving");
 							}
@@ -365,107 +515,53 @@ export default function FillBlank({
 		questions.length > 0 && questions.every((q) => savedAnswers[q.id]?.correct);
 
 	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={chapterLabel}
-				onExit={() => router.history.back()}
-			/>
-			<ActivityProgress
-				current={currentIndex}
-				total={totalSteps}
-				onJump={setCurrentIndex}
-			/>
-
-			<ActivityBody
-				feedback={
-					answerState === "correct" ? (
-						<FeedbackMessage kind="correct" />
-					) : answerState === "wrong" ? (
-						<FeedbackMessage kind="wrong" />
-					) : null
-				}
-			>
-				<ProblemCard
-					instruction={
-						<>
-							{instruction.ko}
-							{instruction.translated && <p>{instruction.translated}</p>}
-						</>
-					}
-				>
-					{/* 고른 어미가 문장에 들어간 모습을 그대로 보여 준다 */}
-					<BlankCard>
-						{solved ? (
-							<>
-								{questionParts.completionBefore}
-								<b>{questionParts.completionFilled}</b>
-								{questionParts.completionAfter}
-							</>
-						) : selectedAnswer ? (
-							questionParts.segments.map((segment, index) => (
-								<Fragment key={`${index}-${segment}`}>
-									{segment}
-									{index < questionParts.segments.length - 1 && (
-										<b className={isSelectionCorrect ? "" : "miss"}>
-											{selectedParts[index] ?? selectedAnswer}
-										</b>
-									)}
-								</Fragment>
-							))
-						) : (
-							questionParts.segments.map((segment, index) => (
-								<Fragment key={`${index}-${segment}`}>
-									{segment}
-									{index < questionParts.segments.length - 1 && (
-										<span className="blank-slot" />
-									)}
-								</Fragment>
-							))
-						)}
-					</BlankCard>
-					{selectedAnswer && (
-						<div className="grammar-note">
-							{question.grammar_focus_revised?.trim() || question.grammar_focus}
-						</div>
-					)}
-				</ProblemCard>
-
-				<ChipWrap>
-					{selections.map((sel) => {
-						const chosen = selectedAnswer === sel;
-						return (
-							<ChipOption
-								key={sel}
-								value={sel}
-								// 칩에는 목록형에 없는 중간 상태가 있다 — 고른 뒤 채점 전
-								state={
-									chosen
-										? sel === question.answer
-											? "ok"
-											: answerState === "wrong"
-												? "no"
-												: "on"
-										: ""
-								}
-								onClick={() => handleSelectAnswer(sel)}
-							>
-								{sel}
-							</ChipOption>
-						);
-					})}
-				</ChipWrap>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<PrimaryButton
-						label={hasNext ? t("player.next") : t("player.showResult")}
-						on={hasNext ? solved : allSolved}
-						action="next"
-						onClick={hasNext ? handleNext : () => setPhase("result")}
-					/>
-				</Dock>
-			</ActivityFooter>
-		</ActivityFrame>
+		<FillBlankView
+			lesson={chapterLabel}
+			onExit={() => router.history.back()}
+			// shell_spec §23 — 헤더 → 는 상시 있다. "현재 문항을 넘긴다"
+			onSkip={() => {
+				setSkipped((prev) =>
+					prev.includes(question.id) ? prev : [...prev, question.id],
+				);
+				if (hasNext) handleNext();
+				else setPhase("result");
+			}}
+			current={currentIndex}
+			total={totalSteps}
+			onJump={setCurrentIndex}
+			instruction={
+				<>
+					{instruction.ko}
+					{instruction.translated && <p>{instruction.translated}</p>}
+				</>
+			}
+			answerState={answerState}
+			completion={
+				solved
+					? {
+							before: questionParts.completionBefore,
+							filled: questionParts.completionFilled,
+							after: questionParts.completionAfter,
+						}
+					: null
+			}
+			segments={questionParts.segments}
+			fills={selectedAnswer ? selectedParts : null}
+			fillMissed={!isSelectionCorrect}
+			grammarNote={
+				selectedAnswer
+					? question.grammar_focus_revised?.trim() || question.grammar_focus
+					: null
+			}
+			selections={selections}
+			answer={question.answer}
+			selectedAnswer={selectedAnswer}
+			onSelect={handleSelectAnswer}
+			primary={{
+				label: hasNext ? t("player.next") : t("player.showResult"),
+				on: hasNext ? solved : allSolved,
+				onClick: hasNext ? handleNext : () => setPhase("result"),
+			}}
+		/>
 	);
 }

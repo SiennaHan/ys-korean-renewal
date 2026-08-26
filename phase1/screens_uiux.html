@@ -288,7 +288,10 @@
 
   /* 문법 · 읽기 */
   .blank-card { border-radius:12px; border:0; background:#f0f7ff; padding:14px 16px; font-size:18px; line-height:1.7; color:var(--blue-gray-900); font-weight:500; }
-  .blank-card u { text-decoration:none; border-bottom:2px solid var(--blue-gray-400); padding:0 18px; color:transparent; }
+  /* 빈칸은 <u> 대신 빈 <span> 이다 — 앱이 2026-08-25 66b0e94 "빈칸 표기를 통일한다" 에서
+     바꾼 것을 정본이 따라간다. 폭이 고정이라 문장마다 흔들리지 않고, 보조기술이
+     투명한 전각 공백을 읽지 않는다. */
+  .blank-card .blank-slot { display:inline-block; width:38px; margin:0 2px; border-bottom:2px solid var(--blue-gray-400); vertical-align:baseline; }
   .blank-card b { color:var(--blue-500); font-weight:700; }
   .blank-card b.miss { color:var(--blue-gray-900); }
   .chip-wrap { display:flex; flex-wrap:wrap; gap:8px; }
@@ -3997,7 +4000,7 @@ function gapProblem(instr,stimulus=''){return `<section class="problem-card"><he
 function gapPrimary(label,on,action='nextExtra'){return `<button class="primary ${on?'on':''}" ${on?`data-action="${action}"`:''}>${label}</button>`}
 function gapDock(main,right){return `<div class="dock"><div class="main">${main}</div>${right===undefined?'':`<button class="slot" data-action="nextExtra" aria-label="다음" ${right?'':'disabled'}>${icons.next}</button>`}</div>`}
 
-function grammarView(){const g=extra.grammar,p=state.gPicked;const sentence=state.gOk?`${g.q[0]}<b>${g.answer}</b> ${g.q[1]}`:p?`${g.q[0]}<b class="${p===g.answer?'':'miss'}">${p}</b> ${g.q[1]}`:`${g.q[0]}<u>　</u> ${g.q[1]}`;const chips=g.sels.map(s=>{const on=p===s,cls=state.gOk&&on?'ok':on&&s!==g.answer?'no':on?'on':'';return `<button class="chip-opt ${cls}" data-action="gpick" data-value="${s}">${s}</button>`}).join('');const body=gapProblem('빈칸에 알맞은 것을 고르세요.',`<div class="blank-card">${sentence}</div>`)+`<div class="response-area"><div class="chip-wrap">${chips}</div>${p?`<div class="focus-note">${g.focus}</div>`:''}</div>`;return gapFrame(gapAppbar('1급 4과'),gapProgress(1,5),body,gapFeedback(state.gOk?'correct':p?'wrong':null),gapDock(gapPrimary('다음',state.gOk)))}
+function grammarView(){const g=extra.grammar,p=state.gPicked;const sentence=state.gOk?`${g.q[0]}<b>${g.answer}</b> ${g.q[1]}`:p?`${g.q[0]}<b class="${p===g.answer?'':'miss'}">${p}</b> ${g.q[1]}`:`${g.q[0]}<span class="blank-slot"></span> ${g.q[1]}`;const chips=g.sels.map(s=>{const on=p===s,cls=state.gOk&&on?'ok':on&&s!==g.answer?'no':on?'on':'';return `<button class="chip-opt ${cls}" data-action="gpick" data-value="${s}">${s}</button>`}).join('');const body=gapProblem('빈칸에 알맞은 것을 고르세요.',`<div class="blank-card">${sentence}</div>`)+`<div class="response-area"><div class="chip-wrap">${chips}</div>${p?`<div class="focus-note">${g.focus}</div>`:''}</div>`;return gapFrame(gapAppbar('1급 4과'),gapProgress(1,5),body,gapFeedback(state.gOk?'correct':p?'wrong':null),gapDock(gapPrimary('다음',state.gOk)))}
 function currentReading(){return extra.reading[state.readingType]}
 function readingView(){const r=currentReading(),p=state.rPicked;const choices=r.ch.map((x,i)=>{const on=p===i,cls=on?(i===r.a?'correct':'wrong'):'';return `<button class="choice ${cls}" data-action="rpick" data-index="${i}"><span>${x}</span>${r.type==='ox'?`<em>${x==='O'?'내용이 맞아요':'내용이 달라요'}</em>`:''}${on?`<span class="choice-mark">${i===r.a?'✓':'✕'}</span>`:''}</button>`}).join('');const variant=r.type==='ox'?'binary-grid listen-choices':'choice-list';const body=gapProblem('읽고 질문에 답하세요.',`<div class="passage">${r.passage}</div>`)+`<div class="response-area"><p class="q-text">${r.q}</p><div class="${variant}">${choices}</div></div>`;return gapFrame(gapAppbar('1급 6과'),gapProgress(0,3),body,gapFeedback(state.rOk?'correct':p!==null?'wrong':null),gapDock(gapPrimary('다음',state.rOk)))}
 function practiceNav(tabs){return `<div class="practice-nav"><span class="practice-label">학습 목록</span><div class="jamo-tabs" aria-label="학습 묶음">${tabs.map(x=>`<button class="${x===state.practiceSet?'on':''}" data-action="practiceSet" data-value="${x}">${x}</button>`).join('')}</div></div>`}

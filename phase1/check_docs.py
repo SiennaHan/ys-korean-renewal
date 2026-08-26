@@ -576,6 +576,11 @@ def stale_phrases(text: dict[str, str]) -> list[str]:
 
 
 TWIN_ALLOW = {
+    "activity__grammar.html":
+    "목업 v2.9 승격(2026-08-26). 빈칸을 <u>　</u> 에서 <span class=blank-slot> 으로 —"
+    " 앱이 66b0e94 '빈칸 표기를 통일한다'(08-25)에서 먼저 정한 것을 정본이 따라갔다."
+    " 폭이 고정이고 보조기술이 투명한 전각 공백을 읽지 않는다."
+    " captured/ 는 그때 뜬 날것이라 그대로 둔다",
     "activity__failed.html":
     "목업 v2.8 승격(2026-08-26). 한 줄 문장만 떠 있던 것을 아이콘 + 제목 + 설명으로 바꿨다 —"
     " activity_controls_uiux 에 시안으로만 그려져 있고 정본에 올라온 적이 없던 디자인이다."
