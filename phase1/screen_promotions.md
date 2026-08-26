@@ -40,7 +40,7 @@
 | `nav__book__resume` | 활동 이름을 기획자가 확정했다(2026-08-25, 66b0e94 '빈칸 표기를 통일한다') — '빈칸 채워 말하기' → '빈칸 채우기'. 앱이 쓰는 i18n(ko.ts 'fill-blank')과 screens_ref 를 같이 바꿨고, _snapshots/ 는 그때 뜬 날것이라 그대로 둔다. 차이는 이 한 줄뿐이다 |
 | `nav__home__none` | 캡처는 탭바가 위·홈 비활성. screens_ref 가 아래·활성으로 고친 판(08-20) |
 | `nav__home__resume` | 같음 |
-| `nav__home__review` | 같음 |
+| `nav__home__review` | 위와 같은 탭바 사정. **그리고 기획 확정으로 정본이 한 번 더 나아갔다(2026-08-26)** — 홈의 '오늘 할 일' 이 한 자리를 세 갈래가 나눠 쓰다 보니 다시 풀 것이 하나라도 있는 동안 **이어하기 버튼이 사라졌다.** 앱을 열자마자 하려는 일은 '하던 데서 계속' 인데 그 자리를 다시 풀기가 이긴 것이다. 맨 위를 최근 학습 바로가기로 고정하고 다시 풀기를 그 아래로 내렸다 — 그래서 홈 셋 중 이 화면만 카드가 둘이다(resume + review). `screens_SOT.html` 도 같은 판에 고쳤으니 앱이 목업을 앞지른 것이 아니라 둘을 같이 옮겼다. _snapshots/ 는 그때 뜬 날것이라 그대로 둔다 |
 | `game__pc_result` | 캡처는 🔊 가 맨 글자. screens_ref 는 aria-label 붙은 button 으로 감쌌다 — 접근성 개선(2026-08-24) |
 | `game__sp_map` | 장소 카드 10개가 캡처에는 div 였다 — 장소로 들어가는 유일한 경로인데 키보드로 닿지 않아 screens_ref 를 button 으로 고친 판(08-24). 지도 핀은 SVG <g> 라 초점을 못 받는다 |
 | `game__sp_entry` | 위 sp_map 과 같은 사정 — .sp-loc-card 의 버튼 기본값 되돌림(text-align·font·color)이 공유 <style> 블록에 들어갔다 |

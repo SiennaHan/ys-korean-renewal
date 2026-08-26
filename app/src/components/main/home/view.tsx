@@ -73,15 +73,15 @@ export default function HomeView({
 			/>
 
 			<div className="pad">
-				{/* 오늘 할 일은 한 자리다. 세 갈래가 그 자리를 나눠 쓴다 */}
-				{reviewCount > 0 ? (
-					<TaskCard
-						kind="review"
-						title={t("home.taskReview", { count: reviewCount })}
-						body={t("home.taskReviewBody")}
-						onClick={onReview ?? (() => {})}
-					/>
-				) : continueLearning ? (
+				{/*
+				 * 맨 위 자리는 **최근 학습 바로가기**다 (기획 확정 2026-08-26).
+				 *
+				 * 전에는 이 한 자리를 세 갈래가 나눠 쓰면서 다시 풀기가 이겼다.
+				 * 그러면 다시 풀 것이 하나라도 있는 동안 **이어하기 버튼이 사라진다** —
+				 * 앱을 열자마자 하려는 일은 "하던 데서 계속" 이므로 그 자리를 내주면 안 된다.
+				 * 다시 풀기는 아래로 내려 따로 둔다.
+				 */}
+				{continueLearning ? (
 					<TaskCard
 						kind="resume"
 						title={t("home.taskResume")}
@@ -94,6 +94,16 @@ export default function HomeView({
 						title={t("home.taskNone")}
 						body={t("home.taskNoneBody")}
 						onClick={onStartLearning}
+					/>
+				)}
+
+				{/* 다시 풀 것이 있을 때만 그 아래에 붙는다 — 자리를 다투지 않는다 */}
+				{reviewCount > 0 && (
+					<TaskCard
+						kind="review"
+						title={t("home.taskReview", { count: reviewCount })}
+						body={t("home.taskReviewBody")}
+						onClick={onReview ?? (() => {})}
 					/>
 				)}
 

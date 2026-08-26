@@ -4222,11 +4222,20 @@ function tabbar(on){
 /* ── 홈 ── */
 function homeView(){
   const s=D.status, pct=s.ch/s.chTotal, C=2*Math.PI*40;
-  const task={
+  const TASKS={
     resume:{ ic:icons.play, t1:"이어서 학습하기", t2:"1급 6과 · 듣고 질문에 답하기 3/5" },
     review:{ ic:icons.redo, t1:"다시 풀 문항 7개", t2:"어제 틀린 문항부터 만나요" },
     none:{   ic:icons.book, t1:"학습 시작하기",   t2:"교재학습 메뉴에서 시작해보세요" },
-  }[state.task];
+  };
+  /* 맨 위 자리는 최근 학습 바로가기다 — 다시 풀 것이 있어도 그 자리를 내주지 않는다.
+     다시 풀기는 아래에 따로 붙는다. `top` 은 window.top 을 가리므로 쓰지 않는다 */
+  const taskTop = state.task==="none" ? TASKS.none : TASKS.resume;
+  const taskRedo = state.task==="review" ? TASKS.review : null;
+  const taskBtn = t => `<button class="task">
+        <span class="ic">${t.ic}</span>
+        <span class="tx"><span class="t1">${t.t1}</span><span class="t2">${t.t2}</span></span>
+        <span class="go">${icons.right}</span>
+      </button>`;
   const max=Math.max(...D.chart,1);
   return `<div class="scroll">
     <div class="greet"><div class="hi">안녕하세요,</div><div class="name">수현 님</div></div>
@@ -4239,11 +4248,8 @@ function homeView(){
       <div class="streak"><b>${D.streak}일</b> 연속 학습 중</div>
     </div>
     <div class="pad">
-      <button class="task">
-        <span class="ic">${task.ic}</span>
-        <span class="tx"><span class="t1">${task.t1}</span><span class="t2">${task.t2}</span></span>
-        <span class="go">${icons.right}</span>
-      </button>
+      ${taskBtn(taskTop)}
+      ${taskRedo ? taskBtn(taskRedo) : ""}
       <div class="sec-title">학습 현황</div>
       <div class="status">
         <div class="gauge">

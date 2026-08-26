@@ -128,7 +128,7 @@ MODULE_LABELS = {
     "word": "단어 학습하기",
     "roleplay": "AI 롤플레잉",
     "listen-answer": "듣고 질문에 답하기",
-    "fill-blank": "빈칸 채워 말하기",
+    "fill-blank": "빈칸 채우기",   # 기획자 확정 66b0e94(08-25) — 앱의 ko.ts 는 그때 바꿨고 여기만 낡아 있었다
     "read-answer": "읽고 질문에 답하기",
     "mission-chat": "AI 미션 대화",
     "flashcard": "단어 플래시카드",
