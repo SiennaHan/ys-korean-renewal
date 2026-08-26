@@ -1,6 +1,7 @@
 import type { LearningRecord } from "@/api/apiType";
 import { getListenAudio } from "@/api/chat";
 import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
+import { useActivityState } from "@/hooks/use-activity-state";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
@@ -223,13 +224,56 @@ export default function ListenAnswer({
 				}
 			}
 			setSavedAnswers(map);
-			// 첫 번째 안 푼 문제로 이동
-			const firstUnsolved = questions.findIndex((q) => map[q.id] === undefined);
-			if (firstUnsolved > 0) {
-				setCurrentIndex(firstUnsolved);
-			}
 		});
-	}, [bookId, chapterSeq, questions]);
+	}, [bookId, chapterSeq]);
+	/*
+	 * 이어하기 위치는 **서버가 준다** — ko_activity_state.current_item_index.
+	 * 전에는 여기서 정답 기록으로 유추했는데, 첫 시도만 기록하도록 서버를 고친 뒤
+	 * 어긋났다(BLOCKERS §6-c-1). 정답률과 진행 위치는 다른 것이라 갈랐다.
+	 */
+	const { startIndex, saveProgress, complete } = useActivityState({
+		bookId,
+		chapterSeq,
+		menuType: "listen-answer",
+		totalItems: questions.length || null,
+		retry: retryOnly !== null,
+	});
+
+	/** 서버가 준 위치로 한 번만 옮긴다. null 은 "아직 모른다" 다 */
+	const jumped = useRef(false);
+	useEffect(() => {
+		if (jumped.current || startIndex === null) return;
+		jumped.current = true;
+		if (startIndex > 0 && startIndex < questions.length) {
+			setCurrentIndex(startIndex);
+		}
+	}, [startIndex, questions.length]);
+
+	/** 위치가 바뀌면 알린다. ✕ 로 나가도 이 값이 이미 저장돼 있다 */
+	useEffect(() => {
+		saveProgress(currentIndex);
+	}, [currentIndex, saveProgress]);
+
+	/*
+	 * 결과로 넘어갈 때 한 번 완료를 알린다. 세 수의 뜻은 dev_spec §2.1 —
+	 * answered 는 응답 수, graded 는 채점 대상, correct 는 **첫 시도** 정답이다.
+	 */
+	const reported = useRef(false);
+	useEffect(() => {
+		if (phase !== "result" || reported.current) return;
+		reported.current = true;
+		// wrongAttempts 는 틀린 차례대로 담는 Set 이라 비어 있지 않으면 첫 시도 오답이다.
+		// 결과 화면의 firstWrongOf 와 같은 판정인데 그쪽은 그 블록 안에만 있어서 여기서 다시 센다
+		const wrongCount = questions.filter(
+			(q) => (wrongAttempts[q.id]?.size ?? 0) > 0,
+		).length;
+		const skippedCount = questions.filter((q) => skipped.includes(q.id)).length;
+		void complete({
+			answeredCount: questions.length - skippedCount,
+			gradedCount: questions.length - skippedCount,
+			correctCount: questions.length - wrongCount - skippedCount,
+		});
+	}, [phase, questions, wrongAttempts, skipped, complete]);
 
 	const question = questions[currentIndex] as ListenQuestion | undefined;
 	const instruction = useInstruction(question, "activity.instrListen");

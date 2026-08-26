@@ -16,6 +16,7 @@ import {
 	WordPreviewList,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
+import { useActivityState } from "@/hooks/use-activity-state";
 import { type WordItem, wordList } from "@/shared/data/word-list";
 import { wordQuizList } from "@/shared/data/word-quiz";
 import { nextLessonActivity } from "@/shared/lesson-flow";
@@ -314,14 +315,53 @@ export default function WordLearning({
 				}
 			}
 			setSavedAnswers(map);
-			// 이미 푼 퀴즈가 있으면 첫 미풀이 퀴즈로 이어서 이동 (page 0 = 단어목록, 1~ = 퀴즈)
-			// 아무것도 안 풀었으면(firstUnsolved === 0) 단어목록(page 0)에 그대로 머문다
-			const firstUnsolved = quizzes.findIndex((q) => map[q.id] === undefined);
-			if (firstUnsolved > 0) {
-				setCurrentPage(firstUnsolved + 1);
-			}
 		});
-	}, [bookId, chapterSeq, quizzes]);
+	}, [bookId, chapterSeq]);
+	/*
+	 * 이어하기 위치는 **서버가 준다** — ko_activity_state.current_item_index.
+	 * 전에는 여기서 정답 기록으로 유추했는데, 첫 시도만 기록하도록 서버를 고친 뒤
+	 * 어긋났다(BLOCKERS §6-c-1). 정답률과 진행 위치는 다른 것이라 갈랐다.
+	 */
+	const { startIndex, saveProgress, complete } = useActivityState({
+		bookId,
+		chapterSeq,
+		menuType: "word",
+		totalItems: quizzes.length || null,
+		retry: retryOnly !== null,
+	});
+
+	/** 서버가 준 위치로 한 번만 옮긴다. null 은 "아직 모른다" 다 */
+	const jumped = useRef(false);
+	useEffect(() => {
+		if (jumped.current || startIndex === null) return;
+		jumped.current = true;
+		if (startIndex > 0 && startIndex <= quizzes.length) {
+			setCurrentPage(startIndex);
+		}
+	}, [startIndex, quizzes.length]);
+
+	/** 위치가 바뀌면 알린다. ✕ 로 나가도 이 값이 이미 저장돼 있다 */
+	useEffect(() => {
+		saveProgress(currentPage);
+	}, [currentPage, saveProgress]);
+
+	/*
+	 * 결과로 넘어갈 때 한 번 완료를 알린다. 세 수의 뜻은 dev_spec §2.1 —
+	 * answered 는 응답 수, graded 는 채점 대상, correct 는 **첫 시도** 정답이다.
+	 */
+	const reported = useRef(false);
+	useEffect(() => {
+		if (phase !== "result" || reported.current) return;
+		reported.current = true;
+		const wrongCount = quizzes.filter(
+			(q) => firstWrong[q.id] !== undefined,
+		).length;
+		void complete({
+			answeredCount: quizzes.length,
+			gradedCount: quizzes.length,
+			correctCount: quizzes.length - wrongCount,
+		});
+	}, [phase, quizzes, firstWrong, complete]);
 
 	// page 0 = word list, pages 1..N = quiz questions
 	const totalPages = 1 + quizzes.length;

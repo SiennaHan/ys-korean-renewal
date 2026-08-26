@@ -1,4 +1,5 @@
 import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
+import { useActivityState } from "@/hooks/use-activity-state";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
 	ActivityAppBar,
@@ -249,7 +250,23 @@ export default function FillBlank({
 		Record<number, { answer: string; correct: boolean }>
 	>({});
 
-	/** Fetch existing records on mount + 첫 미풀이 문제로 이동 */
+	/*
+	 * 이어하기 위치는 **서버가 준다** — ko_activity_state.current_item_index.
+	 *
+	 * 전에는 여기서 `findIndex(q => !map[q.id]?.correct)` 로 유추했다. 첫 시도만
+	 * 기록하도록 서버를 고친 뒤 그 유추가 어긋났다 — 재시도로 맞힌 문항이 영원히
+	 * "안 푼 것" 으로 남아 새로고침마다 그리로 되돌아갔다(BLOCKERS §6-c-1).
+	 * 정답률과 진행 위치는 다른 것이라 갈랐다.
+	 */
+	const { startIndex, saveProgress, complete } = useActivityState({
+		bookId,
+		chapterSeq,
+		menuType: "fill-blank",
+		totalItems: questions.length || null,
+		retry: retryOnly !== null,
+	});
+
+	/** 지난 답 복원 — 위치가 아니라 **답**만 쓴다 */
 	useEffect(() => {
 		if (!bookId || !chapterSeq) return;
 		getLearningRecords(bookId, chapterSeq, "fill-blank").then((records) => {
@@ -263,12 +280,23 @@ export default function FillBlank({
 				}
 			}
 			setSavedAnswers(map);
-			const firstUnsolved = questions.findIndex((q) => !map[q.id]?.correct);
-			if (firstUnsolved > 0) {
-				setCurrentIndex(firstUnsolved);
-			}
 		});
-	}, [bookId, chapterSeq, questions]);
+	}, [bookId, chapterSeq]);
+
+	/** 서버가 준 위치로 한 번만 옮긴다. null 은 "아직 모른다" 다 */
+	const jumped = useRef(false);
+	useEffect(() => {
+		if (jumped.current || startIndex === null) return;
+		jumped.current = true;
+		if (startIndex > 0 && startIndex < questions.length) {
+			setCurrentIndex(startIndex);
+		}
+	}, [startIndex, questions.length]);
+
+	/** 문항이 바뀌면 알린다. ✕ 로 나가도 이 값이 이미 저장돼 있다 */
+	useEffect(() => {
+		saveProgress(currentIndex);
+	}, [currentIndex, saveProgress]);
 
 	const question = questions[currentIndex];
 	const instruction = useInstruction(question, "activity.instrGrammar");
@@ -437,6 +465,29 @@ export default function FillBlank({
 
 	const hasPrev = currentIndex > 0;
 	const hasNext = currentIndex < totalSteps - 1;
+
+	/*
+	 * 결과 화면으로 넘어갈 때 한 번 완료를 알린다.
+	 *
+	 * 세 수의 뜻은 dev_spec §2.1 에 있다 — answered 는 응답한 수(정오답 무관),
+	 * graded 는 채점 대상(건너뛴 것은 뺀다), correct 는 **첫 시도** 정답이다.
+	 * 건너뛴 문항은 오답이 아니라 안 푼 것이므로 분자·분모에서 모두 뺀다.
+	 *
+	 * 서버가 ko_learning_record 로 다시 셀 수도 있지만 그러면 건너뜀을 알 수 없다 —
+	 * 그 표에는 남지 않기 때문이다. 그래서 화면이 세어 보낸다.
+	 */
+	const reported = useRef(false);
+	useEffect(() => {
+		if (phase !== "result" || reported.current) return;
+		reported.current = true;
+		const wrongCount = questions.filter((q) => firstWrong[q.id]).length;
+		const skippedCount = questions.filter((q) => skipped.includes(q.id)).length;
+		void complete({
+			answeredCount: questions.length - skippedCount,
+			gradedCount: questions.length - skippedCount,
+			correctCount: questions.length - wrongCount - skippedCount,
+		});
+	}, [phase, questions, firstWrong, skipped, complete]);
 
 	if (phase === "result") {
 		const wrongIds = questions.filter((q) => firstWrong[q.id]).map((q) => q.id);

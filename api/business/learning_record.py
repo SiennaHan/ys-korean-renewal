@@ -21,11 +21,18 @@ async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, q
 
         # 다시 풀기 예약·제거. 표가 아직 없는 환경에서도 학습 기록은 남아야 하므로 감싼다
         try:
-            if isCorrect and not skipped:
+            if isCorrect and not skipped and review:
+                # **다시 풀기에서 맞혔을 때만 뺀다.**
+                #
+                # 처음엔 "맞히면 뺀다" 로 썼는데 명세와 반대였다 — 같은 세션의
+                # 재시도로 맞힌 것까지 빠져서, 첫 시도에 틀린 문항이 큐에 하나도
+                # 남지 않았다. 브라우저에서 큐가 비어 있는 것으로 드러났다.
+                # 명세: "재시도로 맞혀도 복습 큐에 남는다 · 제거 조건은 다시
+                # 풀기에서 정답 1회" (dev_spec §2.1 · §2.3)
                 await repo_review_queue.remove(
                     userId, bookId, chapterSeq, menuType, sub, questionId, db
                 )
-            elif created or review:
+            elif created or (review and not isCorrect):
                 # 첫 시도 오답·건너뜀은 예약한다(created).
                 # 다시 풀기 세션에서 또 틀리면 attempts 를 올리고 available_at 을
                 # 다시 미룬다(review) — add() 가 있으면 올리고 없으면 만든다.
