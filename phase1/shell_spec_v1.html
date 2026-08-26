@@ -301,7 +301,7 @@
 </table></div>
 <p class="qa"><b>어휘 문제 진행은 첫 퀴즈를 1/N로 계산</b>한다. 미리보기는 분모에 넣지 않으며, 퀴즈가 2~15개면 다른 분절형과 마찬가지로 숫자는 화면에 쓰지 않는다. 로딩 화면은 현재 위치와 전체 문항 수를 이미 아는 경우에만 기존 진행바를 유지한다.</p>
 <h4>긴 활동의 진행 표시 <span class="pill new">플래시카드 확인 반영</span></h4>
-<p>세그먼트바는 문항이 많아지면 각 칸이 손톱만 해져 상태를 읽을 수 없다. 실제로 <b>플래시카드는 세트당 10~45장</b>(<code>flashcard_word.ts</code> 실측 — 5번 세트가 45장, 8번이 10장)이라 45칸짜리 바가 나온다.</p>
+<p>세그먼트바는 문항이 많아지면 각 칸이 손톱만 해져 상태를 읽을 수 없다. 실제로 <b>플래시카드는 세트당 10~44장</b>(<code>flashcard_word.ts</code> 실측 — 가장 큰 것이 1급 8과 44장, 가장 작은 것이 11과 10장. 다시 세려면 <code>build-content.py --check</code> 의 <code>n6_flashcard_card</code>)이라 44칸짜리 바가 나온다.</p>
 <div class="tablewrap"><table>
   <tr><th>문항 수</th><th>표시 방식</th></tr>
   <tr><td>1개</td><td><b>숨김</b> — 늘 꽉 찬 한 칸은 현재 위치 정보를 주지 못하고 자리만 차지한다</td></tr>
@@ -309,7 +309,7 @@
   <tr><td>16개 이상</td><td><b>연속 진행바 + <code>n/N</code></b> — 개별 칸을 포기하고 채워지는 바 하나로.
       <code>n/N</code>은 <b>바 오른쪽에</b> 붙인다(얇은 바 위에는 얹을 자리가 없다)</td></tr>
 </table></div>
-<p class="qa">이 규칙 덕분에 <b>콘텐츠를 세트로 쪼갤 필요가 없다.</b> 45장을 한 세션에 다 못 끝내는 문제는 §1의 이어하기(문항 단위 위치 저장)가 이미 해결하므로, 분량 때문에 세트를 분할하는 설계는 채택하지 않는다.</p>
+<p class="qa">이 규칙 덕분에 <b>콘텐츠를 세트로 쪼갤 필요가 없다.</b> 44장을 한 세션에 다 못 끝내는 문제는 §1의 이어하기(문항 단위 위치 저장)가 이미 해결하므로, 분량 때문에 세트를 분할하는 설계는 채택하지 않는다.</p>
 
 <h3>3.2 피드백 (문항 응답 직후) <span class="pill new">S1 확정 반영</span></h3>
 <p><b>즉시 채점</b>이다 — 선택지를 누르는 순간 판정한다. 별도 [정답 확인] 동작은 없다.</p>
@@ -1351,7 +1351,7 @@ y=648  마이크 영역                  360×92
   <tr><td>읽기</td><td>지문 + ChoiceList(2~4)</td><td>지문·선택지 목록은 각자 필요한 영역에서 스크롤</td></tr>
   <tr><td>AI 롤플레잉</td><td>대화 턴 + <b>MicZone</b></td><td>피드백이 <code>speaking</code> 상태 사용</td></tr>
   <tr><td>AI 미션 대화</td><td><b>ChatThread</b> + 미션 체크리스트</td><td>진행바 = 미션 3칸 · 결과는 기존 리포트 · <b>종료 확인 다이얼로그</b></td></tr>
-  <tr><td>플래시카드</td><td><b>FlipCard</b> + [몰라요]/[알아요]</td><td>진행바 색 의미 교체 · <b>최대 45장 → continuous 모드 필수</b></td></tr>
+  <tr><td>플래시카드</td><td><b>FlipCard</b> + [몰라요]/[알아요]</td><td>진행바 색 의미 교체 · <b>최대 44장 → continuous 모드 필수</b></td></tr>
   <tr><td>자모</td><td>유형별 5종(듣기·조합·쓰기 캔버스·선택)</td><td>쓰기 유형은 <b>WritingCanvas</b>가 슬롯 차지, 피드백은 OCR 결과</td></tr>
 </table></div>
 <div class="callout">
@@ -1932,9 +1932,9 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
     <tr><td>어휘 · 문법 · 듣기 · 읽기 · 롤플레잉</td><td><b>서버</b> — <code>content_counts.py</code></td>
         <td>1급 과당 평균 26.7 (25~30)</td></tr>
     <tr><td><b>플래시카드</b></td><td><b>프론트 번들</b> — <code>flashcard.ts</code> · <code>flashcard_word.ts</code></td>
-        <td>12세트 327장 · 세트별 <b>10~45장</b></td></tr>
+        <td>세트별 <b>10~44장</b>. 총수는 여기 적지 않는다 — <code>build-content.py --check</code> 의 <code>n6_flashcard</code>·<code>n6_flashcard_card</code>(2026-08-25 에 1급뿐이던 것이 1~8급으로 넓어졌다)</td></tr>
     <tr><td><b>미션 대화</b></td><td><b>프론트 번들</b> — <code>module.ts</code></td><td>117 모듈</td></tr>
-    <tr><td><b>자모</b></td><td><b>프론트 번들</b> — <code>module.ts</code> · <code>problem.ts</code></td>
+    <tr><td><b>자모</b></td><td><b>프론트 번들</b> — <code>module.ts</code> · <code>jamo.ts</code>(원장 <code>n8_jamo</code>. 2026-08-24 에 <code>problem.ts</code> 에서 옮겼다)</td>
         <td>유형별 6~20 모듈</td></tr>
   </table></div>
   <p><b>그래서 <code>enter</code>가 <code>totalItems</code>를 클라이언트에서 받는다.</b>
@@ -2003,7 +2003,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
   <ul>
     <li><b>플래시카드</b> — 진행바 색 의미가 바뀐다: <code>fill-known</code>(알아요) / <code>fill-unknown</code>(몰라요).
         <b>자기 평가이므로 정답/오답 의미색을 쓰지 않는다.</b> 판정 버튼에 <b>비활성 상태를 추가</b>한다 —
-        카드를 뒤집기 전에는 누를 수 없어야 한다. 과당 최대 45장이므로 <b>연속 진행바 경로가 반드시 동작</b>해야 한다.</li>
+        카드를 뒤집기 전에는 누를 수 없어야 한다. 과당 최대 44장이므로 <b>연속 진행바 경로가 반드시 동작</b>해야 한다.</li>
     <li><b>롤플레잉</b> — 밴드에 마이크 영역. 오답 개념이 없고 <b>녹음·분석을 한 대사는 일치 여부와 무관하게 응답</b>이다. 녹음 없이 건너뛴 대사만 미해결로 남긴다.</li>
     <li><b>미션 대화</b> — 진행 단위가 문항이 아니라 <b>미션 키워드</b>다. 종료 시 확인 다이얼로그(§29).
         미션 키워드 목록은 <b>가로로 잘리지 않게</b> 하고, 지시문 전문은 브리핑 화면이 담당한다.</li>
@@ -2106,7 +2106,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
   <tr><td>3</td><td>같은 오답을 연속으로 3번 탭</td><td><b>매번</b> 진동과 효과음이 난다</td></tr>
   <tr><td>4</td><td>다음 날 홈 확인</td><td>어제 첫 시도에 틀린 문항이 목록에 있다</td></tr>
   <tr><td>5</td><td>완료한 활동 재진입 → 중간에 이탈</td><td>완료 상태·정답률·<code>completedAt</code> 모두 <b>불변</b></td></tr>
-  <tr><td>6</td><td>플래시카드 45장 활동 진입</td><td>분절이 아니라 <b>연속 진행바 + <code>n/N</code></b></td></tr>
+  <tr><td>6</td><td>플래시카드 44장 활동 진입(1급 8과 — 가장 큰 세트)</td><td>분절이 아니라 <b>연속 진행바 + <code>n/N</code></b></td></tr>
   <tr><td>7</td><td>듣기 활동에서 2개·4개 문항을 오가며 진행</td><td><b>첫 선택지의 시작 y가 동일</b>하고 빈 공간은 목록 아래에 남는다</td></tr>
   <tr><td>8</td><td>UI 언어 5종 전환</td><td>미번역 0. 가장 긴 문자열(보통 베트남어)에서 레이아웃이 깨지지 않는다</td></tr>
   <tr><td>9</td><td>폭 320 · 긴 문장 4개</td><td>min-height 64·padding 16 18을 유지하고 <b>선택지 목록만 스크롤</b>. 하단 버튼은 고정</td></tr>

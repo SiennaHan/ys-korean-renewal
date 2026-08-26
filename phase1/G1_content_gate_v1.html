@@ -507,7 +507,7 @@ updated_at / updated_by</pre>
     <tr><td>세그먼트바에 45칸은 못 그림</td><td><span class="pill new">누락</span> G2에 표시 규칙이 없었음 → <b>이번에 추가</b>(16개 이상은 연속 진행바 + n/N)</td><td>G2에서 해결</td></tr>
   </table></div>
   <p><b>UI 관점에서도 분할이 불리하다.</b> 과 목록에 "단어 플래시카드 (1/3)(2/3)(3/3)"처럼 세 줄이 생기면, 다른 활동은 과당 1줄인데 <b>플래시카드만 여러 줄이 되어 목록이 불균형</b>해진다. 8과는 활동이 7개인데 플래시카드 3개가 붙어 10줄이 된다.</p>
-  <p><b>확정: 과당 1세트 유지</b>(12세트, 10~45장). 분량 문제는 이어하기가, 표시 문제는 G2 진행바 규칙이 담당한다.</p>
+  <p><b>확정: 과당 1세트 유지</b>(세트당 10~44장). 분량 문제는 이어하기가, 표시 문제는 G2 진행바 규칙이 담당한다.<br><b>세트 수는 여기 적지 않는다</b> — 심의 당시 1급 12세트였고 2026-08-25 에 2~8급까지 저작했다. 지금 수는 <code>build-content.py --check</code> 의 <code>n6_flashcard</code>.</p>
   <p><b>시트 구조는 정규화했다</b> — <code>n6_flashcard</code>(세트 원장) + <code>n6_flashcard_card</code>(카드 원장) 2탭. 듣기(script/line/repeat)와 같은 부모-자식 패턴이다.</p>
   <div class="callout warn" style="margin-top:12px">
     <div class="t">이 건이 드러낸 문서 간 불일치</div>

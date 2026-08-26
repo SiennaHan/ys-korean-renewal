@@ -185,7 +185,7 @@
     <tr><td>총 문항 수</td><td>같은 파일의 <span class="file">get*Count()</span></td>
       <td><span class="file">done</span> 판정의 분모다</td></tr>
     <tr><td>심화 — 플래시카드</td><td><span class="file">flashcard.ts</span> (급 + 과로 찾는다)</td>
-      <td><b>12세트 327장이 전부 1급 것이다</b> — 2~8급은 늘 <span class="file">off</span></td></tr>
+      <td><b>1~8급 전부에 있다</b>(2026-08-25 원장 배선) — 2~8급도 <span class="file">on</span> 이다.<br>세트 수는 여기 적지 않는다 — <code>build-content.py --check</code> 의 <code>n6_flashcard</code></td></tr>
     <tr><td>심화 — 미션 대화</td><td><span class="file">module.ts</span> 의 <span class="file">scene_type==="mission_chat"</span></td>
       <td><b>117모듈</b> — 8급 전체에 과마다 하나씩 고르게 있다</td></tr>
   </tbody>
@@ -297,11 +297,12 @@
     <span class="file">/book/chapter/unit/…/$id</span> 에 남아 <b>콘텐츠 ID 를 URL 에 노출한다.</b>
     명세가 없애라고 한 바로 그것이다. <b>이 화면이 실제로 여는 길</b>이므로
     이관 우선순위가 높다 — <span class="file">masterplan_v3</span> §18 의 1번</div></div></li>
-  <li><div><div class="h">2~8급에는 플래시카드가 늘 잠겨 있다</div>
-    <div class="d">327장이 전부 1급 것이라 2~8급에서는 심화학습 두 줄 중 하나가 항상
-    <span class="file">off</span> 다. <b>고장이 아니라 콘텐츠가 없는 것</b>인데,
-    화면만 보면 구분되지 않는다. 급별 콘텐츠를 만들지, 아니면 <b>1급 전용 활동으로
-    명시</b>할지 정해야 한다 — <span class="file">access_and_pricing_v1</span> §07 의 5번과 같은 물음이다</div></div></li>
+  <li><div><div class="h">2~8급에는 플래시카드가 늘 잠겨 있다 <span class="pill done">해소 2026-08-25</span></div>
+    <div class="d"><b>급별 콘텐츠를 만드는 쪽으로 정해졌다.</b> 2~8급 플래시카드를 원장에
+    저작해 배선했고 이제 두 줄이 다 켜진다. "1급 전용 활동으로 명시" 안은 버렸다 —
+    <span class="file">access_and_pricing_v1</span> §07 의 5번도 같이 해소됐다.<br>
+    <b>그래도 남는 것</b> — 콘텐츠가 없어 꺼진 줄과 고장으로 꺼진 줄을 화면에서 구분할 수
+    없다는 문제는 그대로다. 플래시카드에서만 안 보이게 됐을 뿐이다</div></div></li>
 </ol>
 
 <h2><span class="n">08</span>권한 잠금이 들어갈 자리</h2>
@@ -341,9 +342,9 @@
     <div class="d">§06 의 권고는 <b>급 단위로 한 번</b>이다. 응답에 과가 들어가야 하므로
     <span class="file">/learning-record/progress</span> 의 모양이 바뀐다 —
     <span class="file">dev_spec_v1</span> §16 에 올려 개발자와 정할 물음이다.</div></div></li>
-  <li><div><div class="h">2~8급 플래시카드를 만들지, 1급 전용으로 명시할지 <span class="pill open">콘텐츠</span></div>
-    <div class="d">§07 의 6번. 만들면 급마다 값이 같아지고, 명시하면 화면에서
-    "1급에만 있어요" 를 말해 줘야 한다. <b>콘텐츠 제작 여부가 걸린 기획 물음이다.</b></div></div></li>
+  <li><div><div class="h">2~8급 플래시카드를 만들지, 1급 전용으로 명시할지 <span class="pill done">해소 2026-08-25</span></div>
+    <div class="d">§07 의 6번. <b>만드는 쪽으로 정해졌다</b> — 원장에 2~8급을 저작해 배선했고
+    이제 급마다 값이 나란하다. 화면에서 "1급에만 있어요" 를 말할 일은 없어졌다.</div></div></li>
   <li><div><div class="h">목업 대조에 이 화면을 넣을지 <span class="pill open">도구</span></div>
     <div class="d">권/급 어긋남이 <b>목업 대조가 이 화면을 안 봐서</b> 빠져나갔다.
     캡처(<span class="file">nav__book__resume.html</span>)는 이미 있으므로
