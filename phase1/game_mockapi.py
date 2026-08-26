@@ -131,6 +131,18 @@ class H(BaseHTTPRequestHandler):
                 f.write(raw)
             return self._send({'result':True,'code':200,'message':None,
                                'data':{'saved':name,'bytes':len(raw)}})
+        # 학생 로그인 — **비밀번호를 확인하지 않는다.** 로컬에는 계정이 없고
+        # (.env 가 이 목을 본다) 어드민 계정은 실서버 것이라 여기서 안 먹는다.
+        # 로그인이 필요한 화면(마이페이지)을 감사·확인하려고 계약(LoginToken)대로
+        # 토큰과 사용자만 낸다. **인증을 흉내 낼 뿐 인증이 아니다.**
+        if self.path.rstrip('/') == '/user/sign/login':
+            n = int(self.headers.get('Content-Length', 0))
+            body = json.loads(self.rfile.read(n) or b'{}')
+            email = body.get('email') or 'local@example.com'
+            return self._send({'result':True,'code':200,'message':None,'data':{
+                'token':'local-dev-mock',
+                'user':{'id':1,'email':email,'name':'로컬 확인용',
+                        'role':'student','schoolCode':None}}})
         # 게스트 로그인 — 토큰 없이 {} 만 주면 앱이 "undefined" 를 토큰으로 저장하고
         # 들어온 것처럼 보이다가 모든 요청이 조용히 실패한다. 실서버처럼 토큰을 낸다.
         if self.path.rstrip('/') == '/user/sign/guest':
