@@ -91,7 +91,7 @@ const SearchInputField = ({
 		<div className="relative flex h-[48px] w-full items-center overflow-hidden rounded-[10px] bg-white">
 			<input
 				type="text"
-				className="h-full w-full bg-transparent pr-[72px] pl-[12px] font-medium text-[#383a3f] text-[14px] leading-[20px] placeholder:text-[#adb3be] focus:outline-none"
+				className="h-full w-full bg-transparent pr-[72px] pl-[12px] font-medium text-[14px] text-text-strong leading-[20px] placeholder:text-text-sub focus:outline-none"
 				value={searchWord}
 				onChange={onSearchChanged}
 				placeholder={t("clip.searchPlaceholder")}
@@ -100,12 +100,12 @@ const SearchInputField = ({
 				<button
 					type="button"
 					onClick={onClear}
-					className="-translate-y-1/2 absolute top-1/2 right-[36px] flex size-[24px] items-center justify-center text-[#adb3be]"
+					className="-translate-y-1/2 absolute top-1/2 right-[36px] flex size-[24px] items-center justify-center text-icon-normal"
 				>
 					<X size={16} />
 				</button>
 			)}
-			<div className="-translate-y-1/2 absolute top-1/2 right-[12px] flex size-[24px] items-center justify-center rounded-full bg-[#0180ff]">
+			<div className="-translate-y-1/2 absolute top-1/2 right-[12px] flex size-[24px] items-center justify-center rounded-full bg-fill-primary">
 				<Search size={16} className="text-white" />
 			</div>
 		</div>
@@ -132,8 +132,11 @@ const CategoryChips = ({
 						onClick={() => onSelect(cat)}
 						className={`shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] ${
 							isSelected
-								? "border border-[#59acff] bg-[#dbedff] font-bold text-[#0a6acb]"
-								: "border border-transparent bg-white font-semibold text-[#c8ccd3]"
+								? // 고른 칩의 테두리(blue-300)와 글자(blue-700)는 semantic 에 이름이 없다.
+									// 활동 셸의 .chip-opt.on 은 또 다른 값(#e9f2fc)을 쓰고 있어서,
+									// 어느 쪽이 정본인지 정해지기 전에는 옮기지 않는다
+									"border border-[#59acff] bg-background-choice font-bold text-[#0a6acb]"
+								: "border border-transparent bg-white font-semibold text-text-sub"
 						}`}
 					>
 						{t(CATEGORY_KEY[cat])}
@@ -172,7 +175,7 @@ const VideoCard = ({
 			<span>
 				{parts.map((part, index) =>
 					part.toLowerCase() === keyword.toLowerCase() ? (
-						<span key={index} className="font-bold text-[#383a3f]">
+						<span key={index} className="font-bold text-text-strong">
 							{part}
 						</span>
 					) : (
@@ -196,7 +199,9 @@ const VideoCard = ({
 					alt={video.title}
 					className="absolute inset-0 h-full w-full object-cover"
 				/>
-				{/* 시간 뱃지 */}
+				{/* 시간 뱃지 — 썸네일 위에 얹는 어두운 오버레이다. semantic 에 "그림 위
+				    오버레이" 역할이 없고 이 화면에만 있어서, 이 하나 때문에 토큰을
+				    만들지 않고 값을 남긴다(blue-gray-900 과 같은 값) */}
 				<div className="absolute top-[12px] left-[12px] rounded-[6px] bg-[#383a3f] px-[8px] py-[2px]">
 					<span className="whitespace-nowrap font-medium text-[12px] text-white leading-[16px]">
 						{formatTime(video.start)}
@@ -210,17 +215,17 @@ const VideoCard = ({
 
 			{/* 제목 + 스크립트 + 메뉴 */}
 			<div className="flex flex-col gap-[2px]">
-				<div className="font-medium text-[#383a3f] text-[14px] leading-[20px]">
+				<div className="font-medium text-[14px] text-text-strong leading-[20px]">
 					{highlightKeyword(video.content, video.word)}
 				</div>
 				<div className="flex items-center justify-between">
-					<p className="w-[296px] truncate font-medium text-[#383a3f] text-[14px] leading-[20px]">
+					<p className="w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]">
 						{video.title}
 					</p>
 					<button
 						type="button"
 						onClick={() => onMenuClick(video)}
-						className="flex size-[24px] shrink-0 items-center justify-center text-[#7f848d]"
+						className="flex size-[24px] shrink-0 items-center justify-center text-text-sub"
 					>
 						<MoreVertical size={16} />
 					</button>
@@ -334,17 +339,17 @@ const ReportBottomSheet = ({
 		<>
 			{/* 딤드 배경 */}
 			<div
-				className="fixed inset-0 z-40 bg-[rgba(56,58,63,0.5)]"
+				className="absolute inset-0 z-40 bg-black/40"
 				onClick={onClose}
 				onKeyDown={(e) => e.key === "Escape" && onClose()}
 			/>
 			{/* 바텀시트 */}
-			<div className="fixed right-0 bottom-0 left-0 z-50 rounded-t-[16px] bg-white pb-[40px]">
+			<div className="absolute inset-x-0 bottom-0 z-50 rounded-t-[16px] bg-white pb-[40px]">
 				<div className="flex items-center justify-end px-[16px] pt-[16px] pb-[8px]">
 					<button
 						type="button"
 						onClick={onClose}
-						className="flex size-[24px] items-center justify-center text-[#383a3f]"
+						className="flex size-[24px] items-center justify-center text-text-strong"
 					>
 						<X size={14} />
 					</button>
@@ -354,7 +359,7 @@ const ReportBottomSheet = ({
 					onClick={() => onReport("audio_quality")}
 					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px]"
 				>
-					<div className="flex size-[24px] items-center justify-center">
+					<div className="flex size-[24px] items-center justify-center text-icon-strong">
 						<svg
 							aria-hidden="true"
 							width="18"
@@ -365,11 +370,11 @@ const ReportBottomSheet = ({
 						>
 							<path
 								d="M9 1C4.58 1 1 4.58 1 9s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 11.5a1 1 0 110-2 1 1 0 010 2zM9.75 9a.75.75 0 01-1.5 0V5.5a.75.75 0 011.5 0V9z"
-								fill="#383A3F"
+								fill="currentColor"
 							/>
 						</svg>
 					</div>
-					<span className="font-medium text-[#383a3f] text-[16px] leading-[24px]">
+					<span className="font-medium text-[16px] text-text-strong leading-[24px]">
 						{t("clip.reportAudio")}
 					</span>
 				</button>
@@ -378,7 +383,7 @@ const ReportBottomSheet = ({
 					onClick={() => onReport("inappropriate")}
 					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px]"
 				>
-					<div className="flex size-[24px] items-center justify-center">
+					<div className="flex size-[24px] items-center justify-center text-icon-strong">
 						<svg
 							aria-hidden="true"
 							width="16"
@@ -389,13 +394,20 @@ const ReportBottomSheet = ({
 						>
 							<path
 								d="M6 4a6 6 0 1112 0H6z"
-								fill="#383A3F"
+								fill="currentColor"
 								transform="translate(-2, 2) scale(0.8)"
 							/>
-							<rect x="2" y="15" width="12" height="2" rx="1" fill="#383A3F" />
+							<rect
+								x="2"
+								y="15"
+								width="12"
+								height="2"
+								rx="1"
+								fill="currentColor"
+							/>
 						</svg>
 					</div>
-					<span className="font-medium text-[#4b505a] text-[16px] leading-[24px]">
+					<span className="font-medium text-[16px] text-text-strong leading-[24px]">
 						{t("clip.reportInappropriate")}
 					</span>
 				</button>
@@ -570,11 +582,14 @@ export default function Content4() {
 	const hasResults = results.length > 0;
 	const hasSearchWord = searchWord.trim().length >= 2;
 
+	// 배경 #f9fafc 는 게임 목록(목업 정본)이 쓰는 목록 화면 배경과 같은 값이다.
+	// semantic 의 background-base 는 #f6f7f8 라 여기만 바꾸면 두 목록이 갈린다 —
+	// 두 값 중 무엇이 목록 배경인지는 셸 명세가 정할 일이라 그대로 둔다.
 	return (
 		<div className="flex h-full w-full flex-col bg-[#f9fafc]">
 			{/* 타이틀 */}
 			<div className="mt-[20px] flex h-[48px] items-center px-[16px]">
-				<span className="font-bold text-[#383a3f] text-[20px] leading-[32px]">
+				<span className="font-bold text-[20px] text-text-strong leading-[32px]">
 					{t("clip.title")}
 				</span>
 			</div>
@@ -604,10 +619,10 @@ export default function Content4() {
 					<>
 						{/* 검색 결과 헤더 */}
 						<div className="flex items-center justify-between px-[16px] py-[12px]">
-							<span className="font-bold text-[#0180ff] text-[17px] leading-[26px]">
+							<span className="font-bold text-[17px] text-text-primary leading-[26px]">
 								'{searchWord}'
 							</span>
-							<span className="font-semibold text-[#7f848d] text-[12px] leading-[18px]">
+							<span className="font-semibold text-[12px] text-text-sub leading-[18px]">
 								{t("clip.resultCount", { count: results.length })}
 							</span>
 						</div>
@@ -624,13 +639,13 @@ export default function Content4() {
 												onClose={() => setPlayingVideo(null)}
 											/>
 											<div className="flex items-center justify-between">
-												<p className="w-[296px] truncate font-medium text-[#383a3f] text-[14px] leading-[20px]">
+												<p className="w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]">
 													{item.title}
 												</p>
 												<button
 													type="button"
 													onClick={() => onMenuClick(item)}
-													className="flex size-[24px] shrink-0 items-center justify-center text-[#7f848d]"
+													className="flex size-[24px] shrink-0 items-center justify-center text-text-sub"
 												>
 													<MoreVertical size={16} />
 												</button>
@@ -657,7 +672,7 @@ export default function Content4() {
 							alt=""
 							className="size-[64px]"
 						/>
-						<p className="mt-[8px] text-center font-semibold text-[#24425f] text-[16px] leading-[24px]">
+						<p className="mt-[8px] text-center font-semibold text-[16px] text-text-heading leading-[24px]">
 							{t("clip.emptyLine1")}
 							<br />
 							{t("clip.emptyLine2")}
