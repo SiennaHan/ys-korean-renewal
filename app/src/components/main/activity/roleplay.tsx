@@ -199,6 +199,8 @@ export function RoleplayScreen({
 	onExit,
 	onSkip,
 	onJump,
+	/** 진행바 칸을 눌러 그 시나리오로 — 제품(ai-roleplay)은 넘기는데 여기만 빠져 있었다 */
+	onScenarioJump,
 	onDirection,
 	onRecord,
 	onReplay,
@@ -215,6 +217,7 @@ export function RoleplayScreen({
 	onExit?: () => void;
 	onSkip?: () => void;
 	onJump?: (index: number) => void;
+	onScenarioJump?: (index: number) => void;
 	onDirection?: (direction: "ai" | "me") => void;
 	onRecord?: () => void;
 	onReplay?: () => void;
@@ -229,7 +232,7 @@ export function RoleplayScreen({
 	return (
 		<ActivityFrame>
 			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
-			<ActivityProgress current={0} total={2} />
+			<ActivityProgress current={0} total={2} onJump={onScenarioJump} />
 
 			<section className="role-intro">
 				<div className="role-title">{t("activity.roleIntro")}</div>

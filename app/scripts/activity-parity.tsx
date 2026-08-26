@@ -141,6 +141,8 @@ const LESSON = "1급 4과";
 function Screen({
 	lesson = LESSON,
 	progress,
+	/** 칸을 눌러 그 문항으로 — 제품이 문항형 활동에 늘 준다 */
+	jump = true,
 	body,
 	footer,
 	feedback,
@@ -149,6 +151,7 @@ function Screen({
 }: {
 	lesson?: string;
 	progress?: [number, number];
+	jump?: boolean;
 	body: ReactElement;
 	footer: ReactElement;
 	feedback?: ReactElement | null;
@@ -160,7 +163,11 @@ function Screen({
 		<ActivityFrame>
 			<ActivityAppBar lesson={lesson} onExit={() => {}} onSkip={() => {}} />
 			{progress && (
-				<ActivityProgress current={progress[0]} total={progress[1]} />
+				<ActivityProgress
+					current={progress[0]}
+					total={progress[1]}
+					onJump={jump ? () => {} : undefined}
+				/>
 			)}
 			<ActivityBody feedback={noFeedback ? undefined : (feedback ?? null)}>
 				{body}
@@ -258,6 +265,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={1}
 			total={5}
+			onJump={() => {}}
 			instruction={T("activity.instrGrammar")}
 			answerState="idle"
 			segments={["오늘 날씨가 ", " 밖에 나가고 싶어요."]}
@@ -307,6 +315,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={0}
 			total={3}
+			onJump={() => {}}
 			instruction={T("activity.instrListen")}
 			type="ox"
 			question="여자 이름은 영주예요."
@@ -326,6 +335,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={0}
 			total={4}
+			onJump={() => {}}
 			instruction={T("activity.instrJamoListen")}
 			audioLabel="발음 듣기"
 			audioSub="자모 음성"
@@ -378,6 +388,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={0}
 			total={3}
+			onJump={() => {}}
 			instruction={T("activity.instrReading")}
 			passage={`저는 마이클입니다. 미국 사람이에요.
 지금 한국에서 한국어를 배웁니다.
@@ -415,6 +426,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={0}
 			total={3}
+			onJump={() => {}}
 			instruction={T("activity.instrWriteSelect")}
 			audioLabel={T("player.playAudio")}
 			audioSub={T("activity.audioSub")}
@@ -434,6 +446,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={0}
 			total={1}
+			onJump={() => {}}
 			instruction={T("activity.instrWriteSelect")}
 			audioLabel={T("player.playAudio")}
 			audioSub={T("activity.audioSub")}
@@ -459,6 +472,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={0}
 			total={3}
+			onJump={() => {}}
 			instruction={T("activity.instrWriteTrace")}
 			canvas={<WriteCanvasPane guide="../handwriting/가.png" />}
 			primary={{ label: T("player.confirm"), on: false }}
@@ -472,6 +486,7 @@ const SCREENS: Record<string, ReactElement> = {
 			onSkip={() => {}}
 			current={0}
 			total={1}
+			onJump={() => {}}
 			instruction={T("activity.instrWriteTrace")}
 			canvas={<WriteCanvasPane guide="../handwriting/산.png" />}
 			primary={{ label: T("player.confirm"), on: false }}
@@ -562,6 +577,7 @@ const SCREENS: Record<string, ReactElement> = {
 			lesson={LESSON}
 			turns={ROLE_TURNS}
 			current={1}
+			onScenarioJump={() => {}}
 			direction="ai"
 			recordMode="idle"
 			onSkip={() => {}}
