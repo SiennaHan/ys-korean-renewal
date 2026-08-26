@@ -124,6 +124,7 @@
 	--color-background-wrong: var(--color-primitive-red-50); /* 오답 피드백 배경 */
 	--color-background-caution: var(--color-primitive-yellow-50); /* 다시 풀기 배지 배경 */
 	--color-background-disable: var(--color-primitive-gray-200); /* 비활성 배경 */
+	--color-background-sunken: var(--color-primitive-blue-gray-100); /* 흰 카드 위에 한 단 내려앉은 안내 상자 */
 
 	/* fill */
 	--color-fill-primary: var(--color-primitive-blue-500); /* 주요 버튼 · 현재 위치 */

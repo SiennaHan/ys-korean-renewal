@@ -99,11 +99,11 @@ function MyProfilePage() {
 
 			<div className="flex flex-1 flex-col gap-[16px] px-[16px] pb-[24px]">
 				{/* 안내 박스 */}
-				<div className="rounded-[12px] bg-[#e9ecf0] p-[12px]">
+				<div className="rounded-[12px] bg-background-sunken p-[12px]">
 					<p className="font-bold text-[14px] text-text-primary leading-[20px]">
 						{t("mypage.profileInfo.notice")}
 					</p>
-					<p className="mt-[8px] font-semibold text-[#4B505A] text-[12px] leading-[18px]">
+					<p className="mt-[8px] font-semibold text-[12px] text-text-sub leading-[18px]">
 						{t("mypage.profileInfo.noticeText")}
 					</p>
 				</div>
@@ -271,7 +271,7 @@ function MyProfilePage() {
 				</div>
 
 				{error && (
-					<p className="text-center text-[#FF3B30] text-[14px]">{error}</p>
+					<p className="text-center text-[14px] text-fill-wrong">{error}</p>
 				)}
 			</div>
 
@@ -281,7 +281,7 @@ function MyProfilePage() {
 					type="button"
 					onClick={handleSubmit}
 					disabled={isLoading}
-					className="flex h-[56px] w-full items-center justify-center rounded-[10px] bg-fill-primary font-bold text-[16px] text-white leading-[24px] disabled:bg-line-normal disabled:text-[#ACB3BD]"
+					className="flex h-[56px] w-full items-center justify-center rounded-[10px] bg-fill-primary font-bold text-[16px] text-white leading-[24px] disabled:bg-line-normal disabled:text-text-disable"
 				>
 					{isLoading
 						? t("mypage.profileInfo.submitting")

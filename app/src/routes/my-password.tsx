@@ -119,7 +119,7 @@ function MyPasswordPage() {
 							value={currentPassword}
 							onChange={(e) => setCurrentPassword(e.target.value)}
 							placeholder={t("mypage.passwordChange.currentPassword")}
-							className="flex h-[52px] w-full rounded-[12px] bg-white px-[16px] pr-[48px] font-medium text-[16px] text-text-strong leading-[24px] placeholder:text-[#ACB3BD] focus:outline-none focus:ring-1 focus:ring-[#0180FF]"
+							className="flex h-[52px] w-full rounded-[12px] bg-white px-[16px] pr-[48px] font-medium text-[16px] text-text-strong leading-[24px] placeholder:text-text-sub focus:outline-none focus:ring-1 focus:ring-[#0180FF]"
 						/>
 						<button
 							type="button"
@@ -147,7 +147,7 @@ function MyPasswordPage() {
 								value={newPassword}
 								onChange={(e) => setNewPassword(e.target.value)}
 								placeholder={t("mypage.passwordChange.newPassword")}
-								className="flex h-[52px] w-full rounded-[12px] bg-white px-[16px] pr-[48px] font-medium text-[16px] text-text-strong leading-[24px] placeholder:text-[#ACB3BD] focus:outline-none focus:ring-1 focus:ring-[#0180FF]"
+								className="flex h-[52px] w-full rounded-[12px] bg-white px-[16px] pr-[48px] font-medium text-[16px] text-text-strong leading-[24px] placeholder:text-text-sub focus:outline-none focus:ring-1 focus:ring-[#0180FF]"
 							/>
 							<button
 								type="button"
@@ -170,13 +170,14 @@ function MyPasswordPage() {
 								<Check
 									className={cn(
 										"size-[12px]",
-										req.met ? "text-text-primary" : "text-[#ACB3BD]",
+										req.met ? "text-text-primary" : "text-text-disable",
 									)}
 								/>
 								<span
 									className={cn(
 										"font-semibold text-[12px] leading-[18px]",
-										req.met ? "text-text-primary" : "text-[#ACB3BD]",
+										// 미충족이어도 "읽어야 하는 규칙" 이다 — disable(#BDBDBD)은 흰 배경에서 대비 2.2:1
+										req.met ? "text-text-primary" : "text-text-sub",
 									)}
 								>
 									{req.label}
@@ -197,7 +198,7 @@ function MyPasswordPage() {
 							value={confirmPassword}
 							onChange={(e) => setConfirmPassword(e.target.value)}
 							placeholder={t("mypage.passwordChange.confirmPassword")}
-							className="flex h-[52px] w-full rounded-[12px] bg-white px-[16px] pr-[48px] font-medium text-[16px] text-text-strong leading-[24px] placeholder:text-[#ACB3BD] focus:outline-none focus:ring-1 focus:ring-[#0180FF]"
+							className="flex h-[52px] w-full rounded-[12px] bg-white px-[16px] pr-[48px] font-medium text-[16px] text-text-strong leading-[24px] placeholder:text-text-sub focus:outline-none focus:ring-1 focus:ring-[#0180FF]"
 						/>
 						<button
 							type="button"
@@ -214,7 +215,7 @@ function MyPasswordPage() {
 				</div>
 
 				{error && (
-					<p className="text-center text-[#FF3B30] text-[14px]">{error}</p>
+					<p className="text-center text-[14px] text-fill-wrong">{error}</p>
 				)}
 			</div>
 
@@ -224,7 +225,7 @@ function MyPasswordPage() {
 					type="button"
 					onClick={handleSubmit}
 					disabled={isLoading || !canSubmit}
-					className="flex h-[56px] w-full items-center justify-center rounded-[10px] bg-fill-primary font-bold text-[16px] text-white leading-[24px] disabled:bg-line-normal disabled:text-[#ACB3BD]"
+					className="flex h-[56px] w-full items-center justify-center rounded-[10px] bg-fill-primary font-bold text-[16px] text-white leading-[24px] disabled:bg-line-normal disabled:text-text-disable"
 				>
 					{isLoading
 						? t("mypage.passwordChange.submitting")
