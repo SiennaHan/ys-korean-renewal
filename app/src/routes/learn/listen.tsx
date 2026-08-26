@@ -12,7 +12,7 @@ export const Route = createFileRoute("/learn/listen")({
 
 function Page() {
 	useStudySessionPing("listen-answer");
-	const { level, lesson } = Route.useSearch();
+	const { level, lesson, review } = Route.useSearch();
 	const { t } = useTranslation();
 	// 목업의 상단은 급과 과만 말한다 — 활동 이름은 문제 카드가 말한다
 	const chapterLabel = t("player.lessonTitle", { level, lesson });
@@ -23,6 +23,7 @@ function Page() {
 			chapterSeq={lesson}
 			chapter={lesson}
 			chapterLabel={chapterLabel}
+			review={review}
 		/>
 	);
 }

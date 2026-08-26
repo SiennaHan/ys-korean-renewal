@@ -1,5 +1,7 @@
 import { type DashboardData, getDashboard } from "@/api/dashboard";
+import { getHomeReviewQueue } from "@/api/review-queue";
 import { useAuth } from "@/components/sign/sign-provider";
+import { LEARN_ROUTE, type LessonActivityId } from "@/shared/lesson-flow";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -27,11 +29,60 @@ export default function HomeContent() {
 	const [data, setData] = useState<DashboardData | null>(null);
 	const [loading, setLoading] = useState(true);
 
+	/**
+	 * 다시 풀기 총계와 첫 항목.
+	 *
+	 * 총계는 카드에 쓰고, 첫 항목은 **어디로 보낼지** 에 쓴다. 큐가 여러 활동에
+	 * 흩어져 있으면 한 번에 한 활동씩 끝낸다(기획 확정 2026-08-26) —
+	 * 그 활동을 끝내고 홈에 오면 다음 활동이 뜬다.
+	 */
+	const [review, setReview] = useState<{
+		total: number;
+		first: { bookId: number; chapterSeq: number; menuType: string } | null;
+	}>({ total: 0, first: null });
+
 	useEffect(() => {
 		getDashboard()
 			.then(setData)
 			.finally(() => setLoading(false));
 	}, []);
+
+	useEffect(() => {
+		getHomeReviewQueue().then((q) => {
+			const it = q.items[0];
+			setReview({
+				total: q.total,
+				first: it
+					? {
+							bookId: it.bookId,
+							chapterSeq: it.chapterSeq,
+							menuType: it.menuType,
+						}
+					: null,
+			});
+		});
+	}, []);
+
+	/**
+	 * 다시 풀기 카드를 누르면 큐 첫 항목의 활동으로 보낸다.
+	 *
+	 * `?review=1` 이 붙으면 그 화면이 큐에서 자기 몫을 받아 그 문항만 낸다 —
+	 * 결과 화면의 [다시 풀기] 와 같은 길이라 새 화면이 없다.
+	 *
+	 * **중간에 멈춰도 깨지지 않는다.** 맞힌 것은 큐에서 빠지고, 또 틀린 것은
+	 * 내일로 밀리고, 손대지 않은 것은 오늘 그대로 남는다 — 큐가 곧 진행 상태다.
+	 */
+	const handleReview = () => {
+		const first = review.first;
+		if (!first) return;
+		const route = LEARN_ROUTE[first.menuType as LessonActivityId];
+		// 자모처럼 이 표에 없는 활동은 아직 배선 밖이다 — 조용히 아무것도 하지 않는다
+		if (!route) return;
+		navigate({
+			to: route,
+			search: { level: first.bookId, lesson: first.chapterSeq, review: true },
+		});
+	};
 
 	if (loading) {
 		return (
@@ -75,9 +126,12 @@ export default function HomeContent() {
 			attendance={data?.attendance ?? fallbackAttendance()}
 			continueLearning={continueLearning}
 			/*
-			 * reviewCount 는 아직 넘기지 않는다 — 원천이 GET /review-queue 이고
-			 * 그 API 가 없다(BLOCKERS §6). 생기면 여기 한 줄이 붙는다.
+			 * 원천은 GET /review-queue 다 — 2026-08-26 에 만들었다(BLOCKERS §9-a-1).
+			 * 라우트에 없는 활동(자모 등)만 큐에 남아 있으면 카드는 뜨는데 눌러도
+			 * 아무 일이 없다 — 그 활동들을 배선하면 풀린다.
 			 */
+			reviewCount={review.total}
+			onReview={handleReview}
 			learningStatus={
 				data?.learningStatus ?? {
 					chapterCompleted: 0,
