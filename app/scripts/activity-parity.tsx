@@ -19,6 +19,7 @@ import { JamoWordRepeatView } from "@/components/learn/jamo/word-repeat";
 import { JamoWordWriteView } from "@/components/learn/jamo/word-write";
 import { ListenAnswerView } from "@/components/learn/listen-answer";
 import { ReadAnswerView } from "@/components/learn/read-answer";
+import { WordPreviewView } from "@/components/learn/word-learning";
 import { AudioRow } from "@/components/main/activity/audio";
 import { BriefingScreen } from "@/components/main/activity/briefing-screen";
 import { ChatScreen } from "@/components/main/activity/chat";
@@ -390,24 +391,20 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	wordPreview: (
-		<Screen
-			progress={[0, 1]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrWordPreview")} />
-					<WordPreviewList
-						words={[
-							{ word: "안녕하다", meaning: "to be well / hello" },
-							{ word: "네", meaning: "yes" },
-							{ word: "제", meaning: "my" },
-							{ word: "이름", meaning: "name" },
-							{ word: "저", meaning: "I (formal)" },
-							{ word: "반갑다", meaning: "to be glad to meet" },
-						]}
-					/>
-				</>
-			}
-			footer={<PrimaryButton label={T("activity.toQuiz")} on action="toQuiz" />}
+		<WordPreviewView
+			lesson={LESSON}
+			onExit={() => {}}
+			onSkip={() => {}}
+			instruction={T("activity.instrWordPreview")}
+			rows={[
+				{ key: 1, word: "안녕하다", meaning: "to be well / hello" },
+				{ key: 2, word: "네", meaning: "yes" },
+				{ key: 3, word: "제", meaning: "my" },
+				{ key: 4, word: "이름", meaning: "name" },
+				{ key: 5, word: "저", meaning: "I (formal)" },
+				{ key: 6, word: "반갑다", meaning: "to be glad to meet" },
+			]}
+			primary={{ label: T("activity.toQuiz"), on: true, action: "toQuiz" }}
 		/>
 	),
 

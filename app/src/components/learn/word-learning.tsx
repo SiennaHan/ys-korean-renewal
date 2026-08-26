@@ -30,6 +30,7 @@ import {
 	Square,
 	X,
 } from "lucide-react";
+import type { ReactNode } from "react";
 import {
 	Fragment,
 	useCallback,
@@ -88,6 +89,85 @@ function formatTime(seconds: number): string {
 	const m = Math.floor(seconds / 60);
 	const s = Math.floor(seconds % 60);
 	return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+/**
+ * 어휘 미리보기 — **표시만** 한다. 목업 activity__wordPreview 자리다.
+ *
+ * 진행바가 없는 것은 shell_spec "활동별 진행 표시 정책" 의 "진행 없음" 이다 —
+ * 미리보기는 퀴즈의 0번 문항이 아니라 준비 화면이라 분모에도 안 들어간다.
+ */
+export function WordPreviewView({
+	lesson,
+	onExit,
+	onSkip,
+	instruction,
+	rows,
+	primary,
+	after,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	instruction: ReactNode;
+	rows: {
+		key: string | number;
+		word: string;
+		meaning: string;
+		on?: boolean;
+		loading?: boolean;
+		onSelect?: () => void;
+		onPlay?: () => void;
+		/** 펼친 줄 아래에 붙는 그림·녹음. 목업에는 없는 자리다 */
+		extra?: ReactNode;
+	}[];
+	primary: {
+		label: string;
+		on: boolean;
+		action?: string;
+		onClick?: () => void;
+	};
+	after?: ReactNode;
+}) {
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			{/* 목업이 이 칸에 aria-live 를 단다 */}
+			<ActivityBody feedback={null}>
+				<ProblemCard instruction={instruction} />
+				<WordPreviewList words={[]}>
+					{rows.map((r) => (
+						<Fragment key={r.key}>
+							<PreviewRow
+								word={r.word}
+								meaning={r.meaning}
+								on={r.on}
+								loading={r.loading}
+								onSelect={r.onSelect}
+								onPlay={r.onPlay}
+							/>
+							{/* 펼친 줄에만 붙는 그림과 녹음 — 목업 미리보기에는 없는 자리다.
+							    .word-preview-list 의 형제로 그대로 붙어야 :last-child 기반
+							    구분선·모서리 라운딩이 목록 진짜 끝에 맞게 작동한다. */}
+							{r.on && r.extra}
+						</Fragment>
+					))}
+				</WordPreviewList>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={primary.label}
+						on={primary.on}
+						action={primary.action ?? "next"}
+						onClick={primary.onClick}
+					/>
+				</Dock>
+			</ActivityFooter>
+			{after}
+		</ActivityFrame>
+	);
 }
 
 export default function WordLearning({
@@ -437,124 +517,103 @@ export default function WordLearning({
 
 	// Word list page (page 0)
 	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={chapterLabel}
-				onExit={() => router.history.back()}
-				onSkip={handleSkip}
-			/>
-			<ActivityBody>
-				<ProblemCard instruction={t("activity.instrWordPreview")} />
-				<WordPreviewList words={[]}>
-					{words.map((w) => {
-						const isSelected = selectedWordId === w.id;
-						const recording = recordings[w.id];
-						const isPlaying = playingWordId === w.id;
-						const pronunciation = getPronunciationDisplay(w);
+		<WordPreviewView
+			lesson={chapterLabel}
+			onExit={() => router.history.back()}
+			onSkip={handleSkip}
+			instruction={t("activity.instrWordPreview")}
+			rows={words.map((w) => {
+				const isSelected = selectedWordId === w.id;
+				const recording = recordings[w.id];
+				const isPlaying = playingWordId === w.id;
+				const pronunciation = getPronunciationDisplay(w);
+				return {
+					key: w.id,
+					word: w.word,
+					meaning: getMeaning(w, i18n.language),
+					on: isSelected,
+					loading: ttsLoadingWordId === w.id,
+					onSelect: () => handleWordClick(w.id),
+					onPlay: () =>
+						handleSpeakerClick(
+							{ stopPropagation: () => {} } as React.MouseEvent,
+							w,
+						),
+					extra: (
+						<div className="preview-extra">
+							{w.image && (
+								<img src={`/textbook/${w.book_id}/${w.image}`} alt={w.word} />
+							)}
 
-						return (
-							<Fragment key={w.id}>
-								<PreviewRow
-									word={w.word}
-									meaning={getMeaning(w, i18n.language)}
-									on={isSelected}
-									loading={ttsLoadingWordId === w.id}
-									onSelect={() => handleWordClick(w.id)}
-									onPlay={() =>
-										handleSpeakerClick(
-											{ stopPropagation: () => {} } as React.MouseEvent,
-											w,
-										)
-									}
-								/>
-								{/* 펼친 줄에만 붙는 그림과 녹음 — 목업 미리보기에는 없는 자리다.
-								    .word-preview-list 의 형제로 그대로 붙어야 :last-child 기반
-								    구분선·모서리 라운딩이 목록 진짜 끝에 맞게 작동한다. */}
-								{isSelected && (
-									<div className="preview-extra">
-										{w.image && (
-											<img
-												src={`/textbook/${w.book_id}/${w.image}`}
-												alt={w.word}
-											/>
-										)}
+							<div className="preview-record">
+								<div className="preview-record-side">
+									{recording && (
+										<button
+											type="button"
+											onClick={() => handleClearRecording(w.id)}
+											className="preview-record-clear"
+										>
+											<X className="size-[14px]" />
+										</button>
+									)}
+								</div>
 
-										<div className="preview-record">
-											<div className="preview-record-side">
-												{recording && (
-													<button
-														type="button"
-														onClick={() => handleClearRecording(w.id)}
-														className="preview-record-clear"
-													>
-														<X className="size-[14px]" />
-													</button>
-												)}
-											</div>
+								<div className="preview-record-center">
+									{recording ? (
+										<span className="preview-record-result">
+											{recording.resultWord}
+										</span>
+									) : (
+										<>
+											<span className="preview-record-pron">
+												{pronunciation.text}
+											</span>
+											{pronunciation.bracket && (
+												<span className="preview-record-bracket">
+													{pronunciation.bracket}
+												</span>
+											)}
+										</>
+									)}
+								</div>
 
-											<div className="preview-record-center">
-												{recording ? (
-													<span className="preview-record-result">
-														{recording.resultWord}
-													</span>
+								<div className="preview-record-side preview-record-side--right">
+									{recording && (
+										<>
+											<span className="preview-record-timer">
+												{formatTime(isPlaying ? playTime : 0)}
+											</span>
+											<button
+												type="button"
+												onClick={() =>
+													handleTogglePlay(w.id, recording.audioUrl)
+												}
+												className="preview-record-play"
+											>
+												{isPlaying ? (
+													<Square className="size-[12px] text-white" />
 												) : (
-													<>
-														<span className="preview-record-pron">
-															{pronunciation.text}
-														</span>
-														{pronunciation.bracket && (
-															<span className="preview-record-bracket">
-																{pronunciation.bracket}
-															</span>
-														)}
-													</>
+													<Play className="ml-[2px] size-[12px] text-white" />
 												)}
-											</div>
-
-											<div className="preview-record-side preview-record-side--right">
-												{recording && (
-													<>
-														<span className="preview-record-timer">
-															{formatTime(isPlaying ? playTime : 0)}
-														</span>
-														<button
-															type="button"
-															onClick={() =>
-																handleTogglePlay(w.id, recording.audioUrl)
-															}
-															className="preview-record-play"
-														>
-															{isPlaying ? (
-																<Square className="size-[12px] text-white" />
-															) : (
-																<Play className="ml-[2px] size-[12px] text-white" />
-															)}
-														</button>
-													</>
-												)}
-											</div>
-										</div>
-									</div>
-								)}
-							</Fragment>
-						);
-					})}
-				</WordPreviewList>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<PrimaryButton
-						label={t("activity.toQuiz")}
-						on
-						action="toQuiz"
-						onClick={() => setCurrentPage(1)}
-					/>
-				</Dock>
-			</ActivityFooter>
-
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
-			<audio ref={playAudioRef} className="hidden" />
-		</ActivityFrame>
+											</button>
+										</>
+									)}
+								</div>
+							</div>
+						</div>
+					),
+				};
+			})}
+			primary={{
+				label: t("activity.toQuiz"),
+				on: true,
+				action: "toQuiz",
+				onClick: () => setCurrentPage(1),
+			}}
+			after={
+				// biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오
+				<audio ref={playAudioRef} className="hidden" />
+			}
+		/>
 	);
 }
