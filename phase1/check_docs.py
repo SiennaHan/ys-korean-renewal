@@ -382,6 +382,9 @@ TWIN_ALLOW = {
     "직접 입력 줄을 <div> 대신 <form> 으로 감쌌다 — Enter 로 제출된다."
     " 정본은 <div> 라 키보드만 쓰면 버튼까지 Tab 해야 했다."
     " captured/ 는 그때 뜬 날것이라 그대로 둔다",
+    "nav__book__resume.html": "활동 이름을 기획자가 확정했다(2026-08-25, 66b0e94 '빈칸 표기를 통일한다') —"
+    " '빈칸 채워 말하기' → '빈칸 채우기'. 앱이 쓰는 i18n(ko.ts 'fill-blank')과 mockups 를 같이 바꿨고,"
+    " captured/ 는 그때 뜬 날것이라 그대로 둔다. 차이는 이 한 줄뿐이다",
     "nav__home__none.html": "캡처는 탭바가 위·홈 비활성. mockups 가 아래·활성으로 고친 판(08-20)",
     "nav__home__resume.html": "같음",
     "nav__home__review.html": "같음",
