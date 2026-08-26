@@ -37,6 +37,7 @@ import { units } from "@/shared/data/unit";
 import type { ModuleType, ProblemType } from "@/types/book.types";
 import clsx from "clsx";
 import { Volume2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 const baseButton =
@@ -48,6 +49,90 @@ const baseCardButton =
 												hover:bg-gray-100 active:bg-gray-200 disabled:text-[#bbb] disabled:shadow-none disabled:opacity-70 \
 												disabled:border-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:hover:bg-gray-100";
 const selectedCardButton = "!bg-[#359AFF] !text-white";
+
+/**
+ * 자모 듣고 고르기 — **표시만** 한다. 오디오·판정·이동은 아래가 쥔다.
+ * 가른 이유는 fill-blank.tsx 의 FillBlankView 주석과 같다(목업 대조).
+ */
+export function JamoChooseView({
+	lesson,
+	onExit,
+	onSkip,
+	current,
+	total,
+	onJump,
+	instruction,
+	audioLabel,
+	audioSub,
+	onPlay,
+	options,
+	/** 지금까지 틀린 자리 — 맞힐 때까지 다시 고르므로 여럿이다 */
+	wrongIndexes,
+	onSelect,
+	primary,
+	/** 숨은 <audio> 처럼 표시가 아닌 것. 대조는 넘기지 않는다 */
+	after,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	current: number;
+	total: number;
+	onJump?: (index: number) => void;
+	instruction: ReactNode;
+	audioLabel: string;
+	audioSub: string;
+	onPlay?: () => void;
+	options: string[];
+	wrongIndexes?: boolean[];
+	onSelect: (value: string) => void;
+	primary: { label: string; on: boolean; onClick: () => void };
+	after?: ReactNode;
+}) {
+	return (
+		<ActivityFrame>
+			{/* 건너뛰기 — 목업 모든 활동 화면에 있는데 실제 자모 화면엔 없었다 */}
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			<ActivityProgress current={current} total={total} onJump={onJump} />
+
+			<ActivityBody
+				feedback={
+					wrongIndexes?.some(Boolean) ? <FeedbackMessage kind="wrong" /> : null
+				}
+			>
+				<ProblemCard instruction={instruction}>
+					<AudioRow label={audioLabel} sub={audioSub} onPlay={onPlay} />
+				</ProblemCard>
+
+				<ChoiceList variant="jamo">
+					{options.map((item, idx) => (
+						<Choice
+							key={item}
+							index={idx}
+							// 맞을 때까지 다시 고르는 화면이라 틀린 것이 여럿 남는다
+							state={wrongIndexes?.[idx] ? "wrong" : ""}
+							onClick={() => onSelect(item)}
+						>
+							{item}
+						</Choice>
+					))}
+				</ChoiceList>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={primary.label}
+						on={primary.on}
+						action="next"
+						onClick={primary.onClick}
+					/>
+				</Dock>
+			</ActivityFooter>
+			{after}
+		</ActivityFrame>
+	);
+}
 
 export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	const code = moduleCode;
@@ -195,57 +280,29 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 		.join(" · ");
 
 	return (
-		<ActivityFrame>
-			{/* 건너뛰기 — 목업 모든 활동 화면에 있는데 실제 자모 화면엔 없었다.
-			    대조가 못 잡는 자리다(activity-parity 는 learn/jamo 를 안 본다). */}
-			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={skip} />
-			<ActivityProgress
-				current={problemIndex}
-				total={problemList.length}
-				onJump={setProblemIndex}
-			/>
-
-			<ActivityBody
-				feedback={
-					incorrectSlots.some(Boolean) ? <FeedbackMessage kind="wrong" /> : null
-				}
-			>
-				<ProblemCard instruction={t("activity.instrJamoListen")}>
-					<AudioRow
-						label={t("player.playAudio")}
-						sub={t("activity.audioSub")}
-						onPlay={play}
-					/>
-				</ProblemCard>
-
-				<ChoiceList variant="jamo">
-					{wordList.map((item, idx) => (
-						<Choice
-							key={item}
-							index={idx}
-							// 맞을 때까지 다시 고르는 화면이라 틀린 것이 여럿 남는다
-							state={incorrectSlots[idx] ? "wrong" : ""}
-							onClick={() => selectWord(item)}
-						>
-							{item}
-						</Choice>
-					))}
-				</ChoiceList>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<PrimaryButton
-						label={isExit ? t("player.showResult") : t("player.next")}
-						on={isExit}
-						action="next"
-						onClick={exit}
-					/>
-				</Dock>
-			</ActivityFooter>
-
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
-			<audio className="hidden" src={audioSrc} ref={audioRef} />
-		</ActivityFrame>
+		<JamoChooseView
+			lesson={lesson}
+			onExit={exit}
+			onSkip={skip}
+			current={problemIndex}
+			total={problemList.length}
+			onJump={setProblemIndex}
+			instruction={t("activity.instrJamoListen")}
+			audioLabel={t("player.playAudio")}
+			audioSub={t("activity.audioSub")}
+			onPlay={play}
+			options={wordList}
+			wrongIndexes={incorrectSlots}
+			onSelect={selectWord}
+			primary={{
+				label: isExit ? t("player.showResult") : t("player.next"),
+				on: isExit,
+				onClick: exit,
+			}}
+			after={
+				// biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오
+				<audio className="hidden" src={audioSrc} ref={audioRef} />
+			}
+		/>
 	);
 }

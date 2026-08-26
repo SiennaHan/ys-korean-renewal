@@ -13,6 +13,7 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FillBlankView } from "@/components/learn/fill-blank";
+import { JamoChooseView } from "@/components/learn/jamo/choose";
 import { ListenAnswerView } from "@/components/learn/listen-answer";
 import { ReadAnswerView } from "@/components/learn/read-answer";
 import { AudioRow } from "@/components/main/activity/audio";
@@ -312,24 +313,18 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	jamoListen: (
-		<Screen
+		<JamoChooseView
 			lesson="1급 1과"
-			progress={[0, 4]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrJamoListen")}>
-						<AudioRow label="발음 듣기" sub="자모 음성" />
-					</ProblemCard>
-					<ChoiceList variant="jamo">
-						{["어", "오"].map((x, i) => (
-							<Choice key={x} index={i}>
-								{x}
-							</Choice>
-						))}
-					</ChoiceList>
-				</>
-			}
-			footer={NEXT}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={4}
+			instruction={T("activity.instrJamoListen")}
+			audioLabel="발음 듣기"
+			audioSub="자모 음성"
+			options={["어", "오"]}
+			onSelect={() => {}}
+			primary={{ label: T("player.next"), on: false, onClick: () => {} }}
 		/>
 	),
 
