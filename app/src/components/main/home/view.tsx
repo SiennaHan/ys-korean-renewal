@@ -25,9 +25,8 @@ export interface HomeViewProps {
 	/**
 	 * 다시 풀 문항 수. 0 보다 크면 "오늘 할 일" 자리를 복습이 차지한다.
 	 *
-	 * 아직 아무도 넘기지 않는다 — 원천이 `GET /review-queue` 인데 그 API 가 없다
-	 * (BLOCKERS §6). 목업 nav__home__review 와 i18n(home.taskReview)은 이미
-	 * 이 갈래를 정해 두었으므로 표시 쪽만 먼저 갖춰 둔다.
+	 * 원천은 `GET /review-queue` 다 — 2026-08-26 에 만들었고 `index.tsx` 가 넘긴다
+	 * (BLOCKERS §9-a-1). 그 전에는 API 가 없어 표시 쪽만 갖춰 두고 있었다.
 	 */
 	reviewCount?: number;
 	learningStatus: DashboardLearningStatus;

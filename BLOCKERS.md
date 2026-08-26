@@ -854,7 +854,7 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ f45a49f -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 976ec63 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1273,7 +1273,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ f45a49f -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 976ec63 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -1291,7 +1291,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 | 무엇 | 찍어 본 것 |
 |---|---|
 | 활동 진입·진행·완료 저장 | **됐다**(2026-08-26 · 아래 9-a-1). `ko_activity_state` 5곳 · 학습 화면 넷이 `useActivityState` 로 붙었다 |
-| 오답·복습 큐 | **서버는 됐다**(`ko_review_queue` · `GET /review-queue`). **앱은 아직 안 붙었다** — `home/view.tsx` 와 `home/index.tsx` 가 여전히 "원천이 없다" 고 적어 두고 `reviewCount` 를 안 넘긴다 |
+| 오답·복습 큐 | **됐다**(2026-08-26). `ko_review_queue` · `GET /review-queue` 에 홈이 붙었다 — `index.tsx` 가 `reviewCount={review.total}` 을 넘긴다 |
 | 다른 기기 이어하기 · 마지막 문항 복구 | **마지막 문항 복구는 됐다** — 서버가 `current_item_index` 를 준다(9-a-1). 기기 간 이어하기는 그 위에 얹으면 된다 |
 | 중복 전송 처리 | `idempotency` 0곳 |
 | 재시도 세션의 헛 전송 | 「다시 풀기」는 `activity/progress`·`complete` 를 안 보낸다(확인함). 그런데 `learning-record` 는 계속 보낸다 —<br>6문항 재시도에 12번. 서버가 첫 행을 안 덮으니(§6-c) 해롭진 않지만 **보낼 필요가 없는 것**이다. 화면이 `retry` 를 알므로 막을 수 있다 |
