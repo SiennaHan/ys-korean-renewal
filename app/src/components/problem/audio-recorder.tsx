@@ -201,6 +201,7 @@ const AudioRecorder = (props: Props) => {
 				<RecordControl
 					mode={recorderStatus}
 					action="srec"
+					disabled={props.disabled}
 					onPress={props.disabled ? undefined : handlePrimaryAction}
 				/>
 				{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}

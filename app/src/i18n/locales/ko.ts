@@ -277,6 +277,8 @@ const ko = {
 		sendingSub: "잠시만 기다려 주세요",
 		aiListenTitle: "AI 말 듣기",
 		aiListenSub: "대사를 듣고 확인하세요",
+		aiSpeakingTitle: "AI가 말하는 중",
+		aiSpeakingSub: "대사를 듣고 내 차례를 기다리세요",
 		keyboardInput: "키보드 입력",
 		roleIntro: "AI와 함께 대화를 연습해 보세요.",
 		rolePracticeOrder: "연습 순서",

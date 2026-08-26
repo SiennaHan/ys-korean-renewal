@@ -274,6 +274,8 @@ const zh = {
 		sendingSub: "请稍候",
 		aiListenTitle: "听AI说",
 		aiListenSub: "听台词并确认",
+		aiSpeakingTitle: "AI正在说话",
+		aiSpeakingSub: "请听台词并等待轮到你",
 		keyboardInput: "键盘输入",
 		roleIntro: "和AI一起练习对话。",
 		rolePracticeOrder: "练习顺序",

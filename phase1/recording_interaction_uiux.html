@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="uiux-version" content="2.5">
-  <title>연세 한국어 · 녹음 인터랙션 시안 v2.5</title>
+  <meta name="uiux-version" content="2.6">
+  <title>연세 한국어 · 녹음 인터랙션 시안 v2.6</title>
   <style>
     :root {
       --blue-50:#edf6ff;
@@ -65,6 +65,7 @@
     .device { position:relative; width:377px; height:720px; overflow:hidden; border:1px solid #d8dee5; border-radius:30px; background:var(--canvas); box-shadow:var(--shadow); transition:width .2s ease; }
     .device.w320 { width:322px; }
     .device.mission .activity { height:calc(100% - 58px - 89px); }
+    .device.result .activity { height:calc(100% - 90px); padding-bottom:14px; }
 
     .appbar { display:grid; grid-template-columns:44px 1fr 44px; align-items:center; height:58px; padding:0 12px; background:#fff; }
     .appbar button { display:grid; place-items:center; width:44px; height:44px; border:0; border-radius:50%; background:transparent; color:#596473; cursor:pointer; }
@@ -126,7 +127,7 @@
     .role-heard .miss { color:var(--coral); text-decoration:underline; text-underline-offset:3px; }
     .role-help { margin:5px 0 0; color:#89919a; font-size:11px; line-height:17px; }
     .role-result-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:10px; }
-    .role-result-actions button { min-height:36px; border:0; border-radius:9px; font-size:11px; font-weight:800; cursor:pointer; }
+    .role-result-actions button { min-height:42px; border:0; border-radius:9px; font-size:11px; font-weight:800; cursor:pointer; }
     .role-result-actions .replay { grid-column:1/-1; display:flex; align-items:center; justify-content:center; gap:6px; background:var(--blue-50); color:var(--blue-600); }
     .role-result-actions .replay svg { width:15px; height:15px; }
     .role-result-actions .retry { background:#f2f5f7; color:#596673; }
@@ -146,14 +147,6 @@
     .typing i:nth-child(2) { animation-delay:.13s; }
     .typing i:nth-child(3) { animation-delay:.26s; }
 
-    .record-status { position:absolute; left:0; right:0; bottom:89px; z-index:3; display:flex; align-items:center; justify-content:center; min-height:42px; padding:7px 14px; border-top:1px solid var(--line); background:rgba(255,255,255,.96); backdrop-filter:blur(8px); }
-    .status-copy { min-width:0; text-align:center; }
-    .status-copy b { display:block; overflow:hidden; color:#46515d; font-size:12px; line-height:16px; text-overflow:ellipsis; white-space:nowrap; }
-    .status-copy span { display:block; overflow:hidden; margin-top:1px; color:#9199a2; font-size:10px; line-height:14px; text-overflow:ellipsis; white-space:nowrap; }
-    .status-copy.recording b, .status-copy.finishing b { color:var(--coral); }
-    .status-copy.done b { color:var(--blue-600); }
-    .redo { flex:0 0 auto; margin-left:9px; padding:5px 8px; border:0; border-radius:8px; background:#f1f5f8; color:#5e7182; font-size:10px; font-weight:750; cursor:pointer; }
-
     .footer { position:absolute; left:0; right:0; bottom:0; z-index:4; height:89px; padding:14px 14px 15px; border-top:1px solid var(--line); background:#fff; }
     .dock { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; width:100%; height:60px; }
     .side-action { display:grid; place-items:center; width:44px; height:44px; border:0; border-radius:13px; background:#f2f5f7; color:#65727f; cursor:pointer; }
@@ -161,26 +154,27 @@
     .side-action:disabled { background:#eef1f4; color:#b8bfc7; cursor:default; }
     .side-action svg { width:20px; height:20px; }
     .record-zone { display:flex; justify-content:center; min-width:0; }
-    .record-button { position:relative; display:grid; place-items:center; width:60px; height:60px; padding:0; border:0; border-radius:50%; background:var(--blue-500); color:#fff; cursor:pointer; box-shadow:0 6px 16px rgba(1,128,255,.24); transition:transform .14s ease, background .18s ease, box-shadow .18s ease; }
+    .record-core { width:min(210px,100%); display:grid; grid-template-columns:56px minmax(0,1fr); align-items:center; gap:11px; }
+    .record-button { position:relative; display:grid; place-items:center; width:56px; height:56px; padding:0; border:0; border-radius:50%; background:var(--blue-500); color:#fff; cursor:pointer; transition:transform .14s ease, background .18s ease, box-shadow .18s ease; }
     .record-button:hover { transform:translateY(-1px); }
     .record-button:active { transform:translateY(1px) scale(.98); }
     .record-button svg { width:25px; height:25px; }
-    .record-button.preparing { background:#fff; color:var(--blue-600); box-shadow:0 0 0 7px var(--blue-100); }
-    .record-button.recording, .record-button.finishing { background:var(--coral); box-shadow:0 0 0 7px var(--coral-weak); }
-    .record-button.sending { background:#fff; color:var(--blue-600); box-shadow:0 0 0 7px var(--blue-50); cursor:wait; }
-    .record-button.done { background:#fff; color:var(--green); box-shadow:0 0 0 2px #dff3e9; }
+    .record-button.preparing, .record-button.finishing, .record-button.sending { background:var(--blue-50); color:var(--blue-600); }
+    .record-button.recording { background:var(--blue-500); }
+    .record-button.done { background:var(--blue-50); color:var(--blue-600); }
     .record-button.finishing { cursor:wait; }
     .record-button .countdown { font-size:21px; line-height:1; font-weight:800; font-variant-numeric:tabular-nums; }
     .record-button .spinner { width:24px; height:24px; border:3px solid rgba(1,128,255,.2); border-top-color:var(--blue-500); border-radius:50%; animation:spin .75s linear infinite; }
     .record-button .stop { width:18px; height:18px; border-radius:5px; background:#fff; }
-    .record-button.recording::after { content:""; position:absolute; inset:-8px; border:1px solid rgba(242,102,85,.35); border-radius:50%; animation:pulse 1.35s ease-out infinite; }
-    .waves { position:absolute; left:50%; top:-8px; display:flex; align-items:flex-end; gap:2px; height:10px; transform:translateX(-50%); }
-    .waves i { width:2px; border-radius:2px; background:var(--coral); animation:wave .72s ease-in-out infinite alternate; }
-    .waves i:nth-child(1) { height:4px; }
-    .waves i:nth-child(2) { height:9px; animation-delay:.12s; }
-    .waves i:nth-child(3) { height:6px; animation-delay:.24s; }
-    .waves i:nth-child(4) { height:10px; animation-delay:.36s; }
-    .waves i:nth-child(5) { height:5px; animation-delay:.48s; }
+    .record-button.recording::after { content:""; position:absolute; inset:-6px; border:1px solid var(--blue-300); border-radius:50%; animation:pulse 1.35s ease-out infinite; }
+    .record-copy { min-width:0; display:flex; flex-direction:column; align-items:flex-start; text-align:left; }
+    .record-copy b { overflow:hidden; max-width:100%; color:#46515d; font-size:14px; line-height:20px; text-overflow:ellipsis; white-space:nowrap; }
+    .record-copy > span { overflow:hidden; max-width:100%; color:#89919a; font-size:12px; line-height:16px; text-overflow:ellipsis; white-space:nowrap; }
+    .record-wave { height:12px; display:flex; align-items:center; gap:2px; margin-top:3px; }
+    .record-wave i { width:2px; border-radius:2px; background:var(--blue-300); animation:wave .72s ease-in-out infinite alternate; }
+    .record-wave i:nth-child(3n+1) { height:5px; }
+    .record-wave i:nth-child(3n+2) { height:11px; animation-delay:.12s; }
+    .record-wave i:nth-child(3n) { height:8px; animation-delay:.24s; }
 
     .device.w320 .activity { padding-left:10px; padding-right:10px; }
     .device.w320 .problem { padding:14px; }
@@ -212,7 +206,7 @@
   <div class="page">
     <header class="intro">
       <div>
-        <p class="eyebrow">RECORDING INTERACTION · UIUX · v2.5</p>
+        <p class="eyebrow">RECORDING INTERACTION · UIUX · v2.6</p>
         <h1>녹음은 여유 있게,<br>진행은 한 자리에서</h1>
       </div>
       <p>사용자가 버튼과 동시에 말하거나 끝음을 다 말하기 전에 종료해도 잘리지 않도록, 시작 전 2초와 종료 후 1초를 한 흐름으로 설계한 시안입니다.</p>
@@ -379,12 +373,12 @@
 
     function statusCopy() {
       const map = {
-        idle:["눌러서 녹음","말할 준비가 되면 시작하세요"],
-        preparing:["잠시만요 · 곧 시작해요","버튼을 누른 순간부터 소리를 담고 있어요"],
-        recording:[`녹음 중 · ${app.elapsed.toFixed(1)}초`,"말을 마치고 가운데 버튼을 눌러 주세요"],
-        finishing:["마지막 음성을 담고 있어요","1초 뒤 자동으로 녹음을 마칩니다"],
-        sending:[app.mode === "mission" ? "답변을 보내고 있어요" : "녹음을 저장하고 있어요","잠시만 기다려 주세요"],
-        done:[app.mode === "mission" ? "답변을 보냈어요" : "녹음이 준비됐어요",app.mode === "mission" ? "상대방의 답을 기다리고 있어요" : "내 녹음을 듣거나 다음으로 이동하세요"]
+        idle:["눌러서 녹음","문장을 말해 보세요"],
+        preparing:["준비 중","곧 시작해요"],
+        recording:["녹음 중","한 번 더 누르면 완료"],
+        finishing:["마무리 중","끝까지 말해 보세요"],
+        sending:["확인 중","잠시만 기다려 주세요"],
+        done:["녹음 완료","누르면 다시 녹음"]
       };
       return map[app.state];
     }
@@ -397,7 +391,7 @@
         body = `<span class="countdown">${Math.max(1,Math.ceil(app.countdown))}</span>`;
         label = "녹음 준비 중";
       } else if (app.state === "recording") {
-        body = `<span class="waves"><i></i><i></i><i></i><i></i><i></i></span><span class="stop"></span>`;
+        body = `<span class="stop"></span>`;
         label = "녹음 종료";
       } else if (app.state === "finishing") {
         body = `<span class="stop"></span>`;
@@ -413,6 +407,15 @@
         disabled = true;
       }
       return `<button class="record-button ${app.state}" data-action="record" aria-label="${label}" ${disabled?"disabled":""}>${body}</button>`;
+    }
+
+    function recordWave() {
+      return `<span class="record-wave" aria-hidden="true">${Array.from({length:12},()=>"<i></i>").join("")}</span>`;
+    }
+
+    function recordCore() {
+      const copy = statusCopy();
+      return `<div class="record-core">${recordButton()}<span class="record-copy"><b>${copy[0]}</b><span>${copy[1]}</span>${app.state === "recording" || app.state === "finishing" ? recordWave() : ""}</span></div>`;
     }
 
     function repeatContent() {
@@ -473,20 +476,18 @@
       const right = app.mode === "mission" || app.mode === "role"
         ? `<span aria-hidden="true"></span>`
         : `<button class="side-action next" data-action="next" aria-label="다음" ${app.state === "done" ? "" : "disabled"}>${icons.chevron}</button>`;
-      return `<div class="dock">${left}<div class="record-zone">${recordButton()}</div>${right}</div>`;
+      return `<div class="dock">${left}<div class="record-zone">${recordCore()}</div>${right}</div>`;
     }
 
     function renderDevice() {
       const device = document.getElementById("device");
-      const copy = statusCopy();
       const segmented = app.mode !== "mission";
-      device.className = `device ${app.width === 320 ? "w320" : ""} ${app.mode === "mission" ? "mission" : ""}`;
       const roleResult = app.mode === "role" && app.state === "done";
+      device.className = `device ${app.width === 320 ? "w320" : ""} ${app.mode === "mission" ? "mission" : ""} ${roleResult ? "result" : ""}`;
       device.innerHTML = `
         <header class="appbar"><button aria-label="나가기">${icons.x}</button><div class="lesson">1급 4과</div><button aria-label="건너뛰기">${icons.chevron}</button></header>
         ${segmented?`<div class="progress-row"><div class="progress"><i class="on"></i><i class="${app.item>1?"on":""}"></i><i class="${app.item>2?"on":""}"></i></div></div>`:""}
         <main class="activity">${content()}</main>
-        ${roleResult?"":`<div class="record-status" aria-live="polite"><div class="status-copy ${app.state}"><b>${copy[0]}</b><span>${copy[1]}</span></div>${app.state === "done" && app.mode !== "mission"?`<button class="redo" data-action="redo">다시 녹음</button>`:""}</div>`}
         ${roleResult?"":`<footer class="footer">${dock()}</footer>`}`;
     }
 

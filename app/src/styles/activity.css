@@ -292,8 +292,14 @@
 .activity-frame .record-button { position:relative; width:56px; height:56px; border:0; border-radius:50%; background:var(--color-fill-primary); color:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
 .activity-frame .record-button::after { content:""; position:absolute; inset:-5px; border:1px solid transparent; border-radius:50%; }
 .activity-frame .record-button.recording::after { border-color:var(--blue-300); animation:record-pulse 1.2s ease-out infinite; }
+.activity-frame .record-button:disabled { cursor:default; }
+.activity-frame .record-button.preparing,
+.activity-frame .record-button.finishing,
+.activity-frame .record-button.sending { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .record-button.is-disabled { background:var(--color-background-disable); color:var(--color-text-disable); }
 .activity-frame .record-button.done { border:0; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
 .activity-frame .record-button.listen { border:0; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .record-button.listen.playing::after { border-color:var(--blue-300); animation:record-pulse 1.2s ease-out infinite; }
 .activity-frame .record-button svg { width:24px; height:24px; }
 .activity-frame .record-spinner { fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-dasharray:38 14; transform-origin:center; animation:record-spin .8s linear infinite; }
 .activity-frame .record-copy { min-width:0; display:flex; flex-direction:column; align-items:flex-start; text-align:left; }
@@ -348,15 +354,18 @@
 .activity-frame .role-order { display:flex; align-items:center; gap:5px; }
 .activity-frame .role-order button { height:34px; padding:0 11px; border:1px solid var(--color-line-control); border-radius:8px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; cursor:pointer; }
 .activity-frame .role-order button.on { border-color:#dcecff; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
-.activity-frame .turn { display:grid; grid-template-columns:34px 1fr 22px; gap:8px; align-items:start; margin:0; padding:9px 12px 9px 9px; border:0; border-left:3px solid transparent; border-bottom:1px solid var(--color-line-control); border-radius:0; background:var(--color-background-surface); }
+.activity-frame .turn { display:grid; grid-template-columns:34px minmax(0,1fr) 32px; gap:8px; align-items:start; margin:0; padding:9px 7px 9px 9px; border:0; border-left:3px solid transparent; border-bottom:1px solid var(--color-line-control); border-radius:0; background:var(--color-background-surface); }
 .activity-frame .turn.current.ai, .activity-frame .turn.current.me { border-left-color:var(--color-fill-primary); background:#eef6ff; }
 .activity-frame .turn .who { width:34px; height:24px; display:grid; place-items:center; border-radius:6px; background:#f1f3f6; color:var(--blue-gray-800); font-size:11px; line-height:18px; font-weight:700; }
 .activity-frame .turn.me .who { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
 .activity-frame .turn .line { color:var(--color-text-strong); font-size:15px; line-height:24px; }
-.activity-frame .turn .listen { padding-top:2px; color:var(--color-text-sub); }
+.activity-frame .turn .listen { width:32px; min-height:32px; color:var(--color-text-sub); display:grid; place-items:center; }
+.activity-frame .turn .listen button { width:32px; height:32px; padding:0; border:0; border-radius:50%; background:transparent; color:inherit; display:grid; place-items:center; cursor:pointer; }
+.activity-frame .turn .listen button:hover { background:var(--color-background-base); }
+.activity-frame .turn .listen button:disabled { cursor:default; }
 .activity-frame .turn .listen svg { width:17px; height:17px; }
-.activity-frame .turn.future .who { background:#f7f8f9; color:var(--color-text-disable); }
-.activity-frame .turn.future .line { color:var(--color-text-disable); }
+.activity-frame .turn.future .who { background:#f7f8f9; color:var(--blue-gray-400); }
+.activity-frame .turn.future .line { color:var(--color-text-sub); }
 .activity-frame .record-card { margin:0; padding:11px 12px 12px 54px; border-bottom:1px solid var(--color-line-control); border-radius:0; background:var(--color-background-surface); }
 .activity-frame .record-result-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:5px 8px; }
 .activity-frame .record-result-label { color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; }
@@ -366,7 +375,7 @@
 .activity-frame .record-card .heard { min-height:24px; margin-top:6px; color:var(--color-text-strong); display:flex; align-items:center; gap:1px; flex-wrap:wrap; font-size:15px; line-height:24px; font-weight:500; }
 .activity-frame .record-result-help { margin:5px 0 0; color:var(--color-text-sub); font-size:12px; line-height:18px; }
 .activity-frame .record-result-actions { margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-.activity-frame .record-result-actions button { min-width:0; height:34px; border-radius:8px; font-size:12px; line-height:18px; font-weight:600; white-space:nowrap; cursor:pointer; }
+.activity-frame .record-result-actions button { min-width:0; height:42px; border-radius:9px; font-size:12px; line-height:18px; font-weight:600; white-space:nowrap; cursor:pointer; }
 .activity-frame .record-replay { grid-column:1 / -1; border:0; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); display:flex; align-items:center; justify-content:center; gap:6px; }
 .activity-frame .record-replay svg { width:16px; height:16px; }
 .activity-frame .record-retry { border:1px solid var(--color-line-control); background:var(--color-background-surface); color:var(--color-text-sub); }

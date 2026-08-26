@@ -278,6 +278,8 @@ const en = {
 		sendingSub: "One moment",
 		aiListenTitle: "Listen to AI",
 		aiListenSub: "Listen to the line and check",
+		aiSpeakingTitle: "AI is speaking",
+		aiSpeakingSub: "Listen and wait for your turn",
 		keyboardInput: "Keyboard input",
 		roleIntro: "Practice the conversation with AI.",
 		rolePracticeOrder: "Practice order",

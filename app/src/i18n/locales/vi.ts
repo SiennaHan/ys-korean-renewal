@@ -277,6 +277,8 @@ const vi = {
 		sendingSub: "Vui lòng đợi",
 		aiListenTitle: "Nghe AI nói",
 		aiListenSub: "Nghe lời thoại và kiểm tra",
+		aiSpeakingTitle: "AI đang nói",
+		aiSpeakingSub: "Hãy nghe và chờ đến lượt của bạn",
 		keyboardInput: "Nhập bàn phím",
 		roleIntro: "Hãy luyện hội thoại cùng AI.",
 		rolePracticeOrder: "Thứ tự luyện tập",

@@ -45,6 +45,7 @@ export function RecordControl({
 	action,
 	onPress,
 	doneHint,
+	disabled = false,
 }: {
 	mode: RecordMode;
 	/** 목업이 화면마다 다르게 붙여 둔 값 (srec · chatRecord · roleRecord) */
@@ -55,6 +56,8 @@ export function RecordControl({
 	 * 화면에 따라 확인을 보내는 자리이기도 하다 — 하는 일과 글이 어긋나면 안 된다.
 	 */
 	doneHint?: string;
+	/** 화면 흐름상 아직 녹음을 받을 수 없는 상태. 내부 대기 상태와 구분한다. */
+	disabled?: boolean;
 }) {
 	const { t } = useTranslation();
 	const COPY: Record<RecordMode, [string, string]> = {
@@ -72,11 +75,14 @@ export function RecordControl({
 		<div className="record-core">
 			<button
 				type="button"
-				className={`record-button ${mode}`}
+				className={`record-button ${mode}${disabled ? " is-disabled" : ""}`}
 				data-action={action}
 				aria-label={title}
 				disabled={
-					mode === "preparing" || mode === "finishing" || mode === "sending"
+					disabled ||
+					mode === "preparing" ||
+					mode === "finishing" ||
+					mode === "sending"
 				}
 				onClick={onPress}
 			>
@@ -103,22 +109,36 @@ export function RecordControl({
  * 같은 자리에 앉지만 내 차례가 아닐 때 — 롤플레잉에서 AI 가 말할 차례다.
  * 녹음 버튼과 자리를 나눠 쓰므로 도크가 흔들리지 않는다.
  */
-export function ListenControl({ onPlay }: { onPlay?: () => void }) {
+export function ListenControl({
+	onPlay,
+	mode = "ready",
+}: {
+	onPlay?: () => void;
+	mode?: "ready" | "playing";
+}) {
 	const { t } = useTranslation();
+	const playing = mode === "playing";
+	const title = t(
+		playing ? "activity.aiSpeakingTitle" : "activity.aiListenTitle",
+	);
+	const sub = t(playing ? "activity.aiSpeakingSub" : "activity.aiListenSub");
 	return (
 		<div className="record-core">
 			<button
 				type="button"
-				className="record-button listen"
+				className={`record-button listen ${mode}`}
 				data-action="audio"
-				aria-label={t("activity.aiListenTitle")}
+				aria-label={title}
+				aria-busy={playing}
+				disabled={playing}
 				onClick={onPlay}
 			>
 				<IconVolume />
 			</button>
 			<span className="record-copy">
-				<b>{t("activity.aiListenTitle")}</b>
-				<span>{t("activity.aiListenSub")}</span>
+				<b>{title}</b>
+				<span>{sub}</span>
+				{playing && <Wave />}
 			</span>
 		</div>
 	);

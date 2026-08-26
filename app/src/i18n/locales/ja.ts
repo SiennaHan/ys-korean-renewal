@@ -278,6 +278,8 @@ const ja = {
 		sendingSub: "少々お待ちください",
 		aiListenTitle: "AIの発話を聞く",
 		aiListenSub: "セリフを聞いて確認しましょう",
+		aiSpeakingTitle: "AIが話しています",
+		aiSpeakingSub: "セリフを聞いて自分の番を待ちましょう",
 		keyboardInput: "キーボード入力",
 		roleIntro: "AIと一緒に会話を練習しましょう。",
 		rolePracticeOrder: "練習の順番",

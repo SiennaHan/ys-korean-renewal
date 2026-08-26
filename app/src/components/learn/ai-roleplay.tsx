@@ -6,7 +6,9 @@ import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
 	ActivityFooter,
 	IconVolume,
+	ListenControl,
 	PrimaryButton,
+	RecordControl,
 	RoleplayLayout,
 	RoleplayRecordResult,
 } from "@/components/main/activity";
@@ -430,6 +432,10 @@ export default function AiRoleplay({
 	const choosingAfterResult = Boolean(
 		playState === "practice-turn" && activeRecord && !activeRecord.isCorrect,
 	);
+	const currentTurn = turns[currentTurnIdx];
+	const currentIsPractice = currentTurn
+		? isPracticeTurn(currentTurn.turn_seq)
+		: false;
 
 	return (
 		<RoleplayLayout
@@ -466,12 +472,29 @@ export default function AiRoleplay({
 					<ActivityFooter>
 						<div className="dock">
 							<div className="main">
-								<AudioRecorder
-									dock
-									setResult={handleRecordResult}
-									onSkipActivity={handleSkip}
-									disabled={playState !== "practice-turn" || evaluating}
-								/>
+								{currentIsPractice ? (
+									evaluating ? (
+										<RecordControl mode="sending" action="roleEvaluate" />
+									) : (
+										<AudioRecorder
+											dock
+											setResult={handleRecordResult}
+											onSkipActivity={handleSkip}
+											disabled={playState !== "practice-turn"}
+										/>
+									)
+								) : (
+									<ListenControl
+										mode={audioBlocked ? "ready" : "playing"}
+										onPlay={
+											audioBlocked
+												? () => {
+														void sharedAudio.unlock();
+													}
+												: undefined
+										}
+									/>
+								)}
 							</div>
 						</div>
 					</ActivityFooter>
