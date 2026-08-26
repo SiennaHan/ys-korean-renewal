@@ -50,7 +50,7 @@
 .nav-frame .greet { padding:18px var(--gutter) 2px; }
 .nav-frame .greet .hi { font-size:14px; color:var(--nav-text-mute); }
 .nav-frame .greet .name { margin-top:1px; font-size:24px; line-height:32px; font-weight:700; letter-spacing:-.02em; color:var(--color-text-heading); }
-.nav-frame .week { display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px 0 8px; }
+.nav-frame .week { display:flex; flex-direction:column; align-items:center; gap:10px; padding:14px 0 var(--space-4); }
 .nav-frame .week .days { display:flex; gap:12px; }
 .nav-frame .week .d { display:flex; flex-direction:column; align-items:center; gap:4px; }
 .nav-frame .week .c { width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
@@ -66,6 +66,9 @@
 .nav-frame /* 오늘 할 일 — 한 자리에 세 갈래 */
   .task { display:flex; align-items:center; gap:var(--space-3); width:100%; padding:14px;
     border:1px solid var(--nav-tint-line); border-radius:var(--radius-card); background:var(--nav-tint-fill); text-align:left; cursor:pointer; }
+/* 오늘 할 일 카드가 둘 붙을 수 있다(최근 학습 + 다시 풀기) — 맞닿아 있으면
+   한 덩어리로 읽힌다. 목록의 .learning-section 과 같은 12px 를 쓴다 */
+.nav-frame .task + .task { margin-top:var(--space-3); }
 .nav-frame .task:hover { background:var(--nav-tint-fill-hover); }
 .nav-frame .task .ic { width:48px; height:48px; border-radius:12px; flex:none; display:grid;
     place-items:center; background:var(--color-fill-primary); color:var(--color-text-inverse); font-size:20px; }
