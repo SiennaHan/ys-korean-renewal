@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, asArray } from "./api";
 import type {
 	UserFlashcard,
 	UserFlashcardRequest,
@@ -15,8 +15,9 @@ export async function listUserFlashcard(
 		const response = await api.get<UserFlashcard[]>(
 			`/flashcard/book/${bookId}`,
 		);
-		if (!response.result || !response.data) return [];
-		return response.data;
+		if (!response.result) return [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<UserFlashcard>(response.data);
 	} catch (error) {
 		console.error("listUserFlashcard failed:", error);
 		return [];
@@ -60,8 +61,9 @@ export async function listUserFlashcardWord(
 		const response = await api.get<UserFlashcardWord[]>(
 			`/flashcard/word/${flashcardId}`,
 		);
-		if (!response.result || !response.data) return [];
-		return response.data;
+		if (!response.result) return [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<UserFlashcardWord>(response.data);
 	} catch (error) {
 		console.error("listUserFlashcardWord failed:", error);
 		return [];
@@ -137,8 +139,9 @@ export async function listUserFlashcardWordByType(
 		const response = await api.get<UserFlashcardWord[]>(
 			`/flashcard/word/${flashcardId}/${cardType}`,
 		);
-		if (!response.result || !response.data) return [];
-		return response.data;
+		if (!response.result) return [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<UserFlashcardWord>(response.data);
 	} catch (error) {
 		console.error("listUserFlashcardWordByType failed:", error);
 		return [];

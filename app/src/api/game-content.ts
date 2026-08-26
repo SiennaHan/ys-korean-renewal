@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, asArray } from "./api";
 
 export interface SpringPicnicFriend {
 	id: string;
@@ -29,8 +29,9 @@ export async function getSpringPicnicFriends(): Promise<SpringPicnicFriend[]> {
 		const response = await api.get<SpringPicnicFriend[]>(
 			"/game-content/spring-picnic/friends",
 		);
-		if (!response.result || !response.data) return [];
-		return response.data;
+		if (!response.result) return [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<SpringPicnicFriend>(response.data);
 	} catch (error) {
 		console.error("getSpringPicnicFriends failed:", error);
 		return [];
@@ -44,8 +45,9 @@ export async function getSpringPicnicQuestions(): Promise<
 		const response = await api.get<SpringPicnicQuestion[]>(
 			"/game-content/spring-picnic/questions",
 		);
-		if (!response.result || !response.data) return [];
-		return response.data;
+		if (!response.result) return [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<SpringPicnicQuestion>(response.data);
 	} catch (error) {
 		console.error("getSpringPicnicQuestions failed:", error);
 		return [];

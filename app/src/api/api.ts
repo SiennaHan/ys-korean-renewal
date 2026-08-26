@@ -234,3 +234,18 @@ export const api = {
 		});
 	},
 };
+
+/**
+ * 응답이 **배열이라고 약속한 자리**에서 모양을 확인한다.
+ *
+ * 래퍼 대부분이 `if (!res.result || !res.data) return []; return res.data;` 꼴이다.
+ * 없는 것은 막지만 **모양이 틀린 것은 못 막는다** — 서버가 `{}` 를 주면 truthy 라
+ * 그대로 흘러가고, 받는 쪽 `.map` 이 터진다. 화면은 조용히 죽고 콘솔에만 남는다.
+ * 2026-08-26 에 `review-queue` 가 그렇게 다섯 자리를 한꺼번에 터뜨렸다.
+ *
+ * 막는 자리는 **부르는 쪽이 아니라 여기**다 — 부르는 곳마다 `?? []` 를 흩뿌리면
+ * 새로 부르는 곳이 또 빠뜨린다.
+ */
+export function asArray<T>(data: unknown): T[] {
+	return Array.isArray(data) ? (data as T[]) : [];
+}

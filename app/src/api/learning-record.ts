@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, asArray } from "./api";
 import type {
 	LearningProgress,
 	LearningRecord,
@@ -30,8 +30,9 @@ export async function getLearningRecords(
 		const response = await api.get<LearningRecord[]>(
 			`/learning-record/list?bookId=${bookId}&chapterSeq=${chapterSeq}&menuType=${menuType}`,
 		);
-		if (!response.result || !response.data) return [];
-		return response.data;
+		if (!response.result) return [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<LearningRecord>(response.data);
 	} catch (error) {
 		console.error("getLearningRecords failed:", error);
 		return [];

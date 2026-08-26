@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, asArray } from "./api";
 import type { GameProgressRecord, GameProgressRequest } from "./apiType";
 
 export async function saveGameProgress(
@@ -24,8 +24,9 @@ export async function getGameProgress(
 		const response = await api.get<GameProgressRecord[]>(
 			`/game-progress/${encodeURIComponent(gameName)}`,
 		);
-		if (!response.result || !response.data) return [];
-		return response.data;
+		if (!response.result) return [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<GameProgressRecord>(response.data);
 	} catch (error) {
 		console.error("getGameProgress failed:", error);
 		return [];

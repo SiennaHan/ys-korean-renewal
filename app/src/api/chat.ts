@@ -1,5 +1,5 @@
 import i18n from "@/i18n";
-import { api, authFetch } from "./api";
+import { api, asArray, authFetch } from "./api";
 import type {
 	ChatResponse,
 	CheckMission,
@@ -136,7 +136,9 @@ export async function getListenAudio(
 			lines,
 		});
 		if (!response.result || !response.data) return null;
-		return response.data.urls;
+		// urls 가 배열이 아니면 부르는 쪽 .map 이 터진다
+		const urls = asArray<string>(response.data.urls);
+		return urls.length > 0 ? urls : null;
 	} catch (error) {
 		console.error("getListenAudio failed:", error);
 		return null;
@@ -234,7 +236,8 @@ export async function getReport(
 export async function getChatListByBookId(bookId: number): Promise<KoChat[]> {
 	try {
 		const response = await api.get<KoChat[]>(`/dialog/mission/book/${bookId}`);
-		return response.data ?? [];
+		// 모양까지 본다 — api.ts 의 asArray 주석 참고
+		return asArray<KoChat>(response.data);
 	} catch (error) {
 		console.error("getChatListByBookId failed:", error);
 		return [];
