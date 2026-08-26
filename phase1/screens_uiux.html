@@ -115,6 +115,8 @@
   .wave i { width:2px; border-radius:2px; background:var(--blue-300); }
   .wave i:nth-child(3n+1) { height:8px; } .wave i:nth-child(3n+2) { height:16px; } .wave i:nth-child(3n) { height:11px; }
   .binary-grid,.jamo-choices { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  /* 목업 v2.9 승격 — 앱이 66b0e94(08-25)에서 선택지 칸을 한 겹 감싸고 위 여백을 줬다 */
+  .listen-response { margin-top:20px; }
   .listen-choices .choice { min-height:74px; justify-content:center; flex-direction:column; gap:1px; padding:12px 42px; font-size:23px; line-height:30px; font-weight:600; }
   .listen-choices .choice em { color:var(--blue-gray-600); font-size:12px; line-height:18px; font-style:normal; font-weight:500; }
   .listen-choices .choice.wrong em,.listen-choices .choice.correct em { color:inherit; }
@@ -3971,7 +3973,7 @@ function wordQuiz(){const q=item(),stimulus=q.promptType==="word"?`<div class="w
 function wordPreview(){const rows=data.wordPreview.map(x=>`<div class="preview-row"><div class="preview-word">${x.q}</div><div class="preview-meaning">${x.m}</div><button class="preview-audio" data-action="audio" aria-label="${x.q} 발음 듣기">${icons.volume}</button></div>`).join("");return shell(problem(),`<div class="response-area word-preview-list">${rows}</div>`,'<button class="primary on" data-action="toQuiz">문제 풀기</button>')}
 function wave(){return `<span class="wave" aria-hidden="true">${Array.from({length:12},()=>'<i></i>').join('')}</span>`}
 function audioRow(label,sub){return `<div class="audio-row"><button class="audio-play" data-action="audio" aria-label="${label}">${icons.volume}</button><span class="audio-copy"><b>${label}</b><span>${sub}</span></span>${wave()}</div>`}
-function generalListen(){const q=item(),stimulus=`<div class="listen-copy"><small>들은 문장</small><p class="statement">${q.q}</p></div><div class="listen-stimulus">${audioRow("문장 다시 듣기","오디오")}</div>`,response=`<div class="response-area binary-grid listen-choices">${q.ch.map((x,i)=>{const active=state.picked===i,cls=active?(state.resolved?'correct':'wrong'):'',mark=active?`<span class="choice-mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice ${cls}" data-action="choice" data-index="${i}"><span>${x}</span><em>${x==='O'?'내용이 같아요':'내용이 달라요'}</em>${mark}</button>`}).join("")}</div>`;return shell(problem(stimulus),response,nextFooter())}
+function generalListen(){const q=item(),stimulus=`<div class="listen-copy"><small>제시 문장</small><p class="statement">${q.q}</p></div><div class="listen-stimulus">${audioRow("문장 다시 듣기","오디오")}</div>`,response=`<div class="response-area listen-response"><div class="binary-grid listen-choices">${q.ch.map((x,i)=>{const active=state.picked===i,cls=active?(state.resolved?'correct':'wrong'):'',mark=active?`<span class="choice-mark">${state.resolved?'✓':'✕'}</span>`:'';return `<button class="choice ${cls}" data-action="choice" data-index="${i}"><span>${x}</span><em>${x==='O'?'내용이 같아요':'내용이 달라요'}</em>${mark}</button>`}).join("")}</div></div>`;return shell(problem(stimulus),response,nextFooter())}
 function jamoListen(){const q=item(),response=`<div class="response-area jamo-choices">${q.ch.map((x,i)=>choiceMarkup(x,i)).join("")}</div>`;return shell(problem(audioRow("발음 듣기","자모 음성")),response,nextFooter())}
 function jamoGrid(list,on,type){return `<div class="jamo-grid">${list.map(x=>`<button class="${x===on?'on':''}" data-action="jamo" data-type="${type}" data-value="${x}">${x}</button>`).join("")}</div>`}
 function selectedConsonant(){return state.chosenConsonant||item().parts[0]}

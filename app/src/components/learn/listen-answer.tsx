@@ -30,6 +30,7 @@ import {
 } from "@/shared/data/listen-answer";
 import { nextLessonActivity } from "@/shared/lesson-flow";
 import { useNavigate, useRouter } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -38,6 +39,132 @@ interface ListenAnswerProps {
 	chapter?: number;
 	chapterSeq?: number;
 	chapterLabel: string;
+}
+
+/**
+ * 듣기 — **표시만** 한다. 오디오·기록·이동은 아래 ListenAnswer 가 쥔다.
+ * 가른 이유는 fill-blank.tsx 의 FillBlankView 주석과 같다(목업 대조).
+ */
+export function ListenAnswerView({
+	lesson,
+	onExit,
+	onSkip,
+	current,
+	total,
+	onJump,
+	instruction,
+	/** "ox" 는 판단할 문장을 카드 안에 크게, 나머지는 선택지 위에 질문으로 */
+	type,
+	question,
+	audioSub,
+	onPlay,
+	options,
+	correctIndex,
+	wrongIndexes,
+	onSelect,
+	primary,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	current: number;
+	total: number;
+	onJump?: (index: number) => void;
+	instruction: ReactNode;
+	type: "choice" | "ox" | "image";
+	question: string;
+	audioSub?: string;
+	onPlay?: () => void;
+	options: { index: number; text: string; image?: ReactNode }[];
+	correctIndex?: number | null;
+	wrongIndexes?: number[];
+	onSelect: (index: number) => void;
+	primary: { label: string; on: boolean; onClick: () => void };
+}) {
+	const { t } = useTranslation();
+	const wrong = new Set(wrongIndexes ?? []);
+	const isOx = type === "ox";
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			<ActivityProgress current={current} total={total} onJump={onJump} />
+
+			<ActivityBody
+				feedback={
+					correctIndex != null ? (
+						<FeedbackMessage kind="correct" />
+					) : wrong.size > 0 ? (
+						<FeedbackMessage kind="wrong" />
+					) : null
+				}
+			>
+				<ProblemCard instruction={instruction}>
+					{/* O/X 가 판단할 문장. 들은 것이 아니라 제시된 것이다 —
+					    들은 것은 오디오뿐이고 이 글자는 맞는지 가릴 대상이다.
+					    카드 안에서 가장 큰 글자가 된다. 객관식은 질문이 따로 있으므로
+					    선택지 위로 뺀다 */}
+					{isOx && (
+						<ListenCopy
+							label={t("activity.statementLabel")}
+							statement={question}
+						/>
+					)}
+					<div className="listen-stimulus">
+						<AudioRow
+							label={t("activity.playSentence")}
+							sub={audioSub ?? t("activity.audioSub")}
+							onPlay={onPlay}
+						/>
+					</div>
+				</ProblemCard>
+
+				<div className="response-area listen-response">
+					{!isOx && <QuestionText>{question}</QuestionText>}
+					<ChoiceList
+						variant={type === "image" ? "image" : isOx ? "binary" : "list"}
+						inResponseArea={false}
+					>
+						{options.map((opt) => (
+							<Choice
+								key={opt.index}
+								index={opt.index}
+								state={
+									correctIndex === opt.index
+										? "correct"
+										: wrong.has(opt.index)
+											? "wrong"
+											: ""
+								}
+								sub={
+									isOx
+										? t(
+												opt.text === "O"
+													? "activity.oxSame"
+													: "activity.oxDifferent",
+											)
+										: undefined
+								}
+								onClick={() => onSelect(opt.index)}
+							>
+								{opt.image ?? opt.text}
+							</Choice>
+						))}
+					</ChoiceList>
+				</div>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={primary.label}
+						on={primary.on}
+						action="next"
+						onClick={primary.onClick}
+					/>
+				</Dock>
+			</ActivityFooter>
+		</ActivityFrame>
+	);
 }
 
 export default function ListenAnswer({
@@ -61,6 +188,8 @@ export default function ListenAnswer({
 	const [phase, setPhase] = useState<"solving" | "result">("solving");
 	/** 다시 풀기로 좁힌 문항. null 이면 과 전체다 */
 	const [retryOnly, setRetryOnly] = useState<number[] | null>(null);
+	/** 헤더 → 로 넘긴 문항 — shell_spec §23·§28 */
+	const [skipped, setSkipped] = useState<number[]>([]);
 
 	const questions = useMemo(() => {
 		const all =
@@ -258,6 +387,10 @@ export default function ListenAnswer({
 			[q.selection1, q.selection2, q.selection3, q.selection4][idx] ?? "";
 		const missed = questions.filter((q) => firstWrongOf(q.id) !== null);
 		const wrongIds = missed.map((q) => q.id);
+		const skippedIds = questions
+			.filter((q) => skipped.includes(q.id))
+			.map((q) => q.id);
+		const unresolved = [...new Set([...wrongIds, ...skippedIds])];
 		return (
 			<ResultScreen
 				lesson={chapterLabel}
@@ -265,8 +398,8 @@ export default function ListenAnswer({
 				answered={
 					questions.filter((q) => savedAnswers[q.id] !== undefined).length
 				}
-				graded={questions.length}
-				correct={questions.length - wrongIds.length}
+				graded={questions.length - skippedIds.length}
+				correct={questions.length - wrongIds.length - skippedIds.length}
 				wrongs={missed.map((q) => ({
 					picked: pick(q, firstWrongOf(q.id) as number),
 					// 이 원장에는 해설이 없다 — 빈 칸을 그리느니 정답을 말해 준다
@@ -276,15 +409,16 @@ export default function ListenAnswer({
 				}))}
 				onExit={() => router.history.back()}
 				onRetry={
-					wrongIds.length > 0
+					unresolved.length > 0
 						? () => {
 								setSavedAnswers((prev) => {
 									const next = { ...prev };
-									for (const id of wrongIds) delete next[id];
+									for (const id of unresolved) delete next[id];
 									return next;
 								});
 								setWrongAttempts({});
-								setRetryOnly(wrongIds);
+								setSkipped([]);
+								setRetryOnly(unresolved);
 								setCurrentIndex(0);
 								setPhase("solving");
 							}
@@ -322,122 +456,56 @@ export default function ListenAnswer({
 	const isOxType = question.type === "ox";
 
 	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={chapterLabel}
-				onExit={() => router.history.back()}
-			/>
-			<ActivityProgress
-				current={currentIndex}
-				total={totalSteps}
-				onJump={setCurrentIndex}
-			/>
-
-			<ActivityBody
-				feedback={
-					isSolved ? (
-						<FeedbackMessage kind="correct" />
-					) : currentWrongSet.size > 0 ? (
-						<FeedbackMessage kind="wrong" />
-					) : null
-				}
-			>
-				<ProblemCard
-					instruction={
-						<>
-							{instruction.ko}
-							{instruction.translated && <p>{instruction.translated}</p>}
-						</>
-					}
-				>
-					{/* O/X 가 판단할 문장. 들은 것이 아니라 제시된 것이다 —
-					    들은 것은 오디오뿐이고 이 글자는 맞는지 가릴 대상이다.
-					    카드 안에서 가장 큰 글자가 된다. 객관식은 질문이 따로 있으므로
-					    선택지 위로 뺀다 */}
-					{isOxType && (
-						<ListenCopy
-							label={t("activity.statementLabel")}
-							statement={question.question}
-						/>
-					)}
-					<div className="listen-stimulus">
-						<AudioRow
-							label={t("activity.playSentence")}
-							sub={
-								isPlaying ? t("state.audioPreparing") : t("activity.audioSub")
-							}
-							onPlay={handlePlay}
-						/>
-					</div>
-				</ProblemCard>
-
-				<div className="response-area listen-response">
-					{!isOxType && <QuestionText>{question.question}</QuestionText>}
-					<ChoiceList
-						variant={isImageType ? "image" : isOxType ? "binary" : "list"}
-						inResponseArea={false}
-					>
-						{selections.map((sel) => {
-							const state =
-								isSolved && sel.originalIndex === question.answer_index
-									? "correct"
-									: currentWrongSet.has(sel.originalIndex)
-										? "wrong"
-										: "";
-							return (
-								<Choice
-									key={sel.originalIndex}
-									index={sel.originalIndex}
-									state={state}
-									sub={
-										isOxType
-											? t(
-													sel.text === "O"
-														? "activity.oxSame"
-														: "activity.oxDifferent",
-												)
-											: undefined
-									}
-									onClick={() => handleSelect(sel.originalIndex)}
-								>
-									{isImageType ? (
-										<img
-											src={getQuestionImagePath(bookId ?? 1, sel.image)}
-											alt={sel.text || ""}
-										/>
-									) : (
-										sel.text
-									)}
-								</Choice>
-							);
-						})}
-					</ChoiceList>
-				</div>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<PrimaryButton
-						label={
-							currentIndex < totalSteps - 1
-								? t("player.next")
-								: t("player.showResult")
-						}
-						on={
-							currentIndex < totalSteps - 1
-								? isSolved
-								: questions.length > 0 &&
-									questions.every((q) => savedAnswers[q.id] !== undefined)
-						}
-						action="next"
-						onClick={
-							currentIndex < totalSteps - 1
-								? handleNext
-								: () => setPhase("result")
-						}
+		<ListenAnswerView
+			lesson={chapterLabel}
+			onExit={() => router.history.back()}
+			// shell_spec §23 — 헤더 → 는 상시 있다. "현재 문항을 넘긴다"
+			onSkip={() => {
+				setSkipped((prev) =>
+					prev.includes(question.id) ? prev : [...prev, question.id],
+				);
+				if (currentIndex < totalSteps - 1) handleNext();
+				else setPhase("result");
+			}}
+			current={currentIndex}
+			total={totalSteps}
+			onJump={setCurrentIndex}
+			instruction={
+				<>
+					{instruction.ko}
+					{instruction.translated && <p>{instruction.translated}</p>}
+				</>
+			}
+			type={question.type}
+			question={question.question}
+			audioSub={isPlaying ? t("state.audioPreparing") : undefined}
+			onPlay={handlePlay}
+			options={selections.map((sel) => ({
+				index: sel.originalIndex,
+				text: sel.text,
+				image: isImageType ? (
+					<img
+						src={getQuestionImagePath(bookId ?? 1, sel.image)}
+						alt={sel.text || ""}
 					/>
-				</Dock>
-			</ActivityFooter>
-		</ActivityFrame>
+				) : undefined,
+			}))}
+			correctIndex={isSolved ? question.answer_index : null}
+			wrongIndexes={[...currentWrongSet]}
+			onSelect={handleSelect}
+			primary={{
+				label:
+					currentIndex < totalSteps - 1
+						? t("player.next")
+						: t("player.showResult"),
+				on:
+					currentIndex < totalSteps - 1
+						? isSolved
+						: questions.length > 0 &&
+							questions.every((q) => savedAnswers[q.id] !== undefined),
+				onClick:
+					currentIndex < totalSteps - 1 ? handleNext : () => setPhase("result"),
+			}}
+		/>
 	);
 }

@@ -22,6 +22,7 @@ import readQuestions from "@/shared/data/n5_read_answer_questions.json";
 import readTexts from "@/shared/data/n5_read_answer_text.json";
 import { nextLessonActivity } from "@/shared/lesson-flow";
 import { useNavigate, useRouter } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -55,6 +56,117 @@ interface ReadAnswerProps {
 	chapterLabel: string;
 }
 
+/**
+ * 읽기 — **표시만** 한다. 데이터·기록·이동은 아래 ReadAnswer 가 쥔다.
+ * 가른 이유는 fill-blank.tsx 의 FillBlankView 주석과 같다(목업 대조).
+ */
+export function ReadAnswerView({
+	lesson,
+	onExit,
+	onSkip,
+	current,
+	total,
+	onJump,
+	instruction,
+	passage,
+	question,
+	/** "ox" 면 2열로 크게, 아니면 세로 목록 */
+	type,
+	options,
+	/** 맞힌 보기. 없으면 아직 안 맞힌 것이다 */
+	correctIndex,
+	/** 지금까지 틀린 보기들 — 맞힐 때까지 다시 고르므로 여럿이다 */
+	wrongIndexes,
+	onSelect,
+	primary,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	current: number;
+	total: number;
+	onJump?: (index: number) => void;
+	instruction: ReactNode;
+	passage: string;
+	question: string;
+	type: "choice" | "ox";
+	options: string[];
+	correctIndex?: number | null;
+	wrongIndexes?: number[];
+	onSelect: (index: number) => void;
+	primary: { label: string; on: boolean; onClick: () => void };
+}) {
+	const { t } = useTranslation();
+	const wrong = new Set(wrongIndexes ?? []);
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			<ActivityProgress current={current} total={total} onJump={onJump} />
+
+			<ActivityBody
+				feedback={
+					correctIndex != null ? (
+						<FeedbackMessage kind="correct" />
+					) : wrong.size > 0 ? (
+						<FeedbackMessage kind="wrong" />
+					) : null
+				}
+			>
+				<ProblemCard instruction={instruction}>
+					<Passage>{passage}</Passage>
+				</ProblemCard>
+
+				<div className="response-area">
+					<QuestionText>{question}</QuestionText>
+					{/* O/X 는 2열로 크게, 객관식은 세로 목록 */}
+					<ChoiceList
+						variant={type === "ox" ? "binary" : "list"}
+						inResponseArea={false}
+					>
+						{options.map((opt, idx) => (
+							<Choice
+								key={opt}
+								index={idx}
+								action="rpick"
+								state={
+									correctIndex === idx
+										? "correct"
+										: wrong.has(idx)
+											? "wrong"
+											: ""
+								}
+								sub={
+									type === "ox"
+										? t(
+												opt === "O"
+													? "activity.oxSame"
+													: "activity.oxDifferent",
+											)
+										: undefined
+								}
+								onClick={() => onSelect(idx)}
+							>
+								{opt}
+							</Choice>
+						))}
+					</ChoiceList>
+				</div>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={primary.label}
+						on={primary.on}
+						action="next"
+						onClick={primary.onClick}
+					/>
+				</Dock>
+			</ActivityFooter>
+		</ActivityFrame>
+	);
+}
+
 export default function ReadAnswer({
 	bookId,
 	chapterSeq,
@@ -80,6 +192,11 @@ export default function ReadAnswer({
 	const [phase, setPhase] = useState<"solving" | "result">("solving");
 	/** 다시 풀기로 좁힌 문항. null 이면 과 전체다 */
 	const [retryOnly, setRetryOnly] = useState<number[] | null>(null);
+	/**
+	 * 헤더 → 로 넘긴 문항. shell_spec §23·§28 —
+	 * 건너뛴 문항은 미응답이고 결과에서 미해결이다. 정답률 분모에서도 뺀다.
+	 */
+	const [skipped, setSkipped] = useState<number[]>([]);
 
 	/** 해당 지문의 질문들 */
 	const questions = useMemo(() => {
@@ -230,6 +347,11 @@ export default function ReadAnswer({
 			[q.selection1, q.selection2, q.selection3, q.selection4][idx] ?? "";
 		const missed = questions.filter((q) => firstWrongOf(q.id) !== null);
 		const wrongIds = missed.map((q) => q.id);
+		// 건너뛴 것은 오답이 아니라 안 푼 것이다 — 정답 수에서도 분모에서도 뺀다
+		const skippedIds = questions
+			.filter((q) => skipped.includes(q.id))
+			.map((q) => q.id);
+		const unresolved = [...new Set([...wrongIds, ...skippedIds])];
 		return (
 			<ResultScreen
 				lesson={chapterLabel}
@@ -237,8 +359,8 @@ export default function ReadAnswer({
 				answered={
 					questions.filter((q) => savedAnswers[q.id] !== undefined).length
 				}
-				graded={questions.length}
-				correct={questions.length - wrongIds.length}
+				graded={questions.length - skippedIds.length}
+				correct={questions.length - wrongIds.length - skippedIds.length}
 				wrongs={missed.map((q) => ({
 					picked: pick(q, firstWrongOf(q.id) as number),
 					// 이 원장에는 해설이 없다 — 문법만 grammar_focus_revised 를 들고 온다.
@@ -249,15 +371,16 @@ export default function ReadAnswer({
 				}))}
 				onExit={() => router.history.back()}
 				onRetry={
-					wrongIds.length > 0
+					unresolved.length > 0
 						? () => {
 								setSavedAnswers((prev) => {
 									const next = { ...prev };
-									for (const id of wrongIds) delete next[id];
+									for (const id of unresolved) delete next[id];
 									return next;
 								});
 								setWrongAttempts({});
-								setRetryOnly(wrongIds);
+								setSkipped([]);
+								setRetryOnly(unresolved);
 								setCurrentIndex(0);
 								setPhase("solving");
 							}
@@ -296,85 +419,38 @@ export default function ReadAnswer({
 		questions.every((q) => savedAnswers[q.id] !== undefined);
 
 	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={chapterLabel}
-				onExit={() => router.history.back()}
-			/>
-			<ActivityProgress
-				current={currentIndex}
-				total={totalSteps}
-				onJump={setCurrentIndex}
-			/>
-
-			<ActivityBody
-				feedback={
-					isSolved ? (
-						<FeedbackMessage kind="correct" />
-					) : currentWrongSet.size > 0 ? (
-						<FeedbackMessage kind="wrong" />
-					) : null
-				}
-			>
-				<ProblemCard
-					instruction={
-						<>
-							{instruction.ko}
-							{instruction.translated && <p>{instruction.translated}</p>}
-						</>
-					}
-				>
-					<Passage>{passage.text}</Passage>
-				</ProblemCard>
-
-				<div className="response-area">
-					<QuestionText>{question.question}</QuestionText>
-					{/* O/X 는 2열로 크게, 객관식은 세로 목록 */}
-					<ChoiceList
-						variant={question.type === "ox" ? "binary" : "list"}
-						inResponseArea={false}
-					>
-						{options.map((opt, idx) => (
-							<Choice
-								key={opt}
-								index={idx}
-								action="rpick"
-								// 맞을 때까지 다시 고를 수 있는 화면이라 틀린 것이 여럿 남는다
-								state={
-									isSolved && idx === question.answer_index
-										? "correct"
-										: currentWrongSet.has(idx)
-											? "wrong"
-											: ""
-								}
-								sub={
-									question.type === "ox"
-										? t(
-												opt === "O"
-													? "activity.oxSame"
-													: "activity.oxDifferent",
-											)
-										: undefined
-								}
-								onClick={() => handleSelect(idx)}
-							>
-								{opt}
-							</Choice>
-						))}
-					</ChoiceList>
-				</div>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<PrimaryButton
-						label={hasNext ? t("player.next") : t("player.showResult")}
-						on={hasNext ? isSolved : allSolved}
-						action="next"
-						onClick={hasNext ? handleNext : () => setPhase("result")}
-					/>
-				</Dock>
-			</ActivityFooter>
-		</ActivityFrame>
+		<ReadAnswerView
+			lesson={chapterLabel}
+			onExit={() => router.history.back()}
+			// shell_spec §23 — 헤더 → 는 상시 있다. "현재 문항을 넘긴다"
+			onSkip={() => {
+				setSkipped((prev) =>
+					prev.includes(question.id) ? prev : [...prev, question.id],
+				);
+				if (hasNext) handleNext();
+				else setPhase("result");
+			}}
+			current={currentIndex}
+			total={totalSteps}
+			onJump={setCurrentIndex}
+			instruction={
+				<>
+					{instruction.ko}
+					{instruction.translated && <p>{instruction.translated}</p>}
+				</>
+			}
+			passage={passage.text}
+			question={question.question}
+			type={question.type}
+			options={options}
+			correctIndex={isSolved ? question.answer_index : null}
+			wrongIndexes={[...currentWrongSet]}
+			onSelect={handleSelect}
+			primary={{
+				label: hasNext ? t("player.next") : t("player.showResult"),
+				on: hasNext ? isSolved : allSolved,
+				onClick: hasNext ? handleNext : () => setPhase("result"),
+			}}
+		/>
 	);
 }

@@ -576,6 +576,12 @@ def stale_phrases(text: dict[str, str]) -> list[str]:
 
 
 TWIN_ALLOW = {
+    "activity__listen.html":
+    "목업 v2.9 승격(2026-08-26). 둘 다 앱이 먼저 정한 것을 정본이 따라갔다 —"
+    " ① O/X 카드 라벨 '들은 문장' → '제시 문장'(f8bd0aa 08-20)."
+    " 들은 것은 오디오뿐이고 그 글자는 맞는지 가릴 대상이라 뜻이 달랐다."
+    " ② 선택지를 .listen-response 로 한 겹 감싸 위 여백을 줬다(66b0e94 08-25)."
+    " captured/ 는 그때 뜬 날것이라 그대로 둔다",
     "activity__grammar.html":
     "목업 v2.9 승격(2026-08-26). 빈칸을 <u>　</u> 에서 <span class=blank-slot> 으로 —"
     " 앱이 66b0e94 '빈칸 표기를 통일한다'(08-25)에서 먼저 정한 것을 정본이 따라갔다."

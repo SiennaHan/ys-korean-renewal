@@ -13,6 +13,8 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FillBlankView } from "@/components/learn/fill-blank";
+import { ListenAnswerView } from "@/components/learn/listen-answer";
+import { ReadAnswerView } from "@/components/learn/read-answer";
 import { AudioRow } from "@/components/main/activity/audio";
 import { BriefingScreen } from "@/components/main/activity/briefing-screen";
 import { ChatScreen } from "@/components/main/activity/chat";
@@ -291,30 +293,21 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	listen: (
-		<Screen
-			progress={[0, 3]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrListen")}>
-						<div className="listen-copy">
-							<small>들은 문장</small>
-							<p className="statement">여자 이름은 영주예요.</p>
-						</div>
-						<div className="listen-stimulus">
-							<AudioRow label="문장 다시 듣기" sub="오디오" />
-						</div>
-					</ProblemCard>
-					<ChoiceList variant="binary">
-						<Choice index={0} sub="내용이 달라요">
-							X
-						</Choice>
-						<Choice index={1} sub="내용이 같아요">
-							O
-						</Choice>
-					</ChoiceList>
-				</>
-			}
-			footer={NEXT}
+		<ListenAnswerView
+			lesson={LESSON}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={3}
+			instruction={T("activity.instrListen")}
+			type="ox"
+			question="여자 이름은 영주예요."
+			onSelect={() => {}}
+			options={[
+				{ index: 0, text: "X" },
+				{ index: 1, text: "O" },
+			]}
+			primary={{ label: T("player.next"), on: false, onClick: () => {} }}
 		/>
 	),
 
@@ -377,31 +370,21 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	reading: (
-		<Screen
+		<ReadAnswerView
 			lesson="1급 6과"
-			progress={[0, 3]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrReading")}>
-						<Passage>
-							{`저는 마이클입니다. 미국 사람이에요.
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={3}
+			instruction={T("activity.instrReading")}
+			passage={`저는 마이클입니다. 미국 사람이에요.
 지금 한국에서 한국어를 배웁니다.
 학교는 신촌에 있어요. 매일 아침 아홉 시에 갑니다.`}
-						</Passage>
-					</ProblemCard>
-					<div className="response-area">
-						<QuestionText>마이클은 어디에서 한국어를 배웁니까?</QuestionText>
-						<ChoiceList inResponseArea={false}>
-							{["미국", "신촌", "도쿄", "부산"].map((x, i) => (
-								<Choice key={x} index={i} action="rpick">
-									{x}
-								</Choice>
-							))}
-						</ChoiceList>
-					</div>
-				</>
-			}
-			footer={NEXT}
+			question="마이클은 어디에서 한국어를 배웁니까?"
+			type="choice"
+			options={["미국", "신촌", "도쿄", "부산"]}
+			onSelect={() => {}}
+			primary={{ label: T("player.next"), on: false, onClick: () => {} }}
 		/>
 	),
 
