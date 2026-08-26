@@ -18,6 +18,8 @@ dist/
 .idea
 
 .env
+# 값이 없는 본보기는 추적한다 — api/.gitignore 와 같은 사정
+!.env.example
 
 sample
 spec
