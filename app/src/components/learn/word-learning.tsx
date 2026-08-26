@@ -97,6 +97,64 @@ function formatTime(seconds: number): string {
  * 진행바가 없는 것은 shell_spec "활동별 진행 표시 정책" 의 "진행 없음" 이다 —
  * 미리보기는 퀴즈의 0번 문항이 아니라 준비 화면이라 분모에도 안 들어간다.
  */
+/**
+ * 어휘 문제 — **표시만** 한다. 목업 activity__wordQuiz · wordQuiz_image 자리다.
+ *
+ * 문제 카드 자체는 `WordQuizCard` 가 그린다. 원장이 가진 갈래는 둘이다 —
+ * 뜻을 주고 낱말을 고르거나(meaning-to-word), 그림을 주고 낱말을 고른다(image-to-word).
+ */
+export function WordQuizPageView({
+	lesson,
+	onExit,
+	onSkip,
+	current,
+	total,
+	onJump,
+	solved,
+	card,
+	primary,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	current: number;
+	total: number;
+	onJump?: (index: number) => void;
+	/** 맞혔으면 피드백 칸에 정답 문구가 뜬다 */
+	solved?: boolean;
+	card: ReactNode;
+	primary: {
+		label: string;
+		on: boolean;
+		action?: string;
+		onClick?: () => void;
+	};
+}) {
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+			<ActivityProgress current={current} total={total} onJump={onJump} />
+
+			<ActivityBody
+				feedback={solved ? <FeedbackMessage kind="correct" /> : null}
+			>
+				{card}
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock>
+					<PrimaryButton
+						label={primary.label}
+						on={primary.on}
+						action={primary.action ?? "next"}
+						onClick={primary.onClick}
+					/>
+				</Dock>
+			</ActivityFooter>
+		</ActivityFrame>
+	);
+}
+
 export function WordPreviewView({
 	lesson,
 	onExit,
@@ -431,26 +489,16 @@ export default function WordLearning({
 		const quiz = quizzes[quizIndex];
 
 		return (
-			<ActivityFrame>
-				<ActivityAppBar
-					lesson={chapterLabel}
-					onExit={() => router.history.back()}
-					onSkip={handleSkip}
-				/>
-				<ActivityProgress
-					current={quizIndex}
-					total={quizzes.length}
-					onJump={(index) => setCurrentPage(index + 1)}
-				/>
-
-				<ActivityBody
-					feedback={
-						quiz && savedAnswers[quiz.id] !== undefined ? (
-							<FeedbackMessage kind="correct" />
-						) : null
-					}
-				>
-					{quiz && (
+			<WordQuizPageView
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+				onSkip={handleSkip}
+				current={quizIndex}
+				total={quizzes.length}
+				onJump={(index) => setCurrentPage(index + 1)}
+				solved={quiz != null && savedAnswers[quiz.id] !== undefined}
+				card={
+					quiz && (
 						<WordQuizCard
 							key={quiz.id}
 							quiz={quiz}
@@ -489,29 +537,19 @@ export default function WordLearning({
 								}
 							}}
 						/>
-					)}
-				</ActivityBody>
-
-				<ActivityFooter>
-					<Dock>
-						<PrimaryButton
-							label={hasNext ? t("player.next") : t("player.showResult")}
-							on={
-								hasNext
-									? quiz !== undefined && savedAnswers[quiz.id] !== undefined
-									: quizzes.length > 0 &&
-										quizzes.every((q) => savedAnswers[q.id] !== undefined)
-							}
-							action="next"
-							onClick={
-								hasNext
-									? () => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-									: () => setPhase("result")
-							}
-						/>
-					</Dock>
-				</ActivityFooter>
-			</ActivityFrame>
+					)
+				}
+				primary={{
+					label: hasNext ? t("player.next") : t("player.showResult"),
+					on: hasNext
+						? quiz !== undefined && savedAnswers[quiz.id] !== undefined
+						: quizzes.length > 0 &&
+							quizzes.every((q) => savedAnswers[q.id] !== undefined),
+					onClick: hasNext
+						? () => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
+						: () => setPhase("result"),
+				}}
+			/>
 		);
 	}
 

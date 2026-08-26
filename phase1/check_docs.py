@@ -594,6 +594,11 @@ def stale_phrases(text: dict[str, str]) -> list[str]:
 
 
 TWIN_ALLOW = {
+    "activity__wordQuiz_image.html":
+    "새 화면이다(2026-08-26) — captured/ 에 짝이 없는 것이 맞다."
+    " 원장의 어휘 문제는 갈래가 둘인데(meaning-to-word 950 · image-to-word 196)"
+    " 정본은 그림 갈래를 그리지 않았고, 대신 원장에 0건인 낱말+발음듣기 갈래를"
+    " 그리고 있었다. 그 갈래를 빼고 그림 갈래를 넣으면서 화면이 하나 늘었다",
     "activity__jamoListen.html":
     "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
     " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
@@ -617,7 +622,8 @@ TWIN_ALLOW = {
     " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
     " 지키느라 앞 문항으로 돌아갈 길이 없어서 그 길을 진행바로 옮긴 것이다."
     " 그 커밋이 '대조는 영향을 받지 않는다' 고 적어 둔 자리라 여태 안 보였다."
-    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다",
+    " 플래시카드·로딩은 제품도 안 넘기므로 그대로다. captured/ 는 그때 뜬 날것이라 그대로 둔다"
+    " 같은 판에 표본을 낱말+발음듣기 갈래에서 뜻 갈래로 바꿨다 — 원장에 있는 갈래다.",
     "activity__write3_canvas.html":
     "목업 v2.9 승격(2026-08-26). 진행바 칸이 `<i>` 에서 누를 수 있는 `<button class=seg>` 가 됐다 —"
     " 앱이 35589a2(08-20)에서 먼저 정한 것을 정본이 따라갔다. 하단 도크가 목업의 전폭 버튼을"
@@ -719,9 +725,14 @@ def mockup_twins() -> tuple[list[str], list[str]]:
     ok: list[str] = []
     an = {p.name for p in a.glob("*.html")}
     bn = {p.name for p in b.glob("*.html")}
+    # 한쪽에만 있는 것도 TWIN_ALLOW 로 재울 수 있다 — 캡처 뒤에 생긴 화면이 그렇다.
+    # 이유 없이 한쪽에만 있으면 여전히 걸린다.
     for only, where in ((an - bn, "captured/ 에만"), (bn - an, "app/src/mockups/ 에만")):
         for n in sorted(only):
-            bad.append(f"[목업 쌍둥이] {n} 이 {where} 있다")
+            if n in TWIN_ALLOW:
+                ok.append(f"{n} — {TWIN_ALLOW[n]}")
+            else:
+                bad.append(f"[목업 쌍둥이] {n} 이 {where} 있다")
     for n in sorted(an & bn):
         if (a / n).read_bytes() == (b / n).read_bytes():
             continue

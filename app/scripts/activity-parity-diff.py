@@ -12,6 +12,9 @@ IGNORED = {
     "disabled": "꺼진 버튼에 붙였다 — 목업은 data-action 을 빼는 것으로 같은 뜻을 냈다",
     'aria-hidden="true"': "장식 svg 를 읽지 않게 한다",
     'role="img"': "라벨 붙은 svg 를 그림으로 읽게 한다",
+    "어휘 문제 그림 경로": "같은 그림인데 사는 곳이 다르다 — 목업은 프로토타입 옆의"
+    " ../illust/images/… 를 보고, 앱은 서버가 내는 /textbook/{급}/… 를 본다."
+    " 파일 이름은 같다(b1_ch6_p63_10.png). .word-pic img 의 src 만 건너뛴다",
     "한 칸 진행막대": "칸이 하나뿐이면 늘 꽉 찬 줄이라 어디쯤인지를 말해 주지 못한다."
     " 그려도 자리만 먹으므로 뺐다 (wordPreview · write3 · write3_canvas)",
     "레이더 viewBox": "목업은 220 폭. 축 이름을 번역하면 좌우로 넘쳐 잘려서"
@@ -227,10 +230,13 @@ class Flat(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.rows, self.d = [], 0
         self._stat_row_child_depth = None
+        self._word_pic_depth = None
 
     def handle_starttag(self, tag, attrs):
         a = {k: (v or "") for k, v in attrs if k not in DROP_ATTRS}
         # 위 IGNORED "cs-stat-row 인라인 style" 참조
+        if tag == "div" and a.get("class") == "word-pic":
+            self._word_pic_depth = self.d + 1
         if tag == "div" and a.get("class") == "cs-stat-row":
             a.pop("style", None)
             self._stat_row_child_depth = self.d + 1
@@ -239,6 +245,9 @@ class Flat(HTMLParser):
         if a.get("viewBox" if "viewBox" in a else "viewbox", "") == "-30 0 280 210":
             a["viewbox"] = "0 0 220 210"
             a["style"] = a.get("style", "").replace("max-width:280px", "max-width:220px")
+        # 위 IGNORED "어휘 문제 그림 경로" 참조 — 파일 이름만 남기고 뿌리는 버린다
+        if tag == "img" and "src" in a and self._word_pic_depth == self.d:
+            a["src"] = a["src"].rsplit("/", 1)[-1]
         if a.get("aria-label") in EXIT_LABELS:
             a["aria-label"] = "(나가기)"
         # 위 IGNORED "운석 낙하 시간" 참조 — 앱만 인라인으로 준다

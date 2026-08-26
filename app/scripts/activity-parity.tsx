@@ -8,6 +8,12 @@
  *   npx tsx scripts/activity-parity.tsx
  */
 import "./parity-shim";
+import { AudioProvider } from "@/components/audio/audio-provider";
+import { MicPermissionProvider } from "@/components/audio/mic-permission-provider";
+import { ConfettiProvider } from "@/components/effect/confetti-provider";
+import { LottieEffectProvider } from "@/components/effect/lottie-effect-provider";
+import { SignProvider } from "@/components/sign/sign-provider";
+import { ToastProvider } from "@/components/toast/toast-context";
 
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -19,7 +25,11 @@ import { JamoWordRepeatView } from "@/components/learn/jamo/word-repeat";
 import { JamoWordWriteView } from "@/components/learn/jamo/word-write";
 import { ListenAnswerView } from "@/components/learn/listen-answer";
 import { ReadAnswerView } from "@/components/learn/read-answer";
-import { WordPreviewView } from "@/components/learn/word-learning";
+import {
+	WordPreviewView,
+	WordQuizPageView,
+} from "@/components/learn/word-learning";
+import WordQuizCard from "@/components/learn/word-quiz-card";
 import { AudioRow } from "@/components/main/activity/audio";
 import { BriefingScreen } from "@/components/main/activity/briefing-screen";
 import { ChatScreen } from "@/components/main/activity/chat";
@@ -184,6 +194,57 @@ const NEXT = <PrimaryButton label={T("player.next")} on={false} />;
 const CONSONANTS = "ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅅ ㅇ ㅈ ㅎ ㅋ ㅌ".split(" ");
 const VOWELS = "ㅏ ㅓ ㅗ ㅜ ㅡ ㅣ ㅐ ㅔ ㅚ ㅟ ㅑ ㅕ".split(" ");
 const FINALS = "ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅅ ㅇ".split(" ");
+/*
+ * 어휘 문제 두 갈래의 표본. 제품 `WordQuizCard` 를 그대로 그리므로 원장 한 줄의
+ * 꼴을 그대로 흉내 낸다 — 값은 목업이 그리는 것과 같게 맞췄다.
+ */
+const WORD_QUIZ_BASE = {
+	book_id: 1,
+	chapter: 6,
+	prompt_en: "",
+	prompt_jp: "",
+	prompt_cn: "",
+	prompt_vi: "",
+	meaning_jp: "",
+	meaning_cn: "",
+	meaning_vi: "",
+	selection3: "",
+	selection4: "",
+	item_id: "",
+	review_status: "reviewed",
+	source_page: "",
+	change_note: "",
+	hold_reason: "",
+} as const;
+
+const WORD_QUIZ_MEANING = {
+	...WORD_QUIZ_BASE,
+	id: 9001,
+	type: "meaning-to-word" as const,
+	prompt: "단어에 맞는 뜻을 고르세요.",
+	meaning_en: "college / university",
+	image: "",
+	selection1: "친구",
+	selection2: "대학교",
+	selection3: "학생",
+	selection4: "성",
+	answer_index: 1,
+};
+
+const WORD_QUIZ_IMAGE = {
+	...WORD_QUIZ_BASE,
+	id: 9002,
+	type: "image-to-word" as const,
+	prompt: "그림에 알맞은 단어를 고르세요.",
+	meaning_en: "",
+	image: "b1_ch6_p63_10.png",
+	selection1: "책",
+	selection2: "공책",
+	selection3: "연필",
+	selection4: "지우개",
+	answer_index: 0,
+};
+
 const TABS = ["1", "2", "3"];
 const JAMO_WORDS = "아 어 오 우 으 이 애 에 외 위".split(" ");
 const IMG = "../illust/images";
@@ -277,34 +338,33 @@ const SCREENS: Record<string, ReactElement> = {
 		/>
 	),
 
+	/*
+	 * 원장이 가진 갈래는 둘이다 — 뜻(meaning-to-word 950) · 그림(image-to-word 196).
+	 * 낱말+발음듣기 갈래는 2026-08-26 에 정본에서 뺐다(원장에 0건이라 학생이 못 본다).
+	 */
 	wordQuiz: (
-		<Screen
-			progress={[0, 4]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrWordQuiz")}>
-						<div className="word-focus">
-							<strong>사과</strong>
-							<button
-								type="button"
-								className="sound-icon"
-								data-action="audio"
-								aria-label="발음 듣기"
-							>
-								<IconVolumeInline />
-							</button>
-						</div>
-					</ProblemCard>
-					<ChoiceList>
-						{["apple", "grape", "peach", "pear"].map((x, i) => (
-							<Choice key={x} index={i}>
-								{x}
-							</Choice>
-						))}
-					</ChoiceList>
-				</>
-			}
-			footer={NEXT}
+		<WordQuizPageView
+			lesson={LESSON}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={4}
+			onJump={() => {}}
+			card={<WordQuizCard quiz={WORD_QUIZ_MEANING} />}
+			primary={{ label: T("player.next"), on: false }}
+		/>
+	),
+
+	wordQuiz_image: (
+		<WordQuizPageView
+			lesson={LESSON}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={1}
+			total={4}
+			onJump={() => {}}
+			card={<WordQuizCard quiz={WORD_QUIZ_IMAGE} />}
+			primary={{ label: T("player.next"), on: false }}
 		/>
 	),
 
@@ -1504,8 +1564,25 @@ mkdirSync(outDir, { recursive: true });
 
 await i18n.changeLanguage("ko");
 for (const [name, element] of Object.entries(SCREENS)) {
+	/*
+	 * 제품 컴포넌트를 그대로 그리므로 앱 루트가 씌우는 provider 를 같이 씌운다 —
+	 * 소리·토스트·컨페티를 쓰는 컴포넌트가 있어서 없으면 렌더가 죽는다.
+	 * 서버 렌더라 effect 는 돌지 않으므로 실제로 소리가 나지는 않는다.
+	 */
 	const html = renderToStaticMarkup(
-		<I18nextProvider i18n={i18n}>{element}</I18nextProvider>,
+		<I18nextProvider i18n={i18n}>
+			<SignProvider>
+				<AudioProvider>
+					<MicPermissionProvider>
+						<ToastProvider>
+							<ConfettiProvider>
+								<LottieEffectProvider>{element}</LottieEffectProvider>
+							</ConfettiProvider>
+						</ToastProvider>
+					</MicPermissionProvider>
+				</AudioProvider>
+			</SignProvider>
+		</I18nextProvider>,
 	);
 	/*
 	 * 프레임은 목업 캡처에 없다 — 캡처는 프레임 안쪽만 담았다.
@@ -1517,6 +1594,8 @@ for (const [name, element] of Object.entries(SCREENS)) {
 	 * data-screen 처럼 프레임에 붙는 속성도 같이 벗긴다.
 	 */
 	const inner = html
+		// AudioProvider 가 프레임 밖에 숨은 <audio> 를 하나 단다 — 화면이 아니다
+		.replace(/<audio class="hidden"[^>]*><\/audio>$/, "")
 		.replace(/^<div class="(?:activity|vocashot)-frame"[^>]*>/, "")
 		// 게임은 game-frame 이 프레임이다. 캡처 쪽에서도 같은 층을 벗긴다
 		.replace(/^<div class="game-frame[^"]*"[^>]*>/, "")
