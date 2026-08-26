@@ -191,7 +191,7 @@ const en = {
 		statusTitle: "Progress",
 		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
 		statusFallback: "Studying",
-		chartTitle: "This week",
+		chartTitle: "Study time this week",
 		todayActivities: "Today",
 		weeklyActivities: "This week",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */

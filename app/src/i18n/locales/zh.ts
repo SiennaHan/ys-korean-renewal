@@ -188,7 +188,7 @@ const zh = {
 		statusTitle: "学习情况",
 		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
 		statusFallback: "学习中",
-		chartTitle: "本周活动",
+		chartTitle: "本周学习时长",
 		todayActivities: "今日活动数",
 		weeklyActivities: "本周活动数",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */

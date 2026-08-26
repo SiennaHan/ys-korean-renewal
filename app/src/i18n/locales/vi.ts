@@ -191,7 +191,7 @@ const vi = {
 		statusTitle: "Tiến độ học",
 		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
 		statusFallback: "Đang học",
-		chartTitle: "Hoạt động tuần",
+		chartTitle: "Thời gian học trong tuần",
 		todayActivities: "Hôm nay",
 		weeklyActivities: "Trong tuần",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */

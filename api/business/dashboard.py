@@ -132,6 +132,9 @@ async def getDashboard(userId: str):
                 d = datetime.strptime(a.activity_date, "%Y-%m-%d").date()
                 idx = (d - monday).days
                 if 0 <= idx < 7:
+                    # 단위는 분(分)이다 — 활동 건수가 아니다. 같은 응답의
+                    # todayActivities·weeklyActivities 와 세는 것이 다르다.
+                    # 앱은 이 값을 「주간 학습 시간」으로 그린다(2026-08-26 확정).
                     chartData[idx] = (a.study_seconds or 0) // 60
             weeklyWords = sum(a.words_learned for a in week_activities)
 

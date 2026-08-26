@@ -192,7 +192,7 @@ const ja = {
 		statusTitle: "学習状況",
 		/** 대시보드 응답이 없을 때 학습 현황에 쓰는 값 */
 		statusFallback: "学習中",
-		chartTitle: "週間の学習",
+		chartTitle: "週間の学習時間",
 		todayActivities: "今日の活動数",
 		weeklyActivities: "週間の活動数",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
