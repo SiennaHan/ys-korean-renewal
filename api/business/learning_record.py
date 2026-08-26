@@ -32,8 +32,14 @@ async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, q
                 await repo_review_queue.remove(
                     userId, bookId, chapterSeq, menuType, sub, questionId, db
                 )
-            elif created or (review and not isCorrect):
-                # 첫 시도 오답·건너뜀은 예약한다(created).
+            elif (created and (skipped or not isCorrect)) or (review and not isCorrect):
+                # 첫 시도 오답·건너뜀은 예약한다(created + 틀렸거나 건너뜀).
+                #
+                # **전에는 `created` 만 봤다 — 첫 시도에 맞힌 것까지 "wrong" 으로
+                # 큐에 들어갔다.** 주석은 "오답·건너뜀은" 이라고 적혀 있었는데
+                # 조건이 정답을 안 가렸다. 아래 except 가 조용히 삼키는 자리라
+                # 화면에도 오류가 안 났고, 큐가 늘 차 있으니 그럴듯해 보였다.
+                # 첫 시도에 정답을 넣어 큐를 확인해서야 드러났다(2026-08-26).
                 # 다시 풀기 세션에서 또 틀리면 attempts 를 올리고 available_at 을
                 # 다시 미룬다(review) — add() 가 있으면 올리고 없으면 만든다.
                 # **같은 세션의 재시도는 여기 오지 않는다** — created 도 review 도
@@ -42,8 +48,10 @@ async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, q
                     userId, bookId, chapterSeq, menuType, sub, questionId,
                     "skipped" if skipped else "wrong", db,
                 )
-        except Exception:
-            pass
+        except Exception as e:
+            # 표가 없는 환경에서도 학습 기록은 남아야 하므로 삼키되, **찍는다.**
+            # 조용히 넘기던 탓에 위의 조건 버그가 오래 안 보였다
+            print(f"[review-queue] 예약·제거 실패 — user[{userId}] q[{questionId}] {e!r}")
 
         # 일별 활동 갱신 (출석 자동 기록) — 테이블 미생성 시에도 학습 기록은 정상 저장
         try:

@@ -186,6 +186,16 @@ export interface LearningRecordRequest {
 	questionId: number;
 	selectedAnswer: string;
 	isCorrect: boolean;
+	/** 자모처럼 한 과 안에서 갈래가 갈리는 활동의 하위 번호 */
+	sub?: number;
+	/** 안 풀고 넘어간 것. 오답과 다른 이유로 다시 풀기에 들어간다 */
+	skipped?: boolean;
+	/**
+	 * **다시 풀기 세션에서 온 저장인가.** 서버가 이걸 봐야 큐에서 뺀다
+	 * (`business/learning_record.py`). 안 보내면 맞혀도 큐에 그대로 남아
+	 * 홈의 「다시 풀 문항」이 영원히 줄지 않는다 — 실제로 그랬다(2026-08-26).
+	 */
+	review?: boolean;
 }
 
 export interface LearningRecord {

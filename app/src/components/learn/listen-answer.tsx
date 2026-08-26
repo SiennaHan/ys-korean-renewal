@@ -1,7 +1,7 @@
 import type { LearningRecord } from "@/api/apiType";
 import { getListenAudio } from "@/api/chat";
 import { getLearningRecords, saveLearningRecord } from "@/api/learning-record";
-import { useActivityState } from "@/hooks/use-activity-state";
+import { getActivityReviewQueue } from "@/api/review-queue";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
@@ -22,6 +22,7 @@ import {
 	QuestionText,
 	ResultScreen,
 } from "@/components/main/activity";
+import { useActivityState } from "@/hooks/use-activity-state";
 import { useInstruction } from "@/shared/data/instruction";
 import {
 	type ListenQuestion,
@@ -40,6 +41,8 @@ interface ListenAnswerProps {
 	chapter?: number;
 	chapterSeq?: number;
 	chapterLabel: string;
+	/** 홈의 다시 풀기 카드로 들어왔나. 큐에 있는 문항만 낸다 */
+	review?: boolean;
 }
 
 /**
@@ -173,6 +176,7 @@ export default function ListenAnswer({
 	chapter,
 	chapterSeq,
 	chapterLabel,
+	review,
 }: ListenAnswerProps) {
 	const router = useRouter();
 	const navigate = useNavigate();
@@ -189,6 +193,16 @@ export default function ListenAnswer({
 	const [phase, setPhase] = useState<"solving" | "result">("solving");
 	/** 다시 풀기로 좁힌 문항. null 이면 과 전체다 */
 	const [retryOnly, setRetryOnly] = useState<number[] | null>(null);
+
+	/*
+	 * 홈의 다시 풀기로 들어왔으면 큐에 있는 문항만 낸다.
+	 *
+	 * 결과 화면의 [다시 풀기] 와 **같은 길**이다 — retryOnly 를 채우는 주체만 다르다.
+	 * 그래서 복습을 위한 새 화면이 없다(BLOCKERS §9-a-1).
+	 *
+	 * 큐가 비어 있으면(다른 기기에서 이미 다 풀었다든가) 손대지 않는다 —
+	 * retryOnly 가 빈 배열이면 문항이 0개인 화면이 된다.
+	 */
 	/** 헤더 → 로 넘긴 문항 — shell_spec §23·§28 */
 	const [skipped, setSkipped] = useState<number[]>([]);
 
@@ -231,6 +245,37 @@ export default function ListenAnswer({
 	 * 전에는 여기서 정답 기록으로 유추했는데, 첫 시도만 기록하도록 서버를 고친 뒤
 	 * 어긋났다(BLOCKERS §6-c-1). 정답률과 진행 위치는 다른 것이라 갈랐다.
 	 */
+	const seeded = useRef(false);
+	useEffect(() => {
+		if (seeded.current || !review || !bookId || !chapterSeq) return;
+		// questions 는 retryOnly 가 null 인 지금 **과 전체**다 — 그래서 여기서 걸러야 한다
+		if (questions.length === 0) return;
+		seeded.current = true;
+		let alive = true;
+		getActivityReviewQueue({
+			bookId,
+			chapterSeq,
+			menuType: "listen-answer",
+		}).then((q) => {
+			if (!alive) return;
+			/*
+			 * **콘텐츠에 없는 문항은 버린다** (dev_spec §2.3 "콘텐츠 삭제 대응").
+			 * 큐는 서버에 있고 문항은 프런트 번들에 있어서, 콘텐츠가 바뀌면 큐에
+			 * 없는 id 가 남는다. 걸러 내지 않으면 문항 0개인 화면이 되어
+			 * "활동을 불러오지 못했어요" 가 뜬다 — 실제로 그렇게 나왔다.
+			 * 하나도 안 남으면 손대지 않는다 — 과 전체로 여는 것이 낫다.
+			 */
+			const valid = new Set(questions.map((x) => x.id));
+			const ids = q.items
+				.map((it) => it.questionId)
+				.filter((id) => valid.has(id));
+			if (ids.length > 0) setRetryOnly(ids);
+		});
+		return () => {
+			alive = false;
+		};
+	}, [review, bookId, chapterSeq, questions]);
+
 	const { startIndex, saveProgress, complete } = useActivityState({
 		bookId,
 		chapterSeq,
@@ -405,6 +450,7 @@ export default function ListenAnswer({
 				questionId: question.id,
 				selectedAnswer: String(idx),
 				isCorrect,
+				review,
 			});
 
 			if (isCorrect) {
