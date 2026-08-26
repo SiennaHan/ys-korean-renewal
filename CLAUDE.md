@@ -21,7 +21,7 @@
 | 수 | 무엇 | 어디서 나오나 |
 |---|---|---|
 | **20** | **목업의 활동 화면** | `screens_SOT.html` 활동 절의 버튼 수. `write`·`write3` 은 조합/따라쓰기를 한 버튼 안에서 상태로 넘긴다 |
-| **22** | **활동 컴포넌트** | `app/scripts/activity-parity.tsx` 의 `SCREENS` 활동 항목. 위의 두 단계를 따로 센다 |
+| **23** | **활동 컴포넌트** | `app/scripts/activity-parity.tsx` 의 `SCREENS` 활동 항목. 위의 두 단계를 따로 센다 |
 | **24** | **이식한 화면** | `masterplan_v3.html` **§15 의 표 합계** — `/learn/*` 6 · 자모 6 · 게임+목록 6 · 홈 등 4 · 클립·MY 2 |
 | **목업 대조 화면** | `pnpm parity:activity` 가 실제로 대조하는 수. **목업 캡처 전부**가 들어가 있다 — 지금 수와 갈래별 분해는 `check_docs.py` 가 찍는다 |
 

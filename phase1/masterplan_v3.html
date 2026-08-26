@@ -186,7 +186,7 @@
   <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). <b>구독·월 단위로 정해졌다 (2026-08-26)</b> — 남은 큰 물음은 <b>가격</b></td></tr>
   <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>루트의 <code>글로벌_교재기반_콘텐츠_v*.xlsx</code> 중 가장 높은 번호</b>다 — 번호를 여기 적지 않는다(적었다가 이 문서만 낡았다). 앱에 반영된 문항 수는 <b>여기 적지 않는다</b> — 시트마다 계속 늘어난다. 세려면 <code>python3 app/scripts/build-content.py --check</code> 가 시트별 행 수를 찍는다.<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비)이고 <b>브리핑 화면까지 배선됐다</b> — 실제 AI 대화만 아직 구 데이터(<code>ko_chat_dialog</code>)를 쓴다(BLOCKERS §8). 자모 529 는 <span class="pill done">배선 완료</span>(2026-08-24) — 화면 여섯이 <code>n8_jamo</code> 를 읽는다. 남은 검수는 받침·겹받침 낱자 목록뿐이고 배관을 막지 않는다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b · §2-c)</td></tr>
   <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업 · CSS 규칙 1,229개. <b>목업이 시각 정본</b>이고 Figma 를 대체했다</td></tr>
-  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 <b>24개 이식</b>(handoff §02 의 표 합계) · 활동 컴포넌트 22종으로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
+  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 <b>24개 이식</b>(handoff §02 의 표 합계) · 활동 컴포넌트 전부으로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
   <tr><td>개발 — 서버</td><td><span class="pill risk">막힘</span></td><td>DB 2종 · API 7종 미착수. <b>이것이 지금 임계 경로다</b>(§8) — 화면은 다 됐고 상태만 붙이면 된다</td></tr>
   <tr><td>B2C·결제</td><td><span class="pill now">설계 완료</span></td><td>경계·권한 판정·신설 DB·API 는 정해졌다(<span class="file">access_and_pricing_v1</span>). 구현 미착수</td></tr>
 </table></div>
@@ -209,7 +209,7 @@
 <table>
   <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
   <tbody>
-    <tr><td><b>활동 셸</b></td><td>shell_spec_v1 §1·3</td><td>shell_spec_v1 §11~§34</td><td>legacy_shell_mockup</td><td>dev_spec_v1 §2·5</td></tr>
+    <tr><td><b>활동 셸</b></td><td>shell_spec_v1 §1·3</td><td>shell_spec_v1 §11~§34</td><td>screens_SOT (활동 절)<br><span class="note">여기 <code>legacy_shell_mockup</code> 을 적어 뒀는데 <b>틀렸다</b>(2026-08-26 정정) — 그 문서는 <b>앱 반영 0</b> 이라고 아래 표가 스스로 적는다. 앱의 활동 셸을 실제로 지키는 것은 <code>pnpm parity:activity</code> 가 견주는 <code>screens_SOT</code> 의 활동 절이다.</span></td><td>dev_spec_v1 §2·5</td></tr>
     <tr><td><b>활동 12종</b></td><td>G1_content_gate_v1</td><td>_superseded/mockup_read_v1 <span class="pill stop">폐기</span><br>규격은 <code>parity:activity</code> 가 지킨다</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §11</td></tr>
     <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>jamo_authoring_spec_v1 §3·4</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §4 <span class="pill ok">통합했다 2026-08-24</span></td></tr>
     <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>screens_SOT(홈·목록)</td><td>dev_spec_v1 §14</td></tr>
@@ -500,7 +500,7 @@
   <tr><td>같은 문서 <b>게임 절</b></td><td>게임 17화면</td>
       <td class="n">315</td><td class="n">98</td><td>구현됨 · 대조 밖</td></tr>
   <tr><td><code>legacy_shell_mockup</code></td><td>공통 셸</td>
-      <td class="n">169</td><td class="n">84</td><td><span class="pill stop">0</span></td></tr>
+      <td class="n">163</td><td class="n">100</td><td><span class="pill stop">0</span></td></tr>
   <tr><td>같은 문서 <b>VocaShot 절</b></td><td>VocaShot 플레이</td>
       <td class="n">156</td><td class="n">71</td><td>구현됨 · <b>시작 화면은 대조 안</b></td></tr>
   <tr><td>같은 문서 <b>홈·목록 절</b></td><td>하단 내비 · 홈 · 교재학습 · 자모</td>
@@ -995,7 +995,7 @@ footer / dock   primary "다음" | "결과 보기"</pre>
     <div class="d">ko_activity_state · ko_review_queue 신설, /activity/* 와 /review-queue.
       <b>dev_spec_v1 §16 의 물음 넷 중 둘은 정해졌고(해설·게스트) 둘은 개발 판단이다</b></div></div>
   <div class="card"><div class="k">3</div><div class="nm">ActivityShell 상태 배선</div>
-    <div class="d"><b>활동 컴포넌트 22종</b>이 다 있다(§15 의 표). <b>2번(DB·API)이 끝나면</b> 상태만 붙인다</div></div>
+    <div class="d"><b>활동 컴포넌트 전부</b>이 다 있다(§15 의 표). <b>2번(DB·API)이 끝나면</b> 상태만 붙인다</div></div>
 </div>
 
 <h2 id="s19"><span class="n">19</span>건드리면 깨지는 것</h2>
