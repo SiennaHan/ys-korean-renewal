@@ -6,15 +6,7 @@ import {
 } from "@/api/flashcard";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import FlashcardResult from "@/components/learn/flashcard-result";
-import {
-	ActivityAppBar,
-	ActivityFooter,
-	ActivityFrame,
-	ActivityProgress,
-	Dock,
-	IconSpinner,
-	IconVolume,
-} from "@/components/main/activity";
+import { FlashcardScreen, LoadingScreen } from "@/components/main/activity";
 import { env } from "@/config/env";
 import { flashcards } from "@/shared/data/flashcard";
 import {
@@ -62,77 +54,6 @@ const SWIPE_VELOCITY_THRESHOLD = 500;
 /** 카드가 화면 밖으로 날아가는 목표 거리(px) */
 const FLY_OUT_DISTANCE = 500;
 
-/**
- * 뒤집기가 되는 단어 카드(프레젠테이션 전용).
- * 드래그/스와이프는 바깥 motion.div가 담당하고, 여기서는 앞/뒤 3D 뒤집기만 처리한다.
- * 뒤 카드(다음 카드)와 앞 카드가 같은 컴포넌트를 써서 교체가 매끄럽다.
- */
-function FlashcardCard({
-	card,
-	cardType,
-	lang,
-	isFlipped,
-	isAudioPlaying,
-	onPlay,
-}: {
-	card: FlashcardWord;
-	cardType: string;
-	lang: string;
-	isFlipped: boolean;
-	isAudioPlaying?: boolean;
-	onPlay?: (e: ReactMouseEvent) => void;
-}) {
-	// 뜻은 화면 언어를 따른다 — 아직 안 채워진 언어는 영어로 되돌아간다
-	const meaning = meaningFor(card, lang);
-	/*
-	 * 앞면은 문제, 뒷면은 **답이 크게**다 — 목업의 뒷면 <strong> 이 'apple'(뜻)이고
-	 * 작은 줄이 부가 정보다. 전에는 backTop 이 앞면과 같은 값이라 뒤집어도 큰 글자가
-	 * 그대로여서, 무엇이 답인지가 흐렸다. cardType 이 방향을 정한다:
-	 *   wm = 한국어를 보고 뜻을 맞힌다 -> 뒷면 큰 글자는 뜻
-	 *   mw = 뜻을 보고 한국어를 맞힌다 -> 뒷면 큰 글자는 한국어
-	 */
-	const frontText = cardType === "wm" ? card.word : meaning;
-	const backTop = cardType === "wm" ? meaning : card.word;
-	const backBottom = cardType === "wm" ? card.word : meaning;
-
-	return (
-		<div className={`flash-card ${isFlipped ? "flipped" : ""}`}>
-			<div className="flash-face">
-				<strong>{frontText}</strong>
-				<button
-					type="button"
-					className="card-audio"
-					onClick={onPlay}
-					onPointerDown={(e) => e.stopPropagation()}
-					disabled={isAudioPlaying}
-					aria-label="발음 듣기"
-				>
-					{isAudioPlaying ? <IconSpinner /> : <IconVolume />}
-				</button>
-			</div>
-			<div className="flash-face back">
-				<strong>{backTop}</strong>
-				<span className="kind">{backBottom}</span>
-				{card.image && (
-					<div className="flash-picture">
-						<img src={`${env.RES_URL_ROOT}/${card.image}`} alt={card.word} />
-					</div>
-				)}
-				<button
-					type="button"
-					className="card-audio"
-					onClick={onPlay}
-					onPointerDown={(e) => e.stopPropagation()}
-					disabled={isAudioPlaying}
-					aria-label="발음 듣기"
-				>
-					{isAudioPlaying ? <IconSpinner /> : <IconVolume />}
-				</button>
-			</div>
-		</div>
-	);
-}
-
 function RouteComponent() {
 	const { i18n } = useTranslation();
 	const { level, lesson } = Route.useSearch();
@@ -177,6 +98,11 @@ function RouteComponent() {
 	const animatingRef = useRef(false);
 
 	const currentCard = cardData[currentIndex];
+
+	// 상단 바에 적히는 줄. 세트 제목이 원장에 없으면 활동 이름으로 대신한다
+	const lessonLabel = `${flashcardModule?.chapter ?? lesson}과 · ${
+		flashcardModule?.title ?? "플래시카드"
+	}`;
 
 	const putData = async (cardId: string, status: "known" | "unknown") => {
 		await upsertUserFlashcardWord({
@@ -348,72 +274,72 @@ function RouteComponent() {
 		);
 	}
 
-	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={`${flashcardModule?.chapter ?? lesson}과 · ${flashcardModule?.title ?? "플래시카드"}`}
+	// 카드가 아직 안 왔다 — 서버에 저장된 진행을 읽어 오는 동안이다.
+	// 전에는 빈 카드 자리를 그대로 보여 줬다. 목업 정본에 기다리는 화면이 있다
+	// (activity__loading) — 그 화면을 쓴다.
+	if (!currentCard) {
+		return (
+			<LoadingScreen
+				lesson={lessonLabel}
+				current={currentIndex}
+				total={cardData.length}
 				onExit={onClose}
-				onSkip={() => swipe(-1)}
 			/>
-			<ActivityProgress current={currentIndex} total={cardData.length} />
-			<div className="flash-body">
-				{/* 확인 목업처럼 다음 카드의 가장자리만 보여 주되, 현재 카드는 스와이프를 유지한다. */}
-				<div className="flash-stage">
-					<div className="flash-next" />
-					{currentCard && (
-						<motion.div
-							className="flash-motion"
-							style={{ x, rotate }}
-							drag="x"
-							dragDirectionLock
-							onDragEnd={handleDragEnd}
-							onTap={handleFlip}
-							whileTap={{ cursor: "grabbing" }}
-						>
-							<FlashcardCard
-								card={currentCard}
-								cardType={cardType}
-								lang={i18n.language}
-								isFlipped={isFlipped}
-								isAudioPlaying={isAudioPlaying}
-								onPlay={(e) => {
-									e.stopPropagation();
-									playAudio();
-								}}
-							/>
-						</motion.div>
-					)}
-				</div>
-				<div className="flash-meta">
-					{isFlipped
-						? "다시 뒤집으려면 카드를 누르세요"
-						: "카드를 눌러 뜻을 보세요"}
-				</div>
-			</div>
-			<ActivityFooter>
-				<Dock>
-					<div className="judge">
-						<button
-							type="button"
-							className="unknown"
-							onClick={() => swipe(-1)}
-							disabled={isSwiping}
-						>
-							<span className="badge">{unknownWords.length}</span>
-							<span className="label">몰라요</span>
-						</button>
-						<button
-							type="button"
-							className="known"
-							onClick={() => swipe(1)}
-							disabled={isSwiping}
-						>
-							<span className="badge">{knownWords.length}</span>
-							<span className="label">알아요</span>
-						</button>
-					</div>
-				</Dock>
-			</ActivityFooter>
-		</ActivityFrame>
+		);
+	}
+
+	/*
+	 * 방향(cardType)을 여기서 푼다 — 화면은 앞 · 뒤 · 뒤의 작은 줄만 안다.
+	 *   wm = 한국어를 보고 뜻을 맞힌다 -> 뒷면 큰 글자는 뜻
+	 *   mw = 뜻을 보고 한국어를 맞힌다 -> 뒷면 큰 글자는 한국어
+	 * 소리는 방향과 무관하게 늘 한국어 낱말을 읽는다.
+	 */
+	const meaning = meaningFor(currentCard, i18n.language);
+	const isWordFirst = cardType === "wm";
+
+	return (
+		<FlashcardScreen
+			lesson={lessonLabel}
+			index={currentIndex}
+			total={cardData.length}
+			card={{
+				front: isWordFirst ? currentCard.word : meaning,
+				back: isWordFirst ? meaning : currentCard.word,
+				sub: isWordFirst ? currentCard.word : meaning,
+				spoken: currentCard.word,
+				imageUrl: currentCard.image
+					? `${env.RES_URL_ROOT}/${currentCard.image}`
+					: undefined,
+			}}
+			flipped={isFlipped}
+			knownCount={knownWords.length}
+			unknownCount={unknownWords.length}
+			audioBusy={isAudioPlaying}
+			judgeDisabled={isSwiping}
+			onExit={onClose}
+			onSkip={() => swipe(-1)}
+			// 뒤집기는 motion 의 onTap 이 맡는다 — 여기서도 받으면 끌고 놓을 때
+			// 클릭이 뒤따라 와 카드가 한 번 더 뒤집힌다
+			onAudio={(e) => {
+				e.stopPropagation();
+				playAudio();
+			}}
+			onAudioPointerDown={(e) => e.stopPropagation()}
+			onKnown={() => swipe(1)}
+			onUnknown={() => swipe(-1)}
+			wrapCard={(cardNode) => (
+				<motion.div
+					className="flash-motion"
+					style={{ x, rotate }}
+					drag="x"
+					dragDirectionLock
+					onDragEnd={handleDragEnd}
+					onTap={handleFlip}
+					whileTap={{ cursor: "grabbing" }}
+				>
+					{cardNode}
+				</motion.div>
+			)}
+		/>
 	);
 }

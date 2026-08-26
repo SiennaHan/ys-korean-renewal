@@ -693,7 +693,7 @@ export const 플래시카드_앞면: Story = {
 				lesson={LESSON}
 				index={0}
 				total={3}
-				card={{ word: "사과", meaning: "apple", kind: "명사" }}
+				card={{ front: "사과", back: "apple", sub: "명사" }}
 				flipped={false}
 				knownCount={0}
 				unknownCount={0}
@@ -711,7 +711,7 @@ export const 플래시카드_뒷면: Story = {
 				lesson={LESSON}
 				index={1}
 				total={3}
-				card={{ word: "사과", meaning: "apple", kind: "명사" }}
+				card={{ front: "사과", back: "apple", sub: "명사" }}
 				flipped
 				knownCount={1}
 				unknownCount={0}
