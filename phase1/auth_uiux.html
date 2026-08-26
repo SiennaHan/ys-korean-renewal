@@ -174,7 +174,7 @@
 
     <main class="workspace">
       <section class="notes" aria-label="설계 원칙">
-        <h2>규칙 다섯 — 코드를 읽고 정한 것입니다</h2>
+        <h2>규칙 일곱 — 코드를 읽고 정한 것입니다</h2>
 
         <div class="rule">
           <span class="rule-no">01</span>
@@ -196,7 +196,7 @@
         </div>
 
         <div class="rule">
-          <span class="rule-no">05</span>
+          <span class="rule-no">03</span>
           <div><b>계정 만드는 길이 둘이 됩니다</b>
             <p>지금 학생 계정은 <b>본인이 만들지 않습니다.</b> 학교 관리자가 일괄 등록합니다 —
               <code>POST /student/batch</code> · <code>/upload</code>(둘 다 <code>AdminRequired</code>).
@@ -206,14 +206,36 @@
         </div>
 
         <div class="rule">
-          <span class="rule-no">03</span>
+          <span class="rule-no">04</span>
+          <div><b>로그인은 갈래를 만들지 않습니다 (실측 2026-08-26)</b>
+            <p><b>학교 코드 입력이 없습니다.</b> <code>POST /sign/login</code> 은 이메일·비밀번호만
+              받고(<code>LoginRequest</code>), 학교는 관리자가 등록할 때 계정에 박힙니다
+              (<code>ko_user.school_code</code>). 그래서 이 시안의 로그인 화면에 칸이 둘뿐인 것이 맞습니다.<br>
+              <b>역할별 분기도 없습니다.</b> 학생 앱은 <code>role</code> 을 어디에서도 쓰지 않고
+              성공하면 <b>항상 <code>/main</code></b> 으로 갑니다. 서버도 역할을 보지 않아
+              관리자 계정이 학생 앱에 그대로 들어옵니다.<br>
+              <b>페이월이 기관 학생을 아는 법은 이것입니다</b> — 로그인 응답의
+              <code>schoolCode</code>. 있으면 기관, 없으면 개인입니다.</p></div>
+        </div>
+
+        <div class="rule">
+          <span class="rule-no">05</span>
+          <div><b>세션은 30일이고 갱신이 없습니다</b>
+            <p><code>signJwt</code> 의 <code>exp</code> 가 30일이고 <code>dev_spec_v1</code> 도
+              <b>"JWT 30일, 갱신 없음"</b> 이라 적었습니다. <b>30일이 지나면 예고 없이
+              로그아웃됩니다.</b> 그 순간을 위한 화면이 이 시안에 없습니다 —
+              구독 만료(<code>paywall_uiux</code>)와 다른 상태입니다. 다음 판에서 다룹니다.</p></div>
+        </div>
+
+        <div class="rule">
+          <span class="rule-no">06</span>
           <div><b>둘러보기 출구를 없애지 않습니다</b>
             <p>무료 범위가 로그인 없이 열려 있으므로(§02) 로그인 화면의 <b>유일한 출구</b>인
               "로그인하지 않고 둘러보기" 는 그대로 둡니다. 지금 구현도 그렇습니다.</p></div>
         </div>
 
         <div class="rule">
-          <span class="rule-no">04</span>
+          <span class="rule-no">07</span>
           <div><b>동의는 받을 것만 받습니다</b>
             <p>녹음 파일을 서버에 보관할지가 아직 미정입니다(<code>BLOCKERS.md</code> §9-d).
               보관하게 되면 <b>음성 동의 항목이 하나 더 필요</b>합니다 — 자리만 잡아 두고
@@ -347,8 +369,10 @@
           <h3>이메일을 확인하세요</h3>
           <p class="lead"><b>yuri@yonsei.ac.kr</b> 로 재설정 링크를 보냈습니다.
             받은 편지함에 없으면 스팸함도 확인해 주세요.</p>
-          <div class="banner info"><b>링크는 30분 동안 유효합니다</b>
-            <p>시간이 지나면 다시 요청해 주세요. 유효 시간은 아직 확정 전입니다.</p></div>
+          <div class="banner info"><b>링크 유효 시간 — 아직 정해지지 않았습니다</b>
+            <p><b>이 자리에 넣을 숫자가 없습니다.</b> 재설정 토큰 규약이 저장소에 없습니다 —
+              서버 라우트도, 표도, 명세도 없습니다(2026-08-26 실측).
+              정하면 여기와 <code>dev_spec_v1</code> 에 같이 적습니다.</p></div>
           <div class="dock">
             <button class="ghost">로그인으로 돌아가기</button>
             <p class="dockhint">메일이 오지 않으면 다시 보내기 — 1분 뒤 활성화</p>
