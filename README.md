@@ -84,9 +84,13 @@ cd app && pnpm install && pnpm dev
 | 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**스키마는 안 넣는다** — `createAllTables()` 가 28개를 스스로 만들었다 |
 | 4 외부 키 | **하나도 없어도 된다.** 2026-08-26 에 로드 때 자격증명을 요구하던 다섯 곳을<br>요청 시점으로 옮겼다 — `BLOCKERS.md` §6-b |
 
-**앱과 이어 보지는 않았다.** 확인한 것은 API 쪽 왕복까지다.
-앱은 `PUBLIC_KOREAN_API_URL` 을 `http://127.0.0.1:8000` 으로 두면 붙는다
-(`app/.env.example`).
+**앱까지 붙여서 화면에서 돌렸다.** 게스트 로그인 → 홈 → 교재학습 → 활동 →
+정답 → 서버 저장 → 새로고침 → **2번 문항에서 이어하기**. 홈은 전에 이 자리가
+"오류가 발생했습니다" 였다. 자세한 것은 `BLOCKERS.md` §6-b.
+
+> **`app/.env` 를 바꿔서 시험하지 마라.** 앱 개발 서버가 그 파일을 감시해서,
+> 다른 세션이 띄워 둔 앱까지 같이 옮겨 간다. 포트를 맞출 일이 있으면
+> **API 쪽을 옮겨라.**
 
 ## 이 저장소가 쓰는 세 장치
 
