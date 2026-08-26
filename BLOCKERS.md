@@ -137,9 +137,9 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 **활동 이름을 한 번 더 줄였다 (2026-08-24).** `자음-모음 조합하고 쓰기` →
 **`자음-모음 조합하기`**. 위 두 표는 08-21 시점의 기록이라 그대로 둔다.
 바꾼 곳 — `app/src/shared/data/module.ts`(앱이 쓰는 값, 8곳) ·
-`app/src/mockups/nav__jamo__resume.html` · `phase1/screens_uiux.html` ·
+`app/src/screens_ref/nav__jamo__resume.html` · `phase1/screens_uiux.html` ·
 `phase1/G1_content_gate_v1.html` · 코드 주석 셋.
-`phase1/captured/` 는 그때 뜬 날것이라 두고 `TWIN_ALLOW` 에 이유를 적었다.
+`phase1/_snapshots/` 는 그때 뜬 날것이라 두고 `TWIN_ALLOW` 에 이유를 적었다.
 
 **받침 묶음도 `자음-모음 조합하기` 로 둔다 — 이름을 바꾸지 마라 (기획자 결정).**
 `write3`(sub=6)은 받침·겹받침 묶음(9·10)에서만 쓰이는데 화면 이름이 sub=2 와 같은
@@ -158,7 +158,7 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 | 급 탭 | 한글 + 1~3급 | **한글 + 1~8급** (두 화면이 공유하는 정의였다) |
 | 1급 과 칩 | 4~9과 | **4~15과** — 1~3과는 한글 탭으로 간다 |
 
-캡처를 다시 떠서(`phase1/captured/` → `app/src/mockups/`) **자모 목록이 목업 대조에
+캡처를 다시 떠서(`phase1/_snapshots/` → `app/src/screens_ref/`) **자모 목록이 목업 대조에
 들어갔다** — 그때 스물일곱이었고, 그 뒤 VocaShot 셋과 게임 열일곱이 더 들어왔다
 (지금 수는 `README.md`). 렌더 뒤에 붙는 스크롤 표시 속성(`data-cue-bound` 등)은
 디자인이 아니라 걷어냈다.
@@ -661,12 +661,12 @@ vs `ux-control ps-result-retry`), 게임 캡처의 `<div id="app">` 껍데기를
 두어서, `div` 에 `onClick` 만 얹는 방법은 마우스로만 닿았다. 접근성을 갖추려면 마크업이
 버튼이어야 하고, **화면의 정본은 목업이므로 목업을 고치는 것이 맞는 순서다.**
 
-`app/src/mockups/game__pc_result.html` 에 `<button aria-label="문장 다시 듣기">` 를
-넣고 앱을 맞췄다. 스토리북이 읽는 `src/mockups/screens.ts` 도 같이 고쳤다 — 안 고치면
+`app/src/screens_ref/game__pc_result.html` 에 `<button aria-label="문장 다시 듣기">` 를
+넣고 앱을 맞췄다. 스토리북이 읽는 `src/screens_ref/screens.ts` 도 같이 고쳤다 — 안 고치면
 스토리만 옛 판을 보여 준다. `game.css` 에 `.pc-wrong-play` 를 더했다(생김새는 그대로,
 탭 자리 24px · 키보드 초점 링).
 
-`phase1/captured/` 의 날것 캡처와 갈라지므로 `check_docs.py` 의 `TWIN_ALLOW` 에 이유를
+`phase1/_snapshots/` 의 날것 캡처와 갈라지므로 `check_docs.py` 의 `TWIN_ALLOW` 에 이유를
 적었다 — **홈 셋이 이미 같은 길을 갔다**(08-20 에 탭 바를 고친 판). 캡처는 시점 기록으로
 남기고 `mockups/` 를 고치는 것이 이 저장소의 방식이다.
 
@@ -1268,6 +1268,53 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 | 학생 자체 회원가입 | `qr.tsx` 뿐 — B2B QR 방식이다 |
 | 비밀번호 재설정 메일 | 화면만 — §7 |
 
+### 9-a-1. 서버 쪽을 만들었다 — 표 둘과 API 여섯 (2026-08-26)
+
+`dev_spec_v1` §2.1 · §2.3 · §3 의 명세대로 만들었다. **로컬에서 실제로 돌려 확인했다.**
+
+| 만든 것 | |
+|---|---|
+| `ko_activity_state` | 15열. 유니크 `(user_id, book_id, chapter_seq, menu_type, sub)` |
+| `ko_review_queue` | 12열. 유니크 `(…, question_id)` · 색인 `(user_id, available_at)` |
+| `POST /activity/enter` | 없으면 `in_progress` 로 만들고 `currentItemIndex` 를 낸다 |
+| `PATCH /activity/progress` | 문항 이동마다. ✕ 로 나갈 때도 부른다 |
+| `POST /activity/complete` | `completed` + `completed_at`. **잔여 다시 풀기 수**를 같이 낸다 |
+| `GET /activity/chapter` | 한 과의 상태 전부 (교재학습 목록의 done 표시) |
+| `GET /review-queue` | `?scope=home` 은 `available_at` 지난 것만 · `?scope=activity` 는 그 활동분 |
+| `DELETE /review-queue/{id}` | 남의 행을 못 지우게 `user_id` 를 같이 건다 |
+
+`POST /learning-record` 도 이었다 — **오답·건너뜀이면 예약하고 맞히면 뺀다.** 왕복을
+줄이려고 서버가 알아서 한다(§3 의 권장).
+
+**명세를 읽다 구멍 하나를 찾았다.** 명세는 "재오답 → attempts += 1" 인데, 서버는
+**같은 세션의 재시도와 다시 풀기 세션의 오답을 요청만 보고 구분할 수 없다.**
+둘 다 "이미 있는 문항의 오답" 으로 똑같이 온다. 그래서 `POST /learning-record` 에
+`review` 플래그를 더했다 — 클라이언트가 "다시 풀기에서 온 것" 이라고 말해야 한다.
+그러지 않으면 명세의 그 규칙에 닿는 길이 없다.
+
+**확인한 것 (서버에 직접 물어서)**
+
+```
+enter → in_progress · idx 0        progress → idx 3
+오답 기록 → 큐에 wrong 1개          홈 큐는 0 (available_at 이 내일 0시라 같은 날 재출제를 막는다)
+맞히면 → 큐에서 빠진다              건너뜀 → reason=skipped
+complete → completed · 잔여 1       재진입 → completed 유지 · practice=true (연습 세션)
+
+같은 세션 재시도 → attempts 1 그대로     ← "문항당 한 번만 기록" 이 지켜진다
+다시 풀기에서 또 틀림 → 2 → 3            ← 명세의 재오답 규칙
+다시 풀기에서 맞힘 → 큐에서 빠진다
+
+73개 넣기 → total 60                    ← 상한
+attempts>=3 인 1·2·3 → 살아남았다        ← 가장 오래됐는데도 보호됐다
+attempts<3 중 10~22 → 지워졌다           ← 오래된 것부터
+
+진입 없이 progress → None                ← 반쪽 행(total_items 모르는 행)을 만들지 않는다
+자모 sub 1·2 → 따로 산다                 ← sub 가 키에 있어야 하는 이유
+```
+
+**아직 안 한 것** — 앱이 이 API 를 부르지 않는다. 화면 배선은 다음 일이다.
+그리고 `GET /dashboard` 에 `reviewCount`·`todayTask` 를 더하는 것(§3)도 남았다.
+
 ### 9-b. 이미 해결된 여섯 — 리뷰가 몰랐던 것
 
 | 항목 | 어디서 |
@@ -1373,7 +1420,7 @@ pnpm build            # 통과 — §1 에서 고쳤다
 `src/components/main/game/data` 도 여기 있었는데, **아무도 안 읽는 사본이라
 2026-08-25 에 지웠다**(앱은 게임 콘텐츠를 서버에서 받는다). 제외 목록에서도 뺐다.
 
-`src/mockups/screens.ts` 가 이미 같은 이유로 제외돼 있었다.
+`src/screens_ref/screens.ts` 가 이미 같은 이유로 제외돼 있었다.
 
 **딸려 오는 것 — `src/shared/data` 의 작은 로더 모듈들이 검사 밖으로 나갔다.**
 `word-list.ts` · `learn-data-check.ts` 처럼 JSON 을 읽어 타입을 붙이는 파일 열한 개다.

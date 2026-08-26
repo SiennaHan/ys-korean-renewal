@@ -165,6 +165,45 @@ class LearningRecordRequest(BaseModel):
     questionId: int
     selectedAnswer: str
     isCorrect: bool
+    # 자모만 1~6, 나머지 활동은 0 (dev_spec_v1 §2.1). 옛 클라이언트는 안 보내므로 기본 0 이다
+    sub: int = 0
+    # 건너뛴 문항. 오답과 다르게 세야 해서 따로 받는다 — 다시 풀기 이유가 skipped 가 된다
+    skipped: bool = False
+    # **다시 풀기 세션에서 온 것인가.** 서버는 이것을 알 수 없다 —
+    # 같은 세션의 재시도와 다시 풀기 세션의 오답이 요청만 보면 똑같다.
+    # 명세의 "재오답 → attempts += 1" 은 뒤쪽만 해당하므로 클라이언트가 말해야 한다
+    # (dev_spec_v1 §2.3)
+    review: bool = False
+
+
+# ── 활동 상태 (dev_spec_v1 §2.1 · §3) ──
+
+class ActivityEnterRequest(BaseModel):
+    bookId: int
+    chapterSeq: int
+    menuType: str
+    sub: int = 0
+    totalItems: Optional[int] = None
+
+
+class ActivityProgressRequest(BaseModel):
+    bookId: int
+    chapterSeq: int
+    menuType: str
+    sub: int = 0
+    currentItemIndex: int
+
+
+class ActivityCompleteRequest(BaseModel):
+    bookId: int
+    chapterSeq: int
+    menuType: str
+    sub: int = 0
+    # 넘기지 않으면 기존 값을 그대로 둔다. 발음처럼 채점하지 않는 활동은
+    # ko_learning_record 에 안 남아서 클라이언트가 아는 것이 더 정확하다
+    answeredCount: Optional[int] = None
+    gradedCount: Optional[int] = None
+    correctCount: Optional[int] = None
 
 
 # ── Game Progress ──

@@ -1,4 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime, Text, func, ForeignKey
+from sqlalchemy import Index, SmallInteger, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -348,3 +349,88 @@ class KoVocashotPreset(Base) :
     sort_order     = Column(Integer,      nullable=False, default=0)
     created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
     updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+
+
+class KoActivityState(Base) :
+    """활동 상태 — dev_spec_v1 §2.1
+
+    전에는 활동 완료를 ko_learning_record 건수와 content_counts.TOTAL_QUESTIONS 를
+    비교해 매번 계산했다. 명시 상태와 이어하기 위치가 필요해 별도 표로 올린다.
+
+    **미학습은 행이 없는 것으로 표현한다** — state 에 'not_started' 를 두지 않는다
+    (G2 §9: 화면에도 표기하지 않는다).
+
+    sub 가 키에 있는 이유 — 자모는 menu_type 이 'jamo' 하나인데 하위활동이 여섯이다
+    (/learn/jamo?sub=1~6). sub 가 없으면 여섯이 한 행을 공유해서 하나를 끝내면
+    나머지도 완료로 보이고 이어하기 위치가 서로 덮인다. menu_type 을 jamo-1~6 으로
+    쪼개지 않는 이유는 그러면 ko_learning_record·ko_daily_activity·content_counts 의
+    키가 전부 여섯 배로 늘기 때문이다. **NULL 이 아니라 0 인 이유**는 MySQL 이
+    UNIQUE 키에서 NULL 중복을 허용해서, NULL 로 두면 자모 아닌 활동의 유니크가
+    무력해진다.
+
+    "복습 권장" 은 컬럼이 아니다 — 완료의 하위 표시이므로 ko_review_queue 에 그
+    활동 소속 항목이 남았는지로 판정한다. 상태를 두 곳에 쓰면 어긋난다.
+    """
+    __tablename__      = "ko_activity_state"
+    id                 = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
+    user_id            = Column(String(45),   nullable=False, index=True)
+    book_id            = Column(Integer,      nullable=False)
+    chapter_seq        = Column(Integer,      nullable=False)
+    # 라우트는 개칭했지만 저장 값은 그대로다 — fill-blank · listen-answer · read-answer
+    # (dev_spec §2.2. 값을 바꾸면 기존 학습 기록이 통째로 미아가 된다)
+    menu_type          = Column(String(20),   nullable=False)
+    state              = Column(String(16),   nullable=False, default="in_progress")
+    sub                = Column(SmallInteger, nullable=False, default=0)
+    current_item_index = Column(Integer,      nullable=False, default=0)
+    total_items        = Column(Integer,      nullable=True)
+    # 응답한 문항 수. 진행률의 분자. 정오답 무관하고 발음도 센다.
+    # 건너뛴 문항과 녹음 없이 넘긴 발음 문항은 세지 않는다
+    answered_count     = Column(Integer,      nullable=False, default=0)
+    # 채점 대상 수. 정답률의 분모. 발음(자모 sub=1·3)과 플래시카드는 0 → 화면에 "—"
+    graded_count       = Column(Integer,      nullable=False, default=0)
+    # 첫 시도 기준. 재시도로 맞힌 것은 세지 않는다(셸 명세 S1 · BLOCKERS §6-c)
+    correct_count      = Column(Integer,      nullable=False, default=0)
+    completed_at       = Column(DateTime,     nullable=True)
+    created_at         = Column(DateTime,     nullable=False, default=func.utc_timestamp())
+    updated_at         = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id", "book_id", "chapter_seq", "menu_type", "sub", name="uq_state"
+        ),
+    )
+
+
+class KoReviewQueue(Base) :
+    """다시 풀기 목록 — dev_spec_v1 §2.3
+
+    첫 시도 오답·건너뜀·"몰라요" 가 들어온다. **재시도로 맞혀도 남는다** — 예약도
+    첫 시도 기준이다(셸 명세 S1).
+
+    available_at 은 오답 다음 날 KST 00:00 이다. 홈 목록은 그 시각이 지난 것만 내고,
+    결과 화면의 [다시 풀기] 는 이 값을 무시하고 바로 낸다 — 같은 날 재출제를 막는
+    것은 홈 쪽뿐이다.
+    """
+    __tablename__  = "ko_review_queue"
+    id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
+    user_id        = Column(String(45),   nullable=False)
+    book_id        = Column(Integer,      nullable=False)
+    chapter_seq    = Column(Integer,      nullable=False)
+    menu_type      = Column(String(20),   nullable=False)
+    sub            = Column(SmallInteger, nullable=False, default=0)
+    # Phase 1 은 기존 체계를 그대로 쓴다. item_id 이관은 Phase 2 다
+    question_id    = Column(Integer,      nullable=False)
+    # wrong | skipped | unknown(플래시카드 "몰라요")
+    reason         = Column(String(16),   nullable=False)
+    attempts       = Column(Integer,      nullable=False, default=1)
+    available_at   = Column(DateTime,     nullable=False)
+    created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id", "book_id", "chapter_seq", "menu_type", "sub", "question_id",
+            name="uq_queue",
+        ),
+        Index("ix_user_avail", "user_id", "available_at"),
+    )

@@ -2,14 +2,41 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi.encoders import jsonable_encoder
 from persistence.database import sessionScope
-from persistence import repo_learning_record, repo_daily_activity
+from persistence import repo_learning_record, repo_daily_activity, repo_review_queue
 
 KST = timezone(timedelta(hours=9))
 
 
-async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, questionId: int, selectedAnswer: str, isCorrect: bool):
+async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, questionId: int, selectedAnswer: str, isCorrect: bool, sub: int = 0, skipped: bool = False, review: bool = False):
+    """문항 하나를 기록한다. 오답·건너뜀이면 다시 풀기에 예약하고, 맞히면 뺀다.
+
+    **예약은 첫 시도 기준이다**(dev_spec §2.1, 셸 명세 S1). 재시도로 맞혀도 큐에
+    남는다 — 그래서 `created` 일 때만 넣는다. 반대로 제거는 시도 회차를 보지 않는다:
+    다시 풀기에서 맞히면 빼야 하고 그것은 두 번째 이후 시도다.
+
+    자동 제거를 서버가 하는 이유는 왕복을 줄이는 것이다(§3 의 권장).
+    """
     with sessionScope() as db:
         record, created = await repo_learning_record.upsert(userId, bookId, chapterSeq, menuType, questionId, selectedAnswer, isCorrect, db)
+
+        # 다시 풀기 예약·제거. 표가 아직 없는 환경에서도 학습 기록은 남아야 하므로 감싼다
+        try:
+            if isCorrect and not skipped:
+                await repo_review_queue.remove(
+                    userId, bookId, chapterSeq, menuType, sub, questionId, db
+                )
+            elif created or review:
+                # 첫 시도 오답·건너뜀은 예약한다(created).
+                # 다시 풀기 세션에서 또 틀리면 attempts 를 올리고 available_at 을
+                # 다시 미룬다(review) — add() 가 있으면 올리고 없으면 만든다.
+                # **같은 세션의 재시도는 여기 오지 않는다** — created 도 review 도
+                # 아니므로. 그래야 "문항당 한 번만 기록" 이 지켜진다
+                await repo_review_queue.add(
+                    userId, bookId, chapterSeq, menuType, sub, questionId,
+                    "skipped" if skipped else "wrong", db,
+                )
+        except Exception:
+            pass
 
         # 일별 활동 갱신 (출석 자동 기록) — 테이블 미생성 시에도 학습 기록은 정상 저장
         try:

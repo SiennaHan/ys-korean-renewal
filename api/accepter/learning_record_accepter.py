@@ -14,7 +14,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 async def save_learning_record(req: LearningRecordRequest, token: str = Depends(oauth2_scheme)):
     userId = auth.getUserIdFrom(token)
     return makeResponse(await learning_record.saveRecord(
-        userId, req.bookId, req.chapterSeq, req.menuType, req.questionId, req.selectedAnswer, req.isCorrect
+        userId, req.bookId, req.chapterSeq, req.menuType, req.questionId, req.selectedAnswer, req.isCorrect, req.sub, req.skipped, req.review
     ))
 
 

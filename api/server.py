@@ -15,6 +15,7 @@ from accepter import auth_accepter, admin_accepter, school_accepter, student_acc
 from accepter import dashboard_accepter, study_session_accepter, speech_accepter, game_progress_accepter
 from accepter import spring_picnic_accepter, particle_sniper_accepter, card_sort_accepter, seoul_puzzle_accepter, vocashot_accepter
 from accepter import qr_accepter
+from accepter import activity_accepter, review_queue_accepter
 from persistence.database import createAllTables
 
 load_dotenv(override=True)
@@ -106,6 +107,15 @@ app.include_router(
 
 app.include_router(
     dashboard_accepter.router, prefix="/dashboard", tags=["dashboard"], responses={404: {"description": "Not found"}},
+)
+
+# 활동 상태와 다시 풀기 — dev_spec_v1 §2.1 · §2.3 · §3
+app.include_router(
+    activity_accepter.router, prefix="/activity", tags=["activity"], responses={404: {"description": "Not found"}},
+)
+
+app.include_router(
+    review_queue_accepter.router, prefix="/review-queue", tags=["review-queue"], responses={404: {"description": "Not found"}},
 )
 
 app.include_router(
