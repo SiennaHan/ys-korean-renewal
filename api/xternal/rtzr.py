@@ -11,8 +11,18 @@ load_dotenv(override=True)
 RTZR_CLIENT_ID = os.getenv("RTZR_CLIENT_ID")
 RTZR_CLIENT_SECRET = os.getenv("RTZR_CLIENT_SECRET")
 
-if not RTZR_CLIENT_ID or not RTZR_CLIENT_SECRET:
-    raise RuntimeError("RTZR_CLIENT_ID and RTZR_CLIENT_SECRET environment variables required")
+def _creds() -> tuple[str, str]:
+    """요청 시점에 자격증명을 요구한다.
+
+    전에는 모듈 최상위에서 바로 raise 했다. business/stt.py 가 이 모듈을
+    import 하므로 **두 값이 없으면 서버 자체가 안 떴다** — 학습 흐름은
+    리턴제로 STT 가 필요 없는데도 그랬다.
+    """
+    if not RTZR_CLIENT_ID or not RTZR_CLIENT_SECRET:
+        raise RuntimeError(
+            "RTZR_CLIENT_ID and RTZR_CLIENT_SECRET environment variables required"
+        )
+    return RTZR_CLIENT_ID, RTZR_CLIENT_SECRET
 
 BASE_URL = "https://openapi.vito.ai"
 # sommers: 리턴제로 최신 범용 한국어 모델
@@ -36,7 +46,7 @@ def _authenticate() -> str:
 
     resp = requests.post(
         f"{BASE_URL}/v1/authenticate",
-        data={"client_id": RTZR_CLIENT_ID, "client_secret": RTZR_CLIENT_SECRET},
+        data=dict(zip(("client_id", "client_secret"), _creds())),
         timeout=10,
     )
     resp.raise_for_status()

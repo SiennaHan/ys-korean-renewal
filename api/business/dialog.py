@@ -59,15 +59,29 @@ async def listMission(bookId: int, userId:str):
 
 ##
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-if not OPENAI_API_KEY:
-	raise RuntimeError("OPENAI_API_KEY environment variable required")
+
+
+def _key() -> str:
+	"""요청 시점에 키를 요구한다.
+
+	전에는 이 자리에서 바로 raise 했다. 모듈 로드 때 던지므로 **OPENAI_API_KEY 가
+	없으면 서버 자체가 안 떴다** — dialog_accepter 가 이 모듈을 import 하기 때문이다.
+	학습 흐름(로그인·활동·기록 저장)은 이 키가 필요 없는데도 그랬다.
+	"""
+	if not OPENAI_API_KEY:
+		raise RuntimeError("OPENAI_API_KEY environment variable required")
+	return OPENAI_API_KEY
+
 
 TTS_ENDPOINT = "https://api.openai.com/v1/audio/speech"
-HEADERS = {
-	"Authorization": f"Bearer {OPENAI_API_KEY}",
-	"Content-Type": "application/json",
-	"Accept": "audio/mpeg"
-}
+
+
+def headers() -> dict:
+	"""쓰는 곳이 아직 없다. 키를 로드 때 끼워 넣지 않으려고 함수로 둔다"""
+	return {
+		"Authorization": f"Bearer {_key()}",
+		"Content-Type": "application/json",
+	}
 async def getFirstMsgAudioUrl(dialogId: str, voice: TtsVoiceGender):
     """
     미션챗 첫 AI 발화의 음성 URL을 반환.

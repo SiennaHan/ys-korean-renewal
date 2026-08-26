@@ -14,8 +14,18 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    raise RuntimeError("GEMINI_API_KEY environment variable required")
+
+
+def _key() -> str:
+    """요청 시점에 키를 요구한다.
+
+    전에는 이 자리에서 바로 raise 했다. 모듈 로드 때 던지므로
+    **GEMINI_API_KEY 가 없으면 서버 자체가 안 떴다** — 이 모듈을
+    tts_accepter 가 import 하기 때문이다. 학습 흐름은 TTS 가 필요 없는데도 그랬다.
+    """
+    if not GEMINI_API_KEY:
+        raise RuntimeError("GEMINI_API_KEY environment variable required")
+    return GEMINI_API_KEY
 
 TTS_MODEL = "gemini-3.1-flash-tts-preview"
 TTS_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{TTS_MODEL}:generateContent"
@@ -103,7 +113,7 @@ async def gemini_tts(text: str, voice: str = DEFAULT_VOICE) -> bytes:
         for attempt in range(RATE_LIMIT_RETRIES + 1):
             response = requests.post(
                 TTS_URL,
-                params={"key": GEMINI_API_KEY},
+                params={"key": _key()},
                 json=_ttsPayload(text, voice),
                 timeout=(10, 60),
             )
@@ -173,7 +183,7 @@ async def gemini_tts_stream(text: str, voice: str = DEFAULT_VOICE):
     async with client.stream(
         "POST",
         STREAM_URL,
-        params={"key": GEMINI_API_KEY, "alt": "sse"},
+        params={"key": _key(), "alt": "sse"},
         json=_ttsPayload(text, voice),
     ) as response:
         response.raise_for_status()

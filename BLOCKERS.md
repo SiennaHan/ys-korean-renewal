@@ -868,25 +868,51 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 | 프런트와 API 를 함께 실행하는 절차 | ❌ 없다 (`docker-compose` 도 없다) |
 | 최소 연동 검사 | ❌ 없다 |
 
-### 6-b-1. 실제로 띄워 보고 센 막힘 다섯 (2026-08-26)
+### 6-b-1. 막힘을 하나씩 없앴다 — 이제 DB 둘만 남았다 (2026-08-26)
 
 `api/.venv` 로 `import server` 를 시켜 하나씩 넘으며 셌다. **추론이 아니라 실행이다** —
-처음에 `os.getenv()` 만 grep 하고 "키 없이 뜬다" 고 적었다가 틀렸다.
+처음에 `os.getenv()` 만 grep 하고 "키 없이 뜬다" 고 적었다가 틀렸고, 그다음엔
+"Gemini·Tutorus·RTZR 은 안 막는다" 고 적었다가 또 틀렸다(가짜 값을 준 채로 쟀다).
+**막던 것은 여섯이었고 다섯을 고쳤다.**
 
-| # | 무엇이 막나 | 어디 |
+| 무엇이 막았나 | 어디 | 지금 |
 |---|---|---|
-| 1 | **DB 값 다섯** — `DB_PORT` 가 `None` 이라 `int('None')` | `persistence/database.py` |
-| 2 | **`OPENAI_API_KEY`** — 모듈 로드 때 `OpenAI()` 를 만든다. **없으면 서버가 안 뜬다** | `xternal/openai.py:21` |
-| 3 | **`httpx` 가 `requirements.txt` 에 없다** | `xternal/gemini.py:10` 이 import 한다 |
-| 4 | **구글 TTS 자격증명 *파일*** — 경로가 코드에 박혀 있고 로드 때 클라이언트를 만든다 | `xternal/gcloud.py:7·10` → `key/korean-483509-9f4249b92e75.json` |
-| 5 | **MySQL 인스턴스** — `createAllTables()` 가 시작 때 붙는다 | 위 넷을 다 넘긴 뒤 |
+| `OpenAI()` 를 로드 때 만든다 | `xternal/openai.py` | **고쳤다** — 대리 객체로 첫 호출 때 만든다 |
+| 로드 때 `OPENAI_API_KEY` 없으면 raise | `business/dialog.py` | **고쳤다** — `_key()` 로 요청 시점에 |
+| 로드 때 `GEMINI_API_KEY` 없으면 raise | `xternal/gemini.py` | **고쳤다** — `_key()` 로 요청 시점에 |
+| 로드 때 `RTZR_*` 없으면 raise | `xternal/rtzr.py` | **고쳤다** — `_creds()` 로 요청 시점에 |
+| `TextToSpeechClient()` 를 로드 때 만든다 | `xternal/gcloud.py` | **고쳤다** — 대리 객체. 경로도 `setdefault` 라 밖에서 준 쪽이 이긴다 |
+| `httpx` 가 `requirements.txt` 에 없다 | `xternal/gemini.py` 가 import | **고쳤다** — 목록에 넣었다 |
+| **DB 값 다섯** — `DB_PORT` 가 `None` 이라 `int('None')` | `persistence/database.py` | 남았다 |
+| **MySQL 인스턴스** | `createAllTables()` | 남았다 |
 
-**Gemini · Tutorus · RTZR 키는 안 막는다** — 비어 있어도 뜨고 그 기능만 실패한다.
-구글 클라이언트만 가짜로 막아 봤더니 라우터까지 다 등록되고 남는 실패는 MySQL 접속뿐이었다.
+**확인한 방법** — 외부 자격증명을 하나도 주지 않고 `import server` 를 시켰다.
+지금은 라우터까지 다 등록되고 남는 실패는 **MySQL 접속 하나**다. 그리고 다섯을
+양방향으로 시험했다: 키가 없으면 *쓸 때* 던지고(`OpenAIError` ·
+`DefaultCredentialsError` · `RuntimeError` 셋), 키가 있으면 진짜 객체가 나온다.
 
-즉 **키를 하나도 못 받아도 2·4 를 지연 생성으로 바꾸면 학습 흐름은 켜진다.**
-리뷰가 말한 "키가 없다고 전체가 안 켜져서는 안 된다" 를 만족시키는 데 필요한 것은
-그 두 줄이다 — 새 개발 모드를 만들 필요가 없다.
+Tutorus 만 원래부터 안 막았다 — 없으면 라우터를 아예 안 붙이고 로그에
+`[TUTORUS] 발음평가 비활성` 을 찍는다. **그 방식이 옳고, 나머지도 그렇게 바꾼 것이다.**
+
+### 최소 연동 검사도 만들었다
+
+`api/smoke_test.py` — 리뷰가 준 순서 그대로다.
+
+```
+게스트 토큰 → 저장 전 조회 → POST /learning-record → 재조회
+```
+
+**키가 하나도 없어도 여기까지 돌아야 한다.** 게스트 토큰은 자격증명을 요구하지 않고
+학습 기록은 DB 만 쓴다. 서버가 안 떠 있으면 그렇다고 말하고 1 을 낸다.
+
+`api/README.md` 에 **"로컬에서 처음 띄우기"** 절을 넣었다 — MySQL 만드는 법,
+프런트와 같이 띄우는 절차, 키가 없으면 무엇이 안 되는지의 표까지.
+
+### 남은 것 — 사람 손이 필요하다
+
+이 기계에 **MySQL 도 도커도 없다.** `brew` 뿐이라 설치는 시스템을 바꾸는 일이고
+확인을 받아야 한다. 그래서 **서버를 실제로 띄워 본 것은 아직 없다** —
+`import server` 가 MySQL 접속 직전까지 간 것까지가 확인된 전부다.
 
 ### `.env.example` 은 만들었다 (2026-08-26)
 

@@ -18,7 +18,26 @@ ERROR503 = "OpenAI server is busy, try again later"
 TTS_VOICES = ["marin", "cedar", "alloy", "ash", "ballad", "coral", "echo", "fable", "onyx", "nova", "sage", "shimmer", "verse"]
 
 load_dotenv(override=True)
-client = OpenAI()
+
+
+class _LazyOpenAI:
+    """첫 호출 때 만든다 — 서버가 뜰 때 키를 요구하지 않게.
+
+    전에는 `client = OpenAI()` 를 모듈 로드 때 했다. OpenAI SDK 는 키가 없으면
+    생성자에서 던지므로 **OPENAI_API_KEY 가 없으면 서버 자체가 안 떴다**.
+    학습 흐름(로그인·활동·기록 저장)은 이 키가 필요 없는데도 그랬다.
+    이제 /chat/* 같이 실제로 쓰는 요청에서만 키를 요구한다.
+    """
+
+    _client = None
+
+    def __getattr__(self, name):
+        if _LazyOpenAI._client is None:
+            _LazyOpenAI._client = OpenAI()
+        return getattr(_LazyOpenAI._client, name)
+
+
+client = _LazyOpenAI()
 
 
 async def transcribe(audio_bytes: bytes, filename: str = "audio.webm") -> str:

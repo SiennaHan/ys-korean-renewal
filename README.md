@@ -71,13 +71,18 @@ cd app && pnpm install && pnpm dev
 ("오류가 발생했습니다")로 바뀐다. **화면이 없는 게 아니라 데이터를 못 받는 것이다** —
 목업 대조 49화면이 통과하므로 홈·탭바·게임 화면은 다 그려진다.
 
-띄우려면 셋이 필요하고 **2·3 은 받아야 한다.**
+**2026-08-26 에 필요한 것이 줄었다.** 전에는 외부 자격증명 넷이 모듈 로드 때
+필요해서 하나만 없어도 서버가 안 떴는데, 전부 요청 시점으로 옮겼다 —
+`BLOCKERS.md` §6-b. 이제 **DB 값 다섯과 MySQL 하나면 뜬다.**
 
 | | 상태 | 무엇 |
 |---|---|---|
-| 1 파이썬 의존성 | **깔았다** — `api/.venv` (2026-08-24) | `requirements.txt` 20줄 → 실제 63개 |
-| 2 `api/.env` | **없다** | `DB_USER` · `DB_PASSWORD` · `DB_HOST` · `DB_PORT` · `DB_NAME` · `JWT_SECRET` · `OPENAI_API_KEY` · `GEMINI_API_KEY` · `TUTORUS_*` |
-| 3 MySQL | **없다** — `mysql` 명령도 없고 3306 도 닫혀 있다 | DB 서버 + `migration_*.sql` 넷 |
+| 1 파이썬 의존성 | **깔았다** — `api/.venv` (2026-08-24) | `requirements.txt` 는 불완전했다 — `httpx` 가 빠져 있어 넣었다 |
+| 2 `api/.env` | **없다 — 받아야 한다** | **`DB_*` 다섯과 `JWT_SECRET` 뿐이다.**<br>본보기는 만들어 두었다 — `api/.env.example` 이 무엇이 필수인지 넷으로 갈라 적는다.<br>외부 키(OpenAI·Gemini·Tutorus·리턴제로)는 **없어도 뜬다.** 그 기능만 실패한다 |
+| 3 MySQL | **없다 — 깔아야 한다** | 이 기계에 `mysql` 도 도커도 없다. 스키마는 안 넣어도 된다 —<br>`createAllTables()` 가 28개를 스스로 만든다(`model.py` 28 = 코드가 부르는 28) |
+
+띄운 뒤에는 `api/smoke_test.py` 가 학습 흐름을 끝까지 확인한다 —
+게스트 토큰 → 조회 → 저장 → 재조회. **키 없이 여기까지 돌아야 한다.**
 
 `server.py` 는 켜질 때 `createAllTables()` 를 부르고 그것이
 `mysql+mysqlconnector://{DB_USER}:…@{DB_HOST}:{DB_PORT}/{DB_NAME}` 로 붙는다.

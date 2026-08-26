@@ -19,3 +19,5 @@ openpyxl
 python-multipart
 # Tutorus 비원어민 STT(korstt) WebSocket 클라이언트용
 websockets
+# xternal/gemini.py 가 import 하는데 목록에 없었다 (2026-08-26)
+httpx

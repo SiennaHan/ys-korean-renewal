@@ -14,6 +14,65 @@ Speako 메인 API (포트 8000) — 채팅, 인증, TTS, STT, 다이얼로그, �
   brew install ffmpeg
   ```
 
+## 로컬에서 처음 띄우기 (2026-08-26)
+
+**외부 API 키가 하나도 없어도 학습 흐름은 켜진다.** 필요한 것은 DB 다섯 값과
+MySQL 하나뿐이다. 전에는 OpenAI·Gemini·구글·리턴제로 자격증명이 모듈 로드 때
+필요해서 하나만 없어도 서버가 안 떴는데, 2026-08-26 에 전부 요청 시점으로 옮겼다.
+
+```bash
+# 1. 값 채우기 — 본보기에 무엇이 필수인지 적어 두었다
+cp .env.example .env
+$EDITOR .env                      # DB_* 다섯과 JWT_SECRET 만 채우면 된다
+
+# 2. MySQL (mac · 도커가 없을 때)
+brew install mysql
+brew services start mysql
+mysql -uroot -e "CREATE DATABASE korean CHARACTER SET utf8mb4;"
+#   .env 에 DB_USER=root · DB_PASSWORD= · DB_NAME=korean · DB_PORT=3306
+
+# 3. 의존성과 실행
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python server.py        # 없는 테이블 28개를 스스로 만든다
+
+# 4. 다른 창에서 — 최소 연동 검사
+.venv/bin/python smoke_test.py    # 게스트 토큰 → 조회 → 저장 → 재조회
+```
+
+**스키마를 따로 넣지 않는다.** `persistence/database.py` 의 `createAllTables()` 가
+서버 시작 때 없는 테이블을 만든다. `model.py` 가 28개를 정의하고 코드가 부르는
+것도 28개다.
+
+**학습 콘텐츠도 DB 에 안 넣는다.** 문항은 프런트 번들(`app/src/shared/data/n*.json`)에
+있다. DB 가 필요한 것은 사용자·기록·게임뿐이고, 게임 콘텐츠 넣는 법은
+`DEPLOY_GAME_CONTENT.md` 에 있다.
+
+**테스트 계정도 필요 없다.** `POST /user/sign/guest` 가 자격증명 없이 JWT 를 준다.
+
+### 프런트와 같이 띄우기
+
+```bash
+# 창 1 — API
+cd api && .venv/bin/python server.py
+
+# 창 2 — 앱
+cd app && cp .env.example .env    # PUBLIC_KOREAN_API_URL 이 http://127.0.0.1:8000 이다
+pnpm install && pnpm dev          # npm 을 쓰지 마라 — 프로덕션 빌드가 깨진다
+```
+
+`PUBLIC_RES_URL_ROOT` 가 비어 있으면 **교재 삽화와 음성이 전부 404** 가 된다.
+로컬에서 그림이 깨지면 대개 이것이다 — 고장이 아니다.
+
+### 키가 없으면 무엇이 안 되나
+
+| 키 | 없을 때 |
+|---|---|
+| `OPENAI_API_KEY` | `/chat/*` · 일부 STT 만 실패. 서버는 뜬다 |
+| `GEMINI_API_KEY` | `/tts/*` 만 실패 |
+| 구글 TTS `key/*.json` | 구글 음성 합성만 실패 |
+| `TUTORUS_*` | 발음 평가 라우터가 아예 안 붙는다(로그에 "발음평가 비활성") |
+| `RTZR_*` | 리턴제로 STT 만 실패 |
+
 ## 설치 & 실행
 
 ```bash
