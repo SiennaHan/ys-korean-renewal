@@ -36,11 +36,88 @@ import type { ProblemType } from "@/types/book.types";
 import { useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Volume2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const baseButtonClasses =
 	"flex rounded-[8px] items-center justify-center cursor-pointer hover:bg-gray-200 active:bg-gray-300";
+
+/**
+ * 단어 듣고 따라 말하기 — **표시만** 한다.
+ * 진행바가 없는 것은 shell_spec "활동별 진행 표시 정책"(2026-08-25 확정) 대로다 —
+ * 내부 탐색형이라 카드·탭이 현재 위치를 말한다.
+ */
+export function JamoWordRepeatView({
+	lesson,
+	onExit,
+	onSkip,
+	instruction,
+	word,
+	image,
+	mine,
+	onPlaySource,
+	onPlayMine,
+	tabs,
+	currentTab,
+	onTab,
+	cards,
+	onPick,
+	footer,
+	next,
+	after,
+}: {
+	lesson: string;
+	onExit?: () => void;
+	onSkip?: () => void;
+	instruction: ReactNode;
+	word: string;
+	image: string;
+	/** 내가 말한 것의 판정 — "" · "ok" · "no" */
+	mine?: "" | "ok" | "no";
+	onPlaySource?: () => void;
+	onPlayMine?: () => void;
+	tabs: string[];
+	currentTab: string;
+	onTab?: (name: string) => void;
+	cards: { word: string; image: string; done: boolean }[];
+	onPick?: (word: string) => void;
+	footer: ReactNode;
+	/**
+	 * 하단 오른쪽 [다음]. shell_spec §26 — "발음 활동은 첫 녹음을 마치면 [다음]이 활성".
+	 * 목업은 처음부터 이 칸을 그렸는데 제품에는 없었다(대조가 못 보던 자리다).
+	 */
+	next?: { enabled: boolean; onClick?: () => void };
+	/** 숨은 <audio> 처럼 표시가 아닌 것 */
+	after?: ReactNode;
+}) {
+	return (
+		<ActivityFrame>
+			<ActivityAppBar lesson={lesson} onExit={onExit} onSkip={onSkip} />
+
+			<ActivityBody>
+				<ProblemCard instruction={instruction} stimulusStyle={{ gap: 20 }}>
+					<WordPicture word={word} image={image} />
+					<AudioPair
+						source={word}
+						mine={mine ?? ""}
+						onPlaySource={onPlaySource}
+						onPlayMine={onPlayMine}
+					/>
+				</ProblemCard>
+
+				<PracticeBrowser tabs={tabs} current={currentTab} onTab={onTab}>
+					<ThumbWordCards cards={cards} current={word} onPick={onPick} />
+				</PracticeBrowser>
+			</ActivityBody>
+
+			<ActivityFooter>
+				<Dock right={next ?? { enabled: false }}>{footer}</Dock>
+			</ActivityFooter>
+			{after}
+		</ActivityFrame>
+	);
+}
 
 export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 	const code = moduleCode;
@@ -228,63 +305,42 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 			: problemList;
 
 	return (
-		<ActivityFrame>
-			<ActivityAppBar
-				lesson={lesson}
-				onExit={() => router.history.back()}
-				onSkip={skip}
-			/>
-
-			<ActivityBody>
-				<ProblemCard
-					instruction={t("activity.instrWordRep")}
-					stimulusStyle={{ gap: 20 }}
-				>
-					<WordPicture
-						word={selectedWord?.content ?? ""}
-						image={`${env.RES_URL_ROOT}/${selectedWord?.content_img}`}
-					/>
-					<AudioPair
-						source={selectedWord?.content ?? ""}
-						mine={resultWord ? (isSucceed ? "ok" : "no") : ""}
-						onPlaySource={playAudio}
-						onPlayMine={playMyAudio}
-					/>
-				</ProblemCard>
-
-				<PracticeBrowser
-					tabs={(tabList ?? []).map((x) => x.tab_name)}
-					current={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
-					onTab={(name) => {
-						const at = tabList?.findIndex((x) => x.tab_name === name) ?? -1;
-						if (at >= 0) onTabClick(tabList[at].id, at);
-					}}
-				>
-					<ThumbWordCards
-						cards={shown.map((x) => ({
-							word: x.content,
-							image: `${env.RES_URL_ROOT}/${x.content_img}`,
-							done: false,
-						}))}
-						current={selectedWord?.content ?? ""}
-						onPick={(word) => {
-							const idx = problemList.findIndex((x) => x.content === word);
-							if (idx >= 0) setProblemIndex(idx);
-						}}
-					/>
-				</PracticeBrowser>
-			</ActivityBody>
-
-			<ActivityFooter>
-				<Dock>
-					<AudioRecorder dock setResult={setResult} />
-				</Dock>
-			</ActivityFooter>
-
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
-			<audio className="hidden" ref={audioRef} src={audioSrc} />
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
-			<audio className="hidden" ref={myAudioRef} src={myAudioSrc} />
-		</ActivityFrame>
+		<JamoWordRepeatView
+			lesson={lesson}
+			onExit={() => router.history.back()}
+			onSkip={skip}
+			instruction={t("activity.instrWordRep")}
+			word={selectedWord?.content ?? ""}
+			image={`${env.RES_URL_ROOT}/${selectedWord?.content_img}`}
+			mine={resultWord ? (isSucceed ? "ok" : "no") : ""}
+			onPlaySource={playAudio}
+			onPlayMine={playMyAudio}
+			tabs={(tabList ?? []).map((x) => x.tab_name)}
+			currentTab={tabList?.find((x) => x.id === selectedTab)?.tab_name ?? ""}
+			onTab={(name) => {
+				const at = tabList?.findIndex((x) => x.tab_name === name) ?? -1;
+				if (at >= 0) onTabClick(tabList[at].id, at);
+			}}
+			cards={shown.map((x) => ({
+				word: x.content,
+				image: `${env.RES_URL_ROOT}/${x.content_img}`,
+				done: false,
+			}))}
+			onPick={(word) => {
+				const idx = problemList.findIndex((x) => x.content === word);
+				if (idx >= 0) setProblemIndex(idx);
+			}}
+			footer={<AudioRecorder dock setResult={setResult} />}
+			// 녹음을 마치면 다음 단어로 — 명세 §26
+			next={{ enabled: !!resultWord, onClick: skip }}
+			after={
+				<>
+					{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+					<audio className="hidden" ref={audioRef} src={audioSrc} />
+					{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+					<audio className="hidden" ref={myAudioRef} src={myAudioSrc} />
+				</>
+			}
+		/>
 	);
 }

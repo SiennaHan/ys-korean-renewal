@@ -14,6 +14,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FillBlankView } from "@/components/learn/fill-blank";
 import { JamoChooseView } from "@/components/learn/jamo/choose";
+import { JamoWordRepeatView } from "@/components/learn/jamo/word-repeat";
 import { ListenAnswerView } from "@/components/learn/listen-answer";
 import { ReadAnswerView } from "@/components/learn/read-answer";
 import { AudioRow } from "@/components/main/activity/audio";
@@ -489,7 +490,6 @@ const SCREENS: Record<string, ReactElement> = {
 	speak: (
 		<Screen
 			lesson="1급 1과"
-			progress={[2, 6]}
 			noFeedback
 			body={
 				<>
@@ -515,25 +515,16 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	wordrep: (
-		<Screen
+		<JamoWordRepeatView
 			lesson="1급 1과"
-			progress={[0, 6]}
-			noFeedback
-			body={
-				<>
-					<ProblemCard
-						instruction={T("activity.instrWordRep")}
-						stimulusStyle={{ gap: 20 }}
-					>
-						<WordPicture word="어머니" image={FAMILY[0].image} />
-						<AudioPair source="어머니" mine="" />
-					</ProblemCard>
-					<PracticeBrowser tabs={TABS} current="1">
-						<ThumbWordCards cards={FAMILY} current="어머니" />
-					</PracticeBrowser>
-				</>
-			}
-			dockRight={{ enabled: false }}
+			onExit={() => {}}
+			onSkip={() => {}}
+			instruction={T("activity.instrWordRep")}
+			word="어머니"
+			image={FAMILY[0].image}
+			tabs={TABS}
+			currentTab="1"
+			cards={FAMILY}
 			footer={<RecordControl mode="idle" action="srec" />}
 		/>
 	),
@@ -541,7 +532,6 @@ const SCREENS: Record<string, ReactElement> = {
 	readwrite: (
 		<Screen
 			lesson="1급 1과"
-			progress={[1, 6]}
 			noFeedback
 			body={
 				<>
