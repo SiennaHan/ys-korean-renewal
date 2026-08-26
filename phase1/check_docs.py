@@ -27,6 +27,7 @@
   [데이터 정본]  문서가 말하는 데이터 출처와 코드의 import 가 다른 경우
   [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
   [문구 지뢰]    한 번 거짓이라 밝혀진 표현이 남아 있거나 되살아난 경우 — STALE_PHRASES
+  [관찰 기준]    문서가 선언한 관찰 경로가 기준 커밋 이후 바뀐 경우 — <!-- 관찰: … @ 커밋 -->
   [목업 쌍둥이]  phase1/captured/ 와 app/src/mockups/ 가 갈라진 경우
 
 [옛 경로] 는 인계 메모(*.txt)까지 본다.
@@ -44,6 +45,7 @@ h3 을 두어서 §N.M 인용 59곳이 닿지 않았다. 둘 다 "통과" 뒤에
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 import unicodedata
 from pathlib import Path
@@ -421,6 +423,68 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
 
 # captured/ 와 mockups/ 가 일부러 다른 곳. 이유를 적어야 넣을 수 있고,
 # 눈감아 준 것은 실행할 때마다 같이 찍는다 — parity 스크립트와 같은 규칙이다.
+# ── 관찰 기준 ────────────────────────────────────────────────────────
+# 문서가 코드·데이터를 보고 적은 문장은 캐시다. 원본이 바뀌면 낡는다.
+# 그래서 문서가 스스로 선언한다 — "나는 이 경로들을 이 커밋 기준으로 봤다."
+# 그 커밋 이후 그 경로가 바뀌었으면 잡는다. 문서 안에 한 줄로 적는다.
+#
+#     <!-- 관찰: app/src/shared/data/n6_flashcard.json @ 49101fb -->
+#
+# 어느 문장이 틀렸는지는 말해 주지 않는다. **"이 문서를 다시 봐라" 만 말한다.**
+# 그것이 2026-08-26 에 없던 것이다 — 플래시카드가 1~8급으로 넓어졌는데 그 전제로
+# 쓴 문장 다섯이 남은 것을 사람이 훑어서야 찾았다.
+#
+# 다시 본 뒤 고칠 것이 없으면 기준 커밋만 지금으로 올린다. 그게 정상 흐름이다.
+#
+# **경로는 좁게 골라라.** 100커밋 동안 몇 번 바뀌는지 세어 정했다 —
+#   데이터 JSON 1~2회 · jamo.ts 4 · main/textbook 7 · learn/jamo 10
+#   routes/learn 19 · main/activity 23 · components/ 97  ← 이 정도면 쓸 수 없다
+# 자주 우는 검사는 사람이 보지 않고 기준만 올리게 만든다. 없는 것보다 나쁘다.
+OBSERVE_RE = re.compile(
+    r"<!--\s*관찰:\s*(?P<paths>[^@]+?)\s*@\s*(?P<base>[0-9a-f]{7,40})\s*-->"
+)
+
+
+def observation_baselines() -> list[str]:
+    """문서가 선언한 관찰 경로가 기준 커밋 이후 바뀌었는지 본다."""
+    out: list[str] = []
+    for f in sorted(HERE.glob("*.html")) + sorted(HERE.glob("*.md")) + [
+        ROOT / "README.md",
+        ROOT / "BLOCKERS.md",
+        ROOT / "CLAUDE.md",
+    ]:
+        if not f.exists():
+            continue
+        for m in OBSERVE_RE.finditer(f.read_text(encoding="utf-8")):
+            paths = [x.strip() for x in m.group("paths").split(",") if x.strip()]
+            base = m.group("base")
+            try:
+                r = subprocess.run(
+                    ["git", "diff", "--name-only", f"{base}..HEAD", "--", *paths],
+                    cwd=ROOT, capture_output=True, text=True, timeout=20,
+                )
+            except (OSError, subprocess.SubprocessError) as e:
+                out.append(f"[관찰 기준] {f.name} — git 을 못 돌렸다: {e}")
+                continue
+            if r.returncode != 0:
+                err = (r.stderr or "").strip().split("\n")[0][:80]
+                out.append(
+                    f"[관찰 기준] {f.name} 의 기준 {base} 를 git 이 모른다 — {err}"
+                )
+                continue
+            changed = [x for x in r.stdout.split("\n") if x.strip()]
+            if changed:
+                shown = ", ".join(changed[:4])
+                more = f" 외 {len(changed) - 4}개" if len(changed) > 4 else ""
+                out.append(
+                    f"[관찰 기준] {f.name} 가 {base} 기준으로 봤다고 적었는데"
+                    f" 그 뒤 {len(changed)}개가 바뀌었다\n"
+                    f"           {shown}{more}\n"
+                    f"           문서를 다시 보고, 고칠 것이 없으면 기준 커밋만 지금으로 올려라"
+                )
+    return out
+
+
 # ── 문구 지뢰 ────────────────────────────────────────────────────────
 # 한 번 거짓이라고 밝혀진 표현. 같은 복사본이 안 훑은 문서에 남아 있거나
 # 나중에 되살아나면 잡는다. 손으로 훑은 것을 영구히 남기는 장치다.
@@ -980,8 +1044,9 @@ def main() -> int:
     # ── 5. 숫자 주장
     problems += claims(live, text)
 
-    # ── 문구 지뢰
+    # ── 문구 지뢰 · 관찰 기준
     problems += stale_phrases(text)
+    problems += observation_baselines()
 
     # ── 원장 버전 · 데이터 정본
     problems += ledger_claims(text)
