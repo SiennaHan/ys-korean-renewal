@@ -58,7 +58,7 @@
 | 새로 뜬 상태 | **54** (360폭·한국어 기준) |
 | 추가 캡처 | 320폭 7 · 영어 7 |
 | 파일 | `.png` · `.html`(활동 뿌리 outerHTML) · `.md`(상태 설명) 세 벌 |
-| 분류 | 표시 컴포넌트 `MATCH` 24 · `UNSPECIFIED` 27 · `DRIFT` 3 · 실제 라우트 `MATCH` 16 · `DRIFT` 3 · `UNSPECIFIED` 3 |
+| 분류 | 표시 컴포넌트 `MATCH` 24 · `UNSPECIFIED` 27 · `DRIFT` 3 · 실제 라우트 `MATCH` 17 · `DRIFT` 3 · `UNSPECIFIED` 3 |
 | 디자인 결정이 먼저 필요 | 10 |
 
 ## 어떻게 떴나 — 지어내지 않았다
@@ -268,6 +268,7 @@
 | `real__readwrite_modal_wrong` | 단어 읽고 쓰기 모달 | `같음 → 확인(틀린 글씨)` | `activity__write_canvas_wrong` | `MATCH` |
 | `real__role_me_to_ai` | 롤플레잉 연습 순서 바꿈 | `/learn/roleplay?level=1&lesson=4 → Me → AI` | `없음` | `UNSPECIFIED` |
 | `real__flash_nodata` | 플래시카드 — 데이터 없는 급·과 | `/learn/flashcard?level=2&lesson=4` | `없음` | `DRIFT` |
+| `real__flash_back` | 플래시카드 뒷면 | `/learn/flashcard?level=1&lesson=4 → 카드 탭` | `activity__flash_back` | `MATCH` |
 
 ### 자모 매핑이 실제 화면으로 확인됐다
 
@@ -500,6 +501,53 @@ TTS 재생이 끝나거나 연습 턴 녹음이 끝나야 하는데, 로컬에 T
 둘 다 **접근성·구조 개선**이라 되돌릴 것이 아니라 **목업을 따라오게 하는 것**이 맞다
 (`game__pc_result` 가 같은 길을 갔다 — `TWIN_ALLOW`). 이 감사는 정본을 안 건드리므로
 그 작업은 남긴다.
+
+## 2026-08-26 — `2abf726` 기준 전체 재측정
+
+롤플레잉 v2.6 · 플래시카드 원장 배선까지 들어온 뒤 **표시 컴포넌트 50 + 실제 라우트 15**
+를 다시 떴다.
+
+### 고쳐진 것
+
+| | 지금 |
+|---|---|
+| 플래시카드 | 확정 셸 + **진행 표시(점 27 · 「1 / 27」)** + 「카드를 눌러 뜻을 보세요」. **뒷면도 담았다** |
+| 미션대화 | 셸 · 미션 칩 · 말풍선 조작(스피커 · Aa)이 정리됨 |
+| 롤플레잉 | 진행 표시 정책대로 · 버튼 이름 전부 있음 |
+| 쓰기 모달 | 빨간 외곽선 + 획 유지 + i18n |
+| 빈칸 표기 | `___` → `__` 로 통일 |
+
+### 아직 남은 것 넷
+
+**① 문법 채점 — 정답 공개가 그대로다.**
+`fill-blank.tsx` 가 `sel === question.answer ? "ok"` 라 **오답을 골라도 정답 칩이
+초록**이다. 확정 규칙은 공개 금지다. 오답 칩에 `✕` 표가 없는 것도 그대로.
+
+**② 결과 화면 — 고쳤는데 아무도 안 쓴다.**
+`ResultScreen` 의 `grading="completion"` 을 넘기는 곳이 **스토리에도 제품에도 없다.**
+그래서 채점 없는 결과에 「정답률 —」 카드가 계속 남는다.
+
+**③ 읽기 짧은 답이 왼쪽 정렬이다.**
+`.choice` 가 `justify-content:flex-start; text-align:left` 이고, 가운데 정렬은
+`binary`·`jamo` 변형에만 있다. 확정 규칙의 "짧은 답 가운데 · 화면에서 명시 지정"
+을 담을 변형이 아직 없다.
+
+**④ 미션대화 헤더가 영문 리터럴이다.**
+`chat-header.tsx` 가 `skip` · `finish` 를 **글자 그대로 박아** 뒀다.
+`ko.ts` 에 `player.skip: "건너뛰기"` 가 이미 있는데 안 쓴다.
+
+**그리고 통짜 컴포넌트 넷이 남았다** — `ResultScreen` · `FlashcardScreen` ·
+`RoleplayScreen` · `ChatScreen` 은 여전히 제품이 안 쓴다.
+(`BriefingScreen` · `ReportScreen` 둘은 연결됐다.)
+
+### 인계 — 검사 둘이 아직 빨갛다
+
+| | |
+|---|---|
+| `pnpm parity:activity` | **`briefing` · `report` 2건 실패.** 구현이 접근성·구조를 고쳤는데 목업이 안 따라왔다. 두 목업은 최초 일괄 캡처(`d1a7cfb`) 이후 **한 번도 안 고쳐졌다** |
+| `python3 phase1/check_docs.py` | **`nav__book__resume` 쌍둥이 갈림 1건.** 「빈칸 채워 말하기」→「빈칸 채우기」로 목업만 고치고 `TWIN_ALLOW` 에 이유를 안 적었다 |
+
+`typecheck` · `build` · `check:css` 는 통과다.
 
 ## 승격은 보류다
 
