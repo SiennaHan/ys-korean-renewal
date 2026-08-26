@@ -137,6 +137,7 @@ import ModuleList, {
 	ChapterHead,
 	type ModuleState,
 } from "@/components/main/textbook/module-list";
+import AudioRecorder from "@/components/problem/audio-recorder";
 import i18n from "@/i18n";
 import { chapters } from "@/shared/data/chapter";
 import type { ReactElement } from "react";
@@ -273,21 +274,16 @@ const THINGS = [
 	done: done as boolean,
 }));
 const ROLE_TURNS = [
-	[
-		"AI",
-		false,
-		"어서 오세요. 뭘 도와드릴까요?",
-		"Welcome. How can I help you?",
-	],
-	["나", true, "커피 한 잔 주세요.", "One coffee, please."],
-	["AI", false, "따뜻한 걸로 드릴까요?", "Would you like it hot?"],
-	["나", true, "네, 따뜻한 걸로 주세요.", "Yes, hot please."],
-	["AI", false, "삼천 원입니다.", "That is 3,000 won."],
-].map(([who, mine, ko, en]) => ({
+	["AI", false, "어서 오세요. 뭘 도와드릴까요?"],
+	["나", true, "커피 한 잔 주세요."],
+	["AI", false, "따뜻한 걸로 드릴까요?"],
+	["나", true, "네, 따뜻한 걸로 주세요."],
+	["AI", false, "삼천 원입니다."],
+].map(([who, mine, ko], i) => ({
+	id: i,
 	who: who as string,
 	mine: mine as boolean,
 	ko: ko as string,
-	en: en as string,
 }));
 
 /*
@@ -633,13 +629,19 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	role: (
+		/*
+		 * 도크의 조작은 제품이 넣는 것을 그대로 넣는다 — 내 차례의 녹음 도크는
+		 * `AudioRecorder dock` 이다. 여기만 `RecordControl` 을 직접 쓰면 대조가
+		 * 또 아무도 안 보는 쪽을 보게 된다.
+		 */
 		<RoleplayScreen
 			lesson={LESSON}
 			turns={ROLE_TURNS}
 			current={1}
+			totalScenarios={2}
 			onScenarioJump={() => {}}
 			direction="ai"
-			recordMode="idle"
+			control={<AudioRecorder dock action="roleRecord" setResult={() => {}} />}
 			onSkip={() => {}}
 		/>
 	),
@@ -1595,8 +1597,12 @@ for (const [name, element] of Object.entries(SCREENS)) {
 	 * data-screen 처럼 프레임에 붙는 속성도 같이 벗긴다.
 	 */
 	const inner = html
-		// AudioProvider 가 프레임 밖에 숨은 <audio> 를 하나 단다 — 화면이 아니다
-		.replace(/<audio class="hidden"[^>]*><\/audio>$/, "")
+		/*
+		 * 숨은 <audio> 는 화면이 아니다 — 어디에 있든 지운다.
+		 * AudioProvider 가 프레임 밖에 하나 달고, AudioRecorder 는 도크 **안에**
+		 * 하나 단다. 전에는 맨 끝만 벗겨서 도크 안의 것이 남아 대조에 걸렸다.
+		 */
+		.replace(/<audio class="hidden"[^>]*><\/audio>/g, "")
 		.replace(/^<div class="(?:activity|vocashot)-frame"[^>]*>/, "")
 		// 게임은 game-frame 이 프레임이다. 캡처 쪽에서도 같은 층을 벗긴다
 		.replace(/^<div class="game-frame[^"]*"[^>]*>/, "")

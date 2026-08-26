@@ -4,13 +4,11 @@ import { SpeakerIcon } from "@/assets/icons";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
-	ActivityFooter,
-	IconVolume,
 	ListenControl,
 	PrimaryButton,
 	RecordControl,
-	RoleplayLayout,
-	RoleplayRecordResult,
+	type RoleTurn,
+	RoleplayScreen,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { type RoleplayTurn, getScenarios } from "@/shared/data/roleplay";
@@ -437,12 +435,98 @@ export default function AiRoleplay({
 		? isPracticeTurn(currentTurn.turn_seq)
 		: false;
 
+	/*
+	 * 대본 줄과 도크 껍데기는 `RoleplayScreen` 이 그린다(2026-08-26). 전에는
+	 * 여기 `TurnLine` 이라는 두 번째 판이 있었고, 목업 대조는 그 컴포넌트가 아니라
+	 * 같은 이름의 다른 컴포넌트를 보고 있었다 — 학생이 보는 줄은 아무도 안 봤다.
+	 * 여기 남는 것은 **어느 줄이 어떤 상태인지** 를 아는 일뿐이다.
+	 */
+	const scriptTurns: RoleTurn[] = turns.map((turn) => {
+		const practice = isPracticeTurn(turn.turn_seq);
+		return {
+			id: turn.id,
+			who: practice ? "나" : "AI",
+			mine: practice,
+			ko: turn.ko,
+		};
+	});
+
+	/**
+	 * 그 줄에 소리 버튼을 둘지.
+	 * - AI 줄: 이미 나온 문장이면 다시 듣기 (안 나온 줄은 미리 안 들려준다)
+	 * - 내 줄: 분석을 마친 녹음이 있을 때만. 지금 줄은 아래 결과 카드가 그 일을
+	 *   하므로 한 화면에 같은 버튼을 두 번 두지 않는다
+	 */
+	const replayableAt = (idx: number) => {
+		const turn = turns[idx];
+		if (!turn || idx > currentTurnIdx) return false;
+		if (!isPracticeTurn(turn.turn_seq)) return true;
+		return idx !== currentTurnIdx && Boolean(userRecords[idx]?.audioUrl);
+	};
+
+	const control =
+		playState === "done" ? (
+			<PrimaryButton
+				label={
+					hasNext ? t("activity.roleNextDialogue") : t("activity.roleFinish")
+				}
+				on
+				action="roleNext"
+				onClick={hasNext ? handleNext : () => router.history.back()}
+			/>
+		) : choosingAfterResult ? null : currentIsPractice ? (
+			evaluating ? (
+				<RecordControl mode="sending" action="roleEvaluate" />
+			) : (
+				<AudioRecorder
+					dock
+					action="roleRecord"
+					setResult={handleRecordResult}
+					onSkipActivity={handleSkip}
+					disabled={playState !== "practice-turn"}
+				/>
+			)
+		) : (
+			<ListenControl
+				mode={audioBlocked ? "ready" : "playing"}
+				onPlay={
+					audioBlocked
+						? () => {
+								void sharedAudio.unlock();
+							}
+						: undefined
+				}
+			/>
+		);
+
 	return (
-		<RoleplayLayout
+		<RoleplayScreen
 			lesson={chapterLabel}
+			turns={scriptTurns}
+			current={currentTurnIdx}
 			direction={activeTab === "ai-to-me" ? "ai" : "me"}
 			currentScenario={scenarioIdx}
 			totalScenarios={scenarios.length}
+			speaking={playState === "model-speaking"}
+			replayableAt={replayableAt}
+			// AI 줄이 말하는 중이면 그 재생을 가로채지 않는다
+			replayDisabled={playState === "model-speaking"}
+			result={
+				currentIsPractice && activeRecord
+					? {
+							index: currentTurnIdx,
+							expected: currentTurn?.ko ?? "",
+							recognized: activeRecord.sttText,
+							matched: activeRecord.isCorrect,
+							canChooseNext:
+								!activeRecord.isCorrect && playState === "practice-turn",
+							onReplay: () => handleReplayMyVoice(activeRecord.audioUrl),
+							onRetry: () => handleClearRecord(currentTurnIdx),
+							onContinue: () => advanceAfterTurn(currentTurnIdx),
+						}
+					: undefined
+			}
+			control={control}
 			onExit={() => router.history.back()}
 			onSkip={handleSkip}
 			onScenarioJump={setScenarioIdx}
@@ -450,176 +534,16 @@ export default function AiRoleplay({
 				tabSwitchedRef.current = true;
 				setActiveTab(direction === "ai" ? "ai-to-me" : "me-to-ai");
 			}}
-			footer={
-				playState === "done" ? (
-					<ActivityFooter>
-						<div className="dock">
-							<div className="main">
-								<PrimaryButton
-									label={
-										hasNext
-											? t("activity.roleNextDialogue")
-											: t("activity.roleFinish")
-									}
-									on
-									action="roleNext"
-									onClick={hasNext ? handleNext : () => router.history.back()}
-								/>
-							</div>
-						</div>
-					</ActivityFooter>
-				) : choosingAfterResult ? null : (
-					<ActivityFooter>
-						<div className="dock">
-							<div className="main">
-								{currentIsPractice ? (
-									evaluating ? (
-										<RecordControl mode="sending" action="roleEvaluate" />
-									) : (
-										<AudioRecorder
-											dock
-											setResult={handleRecordResult}
-											onSkipActivity={handleSkip}
-											disabled={playState !== "practice-turn"}
-										/>
-									)
-								) : (
-									<ListenControl
-										mode={audioBlocked ? "ready" : "playing"}
-										onPlay={
-											audioBlocked
-												? () => {
-														void sharedAudio.unlock();
-													}
-												: undefined
-										}
-									/>
-								)}
-							</div>
-						</div>
-					</ActivityFooter>
-				)
-			}
-		>
-			{turns.map((turn, idx) => {
-				const isCurrent = idx === currentTurnIdx;
-				const isPast = idx < currentTurnIdx;
-				const isFuture = idx > currentTurnIdx;
-				const record = userRecords[idx];
-				const isPractice = isPracticeTurn(turn.turn_seq);
-				// 현재 턴은 아래 결과 카드가 재생 버튼을 가진다. 지난 턴만 대본 줄의
-				// 작은 스피커로 다시 듣는다 — 한 화면에 같은 기능을 두 번 두지 않는다.
-				const myRecordUrl = !isCurrent
-					? record?.audioUrl || undefined
-					: undefined;
-
-				return (
-					<Fragment key={turn.id}>
-						<TurnLine
-							turn={turn}
-							isCurrent={isCurrent}
-							isPast={isPast}
-							isFuture={isFuture}
-							playState={playState}
-							isPractice={isPractice}
-							myRecordUrl={myRecordUrl}
-							onReplay={() =>
-								isPractice
-									? myRecordUrl && handleReplayMyVoice(myRecordUrl)
-									: handleReplayTurn(turn)
-							}
-						/>
-						{isPractice && record && isCurrent && (
-							<RoleplayRecordResult
-								expected={turn.ko}
-								recognized={record.sttText}
-								matched={record.isCorrect}
-								onReplay={() => handleReplayMyVoice(record.audioUrl)}
-								onRetry={() => handleClearRecord(idx)}
-								onContinue={() => advanceAfterTurn(idx)}
-								canChooseNext={
-									!record.isCorrect && playState === "practice-turn"
-								}
-							/>
-						)}
-					</Fragment>
-				);
-			})}
-		</RoleplayLayout>
-	);
-}
-
-/** 개별 대화 라인 */
-function TurnLine({
-	turn,
-	isCurrent,
-	isPast,
-	isFuture,
-	playState,
-	isPractice,
-	myRecordUrl,
-	onReplay,
-}: {
-	turn: RoleplayTurn;
-	isCurrent: boolean;
-	isPast: boolean;
-	isFuture: boolean;
-	playState: PlayState;
-	isPractice: boolean;
-	/** 분석을 마친 내 녹음 URL — 판정과 무관하게 다시 들을 수 있다 */
-	myRecordUrl?: string;
-	onReplay: () => void;
-}) {
-	const label = isPractice ? "나" : "AI";
-	const displayText = turn.ko;
-
-	// 현재 턴만 하이라이트: 모델 턴 → 옅은 노란색, 연습 턴 → 옅은 파란색
-	const isHighlighted = isCurrent;
-	const bgColor = isHighlighted
-		? isPractice
-			? "bg-[#E9F2FC]"
-			: "bg-[#FFF9E0]"
-		: "";
-
-	// 현재 모델 턴이고 재생 중이면 스피커 아이콘 표시
-	const showSpeakerIcon =
-		isCurrent && !isPractice && playState === "model-speaking";
-
-	// 스피커 버튼 노출 규칙
-	// - AI 턴: 발화가 끝난 문장에 회색 → 그 문장 다시 듣기
-	//          (아직 안 나온 턴은 미리 들려주지 않는다)
-	// - 연습 턴: 분석을 마친 녹음이 있으면 파란색 → 내 목소리 다시 듣기
-	const showAiReplay = !isPractice && !isFuture && !showSpeakerIcon;
-	const showMyReplay = isPractice && !isFuture && Boolean(myRecordUrl);
-	const showReplay = showAiReplay || showMyReplay;
-	// AI 턴이 말하는 중이면 그 재생을 가로채지 않도록 비활성화
-	const replayDisabled = playState === "model-speaking";
-
-	return (
-		// 이 칸 자체는 누르는 자리가 아니다 — 오른쪽 소리 버튼이 초점을 받는다.
-		<div
-			className={`turn ${isCurrent ? "current" : isFuture ? "future" : ""} ${
-				isPractice ? "me" : "ai"
-			}`}
-			data-action="roleJump"
-		>
-			<span className="who">{label}</span>
-			<span className="line">{displayText}</span>
-			{/* 아직 안 지나온 줄은 소리를 미리 들려주지 않는다 */}
-			<span className="listen">
-				{showSpeakerIcon ? (
-					<IconVolume />
-				) : showReplay ? (
-					<button
-						type="button"
-						aria-label={label}
-						disabled={replayDisabled}
-						onClick={onReplay}
-					>
-						<IconVolume />
-					</button>
-				) : null}
-			</span>
-		</div>
+			onReplay={(idx) => {
+				const turn = turns[idx];
+				if (!turn) return;
+				if (isPracticeTurn(turn.turn_seq)) {
+					const url = userRecords[idx]?.audioUrl;
+					if (url) handleReplayMyVoice(url);
+				} else {
+					handleReplayTurn(turn);
+				}
+			}}
+		/>
 	);
 }

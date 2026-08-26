@@ -26,6 +26,11 @@ interface Props {
 	 */
 	dock?: boolean;
 	/**
+	 * 도크 녹음 버튼의 `data-action` 이름. 목업이 화면마다 다르게 부른다 —
+	 * 롤플레잉은 roleRecord 다. 안 주면 예전 이름(srec)을 그대로 쓴다
+	 */
+	action?: string;
+	/**
 	 * 마이크가 막혀 학생이 이 활동을 건너뛰기로 했을 때.
 	 * 막혔다는 사실 자체는 이 컴포넌트가 알림으로 알린다 — 쓰는 화면마다
 	 * 같은 처리를 되풀이하지 않도록.
@@ -200,7 +205,7 @@ const AudioRecorder = (props: Props) => {
 				)}
 				<RecordControl
 					mode={recorderStatus}
-					action="srec"
+					action={props.action ?? "srec"}
 					disabled={props.disabled}
 					onPress={props.disabled ? undefined : handlePrimaryAction}
 				/>

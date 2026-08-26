@@ -10,7 +10,7 @@ import { IconVolume } from "./icons";
 import { JamoSection, WriteCanvas } from "./jamo-write";
 import { PracticeBrowser, ThumbWordCards, WordCards } from "./practice-browser";
 import { ProblemCard } from "./problem-card";
-import { RecordControl } from "./record";
+import { ListenControl, RecordControl } from "./record";
 import { ReportScreen } from "./report-screen";
 import { ResultScreen } from "./result-screen";
 import { RoleplayScreen } from "./roleplay";
@@ -408,17 +408,15 @@ const ROLE_TURNS = [
 		who: "AI",
 		mine: false,
 		ko: "어서 오세요. 뭘 도와드릴까요?",
-		en: "Welcome.",
 	},
 	{
 		who: "나",
 		mine: true,
 		ko: "커피 한 잔 주세요.",
-		en: "One coffee, please.",
 	},
-	{ who: "AI", mine: false, ko: "따뜻한 걸로 드릴까요?", en: "Hot?" },
-	{ who: "나", mine: true, ko: "네, 따뜻한 걸로 주세요.", en: "Yes, hot." },
-	{ who: "AI", mine: false, ko: "삼천 원입니다.", en: "3,000 won." },
+	{ who: "AI", mine: false, ko: "따뜻한 걸로 드릴까요?" },
+	{ who: "나", mine: true, ko: "네, 따뜻한 걸로 주세요." },
+	{ who: "AI", mine: false, ko: "삼천 원입니다." },
 ];
 
 export const 읽기지문: Story = {
@@ -802,7 +800,7 @@ export const 롤플레잉: Story = {
 				turns={ROLE_TURNS}
 				current={1}
 				direction="ai"
-				recordMode="idle"
+				control={<RecordControl mode="idle" action="roleRecord" />}
 				onSkip={() => {}}
 			/>
 		</div>
@@ -818,9 +816,14 @@ export const 롤플레잉_녹음완료: Story = {
 				turns={ROLE_TURNS}
 				current={1}
 				direction="ai"
-				recordMode="idle"
-				heard="커피 한 잔 주새요"
-				heardMatched={false}
+				control={<RecordControl mode="idle" action="roleRecord" />}
+				result={{
+					index: 1,
+					expected: "커피 한 잔 주세요.",
+					recognized: "커피 한 잔 주새요",
+					matched: false,
+					canChooseNext: true,
+				}}
 				onSkip={() => {}}
 			/>
 		</div>
@@ -836,7 +839,7 @@ export const 롤플레잉_AI차례: Story = {
 				turns={ROLE_TURNS}
 				current={2}
 				direction="ai"
-				recordMode="idle"
+				control={<ListenControl />}
 				onSkip={() => {}}
 			/>
 		</div>
