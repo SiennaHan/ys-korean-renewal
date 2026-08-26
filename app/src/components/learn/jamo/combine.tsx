@@ -17,7 +17,9 @@ import {
 	AudioRow,
 	ComboTarget,
 	Dock,
+	JamoCombineSelectView,
 	JamoSection,
+	JamoTraceView,
 	PrimaryButton,
 	ProblemCard,
 } from "@/components/main/activity";
@@ -203,100 +205,79 @@ export default function JamoCombine({ moduleCode }: { moduleCode: string }) {
 		.filter(Boolean)
 		.join(" · ");
 
-	return (
-		<ActivityFrame>
-			{/* 건너뛰기 — 목업 모든 활동 화면에 있는데 실제 자모 화면엔 없었다.
-			    대조가 못 잡는 자리다(activity-parity 는 learn/jamo 를 안 본다). */}
-			<ActivityAppBar lesson={lesson} onExit={exit} onSkip={skip} />
-			<ActivityProgress
-				current={problemIndex}
-				total={problemList.length}
-				onJump={setProblemIndex}
-			/>
-
-			{stage === "select" ? (
-				<ActivityBody>
-					<ProblemCard instruction={t("activity.instrWriteSelect")}>
-						<AudioRow
-							label={t("player.playAudio")}
-							sub={t("activity.audioSub")}
-							onPlay={playAudio}
-						/>
-						<ComboTarget
-							syllable={hintOn ? (problem?.content ?? "?") : combined || "?"}
-							parts={consonant && vowel ? `${consonant} + ${vowel}` : ""}
-							onHint={showHint}
-							hintOn={hintOn}
-						/>
-					</ProblemCard>
-					<JamoSection
-						step={1}
-						slot="consonant"
-						options={consonantList}
-						picked={consonant ?? ""}
-						onPick={setConsonant}
-					/>
-					<JamoSection
-						step={2}
-						slot="vowel"
-						options={vowelList}
-						picked={vowel ?? ""}
-						onPick={setVowel}
-					/>
-				</ActivityBody>
-			) : (
-				<ActivityBody>
-					<ProblemCard instruction={t("activity.instrWriteTrace")} />
-					<div className="response-area">
-						{/* 획을 받는 판은 기존 컴포넌트를 그대로 쓴다 — 목업의 canvas 자리다 */}
-						<div className="canvas-host">
-							<HangulTracingCanvas
-								ref={tracingRef}
-								char={problem?.content ?? ""}
-								isWriteDone={isWriteDone}
-							/>
-						</div>
-						<div className="tools">
-							<button
-								type="button"
-								className="tool"
-								onClick={undoDrawing}
-								disabled={isSucceed}
-							>
-								{t("player.undo")}
-							</button>
-							<button
-								type="button"
-								className="tool"
-								onClick={eraseDrawing}
-								disabled={isSucceed}
-							>
-								{t("player.eraseAll")}
-							</button>
-						</div>
-					</div>
-				</ActivityBody>
-			)}
-
-			<ActivityFooter>
-				<Dock>
-					<PrimaryButton
-						label={
-							isExit
-								? t("player.showResult")
-								: stage === "select"
-									? t("player.confirm")
-									: t("player.next")
-						}
-						on={isExit || isSucceed}
-						action="next"
-						onClick={isExit ? exit : next}
-					/>
-				</Dock>
-			</ActivityFooter>
-
-			{/* biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오 */}
+	const shell = {
+		lesson,
+		onExit: exit,
+		onSkip: skip,
+		current: problemIndex,
+		total: problemList.length,
+		onJump: setProblemIndex,
+		primary: {
+			label: isExit
+				? t("player.showResult")
+				: stage === "select"
+					? t("player.confirm")
+					: t("player.next"),
+			on: isExit || isSucceed,
+			onClick: isExit ? exit : next,
+		},
+		after: (
+			// biome-ignore lint/a11y/useMediaCaption: 재생 전용 숨은 오디오
 			<audio className="hidden" src={audioSrc} ref={audioRef} />
-		</ActivityFrame>
+		),
+	};
+
+	if (stage === "select") {
+		return (
+			<JamoCombineSelectView
+				{...shell}
+				instruction={t("activity.instrWriteSelect")}
+				audioLabel={t("player.playAudio")}
+				audioSub={t("activity.audioSub")}
+				onPlay={playAudio}
+				target={{
+					syllable: hintOn ? (problem?.content ?? "?") : combined || "?",
+					parts: consonant && vowel ? `${consonant} + ${vowel}` : "",
+					onHint: showHint,
+					hintOn,
+				}}
+				sections={[
+					{
+						step: 1,
+						slot: "consonant",
+						options: consonantList,
+						picked: consonant ?? "",
+						onPick: setConsonant,
+					},
+					{
+						step: 2,
+						slot: "vowel",
+						options: vowelList,
+						picked: vowel ?? "",
+						onPick: setVowel,
+					},
+				]}
+			/>
+		);
+	}
+
+	return (
+		<JamoTraceView
+			{...shell}
+			instruction={t("activity.instrWriteTrace")}
+			canvas={
+				// 획을 받는 판은 기존 컴포넌트를 그대로 쓴다 — .canvas-host 가 목업의 틀을 준다
+				<div className="canvas-host">
+					<HangulTracingCanvas
+						ref={tracingRef}
+						char={problem?.content ?? ""}
+						isWriteDone={isWriteDone}
+					/>
+				</div>
+			}
+			onUndo={undoDrawing}
+			onClear={eraseDrawing}
+			toolsDisabled={isSucceed}
+		/>
 	);
 }

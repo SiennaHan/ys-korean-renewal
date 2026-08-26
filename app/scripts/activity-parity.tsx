@@ -30,8 +30,11 @@ import {
 } from "@/components/main/activity/choice";
 import { FlashcardScreen } from "@/components/main/activity/flashcard";
 import {
+	JamoCombineSelectView,
 	JamoSection,
+	JamoTraceView,
 	WriteCanvas,
+	WriteCanvasPane,
 } from "@/components/main/activity/jamo-write";
 import {
 	PracticeBrowser,
@@ -409,83 +412,72 @@ const SCREENS: Record<string, ReactElement> = {
 	),
 
 	write: (
-		<Screen
+		<JamoCombineSelectView
 			lesson="1급 1과"
-			progress={[0, 3]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrWriteSelect")}>
-						<AudioRow
-							label={T("player.playAudio")}
-							sub={T("activity.audioSub")}
-						/>
-						<ComboTarget syllable="가" parts="ㄱ + ㅏ" onHint={() => {}} />
-					</ProblemCard>
-					<JamoSection
-						step={1}
-						slot="consonant"
-						options={CONSONANTS}
-						picked="ㄱ"
-					/>
-					<JamoSection step={2} slot="vowel" options={VOWELS} picked="ㅏ" />
-				</>
-			}
-			footer={<PrimaryButton label={T("player.confirm")} on action="toWrite" />}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={3}
+			instruction={T("activity.instrWriteSelect")}
+			audioLabel={T("player.playAudio")}
+			audioSub={T("activity.audioSub")}
+			target={{ syllable: "가", parts: "ㄱ + ㅏ", onHint: () => {} }}
+			sections={[
+				{ step: 1, slot: "consonant", options: CONSONANTS, picked: "ㄱ" },
+				{ step: 2, slot: "vowel", options: VOWELS, picked: "ㅏ" },
+			]}
+			primary={{ label: T("player.confirm"), on: true, action: "toWrite" }}
 		/>
 	),
 
 	write3: (
-		<Screen
+		<JamoCombineSelectView
 			lesson="1급 1과"
-			progress={[0, 1]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrWriteSelect")}>
-						<AudioRow
-							label={T("player.playAudio")}
-							sub={T("activity.audioSub")}
-						/>
-						<ComboTarget syllable="산" parts="ㅅ + ㅏ + ㄴ" onHint={() => {}} />
-					</ProblemCard>
-					<JamoSection
-						step={1}
-						slot="consonant"
-						options={CONSONANTS}
-						picked="ㅅ"
-					/>
-					<JamoSection step={2} slot="vowel" options={VOWELS} picked="ㅏ" />
-					<JamoSection step={3} slot="final" options={FINALS} picked="ㄴ" />
-				</>
-			}
-			footer={<PrimaryButton label={T("player.confirm")} on action="toWrite" />}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={1}
+			instruction={T("activity.instrWriteSelect")}
+			audioLabel={T("player.playAudio")}
+			audioSub={T("activity.audioSub")}
+			target={{ syllable: "산", parts: "ㅅ + ㅏ + ㄴ", onHint: () => {} }}
+			sections={[
+				{ step: 1, slot: "consonant", options: CONSONANTS, picked: "ㅅ" },
+				{ step: 2, slot: "vowel", options: VOWELS, picked: "ㅏ" },
+				{ step: 3, slot: "final", options: FINALS, picked: "ㄴ" },
+			]}
+			primary={{ label: T("player.confirm"), on: true, action: "toWrite" }}
 		/>
 	),
 
+	/*
+	 * 판 안쪽은 대조하지 않는다 — 목업은 안내 그림을 깐 정적 canvas 이고 제품은
+	 * 획을 판정하는 진짜 HangulTracingCanvas 다. 그 바깥은 전부 대조한다.
+	 * 자세한 사정은 JamoTraceView 주석에 있다.
+	 */
 	write_canvas: (
-		<Screen
+		<JamoTraceView
 			lesson="1급 1과"
-			progress={[0, 3]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrWriteTrace")} />
-					<WriteCanvas guide="../handwriting/가.png" />
-				</>
-			}
-			footer={<PrimaryButton label={T("player.confirm")} on={false} />}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={3}
+			instruction={T("activity.instrWriteTrace")}
+			canvas={<WriteCanvasPane guide="../handwriting/가.png" />}
+			primary={{ label: T("player.confirm"), on: false }}
 		/>
 	),
 
 	write3_canvas: (
-		<Screen
+		<JamoTraceView
 			lesson="1급 1과"
-			progress={[0, 1]}
-			body={
-				<>
-					<ProblemCard instruction={T("activity.instrWriteTrace")} />
-					<WriteCanvas guide="../handwriting/산.png" />
-				</>
-			}
-			footer={<PrimaryButton label={T("player.confirm")} on={false} />}
+			onExit={() => {}}
+			onSkip={() => {}}
+			current={0}
+			total={1}
+			instruction={T("activity.instrWriteTrace")}
+			canvas={<WriteCanvasPane guide="../handwriting/산.png" />}
+			primary={{ label: T("player.confirm"), on: false }}
 		/>
 	),
 

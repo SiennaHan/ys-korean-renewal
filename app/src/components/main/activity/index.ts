@@ -46,7 +46,14 @@ export {
 export { FailedScreen, LoadingScreen, MicDeniedScreen } from "./state-screens";
 export { ChatScreen, type ChatTurn } from "./chat";
 export { type Flashcard, FlashcardScreen } from "./flashcard";
-export { JamoSection, type JamoSlot, WriteCanvas } from "./jamo-write";
+export {
+	JamoCombineSelectView,
+	JamoSection,
+	type JamoSlot,
+	JamoTraceView,
+	WriteCanvas,
+	WriteCanvasPane,
+} from "./jamo-write";
 export {
 	PracticeBrowser,
 	type ThumbCard,
