@@ -1215,6 +1215,9 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 | 진행 저장 방식 | 같은 §16 의 3번 — **권고는 확정**(매 문항 + `keepalive`). 실측까지 있다 |
 | 결과 화면 | **뜬다**(2026-08-26). 문법·읽기·듣기·어휘 넷이 `ResultScreen` 을 쓴다.<br>전에는 「결과 보기」 가 `router.history.back()` 이었다. 남은 것은 아래 두 줄 |
 | 결과 화면 새로고침 | 오답 목록이 **화면 안 상태로만 산다.** 네 활동 다 첫 시도 오답을 서버로 보내지만(`fill-blank` 는 2026-08-26 에 마지막으로 붙었다),<br>받는 쪽 `getLearningRecords` 처리는 `is_correct` 인 것만 복원한다. 되살리려면 그 자리를 고쳐야 한다 |
+| 목업 대조 사각지대 | **12/13 닫았다**(2026-08-26). 대조가 화면 조합을 손으로 다시 짜고 있어서 `components/learn/*` 를 하나도 안 봤다.<br>표시/배선을 갈라 제품 컴포넌트를 그리게 했다. 남은 것은 아래 둘 |
+| ㄴ 어휘 퀴즈 | 정본이 그리는 `promptType === "word"` 갈래(낱말+발음 듣기 `.word-focus`)가 **원장에 0건**이다.<br>`n1_word_quiz.json` 은 meaning-to-word 950 · image-to-word 196 뿐이고, 그림 갈래는 반대로 정본에 없다.<br>목업이 지키는 화면을 학생은 못 보고 학생이 보는 화면은 목업 밖이다 — **기획 결정 대기** |
+| ㄴ 진행바 prop 층 | 제품은 진행바에 `onJump` 를 넘겨 칸이 `<button class="seg">` 인데 대조 fixture 는 안 넘긴다.<br>35589a2 가 이미 적어 뒀다 — *"without it the markup stays exactly as the mockup draws it, which is why the parity check is unaffected"*.<br>닫으려면 목업 **10개**(grammar·reading·listen·jamoListen·write·write3·write_canvas·write3_canvas·wordQuiz·role)를 승격해야 한다. flash·loading 은 제품도 안 넘기므로 그대로다 |
 | 오답 해설 원장 | 문법만 `grammar_focus_revised` 를 들고 온다(836행 중 835행).<br>읽기·듣기·어휘 원장에는 해설 칸이 없어 결과 화면이 `player.answerIs`("정답은 X예요")로 대신한다 |
 
 ### 9-d. 아직 아무것도 없는 것
