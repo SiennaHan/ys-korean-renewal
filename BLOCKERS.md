@@ -841,8 +841,9 @@ pill 도 같은 값을 쓴다 — 둘이 같이 사라져야 한 신호로 읽�
 | **게임 콘텐츠 6라우트가 무인증** | `card-sort/{categories,vocab,rare}` · `particle-sniper/{levels,sentences}` · `seoul-puzzle`. 이 셋을 유료로 하기로 했는데 주소만 알면 누구나 받는다 — 화면 잠금만으로는 잠금이 아니다 |
 | **읽고답하기만 과 키가 없다** | `n5_read_answer_questions` 에는 `chapter` 가 없고 `text_id` 뿐이다. 과 단위로 가두려면 `n5_read_answer_text`(117행)를 거쳐 조인해야 한다. 나머지 여섯 세트는 `(book_id, chapter)` 를 직접 들고 있어 **이것만 예외다** |
 
-게스트 진행을 서버에 남길지는 아직 열려 있다. 남기면 로그인 시
-`migrateGuestData` 가 실제로 돌게 되는데 **그 경로는 한 번도 실행된 적이 없다.**
+게스트 진행은 **서버에 남기기로 정했다 (2026-08-26)** — `access_and_pricing_v1`
+§07 의 2번. 그래서 로그인할 때 `migrateGuestData` 가 실제로 돈다. 확정하면서
+돌려 보니 **`ko_learning_record` 만 이전 목록에서 빠져 있었다** — §6-d 에 적었다.
 
 MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영돼 있다 →
 `phase1/my_learning_summary_v1.html` (별도 전달)
@@ -1009,6 +1010,32 @@ Tutorus 만 원래부터 안 막았다 — 없으면 라우터를 아예 안 붙
 
 ---
 
+## 6-d. 게스트 이전이 학습 기록만 빼먹고 있었다 (2026-08-26)
+
+`access_and_pricing_v1` §07 의 2번을 **"서버에 남긴다"** 로 확정하면서, 그러면
+`migrateGuestData` 가 실제로 돌게 되므로 돌려 봤다.
+
+**표 일곱을 옮기는데 `ko_learning_record` 만 빠져 있었다.**
+
+```
+옮기던 것   ko_chat · ko_chat_msg · ko_chat_feedback · ko_user_flashcard ·
+            ko_user_flashcard_word · ko_study_session · ko_daily_activity · ko_game_progress
+빠진 것     ko_learning_record   ← 푼 문항이 전부 들어 있는 그 표
+```
+
+게스트로 공부한 사람이 가입하면 **답이 다 사라졌다.** 출석(`ko_daily_activity`)과
+게임 점수는 따라오는데 정작 문항 기록만 안 따라오니, 화면에는 "학습한 날" 은 남고
+"무엇을 풀었나" 는 비는 상태가 된다.
+
+같은 자리에 넣었고 **게스트 3행 → 계정 3행**으로 옮겨지는 것을 확인했다.
+
+**유니크 제약을 어떻게 다루나** — `upsert` 가 `(user, book, chapter, menu, question)` 로
+유니크를 걸어 두었으니, 로그인 계정에 같은 문항이 이미 있으면 이 `update` 가
+`IntegrityError` 를 낸다. 그때는 **게스트 쪽을 버린다.** 로그인 계정의 기록이 먼저
+있었으므로 그것이 첫 시도이고, 첫 시도를 보존하는 것이 확정 규칙이다(§6-c).
+
+---
+
 ## 7. 비밀번호 재설정이 껍데기다 · 메일을 못 보낸다
 
 **메일 발송 수단이 저장소 어디에도 없다.** `boto3` 는 있지만 S3 전용이고 SES 는 쓰지 않는다.
@@ -1131,7 +1158,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 | 항목 | 어디까지 |
 |---|---|
-| 게스트 기록 이전 | `migrateGuestData` → `POST /user/sign/migrate` **있다.** 그런데 `access_and_pricing_v1` §07 의 2번이 미결이고 그 문서가 "그 경로는 **한 번도 실행된 적이 없다**" 고 적었다 |
+| ~~게스트 기록 이전~~ | **됐다 (2026-08-26).** §07 의 2번을 "서버에 남긴다" 로 확정하고, 돌려 보니 `ko_learning_record` 만 이전 목록에서 빠져 있어 넣었다 — §6-d |
 | 오디오 재생 실패 | 두 화면에만 |
 | STT·AI 지연 | 비정상 응답은 처리됐고 **타임아웃 상수가 없다** |
 | 앱 전환·백그라운드 | `hooks/use-study-session-ping.ts` 하나 |

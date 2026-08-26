@@ -915,9 +915,11 @@
   <tr><td>4</td><td><b>게스트 사용자</b>도 신규 API를 쓰는지</td>
       <td><b>정해졌다</b> → <code>access_and_pricing_v1</code>. 게스트는 무료 범위를 본다
         (과 단위 맛보기). <code>user_id</code> 가 게스트 겸용이므로 신규 API 도 쓴다.
-        <br><b>남은 것</b> — 게스트 진행을 서버에 남길지. 남기면 로그인 시
-        <code>migrateGuestData</code> 가 실제로 돌게 되는데 그 경로는 한 번도 실행된 적이 없다
-        (<code>BLOCKERS.md</code> §6)</td></tr>
+        <br><b>정해졌다 (2026-08-26)</b> — 게스트 진행은 <b>서버에 남긴다</b>
+        (<code>access_and_pricing_v1</code> §07 의 2번). 그래서 로그인할 때
+        <code>migrateGuestData</code> 가 실제로 돈다. 확정하면서 돌려 보니
+        <b><code>ko_learning_record</code> 만 이전 목록에서 빠져 있어서</b> 넣었다 —
+        <code>BLOCKERS.md</code> §6-d</td></tr>
 </table></div>
 
 <p class="qa" style="margin-top:44px;padding-top:18px;border-top:1px solid var(--line)">

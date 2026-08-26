@@ -4,6 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from accepter import auth
 from persistence.database import sessionScope
 from persistence import repo_user, model
+from sqlalchemy.exc import IntegrityError
 
 
 def verifyPassword(password: str, hashed: str) -> bool:
@@ -62,6 +63,25 @@ async def migrateGuestData(userId: str, guestId: str):
         db.query(model.UserFlashcardWord).filter(
             model.UserFlashcardWord.user_id == guestId
         ).update({"user_id": userId})
+
+        # ko_learning_record 테이블의 user_id 업데이트
+        #
+        # 2026-08-26 에 빠져 있던 것을 넣었다. 표 일곱을 옮기면서 **푼 문항이 전부
+        # 들어 있는 이 표만** 빠져 있었다 — 게스트로 공부한 사람이 가입하면 답이
+        # 다 사라졌다. "게스트 진행을 서버에 남긴다"(access_and_pricing_v1 §07 의
+        # 2번)를 확정하면서 확인하다 찾았다.
+        #
+        # upsert 가 (user, book, chapter, menu, question) 로 유니크를 걸어 두었으니,
+        # 로그인 계정에 같은 문항이 이미 있으면 이 update 가 IntegrityError 를 낸다.
+        # 그때는 게스트 쪽을 버린다 — 로그인 계정의 기록이 첫 시도이고, 첫 시도를
+        # 보존하는 것이 확정 규칙이다(dev_spec_v1 §2.1).
+        try:
+            db.query(model.KoLearningRecord).filter(
+                model.KoLearningRecord.user_id == guestId
+            ).update({"user_id": userId})
+            db.flush()
+        except IntegrityError:
+            db.rollback()
 
         # ko_study_session 테이블의 user_id 업데이트
         db.query(model.KoStudySession).filter(

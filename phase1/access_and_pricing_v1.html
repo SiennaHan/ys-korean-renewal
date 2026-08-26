@@ -329,23 +329,33 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
     §05 의 <span class="file">ko_entitlement</span> 는 <b>기간 단위</b>다(급 단위가 아니다).
     환불·복원도 구독 규칙을 따른다.<br>
     <b>아직 안 정한 것 — 가격과 주기</b>(월/연). 그건 별개 물음이다.</div></div></li>
-  <li><div><div class="h">게스트 진행을 서버에 남기나</div>
-    <div class="d">남기면 로그인할 때 <span class="file">migrateGuestData</span> 가 실제로 돌아야 한다 —
-    <b>그 경로는 한 번도 실행된 적이 없다.</b> 기기에만 두면 옮길 것이 없어 간단하지만
-    게스트가 앱을 지우면 사라진다.
-    <b>내 권고 — 서버에 남긴다.</b> 무료 범위가 좁으니 양이 적고,
-    "지운 게 아까워서" 가 결제 이유가 된다.</div></div></li>
-  <li><div><div class="h">기관 학생의 범위는 전 급인가, 계약한 급인가</div>
-    <div class="d">지금 <span class="file">ko_school</span> 에는 계약 범위를 담는 칸이 없다.
-    전 권으로 하면 단순하지만 1급 수업만 하는 학교에도 8급을 주는 것이다.
-    <b>내 권고 — 계약한 급.</b> <span class="file">ko_school.books</span> 한 칸을 더한다.</div></div></li>
-  <li><div><div class="h">자모 "첫 과" 를 chapter 1 로 볼지</div>
+  <li><div><div class="h">게스트 진행을 서버에 남기나 <span class="pill done">권고대로 확정 2026-08-26</span></div>
+    <div class="d"><b>서버에 남긴다.</b> 무료 범위가 좁으니 양이 적고, "지운 게 아까워서" 가
+    결제 이유가 된다.<br>
+    <b>확정하면서 실제로 돌려 보고 버그를 찾았다.</b> <span class="file">migrateGuestData</span> 는
+    표 일곱을 옮기는데 <b><span class="file">ko_learning_record</span> 만 빠져 있었다</b> —
+    푼 문항이 전부 들어 있는 그 표다. 게스트로 공부한 사람이 가입하면 <b>답이 다 사라졌다.</b>
+    2026-08-26 에 넣었고 게스트 3행 → 계정 3행으로 옮겨지는 것을 확인했다.<br>
+    같은 문항이 로그인 계정에 이미 있으면 유니크 제약에 걸린다 — 그때는 게스트 쪽을 버린다.
+    <b>로그인 계정의 기록이 첫 시도</b>이고 첫 시도를 보존하는 것이 확정 규칙이다
+    (<span class="file">dev_spec_v1</span> §2.1).</div></div></li>
+  <li><div><div class="h">기관 학생의 범위는 전 급인가, 계약한 급인가 <span class="pill done">권고대로 확정 2026-08-26</span></div>
+    <div class="d"><b>계약한 급만.</b> 전 권으로 하면 단순하지만 1급 수업만 하는 학교에도
+    8급을 주는 것이다.<br>
+    <b>새 칸을 더하기 전에 볼 것이 있다 (2026-08-26 실측).</b>
+    <span class="file">ko_school</span> 에 <span class="file">class_levels</span>
+    <span class="file">String(200)</span> 이 <b>이미 있다.</b> 학교를 만들 때 값이 들어가는데
+    <b>권한 판정에 쓰는 곳이 하나도 없다</b> — 저장만 하고 아무도 안 읽는다.
+    그러니 <span class="file">ko_school.books</span> 를 새로 만드는 대신 그 칸의 뜻을
+    "계약 급 목록" 으로 정하는 쪽이 쌀 수 있다. <b>어느 쪽이든 판정 코드는 새로 써야 한다.</b></div></div></li>
+  <li><div><div class="h">자모 "첫 과" 를 chapter 1 로 볼지 <span class="pill done">권고대로 확정 2026-08-26</span></div>
     <div class="d"><span class="file">n8_jamo</span> 의 <span class="file">chapter 1</span> 은
     <b>190문항 = 전체의 36%</b> 다. 맛보기라는 말보다 크다. 더 좁히려면
     <span class="file">jamo_group</span> 단위가 있다 — <b>모음1 만 열면 34문항(6.4%)</b> 로
     다른 무료 비율과 나란해진다.
-    <b>내 권고 — 자모는 chapter 1 그대로 넉넉히 둔다.</b> 한글을 처음 배우는 사람은
-    아직 이 앱을 살 이유를 모르는 사람이고, 여기서 막으면 그 사람을 잃는다.</div></div></li>
+    <b>chapter 1 그대로 넉넉히 둔다 (2026-08-26 확정).</b> 한글을 처음 배우는 사람은
+    아직 이 앱을 살 이유를 모르는 사람이고, 여기서 막으면 그 사람을 잃는다.<br>
+    §02 의 "교재 1급 1과" 가 바로 이것이다 — <b>1급 1~3과가 한글 파트</b>이고 그중 1과만 연다.</div></div></li>
   <li><div><div class="h">플래시카드가 1급에만 있다 <span class="pill done">해소 2026-08-25</span></div>
     <div class="d"><b>2~8급 플래시카드를 만드는 쪽으로 정해졌다.</b> 원장에 저작해 배선했고
     이제 1~8급 전부에 있다. 그래서 "급마다 값이 다른데 값을 같게 받나" 라는 물음은 사라졌다 —
