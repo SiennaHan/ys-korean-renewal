@@ -20,6 +20,20 @@ const ja = {
 		loggingIn: "ログイン中...",
 		serverError: "サーバーに接続できませんでした。",
 	},
+	/**
+	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
+	 * `shared/feature-gates.ts` 의 LEGAL_DOCS_READY 를 보라.
+	 */
+	legal: {
+		termsTitle: "利用規約",
+		privacyTitle: "プライバシーポリシー",
+		back: "戻る",
+		pendingBody:
+			"2つの文書を準備しています。確定したらここで読めるようになります。",
+		pendingHow:
+			"それまでにご不明な点があればお問い合わせください。担当者が読んで返信します。",
+		pendingContact: "お問い合わせ",
+	},
 	inquiry: {
 		title: "お問い合わせ",
 		back: "戻る",
@@ -33,16 +47,19 @@ const ja = {
 		email: "返信先メールアドレス",
 		emailHint: "このアドレスにのみ返信します",
 		message: "内容",
-		messagePlaceholder: "何が起きたかお書きください。画面名を教えていただけると早く見つかります。",
+		messagePlaceholder:
+			"何が起きたかお書きください。画面名を教えていただけると早く見つかります。",
 		send: "送信",
 		sending: "送信中…",
 		doneTitle: "受け取りました",
 		doneBody: "{{email}} にお返事します。",
-		doneShotsLost: "ただしスクリーンショット{{count}}枚は保存できませんでした。必要ならご返信に添付してください。",
+		doneShotsLost:
+			"ただしスクリーンショット{{count}}枚は保存できませんでした。必要ならご返信に添付してください。",
 		doneNumber: "お問い合わせ番号 #{{id}}",
 		doneBack: "戻る",
 		shots: "スクリーンショット（任意）",
-		shotsHint: "文章で説明しにくいときは画面を撮って送ってください。最大{{max}}枚・PNG・JPG・WEBP。",
+		shotsHint:
+			"文章で説明しにくいときは画面を撮って送ってください。最大{{max}}枚・PNG・JPG・WEBP。",
 		shotAdd: "スクリーンショットを追加",
 		shotRemove: "{{name}} を削除",
 		err_fileTooMany: "スクリーンショットは最大{{max}}枚まで添付できます。",
@@ -52,7 +69,8 @@ const ja = {
 		err_emailInvalid: "メールアドレスをもう一度ご確認ください。",
 		err_messageRequired: "内容をお書きください。",
 		err_messageTooLong: "内容が長すぎます。少し短くしてください。",
-		err_inquiryFailed: "送信できませんでした。しばらくしてからもう一度お試しください。",
+		err_inquiryFailed:
+			"送信できませんでした。しばらくしてからもう一度お試しください。",
 	},
 	signup: {
 		title: "会員登録",
@@ -76,16 +94,20 @@ const ja = {
 		privacy: "プライバシーポリシー",
 		agreeSuffix: "に同意します",
 		required: "必須",
-		termsMissing: "2つの文書は準備中です — 公開前にリンクが付きます。",
+		termsMissing:
+			"2つの文書はまだ準備中です — タップすると進み具合が分かります。",
 		submit: "登録して始める",
 		submitting: "登録中…",
 		failed: "登録に失敗しました。",
 		err_emailInvalid: "メールアドレスをもう一度ご確認ください。",
 		err_nameRequired: "名前を入力してください。",
-		err_passwordWeak: "パスワードは8文字以上で、大文字と数字をそれぞれ1つ以上含めてください。",
+		err_passwordWeak:
+			"パスワードは8文字以上で、大文字と数字をそれぞれ1つ以上含めてください。",
 		err_emailTaken: "すでに登録されているメールアドレスです。",
-		err_signupFailed: "登録に失敗しました。しばらくしてからもう一度お試しください。",
-		err_signupBadResponse: "登録の応答が正しくありません。しばらくしてからもう一度お試しください。",
+		err_signupFailed:
+			"登録に失敗しました。しばらくしてからもう一度お試しください。",
+		err_signupBadResponse:
+			"登録の応答が正しくありません。しばらくしてからもう一度お試しください。",
 		haveAccount: "すでにアカウントをお持ちですか？",
 		goLogin: "ログイン",
 	},
@@ -99,7 +121,8 @@ const ja = {
 	},
 	resetPassword: {
 		blockedDescription: "今はメールをお送りできません。",
-		blockedHow: "メール送信の準備が整っていません。機関に所属している場合は学校のご担当者に、個人アカウントの場合はお問い合わせいただければ再設定いたします。",
+		blockedHow:
+			"メール送信の準備が整っていません。機関に所属している場合は学校のご担当者に、個人アカウントの場合はお問い合わせいただければ再設定いたします。",
 		blockedContact: "お問い合わせ",
 		blockedBack: "ログインに戻る",
 		title: "パスワードを再設定",
@@ -118,7 +141,8 @@ const ja = {
 	},
 	newPassword: {
 		blockedDescription: "このリンクではまだパスワードを変更できません。",
-		blockedHow: "メール送信の準備が整っていません。機関に所属している場合は学校のご担当者に、個人アカウントの場合はお問い合わせいただければ再設定いたします。",
+		blockedHow:
+			"メール送信の準備が整っていません。機関に所属している場合は学校のご担当者に、個人アカウントの場合はお問い合わせいただければ再設定いたします。",
 		blockedContact: "お問い合わせ",
 		blockedBack: "ログインに戻る",
 		title: "新しいパスワードを設定",

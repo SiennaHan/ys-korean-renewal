@@ -3,7 +3,8 @@ import { useAuth } from "@/components/sign/sign-provider";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import i18n from "@/i18n";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { LEGAL_DOCS_READY } from "@/shared/feature-gates";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check, CircleAlert, Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,20 +14,20 @@ export const Route = createFileRoute("/signup")({
 });
 
 /**
- * 약관·개인정보 처리방침 주소.
+ * 약관·개인정보 처리방침을 읽는 자리.
  *
- * **기획 문서는 생겼고 앱에는 아직 없다**(2026-08-27) — `phase1/legal_draft_v1.html`
- * 이 초안이고, 앱에는 라우트도 화면도 없다. 주소가 비어 있으면 화면은 링크 없이
- * 문구만 보여 준다.
- * 없는 문서로 링크를 걸거나 "여기 있다" 는 시늉을 하지 않는다 —
- * `phase1/draft_auth.html` 규칙 01("못 하는 것을 할 수 있는 것처럼 말하지
- * 않습니다")이 그것이다.
+ * 이제 앱 안에 있다(`/terms` · `/privacy`, 2026-08-27). **다만 조문은 아직
+ * 없다** — 그 화면이 "준비 중입니다 → 문의하기" 라고 사실대로 말한다
+ * (`shared/feature-gates.ts` 의 `LEGAL_DOCS_READY`).
  *
- * **문서가 생기면 여기 두 줄만 채우면 된다.** 배포 전에 반드시 채워야 한다 —
- * BLOCKERS.md 를 봐라.
+ * 전에는 링크를 아예 안 걸었다. "동의합니다" 를 required 로 요구하면서
+ * **읽을 곳을 한 군데도 안 주는 화면**이었다. 지어낸 조문을 보여 주는 것은
+ * 여전히 안 되지만, 어디까지 와 있는지 말해 주는 자리로 보내는 것은
+ * 안 보내는 것보다 낫다.
+ *
+ * 문안이 오면 `LEGAL_DOCS_READY` 한 줄이 켜지고 두 화면에 조문이 들어간다.
+ * **여기는 그때 고칠 것이 없다.**
  */
-const TERMS_URL = "";
-const PRIVACY_URL = "";
 
 function SignUpPage() {
 	const { t } = useTranslation();
@@ -209,34 +210,18 @@ function SignUpPage() {
 									onChange={(e) => setAgreed(e.target.checked)}
 								/>
 								<span>
-									{TERMS_URL && PRIVACY_URL ? (
-										<>
-											<a
-												href={TERMS_URL}
-												target="_blank"
-												rel="noreferrer"
-												className="auth-link"
-											>
-												{t("signup.terms")}
-											</a>
-											{t("signup.and")}
-											<a
-												href={PRIVACY_URL}
-												target="_blank"
-												rel="noreferrer"
-												className="auth-link"
-											>
-												{t("signup.privacy")}
-											</a>
-											{t("signup.agreeSuffix")}
-										</>
-									) : (
-										`${t("signup.terms")}${t("signup.and")}${t("signup.privacy")}${t("signup.agreeSuffix")}`
-									)}
+									<Link to="/terms" className="auth-link">
+										{t("signup.terms")}
+									</Link>
+									{t("signup.and")}
+									<Link to="/privacy" className="auth-link">
+										{t("signup.privacy")}
+									</Link>
+									{t("signup.agreeSuffix")}
 									<span className="auth-required">{t("signup.required")}</span>
 								</span>
 							</label>
-							{!(TERMS_URL && PRIVACY_URL) && (
+							{!LEGAL_DOCS_READY && (
 								<p className="auth-legal-note">{t("signup.termsMissing")}</p>
 							)}
 						</div>

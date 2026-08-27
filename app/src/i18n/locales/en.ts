@@ -19,6 +19,20 @@ const en = {
 		loggingIn: "Logging in...",
 		serverError: "Failed to connect to server.",
 	},
+	/**
+	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
+	 * `shared/feature-gates.ts` 의 LEGAL_DOCS_READY 를 보라.
+	 */
+	legal: {
+		termsTitle: "Terms of Service",
+		privacyTitle: "Privacy Policy",
+		back: "Back",
+		pendingBody:
+			"Both documents are being prepared. Once they are final you will be able to read them right here.",
+		pendingHow:
+			"Until then, please ask us anything. A person reads and replies.",
+		pendingContact: "Contact us",
+	},
 	inquiry: {
 		title: "Contact us",
 		back: "Back",
@@ -32,16 +46,19 @@ const en = {
 		email: "Email for our reply",
 		emailHint: "We only reply to this address",
 		message: "Message",
-		messagePlaceholder: "Tell us what happened. Naming the screen helps us find it faster.",
+		messagePlaceholder:
+			"Tell us what happened. Naming the screen helps us find it faster.",
 		send: "Send",
 		sending: "Sending…",
 		doneTitle: "We got it",
 		doneBody: "We will reply to {{email}}.",
-		doneShotsLost: "However, {{count}} screenshot(s) could not be saved. Please attach them to your reply if needed.",
+		doneShotsLost:
+			"However, {{count}} screenshot(s) could not be saved. Please attach them to your reply if needed.",
 		doneNumber: "Ticket #{{id}}",
 		doneBack: "Go back",
 		shots: "Screenshots (optional)",
-		shotsHint: "If it is hard to describe, send a screenshot. Up to {{max}} · PNG, JPG, WEBP.",
+		shotsHint:
+			"If it is hard to describe, send a screenshot. Up to {{max}} · PNG, JPG, WEBP.",
 		shotAdd: "Add screenshot",
 		shotRemove: "Remove {{name}}",
 		err_fileTooMany: "You can attach up to {{max}} screenshots.",
@@ -75,16 +92,19 @@ const en = {
 		privacy: "Privacy Policy",
 		agreeSuffix: " — I agree",
 		required: "Required",
-		termsMissing: "Both documents are being prepared — links will be added before launch.",
+		termsMissing:
+			"Both documents are still being drafted — tap to see where they stand.",
 		submit: "Sign up and start",
 		submitting: "Signing up…",
 		failed: "Sign-up failed.",
 		err_emailInvalid: "Please check the email address.",
 		err_nameRequired: "Please enter your name.",
-		err_passwordWeak: "Use at least 8 characters with 1 uppercase letter and 1 number.",
+		err_passwordWeak:
+			"Use at least 8 characters with 1 uppercase letter and 1 number.",
 		err_emailTaken: "That email is already registered.",
 		err_signupFailed: "Sign-up failed. Please try again in a moment.",
-		err_signupBadResponse: "The sign-up response was not valid. Please try again in a moment.",
+		err_signupBadResponse:
+			"The sign-up response was not valid. Please try again in a moment.",
 		haveAccount: "Already have an account?",
 		goLogin: "Sign in",
 	},
@@ -98,7 +118,8 @@ const en = {
 	},
 	resetPassword: {
 		blockedDescription: "We cannot send the email yet.",
-		blockedHow: "Email delivery is not ready. If you belong to a school, ask your school contact. For a personal account, message us and we will reset it for you.",
+		blockedHow:
+			"Email delivery is not ready. If you belong to a school, ask your school contact. For a personal account, message us and we will reset it for you.",
 		blockedContact: "Contact us",
 		blockedBack: "Back to sign in",
 		title: "Reset Password",
@@ -117,7 +138,8 @@ const en = {
 	},
 	newPassword: {
 		blockedDescription: "This link cannot change your password yet.",
-		blockedHow: "Email delivery is not ready. If you belong to a school, ask your school contact. For a personal account, message us and we will reset it for you.",
+		blockedHow:
+			"Email delivery is not ready. If you belong to a school, ask your school contact. For a personal account, message us and we will reset it for you.",
 		blockedContact: "Contact us",
 		blockedBack: "Back to sign in",
 		title: "Create a new password",

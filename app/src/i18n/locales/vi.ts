@@ -19,6 +19,20 @@ const vi = {
 		loggingIn: "Đang đăng nhập...",
 		serverError: "Không thể kết nối đến máy chủ.",
 	},
+	/**
+	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
+	 * `shared/feature-gates.ts` 의 LEGAL_DOCS_READY 를 보라.
+	 */
+	legal: {
+		termsTitle: "Điều khoản dịch vụ",
+		privacyTitle: "Chính sách bảo mật",
+		back: "Quay lại",
+		pendingBody:
+			"Hai tài liệu đang được chuẩn bị. Khi hoàn tất, bạn có thể đọc ngay tại đây.",
+		pendingHow:
+			"Trong thời gian chờ, nếu có thắc mắc xin hãy liên hệ. Sẽ có người đọc và trả lời.",
+		pendingContact: "Liên hệ",
+	},
 	inquiry: {
 		title: "Liên hệ",
 		back: "Quay lại",
@@ -32,16 +46,19 @@ const vi = {
 		email: "Email nhận trả lời",
 		emailHint: "Chúng tôi chỉ trả lời tới địa chỉ này",
 		message: "Nội dung",
-		messagePlaceholder: "Hãy kể chuyện gì đã xảy ra. Cho biết tên màn hình sẽ giúp tìm nhanh hơn.",
+		messagePlaceholder:
+			"Hãy kể chuyện gì đã xảy ra. Cho biết tên màn hình sẽ giúp tìm nhanh hơn.",
 		send: "Gửi",
 		sending: "Đang gửi…",
 		doneTitle: "Đã nhận được",
 		doneBody: "Chúng tôi sẽ trả lời tới {{email}}.",
-		doneShotsLost: "Tuy nhiên {{count}} ảnh màn hình đã không được lưu. Nếu cần, hãy gửi kèm trong email trả lời.",
+		doneShotsLost:
+			"Tuy nhiên {{count}} ảnh màn hình đã không được lưu. Nếu cần, hãy gửi kèm trong email trả lời.",
 		doneNumber: "Mã liên hệ #{{id}}",
 		doneBack: "Quay lại",
 		shots: "Ảnh chụp màn hình (không bắt buộc)",
-		shotsHint: "Nếu khó diễn tả bằng lời, hãy gửi ảnh màn hình. Tối đa {{max}} ảnh · PNG, JPG, WEBP.",
+		shotsHint:
+			"Nếu khó diễn tả bằng lời, hãy gửi ảnh màn hình. Tối đa {{max}} ảnh · PNG, JPG, WEBP.",
 		shotAdd: "Thêm ảnh màn hình",
 		shotRemove: "Xoá {{name}}",
 		err_fileTooMany: "Bạn có thể gửi tối đa {{max}} ảnh.",
@@ -60,7 +77,8 @@ const vi = {
 		carryBody:
 			"Những gì bạn đã học khi xem thử sẽ chuyển sang tài khoản này. Bạn không phải làm lại.",
 		email: "Email",
-		emailHint: "Nếu quên mật khẩu, chúng tôi gửi liên kết đặt lại tới địa chỉ này",
+		emailHint:
+			"Nếu quên mật khẩu, chúng tôi gửi liên kết đặt lại tới địa chỉ này",
 		password: "Mật khẩu",
 		showPassword: "Hiện mật khẩu",
 		hidePassword: "Ẩn mật khẩu",
@@ -75,16 +93,18 @@ const vi = {
 		privacy: "Chính sách bảo mật",
 		agreeSuffix: " — Tôi đồng ý",
 		required: "Bắt buộc",
-		termsMissing: "Hai tài liệu đang được chuẩn bị — liên kết sẽ được thêm trước khi phát hành.",
+		termsMissing: "Hai tài liệu vẫn đang được soạn — chạm để xem tiến độ.",
 		submit: "Đăng ký và bắt đầu",
 		submitting: "Đang đăng ký…",
 		failed: "Đăng ký thất bại.",
 		err_emailInvalid: "Vui lòng kiểm tra lại địa chỉ email.",
 		err_nameRequired: "Vui lòng nhập tên của bạn.",
-		err_passwordWeak: "Mật khẩu cần ít nhất 8 ký tự, gồm 1 chữ hoa và 1 chữ số.",
+		err_passwordWeak:
+			"Mật khẩu cần ít nhất 8 ký tự, gồm 1 chữ hoa và 1 chữ số.",
 		err_emailTaken: "Email này đã được đăng ký.",
 		err_signupFailed: "Đăng ký thất bại. Vui lòng thử lại sau giây lát.",
-		err_signupBadResponse: "Phản hồi đăng ký không hợp lệ. Vui lòng thử lại sau giây lát.",
+		err_signupBadResponse:
+			"Phản hồi đăng ký không hợp lệ. Vui lòng thử lại sau giây lát.",
 		haveAccount: "Đã có tài khoản?",
 		goLogin: "Đăng nhập",
 	},
@@ -98,7 +118,8 @@ const vi = {
 	},
 	resetPassword: {
 		blockedDescription: "Hiện chúng tôi chưa gửi email được.",
-		blockedHow: "Việc gửi email chưa sẵn sàng. Nếu bạn thuộc một trường, hãy hỏi người phụ trách. Với tài khoản cá nhân, hãy liên hệ và chúng tôi sẽ đặt lại giúp bạn.",
+		blockedHow:
+			"Việc gửi email chưa sẵn sàng. Nếu bạn thuộc một trường, hãy hỏi người phụ trách. Với tài khoản cá nhân, hãy liên hệ và chúng tôi sẽ đặt lại giúp bạn.",
 		blockedContact: "Liên hệ",
 		blockedBack: "Quay lại đăng nhập",
 		title: "Đặt lại mật khẩu",
@@ -117,7 +138,8 @@ const vi = {
 	},
 	newPassword: {
 		blockedDescription: "Liên kết này chưa thể đổi mật khẩu.",
-		blockedHow: "Việc gửi email chưa sẵn sàng. Nếu bạn thuộc một trường, hãy hỏi người phụ trách. Với tài khoản cá nhân, hãy liên hệ và chúng tôi sẽ đặt lại giúp bạn.",
+		blockedHow:
+			"Việc gửi email chưa sẵn sàng. Nếu bạn thuộc một trường, hãy hỏi người phụ trách. Với tài khoản cá nhân, hãy liên hệ và chúng tôi sẽ đặt lại giúp bạn.",
 		blockedContact: "Liên hệ",
 		blockedBack: "Quay lại đăng nhập",
 		title: "Tạo mật khẩu mới",

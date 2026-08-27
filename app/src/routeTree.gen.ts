@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QrRouteImport } from './routes/qr'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NewPasswordRouteImport } from './routes/new-password'
 import { Route as MyProfileRouteImport } from './routes/my-profile'
 import { Route as MyPasswordRouteImport } from './routes/my-password'
@@ -64,6 +66,11 @@ import { Route as BookChapterUnitDialogIdRouteImport } from './routes/book/chapt
 import { Route as BookChapterUnitFlashcardResultIdRouteImport } from './routes/book/chapter/unit/flashcard/result/$id'
 import { Route as BookChapterUnitDialogReportIdRouteImport } from './routes/book/chapter/unit/dialog/report/$id'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -77,6 +84,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const QrRoute = QrRouteImport.update({
   id: '/qr',
   path: '/qr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewPasswordRoute = NewPasswordRouteImport.update({
@@ -357,9 +369,11 @@ export interface FileRoutesByFullPath {
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
   '/new-password': typeof NewPasswordRoute
+  '/privacy': typeof PrivacyRoute
   '/qr': typeof QrRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
@@ -412,9 +426,11 @@ export interface FileRoutesByTo {
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
   '/new-password': typeof NewPasswordRoute
+  '/privacy': typeof PrivacyRoute
   '/qr': typeof QrRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
@@ -467,9 +483,11 @@ export interface FileRoutesById {
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
   '/new-password': typeof NewPasswordRoute
+  '/privacy': typeof PrivacyRoute
   '/qr': typeof QrRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
@@ -525,9 +543,11 @@ export interface FileRouteTypes {
     | '/my-password'
     | '/my-profile'
     | '/new-password'
+    | '/privacy'
     | '/qr'
     | '/reset-password'
     | '/signup'
+    | '/terms'
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
@@ -580,9 +600,11 @@ export interface FileRouteTypes {
     | '/my-password'
     | '/my-profile'
     | '/new-password'
+    | '/privacy'
     | '/qr'
     | '/reset-password'
     | '/signup'
+    | '/terms'
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
@@ -634,9 +656,11 @@ export interface FileRouteTypes {
     | '/my-password'
     | '/my-profile'
     | '/new-password'
+    | '/privacy'
     | '/qr'
     | '/reset-password'
     | '/signup'
+    | '/terms'
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
@@ -691,9 +715,11 @@ export interface RootRouteChildren {
   MyPasswordRoute: typeof MyPasswordRoute
   MyProfileRoute: typeof MyProfileRoute
   NewPasswordRoute: typeof NewPasswordRoute
+  PrivacyRoute: typeof PrivacyRoute
   QrRoute: typeof QrRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
   BookIdRoute: typeof BookIdRoute
   BookListRoute: typeof BookListRoute
   LearnFillBlankRoute: typeof LearnFillBlankRoute
@@ -728,6 +754,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -747,6 +780,13 @@ declare module '@tanstack/react-router' {
       path: '/qr'
       fullPath: '/qr'
       preLoaderRoute: typeof QrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/new-password': {
@@ -1172,9 +1212,11 @@ const rootRouteChildren: RootRouteChildren = {
   MyPasswordRoute: MyPasswordRoute,
   MyProfileRoute: MyProfileRoute,
   NewPasswordRoute: NewPasswordRoute,
+  PrivacyRoute: PrivacyRoute,
   QrRoute: QrRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
   BookIdRoute: BookIdRoute,
   BookListRoute: BookListRoute,
   LearnFillBlankRoute: LearnFillBlankRoute,

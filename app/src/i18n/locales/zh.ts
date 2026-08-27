@@ -19,6 +19,18 @@ const zh = {
 		loggingIn: "登录中...",
 		serverError: "无法连接到服务器。",
 	},
+	/**
+	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
+	 * `shared/feature-gates.ts` 의 LEGAL_DOCS_READY 를 보라.
+	 */
+	legal: {
+		termsTitle: "服务条款",
+		privacyTitle: "隐私政策",
+		back: "返回",
+		pendingBody: "两份文件正在准备中。确定后即可在此阅读。",
+		pendingHow: "在此之前如有疑问请联系我们，会有专人阅读并回复。",
+		pendingContact: "联系我们",
+	},
 	inquiry: {
 		title: "联系我们",
 		back: "返回",
@@ -37,11 +49,13 @@ const zh = {
 		sending: "发送中…",
 		doneTitle: "已收到",
 		doneBody: "我们会回复到 {{email}}。",
-		doneShotsLost: "不过有 {{count}} 张截图未能保存。如有需要，请在回复邮件中重新附上。",
+		doneShotsLost:
+			"不过有 {{count}} 张截图未能保存。如有需要，请在回复邮件中重新附上。",
 		doneNumber: "咨询编号 #{{id}}",
 		doneBack: "返回",
 		shots: "屏幕截图（可选）",
-		shotsHint: "如果不好用文字说明，可以上传截图。最多 {{max}} 张 · PNG、JPG、WEBP。",
+		shotsHint:
+			"如果不好用文字说明，可以上传截图。最多 {{max}} 张 · PNG、JPG、WEBP。",
 		shotAdd: "上传截图",
 		shotRemove: "删除 {{name}}",
 		err_fileTooMany: "最多可以上传 {{max}} 张截图。",
@@ -74,7 +88,7 @@ const zh = {
 		privacy: "隐私政策",
 		agreeSuffix: "，我同意",
 		required: "必填",
-		termsMissing: "两份文件正在准备中 — 发布前会补上链接。",
+		termsMissing: "两份文件仍在准备中 — 点击可查看进展。",
 		submit: "注册并开始",
 		submitting: "注册中…",
 		failed: "注册失败。",
@@ -97,7 +111,8 @@ const zh = {
 	},
 	resetPassword: {
 		blockedDescription: "目前还无法向您发送邮件。",
-		blockedHow: "邮件发送尚未就绪。如果您属于某所学校，请联系学校负责人；个人账号请联系我们，我们会为您重置。",
+		blockedHow:
+			"邮件发送尚未就绪。如果您属于某所学校，请联系学校负责人；个人账号请联系我们，我们会为您重置。",
 		blockedContact: "联系我们",
 		blockedBack: "返回登录",
 		title: "重置密码",
@@ -114,7 +129,8 @@ const zh = {
 	},
 	newPassword: {
 		blockedDescription: "这个链接还不能修改密码。",
-		blockedHow: "邮件发送尚未就绪。如果您属于某所学校，请联系学校负责人；个人账号请联系我们，我们会为您重置。",
+		blockedHow:
+			"邮件发送尚未就绪。如果您属于某所学校，请联系学校负责人；个人账号请联系我们，我们会为您重置。",
 		blockedContact: "联系我们",
 		blockedBack: "返回登录",
 		title: "设置新密码",

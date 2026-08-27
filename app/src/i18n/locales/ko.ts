@@ -27,6 +27,20 @@ const ko = {
 	},
 	/** 학생 자체 회원가입 — 목업 phase1/draft_auth.html 의 가입 화면 */
 	/** 문의하기 — 전화 없이 글로 받는다. 보낸 글은 슬랙으로 꽂힌다 */
+	/**
+	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
+	 * `shared/feature-gates.ts` 의 LEGAL_DOCS_READY 를 보라.
+	 */
+	legal: {
+		termsTitle: "이용약관",
+		privacyTitle: "개인정보 처리방침",
+		back: "뒤로",
+		pendingBody:
+			"두 문서를 준비하고 있습니다. 확정되면 여기에서 바로 읽을 수 있습니다.",
+		pendingHow:
+			"그 전에 궁금한 점이 있으면 문의해 주세요. 사람이 읽고 답합니다.",
+		pendingContact: "문의하기",
+	},
 	inquiry: {
 		title: "문의하기",
 		back: "뒤로",
@@ -40,16 +54,19 @@ const ko = {
 		email: "답장 받을 이메일",
 		emailHint: "이 주소로만 답장을 보냅니다",
 		message: "내용",
-		messagePlaceholder: "무슨 일이 있었는지 적어 주세요. 어느 화면이었는지 알려 주시면 더 빨리 찾습니다.",
+		messagePlaceholder:
+			"무슨 일이 있었는지 적어 주세요. 어느 화면이었는지 알려 주시면 더 빨리 찾습니다.",
 		send: "보내기",
 		sending: "보내는 중…",
 		doneTitle: "잘 받았습니다",
 		doneBody: "{{email}} 로 답장 드리겠습니다.",
-		doneShotsLost: "다만 화면 캡처 {{count}}장은 저장되지 못했어요. 필요하면 답장에 다시 붙여 주세요.",
+		doneShotsLost:
+			"다만 화면 캡처 {{count}}장은 저장되지 못했어요. 필요하면 답장에 다시 붙여 주세요.",
 		doneNumber: "문의 번호 #{{id}}",
 		doneBack: "돌아가기",
 		shots: "화면 캡처 (선택)",
-		shotsHint: "글로 설명하기 어려우면 화면을 찍어 올려 주세요. 최대 {{max}}장 · PNG·JPG·WEBP.",
+		shotsHint:
+			"글로 설명하기 어려우면 화면을 찍어 올려 주세요. 최대 {{max}}장 · PNG·JPG·WEBP.",
 		shotAdd: "캡처 올리기",
 		shotRemove: "{{name}} 지우기",
 		err_fileTooMany: "캡처는 최대 {{max}}장까지 올릴 수 있어요.",
@@ -84,16 +101,19 @@ const ko = {
 		agreeSuffix: "에 동의합니다",
 		required: "필수",
 		/** 두 문서가 아직 없다. 있는 척하지 않는다 */
-		termsMissing: "두 문서는 준비 중입니다 — 배포 전에 링크가 붙습니다.",
+		termsMissing:
+			"두 문서는 아직 준비 중입니다 — 눌러 보면 어디까지 왔는지 알 수 있습니다.",
 		submit: "가입하고 시작하기",
 		submitting: "가입하는 중…",
 		failed: "가입에 실패했습니다.",
 		err_emailInvalid: "이메일 주소를 다시 확인해 주세요.",
 		err_nameRequired: "이름을 입력해 주세요.",
-		err_passwordWeak: "비밀번호는 8자 이상, 대문자와 숫자를 각각 1개 이상 포함해야 합니다.",
+		err_passwordWeak:
+			"비밀번호는 8자 이상, 대문자와 숫자를 각각 1개 이상 포함해야 합니다.",
 		err_emailTaken: "이미 등록된 이메일입니다.",
 		err_signupFailed: "가입에 실패했습니다. 잠시 후 다시 시도해 주세요.",
-		err_signupBadResponse: "가입 응답이 올바르지 않습니다. 잠시 후 다시 시도해 주세요.",
+		err_signupBadResponse:
+			"가입 응답이 올바르지 않습니다. 잠시 후 다시 시도해 주세요.",
 		haveAccount: "이미 계정이 있으세요?",
 		goLogin: "로그인",
 	},
@@ -107,7 +127,8 @@ const ko = {
 	},
 	resetPassword: {
 		blockedDescription: "지금은 메일로 보내 드릴 수 없습니다.",
-		blockedHow: "메일 발송 준비가 끝나지 않았습니다. 기관 소속이면 학교 담당자에게, 개인 계정이면 문의하기로 알려 주시면 재설정해 드립니다.",
+		blockedHow:
+			"메일 발송 준비가 끝나지 않았습니다. 기관 소속이면 학교 담당자에게, 개인 계정이면 문의하기로 알려 주시면 재설정해 드립니다.",
 		blockedContact: "문의하기",
 		blockedBack: "로그인으로 돌아가기",
 		title: "비밀번호 재설정",
@@ -126,7 +147,8 @@ const ko = {
 	},
 	newPassword: {
 		blockedDescription: "이 링크로는 아직 비밀번호를 바꿀 수 없습니다.",
-		blockedHow: "메일 발송 준비가 끝나지 않았습니다. 기관 소속이면 학교 담당자에게, 개인 계정이면 문의하기로 알려 주시면 재설정해 드립니다.",
+		blockedHow:
+			"메일 발송 준비가 끝나지 않았습니다. 기관 소속이면 학교 담당자에게, 개인 계정이면 문의하기로 알려 주시면 재설정해 드립니다.",
 		blockedContact: "문의하기",
 		blockedBack: "로그인으로 돌아가기",
 		title: "새 비밀번호 설정",
