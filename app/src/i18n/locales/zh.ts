@@ -202,8 +202,8 @@ const zh = {
 		lockedAria: "已锁定的课",
 		close: "关闭",
 		freeListTitle: "现在就能看的内容",
-		freeJamo: "韩文字母 — 1级 1课",
-		freeBooks: "教材 — 1级4课 · 2级1课 · 3级1课",
+		freeJamo: "韩文字母 — {{lessons}}",
+		freeBooks: "教材 — {{lessons}}",
 		freeGames: "游戏 — {{games}}",
 		freeClips: "表达短片 — 全部",
 		priceTitle: "订阅后开放全部级别和课程",
@@ -217,7 +217,8 @@ const zh = {
 		memberTitle: "这一课订阅后开放",
 		memberBody:
 			"{{level}}级{{lesson}}课在免费范围之外。订阅后可查看从韩文字母到8级的全部内容 — 无需分级购买。",
-		memberBodyGeneric: "这在免费范围之外。订阅后可查看从韩文字母到8级的全部内容 — 无需分级购买。",
+		memberBodyGeneric:
+			"这在免费范围之外。订阅后可查看从韩文字母到8级的全部内容 — 无需分级购买。",
 		memberCta: "了解订阅",
 		memberBack: "回到免费课程",
 		expiredTitle: "订阅已结束",

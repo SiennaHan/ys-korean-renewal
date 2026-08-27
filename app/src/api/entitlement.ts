@@ -38,21 +38,45 @@ export interface Entitlement {
  * 그때는 이 자리도 다시 봐야 한다 — 산 사람에게 손해가 되지 않는 재시도·캐시가
  * 필요해진다.
  */
+const SOURCES: EntitlementSource[] = ["guest", "school", "purchase"];
+
+/**
+ * 받은 것이 **정말 답인지** 본다.
+ *
+ * 빈 객체를 자리 채워 받아들이면 안 된다. 다른 응답에서는 `{}` 가 "아무것도
+ * 없는 사용자" 로 읽혀도 괜찮지만, 여기서는 그 뜻이 **전부 잠김** 이다.
+ * 서버가 `{result:true, data:{}}` 를 내면(경로가 사라졌거나, 목 서버가 모르는
+ * 경로에 그렇게 답한다) 앱은 `ready` 를 참으로 켜고 무료 과까지 잠근다 —
+ * 2026-08-26 에 실제로 그렇게 보였다. 무료인 1급 4과에 자물쇠가 붙고, 바로 그
+ * 안내문이 "1급 4과는 지금 볼 수 있습니다" 라고 적혀 있었다.
+ *
+ * 그래서 자리를 **채우지 않고 거절한다.** `source` 와 네 묶음이 다 있어야
+ * 답으로 친다. 거절하면 `null` 이 되고, 화면은 잠금을 아예 그리지 않는다.
+ */
+function asEntitlement(data: unknown): Entitlement | null {
+	if (!data || typeof data !== "object") return null;
+	const d = data as Partial<Entitlement>;
+	if (!d.source || !SOURCES.includes(d.source)) return null;
+	if (!Array.isArray(d.books)) return null;
+	if (!Array.isArray(d.jamo_chapters)) return null;
+	if (!Array.isArray(d.games)) return null;
+	if (!d.chapters || typeof d.chapters !== "object") return null;
+	return {
+		source: d.source,
+		books: d.books,
+		chapters: d.chapters,
+		jamo_chapters: d.jamo_chapters,
+		games: d.games,
+		clips: d.clips !== false,
+		expires_at: d.expires_at ?? null,
+	};
+}
+
 export async function getEntitlement(): Promise<Entitlement | null> {
 	try {
 		const res = await api.get<Entitlement>("/entitlement");
-		if (!res.result || !res.data) return null;
-		const d = res.data;
-		// 서버가 모양을 어겨도 화면이 터지지 않게 자리를 채운다 — api.ts 의 asArray 와 같은 뜻
-		return {
-			source: d.source ?? "guest",
-			books: Array.isArray(d.books) ? d.books : [],
-			chapters: d.chapters && typeof d.chapters === "object" ? d.chapters : {},
-			jamo_chapters: Array.isArray(d.jamo_chapters) ? d.jamo_chapters : [],
-			games: Array.isArray(d.games) ? d.games : [],
-			clips: d.clips !== false,
-			expires_at: d.expires_at ?? null,
-		};
+		if (!res.result) return null;
+		return asEntitlement(res.data);
 	} catch {
 		return null;
 	}

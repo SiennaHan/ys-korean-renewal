@@ -180,6 +180,19 @@ class H(BaseHTTPRequestHandler):
         self._send({'result':True,'code':200,'message':None,'data':{}})
     def do_GET(self):
         path=self.path.split('?')[0]
+        # 열린 범위 — 실서버의 api/business/entitlement.py 와 **같은 값**을 낸다.
+        # 없으면 알 수 없는 경로로 떨어져 {} 를 내는데, 그건 앱에서 "전부 잠김"
+        # 으로 읽힌다(2026-08-26 확인 — 무료인 1급 4과에도 자물쇠가 붙었다).
+        # 값은 api/shared/free_scope.py 가 정본이다. 여기 손대기 전에 그쪽을 봐라.
+        if path.rstrip('/') == '/entitlement':
+            return self._send({'result':True,'code':200,'message':None,'data':{
+                'source':'guest',
+                'books':[],
+                'chapters':{'1':[4],'2':[1],'3':[1]},
+                'jamo_chapters':[1],
+                'games':['vocashot','spring-picnic'],
+                'clips':True,
+                'expires_at':None}})
         if path.startswith('/game-progress/'):
             game = path[len('/game-progress/'):]
             from urllib.parse import unquote

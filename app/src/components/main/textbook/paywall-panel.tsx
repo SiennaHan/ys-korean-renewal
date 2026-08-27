@@ -68,6 +68,27 @@ export default function PaywallPanel({
 		.map((k) => t(`game.list.${k}.name`))
 		.join(" · ");
 
+	/*
+	 * **무료 목록은 서버가 준 범위로 짓는다.** 문구에 "1급 4과 · 2급 1과 · 3급 1과"
+	 * 라고 적어 두면 경계가 두 곳에 있게 되고, `free_scope.py` 머리말이 못 박은
+	 * 대로 반드시 갈라진다. 실제로 갈라진 것을 봤다 — 2026-08-26, 잠긴 1급 4과
+	 * 위에서 이 목록이 "1급 4과는 지금 볼 수 있습니다" 라고 말하고 있었다.
+	 * 게임 이름을 이미 이렇게 짓고 있었으니 나머지도 같은 자리로 옮긴다.
+	 */
+	const lessonLabel = (level: number | string, lesson: number) =>
+		t("player.lessonTitle", { level, lesson });
+	const freeBookLessons = Object.entries(entitlement?.chapters ?? {})
+		.sort(([a], [b]) => Number(a) - Number(b))
+		.flatMap(([level, seqs]) =>
+			[...seqs].sort((a, b) => a - b).map((seq) => lessonLabel(level, seq)),
+		)
+		.join(" · ");
+	/* 자모는 1급 안에 있다 — 원장의 jamo 과가 전부 book_id 1 이다 */
+	const freeJamoLessons = [...(entitlement?.jamo_chapters ?? [])]
+		.sort((a, b) => a - b)
+		.map((seq) => lessonLabel(1, seq))
+		.join(" · ");
+
 	const title = t(`paywall.${kind}Title`);
 	const body =
 		kind === "member" && level != null && lesson != null
@@ -88,8 +109,12 @@ export default function PaywallPanel({
 			<div className="paywall-free">
 				<div className="paywall-free-t">{t("paywall.freeListTitle")}</div>
 				<ul>
-					<li>{t("paywall.freeJamo")}</li>
-					<li>{t("paywall.freeBooks")}</li>
+					{freeJamoLessons && (
+						<li>{t("paywall.freeJamo", { lessons: freeJamoLessons })}</li>
+					)}
+					{freeBookLessons && (
+						<li>{t("paywall.freeBooks", { lessons: freeBookLessons })}</li>
+					)}
 					{freeGameNames && (
 						<li>{t("paywall.freeGames", { games: freeGameNames })}</li>
 					)}

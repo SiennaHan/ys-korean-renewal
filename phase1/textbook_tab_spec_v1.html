@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ b87c1e7 -->
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 037c07a -->
 <!-- 왜: 심화학습 두 줄이 켜지는지가 이 데이터와 이 목록 컴포넌트에 걸려 있다 -->
 <title>교재학습 탭 — 활동으로 들어가는 유일한 길</title>
 <style>
@@ -307,31 +307,42 @@
     없다는 문제는 그대로다. 플래시카드에서만 안 보이게 됐을 뿐이다</div></div></li>
 </ol>
 
-<h2><span class="n">08</span>권한 잠금이 들어갈 자리</h2>
+<h2><span class="n">08</span>권한 잠금 — 셋 중 둘이 들어왔다</h2>
 <p><span class="file">access_and_pricing_v1</span> 은 <b>"숨기지 않고 보이되 잠근다"</b> 로 정했다.
-이 화면은 그 요구를 <b>이미 절반 만족한다</b> — <span class="file">off</span> 상태가 있고,
-목록에서 지우지 않고 흐리게 보여 준다.</p>
+<b>2026-08-26 에 과 칩과 결제 안내가 들어왔다</b>(<span class="file">037c07a</span>).
+아래 표는 그때 무엇이 채워지고 무엇이 남았는지다.</p>
 
 <div class="tablewrap">
 <table>
-  <thead><tr><th>지금</th><th>더할 것</th></tr></thead>
+  <thead><tr><th>정한 것</th><th>지금</th></tr></thead>
   <tbody>
-    <tr><td><span class="file">off</span> = 콘텐츠 없음. 눌러도 아무 일 없다</td>
-      <td><b>잠긴 이유를 갈라야 한다.</b> 콘텐츠 없음과 권한 없음은 사용자에게 다른 뜻이다 —
-        앞은 기다릴 것이 없고 뒤는 <b>결제하면 열린다</b></td></tr>
-    <tr><td>급 탭·과 칩에 잠금 표시가 없다</td>
-      <td>유료 급·과에 자물쇠. <b>맛보기 과가 어느 것인지</b>가 여기서 보여야 한다 —
+    <tr><td><b>잠긴 이유를 갈라야 한다</b> — 콘텐츠 없음과 권한 없음은 사용자에게 다른 뜻이다.
+        앞은 기다릴 것이 없고 뒤는 결제하면 열린다</td>
+      <td><b>됐다.</b> <span class="file">off</span> 는 콘텐츠 없음 그대로고, 권한 없음은
+        칩의 <span class="file">.locked</span> 와 자물쇠다. 둘이 다르게 보인다</td></tr>
+    <tr><td>유료 급·과에 자물쇠. <b>맛보기 과가 어느 것인지</b>가 여기서 보여야 한다 —
         <b>1급 4과 · 2급 1과 · 3급 1과 셋뿐이고 한글은 1급 1과</b>다
-        (2026-08-26 확정. 전에는 "각 급 1과" 로 8과였다 — <span class="file">access_and_pricing_v1</span> §02)</td></tr>
-    <tr><td>누를 수 없다</td>
-      <td>권한 잠금은 <b>누르면 결제 화면</b>으로 보낸다. 게스트면 로그인 먼저.
-        기관 학생이면 "학교에 문의" 로 — 결제 화면을 띄우면 안 된다</td></tr>
+        (2026-08-26 확정. 전에는 "각 급 1과" 로 8과였다 — <span class="file">access_and_pricing_v1</span> §02)</td>
+      <td><b>과 칩은 됐다.</b> 잠긴 칩에 자물쇠가 붙고, 무료 과가 자동으로 골라진다.<br>
+        <b>급 탭은 아직이다</b> — 4~8급은 무료 과가 하나도 없는데 탭만 보면 알 수 없다.
+        탭에 자물쇠를 붙이려면 목업(<span class="file">nav__book__resume</span>)도 같이 나가야 한다</td></tr>
+    <tr><td>권한 잠금은 <b>누르면 결제 화면</b>으로 보낸다. 게스트면 로그인 먼저.
+        기관 학생이면 "학교에 문의" 로 — 결제 화면을 띄우면 안 된다</td>
+      <td><b>됐다.</b> <span class="file">paywall-panel.tsx</span> 가 게스트·개인·만료·기관
+        넷으로 갈린다. 기관 학생에게는 가격도 결제 버튼도 안 보인다.<br>
+        <b>결제 화면 자체는 아직 없다</b> — 버튼이 눌리지 않는 채로 있다(§09 의 그 뒤)</td></tr>
   </tbody>
 </table>
 </div>
 
 <p class="qa">권한 판정을 이 화면에서 계산하지 않는다. <span class="file">GET /entitlement</span> 의
 응답만 믿는다 — 출처(무료·학교 계약·개인 결제)가 늘어도 이 화면은 고치지 않는다.</p>
+
+<p class="qa"><b>무료 목록을 문구에 적지 마라.</b> 결제 안내의 "지금 바로 볼 수 있는 것" 은
+서버가 준 범위로 짓는다. 처음에는 다섯 언어에 "1급 4과 · 2급 1과 · 3급 1과" 라고 적어 뒀는데,
+그러면 경계가 두 곳에 있게 되고 <span class="file">free_scope.py</span> 머리말이 못 박은 대로
+갈라진다. 실제로 갈라진 것을 봤다 — 잠긴 1급 4과 위에서 그 목록이 "1급 4과는 지금 볼 수 있습니다"
+라고 말하고 있었다(2026-08-26 고침).</p>
 
 <h2><span class="n">09</span>정해야 할 것</h2>
 <ol class="path">
