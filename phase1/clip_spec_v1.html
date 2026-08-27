@@ -116,14 +116,29 @@
   (<span class="file">masterplan_v3</span> §2 — "의도되지 않은 공백 둘" 중 하나).
   그런데 <b>화면은 이미 돌아간다</b> — 없던 것은 코드가 아니라 <b>적어 둔 규칙</b>이다.
   그래서 새로 설계하지 않고 <b>구현을 읽고 재서 규칙으로 고정</b>한 뒤, 어긋난 곳과
-  정해야 할 것을 가려낸다. 숫자는 <span class="file">app/src/shared/data/clip.ts</span> 와
-  빌드 산출물을 실제로 센 것이다.</p>
+  정해야 할 것을 가려냈다. 숫자는 <span class="file">app/src/shared/data/clip.ts</span> 와
+  빌드 산출물과 실제 DB 를 <b>직접 센 것</b>이다.</p>
+  <p class="lead"><b>물음 여섯은 같은 날 전부 확정됐다</b>(§05). 그중 하나는
+  <b>내 초안의 권고가 뒤집혔고</b>(한 글자 검색), 하나는 <b>내가 기능의 뜻을 잘못 잡고 있었다</b> —
+  신고는 영상을 <b>빼는</b> 장치가 아니라 <b>하위로 내리는</b> 장치다(§05 의 6번).
+  그리고 재는 도중에 <b>신고가 한 번도 저장된 적이 없다</b>는 것이 드러났다(§04 의 4번).</p>
 </header>
 
 <h2><span class="n">01</span>이 화면이 무엇인가</h2>
 <p>탭 바 다섯 중 <b>넷째</b>(<span class="file">/main/clip</span>). 학습자가 <b>배우고 싶은 표현을
-검색</b>하면, 그 표현이 실제로 말해지는 <b>유튜브 영상의 그 순간</b>을 찾아 그 구간만 재생한다.
+검색</b>하면, 그 표현이 실제로 말해지는 <b>유튜브 영상의 그 순간</b>들을 찾아 그 구간만 재생한다.
 교재 활동이 아니라 <b>곁들여 보는 것</b>이다.</p>
+
+<div class="callout good">
+  <div class="t">무엇을 주는 기능인가 <span class="pill done">확정 2026-08-27</span></div>
+  <p><b>실제 한국인이 그 표현을 어떻게 발음하는지, 사례를 여럿 들어 보는 것</b>이다.
+  주는 것은 <b>발음과 억양의 실례</b>다. 영상 감상이 아니다.</p>
+  <p>검색 단위는 <b>보통 문장</b>이고 <b>낮은 확률로 낱말</b>이다 — 이 한 줄이 아래 여러 결정을
+  끌고 간다(§05 의 2·3번). <b>이름은 「표현 클립」 그대로 둔다</b> — 기능의 뜻과 어긋나지 않고,
+  이미 다섯 언어와 탭 바에 박혀 있다.</p>
+  <p class="qa">그래서 §3.3 의 <b>반복 재생</b>이 곁다리가 아니라 이 기능의 뼈대다 —
+  5초짜리 한마디를 여러 번 듣는 자리다.</p>
+</div>
 
 <div class="callout">
   <div class="t">이 화면이 유입의 첫 화면이다</div>
@@ -232,8 +247,12 @@
 <b>부적절한 영상 신고</b>) → <span class="file">POST /report</span>.
 <span class="file">category = "video"</span> · <span class="file">target_id = youtube_id</span> ·
 <span class="file">user_id = guestId</span>.</p>
+<p><b>그런데 이것이 한 번도 저장된 적이 없다</b> — §04 의 4번. 그리고 신고가 무엇을 해야 하는지는
+<b>§05 의 6번에서 뒤집혔다</b>(숨기는 것이 아니라 하위로 내리는 것이다).</p>
 
 <h2><span class="n">04</span>어긋난 것 여덟 — 전부 실측이다</h2>
+<p>§05 에서 확정된 결정으로 <b>답이 정해진 것</b>은 그 번호를 달아 뒀다.
+남은 것은 결정 없이도 고쳐야 하는 것들이다.</p>
 <div class="tablewrap">
 <table>
   <thead><tr><th>#</th><th>무엇</th><th>실측</th><th>무게</th></tr></thead>
@@ -242,107 +261,188 @@
       <td>머리글은 <span class="file">results.length</span>, 목록은
         <span class="file">results.slice(0, 10)</span>. "그래서" 는 <b>1,226건</b>이라 적히고 10개가 보인다.
         더 보는 길이 없다</td>
-      <td><span class="pill stop">거짓말</span></td></tr>
-    <tr><td>2</td><td><b>한 글자를 못 찾는다</b></td>
-      <td>2자 미만을 막는다. 대본에 <b>물 1,612 · 집 1,065 · 밥 434 · 돈 433</b>건이 있는데
-        화면은 <b>0건</b>이다. 초급 학습자가 가장 먼저 찾을 낱말들이다</td>
-      <td><span class="pill stop">막힌 길</span></td></tr>
-    <tr><td>3</td><td><b>사전형으로 찾으면 거의 안 나온다</b></td>
-      <td>문자열 그대로 찾으므로 활용형이 안 걸린다 —
-        <b>먹다 26 : 먹었 230</b> · <b>가다 61 : 갔어 168</b> ·
-        <b>고맙다 32 : 고마워 115</b> · <b>예쁘다 62 : 예뻐 81</b></td>
-      <td><span class="pill open">범위 판단</span></td></tr>
-    <tr><td>4</td><td><b>결과가 0일 때 할 말이 없다</b></td>
+      <td><span class="pill done">§05-2 가 정했다</span></td></tr>
+    <tr><td>2</td><td><b>결과가 0일 때 할 말이 없다</b></td>
       <td>빈 상태 문구가 하나뿐이라 <b>검색 전과 검색 실패에 같은 말</b>을 낸다 —
         "배우고 싶은 표현을 검색해 보세요". 0건이 나온 사람에게는 답이 아니다</td>
       <td><span class="pill stop">문구 없음</span></td></tr>
-    <tr><td>5</td><td><b>하트가 장식이다</b></td>
+    <tr><td>3</td><td><b>하트가 장식이다</b></td>
       <td>카드 우상단 하트는 <span class="file">&lt;div&gt;</span> 안의 아이콘이고
         <b><span class="file">onClick</span> 이 없다.</b> 저장하는 곳도 없다</td>
-      <td><span class="pill stop">있는 척</span></td></tr>
-    <tr><td>6</td><td><b>한 사람의 신고가 모두에게 적용된다</b></td>
-      <td><span class="file">repo_error_report.list()</span> 는 <b>카테고리만 거른다</b> —
-        사용자를 안 본다. 게다가 <span class="file">POST /report</span> · <span class="file">GET /report/list</span>
-        둘 다 <b>인증이 없다.</b> 즉 누구든 한 번 신고하면 그 영상이
-        <b>전원의 검색 결과에서 사라진다</b></td>
-      <td><span class="pill stop">막아야 함</span></td></tr>
-    <tr><td>7</td><td><b>재생 오류가 자동으로 그 신고를 보낸다</b></td>
+      <td><span class="pill done">§05-5 가 정했다 — 뺀다</span></td></tr>
+    <tr><td>4</td><td><b>신고가 한 번도 저장된 적이 없다</b></td>
+      <td><span class="file">ko_error_report.target_id</span> 가
+        <b><span class="file">varchar(10)</span></b> 인데 <b>유튜브 ID 는 11자</b>다.
+        실제로 넣어 보면 <span class="file">1406 Data too long</span> →
+        <b><span class="file">POST /report</span> 가 500</b> 이다.
+        DB 에 <span class="file">category='video'</span> 행이 <b>0건</b>인 것이 그 증거다</td>
+      <td><span class="pill stop">죽은 기능</span></td></tr>
+    <tr><td>5</td><td><b>그런데 학습자에게는 성공처럼 보인다</b></td>
+      <td><span class="file">createReport</span> 가
+        <span class="file">catch → return null</span> 로 삼키고, 화면은 반환을 보지 않고
+        <b>바텀시트를 닫는다</b>. 아무 말도 나오지 않는다</td>
+      <td><span class="pill stop">조용한 실패</span></td></tr>
+    <tr><td>6</td><td><b>재생 오류 자동 신고도 같이 죽어 있다</b></td>
       <td><span class="file">onError</span> 가 코드 2·5·100·101·150 을 받아
-        <span class="file">reportError</span> 를 부른다 → 6번의 길을 탄다.
-        <b>임베드 금지(101·150)나 삭제(100)는 그래야 맞지만,
-        HTML5 플레이어 오류(5) 한 번도 같은 결과</b>가 된다</td>
-      <td><span class="pill stop">과하다</span></td></tr>
-    <tr><td>8</td><td><b>열면 gzip 3.0 MB 를 받는다</b></td>
-      <td>그 절반이 <b>아무도 안 읽는 <span class="file">script_org</span></b> 다(§02).
+        <span class="file">reportError</span> 를 부르는데 그 길이 4번에서 막힌다.
+        즉 <b>삭제된 영상·임베드 금지 영상이 스스로 걸러지지도 않는다</b></td>
+      <td><span class="pill stop">죽은 기능</span></td></tr>
+    <tr><td>7</td><td><b>열면 gzip 3.0 MB 를 받고 그 절반을 아무도 읽지 않는다</b></td>
+      <td><span class="file">script_org</span> 3.0 MB(§02).
         무료·비로그인으로 열리는 첫 화면이라 <b>가장 인내심이 없는 순간</b>에 받는다</td>
       <td><span class="pill stop">고칠 것</span></td></tr>
+    <tr><td>8</td><td><b>클립 한 편의 ID 가 엑셀 오류값이다</b></td>
+      <td>index 27 의 <span class="file">youtube_id</span> 가
+        <b><span class="file">#NAME?</span></b> 다. 실제 ID 가
+        <span class="file">-LFpAYRYkJI</span> — <b>하이픈으로 시작해 엑셀이 수식으로 읽었다</b>.
+        <span class="file">link</span> 필드에는 제대로 남아 있어 <b>되살릴 수 있다</b></td>
+      <td><span class="pill stop">데이터 오류</span></td></tr>
   </tbody>
 </table>
 </div>
 
-<h2><span class="n">05</span>정해야 할 것 — 기획 결정 여섯</h2>
-<p>권고를 같이 적는다. <b>권고는 결정이 아니다</b> — 고르는 것은 기획이다.</p>
+<div class="callout bad">
+  <div class="t">순서가 중요하다 — 컬럼을 먼저 늘리면 안 된다</div>
+  <p>숨기는 쪽 코드는 <b>멀쩡히 살아 있다</b> — 진입할 때
+  <span class="file">GET /report/list/video</span> 로 받아 그 영상들을 <b>검색 대상에서 뺀다</b>.
+  지금 아무 일도 안 일어나는 이유는 <b>저장이 500 이라 목록이 늘 비어 있기 때문</b>일 뿐이다.</p>
+  <p>그래서 <span class="file">target_id</span> 를 <b>먼저</b> 늘리면, 그 순간
+  <b>익명 한 사람의 신고가 그 영상을 전원에게서 지우는 동작이 살아난다</b> —
+  <b>§05 의 6번이 하지 말라고 정한 바로 그것</b>이다.
+  <b>정렬 하위로 내리는 쪽을 먼저 넣고, 컬럼은 그다음에 늘린다.</b></p>
+  <p class="qa">지금 신고가 통하는 클립이 딱 하나 있다 — 위 8번의 index 27 이다.
+  <span class="file">#NAME?</span> 은 6자라 컬럼에 들어간다. 즉 <b>ID 가 깨진 그 한 편만
+  신고되면 사라진다</b> — 우연히 자기를 숨기는 셈이다.</p>
+</div>
+
+<h2><span class="n">05</span>정한 것 여섯 <span class="pill done">확정 2026-08-27</span></h2>
 <div class="tablewrap">
 <table>
-  <thead><tr><th>#</th><th>물음</th><th>권고</th><th>왜</th></tr></thead>
+  <thead><tr><th>#</th><th>물음</th><th>정한 것</th><th>왜</th></tr></thead>
   <tbody>
-    <tr><td>1</td><td><b>이 화면이 무엇을 주는 것인가</b> —
-      "짧은 영상 보기" 인가 <b>"그 한마디 듣기"</b> 인가</td>
-      <td><b>한마디 듣기.</b> 지금 구간이 중간 5초이고 반복 재생이 이미 붙어 있다.
-        문구·제목·빈 상태를 그 뜻으로 맞춘다</td>
-      <td>18분짜리 전편에서 5초를 꺼내 반복하는 장치다. 이름이 "클립" 이라
-        영상 감상으로 읽히는데 실제로 주는 것은 <b>발음·억양의 실례</b>다.
-        이 답이 §07 목업의 뼈대를 정한다</td></tr>
-    <tr><td>2</td><td><b>결과 상한을 어떻게 하나</b></td>
-      <td><b>개수를 낸 만큼 보여 준다</b> — 더 보기(또는 무한 스크롤)로 열고,
-        상한을 남기려면 <b>머리글이 그 상한을 말한다</b>("상위 10개")</td>
-      <td>1,226 이라 적고 10 개를 주는 것은 어느 쪽으로든 고쳐야 한다.
-        둘 중 무엇이든 되지만 <b>지금 상태는 안 된다</b></td></tr>
-    <tr><td>3</td><td><b>한 글자 검색을 열까</b></td>
-      <td><b>연다.</b> 1자로 내리고 결과가 많으면 상한으로 다룬다(2번)</td>
-      <td>물·집·밥·돈이 안 되는 것은 초급 학습자에게 치명적이다.
-        2자 제한은 결과 폭발을 막으려는 것이었을 텐데, 그건 상한이 할 일이다</td></tr>
-    <tr><td>4</td><td><b>사전형 검색을 이번에 할까</b></td>
-      <td><b>하지 않는다.</b> 대신 검색창 아래에 <b>"들리는 대로 적어 보세요"</b> 한 줄</td>
-      <td>어간을 맞추려면 형태소 분석이 필요하고 그건 서버 작업이다.
-        <b>못 하는 것을 문구로 알리는 것</b>이 조용히 빈 결과를 주는 것보다 낫다.
-        범위 밖이라고 <b>여기 적어 두는 것</b>이 이 결정의 값어치다</td></tr>
-    <tr><td>5</td><td><b>하트(저장)를 만들까 뺄까</b></td>
-      <td><b>이번에는 뺀다.</b></td>
-      <td>만들면 표·API·MY 의 자리가 같이 필요하다(§06). 그게 이번 범위가 아니면
-        <b>아이콘을 지우는 것이 맞다</b> — 눌러도 안 되는 하트는 기능이 없는 것보다 나쁘다</td></tr>
-    <tr><td>6</td><td><b>신고를 어떻게 다룰까</b> — 어드민은 이번 범위 밖이다</td>
-      <td><b>신고는 쌓기만 하고 숨기지 않는다.</b> 자동으로 숨기는 것은
-        <b>임베드 금지·삭제(코드 100·101·150)</b> 뿐으로 좁힌다</td>
-      <td>지금은 익명 한 사람이 아무 영상이나 전원에게서 지울 수 있다.
-        판정할 사람이 없는 동안에는 <b>숨김을 자동에서 떼는 것</b>이 안전하다.
-        "부적절" 신고는 쌓아 두고 사람이 볼 때까지 기다린다</td></tr>
+    <tr><td>1</td><td>이 화면이 무엇을 주는가 · 이름을 바꿀까</td>
+      <td><b>"그 한마디 듣기" 다 — 발음·억양의 실례.</b>
+        <b>이름은 「표현 클립」 그대로</b></td>
+      <td>구간이 중간 5초이고 반복 재생이 이미 붙어 있다(§3.3).
+        검색 단위는 보통 문장이고 낮은 확률로 낱말이다.
+        이름은 기능의 뜻과 어긋나지 않고 이미 다섯 언어·탭 바에 박혀 있다</td></tr>
+    <tr><td>2</td><td>결과 상한을 어떻게 하나</td>
+      <td><b>개수를 낸 만큼 보여 준다</b> — 더 보기 또는 이어 스크롤로 끝까지 열린다</td>
+      <td>사례를 여럿 들어 보는 것이 이 기능의 목적이다(1번). 열 개로 끊으면
+        그 목적 자체를 깎고, 게다가 지금은 <b>1,226 이라 적고 10을 준다</b></td></tr>
+    <tr><td>3</td><td>한 글자 검색을 열까</td>
+      <td><b>열지 않는다.</b> 2자 최소를 그대로 둔다</td>
+      <td>검색 단위가 <b>문장</b>이다(1번). 한 글자는 이 기능이 답할 물음이 아니고,
+        결과가 수천 건이 되어 사례를 고르는 데도 도움이 안 된다.
+        <b>내 초안의 권고를 기획이 뒤집었고 그게 맞다</b></td></tr>
+    <tr><td>4</td><td>사전형 검색을 이번에 할까 · 안내 문구를 둘까</td>
+      <td><b>둘 다 하지 않는다.</b> 사전형 검색도, 검색창 아래 안내 문구도 없다</td>
+      <td>사전형은 형태소 분석이 필요해 범위 밖이다.
+        <b>그리고 내가 초안에 적은 "들리는 대로 적어 보세요" 는 넣지 않는다</b> —
+        「고맙습니다」가 아니라 <b>「고맙씀니다」처럼 소리 나는 대로 적으라는 말</b>로 읽힌다.
+        틀린 안내는 없는 안내보다 나쁘다</td></tr>
+    <tr><td>5</td><td>하트(저장)를 만들까 뺄까</td>
+      <td><b>뺀다.</b></td>
+      <td>표·API·MY 자리가 같이 필요하고 이번 범위가 아니다.
+        눌러도 안 되는 하트는 기능이 없는 것보다 나쁘다</td></tr>
+    <tr><td>6</td><td>신고가 무엇을 해야 하나</td>
+      <td><b>숨기지 않는다 — 검색 결과에서 하위로 내린다.</b>
+        그리고 <b>단위는 영상이 아니라 구간</b>이다</td>
+      <td>아래 별도 칸</td></tr>
   </tbody>
 </table>
+</div>
+
+<div class="callout good">
+  <div class="t">6번 — 신고는 영상을 빼는 장치가 아니다 <span class="pill done">확정</span></div>
+  <p><b>같은 영상이라도 무엇으로 검색했느냐에 따라 다른 초 부분이 나온다.</b>
+  어떤 검색어에서는 그 영상의 싱크가 어긋나도, <b>다른 검색어에서는 잘 맞을 수 있다</b>.
+  그러므로 영상 하나를 통째로 빼는 것은 <b>멀쩡한 사례까지 같이 버리는 일</b>이다.</p>
+  <p>정한 것 — <b>신고는 그 사례를 검색 결과 하위로 내린다.</b> 목록에서 사라지지 않는다.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>무엇</th><th>어떻게</th></tr></thead>
+    <tbody>
+      <tr><td><b>신고 단위</b></td>
+        <td><b>(영상, 구간 시작 초)</b> — <span class="file">youtube_id</span> 하나로는 안 된다.
+          구간은 타임스탬프에서 나오므로 <b>검색어가 달라도 같은 줄이면 같은 구간</b>이고,
+          그래서 검색어보다 안정된 키다(검색어는 자유 입력이라 끝이 없다)</td></tr>
+      <tr><td><b>검색어</b></td>
+        <td>키가 아니라 <b>진단용으로 같이 남긴다</b> — 사람이 볼 때 왜 신고됐는지 알 수 있다.
+          <span class="file">content</span> 칸이 지금 비어 있다</td></tr>
+      <tr><td><b>정렬에 어떻게 넣나</b></td>
+        <td>지금 정렬은 <b>우선순위(시작·낱말·포함) → 짧은 줄 먼저</b> 다(§3.1).
+          신고를 <b>그보다 앞선 축</b>으로 두어, 신고된 구간은 <b>같은 우선순위 안에서 뒤로</b> 보낸다.
+          <b>빼지 않는다</b></td></tr>
+      <tr><td><b>재생 불가는 별개다</b></td>
+        <td>삭제(100)·임베드 금지(101·150)는 <b>어떤 검색어로도 재생되지 않는다</b> —
+          이쪽은 하위가 아니라 <b>목록에서 빼는 것</b>이 맞다. 사람 신고와 <b>다른 길</b>로 다룬다</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="callout warn">
+  <div class="t">6번에서 남은 물음 하나 — 「부적절한 영상」은 단위가 다르다</div>
+  <p>사유가 둘인데 <b>성격이 갈린다</b>. <b>「발음이 잘 안 들려요」는 구간의 문제</b>이므로
+  위 규칙(하위로)이 그대로 맞다. 그런데 <b>「부적절한 영상 신고」는 영상 전체의 문제</b>다 —
+  내용이 부적절하면 다른 구간에서도 부적절하다.</p>
+  <p><b>권고</b> — 부적절 신고는 <b>구간이 아니라 영상 단위로 쌓고, 그래도 자동으로 숨기지 않는다.</b>
+  판정할 사람이 없는 동안(어드민은 범위 밖) 익명 신고로 콘텐츠가 사라지게 두면 안 된다.
+  대신 <b>쌓인 수를 사람이 볼 수 있게</b> 두고, 임계값·판정은 어드민이 생길 때 정한다.
+  <b>이 한 줄은 아직 결정이 아니다.</b></p>
 </div>
 
 <h2><span class="n">06</span>만들 것 — 무엇이 서버를 필요로 하나</h2>
 <div class="tablewrap">
 <table>
-  <thead><tr><th>일</th><th>서버가 필요한가</th><th>내용</th></tr></thead>
+  <thead><tr><th>일</th><th>서버</th><th>내용</th></tr></thead>
   <tbody>
-    <tr><td><span class="file">script_org</span> 를 산출물에서 뺀다</td>
+    <tr><td>결과를 개수만큼 보여 준다 <span class="pill done">§05-2</span></td>
       <td><b>아니오</b></td>
-      <td>클립 데이터를 만드는 자리에서 그 필드를 지운다. 원본은 따로 보관한다</td></tr>
-    <tr><td>상한·1자·빈 결과 문구</td><td><b>아니오</b></td>
-      <td>화면 안의 일이다. 문구는 5개 언어</td></tr>
-    <tr><td>하트를 뺀다</td><td><b>아니오</b></td><td>아이콘 삭제</td></tr>
-    <tr><td>신고 숨김을 좁힌다</td><td><b>예 — 작다</b></td>
-      <td>클라이언트가 목록에서 빼는 대상을 <b>재생 불가 코드</b>로 한정한다.
-        서버는 <span class="file">reason</span> 을 그대로 쌓는다.
-        <b>인증을 붙이는 것</b>도 같은 판에 본다 — 지금은 둘 다 무인증이다</td></tr>
+      <td><span class="file">slice(0, 10)</span> 을 걷어내고 더 보기(또는 이어 스크롤)로 잇는다.
+        한 번에 그리는 수는 화면 성능에 맞춰 정하되 <b>머리글의 개수와 어긋나지 않게</b> 한다</td></tr>
+    <tr><td>결과 0 문구 <span class="pill stop">§04-2</span></td>
+      <td><b>아니오</b></td>
+      <td>빈 상태를 둘로 가른다 — <b>검색 전</b>(지금 문구)과 <b>0건</b>(검색어를 보여 주고
+        다른 말로 찾아보라고). <b>5개 언어</b></td></tr>
+    <tr><td>하트를 뺀다 <span class="pill done">§05-5</span></td>
+      <td><b>아니오</b></td><td>카드 우상단 아이콘 삭제</td></tr>
+    <tr><td><span class="file">script_org</span> 를 산출물에서 뺀다 <span class="pill stop">§04-7</span></td>
+      <td><b>아니오</b></td>
+      <td>클립 데이터를 만드는 자리에서 그 필드를 지운다. 원본은 저장소 밖에 따로 둔다.
+        <b>받는 크기가 절반이 된다</b></td></tr>
+    <tr><td>index 27 의 ID 를 되살린다 <span class="pill stop">§04-8</span></td>
+      <td><b>아니오</b></td>
+      <td><span class="file">link</span> 에서 캐면 된다(<span class="file">-LFpAYRYkJI</span>).
+        <b>같이 만들 것</b> — 데이터 만들 때 <b>11자 규격을 검사</b>하는 한 줄.
+        엑셀을 거치는 자료라 또 생긴다</td></tr>
+    <tr><td>신고를 하위 정렬로 <span class="pill done">§05-6</span></td>
+      <td><b>예</b></td>
+      <td><b>이것을 먼저 넣는다</b>(§04 의 순서 칸). 클라이언트는 목록에서 빼는 대신
+        정렬 감점으로 쓴다. 재생 불가 코드(100·101·150)만 빼는 길로 남긴다</td></tr>
+    <tr><td>신고 단위를 구간으로 <span class="pill done">§05-6</span></td>
+      <td><b>예</b></td>
+      <td><span class="file">target_id</span> 를 <b>최소 <span class="file">varchar(32)</span></b> 로
+        늘리고 <b>구간 시작 초</b>를 담는다(<span class="file">"{youtube_id}@{start}"</span> 규약이든
+        칸을 하나 더 두든 개발 판단이다). 검색어는 <span class="file">content</span> 에.
+        <b>컬럼을 늘리는 것은 위 항목 다음이다</b></td></tr>
+    <tr><td>신고 API 에 인증 <span class="pill stop">§3.4</span></td>
+      <td><b>예 — 작다</b></td>
+      <td><span class="file">POST /report</span> · <span class="file">GET /report/list</span> 둘 다
+        지금 무인증이다. 게스트도 쓰는 화면이라 게스트 토큰까지 받되
+        <b>토큰 없는 호출은 막는다</b></td></tr>
+    <tr><td>조용한 실패를 없앤다 <span class="pill stop">§04-5</span></td>
+      <td><b>아니오</b></td>
+      <td>신고가 실패하면 <b>실패했다고 말한다</b>. 지금은 500 을 삼키고 바텀시트를 닫아
+        <b>보낸 것처럼 보인다</b></td></tr>
     <tr><td>하트(저장)를 만든다면</td><td><b>예</b></td>
-      <td>표 하나(사용자 · youtube_id · start) + 목록·추가·삭제 API.
-        게스트는 기기에만 남기고 로그인하면 옮기는 규약이 필요하다(게스트 이전 표에 한 줄 늘어난다)</td></tr>
+      <td>표 하나(사용자 · 영상 · 구간 시작 초) + 목록·추가·삭제 API.
+        게스트는 기기에만 남기고 로그인하면 옮기는 규약이 필요하다.
+        <b>이번 범위가 아니다</b>(§05-5)</td></tr>
     <tr><td>검색을 서버로 옮긴다면</td><td><b>예 — 크다</b></td>
-      <td>받는 크기를 3.0 MB 에서 거의 0 으로 만드는 유일한 길이고
-        사전형 검색(§05 의 4번)도 그때 가능해진다. <b>이번 범위로 권하지 않는다</b> —
-        표·색인·API 를 새로 만드는 일이라 결제·메일보다 뒤다</td></tr>
+      <td>받는 크기를 거의 0 으로 만드는 유일한 길이고 사전형 검색도 그때 가능해진다.
+        <b>이번 범위로 권하지 않는다</b> — 표·색인·API 를 새로 만드는 일이라 결제·메일보다 뒤다</td></tr>
   </tbody>
 </table>
 </div>
@@ -400,10 +500,13 @@
       <td>YouTube Data API 의 <span class="file">status.embeddable</span>. 키가 필요하다.
         <b>이것이 §04 의 7번과 이어진다</b> — 임베드 금지 영상이 몇 편인지 모르는 채로
         자동 숨김을 돌리고 있다</td></tr>
-    <tr><td><b>대본이 실제 발화와 맞나</b></td>
-      <td>안 봤다</td>
+    <tr><td><b>대본이 실제 발화와 맞나</b> · <b>타임스탬프 싱크가 맞나</b></td>
+      <td>안 봤다. <b>그런데 어긋난다는 것을 전제로 설계했다</b> — §05 의 6번이
+        "특정 검색어에서 싱크가 어긋날 수 있다" 를 근거로 신고를 <b>구간 단위</b>로 정했다</td>
       <td>표본으로 사람이 듣고 대 봐야 한다. 어긋나면 "그 순간" 을 못 짚는다 —
-        이 화면이 주는 것의 뿌리다</td></tr>
+        이 화면이 주는 것의 뿌리다.<br>
+        <b>신고가 살아나면 그것이 곧 이 측정이 된다</b> — 어느 구간이 얼마나 신고됐는지가
+        싱크 품질의 지도다. 그래서 §06 의 "신고를 쌓는다" 가 진단 장치이기도 하다</td></tr>
   </tbody>
 </table>
 </div>
@@ -412,7 +515,8 @@
   <div class="t">이 문서가 뒤집지 않는 것</div>
   <p>① <b>표현클립 전부 무료</b>(<span class="file">access_and_pricing_v1</span> §02, 2026-08-26)
   ② <b>교재와 잇지 않는다</b>(급·과 추천안은 접혔다 — §01)
-  ③ <b>어드민은 이번 범위 밖</b>이다. §05 의 6번이 그 전제에서 나온 권고다.</p>
+  ③ <b>이름은 「표현 클립」 그대로다</b>(§05 의 1번 — 바꾸지 않기로 확정했다)
+  ④ <b>어드민은 이번 범위 밖</b>이다. §05 의 6번과 그 아래 남은 물음이 그 전제에서 나온다.</p>
 </div>
 
 </main>
