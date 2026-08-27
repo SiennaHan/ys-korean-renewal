@@ -921,6 +921,27 @@
         <code>migrateGuestData</code> 가 실제로 돈다. 확정하면서 돌려 보니
         <b><code>ko_learning_record</code> 만 이전 목록에서 빠져 있어서</b> 넣었다 —
         <code>BLOCKERS.md</code> §6-d</td></tr>
+  <tr><td>5</td><td><b>교재 문항을 서버가 내주게 옮길지</b> — 지금은 앱 번들에 통째로 실린다</td>
+      <td><b>개발 판단이 필요하다 · 기획은 정할 것이 없다.</b> 유료 콘텐츠를 실제로 막으려면
+        이 결정이 앞서야 한다.
+        <br><b>지금 상태(2026-08-27 실측)</b> — 문항이 서버에서 오지 않는다.
+        <code>app/src/shared/data/</code> 의 원장이 빌드 산출물에 그대로 들어간다.
+        5급 빈칸 문항 "한국 대학교에서 공부하( ) 한국말을 열심히 배워요." 를
+        <code>app/dist</code> 에서 grep 하면 <code>5476.*.js</code> 에서 나온다.
+        원장 여덟을 세면 <b>9,373행 중 9,164행(98%)이 유료 범위</b>다 —
+        게스트가 앱을 열기만 해도 그만큼이 기기에 내려간다.
+        <br><b>그래서 가드를 붙일 자리가 없다.</b> 게임은 콘텐츠 라우트가 있어
+        <code>RequireGame</code> 로 막았는데(2026-08-27), 교재는 막을 라우트 자체가 없다.
+        앱의 자물쇠는 <b>표시</b>고, 개발자 도구를 열 줄 아는 사람에게는 없는 것과 같다.
+        <br><b>지금 해 둔 것</b> — 읽기는 못 막아도 쓰기는 막았다.
+        <code>POST /activity/enter</code> · <code>PATCH /activity/progress</code> ·
+        <code>POST /activity/complete</code> · <code>POST /learning-record</code> 에
+        <code>requireChapter</code> 가 붙어 잠긴 과의 진도는 쌓이지 않는다(402).
+        읽기는 자기 기록이라 열어 두었다.
+        <br><b>정해 주실 것 셋</b> — ① 문항을 서버로 옮길지(옮긴다면 <code>n*.json</code>
+        여덟을 표로 올리고 과 단위 조회 API 가 필요하다) ② 옮기지 않는다면 유료 콘텐츠가
+        사실상 공개인 채로 배포할지 ③ 옮긴다면 오프라인·첫 로딩 속도를 어떻게 할지
+        (지금은 번들이라 네트워크 없이도 풀린다)</td></tr>
 </table></div>
 
 <p class="qa" style="margin-top:44px;padding-top:18px;border-top:1px solid var(--line)">

@@ -471,8 +471,15 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
   <div class="card"><div class="k">6</div><div class="nm">PG 연동과 웹훅</div>
     <div class="d">§07 의 1번(구독/급별)이 정해진 뒤에 시작한다. 웹훅 서명 검증 ·
       해외 결제 세금 · 기기를 바꿔도 되는 복원을 같이 만든다</div></div>
-  <div class="card"><div class="k">7</div><div class="nm">서버 쪽 실제 차단</div>
-    <div class="d">게임 6라우트 + 교재 콘텐츠 API 에 권한. 화면 잠금만으로는 잠금이 아니다</div></div>
+  <div class="card"><div class="k">7</div><div class="nm">서버 쪽 실제 차단 <span class="pill">게임은 됐다 · 교재는 개발 결정 대기</span></div>
+    <div class="d"><b>게임 — 됐다 (2026-08-27).</b> 유료 셋의 콘텐츠 라우트에
+      <span class="file">RequireGame</span> 가드가 붙었다. 무료 둘은 없는 것이 맞다.
+      <br><b>교재 — 막을 라우트가 없다.</b> 문항이 서버에서 오지 않고
+      <b>앱 번들에 그대로 실린다</b>(실측: 원장 9,373행 중 9,164행 · 98% 가 유료 범위인데
+      게스트 기기에도 다 내려간다). 가드로 될 일이 아니라 <b>문항을 서버로 옮기는
+      개발 결정</b>이 앞서야 한다 — <span class="file">dev_spec_v1</span> §16 의 5번.
+      <br>그 전까지 할 수 있는 것은 해 뒀다 — 잠긴 과에 <b>진도를 쓰는 것</b>은 막는다
+      (<span class="file">requireChapter</span> · 402). 읽는 것은 못 막는다</div></div>
 </div>
 
 <p class="qa">1~3 은 §07 의 물음이 답을 기다리지 않아도 된다 — 무료 경계가 이미 정해졌으니
