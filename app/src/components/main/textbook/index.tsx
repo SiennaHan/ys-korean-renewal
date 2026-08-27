@@ -425,8 +425,6 @@ export default function TextbookContent() {
 				 */}
 				{selectedChapter && selectedLocked && (
 					<PaywallPanel
-						level={selectedChapter.book_id}
-						lesson={selectedChapter.seq}
 						entitlement={entitlement}
 						onBack={goToFreeChapter}
 						onSignIn={() => navigate({ to: "/login" })}

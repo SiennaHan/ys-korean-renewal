@@ -85,38 +85,49 @@
 .nav-frame .chip3.locked.on { color:var(--color-background-surface); }
 .nav-frame .chip3 .lk { width:12px; height:12px; margin-left:5px; vertical-align:-1px; display:inline-block; }
 
-.nav-frame .paywall { margin:var(--space-4) var(--gutter) 0; padding:22px 20px 20px;
-  border:1px solid var(--nav-tint-line); border-radius:var(--radius-card); background:var(--nav-tint-fill);
+.nav-frame .paywall { position:relative; margin:var(--space-4) var(--gutter) 0; padding:26px 22px 22px;
+  overflow:hidden; border:1px solid var(--nav-tint-line); border-radius:18px;
+  background:linear-gradient(180deg,var(--nav-tint-fill) 0, var(--color-background-surface) 46%);
   display:flex; flex-direction:column; align-items:center; text-align:center; }
-.nav-frame .paywall-mark { width:44px; height:44px; border-radius:50%; display:grid; place-items:center;
-  background:var(--color-background-surface); color:var(--color-fill-primary); margin-bottom:12px; }
-.nav-frame .paywall-mark svg { width:20px; height:20px; }
-.nav-frame .paywall-title { margin:0; font-size:17px; line-height:25px; font-weight:700;
-  letter-spacing:-.01em; color:var(--color-text-heading); }
-.nav-frame .paywall-body { margin:8px 0 0; font-size:13.5px; line-height:21px; color:var(--nav-text-mute); }
+.nav-frame .paywall::before { content:""; position:absolute; top:-74px; left:50%; width:230px; height:150px;
+  border-radius:50%; background:rgba(1,128,255,.07); transform:translateX(-50%); pointer-events:none; }
+.nav-frame .paywall-mark { position:relative; width:48px; height:48px; border-radius:15px; display:grid; place-items:center;
+  background:var(--color-background-surface); color:var(--color-fill-primary); margin-bottom:13px;
+  box-shadow:0 8px 22px rgba(1,87,166,.1); }
+.nav-frame .paywall-mark svg { width:22px; height:22px; stroke-width:2.1; }
+.nav-frame .paywall-kicker { position:relative; margin-bottom:5px; color:var(--color-fill-primary);
+  font-size:12px; line-height:18px; font-weight:700; letter-spacing:.01em; }
+.nav-frame .paywall-title { position:relative; max-width:290px; margin:0; font-size:22px; line-height:30px; font-weight:700;
+  letter-spacing:-.025em; color:var(--color-text-heading); word-break:keep-all; }
+.nav-frame .paywall-body { max-width:310px; margin:8px 0 0; font-size:14px; line-height:22px;
+  color:var(--nav-text-mute); word-break:keep-all; }
 
-/* 벽만 보여 주면 할 일이 없어 보인다 — 지금 열려 있는 것을 같이 적는다 */
-.nav-frame .paywall-free, .nav-frame .paywall-price { width:100%; margin-top:16px; padding:13px 15px;
-  border-radius:12px; background:var(--color-background-surface); text-align:left; }
-.nav-frame .paywall-free-t, .nav-frame .paywall-price-t { font-size:12px; font-weight:700;
-  color:var(--color-text-heading); }
-.nav-frame .paywall-free ul { margin:6px 0 0; padding-left:16px; }
-.nav-frame .paywall-free li { font-size:12.5px; line-height:19px; color:var(--nav-text-mute); }
-.nav-frame .paywall-price p { margin:5px 0 0; font-size:12.5px; line-height:19px; color:var(--nav-text-mute); }
+.nav-frame .paywall-benefits { width:100%; margin:22px 0 0; padding:0; list-style:none; text-align:left; }
+.nav-frame .paywall-benefits li { min-height:42px; display:flex; align-items:center; gap:11px;
+  border-bottom:1px solid var(--color-line-normal); color:var(--color-text-heading);
+  font-size:14px; line-height:20px; font-weight:600; }
+.nav-frame .paywall-benefits li:last-child { border-bottom:0; }
+.nav-frame .paywall-benefits li > span { width:22px; height:22px; flex:none; border-radius:50%;
+  display:grid; place-items:center; background:var(--blue-50); color:var(--color-fill-primary); }
+.nav-frame .paywall-benefits li svg { width:13px; height:13px; stroke-width:2.8; }
 
-.nav-frame .paywall-acts { width:100%; margin-top:18px; display:flex; flex-direction:column; gap:9px; }
-.nav-frame .paywall-cta { height:46px; border-radius:var(--radius-control); border:none;
+.nav-frame .paywall-acts { width:100%; margin-top:20px; display:flex; flex-direction:column; align-items:stretch; gap:7px; }
+.nav-frame .paywall-cta { height:50px; border-radius:var(--radius-control); border:none;
   background:var(--color-fill-primary); color:var(--color-background-surface);
-  font-size:15px; font-weight:700; cursor:pointer; }
+  font-size:16px; font-weight:700; cursor:pointer; }
 /* 결제 화면이 아직 없다. 눌러도 조용한 것보다 눌리지 않는 것이 솔직하다 */
-.nav-frame .paywall-cta:disabled { background:var(--nav-line-faint); cursor:default; }
-.nav-frame .paywall-back { height:42px; border-radius:var(--radius-control);
-  border:1px solid var(--color-line-control); background:transparent;
-  color:var(--color-text-heading); font-size:14px; font-weight:600; cursor:pointer; }
-.nav-frame .paywall-restore { border:none; background:transparent; color:var(--color-fill-primary);
-  font-size:13px; font-weight:600; cursor:pointer; padding:4px; }
-.nav-frame .paywall-restore:disabled { color:var(--nav-text-mute); cursor:default; }
-.nav-frame .paywall-note { margin:2px 0 0; font-size:12px; color:var(--nav-text-mute); }
+.nav-frame .paywall-cta:disabled { background:var(--color-fill-primary); opacity:.48; cursor:default; }
+.nav-frame .paywall-back { min-height:40px; padding:8px 12px; border:0; background:transparent;
+  color:var(--color-text-heading); font-size:14px; line-height:20px; font-weight:600; cursor:pointer; }
+.nav-frame .paywall-back:hover { color:var(--color-fill-primary); }
+.nav-frame .paywall-note { order:-1; margin:0 0 5px; font-size:12px; line-height:18px; color:var(--nav-text-mute); }
+
+.nav-frame .paywall[data-kind="expired"] .paywall-mark { color:#d97706; background:#fff8e8; }
+.nav-frame .paywall[data-kind="expired"]::before { background:rgba(245,158,11,.08); }
+.nav-frame .paywall[data-kind="school"] .paywall-mark { color:var(--blue-gray-800); background:var(--blue-gray-50); box-shadow:none; }
+.nav-frame .paywall[data-kind="school"]::before { background:rgba(75,80,90,.05); }
+.nav-frame .paywall[data-kind="school"] .paywall-acts,
+.nav-frame .paywall[data-kind="guest"] .paywall-acts { margin-top:22px; }
 
 .nav-frame .sec-title { font-size:16px; line-height:24px; font-weight:700; color:var(--color-text-heading); margin:var(--space-6) 0 var(--space-2); }
 .nav-frame .status { border:1px solid var(--color-line-control); border-radius:var(--radius-card); background:var(--color-background-surface); padding:14px;

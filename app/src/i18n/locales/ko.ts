@@ -206,45 +206,38 @@ const ko = {
 		days: ["월", "화", "수", "목", "금", "토", "일"],
 	},
 	/**
-	 * 결제 안내(페이월) — access_and_pricing_v1 §06 의 문구 넷.
-	 * 목업은 phase1/draft_paywall.html 이고 문구를 그대로 옮겼다.
-	 * 게임 이름은 앱의 game.* 를 끼워 넣는다 — 목업의 "낱말맞추기" 대신
-	 * 앱이 실제로 부르는 이름을 쓴다(VocaShot).
+	 * 결제 안내(페이월) — 게스트 · 개인 · 만료 · 기관 네 상태.
+	 * 무료 범위를 다시 열거하지 않고 구독 가치와 다음 행동만 남긴다.
 	 */
 	paywall: {
 		freeTag: "무료",
 		lockedWhy: "구독하면 열립니다",
 		lockedAria: "잠긴 과",
 		close: "닫기",
-		freeListTitle: "지금 바로 볼 수 있는 것",
-		freeJamo: "한글 — {{lessons}}",
-		freeBooks: "교재 — {{lessons}}",
-		freeGames: "게임 — {{games}}",
-		freeClips: "표현클립 — 전부",
-		priceTitle: "구독하면 전 급·전 과가 열립니다",
-		priceBody: "월 단위입니다. 가격은 아직 정해지지 않았습니다.",
-		restore: "이미 구독했어요",
-		guestTitle: "먼저 로그인해 주세요",
-		guestBody:
-			"학습 기록을 계정에 남기려면 로그인이 필요합니다. 지금까지 푼 것은 그대로 옮겨집니다 — 다시 풀지 않아도 됩니다.",
+		benefitAll: "한글부터 8급까지 전 급·전 과",
+		benefitPractice: "AI 대화·롤플레잉을 포함한 모든 학습 활동",
+		benefitProgress: "지금까지의 학습 기록 그대로 이어서",
+		guestKicker: "계정으로 계속하기",
+		guestTitle: "로그인하고 학습을 이어가세요",
+		guestBody: "지금까지 푼 기록도 그대로 이어집니다.",
 		guestCta: "로그인 / 회원가입",
-		guestBack: "무료로 계속 둘러보기",
-		memberTitle: "이 과는 구독하면 열립니다",
-		memberBody:
-			"{{level}}급 {{lesson}}과는 무료 범위 밖입니다. 구독하면 한글부터 8급까지 전부 볼 수 있습니다 — 급을 따로 사지 않습니다.",
-		memberBodyGeneric:
-			"무료 범위 밖입니다. 구독하면 한글부터 8급까지 전부 볼 수 있습니다 — 급을 따로 사지 않습니다.",
-		memberCta: "구독 알아보기",
-		memberBack: "무료 과로 돌아가기",
-		expiredTitle: "구독이 끝났습니다",
+		guestBack: "먼저 둘러보기",
+		memberKicker: "연세 글로벌 한국어 구독",
+		memberTitle: "한글부터 8급까지 모두 열어보세요",
+		memberBody: "모든 교재 수업과 학습 활동을 한 번에 이용할 수 있어요.",
+		memberCta: "구독 시작하기",
+		memberBack: "무료 수업 계속 보기",
+		expiredKicker: "구독 다시 시작",
+		expiredTitle: "멈춘 자리에서 다시 시작하세요",
 		expiredBody:
-			"학습 기록은 그대로 있습니다. 다시 구독하면 멈춘 자리에서 이어집니다 — 처음부터 하지 않습니다.",
+			"학습 기록은 그대로 보관되어 있어요. 다시 구독하면 바로 이어서 학습할 수 있어요.",
 		expiredCta: "구독 다시 시작",
-		schoolTitle: "학교에서 계약한 범위가 아닙니다",
+		schoolKicker: "기관 이용 범위",
+		schoolTitle: "학교 이용 범위에 포함되지 않아요",
 		schoolBody:
-			"지금 계정은 학교 소속입니다. 범위를 넓히려면 학교에 문의해 주세요.",
-		schoolNote: "개인 구독은 기관 계정에서 쓸 수 없습니다",
-		schoolBack: "무료 과로 돌아가기",
+			"이 수업을 이용하려면 학교 담당자에게 이용 범위 확대를 문의해 주세요.",
+		schoolNote: "개인 구독은 기관 계정에 적용되지 않아요.",
+		schoolBack: "이용 가능한 수업 보기",
 	},
 	nav: {
 		home: "홈",
