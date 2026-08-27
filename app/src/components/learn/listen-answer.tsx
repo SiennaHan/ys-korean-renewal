@@ -554,6 +554,32 @@ export default function ListenAnswer({
 				setSkipped((prev) =>
 					prev.includes(question.id) ? prev : [...prev, question.id],
 				);
+				/*
+				 * 건너뛴 문항을 **다시 풀기에 예약한다** (기획 확정 2026-08-27).
+				 *
+				 * 전에는 이 배열이 화면 안에만 있어서, 결과 화면의 [다시 풀기] 는
+				 * 건너뛴 것을 가리켰지만 **그 화면을 벗어나면 사라졌다** — 다음날
+				 * 홈의 「다시 풀 문항」에는 오답만 떴다. `skipped: true` 를 실으면
+				 * 서버가 `reason='skipped'` 로 예약한다.
+				 *
+				 * **오답과 같이 내일부터 보인다**(`nextKstMidnightUtc`) — 안 푼 것이니
+				 * 오늘 바로 내보낼 수도 있었지만 두 갈래로 갈리면 복잡해서 같게 뒀다.
+				 *
+				 * 서버는 건너뜀에 **학습 기록 행을 만들지 않는다** — 만들면
+				 * 전체 진행률이 건너뛰기만으로 오른다(`business/learning_record.py`).
+				 */
+				if (bookId && chapterSeq) {
+					saveLearningRecord({
+						bookId,
+						chapterSeq,
+						menuType: "listen-answer",
+						questionId: question.id,
+						selectedAnswer: "",
+						isCorrect: false,
+						skipped: true,
+						review,
+					});
+				}
 				if (currentIndex < totalSteps - 1) handleNext();
 				else setPhase("result");
 			}}

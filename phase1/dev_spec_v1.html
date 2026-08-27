@@ -283,7 +283,7 @@
   question_id   INT          NOT NULL,     -- Phase 1은 기존 체계 유지. Phase 2에서 item_id로 이관
   reason        VARCHAR(16)  NOT NULL,     -- wrong | skipped | unknown(플래시카드 "몰라요")
   attempts      INT          NOT NULL DEFAULT 1,
-  available_at  DATETIME     NOT NULL,     -- 홈 목록 노출 시각 = 오답 다음 날 0시(KST). 결과화면 [다시 풀기]는 이 값 무시
+  available_at  DATETIME     NOT NULL,     -- 홈 목록 노출 시각 = 오답·건너뜀 다음 날 0시(KST). 결과화면 [다시 풀기]는 이 값 무시
   created_at    DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
   updated_at    DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()) ON UPDATE UTC_TIMESTAMP(),
   UNIQUE KEY uq_queue (user_id, book_id, chapter_seq, menu_type, sub, question_id),
@@ -291,7 +291,7 @@
 );</pre>
 <div class="tablewrap"><table>
   <tr><th>규칙 (G2 §6)</th><th>구현</th></tr>
-  <tr><td>같은 날 재출제 방지</td><td><code>available_at</code> = 오답 발생일 <b>다음 날 KST 00:00</b>. 홈 목록은 <code>available_at &lt;= now</code>만 노출, 결과 화면 [다시 풀기]는 무시하고 즉시 출제</td></tr>
+  <tr><td>같은 날 재출제 방지</td><td><code>available_at</code> = <b>오답·건너뜀</b> 발생일 <b>다음 날 KST 00:00</b> <span class="qa">건너뛴 것도 오답과 같이 내일부터 — 기획 확정 2026-08-27. 안 푼 것이니 오늘 바로 내보낼 수도 있었지만 두 갈래로 갈리면 복잡해서 같게 뒀다</span>. 홈 목록은 <code>available_at &lt;= now</code>만 노출, 결과 화면 [다시 풀기]는 무시하고 즉시 출제</td></tr>
   <tr><td>제거 조건</td><td>다시 풀기에서 <b>정답 1회</b> → 행 삭제</td></tr>
   <tr><td>재오답</td><td><code>attempts += 1</code>, <code>available_at</code> 갱신. <b>3회 이상</b>은 ⓐ 결과 화면 강조 ⓑ 세션에서 먼저 출제 ⓒ 밀어내기 보호</td></tr>
   <tr><td>상한 · 세션</td><td><b>보관 60</b>(초과 시 <code>created_at</code> 오래된 것부터 삭제, 단 <code>attempts ≥ 3</code> 보호) ·

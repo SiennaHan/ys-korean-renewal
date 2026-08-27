@@ -17,11 +17,43 @@ async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, q
     자동 제거를 서버가 하는 이유는 왕복을 줄이는 것이다(§3 의 권장).
     """
     with sessionScope() as db:
-        record, created = await repo_learning_record.upsert(userId, bookId, chapterSeq, menuType, questionId, selectedAnswer, isCorrect, db)
+        if skipped:
+            # **건너뛴 것은 푼 것이 아니다** — 학습 기록을 만들지 않는다
+            # (기획 확정 2026-08-27: "건너뛴거는 푼 게 아니지. 맞혔든 틀렸든
+            #  풀어야지만 완료라고 해야지").
+            #
+            # 행을 만들면 조용히 세 곳이 부풀어 오른다:
+            #   getProgressAll        정오답을 안 가리고 **행 수**를 센다 → 전체 진행률
+            #   countTodayMenuTypes   그 메뉴를 오늘 학습한 것으로 센다
+            #   getProgress           그 과의 total 분모
+            # 즉 건너뛰기만 눌러도 진행률이 오른다. 다시 풀기 예약만 남긴다.
+            #
+            # "첫 시도인가" 는 행이 있나로 가른다 — 이미 푼 문항을 나중에 건너뛰어도
+            # 큐에 새로 들어가지 않는다(그 문항은 이미 풀었다).
+            record = await repo_learning_record.findOne(
+                userId, bookId, chapterSeq, menuType, questionId, db
+            )
+            created = record is None
+        else:
+            record, created = await repo_learning_record.upsert(userId, bookId, chapterSeq, menuType, questionId, selectedAnswer, isCorrect, db)
 
         # 다시 풀기 예약·제거. 표가 아직 없는 환경에서도 학습 기록은 남아야 하므로 감싼다
         try:
-            if isCorrect and not skipped and review:
+            if isCorrect and not skipped and created:
+                # **건너뛴 뒤 돌아가서 첫 시도에 맞혔다 — 빼야 한다.**
+                #
+                # 이 경우가 2026-08-27 에 생겼다. 건너뛰기가 큐에 예약을 남기게
+                # 되면서, 학습자가 진행바로 돌아가 그 문항을 풀어도 예약이 그대로
+                # 남았다 — 내일 홈이 **이미 맞힌 문항**을 "다시 풀 문항" 으로 센다.
+                #
+                # `created` 를 같이 보는 것이 안전장치다. 아래 주석이 말하는
+                # "재시도로 맞힌 것" 은 기록 행이 이미 있어 `created` 가 거짓이므로
+                # 여기 오지 않는다. 즉 이 갈래는 **첫 시도 정답**뿐이고, 첫 시도
+                # 정답인데 큐에 있는 문항은 건너뜀으로 들어간 것밖에 없다.
+                await repo_review_queue.remove(
+                    userId, bookId, chapterSeq, menuType, sub, questionId, db
+                )
+            elif isCorrect and not skipped and review:
                 # **다시 풀기에서 맞혔을 때만 뺀다.**
                 #
                 # 처음엔 "맞히면 뺀다" 로 썼는데 명세와 반대였다 — 같은 세션의
@@ -60,11 +92,14 @@ async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, q
             await repo_daily_activity.updateLastStudy(userId, today, bookId, chapterSeq, menuType, db)
             # 학습 단어 수는 누적값이라 첫 시도에만 센다. 전에는 재시도마다 +1 이라
             # 같은 문항을 세 번 고치면 세 단어를 배운 것으로 찍혔다 (dev_spec §2.1)
-            if menuType == "word" and created:
+            # 건너뛴 것은 배운 것이 아니다 — 위 skipped 주석과 같은 이유
+            if menuType == "word" and created and not skipped:
                 await repo_daily_activity.incrementWordsLearned(userId, today, db)
         except Exception:
             pass
 
+        # 건너뜀이고 그 문항의 기록이 아직 없으면 `record` 는 None 이다 —
+        # 만들지 않기로 했으므로 정상이다. 호출부는 반환을 쓰지 않는다
         return jsonable_encoder(record)
 
 
