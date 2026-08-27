@@ -854,7 +854,7 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 7660695 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ c332bc1 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1273,7 +1273,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 7660695 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ c332bc1 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -2323,6 +2323,38 @@ DB     #6 etc · from-check@example.com · lang ko · from_path /reset-password 
 라우트 레이아웃이 이미 `.nav-frame h-full` 과 `.scroll`(812px)을 주는데, 내가 그
 사이에 높이 없는 `div` 를 한 겹 끼워 `min-height:100%` 가 죽어 있었다.
 껍데기를 빼니 가운데로 왔다(위 154 · 아래 178).
+
+#### 출석 점은 아직 "열어만 봐도" 켜진다 (2026-08-27 · 확인만 함)
+
+스트릭을 「그날 응답이 있었나」로 고친 판(`c332bc1`)을 굴려 봤다. **스트릭은 맞다** —
+열어만 보면 0, 한 문항 풀면 1 이다. 그런데 **출석 점은 안 걸렀다.**
+
+```
+repo_daily_activity.findRecentDates   responded 를 본다   ← 스트릭
+repo_daily_activity.findByDateRange   안 본다             ← 주간 출석 점 · 학습 시간 차트
+```
+
+`business/dashboard.py` 의 `weekDays[i] = d in activity_dates` 가 그 목록을 쓴다.
+그 행은 학습 세션 핑이 만들므로 **활동 화면을 열어만 봐도 오늘 점이 칠해진다.**
+
+열어만 본 상태(행 있음 · `responded=0`)로 홈을 열어 재현했다.
+
+```
+목요일 칸    <i class="c done">   ← 파란 ✓ (출석 완료)
+바로 아래    "0일 연속 학습 중"
+학습 현황    오늘 활동 수 0 · 주간 활동 수 0
+```
+
+**같은 카드에서 어긋난다** — 오늘은 칠해졌는데 연속은 0 이고 활동 수도 0 이다.
+
+그쪽 커밋의 확인 목록은 「열어만 봄 → 스트릭 0」까지만 보고 점은 보지 않았다.
+스트릭을 「응답했나」로 옮겼으면 출석도 같이 옮기는 것이 앞뒤가 맞는데,
+**출석(attendance)이 "앱을 열었다" 는 뜻일 수도 있어서** 손대지 않았다 —
+`findByDateRange` 에 같은 필터를 걸면 한 줄이다. **기획 결정이다.**
+
+> 학습 시간 차트는 그대로 두는 것이 맞다 — 열어만 본 시간도 학습 시간이다.
+> 즉 필터를 거는 자리가 **출석 점 하나**이고, 같은 함수를 차트도 쓰므로
+> 목록을 나누거나 점만 따로 걸러야 한다.
 
 #### 건너뛴 문항이 그 화면을 벗어나면 사라지고 있었다 (2026-08-27)
 
