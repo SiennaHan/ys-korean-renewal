@@ -840,7 +840,7 @@ pill 도 같은 값을 쓴다 — 둘이 같이 사라져야 한 신호로 읽�
 | 무엇 | 왜 막히나 |
 |---|---|
 | ~~**학생 자체 회원가입이 없다**~~ | **됐다 (2026-08-27 · 9-a-4).** `/auth/signup` 은 관리자용이라 그대로 두고 `POST /user/sign/up` 을 새로 냈다 — `role="student"` · 승인 없이 활성 · `school_code` 는 비운다. `is_approved` 기본값 False 는 학교 일괄 등록용이라 그대로 두고 개인 가입에서만 True 로 넣는다 |
-| **게임 콘텐츠 6라우트가 무인증** | `card-sort/{categories,vocab,rare}` · `particle-sniper/{levels,sentences}` · `seoul-puzzle`. 이 셋을 유료로 하기로 했는데 주소만 알면 누구나 받는다 — 화면 잠금만으로는 잠금이 아니다 |
+| ~~**게임 콘텐츠 6라우트가 무인증**~~ | **막았다 (2026-08-27 · 9-b).** `RequireGame` 이 `card-sort/{categories,vocab,rare}` · `particle-sniper/{levels,sentences}` · `seoul-puzzle` 여섯에 붙었고 권한이 없으면 **402** 다(403 은 이 저장소에서 인증 실패라 세션이 지워진다). 판정은 `business/entitlement.py`, 무료 목록은 `shared/free_scope.py` 하나를 쓴다 |
 | **읽고답하기만 과 키가 없다** | `n5_read_answer_questions` 에는 `chapter` 가 없고 `text_id` 뿐이다. 과 단위로 가두려면 `n5_read_answer_text`(117행)를 거쳐 조인해야 한다. 나머지 여섯 세트는 `(book_id, chapter)` 를 직접 들고 있어 **이것만 예외다** |
 
 게스트 진행은 **서버에 남기기로 정했다 (2026-08-26)** — `access_and_pricing_v1`
@@ -854,7 +854,7 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 034da2a -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ aca84df -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1273,7 +1273,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 034da2a -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ aca84df -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
