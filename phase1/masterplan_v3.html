@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/learn/jamo.tsx, app/src/components/learn/jamo @ 6eea43f -->
+<!-- 관찰: app/src/routes/learn/jamo.tsx, app/src/components/learn/jamo @ fac3ea3 -->
 <!-- 왜: 자모 라우트 통합 상태를 적어 두었다 — 전에 여섯 곳이 낡았다 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>리뉴얼 정본 기획서 — 지도 · 게이트 · 현재 상태 · 인계</title>
@@ -187,7 +187,7 @@
   <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>루트의 <code>글로벌_교재기반_콘텐츠_v*.xlsx</code> 중 가장 높은 번호</b>다 — 번호를 여기 적지 않는다(적었다가 이 문서만 낡았다). 앱에 반영된 문항 수는 <b>여기 적지 않는다</b> — 시트마다 계속 늘어난다. 세려면 <code>python3 app/scripts/build-content.py --check</code> 가 시트별 행 수를 찍는다.<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비)이고 <b>브리핑 화면까지 배선됐다</b> — 실제 AI 대화만 아직 구 데이터(<code>ko_chat_dialog</code>)를 쓴다(BLOCKERS §8). 자모 529 는 <span class="pill done">배선 완료</span>(2026-08-24) — 화면 여섯이 <code>n8_jamo</code> 를 읽는다. 남은 검수는 받침·겹받침 낱자 목록뿐이고 배관을 막지 않는다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b · §2-c)</td></tr>
   <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업. <b>목업이 시각 정본</b>이고 Figma 를 대체했다<br><span class="note">CSS 규칙 수는 §9 가 쥔다 — 손으로 센 시점 기록이라 여기 또 적으면 갈린다(실제로 1,229 로 남아 있었다).</span></td></tr>
   <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 이식 <b>완료</b> — 수는 <code>CLAUDE.md</code> 표가 쥔다(§15 의 합계다. 여기 “24개 · handoff §02” 로 적혀 있었는데 둘 다 낡았다) · 활동 컴포넌트 전부로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
-  <tr><td>개발 — 서버</td><td><span class="pill ok">절반</span></td><td><b>DB 2종 · API 6종을 만들었고 화면 넷에 붙였다</b>(2026-08-26 · BLOCKERS §9-a-1) — <code>ko_activity_state</code> · <code>ko_review_queue</code>, <code>/activity/enter·progress·complete</code> · <code>/review-queue</code> 셋.<br><span class="note">여기 “API 7종 미착수 · 이것이 지금 임계 경로다” 로 남아 있었다(2026-08-26 정정). 남은 것은 복습 큐를 홈에 붙이는 일과 결제·권한이다 — BLOCKERS §9.</span></td></tr>
+  <tr><td>개발 — 서버</td><td><span class="pill ok">절반</span></td><td><b>DB 2종 · API 6종을 만들었고 활동 여덟에 다 붙였다</b>(넷은 2026-08-26 · 나머지 <code>roleplay</code>·<code>flashcard</code>·<code>mission-chat</code>·<code>jamo</code>(sub 1~6)는 2026-08-27 — BLOCKERS §9-a-1 · §9-b) — <code>ko_activity_state</code> · <code>ko_review_queue</code>, <code>/activity/enter·progress·complete</code> · <code>/review-queue</code> 셋.<br><span class="note">여기 “API 7종 미착수 · 이것이 지금 임계 경로다” 로 남아 있었다(2026-08-26 정정). 남은 것은 복습 큐를 홈에 붙이는 일과 결제·권한이다 — BLOCKERS §9.</span></td></tr>
   <tr><td>B2C·결제</td><td><span class="pill now">잠금까지 됐다</span></td><td>경계·권한 판정·신설 DB·API 는 정해졌다(<span class="file">access_and_pricing_v1</span>). <b>§09 의 1~3단계를 만들었다 (2026-08-26)</b> — 무료 경계를 데이터로, <code>GET /entitlement</code>, 앱의 자물쇠와 안내 넷(5개 언어). <b>결제는 여전히 코드 0줄</b>이고 가격·PG 도 미정이다. <b>4단계(학생 자체 회원가입)도 됐다 (2026-08-27)</b> — BLOCKERS §9-a-4. 남은 것은 결제(가격·PG 미정)와 <b>약관·개인정보 처리방침 두 문서</b>다</td></tr>
 </table></div>
 <div class="card ok">
