@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ dc437fa -->
+<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ 4492a5c -->
 <!-- 왜: §02 의 착지점과 §05 의 "막힘" 은 전부 이 파일들을 읽고 적은 관찰이다 -->
 <title>유저 플로우 — 진입에서 결제까지 한 장</title>
 <style>
@@ -163,7 +163,7 @@
   <title id="flowtitle">진입에서 결제까지의 유저 플로우</title>
   <desc id="flowdesc">진입 넷이 무료 둘러보기로 모이고, 잠긴 과를 누르면 누구인지에 따라 셋으로 갈린다.
   게스트는 로그인으로, 로그인만 한 사람은 결제로, 기관 학생은 학교 문의로 간다.
-  가입과 결제 두 단계는 지금 코드에 없어서 길이 끊긴다.</desc>
+  가입은 2026-08-27 에 열렸고, 결제만 아직 코드에 없어 거기서 길이 끊긴다.</desc>
   <defs>
     <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-3)"/>
@@ -336,9 +336,11 @@
     <div class="d"><code>ko_chapter.is_free</code> 값 채우기 → <code>GET /entitlement</code>(늘 무료 범위만 낸다) →
     앱에 잠금 붙이기 + 문구 넷을 5개 언어로. <b>결제 없이도 온전한 제품이다</b> —
     <span class="pill file">paywall_SOT</span> 의 비활성 결제 CTA가 실제 결제 흐름으로 이어지는 단계이기도 하다</div></div></li>
-  <li><div><div class="h"><span class="file">access_and_pricing_v1</span> §09 의 4단계 — 학생 자체 회원가입</div>
-    <div class="d"><code>POST /user/sign/up</code> 신설 + 개인 가입은 승인 없이 활성.
-    여기까지 오면 위 <b>막힘 1</b> 이 풀리고 QR 유입자가 계정을 가질 수 있다</div></div></li>
+  <li><div><div class="h"><span class="file">access_and_pricing_v1</span> §09 의 4단계 — 학생 자체 회원가입 <span class="pill done">됐다</span></div>
+    <div class="d">2026-08-27 — <code>POST /user/sign/up</code> 과 <code>/signup</code> 화면.
+    승인 없이 바로 활성이고 게스트 기록이 가입과 함께 따라온다. <b>막힘 1 이 풀렸다</b> —
+    QR 유입자가 계정을 가질 수 있다. 다만 <b>약관·개인정보 처리방침 두 문서가 없으면
+    배포하면 안 된다</b>(<span class="file">legal_draft_v1</span>)</div></div></li>
 </ol>
 <p class="qa">결제(그 뒤)는 가격과 PG 가 정해진 다음이다. 메일(5단계)은 결제와 무관하게
 재설정 때문에 이미 필요하다 — <span class="pill file">BLOCKERS.md</span> §7.</p>
