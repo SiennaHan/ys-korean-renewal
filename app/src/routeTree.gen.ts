@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QrRouteImport } from './routes/qr'
 import { Route as NewPasswordRouteImport } from './routes/new-password'
@@ -62,6 +63,11 @@ import { Route as BookChapterUnitDialogIdRouteImport } from './routes/book/chapt
 import { Route as BookChapterUnitFlashcardResultIdRouteImport } from './routes/book/chapter/unit/flashcard/result/$id'
 import { Route as BookChapterUnitDialogReportIdRouteImport } from './routes/book/chapter/unit/dialog/report/$id'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -346,6 +352,7 @@ export interface FileRoutesByFullPath {
   '/new-password': typeof NewPasswordRoute
   '/qr': typeof QrRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
@@ -399,6 +406,7 @@ export interface FileRoutesByTo {
   '/new-password': typeof NewPasswordRoute
   '/qr': typeof QrRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
@@ -452,6 +460,7 @@ export interface FileRoutesById {
   '/new-password': typeof NewPasswordRoute
   '/qr': typeof QrRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/book/$id': typeof BookIdRoute
   '/book/list': typeof BookListRoute
   '/learn/fill-blank': typeof LearnFillBlankRoute
@@ -508,6 +517,7 @@ export interface FileRouteTypes {
     | '/new-password'
     | '/qr'
     | '/reset-password'
+    | '/signup'
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
@@ -561,6 +571,7 @@ export interface FileRouteTypes {
     | '/new-password'
     | '/qr'
     | '/reset-password'
+    | '/signup'
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
@@ -613,6 +624,7 @@ export interface FileRouteTypes {
     | '/new-password'
     | '/qr'
     | '/reset-password'
+    | '/signup'
     | '/book/$id'
     | '/book/list'
     | '/learn/fill-blank'
@@ -668,6 +680,7 @@ export interface RootRouteChildren {
   NewPasswordRoute: typeof NewPasswordRoute
   QrRoute: typeof QrRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SignupRoute: typeof SignupRoute
   BookIdRoute: typeof BookIdRoute
   BookListRoute: typeof BookListRoute
   LearnFillBlankRoute: typeof LearnFillBlankRoute
@@ -702,6 +715,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -1133,6 +1153,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewPasswordRoute: NewPasswordRoute,
   QrRoute: QrRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SignupRoute: SignupRoute,
   BookIdRoute: BookIdRoute,
   BookListRoute: BookListRoute,
   LearnFillBlankRoute: LearnFillBlankRoute,

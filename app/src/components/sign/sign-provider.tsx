@@ -6,7 +6,12 @@ import {
 	removeGuestId,
 } from "@/api/api";
 import type { LoginToken } from "@/api/apiType";
-import { checkSign, loginAsStudent, migrateGuestData } from "@/api/sign";
+import {
+	checkSign,
+	loginAsStudent,
+	migrateGuestData,
+	signUpStudent,
+} from "@/api/sign";
 import type React from "react";
 import {
 	type ReactNode,
@@ -31,6 +36,12 @@ interface AuthContextType {
 	isLoggedInUser: boolean;
 	user: UserInfo | null;
 	checkSign: () => Promise<boolean>;
+	/** 학생 자체 회원가입 — access_and_pricing_v1 §09 의 4단계 */
+	signUp: (
+		email: string,
+		password: string,
+		name: string,
+	) => Promise<{ success: boolean; error?: string }>;
 	guestSign: () => Promise<boolean>;
 	login: (
 		email: string,
@@ -116,6 +127,33 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		return { success: false, error: result.error };
 	};
 
+	/**
+	 * 가입 — 로그인과 **같은 뒷정리**를 한다.
+	 *
+	 * 처음에는 화면에서 `signUpStudent` 를 직접 부르고 `checkSign()` 만 했는데,
+	 * 그러면 둘이 빠진다. `handleCheckSign` 은 토큰만 읽으므로 `user` 가 null 로
+	 * 남아 **가입 직후 인사말이 이름 대신 "반갑습니다"** 였고, 게스트 id 도
+	 * 지워지지 않았다. 로그인이 이미 그 둘을 하고 있으니 같은 자리에 둔다.
+	 *
+	 * 게스트 기록 이전은 **서버가 가입과 한 번에 한다**(`user_business.signUpStudent`
+	 * 가 guestId 를 받는다) — 로그인처럼 따로 부르지 않는다. 계정이 생긴 뒤
+	 * 별도 호출이 실패하면 "가입은 됐는데 기록은 안 옮겨진" 상태가 남는다.
+	 */
+	const handleSignUp = async (
+		email: string,
+		password: string,
+		name: string,
+	): Promise<{ success: boolean; error?: string }> => {
+		const result = await signUpStudent(email, password, name);
+		if (!result.success || !result.user) {
+			return { success: false, error: result.error };
+		}
+		setUser(result.user);
+		setIsSignedIn(true);
+		removeGuestId();
+		return { success: true };
+	};
+
 	const signOut = useCallback(() => {
 		removeAccessToken();
 		removeGuestId();
@@ -157,6 +195,7 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		isLoggedInUser,
 		user,
 		checkSign: handleCheckSign,
+		signUp: handleSignUp,
 		guestSign: handleGuestSign,
 		login: handleLogin,
 		signOut,

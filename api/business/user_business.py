@@ -1,9 +1,12 @@
+import re
+
 import bcrypt
 from fastapi.encoders import jsonable_encoder
 
 from accepter import auth
 from persistence.database import sessionScope
 from persistence import repo_user, model
+from business.auth_business import hashPassword
 from sqlalchemy.exc import IntegrityError
 
 
@@ -34,6 +37,90 @@ async def loginAsStudent(email: str, password: str):
                 "schoolCode": user.school_code,
             }
         }, None
+
+
+PASSWORD_RULES = (
+    ("length", lambda p: len(p) >= 8),
+    ("upper", lambda p: any(c.isupper() for c in p)),
+    ("digit", lambda p: any(c.isdigit() for c in p)),
+)
+
+_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def checkPassword(password: str) -> list[str]:
+    """못 지킨 규칙의 이름을 낸다. 다 지켰으면 빈 목록.
+
+    규칙은 목업(`phase1/draft_auth.html` 의 가입 화면)이 화면에 적어 둔 셋과
+    같다 — 8자 이상 · 대문자 1개 · 숫자 1개. **앱이 같은 규칙을 화면에서도
+    보여 주지만 판정은 여기서 한 번 더 한다** — 앱을 거치지 않고 부를 수 있다.
+    """
+    return [name for name, ok in PASSWORD_RULES if not ok(password)]
+
+
+async def signUpStudent(email: str, password: str, name: str, guestId: str = None):
+    """학생이 스스로 계정을 만든다 — access_and_pricing_v1 §08 의 1번 · §09 의 4단계.
+
+    **`/auth/signup` 과 다르다.** 저쪽은 어학당 콘솔용이라
+    `role="school_admin"` · `is_approved=False` 로 만든다. 개인 가입자가 그 길로
+    들어오면 승인 대기로 앉아 아무것도 못 한다 — §08 이 "둘을 같이 고쳐야 한다"
+    고 적은 것이 이것이다. 여기서는 **승인 없이 바로 활성**이다. 승인은 학교가
+    학생을 일괄 등록할 때 쓰는 장치이지 개인 구매자에게 쓸 것이 아니다.
+
+    `school_code` 를 비운다 — 그래야 `GET /entitlement` 가 `guest` 를 내고
+    앱이 결제를 안내한다. 학교 소속이면 `school` 이 되어 「학교에 문의」가 뜬다.
+    """
+    email = (email or "").strip().lower()
+    name = (name or "").strip()
+
+    # **오류는 한국어 문장이 아니라 코드로 낸다.** 이 앱을 쓰는 사람은 전부
+    # 한국어를 배우는 중이고 화면은 5개 언어다 — 영어 화면에서 한국어 오류가
+    # 뜨면 무엇이 잘못됐는지 읽을 수가 없다. 앱이 `signup.err_*` 로 옮긴다.
+    # 다른 엔드포인트는 아직 한국어 문장을 내므로 앱이 모르는 값은 그대로 보여 준다.
+    if not _EMAIL.match(email):
+        return None, "emailInvalid"
+    if not name:
+        return None, "nameRequired"
+    if checkPassword(password or ""):
+        return None, "passwordWeak"
+
+    with sessionScope() as db:
+        if await repo_user.findByEmail(email, db):
+            return None, "emailTaken"
+
+        user = model.KoUser()
+        user.email = email
+        user.password_hash = hashPassword(password)
+        user.name = name
+        user.role = "student"
+        user.school_code = None
+        user.is_approved = True
+        user.is_active = True
+        created = await repo_user.createUser(user, db)
+
+        # 세션 안에서 값으로 뽑는다 — 블록을 나온 뒤 읽으면 DetachedInstanceError 다
+        userId, userEmail, userName = created.id, created.email, created.name
+
+    # 둘러보며 푼 것을 옮긴다(§07 의 2번). **실패해도 가입은 성공이다** —
+    # 계정이 생겼는데 "가입 실패" 라고 말하면 다시 가입할 수도 없다
+    migrated = None
+    if guestId:
+        try:
+            migrated = await migrateGuestData(str(userId), guestId)
+        except Exception as e:
+            print(f"[signup] 게스트 이전 실패 — user[{userId}] guest[{guestId}] {e!r}")
+
+    return {
+        "token": auth.signJwt(str(userId), None, ["student"]),
+        "user": {
+            "id": userId,
+            "email": userEmail,
+            "name": userName,
+            "role": "student",
+            "schoolCode": None,
+        },
+        "migrated": migrated,
+    }, None
 
 
 async def migrateGuestData(userId: str, guestId: str):

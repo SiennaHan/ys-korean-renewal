@@ -294,7 +294,10 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
         그 유도 UX 가 비싸다. 재방문 유도는 앱 안의 연속 학습일로 한다.
         5개 언어 템플릿이 필요하다 — <span class="file">BLOCKERS.md</span> §7</td></tr>
     <tr><td>API</td><td><span class="file">POST /user/sign/up</span></td>
-      <td><b>학생 자체 회원가입이 지금 없다.</b> §08 의 1번</td></tr>
+      <td>학생 자체 회원가입. <b>됐다</b>(2026-08-27) — <span class="file">user_business.signUpStudent</span>.
+      <b>승인 없이 바로 활성</b>이고 <span class="file">school_code</span> 는 비운다(§08 의 1번이 요구한 둘).
+      게스트 id 를 같이 받아 <b>가입과 한 번에</b> 기록을 옮긴다 — 계정만 생기고 기록은 안 옮겨진 상태를 만들지 않는다.
+      오류는 한국어 문장이 아니라 <b>코드</b>로 낸다(앱이 5개 언어로 옮긴다)</td></tr>
     <tr><td>API</td><td>게임 콘텐츠 6개 라우트에 인증·권한</td>
       <td>§08 의 3번 — 지금 전부 무인증이다</td></tr>
   </tbody>
@@ -445,8 +448,10 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
   <div class="card"><div class="k">3</div><div class="nm">앱에 잠금 붙이기 <span class="pill done">됐다</span></div>
     <div class="d">보이되 잠근다. 2026-08-26 — 교재·자모 칩과 게임 카드에 자물쇠, 잠긴 과를 고르면 안내 넷,
       문구는 5개 언어. <b>남은 것은 콘텐츠 라우트의 권한이다</b>(§08 의 3번) — 잠금이 아직 표시일 뿐이다</div></div>
-  <div class="card"><div class="k">4</div><div class="nm">학생 자체 회원가입</div>
-    <div class="d">§08 의 1번. 결제보다 먼저다 — 계정 없이 결제하면 기기를 바꿀 때 잃는다</div></div>
+  <div class="card"><div class="k">4</div><div class="nm">학생 자체 회원가입 <span class="pill done">됐다</span></div>
+    <div class="d">2026-08-27 — <span class="file">POST /user/sign/up</span> 과 <span class="file">/signup</span> 화면.
+      게스트로 푼 것이 가입과 함께 계정으로 따라온다(브라우저에서 끝까지 확인했다).
+      <b>남은 것은 약관·개인정보 처리방침 두 문서다</b> — 없으면 배포하면 안 된다. BLOCKERS §9-a-4</div></div>
   <div class="card"><div class="k">5</div><div class="nm">메일 발송</div>
     <div class="d">비밀번호 재설정이 <b>지금 껍데기다</b> — 결제와 무관하게 이미 필요하다.
       결제 영수증도 이 위에 얹힌다. BLOCKERS §7</div></div>

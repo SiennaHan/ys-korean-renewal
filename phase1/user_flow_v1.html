@@ -237,11 +237,11 @@
   <path class="ln" d="M420 352 L420 380 L630 380 L630 522 L602 522"/>
 
   <!-- 가입 (막힘) -->
-  <rect class="bxStop" x="150" y="410" width="452" height="52" rx="10"/>
-  <text class="t1" x="166" y="431">회원가입 <tspan class="tS">막힘 — 학생이 스스로 만들 길이 없다</tspan></text>
-  <text class="t2" x="166" y="449">/auth/signup 은 role=school_admin · is_approved=False 로 만든다</text>
+  <rect class="bxOk" x="150" y="410" width="452" height="52" rx="10"/>
+  <text class="t1" x="166" y="431">회원가입 <tspan class="t2">— 2026-08-27 에 열렸다</tspan></text>
+  <text class="t2" x="166" y="449">POST /user/sign/up · 승인 없이 활성 · 게스트 기록이 같이 따라온다</text>
 
-  <path class="lnStop" d="M376 462 L376 496"/>
+  <path class="ln" d="M376 462 L376 496"/>
 
   <!-- 결제 (없음) -->
   <rect class="bxStop" x="150" y="496" width="452" height="52" rx="10"/>
@@ -278,7 +278,9 @@
     <tr><td>무료 경계 판정</td><td>—</td><td><code>GET /entitlement</code> · <code>shared/free_scope.py</code></td><td><span class="pill done">됐다</span>(2026-08-26). 경계는 파일 한 곳에 있다 — <code>ko_chapter</code> 표가 없어서 그 칸 대신 데이터 파일로 갔다</td></tr>
     <tr><td>잠금 표시</td><td><span class="pill file">paywall_SOT</span> 넷 + 칩의 자물쇠</td><td>위 응답만 믿는다</td><td><span class="pill done">됐다</span>(2026-08-27 승격). 교재·자모 칩과 게임 카드에 자물쇠, 잠긴 과를 고르면 안내 넷. 문구는 5개 언어</td></tr>
     <tr><td>로그인</td><td><code>routes/login.tsx</code></td><td><code>POST /sign/login</code></td><td><span class="pill done">된다</span></td></tr>
-    <tr><td>회원가입</td><td><span class="pill file">draft_auth</span> 의 가입</td><td><code>POST /user/sign/up</code></td><td><span class="pill stop">막힘</span> <span class="file">access_and_pricing_v1</span> §08 의 1번</td></tr>
+    <tr><td>회원가입</td><td><code>routes/signup.tsx</code></td><td><code>POST /user/sign/up</code></td>
+      <td><span class="pill done">됐다</span>(2026-08-27). 게스트 기록이 가입과 함께 따라온다.
+      <b>약관·개인정보 처리방침 두 문서가 없어 아직 배포하면 안 된다</b></td></tr>
     <tr><td>비밀번호 재설정</td><td><code>reset-password</code> · <code>new-password</code></td><td>메일 발송 수단</td><td><span class="pill stop">껍데기</span></td></tr>
     <tr><td>결제</td><td><span class="pill file">paywall_SOT</span> 의 구독 안내</td><td><code>ko_purchase</code> · <code>POST /purchase/webhook</code></td><td><span class="pill stop">0곳</span></td></tr>
     <tr><td>권한 부여</td><td>—</td><td><code>ko_entitlement</code></td><td><span class="pill stop">표가 없다</span></td></tr>
@@ -289,10 +291,11 @@
 
 <h2><span class="n">04</span>걸어 보면 여기서 멈춘다 — 막힘 다섯</h2>
 <ol class="path">
-  <li><div><div class="h">학생이 스스로 계정을 만들 길이 없다</div>
-    <div class="d"><code>POST /auth/signup</code> 은 <code>role="school_admin"</code> · <code>is_approved=False</code> 로 만든다 —
-    어학당 관리자 콘솔용이다. 학생 계정은 <code>POST /student/batch</code>(관리자 전용)로만 생긴다.
-    <b>QR 로 들어온 사람은 벽을 만나도 구독자가 될 수 없다.</b> 이것이 이 플로우의 유일한 완전 단절이다</div></div></li>
+  <li><div><div class="h"><s>학생이 스스로 계정을 만들 길이 없다</s> — 풀렸다 (2026-08-27)</div>
+    <div class="d"><code>POST /user/sign/up</code> 과 <code>/signup</code> 화면을 만들었다
+    (<span class="file">access_and_pricing_v1</span> §09 의 4단계). 승인 없이 바로 활성이고 <code>school_code</code> 를 비워
+    개인 구매자로 잡힌다. 게스트로 푼 것은 가입과 함께 계정으로 따라온다.
+    <b>대신 새 조건이 생겼다 — 약관·개인정보 처리방침 두 문서가 없으면 배포하면 안 된다</b></div></div></li>
   <li><div><div class="h"><s>잠금이 없어서 벽이 아예 안 선다</s> — 풀렸다 (2026-08-26)</div>
     <div class="d"><code>GET /entitlement</code> 와 앱의 잠금을 만들었다(<span class="file">access_and_pricing_v1</span> §09 의 1~3단계).
     <b>다만 표시일 뿐이다</b> — 콘텐츠를 내주는 라우트에 권한이 없어서 주소로는 여전히 새 나간다(<span class="file">access_and_pricing_v1</span> §08 의 3번).

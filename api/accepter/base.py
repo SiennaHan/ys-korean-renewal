@@ -84,6 +84,22 @@ class MigrateRequest(BaseModel):
 
 # ── Admin Auth ──
 
+class StudentSignupRequest(BaseModel):
+    """학생 자체 회원가입 — access_and_pricing_v1 §08 의 1번 · §09 의 4단계
+
+    `AdminSignupRequest` 와 모양이 같아 보이지만 **만드는 계정이 다르다** —
+    저쪽은 `role="school_admin"` · `is_approved=False`(어학당 콘솔용)이고
+    이쪽은 `role="student"` · 승인 없이 바로 활성이다. 한 모델로 합치면
+    그 차이가 안 보여서 다음 사람이 잘못 부른다.
+    """
+    email: str
+    password: str
+    name: str
+    # 둘러보다 가입하면 그동안 푼 것을 이 계정으로 옮긴다(§07 의 2번).
+    # 없으면 그냥 새 계정이다
+    guestId: Optional[str] = None
+
+
 class AdminSignupRequest(BaseModel):
     email: str
     password: str

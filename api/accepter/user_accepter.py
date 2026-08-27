@@ -3,7 +3,7 @@ from fastapi import APIRouter, Header, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 from accepter import auth
-from accepter.base import GuestSign, LoginRequest, MigrateRequest, makeResponse
+from accepter.base import GuestSign, LoginRequest, MigrateRequest, StudentSignupRequest, makeResponse
 from business import user_business
 
 router = APIRouter()
@@ -23,6 +23,21 @@ async def signAsGuest(body:GuestSign, authorization: Optional[str] = Header(None
         return makeResponse({"status": "new", "token": createGuestToken(guestId), "guestId": guestId})
 
     return makeResponse({"status": "exist", "token": token, "guestId": guestId})
+
+
+@router.post("/sign/up")
+async def signUpStudent(body: StudentSignupRequest):
+    """학생 자체 회원가입 — access_and_pricing_v1 §05 · §09 의 4단계.
+
+    관리자용 `/auth/signup` 과 **다른 길이다.** 저쪽은 school_admin 을
+    승인 대기로 만든다 — 개인 가입자가 그리로 가면 아무것도 못 한다.
+    """
+    data, error = await user_business.signUpStudent(
+        body.email, body.password, body.name, body.guestId
+    )
+    if error:
+        return makeResponse({"error": error})
+    return makeResponse(data)
 
 
 @router.post("/sign/login")

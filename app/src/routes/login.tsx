@@ -222,6 +222,23 @@ function LoginPage() {
 						{browseError && (
 							<p className="text-center text-red-500 text-sm">{browseError}</p>
 						)}
+
+						{/*
+						 * 가입으로 가는 길 — 2026-08-27 에 생겼다(§09 의 4단계).
+						 * 그 전에는 학생이 스스로 계정을 만들 길이 아예 없었다
+						 * (학교가 엑셀로 일괄 등록했다). 페이월의 「로그인 / 회원가입」도
+						 * 이 화면으로 오므로 여기가 유일한 입구다
+						 */}
+						<p className="text-center text-gray-500 text-sm">
+							{t("login.noAccount")}{" "}
+							<button
+								type="button"
+								onClick={() => navigate({ to: "/signup" })}
+								className="text-blue-600 hover:underline"
+							>
+								{t("login.goSignUp")}
+							</button>
+						</p>
 					</div>
 				</div>
 			</div>
