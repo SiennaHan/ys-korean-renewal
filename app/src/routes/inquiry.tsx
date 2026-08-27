@@ -139,7 +139,13 @@ function InquiryPage() {
 			setError(i18n.exists(key) ? t(key) : code);
 			return;
 		}
-		setLostShots(Math.max(0, (res.filesAttempted ?? 0) - (res.files ?? 0)));
+		/*
+		 * **담당자에게 닿았으면 경고하지 않는다.** 저장(우리 S3)과 전달(슬랙)은
+		 * 다른 사실이라, 저장만 실패했는데 "유실됐다" 고 하면 필요 없는 걱정을 시킨다.
+		 * 둘 다 안 됐을 때만 말한다.
+		 */
+		const reached = Math.max(res.files ?? 0, res.filesDelivered ?? 0);
+		setLostShots(Math.max(0, (res.filesAttempted ?? 0) - reached));
 		setSentId(res.id ?? 0);
 	};
 

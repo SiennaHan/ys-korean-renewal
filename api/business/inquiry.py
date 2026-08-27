@@ -130,8 +130,12 @@ async def createInquiry(userId, replyEmail, topic, message, lang=None, fromPath=
     saved["file_attempts"] = len(decoded)
 
     # 여기부터는 실패해도 접수는 성공이다. 학습자에게는 이미 받았다고 말한다
+    delivered = 0
     try:
-        if await slack.notifyInquiry(saved):
+        # **바이트를 같이 넘긴다.** 봇 토큰이면 그림이 그대로 올라가고,
+        # S3 저장이 실패했어도 슬랙에는 붙을 수 있다 — 아직 손에 들고 있다
+        sent, delivered = await slack.notifyInquiry(saved, shots=decoded)
+        if sent:
             with sessionScope() as db:
                 await repo_inquiry.markNotified(db, saved["id"])
             saved["notified"] = True
@@ -142,7 +146,10 @@ async def createInquiry(userId, replyEmail, topic, message, lang=None, fromPath=
     # 몇 장이 올라갔는지는 보낸 사람이 알아야 한다
     return {
         "id": saved["id"],
+        # 우리 저장소에 남은 수
         "files": len(keys),
-        # 앱이 견줘서 "캡처는 저장되지 않았다" 고 말할 수 있게 한다
+        # **담당자 채널에 닿은 수.** 저장이 실패해도 슬랙에는 올라갈 수 있다 —
+        # 그때 화면이 "유실됐다" 고만 말하면 필요 없는 걱정을 시킨다
+        "filesDelivered": delivered,
         "filesAttempted": len(decoded),
     }, None

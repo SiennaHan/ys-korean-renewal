@@ -54,15 +54,23 @@ export async function sendInquiry(input: {
 }): Promise<{
 	success: boolean;
 	id?: number;
-	/** 실제로 저장된 캡처 수 */
+	/** 우리 저장소에 남은 캡처 수 */
 	files?: number;
+	/** **담당자 채널에 닿은 수.** 저장이 실패해도 여기로는 갈 수 있다 */
+	filesDelivered?: number;
 	/** 보내려 한 캡처 수. 저장된 것보다 많으면 화면이 그것을 말해야 한다 */
 	filesAttempted?: number;
 	error?: string;
 }> {
 	try {
 		const res = await api.post<
-			{ id: number; files: number; filesAttempted: number } | { error: string }
+			| {
+					id: number;
+					files: number;
+					filesDelivered: number;
+					filesAttempted: number;
+			  }
+			| { error: string }
 		>("/inquiry", input);
 		if (!res.result || !res.data)
 			return { success: false, error: "inquiryFailed" };
@@ -71,6 +79,7 @@ export async function sendInquiry(input: {
 			success: true,
 			id: res.data.id,
 			files: res.data.files,
+			filesDelivered: res.data.filesDelivered,
 			filesAttempted: res.data.filesAttempted,
 		};
 	} catch (error) {

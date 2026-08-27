@@ -31,7 +31,16 @@ async def main():
         return 1
 
     with sessionScope() as db:
-        rows = [jsonable_encoder(r) for r in await repo_inquiry.listPending(db, a.limit)]
+        pending = await repo_inquiry.listPending(db, a.limit)
+        rows = []
+        for r in pending:
+            d = jsonable_encoder(r)
+            # 캡처 키도 같이 싣는다 — 웹훅 경로가 링크를 만들 수 있게.
+            # **바이트는 다시 보내지 않는다**(비공개 S3 에만 있고 여기서 굳이 내려받지 않는다)
+            files = await repo_inquiry.listFiles(db, r.id)
+            d["file_keys"] = [f.s3_key for f in files]
+            d["file_attempts"] = len(files)
+            rows.append(d)
 
     if a.dry_run:
         print(f"못 보낸 문의 {len(rows)}건")
@@ -41,7 +50,10 @@ async def main():
 
     sent = failed = 0
     for r in rows:
-        if await slack.notifyInquiry(r):
+        # 캡처 바이트는 다시 보내지 않는다 — 비공개 S3 에만 있고, 웹훅 경로면
+        # 링크로 붙는다. 봇 토큰 경로에서는 첫 전송 때 이미 올라갔다
+        sent, _ = await slack.notifyInquiry(r)
+        if sent:
             with sessionScope() as db:
                 await repo_inquiry.markNotified(db, r["id"])
             sent += 1
