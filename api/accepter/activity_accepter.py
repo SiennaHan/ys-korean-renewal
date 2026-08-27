@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 from accepter import auth
+from accepter.entitlement_guard import requireChapter
 from accepter.base import (
     ActivityCompleteRequest,
     ActivityEnterRequest,
@@ -24,6 +25,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.post("/enter", dependencies=[Depends(auth.JWTBearer())])
 async def enter_activity(req: ActivityEnterRequest, token: str = Depends(oauth2_scheme)):
+    await requireChapter(token, req.bookId, req.chapterSeq, req.menuType)
     userId = auth.getUserIdFrom(token)
     return makeResponse(await activity_state.enter(
         userId, req.bookId, req.chapterSeq, req.menuType, req.sub, req.totalItems
@@ -32,6 +34,7 @@ async def enter_activity(req: ActivityEnterRequest, token: str = Depends(oauth2_
 
 @router.patch("/progress", dependencies=[Depends(auth.JWTBearer())])
 async def save_activity_progress(req: ActivityProgressRequest, token: str = Depends(oauth2_scheme)):
+    await requireChapter(token, req.bookId, req.chapterSeq, req.menuType)
     userId = auth.getUserIdFrom(token)
     return makeResponse(await activity_state.saveProgress(
         userId, req.bookId, req.chapterSeq, req.menuType, req.sub, req.currentItemIndex
@@ -40,6 +43,7 @@ async def save_activity_progress(req: ActivityProgressRequest, token: str = Depe
 
 @router.post("/complete", dependencies=[Depends(auth.JWTBearer())])
 async def complete_activity(req: ActivityCompleteRequest, token: str = Depends(oauth2_scheme)):
+    await requireChapter(token, req.bookId, req.chapterSeq, req.menuType)
     userId = auth.getUserIdFrom(token)
     return makeResponse(await activity_state.complete(
         userId, req.bookId, req.chapterSeq, req.menuType, req.sub,

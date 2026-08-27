@@ -35,15 +35,10 @@ def RequireGame(gameKey: str):
     """
 
     async def dep(authorization: Optional[str] = Header(None)):
-        userId, roles = "anonymous", ["guest"]
+        token = ""
         if authorization and authorization.lower().startswith("bearer "):
             token = authorization.split(" ", 1)[1]
-            try:
-                userId = auth.getUserIdFrom(token) or "anonymous"
-                roles = auth.getRolesFrom(token) or ["guest"]
-            except Exception:
-                # 만료됐거나 망가진 토큰. 게스트로 본다
-                userId, roles = "anonymous", ["guest"]
+        userId, roles = _identity(token)
 
         try:
             ent = await entitlement.getEntitlement(userId, roles)
@@ -58,3 +53,53 @@ def RequireGame(gameKey: str):
             raise HTTPException(PAYMENT_REQUIRED, detail="구독이 필요한 콘텐츠입니다.")
 
     return dep
+
+
+def _identity(token: str):
+    """토큰에서 누구인지 읽는다. **못 읽으면 게스트로 본다.**
+
+    여기서 403 을 내면 앱이 세션을 지운다(`app/src/api/api.ts`). 인증 실패와
+    권한 없음은 다른 사실이므로 섞지 않는다 — 게스트로 보고 402 로 답한다.
+    """
+    if not token:
+        return "anonymous", ["guest"]
+    try:
+        return (auth.getUserIdFrom(token) or "anonymous",
+                auth.getRolesFrom(token) or ["guest"])
+    except Exception:
+        return "anonymous", ["guest"]
+
+
+async def requireChapter(token: str, bookId: int, chapterSeq: int, menuType: str = ""):
+    """그 과가 열려 있어야 통과한다. 아니면 402.
+
+    **`Depends` 가 아니라 손으로 부른다.** 급·과가 요청 **몸**에 있는데,
+    의존성이 몸을 또 선언하면 라우트마다 몸 모델이 둘이 되어 스키마가 흐려진다.
+    부르는 자리에 한 줄로 두면 어느 라우트가 막히는지도 눈에 보인다.
+
+    **`menuType` 을 반드시 넘겨라 — 자모가 번호 자리를 공유한다.**
+    자모 과는 1급 seq 1~3 이고 일반 과는 seq 4 부터다. 그런데 무료 경계는
+    따로 잡혀 있다(`FREE_JAMO_CHAPTERS = [1]` vs `FREE_CHAPTERS = {1:[4]}`).
+    그래서 급·과만 보면 **무료인 자모 1과를 402 로 막는다.** 2026-08-27 에
+    실제로 그럴 뻔했다 — 그때는 자모가 서버에 아무것도 안 써서 안 드러났는데,
+    같은 날 다른 세션이 `useJamoActivityState` 로 쓰기를 붙이고 있었다.
+    자모 여섯은 `menuType="jamo"` 를 보낸다(dev_spec §10).
+    """
+    userId, roles = _identity(token)
+    try:
+        ent = await entitlement.getEntitlement(userId, roles)
+    except Exception as e:
+        # 판정을 못 했으면 막는다 — 위 RequireGame 과 같은 이유다
+        print(f"[entitlement-guard] 판정 실패 — {menuType or '교재'} {bookId}급 {chapterSeq}과 {e!r}")
+        raise HTTPException(PAYMENT_REQUIRED, detail="구독이 필요한 콘텐츠입니다.")
+
+    if menuType == "jamo":
+        if chapterSeq in (ent.get("jamo_chapters") or []):
+            return
+        raise HTTPException(PAYMENT_REQUIRED, detail="구독이 필요한 콘텐츠입니다.")
+
+    if bookId in (ent.get("books") or []):
+        return
+    if chapterSeq in ((ent.get("chapters") or {}).get(str(bookId)) or []):
+        return
+    raise HTTPException(PAYMENT_REQUIRED, detail="구독이 필요한 콘텐츠입니다.")

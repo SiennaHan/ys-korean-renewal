@@ -4,6 +4,7 @@ from business import learning_record
 
 from accepter.base import LearningRecordRequest, makeResponse
 from accepter import auth
+from accepter.entitlement_guard import requireChapter
 
 router = APIRouter()
 
@@ -12,6 +13,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.post("", dependencies=[Depends(auth.JWTBearer())])
 async def save_learning_record(req: LearningRecordRequest, token: str = Depends(oauth2_scheme)):
+    await requireChapter(token, req.bookId, req.chapterSeq, req.menuType)
     userId = auth.getUserIdFrom(token)
     return makeResponse(await learning_record.saveRecord(
         userId, req.bookId, req.chapterSeq, req.menuType, req.questionId, req.selectedAnswer, req.isCorrect, req.sub, req.skipped, req.review
