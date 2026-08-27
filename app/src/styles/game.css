@@ -61,7 +61,7 @@
   .game-frame[data-screen="list"] .ux-game-sub.is-progress { color:#0073e6 !important; font-weight:600; }
   .game-frame[data-screen="list"] .ux-game-chevron { color:#c8cdd5 !important; }
   /* 잠긴 게임 — 보이되 잠근다. 이름을 흐리고 오른쪽을 자물쇠로 바꾼다
-     (access_and_pricing_v1 §06 · 목업 draft_paywall 의 .row.paid) */
+     (access_and_pricing_v1 §06 · 시각 정본 paywall_SOT 의 .row.paid) */
   .game-frame[data-screen="list"] .ux-game-card.is-locked .ux-game-name { color:#8a929c !important; }
   .game-frame[data-screen="list"] .ux-game-lock { color:#0180ff !important; }
   .game-frame[data-screen="list"] .ux-list-tabbar { flex:none; position:relative !important; bottom:auto !important;

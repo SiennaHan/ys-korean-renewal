@@ -79,7 +79,7 @@
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .nav-frame .task .go { width:22px; flex:none; color:var(--color-fill-primary); }
 .nav-frame .task .go svg { width:22px; height:22px; }
-/* ── 잠금 ── access_and_pricing_v1 §06 · 목업 phase1/draft_paywall.html
+/* ── 잠금 ── access_and_pricing_v1 §06 · 시각 정본 phase1/paywall_SOT.html
    숨기지 않고 보이되 잠근다. 잠긴 칩도 누를 수 있다 — 눌러야 안내가 나온다 */
 .nav-frame .chip3.locked { color:var(--nav-text-mute); }
 .nav-frame .chip3.locked.on { color:var(--color-background-surface); }

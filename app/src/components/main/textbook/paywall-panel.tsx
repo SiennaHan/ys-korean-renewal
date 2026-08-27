@@ -4,7 +4,7 @@ import { Check, LockKeyhole, LogIn, RefreshCw, School } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 /**
- * 결제 안내 — access_and_pricing_v1 §06 · 목업 phase1/draft_paywall.html
+ * 결제 안내 — access_and_pricing_v1 §06 · 시각 정본 phase1/paywall_SOT.html
  *
  * **숨기지 않고 보이되 잠근다.** 잠긴 과를 고르면 활동 목록 자리에 이 안내가
  * 들어온다. 선택한 과 제목은 위에 남기고, 본문은 구독 가치와 다음 행동만 말한다.

@@ -81,7 +81,7 @@
 | `games_spec_v1.html` | **둘을 합쳤다** — §1~§10 게임 넷에서 손볼 것(서울 퍼즐 38단계 문장 검수 포함) ·<br>§11~§20 VocaShot 혼자 하기 설계. **구현됐다** — `/main/game/vocashot-solo` |
 | `user_flow_v1.html` | **진입에서 결제까지 한 장.** 규칙을 새로 정하지 않는다 — 진입 넷 · 무료 둘러보기 · 벽 · 갈림 셋 · 가입 · 결제를 **순서로** 잇고 그 위에 막힌 자리를 표시한다.<br>**단절은 하나다** — 학생이 스스로 계정을 만들 길이 없어서 QR 유입자가 구독자가 못 된다(`access_and_pricing_v1` §08 의 1번) |
 | `draft_auth.html` | **로그인·회원가입·비밀번호 재설정 시안.** 로그인은 구현을 보고 옮겼고 가입은 새 제안이다(구현이 없다).<br>**재설정은 지금 메일이 안 나가는데 "보내드렸습니다" 라고 말한다** — 그래서 솔직한 판을 같이 뒀다. `BLOCKERS.md` §7 |
-| `draft_paywall.html` | **결제 안내(페이월) 시안.** 구독 확정(2026-08-26)으로 필요해진 화면 — 게스트 · 개인 미구독 · 구독 만료 · 기관 학생 넷과 목록의 자물쇠.<br>**기관 학생에게는 결제 버튼을 두지 않는다** — `textbook_tab_spec_v1` §06 의 규칙 |
+| `paywall_SOT.html` | **결제 안내(페이월) 시각 정본 v1.1.** 실제 프로토타입에서 승인한 게스트 · 개인 미구독 · 구독 만료 · 기관 학생 넷과 목록의 자물쇠. 개인 결제 화면은 구독 가치 셋과 주 행동 하나로 정리했고, 320·375폭과 다섯 언어를 같은 벤치에서 확인한다.<br>**기관 학생에게는 결제 버튼을 두지 않는다** — `textbook_tab_spec_v1` §06 의 규칙 |
 | `G1_content_gate_v1.html` | **G1 게이트가 확정한 것 둘.** 활동 8종을 어떻게 정했나·저작 물량(§1~5) · 문항 스키마 공통 컬럼 규약(§6~11). 전에는 두 문서였고 한쪽만 낡았다 |
 
 ---
@@ -127,7 +127,8 @@
 | `activity_controls_uiux.html` | `draft_activity_controls.html` | 확인용 시안 |
 | `recording_interaction_uiux.html` | `draft_recording_interaction.html` | 확인용 시안 |
 | `auth_uiux.html` | `draft_auth.html` | 확인용 시안 |
-| `paywall_uiux.html` | `draft_paywall.html` | 확인용 시안 |
+| `paywall_uiux.html` | `paywall_SOT.html` | 시각 정본 v1.1로 승격 |
+| `draft_paywall.html` | `paywall_SOT.html` | 승인된 프로토타입 디자인으로 승격(2026-08-27) |
 
 폴더 둘도 같은 날 바꿨다 — 이름이 역할과 반대였다.
 
