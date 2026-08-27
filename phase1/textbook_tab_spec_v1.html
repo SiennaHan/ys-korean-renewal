@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 69ef88b -->
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ f2fe8ba -->
 <!-- 왜: 심화학습 두 줄이 켜지는지가 이 데이터와 이 목록 컴포넌트에 걸려 있다 -->
 <title>교재학습 탭 — 활동으로 들어가는 유일한 길</title>
 <style>
@@ -267,6 +267,15 @@
   급 탭을 따로 만들고 있어서 거기는 <span class="file">"1권"</span> 이 그대로 남아 있었다.
   두 화면이 쓰는 라벨을 <span class="file">textbook/labels.ts</span> 한 곳으로 모아
   다시 갈라지지 않게 했다.</p>
+  <p><b>2026-08-27 에 게임 다섯도 여기로 들어왔다.</b> 게임은 급·과를 한국어 문자열째로
+  쥐고 있었다 — 어휘 카드는 <span class="file">vocab["2급"]["4과"]</span> 로 원장을 찾고,
+  진도는 <span class="file">stage_id="2급_4과"</span> 로 쌓이고, 조사 스나이퍼는 서버가
+  <span class="file">id="1급"</span> 을 낸다. <b>즉 그 한국어는 라벨이 아니라 식별자라
+  못 바꾼다.</b> 그래서 값은 그대로 두고 보여 줄 때만 옮기는
+  <span class="file">gameLevelLabel</span> · <span class="file">gameLessonLabel</span> 을
+  같은 파일에 뒀다 — 안에서 이 화면과 같은 <span class="file">catalog.bookTab</span> ·
+  <span class="file">catalog.chapterChip</span> 을 쓴다. 급 라벨이 또 갈라지지 않게
+  하려면 새 화면도 여기를 부르면 된다.</p>
   <p><b>그리고 §10 의 2번을 해서 이 화면이 목업 대조에 들어갔다</b>(23화면).
   같은 어긋남이 다시 나면 <span class="file">pnpm parity:activity</span> 가 잡는다 —
   실제로 급을 권으로 되돌려 보니 <span class="file">-'1급' +'1권'</span> 으로 잡혔다.</p>

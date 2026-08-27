@@ -239,6 +239,52 @@ const vi = {
 	},
 	game: {
 		/**
+		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
+		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
+		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
+		 */
+		springPicnic: {
+			lastMission: "Nhiệm vụ trước: {{friend}} {{emoji}} {{score}} điểm · {{date}}",
+			date: "{{day}}/{{month}}",
+			title: "🌸 Nhiệm vụ số — Dã ngoại mùa xuân",
+			subLine1: "Cùng bạn bè đi dã ngoại",
+			subLine2: "và hoàn thành nhiệm vụ số tiếng Hàn!",
+			start: "Bắt đầu 🌸",
+			easy: "🌱 Dễ",
+			hard: "🌸 Khó",
+			pickMission: "Chọn nhiệm vụ",
+			pickSub: "Hãy chọn bạn và độ khó",
+			retry: "🔄 Thử lại lần nữa!",
+			tryAgain: "Gần rồi! Thử lại một lần nữa nhé.",
+			answerLabel: "Đáp án:",
+			doneMission: "Hoàn thành nhiệm vụ! 🎉",
+			showResult: "Xem kết quả →",
+			nextOk: "Câu tiếp theo 🌸",
+			nextNg: "Câu tiếp theo →",
+			banner90: "🎉 Hoàn hảo!",
+			title90: "Gần như điểm tuyệt đối!",
+			banner70: "👍 Làm tốt lắm!",
+			title70: "Luyện thêm một chút nhé!",
+			banner50: "🌸 Được một nửa!",
+			title50: "Thử lại lần nữa nhé!",
+			banner0: "💪 Cần luyện thêm",
+			title0: "Cùng làm lại nhé!",
+			resultSub: "{{friend}} · nhiệm vụ {{level}} · đã chơi {{n}} lần",
+			easyMission: "🌱 dễ",
+			hardMission: "🌸 khó",
+			firstTry: "Đúng ngay lần đầu",
+			finalCorrect: "Cuối cùng đúng",
+			scorePct: "Tỉ lệ điểm",
+			wrongHead: "Sổ lỗi",
+			wrongCount: "{{n}}",
+			wrongTwice: "Sai hai lần",
+			otherMission: "Nhiệm vụ khác 🌸",
+			reset: "Xoá dữ liệu đã lưu",
+			resetConfirm: "Xoá dữ liệu đã lưu?",
+			loading: "Đang tải...",
+			aria: "Nhiệm vụ số — Dã ngoại mùa xuân",
+		},
+		/**
 		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
 		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
 		 */

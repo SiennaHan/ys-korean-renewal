@@ -75,6 +75,21 @@ function loadSt(): Record<string, unknown> {
 	}
 }
 
+/**
+ * 지난 미션 줄의 날짜. 새 꼴(lastDateMD: [월, 일])이 있으면 그것으로 짜고,
+ * 없으면 예전에 저장된 글자를 그대로 낸다(그 값은 저장될 때의 언어다).
+ */
+function fmtLastDate(
+	t: (k: string, o?: Record<string, unknown>) => string,
+	st: Record<string, unknown>,
+): string {
+	const md = st.lastDateMD;
+	if (Array.isArray(md) && md.length === 2) {
+		return t("game.springPicnic.date", { month: md[0], day: md[1] });
+	}
+	return (st.lastDate as string) || "";
+}
+
 function saveSt(d: Record<string, unknown>) {
 	try {
 		localStorage.setItem(SK, JSON.stringify({ ...loadSt(), ...d }));
@@ -112,7 +127,7 @@ interface GameState {
 
 export default function SpringPicnicGame() {
 	const navigate = useNavigate();
-	const { i18n } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const sound = useSoundEffects();
 	const [playRetrySound] = useSound("/sounds/spring-picnic/incorrect.mp3", {
 		volume: 0.85,
@@ -183,6 +198,7 @@ export default function SpringPicnicGame() {
 						if (e.lastFriend !== undefined) merged.lastFriend = e.lastFriend;
 						if (e.lastLv !== undefined) merged.lastLv = e.lastLv;
 						if (e.lastDate !== undefined) merged.lastDate = e.lastDate;
+						if (e.lastDateMD !== undefined) merged.lastDateMD = e.lastDateMD;
 						if (e.totalPlayed !== undefined) merged.totalPlayed = e.totalPlayed;
 						if (e.wrongHistory !== undefined)
 							merged.wrongHistory = e.wrongHistory;
@@ -199,7 +215,7 @@ export default function SpringPicnicGame() {
 					score: st.lastScore as number,
 					friend: (st.lastFriend as string) || "",
 					lv: (st.lastLv as number) || 1,
-					date: (st.lastDate as string) || "",
+					date: fmtLastDate(t, st),
 				});
 			}
 		})();
@@ -360,8 +376,20 @@ export default function SpringPicnicGame() {
 		});
 
 		const today = new Date();
-		const lastDate = `${today.getMonth() + 1}월 ${today.getDate()}일`;
+		/*
+		 * 날짜는 **숫자로** 남긴다. 전에는 `"8월 27일"` 이라는 다 만들어진 글자를
+		 * 저장했고, 그 값은 localStorage 와 서버(extra.lastDate) 양쪽에 남는다 —
+		 * 나중에 앱 언어를 바꿔도 지난 미션 줄만 한국어로 남는다. 보여 줄 때
+		 * 짜도록 월·일을 따로 둔다. 예전 값(lastDate 문자열)은 그대로 읽어
+		 * 쓴다 — 다음 판을 하면 스스로 새 꼴로 바뀐다.
+		 */
+		const lastDateMD = [today.getMonth() + 1, today.getDate()];
+		const lastDate = t("game.springPicnic.date", {
+			month: lastDateMD[0],
+			day: lastDateMD[1],
+		});
 		saveSt({
+			lastDateMD,
 			lastScore: game.score,
 			lastDate,
 			lastFriend: game.friend.name,
@@ -396,15 +424,16 @@ export default function SpringPicnicGame() {
 			score: game.score,
 			friend: game.friend.name,
 			lv: game.level,
-			date: `${today.getMonth() + 1}월 ${today.getDate()}일`,
+			date: lastDate,
 		});
 		sound.playMissionChecked();
 		if (donePct >= 70) confetti.fireBigBang();
 		setScreen("result");
-	}, [game, sound, confetti]);
+		/* t — 지난 미션 줄의 날짜를 짤 때 쓴다 */
+	}, [game, sound, confetti, t]);
 
 	const resetStorage = useCallback(() => {
-		if (!confirm("저장 데이터를 초기화할까요?")) return;
+		if (!confirm(t("game.springPicnic.resetConfirm"))) return;
 		try {
 			localStorage.removeItem(SK);
 		} catch {
@@ -412,7 +441,7 @@ export default function SpringPicnicGame() {
 		}
 		setLastPlay(null);
 		setScreen("title");
-	}, []);
+	}, [t]);
 
 	/* ── Render ── */
 
@@ -432,7 +461,7 @@ export default function SpringPicnicGame() {
 							color: "#993556",
 						}}
 					>
-						로딩 중...
+						{t("game.springPicnic.loading")}
 					</div>
 				</div>
 			</div>
@@ -456,7 +485,7 @@ export default function SpringPicnicGame() {
 		<div
 			ref={frameRef}
 			tabIndex={-1}
-			aria-label="봄소풍 숫자미션"
+			aria-label={t("game.springPicnic.aria")}
 			className="game-frame"
 			data-screen={screenId}
 		>

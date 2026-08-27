@@ -7,7 +7,7 @@
 		"build": "tsc --noEmit && rsbuild build",
 		"build-storybook": "storybook build",
 		"check": "biome check",
-		"check:css": "python3 scripts/css-class-check.py",
+		"check:css": "python3 scripts/css-class-check.py && python3 scripts/fixed-box-check.py",
 		"dev": "rsbuild dev --port 3000",
 		"format:check": "biome format",
 		"format:write": "biome format --write",

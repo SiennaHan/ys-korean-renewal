@@ -243,6 +243,52 @@ const ja = {
 	},
 	game: {
 		/**
+		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
+		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
+		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
+		 */
+		springPicnic: {
+			lastMission: "前回のミッション: {{friend}} {{emoji}} {{score}}点 · {{date}}",
+			date: "{{month}}月{{day}}日",
+			title: "🌸 春のピクニック数字ミッション",
+			subLine1: "友だちとピクニックを楽しみながら",
+			subLine2: "韓国語の数字ミッションをやりきろう！",
+			start: "はじめる 🌸",
+			easy: "🌱 やさしい",
+			hard: "🌸 むずかしい",
+			pickMission: "ミッション選択",
+			pickSub: "友だちと難易度を選びます",
+			retry: "🔄 もう一度！",
+			tryAgain: "惜しい！もう一度どうぞ。",
+			answerLabel: "正解:",
+			doneMission: "ミッション完了！🎉",
+			showResult: "結果を見る →",
+			nextOk: "次の問題 🌸",
+			nextNg: "次の問題 →",
+			banner90: "🎉 完璧です！",
+			title90: "満点に近いです！",
+			banner70: "👍 よくできました！",
+			title70: "もう少し練習しましょう！",
+			banner50: "🌸 半分成功！",
+			title50: "もう一度挑戦しましょう！",
+			banner0: "💪 練習が必要です",
+			title0: "いっしょにやり直しましょう！",
+			resultSub: "{{friend}} {{level}}ミッション · 通算プレイ{{n}}回",
+			easyMission: "🌱 やさしい",
+			hardMission: "🌸 むずかしい",
+			firstTry: "一度目で正解",
+			finalCorrect: "最後まで正解",
+			scorePct: "得点正答率",
+			wrongHead: "まちがいノート",
+			wrongCount: "{{n}}件",
+			wrongTwice: "二度まちがい",
+			otherMission: "ほかのミッション 🌸",
+			reset: "保存データを初期化",
+			resetConfirm: "保存データを初期化しますか？",
+			loading: "読み込み中...",
+			aria: "春のピクニック数字ミッション",
+		},
+		/**
 		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
 		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
 		 */

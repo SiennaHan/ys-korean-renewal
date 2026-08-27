@@ -228,6 +228,52 @@ const zh = {
 	},
 	game: {
 		/**
+		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
+		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
+		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
+		 */
+		springPicnic: {
+			lastMission: "上次任务: {{friend}} {{emoji}} {{score}}分 · {{date}}",
+			date: "{{month}}月{{day}}日",
+			title: "🌸 春游数字任务",
+			subLine1: "和朋友们一起春游",
+			subLine2: "完成韩语数字任务吧！",
+			start: "开始 🌸",
+			easy: "🌱 简单",
+			hard: "🌸 困难",
+			pickMission: "选择任务",
+			pickSub: "选择朋友和难度",
+			retry: "🔄 再来一次！",
+			tryAgain: "差一点！再试一次吧。",
+			answerLabel: "答案:",
+			doneMission: "任务完成！🎉",
+			showResult: "查看结果 →",
+			nextOk: "下一题 🌸",
+			nextNg: "下一题 →",
+			banner90: "🎉 太棒了！",
+			title90: "接近满分了！",
+			banner70: "👍 做得好！",
+			title70: "再练习一下！",
+			banner50: "🌸 一半成功！",
+			title50: "再挑战一次！",
+			banner0: "💪 需要练习",
+			title0: "一起再来一次！",
+			resultSub: "{{friend}} {{level}}任务 · 共玩{{n}}次",
+			easyMission: "🌱 简单",
+			hardMission: "🌸 困难",
+			firstTry: "首次答对",
+			finalCorrect: "最终答对",
+			scorePct: "得分正确率",
+			wrongHead: "错题本",
+			wrongCount: "{{n}}个",
+			wrongTwice: "错两次",
+			otherMission: "换个任务 🌸",
+			reset: "清除存档",
+			resetConfirm: "要清除存档吗？",
+			loading: "加载中...",
+			aria: "春游数字任务",
+		},
+		/**
 		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
 		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
 		 */

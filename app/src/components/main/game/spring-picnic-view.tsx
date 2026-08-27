@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * 봄 소풍 — **표시만** 담당하는 화면들. 판을 굴리는 일은
@@ -376,6 +377,7 @@ export interface PcTitleViewProps {
 }
 
 export function PcTitleView({ lastPlay, onStart, onBack }: PcTitleViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="scr s-title">
 			{/* 목업(pc_title)은 이 버튼에 ux-back 을 붙인다 — ux-control 은 모든 버튼에 붙는다 */}
@@ -390,18 +392,22 @@ export function PcTitleView({ lastPlay, onStart, onBack }: PcTitleViewProps) {
 			<div className="t-body">
 				{lastPlay && (
 					<div className="t-lp">
-						지난 미션: {lastPlay.friend} {lastPlay.lv === 1 ? "🌱" : "🌸"}{" "}
-						{lastPlay.score}점 · {lastPlay.date}
+						{t("game.springPicnic.lastMission", {
+							friend: lastPlay.friend,
+							emoji: lastPlay.lv === 1 ? "🌱" : "🌸",
+							score: lastPlay.score,
+							date: lastPlay.date,
+						})}
 					</div>
 				)}
-				<div className="t-title">🌸 봄 소풍 숫자 미션</div>
+				<div className="t-title">{t("game.springPicnic.title")}</div>
 				<div className="t-sub">
-					친구들과 소풍을 즐기며
+					{t("game.springPicnic.subLine1")}
 					<br />
-					한국어 숫자 미션을 완수해요!
+					{t("game.springPicnic.subLine2")}
 				</div>
 				<button type="button" className="t-start ux-control" onClick={onStart}>
-					시작하기 🌸
+					{t("game.springPicnic.start")}
 				</button>
 			</div>
 		</div>
@@ -421,6 +427,7 @@ function SelectRow({
 	played: Record<string, boolean>;
 	onStart: (id: string, level: number) => void;
 }) {
+	const { t } = useTranslation();
 	const [desc, setDesc] = useState(`🌱 ${friend.desc}`);
 	return (
 		<div className="sel-row">
@@ -443,7 +450,7 @@ function SelectRow({
 					<div className={`sel-ck${played[`${friend.id}_1`] ? " show" : ""}`}>
 						✓
 					</div>
-					🌱 쉬움
+					{t("game.springPicnic.easy")}
 				</button>
 				<button
 					type="button"
@@ -455,7 +462,7 @@ function SelectRow({
 					<div className={`sel-ck${played[`${friend.id}_2`] ? " show" : ""}`}>
 						✓
 					</div>
-					🌸 어려움
+					{t("game.springPicnic.hard")}
 				</button>
 			</div>
 		</div>
@@ -476,6 +483,7 @@ export function PcSelectView({
 	onStart,
 	onBack,
 }: PcSelectViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="scr" style={{ justifyContent: "flex-start" }}>
 			{/* 목업(pc_select)은 이 화면의 버튼 전부에 ux-level 을 붙인다(뒤로가기 포함) */}
@@ -486,9 +494,9 @@ export function PcSelectView({
 			>
 				<ArrowLeft size={18} color="#993556" />
 			</button>
-			<SmallBanner label="미션 선택" />
+			<SmallBanner label={t("game.springPicnic.pickMission")} />
 			<div className="sel-body">
-				<div className="sel-subtitle">친구와 난이도를 골라요</div>
+				<div className="sel-subtitle">{t("game.springPicnic.pickSub")}</div>
 				{friends.map((f) => (
 					<SelectRow key={f.id} friend={f} played={played} onStart={onStart} />
 				))}
@@ -518,6 +526,7 @@ export function PcGameView({
 	onShowResult,
 	onExit,
 }: PcGameViewProps) {
+	const { t } = useTranslation();
 	const q = game.rounds[game.cur];
 	if (!q) return null;
 
@@ -564,7 +573,9 @@ export function PcGameView({
 
 			<div className="g-card">
 				<div className="g-qarea">
-					{game.wSet.has(q.id) && <div className="g-rb">🔄 다시 도전!</div>}
+					{game.wSet.has(q.id) && (
+						<div className="g-rb">{t("game.springPicnic.retry")}</div>
+					)}
 					<div className="g-hint">{q.hint[curLang] || q.hint.ko}</div>
 					<div className="g-num">{q.num}</div>
 					<div className="g-illo-wrap">
@@ -612,12 +623,13 @@ export function PcGameView({
 							<div className="g-fbr">
 								<div className="g-fbt">
 									{game.retrying ? (
-										"아쉬워요! 한 번 더 해 보세요."
+										t("game.springPicnic.tryAgain")
 									) : isCorrect ? (
 										q.tts
 									) : (
 										<>
-											정답: <strong>{q.correct}</strong>
+											{t("game.springPicnic.answerLabel")}{" "}
+											<strong>{q.correct}</strong>
 										</>
 									)}
 								</div>
@@ -639,7 +651,7 @@ export function PcGameView({
 							className="g-exit ux-control ux-exit"
 							onClick={onExit}
 						>
-							나가기
+							{t("player.exit")}
 						</button>
 						{game.answered && (
 							<button
@@ -649,13 +661,15 @@ export function PcGameView({
 									isLast && game.wQueue.length === 0 ? onShowResult : onNext
 								}
 							>
-								{isLast && game.wQueue.length === 0
-									? isCorrect
-										? "미션 완료! 🎉"
-										: "결과 보기 →"
-									: isCorrect
-										? "다음 문제 🌸"
-										: "다음 문제 →"}
+								{t(
+									isLast && game.wQueue.length === 0
+										? isCorrect
+											? "game.springPicnic.doneMission"
+											: "game.springPicnic.showResult"
+										: isCorrect
+											? "game.springPicnic.nextOk"
+											: "game.springPicnic.nextNg",
+								)}
 							</button>
 						)}
 					</div>
@@ -727,27 +741,18 @@ export function PcResultView({
 	onSelectScreen,
 	onReset,
 }: PcResultViewProps) {
+	const { t } = useTranslation();
 	const total = game.totalR;
 	const firstTry = total - game.wSet.size;
 	const finalCorrect = total - game.w2.size;
 	const firstTryPct = total > 0 ? Math.round((firstTry / total) * 100) : 0;
 	const finalPct = total > 0 ? Math.round((finalCorrect / total) * 100) : 0;
 
-	let banner: string;
-	let title: string;
-	if (finalPct >= 90) {
-		banner = "🎉 완벽해요!";
-		title = "만점에 가까워요!";
-	} else if (finalPct >= 70) {
-		banner = "👍 잘했어요!";
-		title = "조금만 더 연습해요!";
-	} else if (finalPct >= 50) {
-		banner = "🌸 절반 성공!";
-		title = "다시 도전해봐요!";
-	} else {
-		banner = "💪 연습이 필요해요";
-		title = "같이 다시 해봐요!";
-	}
+	/* 등급 넷 — 배너와 제목이 짝이라 한 자리에서 고른다 */
+	const tier =
+		finalPct >= 90 ? "90" : finalPct >= 70 ? "70" : finalPct >= 50 ? "50" : "0";
+	const banner = t(`game.springPicnic.banner${tier}`);
+	const title = t(`game.springPicnic.title${tier}`);
 
 	const wrongItems = [...game.wSet]
 		.map((id) => questions.find((q) => q.id === id))
@@ -775,30 +780,40 @@ export function PcResultView({
 						{firstTry} / {total}
 					</div>
 					<div className="pc-result-sub">
-						{game.friend.name} {game.level === 1 ? "🌱 쉬운" : "🌸 어려운"} 미션
-						· 총 플레이 {totalPlayed}회
+						{t("game.springPicnic.resultSub", {
+							friend: game.friend.name,
+							level: t(
+								game.level === 1
+									? "game.springPicnic.easyMission"
+									: "game.springPicnic.hardMission",
+							),
+							n: totalPlayed,
+						})}
 					</div>
 				</div>
 
 				<div className="pc-result-stats">
 					<div className="pc-result-stat">
 						<b>{firstTry}</b>
-						<span>첫 시도 정답</span>
+						<span>{t("game.springPicnic.firstTry")}</span>
 					</div>
 					<div className="pc-result-stat">
 						<b>{finalCorrect}</b>
-						<span>끝까지 맞힘</span>
+						<span>{t("game.springPicnic.finalCorrect")}</span>
 					</div>
 					<div className="pc-result-stat">
 						<b>{firstTryPct}%</b>
-						<span>점수 정답률</span>
+						<span>{t("game.springPicnic.scorePct")}</span>
 					</div>
 				</div>
 
 				{wrongItems.length > 0 && (
 					<div className="pc-wrong">
 						<div className="pc-wrong-head">
-							오답 노트 <span>{wrongItems.length}개</span>
+							{t("game.springPicnic.wrongHead")}{" "}
+							<span>
+								{t("game.springPicnic.wrongCount", { n: wrongItems.length })}
+							</span>
 						</div>
 						{wrongItems.map((q) => (
 							<div key={q.id} className="pc-wrong-row">
@@ -822,14 +837,14 @@ export function PcResultView({
 									 * 두 번 틀린 행은 그 자리에 "두 번 틀림" 이 들어가 버튼이 없다.
 									 */}
 									<div className="pc-wrong-answer">
-										정답: {q.correct} ·{" "}
+										{t("game.springPicnic.answerLabel")} {q.correct} ·{" "}
 										{game.w2.has(q.id) ? (
-											"두 번 틀림"
+											t("game.springPicnic.wrongTwice")
 										) : (
 											<button
 												type="button"
 												className="pc-wrong-play ux-control ux-replay"
-												aria-label="문장 다시 듣기"
+												aria-label={t("activity.playSentence")}
 												onClick={() => speakQuestion(q)}
 											>
 												🔊
@@ -849,14 +864,14 @@ export function PcResultView({
 					className="pc-result-primary ux-control"
 					onClick={onSelectScreen}
 				>
-					다른 미션 하기 🌸
+					{t("game.springPicnic.otherMission")}
 				</button>
 				<button
 					type="button"
 					className="pc-result-reset ux-control"
 					onClick={onReset}
 				>
-					저장 데이터 초기화
+					{t("game.springPicnic.reset")}
 				</button>
 			</div>
 		</div>

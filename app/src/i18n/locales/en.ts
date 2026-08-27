@@ -239,6 +239,52 @@ const en = {
 	},
 	game: {
 		/**
+		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
+		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
+		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
+		 */
+		springPicnic: {
+			lastMission: "Last mission: {{friend}} {{emoji}} {{score}} pts · {{date}}",
+			date: "{{month}}/{{day}}",
+			title: "🌸 Spring Picnic Number Mission",
+			subLine1: "Enjoy a picnic with friends",
+			subLine2: "and finish the Korean number missions!",
+			start: "Start 🌸",
+			easy: "🌱 Easy",
+			hard: "🌸 Hard",
+			pickMission: "Choose a mission",
+			pickSub: "Pick a friend and a difficulty",
+			retry: "🔄 One more try!",
+			tryAgain: "Not quite! Give it one more go.",
+			answerLabel: "Answer:",
+			doneMission: "Mission complete! 🎉",
+			showResult: "See results →",
+			nextOk: "Next question 🌸",
+			nextNg: "Next question →",
+			banner90: "🎉 Perfect!",
+			title90: "Almost a perfect score!",
+			banner70: "👍 Well done!",
+			title70: "A little more practice!",
+			banner50: "🌸 Halfway there!",
+			title50: "Give it another go!",
+			banner0: "💪 Needs practice",
+			title0: "Let's try again together!",
+			resultSub: "{{friend}} · {{level}} mission · played {{n}} times",
+			easyMission: "🌱 easy",
+			hardMission: "🌸 hard",
+			firstTry: "Right first try",
+			finalCorrect: "Right in the end",
+			scorePct: "Score accuracy",
+			wrongHead: "Review notes",
+			wrongCount: "{{n}}",
+			wrongTwice: "Missed twice",
+			otherMission: "Another mission 🌸",
+			reset: "Clear saved data",
+			resetConfirm: "Clear your saved data?",
+			loading: "Loading...",
+			aria: "Spring Picnic Number Mission",
+		},
+		/**
 		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
 		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
 		 */

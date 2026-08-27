@@ -708,8 +708,17 @@
   .game-frame[data-screen="pc_result"] .pc-wrong-head span { color:#df5f83; font-size:11px; }
   .game-frame[data-screen="pc_result"] .pc-wrong-row { display:flex; gap:10px; align-items:center; margin-top:10px;
     padding-top:10px; border-top:1px solid #f7edf0; }
-  .game-frame[data-screen="pc_result"] .pc-wrong-num { width:38px; height:38px; flex:none; display:grid; place-items:center;
-    border-radius:10px; background:#fff1f4; color:#cf5376; font-size:16px; font-weight:800; }
+  /*
+     오답 노트의 숫자 알약 — 목업은 38×38 정사각형이다. 그런데 목업 캡처에 담긴
+     값은 "15" · "32" 두 글자뿐이었고, **실제 문항의 num 은 그보다 훨씬 길다** —
+     "20,000원" · "102동 804호" · "35,000,000원" 까지 있다. 38px 에 flex:none 이라
+     긴 값은 알약을 넘쳐 오른쪽 문장 위로 올라탔다(2026-08-27 발견).
+     정사각형 대신 **내용을 감싸는 알약**으로 바꾼다 — 짧은 값은 38px 그대로
+     정사각형이고, 긴 값만 옆으로 자란다. 글자는 줄바꿈하지 않는다.
+     목업 그림과 갈라지는 자리라 screen_promotions.md 에 적었다. */
+  .game-frame[data-screen="pc_result"] .pc-wrong-num { min-width:38px; height:38px; flex:none;
+    padding:0 8px; box-sizing:border-box; white-space:nowrap; display:grid; place-items:center;
+    border-radius:10px; background:#fff1f4; color:#cf5376; font-size:15px; font-weight:800; }
   .game-frame[data-screen="pc_result"] .pc-wrong-copy { min-width:0; color:#6d555e; font-size:12px; line-height:18px; }
   .game-frame[data-screen="pc_result"] .pc-wrong-answer { color:#cf5376; font-weight:700; }
   /* 문항 다시 듣기 — 글자였던 자리를 실제 버튼으로 바꿨다(접근성). 생김새는

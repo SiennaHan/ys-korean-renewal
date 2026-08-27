@@ -247,6 +247,52 @@ const ko = {
 	},
 	game: {
 		/**
+		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
+		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
+		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
+		 */
+		springPicnic: {
+			lastMission: "지난 미션: {{friend}} {{emoji}} {{score}}점 · {{date}}",
+			date: "{{month}}월 {{day}}일",
+			title: "🌸 봄 소풍 숫자 미션",
+			subLine1: "친구들과 소풍을 즐기며",
+			subLine2: "한국어 숫자 미션을 완수해요!",
+			start: "시작하기 🌸",
+			easy: "🌱 쉬움",
+			hard: "🌸 어려움",
+			pickMission: "미션 선택",
+			pickSub: "친구와 난이도를 골라요",
+			retry: "🔄 다시 도전!",
+			tryAgain: "아쉬워요! 한 번 더 해 보세요.",
+			answerLabel: "정답:",
+			doneMission: "미션 완료! 🎉",
+			showResult: "결과 보기 →",
+			nextOk: "다음 문제 🌸",
+			nextNg: "다음 문제 →",
+			banner90: "🎉 완벽해요!",
+			title90: "만점에 가까워요!",
+			banner70: "👍 잘했어요!",
+			title70: "조금만 더 연습해요!",
+			banner50: "🌸 절반 성공!",
+			title50: "다시 도전해봐요!",
+			banner0: "💪 연습이 필요해요",
+			title0: "같이 다시 해봐요!",
+			resultSub: "{{friend}} {{level}} 미션 · 총 플레이 {{n}}회",
+			easyMission: "🌱 쉬운",
+			hardMission: "🌸 어려운",
+			firstTry: "첫 시도 정답",
+			finalCorrect: "끝까지 맞힘",
+			scorePct: "점수 정답률",
+			wrongHead: "오답 노트",
+			wrongCount: "{{n}}개",
+			wrongTwice: "두 번 틀림",
+			otherMission: "다른 미션 하기 🌸",
+			reset: "저장 데이터 초기화",
+			resetConfirm: "저장 데이터를 초기화할까요?",
+			loading: "로딩 중...",
+			aria: "봄소풍 숫자미션",
+		},
+		/**
 		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
 		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
 		 */
