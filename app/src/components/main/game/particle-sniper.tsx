@@ -8,6 +8,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useScreenFocus } from "./use-screen-focus";
 
 type GameState =
@@ -117,6 +118,7 @@ const buildQuestionSet = (lessons: LevelData, lesson: string): Question[] => {
 
 // ── 컴포넌트 ──────────────────────────────────────────────────────────
 const ParticleSniper: React.FC = () => {
+	const { t } = useTranslation();
 	const nav = useNavigate();
 	const sound = useSoundEffects();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -356,7 +358,7 @@ const ParticleSniper: React.FC = () => {
 				{
 					sentence: question.sentence,
 					correct: question.answer,
-					userAnswer: "선택 안 함",
+					userAnswer: t("game.common.notPicked"),
 				},
 			],
 		}));
@@ -572,7 +574,7 @@ const ParticleSniper: React.FC = () => {
 				className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[#060612] text-white"
 			>
 				<div style={{ color: "#7878A0", fontFamily: "Pretendard, sans-serif" }}>
-					로딩 중...
+					{t("game.common.loading")}
 				</div>
 			</div>
 		);
@@ -593,7 +595,7 @@ const ParticleSniper: React.FC = () => {
 		<div
 			ref={rootRef}
 			tabIndex={-1}
-			aria-label="조사 스나이퍼"
+			aria-label={t("game.particleSniper.title")}
 			// ps-stage 는 목업이 이 루트에 주입하던 클래스다 — 무대의 어두운 배경과
 			// 스캔 그라디언트가 여기 걸린다. game-frame 만 붙이면 흰 화면이 된다.
 			className="game-frame relative h-full w-full overflow-hidden ps-stage"

@@ -246,6 +246,41 @@ const ko = {
 		vi: "Tiếng Việt",
 	},
 	game: {
+		/** 게임 다섯이 함께 쓰는 문구 */
+		common: {
+			loading: "로딩 중...",
+			notPicked: "선택 안 함",
+		},
+		/**
+		 * 조사 스나이퍼 — **UI 문구만** 이다(shell_spec §31).
+		 * 문장·조사 선택지 자체는 학습 대상이라 원장의 한국어를 그대로 쓴다.
+		 * 한국어 값은 목업(game__ps_*)에 적힌 글자 그대로다 — 바꾸면 대조가 걸린다.
+		 */
+		particleSniper: {
+			title: "조사 스나이퍼",
+			pickLevel: "급수를 선택하세요",
+			backToLevel: "급수 선택",
+			lessonNote: "현재 과와 이전 과에서 최대 {{count}}문제가 랜덤 출제됩니다",
+			randomCount: "랜덤 문제",
+			empty: "아직 등록된 문제가 없습니다.",
+			hearts: "남은 기회 {{count}}개",
+			timeLeft: "남은 시간 {{percent}}%",
+			aim: "조사를 선택해 조준하세요",
+			hit: "명중",
+			miss: "빗나감",
+			tray: "조사 선택지",
+			points: "{{score}}점",
+			best: "최고 점수",
+			accuracy: "정확도",
+			bestCombo: "최고 콤보",
+			correctCount: "맞힌 문항",
+			wrongCount: "오답",
+			wrongList: "틀린 문제",
+			myPick: "나의 선택",
+			answer: "정답",
+			again: "다시하기",
+			pickLesson: "과 선택",
+		},
 		list: {
 			title: "게임",
 			vocashot: {

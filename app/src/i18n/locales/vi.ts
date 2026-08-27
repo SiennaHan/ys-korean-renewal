@@ -238,6 +238,42 @@ const vi = {
 		vi: "Tiếng Việt",
 	},
 	game: {
+		/** 게임 다섯이 함께 쓰는 문구 */
+		common: {
+			loading: "Đang tải...",
+			notPicked: "Chưa chọn",
+		},
+		/**
+		 * 조사 스나이퍼 — **UI 문구만** 이다(shell_spec §31).
+		 * 문장·조사 선택지 자체는 학습 대상이라 원장의 한국어를 그대로 쓴다.
+		 * 한국어 값은 목업(game__ps_*)에 적힌 글자 그대로다 — 바꾸면 대조가 걸린다.
+		 */
+		particleSniper: {
+			title: "Thợ bắn trợ từ",
+			pickLevel: "Chọn cấp độ",
+			backToLevel: "Chọn cấp",
+			lessonNote:
+				"Tối đa {{count}} câu được lấy ngẫu nhiên từ bài này và các bài trước",
+			randomCount: "câu ngẫu nhiên",
+			empty: "Chưa có câu hỏi nào.",
+			hearts: "Còn {{count}} lượt",
+			timeLeft: "Còn {{percent}}% thời gian",
+			aim: "Chọn trợ từ và ngắm",
+			hit: "Trúng",
+			miss: "Trượt",
+			tray: "Các trợ từ",
+			points: "{{score}} điểm",
+			best: "Điểm cao nhất",
+			accuracy: "Độ chính xác",
+			bestCombo: "Combo cao nhất",
+			correctCount: "Số câu đúng",
+			wrongCount: "Câu sai",
+			wrongList: "Câu đã làm sai",
+			myPick: "Bạn chọn",
+			answer: "Đáp án",
+			again: "Chơi lại",
+			pickLesson: "Chọn bài",
+		},
 		list: {
 			title: "Trò chơi",
 			vocashot: {

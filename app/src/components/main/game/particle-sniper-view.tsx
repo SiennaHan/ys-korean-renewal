@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 /**
  * 조사 스나이퍼 — **표시만** 담당하는 화면들. 판을 굴리는 일은
@@ -26,6 +27,7 @@ export function ParticleSniperLevelView({
 	onPick,
 	onBack,
 }: LevelSelectProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="ux-dark-stage relative z-10 flex min-h-full flex-col bg-[#060612] p-6 ps-level-shell ps-stage text-white">
 			<div className="mb-1 flex items-center gap-3 ps-level-header">
@@ -49,13 +51,15 @@ export function ParticleSniperLevelView({
 					<ArrowLeft size={18} color="rgba(255,255,255,0.7)" />
 				</button>
 				{/* 목업은 이 화면에 Exo 2 를 쓰지 않는다 — .game-frame 의 Pretendard 를 물려받는다 */}
-				<h1 className="ux-title font-bold text-3xl">조사 스나이퍼</h1>
+				<h1 className="ux-title font-bold text-3xl">
+					{t("game.particleSniper.title")}
+				</h1>
 			</div>
 			<p
 				className="mb-8 ps-level-subtitle text-[#7878A0] text-sm"
 				style={{ fontFamily: "Pretendard, sans-serif" }}
 			>
-				급수를 선택하세요
+				{t("game.particleSniper.pickLevel")}
 			</p>
 			<div className="grid grid-cols-2 gap-3 ps-level-grid">
 				{Object.entries(levelMeta).map(([level, meta]) => (
@@ -121,6 +125,7 @@ export function ParticleSniperLessonView({
 	onPick,
 	onBack,
 }: LessonSelectProps) {
+	const { t } = useTranslation();
 	const lessonKeys = Object.keys(lessons).sort((a, b) => {
 		const an = Number.parseInt(a, 10);
 		const bn = Number.parseInt(b, 10);
@@ -145,7 +150,7 @@ export function ParticleSniperLessonView({
 				className="ux-back ux-control mb-4 flex items-center gap-1 text-sm"
 				style={{ color: meta.color, fontFamily: "Pretendard, sans-serif" }}
 			>
-				← 급수 선택
+				← {t("game.particleSniper.backToLevel")}
 			</button>
 			{/* 목업은 이 제목에 Exo 2 를 쓰지 않는다 — .game-frame 의 Pretendard 를 물려받는다 */}
 			<h2
@@ -158,7 +163,7 @@ export function ParticleSniperLessonView({
 				className="mb-6 ps-lesson-note text-[#7878A0] text-sm"
 				style={{ fontFamily: "Pretendard, sans-serif" }}
 			>
-				현재 과와 이전 과에서 최대 {maxPerGame}문제가 랜덤 출제됩니다
+				{t("game.particleSniper.lessonNote", { count: maxPerGame })}
 			</p>
 			<div className="space-y-3 ps-lesson-list">
 				{lessonKeys.map((lesson) => {
@@ -204,14 +209,16 @@ export function ParticleSniperLessonView({
 								>
 									{Math.min(maxPerGame, cumCounts[lesson])}
 								</div>
-								<div className="text-[#7878A0] text-xs">랜덤 문제</div>
+								<div className="text-[#7878A0] text-xs">
+									{t("game.particleSniper.randomCount")}
+								</div>
 							</div>
 						</button>
 					);
 				})}
 				{lessonKeys.length === 0 && (
 					<div className="py-12 text-center text-[#7878A0] text-sm">
-						아직 등록된 문제가 없습니다.
+						{t("game.particleSniper.empty")}
 					</div>
 				)}
 			</div>
@@ -262,6 +269,7 @@ export function ParticleSniperPlayView({
 	onAnswer,
 	onBack,
 }: PlayViewProps) {
+	const { t } = useTranslation();
 	// 목업의 상태 클래스 — 쏘면 is-shot 이 붙고 결과에 따라 is-hit / is-miss 가 따라온다
 	const shot = shotResult !== null;
 	const targetState = shot ? `is-shot is-${shotResult}` : "";
@@ -281,12 +289,15 @@ export function ParticleSniperPlayView({
 					<button
 						type="button"
 						className="ps-back"
-						aria-label="나가기"
+						aria-label={t("player.exit")}
 						onClick={onBack}
 					>
 						←
 					</button>
-					<div className="ps-hearts" aria-label={`남은 기회 ${hp}개`}>
+					<div
+						className="ps-hearts"
+						aria-label={t("game.particleSniper.hearts", { count: hp })}
+					>
 						{Array.from({ length: 5 }, (_, i) => (
 							<span key={i} style={i < hp ? undefined : { opacity: 0.18 }}>
 								♥
@@ -306,7 +317,9 @@ export function ParticleSniperPlayView({
 			{/* 낙하가 하던 일 — 남은 시간 */}
 			<div
 				className="ps-timer"
-				aria-label={`남은 시간 ${Math.round(timerProgress)}%`}
+				aria-label={t("game.particleSniper.timeLeft", {
+					percent: Math.round(timerProgress),
+				})}
 			>
 				<i style={{ width: `${timerProgress}%` }} />
 			</div>
@@ -347,16 +360,19 @@ export function ParticleSniperPlayView({
 						<span>＋</span>
 						<b>
 							{!shot
-								? "조사를 선택해 조준하세요"
+								? t("game.particleSniper.aim")
 								: shotResult === "hit"
-									? "명중"
-									: "빗나감"}
+									? t("game.particleSniper.hit")
+									: t("game.particleSniper.miss")}
 						</b>
 					</div>
 				</div>
 			</div>
 
-			<div className="ps-answer-tray" aria-label="조사 선택지">
+			<div
+				className="ps-answer-tray"
+				aria-label={t("game.particleSniper.tray")}
+			>
 				{question.choices.map((choice) => (
 					<button
 						key={choice}
@@ -412,6 +428,7 @@ export function ParticleSniperResultView({
 	onLesson,
 	onLevel,
 }: ParticleSniperResultProps) {
+	const { t } = useTranslation();
 	const acc = answered > 0 ? Math.round((correct / answered) * 100) : 0;
 	const grade = acc >= 90 ? "S" : acc >= 75 ? "A" : acc >= 60 ? "B" : "C";
 
@@ -424,11 +441,16 @@ export function ParticleSniperResultView({
 						{level} · {lesson}
 					</div>
 					<div className="ps-result-score">
-						{score.toLocaleString("ko-KR")}점
+						{t("game.particleSniper.points", { score: score.toLocaleString() })}
 					</div>
 					{best !== null && (
 						<div className="ps-result-best">
-							최고 점수 <b>{best.toLocaleString("ko-KR")}점</b>
+							{t("game.particleSniper.best")}{" "}
+							<b>
+								{t("game.particleSniper.points", {
+									score: best.toLocaleString(),
+								})}
+							</b>
 						</div>
 					)}
 				</div>
@@ -436,34 +458,38 @@ export function ParticleSniperResultView({
 				<div className="ps-result-stats">
 					<div className="ps-result-stat">
 						<b>{acc}%</b>
-						<span>정확도</span>
+						<span>{t("game.particleSniper.accuracy")}</span>
 					</div>
 					<div className="ps-result-stat">
 						<b>{maxCombo}×</b>
-						<span>최고 콤보</span>
+						<span>{t("game.particleSniper.bestCombo")}</span>
 					</div>
 					<div className="ps-result-stat">
 						<b>
 							{correct} / {answered}
 						</b>
-						<span>맞힌 문항</span>
+						<span>{t("game.particleSniper.correctCount")}</span>
 					</div>
 					<div className="ps-result-stat">
 						<b>{mistakes.length}</b>
-						<span>오답</span>
+						<span>{t("game.particleSniper.wrongCount")}</span>
 					</div>
 				</div>
 
 				{mistakes.length > 0 && (
 					<div className="ps-mistakes">
-						<h3>틀린 문제</h3>
+						<h3>{t("game.particleSniper.wrongList")}</h3>
 						{mistakes.map((m, idx) => (
 							// key 에 idx 를 넣는 이유 — 같은 문장을 두 번 틀릴 수 있어
 							// 순서가 신원의 일부다. 문장만으로는 열쇠가 겹친다.
 							<div key={`${m.sentence}-${idx}`} className="ps-mistake">
 								<p className="sentence">{m.sentence}</p>
-								<p className="mine">나의 선택: {m.userAnswer}</p>
-								<p className="answer">정답: {m.correct}</p>
+								<p className="mine">
+									{t("game.particleSniper.myPick")}: {m.userAnswer}
+								</p>
+								<p className="answer">
+									{t("game.particleSniper.answer")}: {m.correct}
+								</p>
 							</div>
 						))}
 					</div>
@@ -476,14 +502,14 @@ export function ParticleSniperResultView({
 					className="ux-control ps-result-retry"
 					onClick={onRetry}
 				>
-					다시하기
+					{t("game.particleSniper.again")}
 				</button>
 				<div className="ps-result-links">
 					<button type="button" className="ux-control" onClick={onLesson}>
-						과 선택
+						{t("game.particleSniper.pickLesson")}
 					</button>
 					<button type="button" className="ux-control" onClick={onLevel}>
-						급수 선택
+						{t("game.particleSniper.backToLevel")}
 					</button>
 				</div>
 			</div>
