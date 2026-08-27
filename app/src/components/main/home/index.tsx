@@ -131,6 +131,8 @@ export default function HomeContent() {
 			 * 아무 일이 없다 — 그 활동들을 배선하면 풀린다.
 			 */
 			reviewCount={review.total}
+			/* 오늘 낼 문항이 있나 — 큐의 `items` 가 비면 내일부터다(view.tsx 주석) */
+			reviewReady={review.first !== null}
 			onReview={handleReview}
 			learningStatus={
 				data?.learningStatus ?? {

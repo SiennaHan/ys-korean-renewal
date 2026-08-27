@@ -29,6 +29,14 @@ export interface HomeViewProps {
 	 * (BLOCKERS §9-a-1). 그 전에는 API 가 없어 표시 쪽만 갖춰 두고 있었다.
 	 */
 	reviewCount?: number;
+	/**
+	 * **오늘 풀 수 있는 것이 있나.** `reviewCount` 와 다르다.
+	 *
+	 * 큐는 보관 전체(`total`)와 오늘 낼 수 있는 것(`items`)을 따로 낸다 —
+	 * 오답·건너뜀은 `available_at` 이 다음 날 0시(KST)라, 오늘 틀린 직후에는
+	 * 개수는 있어도 낼 문항이 없다. 그때 카드를 누르면 아무 일도 없었다.
+	 */
+	reviewReady?: boolean;
 	learningStatus: DashboardLearningStatus;
 	weeklyChart: DashboardWeeklyChart;
 	onContinue: () => void;
@@ -41,6 +49,7 @@ export default function HomeView({
 	attendance,
 	continueLearning,
 	reviewCount = 0,
+	reviewReady = false,
 	learningStatus,
 	weeklyChart,
 	onContinue,
@@ -96,12 +105,24 @@ export default function HomeView({
 					/>
 				)}
 
-				{/* 다시 풀 것이 있을 때만 그 아래에 붙는다 — 자리를 다투지 않는다 */}
+				{/*
+				 * 다시 풀 것이 있을 때만 그 아래에 붙는다 — 자리를 다투지 않는다.
+				 *
+				 * **두 갈래다.** 오늘 낼 문항이 있으면 누를 수 있고, 없으면(오늘 틀리거나
+				 * 건너뛴 것뿐이라 내일부터인 상태) 개수만 알리고 누를 수 없게 둔다 —
+				 * 기획 확정 2026-08-27. 전에는 갈래가 하나여서 **개수가 뜨는데 눌러도
+				 * 아무 일이 없는 카드**가 있었다.
+				 */}
 				{reviewCount > 0 && (
 					<TaskCard
 						kind="review"
 						title={t("home.taskReview", { count: reviewCount })}
-						body={t("home.taskReviewBody")}
+						body={
+							reviewReady
+								? t("home.taskReviewBody")
+								: t("home.taskReviewWaitBody")
+						}
+						waiting={!reviewReady}
 						onClick={onReview ?? (() => {})}
 					/>
 				)}

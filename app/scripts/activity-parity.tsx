@@ -841,8 +841,21 @@ SCREENS.nav__home__none = <HomeView {...HOME_BASE} continueLearning={null} />;
 SCREENS.nav__home__resume = (
 	<HomeView {...HOME_BASE} continueLearning={HOME_RESUME} />
 );
+/*
+ * 목업이 그린 것은 **오늘 풀 수 있는** 갈래다("어제 틀리거나 건너뛴 문항부터
+ * 만나요"). 그래서 `reviewReady` 를 켠다 — 안 켜면 기본값이 거짓이라
+ * 기다리는 갈래("내일부터 풀 수 있어요")가 그려져 목업과 어긋난다.
+ *
+ * 기다리는 갈래는 목업 캡처가 없다 — 같은 카드의 문구와 화살표만 다른 변형이라
+ * 화면을 하나 늘리지 않았다(`phase1/screen_promotions.md` 에 적어 뒀다).
+ */
 SCREENS.nav__home__review = (
-	<HomeView {...HOME_BASE} continueLearning={HOME_RESUME} reviewCount={7} />
+	<HomeView
+		{...HOME_BASE}
+		continueLearning={HOME_RESUME}
+		reviewCount={7}
+		reviewReady
+	/>
 );
 
 /*

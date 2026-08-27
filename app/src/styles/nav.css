@@ -79,6 +79,18 @@
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .nav-frame .task .go { width:22px; flex:none; color:var(--color-fill-primary); }
 .nav-frame .task .go svg { width:22px; height:22px; }
+/* 기다리는 갈래 — **누를 수 없는 카드다.** 그렇게 보여야 한다.
+   오늘 틀리거나 건너뛴 문항은 다음 날 0시부터 나오는데(available_at) 카드의 개수는
+   보관 전체를 센다. 전에는 그 사이에 개수만 뜨고 눌러도 아무 일이 없었다.
+   화살표는 컴포넌트가 빼고(continue-learning.tsx), 여기서 색과 커서를 죽인다.
+   t2 는 위에서 한 줄 고정(nowrap)인데 이 갈래의 문구는 "언제 되는지" 를 말해야 해서
+   길다 — 이 갈래에서만 줄바꿈을 허용한다. 누르는 카드가 아니라 높이가 자유롭다 */
+.nav-frame .task.waiting { cursor:default; background:transparent; border-color:var(--color-line-normal); }
+.nav-frame .task.waiting:hover { background:transparent; }
+.nav-frame .task.waiting .ic { background:var(--color-line-normal); color:var(--color-text-sub); }
+/* `keep-all` 이 없으면 한글이 **단어 중간에서 끊긴다** — 기본값은 음절 어디서나
+   줄을 바꿀 수 있어서 "풀 수 있 / 어요" 처럼 잘렸다(브라우저에서 확인했다) */
+.nav-frame .task.waiting .t2 { color:var(--color-text-sub); white-space:normal; word-break:keep-all; }
 /* ── 잠금 ── access_and_pricing_v1 §06 · 시각 정본 phase1/paywall_SOT.html
    숨기지 않고 보이되 잠근다. 잠긴 칩도 누를 수 있다 — 눌러야 안내가 나온다 */
 .nav-frame .chip3.locked { color:var(--nav-text-mute); }
