@@ -82,8 +82,18 @@ export function gameLevelLabel(t: T, raw: string | number): string {
 	return Number.isFinite(n) ? t("catalog.bookTab", { level: n }) : String(raw);
 }
 
-/** 위와 같은 사정의 과 라벨 — "4과" · 4 둘 다 받는다 */
+/**
+ * 위와 같은 사정의 과 라벨 — `"4과"` · `4` · **`"4–5과"` 범위**를 다 받는다.
+ *
+ * 범위를 따로 읽는 이유 — 서울 퍼즐의 `unit` 이 `"4–5과"` 꼴이다. 숫자 하나만
+ * 뽑으면 `"L4"` 가 되어 **범위가 조용히 사라진다.** 그래서 숫자-구분자-숫자
+ * 까지를 한 덩이로 떼어 `{{seq}}` 에 그대로 넣는다 — `"L4–5"` · `"第4–5课"` 가
+ * 되고 한국어는 `"4–5과"` 로 그대로다.
+ */
 export function gameLessonLabel(t: T, raw: string | number): string {
-	const n = typeof raw === "number" ? raw : Number(String(raw).match(/\d+/)?.[0]);
-	return Number.isFinite(n) ? t("catalog.chapterChip", { seq: n }) : String(raw);
+	if (typeof raw === "number") {
+		return t("catalog.chapterChip", { seq: raw });
+	}
+	const seq = String(raw).match(/\d+(?:\s*[–—~-]\s*\d+)?/)?.[0];
+	return seq ? t("catalog.chapterChip", { seq }) : String(raw);
 }

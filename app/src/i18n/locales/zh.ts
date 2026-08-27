@@ -228,6 +228,57 @@ const zh = {
 	},
 	game: {
 		/**
+		 * 서울 여행 퍼즐 — UI 문구만. 대화문·문장 카드·문법 이름·장소 이름은
+		 * 학습 대상이거나 원장 조회 키라 한국어를 그대로 쓴다(장소 이름은 지도
+		 * 좌표표의 키이기도 하다). 한국어 값은 목업(game__sp_*)에 적힌 글자 그대로다.
+		 *
+		 * friendInitial 은 NPC 아바타의 머리글자다 — 28px 동그라미에 한 자만 들어간다.
+		 */
+		seoulPuzzle: {
+			brand: "首尔旅行",
+			myTrip: "{{name}}的首尔旅行 🗺️",
+			progress: "{{done}} / {{total}} 个地点完成",
+			review: "复习 →",
+			canTry: "可挑战",
+			locked: "未解锁",
+			bookUnit: "延世第1册 {{unit}}",
+			toMap: "← 地图",
+			toLocInfo: "← 地点信息",
+			willLearn: "这个地点要学的语法",
+			start: "开始 →",
+			nthPlace: "第{{n}}个地点 — {{name}}",
+			streak: "🔥连续{{n}}次",
+			friendInitial: "友",
+			makeSentence: "完成句子",
+			dropHere: "点击卡片放到这里",
+			good: "做得好！👍",
+			checkAgain: "再确认一下",
+			clickInOrder: "请按顺序点击",
+			hint: "提示 ({{n}})",
+			check: "确认",
+			nextSentence: "下一句 →",
+			retry: "重做",
+			goOn: "继续 →",
+			xpToast: "⭐ +{{xp}} XP!",
+			xpToastStreak: "⭐ +{{xp}} XP! 🔥连续{{n}}次",
+			placeDone: "{{name}} 完成！",
+			allDone: "所有句子都完成了！",
+			correct: "答对",
+			hintsUsed: "使用提示",
+			totalXp: "累计XP",
+			learned: "这个地点学过的语法",
+			backToMap: "回到地图 →",
+			welcome1: "欢迎来到",
+			welcome2: "首尔旅行！",
+			intro1: "用韩语游览首尔",
+			intro2: "学习新的表达吧。",
+			nameLabel: "姓名 (Korean or English)",
+			namePlaceholder: "例: 유리, Emily…",
+			startTrip: "开始首尔旅行 →",
+			nameNote: "姓名会用在游戏内的对话中。",
+			aria: "首尔旅行拼图",
+		},
+		/**
 		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
 		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
 		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.

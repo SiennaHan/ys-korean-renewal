@@ -247,6 +247,57 @@ const ko = {
 	},
 	game: {
 		/**
+		 * 서울 여행 퍼즐 — UI 문구만. 대화문·문장 카드·문법 이름·장소 이름은
+		 * 학습 대상이거나 원장 조회 키라 한국어를 그대로 쓴다(장소 이름은 지도
+		 * 좌표표의 키이기도 하다). 한국어 값은 목업(game__sp_*)에 적힌 글자 그대로다.
+		 *
+		 * friendInitial 은 NPC 아바타의 머리글자다 — 28px 동그라미에 한 자만 들어간다.
+		 */
+		seoulPuzzle: {
+			brand: "서울 여행",
+			myTrip: "{{name}} 씨의 서울 여행 🗺️",
+			progress: "{{done}} / {{total}} 장소 완료",
+			review: "복습하기 →",
+			canTry: "도전 가능",
+			locked: "잠금",
+			bookUnit: "연세 1권 {{unit}}",
+			toMap: "← 지도",
+			toLocInfo: "← 장소 정보",
+			willLearn: "이번 장소에서 배울 문법",
+			start: "시작하기 →",
+			nthPlace: "{{n}}번째 장소 — {{name}}",
+			streak: "🔥{{n}}연속",
+			friendInitial: "친",
+			makeSentence: "문장 완성하기",
+			dropHere: "카드를 탭해서 여기에 놓으세요",
+			good: "잘했어요! 👍",
+			checkAgain: "다시 확인해봐요",
+			clickInOrder: "순서대로 클릭하세요",
+			hint: "힌트 ({{n}})",
+			check: "확인하기",
+			nextSentence: "다음 문장 →",
+			retry: "다시 풀기",
+			goOn: "다음으로 →",
+			xpToast: "⭐ +{{xp}} XP!",
+			xpToastStreak: "⭐ +{{xp}} XP! 🔥{{n}}연속",
+			placeDone: "{{name}} 완료!",
+			allDone: "모든 문장을 완성했어요!",
+			correct: "정답",
+			hintsUsed: "힌트 사용",
+			totalXp: "누적 XP",
+			learned: "이 장소에서 배운 문법",
+			backToMap: "지도로 돌아가기 →",
+			welcome1: "서울 여행에",
+			welcome2: "오신 것을 환영해요!",
+			intro1: "한국어로 서울을 여행하며",
+			intro2: "새로운 표현을 익혀보세요.",
+			nameLabel: "이름 (Korean or English)",
+			namePlaceholder: "예: 유리, Emily…",
+			startTrip: "서울 여행 시작하기 →",
+			nameNote: "이름은 게임 내 대화에서 사용됩니다.",
+			aria: "서울 여행 퍼즐",
+		},
+		/**
 		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
 		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
 		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.

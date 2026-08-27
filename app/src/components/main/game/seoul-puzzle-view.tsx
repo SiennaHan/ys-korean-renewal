@@ -10,6 +10,8 @@ import {
 } from "@/components/main/game/seoul-puzzle";
 import { ArrowLeft } from "lucide-react";
 import type React from "react";
+import { useTranslation } from "react-i18next";
+import { gameLessonLabel } from "@/components/main/textbook/labels";
 
 /**
  * 서울 퍼즐 — **표시만** 담당하는 화면들. 상태·로직(useState/useEffect/타이머)은
@@ -32,6 +34,7 @@ export interface SpTravelHeaderProps {
 }
 
 export function SpTravelHeader({ totalXp, onBack }: SpTravelHeaderProps) {
+	const { t } = useTranslation();
 	return (
 		<div
 			className="ux-travel-header"
@@ -77,7 +80,7 @@ export function SpTravelHeader({ totalXp, onBack }: SpTravelHeaderProps) {
 						letterSpacing: ".4px",
 					}}
 				>
-					서울 여행
+					{t("game.seoulPuzzle.brand")}
 				</span>
 			</div>
 		</div>
@@ -108,6 +111,7 @@ export function SpMapView({
 	navDir,
 	onSelectLocation,
 }: SpMapViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div
 			className="scrollbar-hide"
@@ -143,7 +147,7 @@ export function SpMapView({
 							letterSpacing: "-.3px",
 						}}
 					>
-						{playerName} 씨의 서울 여행 🗺️
+						{t("game.seoulPuzzle.myTrip", { name: playerName })}
 					</div>
 					<div
 						style={{
@@ -160,7 +164,10 @@ export function SpMapView({
 					</div>
 				</div>
 				<div style={{ color: "rgba(255,255,255,.5)", fontSize: 12 }}>
-					{completed.size} / 10 장소 완료
+					{t("game.seoulPuzzle.progress", {
+						done: completed.size,
+						total: 10,
+					})}
 				</div>
 			</div>
 
@@ -202,11 +209,13 @@ export function SpMapView({
 					const isActive = !isDone && unlocked;
 					const isLocked = !isDone && !unlocked;
 					const stateClass = isDone ? "done" : isActive ? "active" : "locked";
-					const statusText = isDone
-						? "복습하기 →"
-						: isActive
-							? "도전 가능"
-							: "잠금";
+					const statusText = t(
+						isDone
+							? "game.seoulPuzzle.review"
+							: isActive
+								? "game.seoulPuzzle.canTry"
+								: "game.seoulPuzzle.locked",
+					);
 					return (
 						/*
 						 * 장소 카드가 이 게임에서 장소로 들어가는 **유일한 경로**다.
@@ -275,7 +284,9 @@ export function SpMapView({
 											border: "1px solid rgba(99,102,241,.2)",
 										}}
 									>
-										연세 1권 {l.unit}
+										{t("game.seoulPuzzle.bookUnit", {
+											unit: gameLessonLabel(t, l.unit),
+										})}
 									</span>
 									{l.grammar.map((g) => (
 										<span
@@ -341,6 +352,7 @@ export function SpEntryView({
 	onMapBack,
 	onStart,
 }: SpEntryViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div
 			style={{
@@ -408,7 +420,7 @@ export function SpEntryView({
 							zIndex: 10,
 						}}
 					>
-						← 지도
+						{t("game.seoulPuzzle.toMap")}
 					</button>
 				</div>
 
@@ -495,7 +507,7 @@ export function SpEntryView({
 												flexShrink: 0,
 											}}
 										>
-											친
+											{t("game.seoulPuzzle.friendInitial")}
 										</div>
 										<div
 											style={{
@@ -556,7 +568,7 @@ export function SpEntryView({
 								marginBottom: 10,
 							}}
 						>
-							이번 장소에서 배울 문법
+							{t("game.seoulPuzzle.willLearn")}
 						</div>
 						<div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
 							{grammars.map((g) => (
@@ -613,7 +625,7 @@ export function SpEntryView({
 						letterSpacing: "-.2px",
 					}}
 				>
-					시작하기 →
+					{t("game.seoulPuzzle.start")}
 				</button>
 			</div>
 		</div>
@@ -684,6 +696,7 @@ export function SpPuzzleView({
 	onRetry,
 	onNext,
 }: SpPuzzleViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div
 			style={{
@@ -745,7 +758,7 @@ export function SpPuzzleView({
 						zIndex: 10,
 					}}
 				>
-					← 장소 정보
+					{t("game.seoulPuzzle.toLocInfo")}
 				</button>
 			</div>
 
@@ -772,7 +785,7 @@ export function SpPuzzleView({
 							gap: 6,
 						}}
 					>
-						{loc.num}번째 장소 — {loc.name}
+						{t("game.seoulPuzzle.nthPlace", { n: loc.num, name: loc.name })}
 						{streak >= 2 && (
 							<span
 								style={{
@@ -782,7 +795,7 @@ export function SpPuzzleView({
 									animation: "sp-streakPop .4s ease",
 								}}
 							>
-								🔥{streak}연속
+								{t("game.seoulPuzzle.streak", { n: streak })}
 							</span>
 						)}
 					</div>
@@ -906,7 +919,7 @@ export function SpPuzzleView({
 								textTransform: "uppercase",
 							}}
 						>
-							문장 완성하기
+							{t("game.seoulPuzzle.makeSentence")}
 						</span>
 						<button
 							type="button"
@@ -960,7 +973,7 @@ export function SpPuzzleView({
 								<span
 									style={{ fontSize: 12, color: C.text3, padding: "2px 4px" }}
 								>
-									카드를 탭해서 여기에 놓으세요
+									{t("game.seoulPuzzle.dropHere")}
 								</span>
 							) : (
 								slotWords.map((w, i) => {
@@ -1069,7 +1082,7 @@ export function SpPuzzleView({
 								flexShrink: 0,
 							}}
 						>
-							친
+							{t("game.seoulPuzzle.friendInitial")}
 						</div>
 						{answered === "correct" ? (
 							<div
@@ -1092,7 +1105,7 @@ export function SpPuzzleView({
 										marginBottom: 4,
 									}}
 								>
-									잘했어요! 👍
+									{t("game.seoulPuzzle.good")}
 								</div>
 								<div
 									style={{
@@ -1127,7 +1140,7 @@ export function SpPuzzleView({
 										marginBottom: 4,
 									}}
 								>
-									다시 확인해봐요
+									{t("game.seoulPuzzle.checkAgain")}
 								</div>
 								<div
 									style={{
@@ -1177,7 +1190,7 @@ export function SpPuzzleView({
 								marginBottom: 8,
 							}}
 						>
-							순서대로 클릭하세요
+							{t("game.seoulPuzzle.clickInOrder")}
 						</div>
 						<div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
 							{shuffledChips.map((chip, i) => (
@@ -1243,7 +1256,7 @@ export function SpPuzzleView({
 										opacity: hintsLeft === 0 ? 0.35 : 1,
 									}}
 								>
-									힌트 ({hintsLeft})
+									{t("game.seoulPuzzle.hint", { n: hintsLeft })}
 								</button>
 								<button
 									type="button"
@@ -1266,7 +1279,7 @@ export function SpPuzzleView({
 										padding: 13,
 									}}
 								>
-									확인하기
+									{t("game.seoulPuzzle.check")}
 								</button>
 							</>
 						)}
@@ -1291,7 +1304,7 @@ export function SpPuzzleView({
 									padding: 13,
 								}}
 							>
-								다음 문장 →
+								{t("game.seoulPuzzle.nextSentence")}
 							</button>
 						)}
 						{answered === "wrong" && (
@@ -1316,7 +1329,7 @@ export function SpPuzzleView({
 										padding: 13,
 									}}
 								>
-									다시 풀기
+									{t("game.seoulPuzzle.retry")}
 								</button>
 								<button
 									type="button"
@@ -1338,7 +1351,7 @@ export function SpPuzzleView({
 										padding: 13,
 									}}
 								>
-									다음으로 →
+									{t("game.seoulPuzzle.goOn")}
 								</button>
 							</>
 						)}
@@ -1367,6 +1380,7 @@ function ChatBubble({
 	transVisible,
 	toggleTrans,
 }: ChatBubbleProps) {
+	const { t } = useTranslation();
 	const bubbleC = {
 		navy: "#16213e",
 		bg2: "#f0f2f5",
@@ -1455,7 +1469,7 @@ function ChatBubble({
 						flexShrink: 0,
 					}}
 				>
-					친
+					{t("game.seoulPuzzle.friendInitial")}
 				</div>
 				<div style={{ maxWidth: 240 }}>
 					<div
@@ -1525,13 +1539,18 @@ export function SpCompleteView({
 	onBackToMap,
 	onRetry,
 }: SpCompleteViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="result-screen sp-complete">
 			<div className="sp-complete-scroll">
 				<div className="sp-complete-hero">
 					<div className="sp-complete-check">✓</div>
-					<div className="sp-complete-title">{completeSnap.locName} 완료!</div>
-					<div className="sp-complete-copy">모든 문장을 완성했어요!</div>
+					<div className="sp-complete-title">
+						{t("game.seoulPuzzle.placeDone", { name: completeSnap.locName })}
+					</div>
+					<div className="sp-complete-copy">
+						{t("game.seoulPuzzle.allDone")}
+					</div>
 					<div className="sp-complete-xp">
 						{completeSnap.sx} <span>XP</span>
 					</div>
@@ -1542,19 +1561,21 @@ export function SpCompleteView({
 							<b>
 								{completeSnap.sc} / {completeSnap.puzzleCount}
 							</b>
-							<span>정답</span>
+							<span>{t("game.seoulPuzzle.correct")}</span>
 						</div>
 						<div className="sp-complete-stat">
 							<b>{completeSnap.sh}</b>
-							<span>힌트 사용</span>
+							<span>{t("game.seoulPuzzle.hintsUsed")}</span>
 						</div>
 						<div className="sp-complete-stat">
 							<b>{completeSnap.tx} XP</b>
-							<span>누적 XP</span>
+							<span>{t("game.seoulPuzzle.totalXp")}</span>
 						</div>
 					</div>
 					<div className="sp-grammar-review">
-						<div className="sp-grammar-title">이 장소에서 배운 문법</div>
+						<div className="sp-grammar-title">
+							{t("game.seoulPuzzle.learned")}
+						</div>
 						<div className="sp-grammar-chips">
 							{completeSnap.grammars.map((g) => (
 								<span key={g} className="sp-grammar-chip">
@@ -1574,7 +1595,7 @@ export function SpCompleteView({
 						if (e.detail === 0) onBackToMap();
 					}}
 				>
-					지도로 돌아가기 →
+					{t("game.seoulPuzzle.backToMap")}
 				</button>
 				<button
 					type="button"
@@ -1584,7 +1605,7 @@ export function SpCompleteView({
 						if (e.detail === 0) onRetry();
 					}}
 				>
-					다시 풀기
+					{t("game.seoulPuzzle.retry")}
 				</button>
 			</div>
 		</div>

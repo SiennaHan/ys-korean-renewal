@@ -1,4 +1,5 @@
 import { getSeoulPuzzleContent } from "@/api/game-content";
+import { useTranslation } from "react-i18next";
 import { getGameProgress, saveGameProgress } from "@/api/game-progress";
 import {
 	type CompleteSnap,
@@ -820,6 +821,7 @@ function Confetti({ show }: { show: boolean }) {
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function SeoulPuzzle() {
 	const nav = useNavigate();
+	const { t } = useTranslation();
 	const [screen, setScreen] = useState<Screen>("name");
 
 	const [navDir, setNavDir] = useState<NavDir>("forward");
@@ -1076,7 +1078,9 @@ export default function SeoulPuzzle() {
 			setSessionXp((prev) => prev + xp);
 			setSessionCorrect((prev) => prev + 1);
 			const toastText =
-				newStreak >= 2 ? `⭐ +${xp} XP! 🔥${newStreak}연속` : `⭐ +${xp} XP!`;
+				newStreak >= 2
+					? t("game.seoulPuzzle.xpToastStreak", { xp, n: newStreak })
+					: t("game.seoulPuzzle.xpToast", { xp });
 			setXpToast({ text: toastText, key: Date.now() });
 			setTimeout(() => playXp(), 200);
 		} else {
@@ -1232,7 +1236,7 @@ export default function SeoulPuzzle() {
 					color: C.text2,
 				}}
 			>
-				로딩 중...
+				{t("game.common.loading")}
 			</div>
 		);
 	}
@@ -1255,7 +1259,7 @@ export default function SeoulPuzzle() {
 		<div
 			ref={frameRef}
 			tabIndex={-1}
-			aria-label="서울 여행 퍼즐"
+			aria-label={t("game.seoulPuzzle.aria")}
 			className="game-frame"
 			data-screen={screenId}
 		>
@@ -1353,9 +1357,9 @@ export default function SeoulPuzzle() {
 										lineHeight: 1.3,
 									}}
 								>
-									서울 여행에
+									{t("game.seoulPuzzle.welcome1")}
 									<br />
-									오신 것을 환영해요!
+									{t("game.seoulPuzzle.welcome2")}
 								</div>
 								<div
 									style={{
@@ -1366,9 +1370,9 @@ export default function SeoulPuzzle() {
 										marginTop: -12,
 									}}
 								>
-									한국어로 서울을 여행하며
+									{t("game.seoulPuzzle.intro1")}
 									<br />
-									새로운 표현을 익혀보세요.
+									{t("game.seoulPuzzle.intro2")}
 								</div>
 								<div
 									style={{
@@ -1387,14 +1391,14 @@ export default function SeoulPuzzle() {
 											textTransform: "uppercase",
 										}}
 									>
-										이름 (Korean or English)
+										{t("game.seoulPuzzle.nameLabel")}
 									</div>
 									<input
 										type="text"
 										value={nameInput}
 										onChange={(e) => setNameInput(e.target.value)}
 										onKeyDown={(e) => e.key === "Enter" && submitName()}
-										placeholder="예: 유리, Emily…"
+										placeholder={t("game.seoulPuzzle.namePlaceholder")}
 										maxLength={20}
 										style={{
 											width: "100%",
@@ -1436,7 +1440,7 @@ export default function SeoulPuzzle() {
 										transition: "opacity .15s",
 									}}
 								>
-									서울 여행 시작하기 →
+									{t("game.seoulPuzzle.startTrip")}
 								</button>
 								<div
 									style={{
@@ -1445,7 +1449,7 @@ export default function SeoulPuzzle() {
 										textAlign: "center",
 									}}
 								>
-									이름은 게임 내 대화에서 사용됩니다.
+									{t("game.seoulPuzzle.nameNote")}
 								</div>
 							</div>
 						</div>

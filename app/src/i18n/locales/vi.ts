@@ -239,6 +239,57 @@ const vi = {
 	},
 	game: {
 		/**
+		 * 서울 여행 퍼즐 — UI 문구만. 대화문·문장 카드·문법 이름·장소 이름은
+		 * 학습 대상이거나 원장 조회 키라 한국어를 그대로 쓴다(장소 이름은 지도
+		 * 좌표표의 키이기도 하다). 한국어 값은 목업(game__sp_*)에 적힌 글자 그대로다.
+		 *
+		 * friendInitial 은 NPC 아바타의 머리글자다 — 28px 동그라미에 한 자만 들어간다.
+		 */
+		seoulPuzzle: {
+			brand: "Du lịch Seoul",
+			myTrip: "Chuyến đi Seoul của {{name}} 🗺️",
+			progress: "{{done}} / {{total}} địa điểm xong",
+			review: "Ôn lại →",
+			canTry: "Có thể thử",
+			locked: "Đang khoá",
+			bookUnit: "Yonsei tập 1 · {{unit}}",
+			toMap: "← Bản đồ",
+			toLocInfo: "← Thông tin địa điểm",
+			willLearn: "Ngữ pháp học ở đây",
+			start: "Bắt đầu →",
+			nthPlace: "Địa điểm {{n}} — {{name}}",
+			streak: "🔥{{n}} lần liền",
+			friendInitial: "B",
+			makeSentence: "Hoàn thành câu",
+			dropHere: "Chạm vào thẻ để đặt vào đây",
+			good: "Làm tốt lắm! 👍",
+			checkAgain: "Hãy xem lại một lần nữa",
+			clickInOrder: "Hãy chạm theo thứ tự",
+			hint: "Gợi ý ({{n}})",
+			check: "Kiểm tra",
+			nextSentence: "Câu tiếp theo →",
+			retry: "Làm lại",
+			goOn: "Tiếp tục →",
+			xpToast: "⭐ +{{xp}} XP!",
+			xpToastStreak: "⭐ +{{xp}} XP! 🔥{{n}} lần liền",
+			placeDone: "Xong {{name}}!",
+			allDone: "Bạn đã hoàn thành mọi câu!",
+			correct: "Đúng",
+			hintsUsed: "Đã dùng gợi ý",
+			totalXp: "Tổng XP",
+			learned: "Ngữ pháp đã học ở đây",
+			backToMap: "Về bản đồ →",
+			welcome1: "Chào mừng đến",
+			welcome2: "chuyến đi Seoul!",
+			intro1: "Hãy du lịch Seoul bằng tiếng Hàn",
+			intro2: "và học những cách nói mới.",
+			nameLabel: "Tên (Korean or English)",
+			namePlaceholder: "ví dụ: 유리, Emily…",
+			startTrip: "Bắt đầu chuyến đi →",
+			nameNote: "Tên được dùng trong hội thoại của game.",
+			aria: "Câu đố du lịch Seoul",
+		},
+		/**
 		 * 봄소풍 숫자미션 — UI 문구만. 문항의 숫자·문장·정답과 친구 이름은
 		 * 학습 대상·데이터라 원장을 그대로 쓴다(힌트는 원장이 이미 언어별로 갖고 있다).
 		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
