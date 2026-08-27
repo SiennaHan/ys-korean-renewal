@@ -13,7 +13,9 @@
  *  · 한 판은 30문항까지
  */
 import { getGameProgress, saveGameProgress } from "@/api/game-progress";
+import { useTranslation } from "react-i18next";
 import {
+	LANGS,
 	type Missed,
 	type Mode,
 	VocashotPlayView,
@@ -77,6 +79,7 @@ const poolFor = (level: number) =>
 
 export default function VocashotSolo() {
 	const nav = useNavigate();
+	const { t, i18n } = useTranslation();
 
 	const [view, setView] = useState<View>("start");
 	/*
@@ -86,7 +89,15 @@ export default function VocashotSolo() {
 	 */
 	const frameRef = useScreenFocus(view);
 	const [level, setLevel] = useState(2);
-	const [lang, setLang] = useState<string>("en");
+	/*
+	 * 뜻 언어의 첫 값은 앱 언어를 따른다. 전에는 늘 "en" 이었다 — 베트남어로
+	 * 앱을 쓰는 사람이 VocaShot 을 열면 뜻이 영어로 나왔다. 앱 언어가 한국어면
+	 * 영어로 둔다(낱말이 한국어라 한국어 뜻은 없다). 고르면 그 값이 이긴다.
+	 */
+	const [lang, setLang] = useState<string>(() => {
+		const base = (i18n.language || "en").split("-")[0];
+		return LANGS.some((l) => l.code === base) ? base : "en";
+	});
 	const [mode, setMode] = useState<Mode>("easy");
 	const [best, setBest] = useState<number | null>(null);
 
@@ -245,7 +256,7 @@ export default function VocashotSolo() {
 					const next = new Map(m);
 					next.set(cur.q.a, {
 						w: cur.q.a,
-						m: cur.q.m?.[lang] ?? cur.q.m?.en ?? "(그림)",
+						m: cur.q.m?.[lang] ?? cur.q.m?.en ?? t("game.vocashot.picture"),
 						got: false,
 					});
 					return next;
@@ -262,11 +273,11 @@ export default function VocashotSolo() {
 			setFeedback({
 				text: right
 					? gained
-						? `정답 +${gained}`
-						: "정답 · 다시 맞힘"
+						? t("game.vocashot.toastCorrect", { gained })
+						: t("game.vocashot.toastReCorrect")
 					: picked === null
-						? "놓침"
-						: "오답",
+						? t("game.vocashot.toastMissed")
+						: t("game.vocashot.toastWrong"),
 				ok: right,
 			});
 
@@ -276,7 +287,7 @@ export default function VocashotSolo() {
 				serveNext(nextScore, nextHearts);
 			}, FEEDBACK_MS);
 		},
-		[cur, hearts, lang, score, serveNext],
+		[cur, hearts, lang, score, serveNext, t],
 	);
 	resolveRef.current = resolve;
 

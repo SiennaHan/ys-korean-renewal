@@ -239,6 +239,45 @@ const vi = {
 	},
 	game: {
 		/**
+		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
+		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
+		 */
+		vocashot: {
+			soloSub: "Chơi một mình",
+			level: "Cấp độ",
+			langLabel: "Ngôn ngữ nghĩa",
+			inputMode: "Cách trả lời",
+			easy: "Chọn 1 trong 4",
+			hard: "Tự nhập",
+			bestAt: "Điểm cao nhất {{level}}",
+			noBest: "Chưa có",
+			start: "Bắt đầu",
+			ariaStart: "VocaShot — bắt đầu",
+			ariaPlay: "VocaShot — câu hỏi",
+			ariaResult: "VocaShot — kết quả",
+			seconds: "{{n}}s",
+			typePlaceholder: "Hãy nhập từ tiếng Hàn",
+			fire: "Bắn!",
+			cleared: "Hoàn thành",
+			gameOver: "Hết lượt",
+			clearedDesc: "Đã xong {{asked}} câu, còn {{hearts}} tim.",
+			overDesc: "Bạn đã hết tim.",
+			myScore: "Điểm của bạn",
+			newBest: "Phá điểm cao nhất",
+			prevBest: "Cao nhất {{score, number}}",
+			correct: "Đúng",
+			asked: "Số câu",
+			missedCap: "Bỏ lỡ {{n}} từ · đúng lại {{got}}",
+			reCorrect: "Đúng lại",
+			noMissed: "Bạn không bỏ lỡ từ nào.",
+			again: "Chơi lại",
+			toastCorrect: "Đúng +{{gained}}",
+			toastReCorrect: "Đúng · đúng lại",
+			toastMissed: "Bỏ lỡ",
+			toastWrong: "Sai",
+			picture: "(hình)",
+		},
+		/**
 		 * 어휘 카드 마스터 — UI 문구만. 낱말·카테고리 이름은 학습 대상이라
 		 * 원장의 한국어를 그대로 쓴다. 한국어 값은 목업(game__cs_*)에 적힌 글자 그대로다.
 		 */
@@ -265,6 +304,8 @@ const vi = {
 		},
 		/** 게임 다섯이 함께 쓰는 문구 */
 		common: {
+			/** 점수 한 덩이 — 자릿수 구분은 i18next 가 언어별로 찍는다 */
+			points: "{{score, number}} điểm",
 			/** 점수 숫자 옆에 따로 붙는 단위 — 숫자와 글씨 크기가 달라 한 문장으로 못 묶는다 */
 			pointsUnit: "điểm",
 			loading: "Đang tải...",

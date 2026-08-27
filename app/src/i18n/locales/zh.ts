@@ -228,6 +228,45 @@ const zh = {
 	},
 	game: {
 		/**
+		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
+		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
+		 */
+		vocashot: {
+			soloSub: "单人",
+			level: "级别",
+			langLabel: "释义语言",
+			inputMode: "作答方式",
+			easy: "四选一",
+			hard: "直接输入",
+			bestAt: "{{level}} 最高分",
+			noBest: "还没有",
+			start: "开始",
+			ariaStart: "VocaShot — 开始",
+			ariaPlay: "VocaShot — 题目",
+			ariaResult: "VocaShot — 结果",
+			seconds: "{{n}}秒",
+			typePlaceholder: "请输入韩语单词",
+			fire: "发射！",
+			cleared: "完成",
+			gameOver: "游戏结束",
+			clearedDesc: "做完{{asked}}道题，还剩{{hearts}}颗心。",
+			overDesc: "心用完了，游戏结束。",
+			myScore: "我的分数",
+			newBest: "打破最高分",
+			prevBest: "最高分 {{score, number}}",
+			correct: "答对",
+			asked: "出题数",
+			missedCap: "漏掉{{n}}个 · 后来答对{{got}}",
+			reCorrect: "后来答对",
+			noMissed: "没有漏掉的单词。",
+			again: "再玩一次",
+			toastCorrect: "答对 +{{gained}}",
+			toastReCorrect: "答对 · 后来答对",
+			toastMissed: "漏掉",
+			toastWrong: "答错",
+			picture: "（图）",
+		},
+		/**
 		 * 어휘 카드 마스터 — UI 문구만. 낱말·카테고리 이름은 학습 대상이라
 		 * 원장의 한국어를 그대로 쓴다. 한국어 값은 목업(game__cs_*)에 적힌 글자 그대로다.
 		 */
@@ -254,6 +293,8 @@ const zh = {
 		},
 		/** 게임 다섯이 함께 쓰는 문구 */
 		common: {
+			/** 점수 한 덩이 — 자릿수 구분은 i18next 가 언어별로 찍는다 */
+			points: "{{score, number}}分",
 			/** 점수 숫자 옆에 따로 붙는 단위 — 숫자와 글씨 크기가 달라 한 문장으로 못 묶는다 */
 			pointsUnit: "分",
 			loading: "加载中...",

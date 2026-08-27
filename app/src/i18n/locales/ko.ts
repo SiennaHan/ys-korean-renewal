@@ -247,6 +247,45 @@ const ko = {
 	},
 	game: {
 		/**
+		 * VocaShot — UI 문구만. 낱말과 그 뜻은 학습 대상이라 원장을 그대로 쓴다.
+		 * 한국어 값은 목업(vocashot__*)에 적힌 글자 그대로다.
+		 */
+		vocashot: {
+			soloSub: "혼자 하기",
+			level: "급",
+			langLabel: "뜻 언어",
+			inputMode: "입력 방식",
+			easy: "4개 중 고르기",
+			hard: "직접 입력",
+			bestAt: "{{level}} 최고 점수",
+			noBest: "아직 없음",
+			start: "시작하기",
+			ariaStart: "VocaShot — 시작",
+			ariaPlay: "VocaShot — 문제",
+			ariaResult: "VocaShot — 결과",
+			seconds: "{{n}}초",
+			typePlaceholder: "한국어 단어를 입력하세요",
+			fire: "발사!",
+			cleared: "완주",
+			gameOver: "게임 오버",
+			clearedDesc: "{{asked}}문항을 하트 {{hearts}}개 남기고 끝냈습니다.",
+			overDesc: "하트가 0이 되어 끝났습니다.",
+			myScore: "내 점수",
+			newBest: "최고 점수 경신",
+			prevBest: "최고 점수 {{score, number}}",
+			correct: "맞힘",
+			asked: "낸 문항",
+			missedCap: "놓친 단어 {{n}}개 · 다시 맞힘 {{got}}",
+			reCorrect: "다시 맞힘",
+			noMissed: "놓친 단어가 없습니다.",
+			again: "다시 하기",
+			toastCorrect: "정답 +{{gained}}",
+			toastReCorrect: "정답 · 다시 맞힘",
+			toastMissed: "놓침",
+			toastWrong: "오답",
+			picture: "(그림)",
+		},
+		/**
 		 * 어휘 카드 마스터 — UI 문구만. 낱말·카테고리 이름은 학습 대상이라
 		 * 원장의 한국어를 그대로 쓴다. 한국어 값은 목업(game__cs_*)에 적힌 글자 그대로다.
 		 */
@@ -273,6 +312,8 @@ const ko = {
 		},
 		/** 게임 다섯이 함께 쓰는 문구 */
 		common: {
+			/** 점수 한 덩이 — 자릿수 구분은 i18next 가 언어별로 찍는다 */
+			points: "{{score, number}}점",
 			/** 점수 숫자 옆에 따로 붙는 단위 — 숫자와 글씨 크기가 달라 한 문장으로 못 묶는다 */
 			pointsUnit: "점",
 			loading: "로딩 중...",

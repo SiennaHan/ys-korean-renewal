@@ -12,6 +12,8 @@
  */
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { gameLevelLabel } from "@/components/main/textbook/labels";
 
 export const LANGS = [
 	{ code: "en", label: "English" },
@@ -61,13 +63,14 @@ export function VocashotStartView({
 	onStart,
 	onBack,
 }: StartViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div
 			ref={frameRef}
 			className="vocashot-frame"
 			data-screen="vs_start"
 			tabIndex={-1}
-			aria-label="VocaShot — 시작"
+			aria-label={t("game.vocashot.ariaStart")}
 		>
 			<div
 				className="g-dark"
@@ -94,13 +97,13 @@ export function VocashotStartView({
 						</button>
 						<div>
 							<h1>VocaShot</h1>
-							<div className="sub">혼자 하기</div>
+							<div className="sub">{t("game.vocashot.soloSub")}</div>
 						</div>
 					</div>
 				</div>
 
 				<div className="g-body">
-					<span className="g-lb">급</span>
+					<span className="g-lb">{t("game.vocashot.level")}</span>
 					<div className="lv">
 						{[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
 							<button
@@ -109,12 +112,12 @@ export function VocashotStartView({
 								className={n === level ? "on" : ""}
 								onClick={() => onLevel(n)}
 							>
-								{n}급
+								{gameLevelLabel(t, n)}
 							</button>
 						))}
 					</div>
 
-					<span className="g-lb">뜻 언어</span>
+					<span className="g-lb">{t("game.vocashot.langLabel")}</span>
 					<div className="lv" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
 						{LANGS.map((l) => (
 							<button
@@ -129,37 +132,41 @@ export function VocashotStartView({
 						))}
 					</div>
 
-					<span className="g-lb">입력 방식</span>
+					<span className="g-lb">{t("game.vocashot.inputMode")}</span>
 					<div className="seg">
 						<button
 							type="button"
 							className={mode === "easy" ? "on" : ""}
 							onClick={() => onMode("easy")}
 						>
-							4개 중 고르기
+							{t("game.vocashot.easy")}
 						</button>
 						<button
 							type="button"
 							className={mode === "hard" ? "on" : ""}
 							onClick={() => onMode("hard")}
 						>
-							직접 입력
+							{t("game.vocashot.hard")}
 						</button>
 					</div>
 
 					<div className={`best${best === null ? " none" : ""}`}>
-						<span className="k">{level}급 최고 점수</span>
+						<span className="k">
+							{t("game.vocashot.bestAt", {
+								level: gameLevelLabel(t, level),
+							})}
+						</span>
 						<span className="v">
 							{best === null
-								? "아직 없음"
-								: `${best.toLocaleString("ko-KR")}점`}
+								? t("game.vocashot.noBest")
+								: t("game.common.points", { score: best })}
 						</span>
 					</div>
 				</div>
 
 				<div className="g-dock">
 					<button type="button" className="g-go" onClick={onStart}>
-						시작하기
+						{t("game.vocashot.start")}
 					</button>
 				</div>
 			</div>
@@ -334,6 +341,7 @@ export function VocashotPlayView({
 	onTyped,
 	onResolve,
 }: PlayViewProps) {
+	const { t } = useTranslation();
 	/*
 	 * 요격 연출 — 정답을 맞히면 방어선에서 운석까지 광선이 뻗고, 맞은 자리에
 	 * 불꽃이 터지고, 운석이 부서진다. 정본(`screens_SOT.html`)의 `playHitEffect()`
@@ -401,7 +409,7 @@ export function VocashotPlayView({
 			className="vocashot-frame"
 			data-screen="vs_play"
 			tabIndex={-1}
-			aria-label="VocaShot — 문제"
+			aria-label={t("game.vocashot.ariaPlay")}
 		>
 			<div
 				className="g-dark"
@@ -412,8 +420,12 @@ export function VocashotPlayView({
 						<h1>VocaShot</h1>
 						{/* 목업은 낙하 초를 보여 준다 — 점수가 오르면 짧아지는 값이다 */}
 						<div className="sub">
-							{level}급 · {mode === "easy" ? "4개 중 고르기" : "직접 입력"} ·{" "}
-							{lang} · {meteor ? `${meteor.dur.toFixed(1)}초` : "-"}
+							{gameLevelLabel(t, level)} ·{" "}
+							{t(mode === "easy" ? "game.vocashot.easy" : "game.vocashot.hard")}{" "}
+							· {lang} ·{" "}
+							{meteor
+								? t("game.vocashot.seconds", { n: meteor.dur.toFixed(1) })
+								: "-"}
 						</div>
 					</div>
 					<div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -514,7 +526,7 @@ export function VocashotPlayView({
 								onChange={(e) => onTyped(e.target.value)}
 								// 정본에 있다 — 모바일에서 첫 글자가 대문자로 바뀌지 않게 한다
 								autoCapitalize="off"
-								placeholder="한국어 단어를 입력하세요"
+								placeholder={t("game.vocashot.typePlaceholder")}
 								autoComplete="off"
 							/>
 							{/*
@@ -522,7 +534,7 @@ export function VocashotPlayView({
 							 * `g-go` 는 4지선다 쪽 전폭 버튼이라 `width:100%` 가 붙어 있어서,
 							 * 여기 쓰면 입력 칸을 34px 로 찌그러뜨리고 줄이 넘쳤다.
 							 */}
-							<button type="submit">발사!</button>
+							<button type="submit">{t("game.vocashot.fire")}</button>
 						</form>
 					)}
 				</div>
@@ -570,6 +582,7 @@ export function VocashotResultView({
 	onAgain,
 	onExit,
 }: ResultViewProps) {
+	const { t, i18n } = useTranslation();
 	const cleared = hearts > 0;
 	return (
 		<div
@@ -577,7 +590,7 @@ export function VocashotResultView({
 			className="vocashot-frame"
 			data-screen="vs_result"
 			tabIndex={-1}
-			aria-label="VocaShot — 결과"
+			aria-label={t("game.vocashot.ariaResult")}
 		>
 			<div
 				className="g-dark"
@@ -602,14 +615,15 @@ export function VocashotResultView({
 						<div>
 							<h1>VocaShot</h1>
 							<div className="sub">
-								{level}급 · {mode === "easy" ? "4개 중 고르기" : "직접 입력"}
+								{gameLevelLabel(t, level)} ·{" "}
+								{t(mode === "easy" ? "game.vocashot.easy" : "game.vocashot.hard")}
 							</div>
 						</div>
 					</div>
 					<div style={{ textAlign: "right" }}>
 						<div className="r-k">BEST</div>
 						<div className="r-v" style={{ color: "#fbbf24" }}>
-							{(best ?? 0).toLocaleString("ko-KR")}
+							{(best ?? 0).toLocaleString(i18n.language)}
 						</div>
 					</div>
 				</div>
@@ -623,27 +637,27 @@ export function VocashotResultView({
 					 * 새로 뜬 캡처(vocashot__result_best)가 잡았다.
 					 */}
 					<h2 className={`r-ttl ${cleared ? "ok" : "no"}`}>
-						{cleared ? "완주" : "게임 오버"}
+						{t(cleared ? "game.vocashot.cleared" : "game.vocashot.gameOver")}
 					</h2>
 					<p className="r-desc">
 						{cleared
-							? `${asked}문항을 하트 ${hearts}개 남기고 끝냈습니다.`
-							: "하트가 0이 되어 끝났습니다."}
+							? t("game.vocashot.clearedDesc", { asked, hearts })
+							: t("game.vocashot.overDesc")}
 					</p>
 
 					<div className="r-score">
-						<div className="r-k">내 점수</div>
-						<p className="big">{score.toLocaleString("ko-KR")}</p>
+						<div className="r-k">{t("game.vocashot.myScore")}</div>
+						<p className="big">{score.toLocaleString(i18n.language)}</p>
 						{/*
 						 * 정본(`phase1/screens_SOT.html`)은 신기록이면 이전 최고 점수
 						 * 대신 배지를 띄운다. 이 자리가 비어 있어서 `.r-new` 규칙이
 						 * 아무도 안 쓰는 채로 남아 있었다(`pnpm check:css` 가 잡았다).
 						 */}
 						{isBest ? (
-							<span className="r-new">최고 점수 경신</span>
+							<span className="r-new">{t("game.vocashot.newBest")}</span>
 						) : (
 							<p className="r-prev">
-								최고 점수 {(best ?? 0).toLocaleString("ko-KR")}
+								{t("game.vocashot.prevBest", { score: best ?? 0 })}
 							</p>
 						)}
 					</div>
@@ -651,13 +665,13 @@ export function VocashotResultView({
 					{/* 목업은 둘만 둔다 — 남은 하트는 위 r-desc 가 이미 말한다 */}
 					<div className="r-stats">
 						<div className="r-stat">
-							<div className="r-k">맞힘</div>
+							<div className="r-k">{t("game.vocashot.correct")}</div>
 							<div className="v" style={{ color: "#34d399" }}>
 								{correct}
 							</div>
 						</div>
 						<div className="r-stat">
-							<div className="r-k">낸 문항</div>
+							<div className="r-k">{t("game.vocashot.asked")}</div>
 							<div className="v" style={{ color: "#e2e8f0" }}>
 								{asked}
 							</div>
@@ -675,28 +689,32 @@ export function VocashotResultView({
 						 */
 						<div className="r-wrong">
 							<div className="r-k cap">
-								놓친 단어 {missed.length}개 · 다시 맞힘{" "}
-								{missed.filter((x) => x.got).length}
+								{t("game.vocashot.missedCap", {
+									n: missed.length,
+									got: missed.filter((x) => x.got).length,
+								})}
 							</div>
 							{missed.map((m) => (
 								<div key={m.w} className={`r-row${m.got ? " got" : ""}`}>
 									<span className="w">{m.w}</span>
 									<span className="m">{m.m}</span>
-									{m.got && <span className="re">다시 맞힘</span>}
+									{m.got && (
+										<span className="re">{t("game.vocashot.reCorrect")}</span>
+									)}
 								</div>
 							))}
 						</div>
 					) : (
-						<div className="r-empty">놓친 단어가 없습니다.</div>
+						<div className="r-empty">{t("game.vocashot.noMissed")}</div>
 					)}
 				</div>
 
 				<div className="r-dock">
 					<button type="button" className="r-again" onClick={onAgain}>
-						다시 하기
+						{t("game.vocashot.again")}
 					</button>
 					<button type="button" className="r-exit" onClick={onExit}>
-						나가기
+						{t("player.exit")}
 					</button>
 				</div>
 			</div>
