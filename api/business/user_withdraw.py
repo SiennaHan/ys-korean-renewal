@@ -69,26 +69,36 @@ async def withdrawAccount(userId: str, password: str):
     deleted[A.__tablename__] = n
 
     # ── ② 문의. 캡처 파일 → 파일 행 → 문의 행 ──
+    #
+    # **음성과 같은 규칙이다** — 저장소에서 못 지운 파일은 행을 남긴다. 처음에는
+    # 여기만 실패해도 행을 지웠는데(2026-08-27 에 진짜 DB 로 굴려 보다 찾았다),
+    # 그러면 열쇠를 아는 유일한 행이 사라져 **비공개 버킷에 캡처만 남는다.**
+    # 남은 파일 행이 있으면 그 문의도 남긴다 — 외래키가 걸려 있고, 무엇보다
+    # 어느 문의의 파일인지가 지워야 할 것을 다시 찾는 실마리다.
     Q, F = withdrawal_scope.INQUIRY_MODEL, withdrawal_scope.INQUIRY_FILE_MODEL
     with sessionScope() as db:
         inquiryIds = [r.id for r in db.query(Q.id).filter(Q.user_id.in_(ids)).all()]
-        keys = (
-            [r.s3_key for r in db.query(F.s3_key).filter(F.inquiry_id.in_(inquiryIds)).all()]
+        files = (
+            [(r.id, r.inquiry_id, r.s3_key)
+             for r in db.query(F).filter(F.inquiry_id.in_(inquiryIds)).all()]
             if inquiryIds else []
         )
-    _, failed = await _deleteObjects(keys)
+    okKeys, failed = await _deleteObjects([k for _, _, k in files])
     fileFailed += failed
+    okKeySet = set(okKeys)
+    okFileIds = [fid for fid, _, key in files if (not key) or (key in okKeySet)]
+    stuckInquiryIds = {qid for _, qid, key in files if key and key not in okKeySet}
+
     with sessionScope() as db:
-        if inquiryIds:
-            deleted[F.__tablename__] = db.query(F).filter(
-                F.inquiry_id.in_(inquiryIds)
-            ).delete(synchronize_session=False)
-            deleted[Q.__tablename__] = db.query(Q).filter(
-                Q.id.in_(inquiryIds)
-            ).delete(synchronize_session=False)
-        else:
-            deleted[F.__tablename__] = 0
-            deleted[Q.__tablename__] = 0
+        deleted[F.__tablename__] = (
+            db.query(F).filter(F.id.in_(okFileIds)).delete(synchronize_session=False)
+            if okFileIds else 0
+        )
+        goneIds = [i for i in inquiryIds if i not in stuckInquiryIds]
+        deleted[Q.__tablename__] = (
+            db.query(Q).filter(Q.id.in_(goneIds)).delete(synchronize_session=False)
+            if goneIds else 0
+        )
 
     # ── ③ 나머지 표 ──
     with sessionScope() as db:

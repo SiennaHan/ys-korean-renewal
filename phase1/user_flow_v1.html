@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ 4492a5c -->
+<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ f4cb5c3 -->
 <!-- 왜: §02 의 착지점과 §05 의 "막힘" 은 전부 이 파일들을 읽고 적은 관찰이다 -->
 <title>유저 플로우 — 진입에서 결제까지 한 장</title>
 <style>
@@ -315,9 +315,12 @@
   <li><div><div class="h">메일이 안 나간다</div>
     <div class="d">보낼 수단이 아예 없다(<code>boto3</code> 는 S3 전용). 재설정이 껍데기인 것도, 영수증을 못 보내는 것도 같은 뿌리다.
     보낼 것은 넷뿐이고 5개 언어 템플릿이 필요하다</div></div></li>
-  <li><div><div class="h">잠가도 게임 콘텐츠는 주소로 새 나간다</div>
-    <div class="d">콘텐츠를 내주는 여섯 라우트에 인증이 없다 — <span class="file">access_and_pricing_v1</span> §08 의 3번.
-    화면만 잠그면 <b>화면에만 있는 잠금</b>이 된다</div></div></li>
+  <li><div><div class="h">잠가도 게임 콘텐츠는 주소로 새 나간다 <span class="pill done">게임은 풀렸다 (2026-08-27)</span></div>
+    <div class="d">유료 게임 셋의 콘텐츠 라우트에 <span class="file">RequireGame</span> 가드가 붙었다
+    (<span class="file">card_sort</span> · <span class="file">particle_sniper</span> · <span class="file">seoul_puzzle</span>).
+    무료인 <span class="file">vocashot</span> · <span class="file">spring_picnic</span> 은 가드가 없는 것이 맞다.<br>
+    <b>교재 콘텐츠는 아직이다</b> — 잠긴 과의 주소를 직접 치면 그대로 열린다
+    (<span class="file">access_and_pricing_v1</span> §08 의 3번 · §09 의 7단계)</div></div></li>
 </ol>
 
 <h2><span class="n">05</span>아직 정하지 않은 것 셋</h2>
