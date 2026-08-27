@@ -457,25 +457,36 @@
 <table>
   <thead><tr><th>일</th><th>서버</th><th>내용</th></tr></thead>
   <tbody>
-    <tr><td>결과를 개수만큼 보여 준다 <span class="pill done">§05-2</span></td>
+    <tr><td>결과를 개수만큼 보여 준다 <span class="pill done">했다 2026-08-27</span></td>
       <td><b>아니오</b></td>
-      <td><span class="file">slice(0, 10)</span> 을 걷어내고 더 보기(또는 이어 스크롤)로 잇는다.
-        한 번에 그리는 수는 화면 성능에 맞춰 정하되 <b>머리글의 개수와 어긋나지 않게</b> 한다</td></tr>
+      <td><b>이어 스크롤로 했다.</b> <span class="file">slice(0, 10)</span> 은 상한이 아니라
+        <b>한 번에 그리는 수</b>가 됐고(<span class="file">shown</span>), 목록 끝 표식이 시야에
+        들어오면 열 장을 더 그린다 — <b>끝까지 열리되 그리는 것은 본 만큼</b>이다.
+        「더 보기」 버튼으로 하지 않은 이유는 1,226건에서 122번 눌러야 하기 때문이고,
+        <b>새 문구가 필요 없어 다섯 언어를 건드리지 않는다</b>.
+        썸네일에 <span class="file">loading="lazy"</span> 를 같이 붙였다</td></tr>
     <tr><td>결과 0 문구 <span class="pill stop">§04-2</span></td>
       <td><b>아니오</b></td>
       <td>빈 상태를 둘로 가른다 — <b>검색 전</b>(지금 문구)과 <b>0건</b>(검색어를 보여 주고
         다른 말로 찾아보라고). <b>5개 언어</b></td></tr>
-    <tr><td>하트를 뺀다 <span class="pill done">§05-5</span></td>
+    <tr><td>하트를 뺀다 <span class="pill done">했다 2026-08-27</span></td>
       <td><b>아니오</b></td><td>카드 우상단 아이콘 삭제</td></tr>
-    <tr><td><span class="file">script_org</span> 를 산출물에서 뺀다 <span class="pill stop">§04-7</span></td>
+    <tr><td><span class="file">script_org</span> 를 뺀다 <span class="pill done">했다 2026-08-27</span></td>
       <td><b>아니오</b></td>
-      <td>클립 데이터를 만드는 자리에서 그 필드를 지운다. 원본은 저장소 밖에 따로 둔다.
-        <b>받는 크기가 절반이 된다</b></td></tr>
-    <tr><td>index 27 의 ID 를 되살린다 <span class="pill stop">§04-8</span></td>
+      <td>파일에서 지웠다. 생성 스크립트가 없어 손으로 넣는 자료다 —
+        <b>원본이 필요하면 그 커밋 이전을 보면 된다</b>.<br>
+        <b>재서 확인했다</b> — 파일 11 MB → 5.4 MB, <b>실려 나가는 gzip 3.0 MB → 1.92 MB</b>.
+        절반까지는 안 줄었다(반복이 많아 gzip 이 이미 잘 줄이고 있었다)</td></tr>
+    <tr><td>index 27 의 ID 를 되살린다 <span class="pill done">했다 2026-08-27</span></td>
       <td><b>아니오</b></td>
-      <td><span class="file">link</span> 에서 캐면 된다(<span class="file">-LFpAYRYkJI</span>).
-        <b>같이 만들 것</b> — 데이터 만들 때 <b>11자 규격을 검사</b>하는 한 줄.
-        엑셀을 거치는 자료라 또 생긴다</td></tr>
+      <td><span class="file">link</span> 에서 캤다(<span class="file">-LFpAYRYkJI</span>).
+        <b>검사도 같이 만들어 게이트에 걸었다</b> —
+        <span class="file">scripts/clip-data-check.py</span> 가
+        <span class="file">pnpm parity:activity</span> 끝에서 돈다.
+        11자 규격 · <span class="file">youtube_id</span> 중복 ·
+        <span class="file">link</span> 와의 불일치 · 필드 누락 ·
+        <b><span class="file">script_org</span> 가 다시 들어오는 것</b>을 본다.
+        <b>일부러 다섯 가지를 깨뜨려 잡히는 것을 확인했다</b></td></tr>
     <tr><td>신고를 하위 정렬로 <span class="pill done">§05-6</span></td>
       <td><b>예</b></td>
       <td><b>이것을 먼저 넣는다</b>(§04 의 순서 칸). 클라이언트는 목록에서 빼는 대신

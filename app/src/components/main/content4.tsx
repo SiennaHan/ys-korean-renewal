@@ -1,7 +1,7 @@
 import { getGuestId } from "@/api/api";
 import { createReport, listReport } from "@/api/report";
 import { clips } from "@/shared/data/clip";
-import { Heart, MoreVertical, Search, X } from "lucide-react";
+import { MoreVertical, Search, X } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -194,9 +194,13 @@ const VideoCard = ({
 				onClick={() => onPlay(video)}
 				className="relative h-[185px] w-full overflow-hidden rounded-[12px] bg-white"
 			>
+				{/* 결과 상한을 없앴으므로(§05-2) 목록이 수백 장이 될 수 있다 —
+				    `loading="lazy"` 로 보이는 것만 받는다 */}
 				<img
 					src={thumbnailUrl}
 					alt={video.title}
+					loading="lazy"
+					decoding="async"
 					className="absolute inset-0 h-full w-full object-cover"
 				/>
 				{/* 시간 뱃지 — 썸네일 위에 얹는 어두운 오버레이다. semantic 에 "그림 위
@@ -207,10 +211,12 @@ const VideoCard = ({
 						{formatTime(video.start)}
 					</span>
 				</div>
-				{/* 좋아요 아이콘 */}
-				<div className="absolute top-[12px] right-[12px] flex size-[24px] items-center justify-center">
-					<Heart size={20} className="text-white" />
-				</div>
+				{/*
+				 * **하트(좋아요)를 뺐다** — clip_spec_v1 §05 의 5번(기획 확정 2026-08-27).
+				 * `onClick` 이 없는 `<div>` 안의 아이콘이었고 저장하는 곳도 없었다.
+				 * 눌러도 안 되는 하트는 기능이 없는 것보다 나쁘다.
+				 * 만들 때 필요한 것은 그 문서 §06 의 마지막 줄에 적혀 있다.
+				 */}
 			</button>
 
 			{/* 제목 + 스크립트 + 메뉴 */}
@@ -443,6 +449,36 @@ export default function Content4() {
 	const [playingVideo, setPlayingVideo] = useState<ResultItem | null>(null);
 	const [reportVideo, setReportVideo] = useState<ResultItem | null>(null);
 
+	/*
+	 * **한 번에 그리는 수.** 결과 상한이 아니다 — `clip_spec_v1` §05 의 2번
+	 * (기획 확정 2026-08-27)이 "개수를 낸 만큼 보여 준다" 로 정했다.
+	 *
+	 * 전에는 `results.slice(0, 10)` 이 **상한**이었다. 머리글은 전체 개수를 적는데
+	 * (「그래서」는 1,226건) 열 개만 주고 더 보는 길이 없었다 — **개수가 거짓말**이었다.
+	 * 사례를 여럿 들어 보는 것이 이 기능의 목적이므로 열 개로 끊으면 목적을 깎는다.
+	 *
+	 * 그렇다고 수백 장을 한 번에 그리지도 않는다. 아래 감시자가 목록 끝에 닿을 때마다
+	 * 한 판을 더 그린다 — **끝까지 열리되 그리는 것은 본 만큼**이다.
+	 * 버튼이 아니라 스크롤로 한 이유는 1,226건에서 「더 보기」를 122번 누를 수 없기 때문이다.
+	 */
+	const PAGE = 10;
+	const [shown, setShown] = useState(PAGE);
+	const scrollRef = useRef<HTMLDivElement | null>(null);
+
+	/*
+	 * 목록이 갈리면 **처음 판으로 되돌리고 맨 위로 올린다.**
+	 *
+	 * 위로 올리는 것이 같이 있어야 한다 — 상한을 없애기 전에는 목록이 최대 열 장이라
+	 * 거의 스크롤되지 않았지만 이제는 아래에 있을 수 있다. 그 자리에 남으면
+	 * ① 새 결과의 중간이 보이고 ② 목록 끝 표식이 곧바로 눈에 들어와
+	 * **감시자가 연달아 여러 판을 그린다** — 갈래를 바꿨을 때 열 장이 아니라
+	 * 마흔 장이 그려지는 것을 브라우저에서 봤다.
+	 */
+	const resetList = useCallback(() => {
+		setShown(PAGE);
+		if (scrollRef.current) scrollRef.current.scrollTop = 0;
+	}, []);
+
 	const searchScript = useCallback(
 		(word: string, category: CategoryType) => {
 			if (!word || !word.trim() || word.length < 2) {
@@ -527,6 +563,7 @@ export default function Content4() {
 		const word = e.target.value;
 		setSearchWord(word);
 		setPlayingVideo(null);
+		resetList();
 		searchScript(word, selectedCategory);
 	};
 
@@ -534,11 +571,13 @@ export default function Content4() {
 		setSearchWord("");
 		setResults([]);
 		setPlayingVideo(null);
+		resetList();
 	};
 
 	const onCategorySelect = (cat: CategoryType) => {
 		setSelectedCategory(cat);
 		setPlayingVideo(null);
+		resetList();
 		searchScript(searchWord, cat);
 	};
 
@@ -582,6 +621,32 @@ export default function Content4() {
 	const hasResults = results.length > 0;
 	const hasSearchWord = searchWord.trim().length >= 2;
 
+	/*
+	 * 목록 끝에 닿으면 한 판 더. `shown` 을 의존성에 두는 것이 방아쇠다 —
+	 * 한 판 늘어나면 감시자를 새 끝자리에 다시 걸어야 한다.
+	 *
+	 * `results.length` 도 같이 본다. 검색 결과가 바뀌면 끝자리도 바뀐다.
+	 */
+	const tailRef = useRef<HTMLDivElement | null>(null);
+	useEffect(() => {
+		const el = tailRef.current;
+		if (!el) return;
+		if (shown >= results.length) return;
+		const io = new IntersectionObserver(
+			(entries) => {
+				for (const e of entries) {
+					if (e.isIntersecting) {
+						setShown((n) => Math.min(n + PAGE, results.length));
+					}
+				}
+			},
+			// 끝에 닿기 전에 미리 받아 둔다 — 스크롤이 멈추지 않게
+			{ rootMargin: "600px 0px" },
+		);
+		io.observe(el);
+		return () => io.disconnect();
+	}, [shown, results.length]);
+
 	return (
 		<div className="flex h-full w-full flex-col bg-background-base">
 			{/* 타이틀 */}
@@ -611,7 +676,7 @@ export default function Content4() {
 			)}
 
 			{/* 컨텐츠 영역 */}
-			<div className="scrollbar-hide flex-1 overflow-y-auto">
+			<div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
 				{hasSearchWord && hasResults && (
 					<>
 						{/* 검색 결과 헤더 */}
@@ -626,7 +691,7 @@ export default function Content4() {
 
 						{/* 비디오 리스트 */}
 						<div className="flex flex-col gap-[16px] px-[16px] pb-[16px]">
-							{results.slice(0, 10).map((item, index) => (
+							{results.slice(0, shown).map((item, index) => (
 								<div key={`${item.youtubeId}-${item.start}-${index}`}>
 									{playingVideo?.youtubeId === item.youtubeId &&
 									playingVideo?.start === item.start ? (
@@ -657,6 +722,10 @@ export default function Content4() {
 									)}
 								</div>
 							))}
+							{/* 목록 끝 표식 — 보이면 한 판 더 그린다(위 감시자) */}
+							{shown < results.length && (
+								<div ref={tailRef} className="h-[1px] w-full" />
+							)}
 						</div>
 					</>
 				)}
