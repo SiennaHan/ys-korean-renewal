@@ -114,7 +114,11 @@
   <div class="eyebrow">Phase 1 · 기획 · 2026-08-20</div>
   <h1>접근 권한과 유료 경계 — 누가 무엇까지 볼 수 있나</h1>
   <p class="lead">게스트가 어디까지 보고, 무엇이 무료이고, 유료분을 어떻게 여는지를 정한다.
-  <b>코드에는 권한 개념이 아직 하나도 없다</b> — 무료·유료·구매·잠금 어느 것도 없는 백지에서 시작한다.
+  <b>2026-08-27 부터 권한 표시가 코드에 있다</b> — <span class="file">GET /entitlement</span> 와
+  앱의 자물쇠·안내 넷(§09 의 1~3단계), 학생 자체 회원가입(4단계)까지 들어왔다.
+  <b>없는 것은 결제다</b> — 구매·복원·환불·서버 접근 제한. 그래서 지금 잠금은 <b>표시일 뿐</b>이고
+  주소를 직접 치면 잠긴 과가 열린다(§08 의 3번).
+  <span class="qa">여기 "권한 개념이 아직 하나도 없다 — 백지에서 시작한다" 로 남아 있었다(2026-08-27 정정).</span>
   숫자는 전부 <span class="file">app/src/shared/data/</span> 와 원장 <span class="file">v28</span> 을
   실제로 센 것이다.</p>
 </header>
@@ -389,13 +393,15 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
 
 <h2><span class="n">08</span>지금 코드가 이 결정을 못 받는 곳</h2>
 <ol class="path">
-  <li><div><div class="h">학생 자체 회원가입이 없다 <span class="pill stop">막힘</span></div>
-    <div class="d"><span class="file">/auth/signup</span> 은 <b>관리자용</b>이고
-    학생은 학교가 엑셀로 일괄 생성한다(<span class="file">createStudentBatch</span>).
-    게다가 <span class="file">ko_user.is_approved</span> 의 기본값이 <b>False</b> 다 —
-    개인 구매자가 스스로 가입해도 <b>승인 대기로 앉는다.</b>
-    B2C 를 하려면 이 둘을 같이 고쳐야 한다: 학생 가입 경로 신설 +
-    개인 가입은 승인 없이 활성.</div></div></li>
+  <li><div><div class="h"><s>학생 자체 회원가입이 없다</s> <span class="pill done">풀렸다 2026-08-27</span></div>
+    <div class="d">요구한 둘을 그대로 지켰다 — <span class="file">POST /user/sign/up</span> 신설,
+    개인 가입은 <b>승인 없이 활성</b>. <span class="file">/auth_signup</span> 은 관리자용이라 그대로 두었다
+    (그 길은 <span class="file">role="school_admin"</span> · <span class="file">is_approved=False</span> 로 만든다 —
+    개인 가입자가 그리로 오면 승인 대기로 앉는다). <span class="file">school_code</span> 를 비워
+    개인 구매자로 잡히게 한 것도 같이 했다 — 비어야 §04 가 <span class="file">guest</span> 를 내고
+    앱이 결제를 안내한다.<br>
+    <b>대신 새 조건이 생겼다</b> — 약관·개인정보 처리방침 두 문서가 없으면 배포하면 안 된다
+    (<span class="file">legal_draft_v1</span>).</div></div></li>
   <li><div><div class="h">/qr 은 권한 장치가 아니다</div>
     <div class="d">스캔을 기록하고 리다이렉트만 한다(<span class="file">ko_qr_scan</span> ·
     <span class="file">ko_qr_visitor</span>). 책에 QR 을 넣어 권한을 주는 구조로 보이지만

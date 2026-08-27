@@ -81,7 +81,7 @@ cd app && pnpm install && pnpm dev
 |---|---|
 | 1 파이썬 의존성 | `api/.venv`. `requirements.txt` 에 `httpx` 가 빠져 있어 넣었다 |
 | 2 `api/.env` | **`DB_*` 다섯과 `JWT_SECRET` 뿐.** 본보기가 `api/.env.example` 이다.<br>**`JWT_SECRET` 은 base64 여야 한다** — `auth.py:38` 이 `b64decode` 한다. 아무 문자열이면 로그인이 500 이다 |
-| 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**스키마는 안 넣는다** — `createAllTables()` 가 28개를 스스로 만들었다 |
+| 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**스키마는 안 넣는다** — `createAllTables()` 가 표를 스스로 만든다(2026-08-27 기준 **30개**. 세려면 `grep -c '^class Ko' api/persistence/model.py`) |
 | 4 외부 키 | **하나도 없어도 된다.** 2026-08-26 에 로드 때 자격증명을 요구하던 다섯 곳을<br>요청 시점으로 옮겼다 — `BLOCKERS.md` §6-b |
 
 **앱까지 붙여서 화면에서 돌렸다.** 게스트 로그인 → 홈 → 교재학습 → 활동 →

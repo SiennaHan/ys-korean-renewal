@@ -152,7 +152,9 @@
       <td><span class="pill done">된다</span> 계정은 학교가 만든다(<code>POST /student/batch</code> · <code>/upload</code>, 둘 다 관리자 전용)</td></tr>
     <tr><td><b>비밀번호 재설정 메일</b></td>
       <td><code>/reset-password</code> → <code>/new-password</code></td>
-      <td><span class="pill stop">메일이 안 나간다</span> 화면은 "보내드렸습니다" 라고 말한다 — <span class="pill file">BLOCKERS.md</span> §7</td></tr>
+      <td><span class="pill open">메일이 안 나간다</span> <b>화면은 이제 그렇다고 말한다</b>(2026-08-27) —
+        「지금은 메일로 보내 드릴 수 없습니다」와 <b>문의하기</b>로 보낸다. 여기 "화면은
+        보내드렸습니다 라고 말한다" 로 남아 있었다 — <span class="pill file">BLOCKERS.md</span> §7</td></tr>
   </tbody>
 </table>
 </div>
@@ -281,7 +283,14 @@
     <tr><td>회원가입</td><td><code>routes/signup.tsx</code></td><td><code>POST /user/sign/up</code></td>
       <td><span class="pill done">됐다</span>(2026-08-27). 게스트 기록이 가입과 함께 따라온다.
       <b>약관·개인정보 처리방침 두 문서가 없어 아직 배포하면 안 된다</b></td></tr>
-    <tr><td>비밀번호 재설정</td><td><code>reset-password</code> · <code>new-password</code></td><td>메일 발송 수단</td><td><span class="pill stop">껍데기</span></td></tr>
+    <tr><td>비밀번호 재설정</td><td><code>reset-password</code> · <code>new-password</code></td><td>메일 발송 수단</td>
+      <td><span class="pill open">화면은 솔직해졌다</span>(2026-08-27) — 못 한다고 말하고 문의하기로 보낸다.
+      <b>없는 것은 화면이 아니라 메일 발송 수단</b>이다. <code>new-password</code> 의 폼은
+      <code>MAIL_RESET_READY</code> 로 꺼 두었다 — 메일이 붙으면 한 줄만 되돌린다</td></tr>
+    <tr><td><b>문의하기</b></td><td><code>routes/inquiry.tsx</code></td><td><code>POST /inquiry</code> · Slack</td>
+      <td><span class="pill done">됐다</span>(2026-08-27). <b>로그인 없이도 보낸다</b> — 비밀번호를 잊은
+      사람이 이 길을 가장 필요로 한다. 화면 캡처를 최대 3장 붙일 수 있고 담당자 채널로 꽂힌다.
+      개인정보 열람·삭제 요청도 여기로 온다(<span class="pill file">legal_draft_v1</span> §03 제6조)</td></tr>
     <tr><td>결제</td><td><span class="pill file">paywall_SOT</span> 의 구독 안내</td><td><code>ko_purchase</code> · <code>POST /purchase/webhook</code></td><td><span class="pill stop">0곳</span></td></tr>
     <tr><td>권한 부여</td><td>—</td><td><code>ko_entitlement</code></td><td><span class="pill stop">표가 없다</span></td></tr>
     <tr><td>복원 · 기기 변경</td><td>로그인 하나로 끝난다</td><td>권한이 계정에 붙으므로 별도 화면이 없다</td><td><span class="pill open">권한이 생기면 저절로</span></td></tr>
