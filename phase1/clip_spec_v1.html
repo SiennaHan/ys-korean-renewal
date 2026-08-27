@@ -1,0 +1,418 @@
+<meta charset="utf-8">
+<!-- 관찰: app/src/components/main/content4.tsx, app/src/shared/data/clip.ts, api/business/report.py, api/persistence/repo_error_report.py @ 0cb7204 -->
+<!-- 왜: 이 문서의 "지금 이렇게 돈다" 는 전부 저 넷을 읽고 재서 적은 것이다. 원본이 바뀌면 §03·§04 가 낡는다 -->
+<title>표현클립 — 명세도 목업도 없던 유입의 첫 화면</title>
+<style>
+  :root {
+    --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f7;
+    --ink:#181c24; --ink-2:#4e5666; --ink-3:#89909f;
+    --line:#e2e6ed; --accent:#1f5fd6; --accent-soft:#e8f0ff;
+    --bad:#b3261e; --bad-soft:#fdecea; --good:#1c6b42; --good-soft:#e8f5ee;
+    --warn:#8a5a00; --warn-soft:#fdf4e3;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 10px 26px rgba(16,24,40,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+      --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+      --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+      --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+      --warn:#e0ab52; --warn-soft:#2c2417;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+    --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+    --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+    --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+    --warn:#e0ab52; --warn-soft:#2c2417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    font-size:15.5px; line-height:1.74; }
+  main { max-width:860px; margin:0 auto; padding:52px 22px 100px; }
+
+  header.doc { padding-bottom:26px; border-bottom:2px solid var(--ink); margin-bottom:34px; }
+  .eyebrow { font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent); font-weight:800; margin-bottom:10px; }
+  h1 { font-size:30px; line-height:1.28; margin:0 0 12px; font-weight:800;
+    letter-spacing:-.015em; text-wrap:balance; }
+  .lead { color:var(--ink-2); font-size:15.5px; max-width:64ch; margin:0; }
+  .lead b { color:var(--ink); }
+
+  h2 { font-size:20px; font-weight:800; margin:56px 0 4px; letter-spacing:-.01em;
+    display:flex; align-items:baseline; gap:10px; }
+  h2 .n { font-size:13px; font-weight:800; color:var(--accent);
+    font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+  h3 { font-size:15.5px; font-weight:700; margin:26px 0 4px; }
+  p { margin:10px 0; }
+  .qa { color:var(--ink-3); font-size:13.5px; }
+
+  code { font-family:ui-monospace,Menlo,monospace; font-size:.85em;
+    background:var(--surface-2); padding:1.5px 6px; border-radius:5px; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin:14px 0 6px; font-size:13.5px; }
+  th { text-align:left; font-size:11.5px; letter-spacing:.05em; color:var(--ink-3);
+    font-weight:700; padding:8px 10px 6px; border-bottom:2px solid var(--line); white-space:nowrap; }
+  td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td code { white-space:nowrap; }
+
+  .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:12px; padding:16px 20px; margin:18px 0;
+    box-shadow:var(--shadow); }
+  .callout.bad { border-left-color:var(--bad); }
+  .callout.good { border-left-color:var(--good); }
+  .callout.warn { border-left-color:var(--warn); }
+  .callout .t { font-weight:800; font-size:14px; margin-bottom:6px; }
+  .callout.bad .t { color:var(--bad); }
+  .callout.good .t { color:var(--good); }
+  .callout.warn .t { color:var(--warn); }
+  .callout p { font-size:14.5px; margin:7px 0; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px; margin:16px 0 6px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:5px; }
+  .card .k { font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:800; color:var(--ink-3); }
+  .card .nm { font-size:15px; font-weight:700; line-height:1.4; }
+  .card .nm a { text-decoration:none; }
+  .card .nm a:hover { text-decoration:underline; }
+  .card .d { font-size:13px; color:var(--ink-2); line-height:1.6; }
+
+  ol.path { list-style:none; counter-reset:step; padding:0; margin:16px 0 6px;
+    display:flex; flex-direction:column; gap:10px; }
+  ol.path li { counter-increment:step; display:grid; grid-template-columns:30px 1fr;
+    gap:12px; align-items:start; }
+  ol.path li::before { content:counter(step); grid-column:1;
+    width:30px; height:30px; border-radius:50%; background:var(--accent-soft);
+    color:var(--accent); font-size:13px; font-weight:800; display:grid; place-items:center;
+    font-variant-numeric:tabular-nums; }
+  ol.path .h { font-weight:700; }
+  ol.path .d { color:var(--ink-2); font-size:14px; }
+
+  ul { padding-left:22px; margin:10px 0; }
+  li { margin:6px 0; }
+  li::marker { color:var(--ink-3); }
+
+  .pill { display:inline-block; font-size:11px; font-weight:800; border-radius:99px;
+    padding:1.5px 9px; white-space:nowrap; }
+  .pill.done { background:var(--good-soft); color:var(--good); }
+  .pill.open { background:var(--warn-soft); color:var(--warn); }
+  .pill.stop { background:var(--bad-soft); color:var(--bad); }
+  .pill.file { background:var(--accent-soft); color:var(--accent); }
+</style><main>
+<header class="doc">
+  <div class="eyebrow">Phase 1 · 명세 · 2026-08-27</div>
+  <h1>표현클립 — 명세도 목업도 없던 유입의 첫 화면</h1>
+  <p class="lead">덮개 지도에서 <b>명세·목업·API 세 칸이 모두 비어 있던</b> 유일한 자리다
+  (<span class="file">masterplan_v3</span> §2 — "의도되지 않은 공백 둘" 중 하나).
+  그런데 <b>화면은 이미 돌아간다</b> — 없던 것은 코드가 아니라 <b>적어 둔 규칙</b>이다.
+  그래서 새로 설계하지 않고 <b>구현을 읽고 재서 규칙으로 고정</b>한 뒤, 어긋난 곳과
+  정해야 할 것을 가려낸다. 숫자는 <span class="file">app/src/shared/data/clip.ts</span> 와
+  빌드 산출물을 실제로 센 것이다.</p>
+</header>
+
+<h2><span class="n">01</span>이 화면이 무엇인가</h2>
+<p>탭 바 다섯 중 <b>넷째</b>(<span class="file">/main/clip</span>). 학습자가 <b>배우고 싶은 표현을
+검색</b>하면, 그 표현이 실제로 말해지는 <b>유튜브 영상의 그 순간</b>을 찾아 그 구간만 재생한다.
+교재 활동이 아니라 <b>곁들여 보는 것</b>이다.</p>
+
+<div class="callout">
+  <div class="t">이 화면이 유입의 첫 화면이다</div>
+  <p><span class="file">access_and_pricing_v1</span> §02 가 <b>표현클립 전부를 무료</b>로 확정했다
+  (2026-08-26) — 유튜브 임베드라 우리가 쥔 자산이 아니고 <b>유입 장치로서 값이 더 크다</b>는 판단이었다.
+  즉 로그인도 결제도 없이 처음 들어온 사람이 <b>제한 없이 쓸 수 있는 유일한 큰 기능</b>이다.
+  그런데 규칙이 없었다.</p>
+</div>
+
+<div class="callout warn">
+  <div class="t">교재와 잇는 안은 이미 접혔다 — 다시 꺼내지 마라</div>
+  <p>급·과 태그로 클립을 추천하는 안을 검토했고 <b>접었다</b>
+  (<span class="file">masterplan_v3</span>). 이유가 측정값이다 —
+  <b>10단어짜리 과 하나에 329편 중 221편이 걸린다.</b> 걸러지지 않으니 고르는 데 도움이 안 된다.
+  이 문서도 그 결정을 뒤집지 않는다. 표현클립은 <b>교재 진도와 무관한 검색 도구</b>다.</p>
+</div>
+
+<h2><span class="n">02</span>데이터 — 전부 앱 안에 있다</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>항목</th><th>실측</th></tr></thead>
+  <tbody>
+    <tr><td>편수</td><td><b>329편</b></td></tr>
+    <tr><td>갈래</td><td>예능 251 · 뉴스 42 · 일상 24 · 영화·드라마 12.
+      <b>예능이 76%</b>다</td></tr>
+    <tr><td>영상 길이</td><td>최소 137초 · <b>중간 1117초(18분)</b> · 최대 5391초(90분).
+      <b>"클립" 이 아니라 전편이다</b> — 클립처럼 보이는 것은 검색이 구간을 잘라 주기 때문이다</td></tr>
+    <tr><td>필드</td><td><span class="file">index · youtube_id · link · title · category · length · script · script_org</span></td></tr>
+    <tr><td>대본</td><td>329편 전부 있다. <span class="file">script</span> 2.6 MB ·
+      <b><span class="file">script_org</span> 3.0 MB</b> · 합계 21.8만 줄</td></tr>
+    <tr><td>파일</td><td><span class="file">app/src/shared/data/clip.ts</span> <b>6.25 MB</b></td></tr>
+    <tr><td>실려 나가는 크기</td><td>코드 분할된 async 덩이 하나 = 원본 11 MB · <b>gzip 3.0 MB</b>.
+      그 덩이는 <b>거의 전부 클립 데이터</b>다(0.0 MB 지점에서 시작해 6.1 MB 지점까지)</td></tr>
+    <tr><td>서버</td><td><b>없다.</b> 클립 표도, 라우트도 없다</td></tr>
+    <tr><td>원장</td><td><b>없다.</b> 구 앱 덤프이고 <span class="file">글로벌_교재기반_콘텐츠</span> 에 시트가 없다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout bad">
+  <div class="t">받는 것의 절반을 아무도 안 읽는다</div>
+  <p><span class="file">script_org</span>(3.0 MB · 전체의 48%)를 <b>읽는 코드가 0곳이다</b> —
+  화면은 <span class="file">script</span> 만 쓴다. 타임스탬프 사이의 빈 줄이 남아 있는 원본이고,
+  <span class="file">script</span> 가 그것을 정리한 판이다. <b>산출물에서 빼면 그만큼 줄어든다.</b>
+  이건 판단이 필요한 일이 아니라 그냥 낭비다.</p>
+</div>
+
+<h2><span class="n">03</span>지금 어떻게 도는가 — 규칙으로 고정한다</h2>
+
+<h3>3.1 검색</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>규칙</th><th>지금</th></tr></thead>
+  <tbody>
+    <tr><td>언제 돈다</td><td><b>글자를 칠 때마다</b>. 디바운스가 없다</td></tr>
+    <tr><td>최소 길이</td><td><b>2자.</b> 1자면 결과를 비운다</td></tr>
+    <tr><td>어디를 본다</td><td>329편의 <span class="file">script</span> 전문. <b>줄 단위</b>로
+      <span class="file">line.includes(word)</span> — 문자열 그대로다</td></tr>
+    <tr><td>구간 잡기</td><td>맞은 줄에서 <b>위로 걸어 첫 타임스탬프 = start</b>,
+      <b>아래로 걸어 첫 타임스탬프 = end</b>. 둘 다 있어야 결과에 넣는다</td></tr>
+    <tr><td>정렬</td><td>① 줄이 검색어로 <b>시작</b> ② 공백 기준 <b>낱말 일치</b>
+      ③ 그냥 <b>포함</b> — 같으면 <b>짧은 줄 먼저</b></td></tr>
+    <tr><td>갈래 필터</td><td>칩 다섯(전체·예능·영화·드라마·뉴스·일상).
+      <b>검색어가 있을 때만 칩이 보인다</b></td></tr>
+    <tr><td>신고된 것</td><td>진입할 때 <span class="file">GET /report/list/video</span> 로 받아
+      <b>그 영상들을 검색 대상에서 뺀다</b></td></tr>
+  </tbody>
+</table>
+</div>
+<p class="qa">비용을 재 봤다 — 전문 훑기는 흔한 낱말로 <b>10 ms 안쪽</b>이다. 매 타이핑마다 돌아도
+체감되는 값이 아니다. <b>문제는 검색 속도가 아니라 받는 크기</b>다(§02).</p>
+
+<h3>3.2 결과 카드</h3>
+<p>썸네일 <span class="file">hqdefault.jpg</span> 위에 <b>좌상단 시작 시각 배지</b>,
+우상단 <b>하트 아이콘</b>. 아래에 <b>맞은 대본 줄</b>(검색어 강조) + 영상 제목 + <span class="file">⋮</span>.
+카드를 누르면 <b>그 자리에서 인라인 재생</b>으로 바뀐다.</p>
+
+<h3>3.3 플레이어</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>규칙</th><th>지금</th></tr></thead>
+  <tbody>
+    <tr><td>재생 구간</td><td><b><span class="file">start − 2</span> 초부터 <span class="file">end</span> 까지.</b>
+      앞 2초를 덧붙여 문장 시작을 놓치지 않게 한다</td></tr>
+    <tr><td>길이 0 인 구간</td><td><span class="file">start == end</span> 면 <span class="file">end = start + 1</span></td></tr>
+    <tr><td>끝나면</td><td><b>되감아 다시 돈다</b> — 상태 0(ended)에서 <span class="file">seekTo(start−2)</span>.
+      반복 듣기 장치인데 <b>아무 문서에도 적혀 있지 않았다</b></td></tr>
+    <tr><td>화면을 벗어나면</td><td><b>일시정지</b> — <span class="file">IntersectionObserver</span> 0.5</td></tr>
+    <tr><td>재생 오류</td><td>코드별 문구를 만들어 <b>자동으로 신고를 보낸다</b>(§4-7)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout warn">
+  <div class="t">재생 구간이 짧다 — 재서 알았다</div>
+  <p>흔한 낱말 넷으로 3,952구간을 재 보니 <span class="file">end − start</span> 는
+  <b>중간 3초</b>(25% 2초 · 75% 5초 · 최대 77초)다. 앞 2초를 더해도
+  <b>실제 재생은 대개 5초 남짓</b>이고, <b>58%가 3초 이하</b>·<b>8%가 1초 이하</b>다.
+  타임스탬프 간격이 곧 구간이라 <b>대본이 촘촘한 영상일수록 짧아진다.</b></p>
+  <p>이것이 이 화면의 성격을 정한다 — <b>"짧은 영상을 본다" 가 아니라 "그 한마디를 듣는다"</b> 다.
+  반복 재생(위)이 그래서 필요했던 것으로 보인다. <b>어느 쪽으로 갈지는 §05 의 1번이다.</b></p>
+</div>
+
+<h3>3.4 신고</h3>
+<p>카드의 <span class="file">⋮</span> → 바텀시트 → 사유 둘(<b>발음이 잘 안 들려요</b> ·
+<b>부적절한 영상 신고</b>) → <span class="file">POST /report</span>.
+<span class="file">category = "video"</span> · <span class="file">target_id = youtube_id</span> ·
+<span class="file">user_id = guestId</span>.</p>
+
+<h2><span class="n">04</span>어긋난 것 여덟 — 전부 실측이다</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>#</th><th>무엇</th><th>실측</th><th>무게</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><b>개수는 전체를 말하고 목록은 열 개만 준다</b></td>
+      <td>머리글은 <span class="file">results.length</span>, 목록은
+        <span class="file">results.slice(0, 10)</span>. "그래서" 는 <b>1,226건</b>이라 적히고 10개가 보인다.
+        더 보는 길이 없다</td>
+      <td><span class="pill stop">거짓말</span></td></tr>
+    <tr><td>2</td><td><b>한 글자를 못 찾는다</b></td>
+      <td>2자 미만을 막는다. 대본에 <b>물 1,612 · 집 1,065 · 밥 434 · 돈 433</b>건이 있는데
+        화면은 <b>0건</b>이다. 초급 학습자가 가장 먼저 찾을 낱말들이다</td>
+      <td><span class="pill stop">막힌 길</span></td></tr>
+    <tr><td>3</td><td><b>사전형으로 찾으면 거의 안 나온다</b></td>
+      <td>문자열 그대로 찾으므로 활용형이 안 걸린다 —
+        <b>먹다 26 : 먹었 230</b> · <b>가다 61 : 갔어 168</b> ·
+        <b>고맙다 32 : 고마워 115</b> · <b>예쁘다 62 : 예뻐 81</b></td>
+      <td><span class="pill open">범위 판단</span></td></tr>
+    <tr><td>4</td><td><b>결과가 0일 때 할 말이 없다</b></td>
+      <td>빈 상태 문구가 하나뿐이라 <b>검색 전과 검색 실패에 같은 말</b>을 낸다 —
+        "배우고 싶은 표현을 검색해 보세요". 0건이 나온 사람에게는 답이 아니다</td>
+      <td><span class="pill stop">문구 없음</span></td></tr>
+    <tr><td>5</td><td><b>하트가 장식이다</b></td>
+      <td>카드 우상단 하트는 <span class="file">&lt;div&gt;</span> 안의 아이콘이고
+        <b><span class="file">onClick</span> 이 없다.</b> 저장하는 곳도 없다</td>
+      <td><span class="pill stop">있는 척</span></td></tr>
+    <tr><td>6</td><td><b>한 사람의 신고가 모두에게 적용된다</b></td>
+      <td><span class="file">repo_error_report.list()</span> 는 <b>카테고리만 거른다</b> —
+        사용자를 안 본다. 게다가 <span class="file">POST /report</span> · <span class="file">GET /report/list</span>
+        둘 다 <b>인증이 없다.</b> 즉 누구든 한 번 신고하면 그 영상이
+        <b>전원의 검색 결과에서 사라진다</b></td>
+      <td><span class="pill stop">막아야 함</span></td></tr>
+    <tr><td>7</td><td><b>재생 오류가 자동으로 그 신고를 보낸다</b></td>
+      <td><span class="file">onError</span> 가 코드 2·5·100·101·150 을 받아
+        <span class="file">reportError</span> 를 부른다 → 6번의 길을 탄다.
+        <b>임베드 금지(101·150)나 삭제(100)는 그래야 맞지만,
+        HTML5 플레이어 오류(5) 한 번도 같은 결과</b>가 된다</td>
+      <td><span class="pill stop">과하다</span></td></tr>
+    <tr><td>8</td><td><b>열면 gzip 3.0 MB 를 받는다</b></td>
+      <td>그 절반이 <b>아무도 안 읽는 <span class="file">script_org</span></b> 다(§02).
+        무료·비로그인으로 열리는 첫 화면이라 <b>가장 인내심이 없는 순간</b>에 받는다</td>
+      <td><span class="pill stop">고칠 것</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">05</span>정해야 할 것 — 기획 결정 여섯</h2>
+<p>권고를 같이 적는다. <b>권고는 결정이 아니다</b> — 고르는 것은 기획이다.</p>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>#</th><th>물음</th><th>권고</th><th>왜</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><b>이 화면이 무엇을 주는 것인가</b> —
+      "짧은 영상 보기" 인가 <b>"그 한마디 듣기"</b> 인가</td>
+      <td><b>한마디 듣기.</b> 지금 구간이 중간 5초이고 반복 재생이 이미 붙어 있다.
+        문구·제목·빈 상태를 그 뜻으로 맞춘다</td>
+      <td>18분짜리 전편에서 5초를 꺼내 반복하는 장치다. 이름이 "클립" 이라
+        영상 감상으로 읽히는데 실제로 주는 것은 <b>발음·억양의 실례</b>다.
+        이 답이 §07 목업의 뼈대를 정한다</td></tr>
+    <tr><td>2</td><td><b>결과 상한을 어떻게 하나</b></td>
+      <td><b>개수를 낸 만큼 보여 준다</b> — 더 보기(또는 무한 스크롤)로 열고,
+        상한을 남기려면 <b>머리글이 그 상한을 말한다</b>("상위 10개")</td>
+      <td>1,226 이라 적고 10 개를 주는 것은 어느 쪽으로든 고쳐야 한다.
+        둘 중 무엇이든 되지만 <b>지금 상태는 안 된다</b></td></tr>
+    <tr><td>3</td><td><b>한 글자 검색을 열까</b></td>
+      <td><b>연다.</b> 1자로 내리고 결과가 많으면 상한으로 다룬다(2번)</td>
+      <td>물·집·밥·돈이 안 되는 것은 초급 학습자에게 치명적이다.
+        2자 제한은 결과 폭발을 막으려는 것이었을 텐데, 그건 상한이 할 일이다</td></tr>
+    <tr><td>4</td><td><b>사전형 검색을 이번에 할까</b></td>
+      <td><b>하지 않는다.</b> 대신 검색창 아래에 <b>"들리는 대로 적어 보세요"</b> 한 줄</td>
+      <td>어간을 맞추려면 형태소 분석이 필요하고 그건 서버 작업이다.
+        <b>못 하는 것을 문구로 알리는 것</b>이 조용히 빈 결과를 주는 것보다 낫다.
+        범위 밖이라고 <b>여기 적어 두는 것</b>이 이 결정의 값어치다</td></tr>
+    <tr><td>5</td><td><b>하트(저장)를 만들까 뺄까</b></td>
+      <td><b>이번에는 뺀다.</b></td>
+      <td>만들면 표·API·MY 의 자리가 같이 필요하다(§06). 그게 이번 범위가 아니면
+        <b>아이콘을 지우는 것이 맞다</b> — 눌러도 안 되는 하트는 기능이 없는 것보다 나쁘다</td></tr>
+    <tr><td>6</td><td><b>신고를 어떻게 다룰까</b> — 어드민은 이번 범위 밖이다</td>
+      <td><b>신고는 쌓기만 하고 숨기지 않는다.</b> 자동으로 숨기는 것은
+        <b>임베드 금지·삭제(코드 100·101·150)</b> 뿐으로 좁힌다</td>
+      <td>지금은 익명 한 사람이 아무 영상이나 전원에게서 지울 수 있다.
+        판정할 사람이 없는 동안에는 <b>숨김을 자동에서 떼는 것</b>이 안전하다.
+        "부적절" 신고는 쌓아 두고 사람이 볼 때까지 기다린다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">06</span>만들 것 — 무엇이 서버를 필요로 하나</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>일</th><th>서버가 필요한가</th><th>내용</th></tr></thead>
+  <tbody>
+    <tr><td><span class="file">script_org</span> 를 산출물에서 뺀다</td>
+      <td><b>아니오</b></td>
+      <td>클립 데이터를 만드는 자리에서 그 필드를 지운다. 원본은 따로 보관한다</td></tr>
+    <tr><td>상한·1자·빈 결과 문구</td><td><b>아니오</b></td>
+      <td>화면 안의 일이다. 문구는 5개 언어</td></tr>
+    <tr><td>하트를 뺀다</td><td><b>아니오</b></td><td>아이콘 삭제</td></tr>
+    <tr><td>신고 숨김을 좁힌다</td><td><b>예 — 작다</b></td>
+      <td>클라이언트가 목록에서 빼는 대상을 <b>재생 불가 코드</b>로 한정한다.
+        서버는 <span class="file">reason</span> 을 그대로 쌓는다.
+        <b>인증을 붙이는 것</b>도 같은 판에 본다 — 지금은 둘 다 무인증이다</td></tr>
+    <tr><td>하트(저장)를 만든다면</td><td><b>예</b></td>
+      <td>표 하나(사용자 · youtube_id · start) + 목록·추가·삭제 API.
+        게스트는 기기에만 남기고 로그인하면 옮기는 규약이 필요하다(게스트 이전 표에 한 줄 늘어난다)</td></tr>
+    <tr><td>검색을 서버로 옮긴다면</td><td><b>예 — 크다</b></td>
+      <td>받는 크기를 3.0 MB 에서 거의 0 으로 만드는 유일한 길이고
+        사전형 검색(§05 의 4번)도 그때 가능해진다. <b>이번 범위로 권하지 않는다</b> —
+        표·색인·API 를 새로 만드는 일이라 결제·메일보다 뒤다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">07</span>목업이 없다 — 그려야 할 상태 여섯</h2>
+<p><span class="file">masterplan_v3</span> §15 가 이 화면을 <b>"목업 없음"</b> 으로 적어 둔 그 자리다.
+그래서 <b>목업 대조가 이 화면을 한 번도 보지 않는다</b> — <span class="file">parity:activity</span> 의
+대조 목록에 <span class="file">clip__*</span> 이 없다. 캡처를 만들면 그때부터 지켜진다.</p>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>상태</th><th>무엇을 보이나</th></tr></thead>
+  <tbody>
+    <tr><td><b>처음</b></td><td>제목 + 검색창 + 안내. <b>칩은 없다</b>(지금 규칙).
+      §05 의 4번을 받으면 "들리는 대로 적어 보세요" 가 여기 붙는다</td></tr>
+    <tr><td><b>결과 있음</b></td><td>칩 다섯 + 머리글(검색어 · 개수) + 카드 목록.
+      머리글의 개수 표기는 §05 의 2번이 정한다</td></tr>
+    <tr><td><b>결과 없음</b></td><td><b>지금 없는 화면.</b> 검색어를 보여 주고
+      다른 말로 찾아보라고 해야 한다</td></tr>
+    <tr><td><b>재생 중</b></td><td>카드 자리가 플레이어로 바뀐 모습.
+      제목 + <span class="file">⋮</span> 는 아래에 남는다</td></tr>
+    <tr><td><b>신고 바텀시트</b></td><td>사유 둘 + 닫기</td></tr>
+    <tr><td><b>재생 실패</b></td><td><b>지금 없는 화면.</b> 자동 신고만 하고 학습자에게는
+      아무 말도 하지 않는다 — 검은 플레이어만 남는다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">08</span>라이선스·개인정보 — 무료로 열면서 같이 커진 것</h2>
+<div class="callout warn">
+  <div class="t">임베드는 허용된 것이지만 대본은 우리가 붙였다</div>
+  <p><span class="file">access_and_pricing_v1</span> §08 이 이미 짚어 둔 자리다 —
+  임베드 자체는 원저작자가 허용한 범위이지만 <b><span class="file">script</span> ·
+  <span class="file">script_org</span> 는 우리가 만들어 앱에 넣은 것</b>이다.
+  <b>무료라서 문제가 줄어드는 것이 아니라 공개 범위가 넓어져 더 눈에 띈다.</b></p>
+  <p>이 문서가 더할 것 하나 — 대본이 <b>클라이언트 번들에 평문으로</b> 들어 있어
+  누구나 그대로 꺼낼 수 있다. 검색을 서버로 옮기면(§06) 그 노출도 함께 줄어든다.
+  <b>지우자는 뜻이 아니라, 판단할 때 이 사실을 알고 하자는 뜻이다.</b></p>
+</div>
+<p><span class="file">legal_draft_v1</span> 이 적어 둔 것 — <b>유튜브가 자체 쿠키를 심는다.</b>
+우리가 심는 것이 아니어도 방문자에게는 같은 일이고, 처리방침이 그것을 말해야 한다.</p>
+
+<h2><span class="n">09</span>확인하지 못한 것</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>어디까지 봤나</th><th>어떻게 확인하나</th></tr></thead>
+  <tbody>
+    <tr><td><b>329편이 아직 살아 있나</b></td>
+      <td><b>표본 20편은 전부 살아 있다</b>(oEmbed 200 · 2026-08-27)</td>
+      <td>329편 전수로 돌리면 된다. 죽은 것이 있으면 검색 결과에 나오고
+        누르면 검은 화면이 된다</td></tr>
+    <tr><td><b>임베드가 허용돼 있나</b></td>
+      <td><b>확인 못 했다.</b> oEmbed 200 은 임베드 허용과 다른 이야기다.
+        watch 페이지에서 <span class="file">playableInEmbed</span> 를 캐려 했는데
+        표본 8편 전부에서 그 표시가 안 나왔다 — 브라우저가 아닌 요청에는 다른 마크업이 온다</td>
+      <td>YouTube Data API 의 <span class="file">status.embeddable</span>. 키가 필요하다.
+        <b>이것이 §04 의 7번과 이어진다</b> — 임베드 금지 영상이 몇 편인지 모르는 채로
+        자동 숨김을 돌리고 있다</td></tr>
+    <tr><td><b>대본이 실제 발화와 맞나</b></td>
+      <td>안 봤다</td>
+      <td>표본으로 사람이 듣고 대 봐야 한다. 어긋나면 "그 순간" 을 못 짚는다 —
+        이 화면이 주는 것의 뿌리다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout good">
+  <div class="t">이 문서가 뒤집지 않는 것</div>
+  <p>① <b>표현클립 전부 무료</b>(<span class="file">access_and_pricing_v1</span> §02, 2026-08-26)
+  ② <b>교재와 잇지 않는다</b>(급·과 추천안은 접혔다 — §01)
+  ③ <b>어드민은 이번 범위 밖</b>이다. §05 의 6번이 그 전제에서 나온 권고다.</p>
+</div>
+
+</main>
