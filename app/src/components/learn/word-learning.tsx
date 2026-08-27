@@ -558,6 +558,10 @@ export default function WordLearning({
 				graded={quizzes.length - skippedIds.length}
 				correct={quizzes.length - wrongIds.length - skippedIds.length}
 				wrongs={missed.map((q) => ({
+					kind:
+						firstWrong[q.id] !== undefined
+							? ("wrong" as const)
+							: ("skipped" as const),
 					// 건너뛴 문항은 고른 답이 없다 — 자리를 비운다
 					picked:
 						firstWrong[q.id] !== undefined ? pick(q, firstWrong[q.id]) : "",

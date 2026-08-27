@@ -466,14 +466,25 @@ export default function ReadAnswer({
 				}
 				graded={questions.length - skippedIds.length}
 				correct={questions.length - wrongIds.length - skippedIds.length}
-				wrongs={missed.map((q) => ({
-					picked: pick(q, firstWrongOf(q.id) as number),
-					// 이 원장에는 해설이 없다 — 문법만 grammar_focus_revised 를 들고 온다.
-					// 빈 칸을 그리느니 정답을 말해 준다(player.answerIs 는 이미 있는 문구다)
-					explanation: t("player.answerIs", {
-						answer: pick(q, q.answer_index),
-					}),
-				}))}
+				/* 미해결을 다 보여 준다 — 오답과 건너뜀 둘 다(§28). 전에는 오답만
+				   넘겨서 건너뛴 문항이 결과에 안 보였다 */
+				wrongs={questions
+					.filter((q) => unresolved.includes(q.id))
+					.map((q) => ({
+						kind:
+							firstWrongOf(q.id) !== null
+								? ("wrong" as const)
+								: ("skipped" as const),
+						picked:
+							firstWrongOf(q.id) !== null
+								? pick(q, firstWrongOf(q.id) as number)
+								: "",
+						// 이 원장에는 해설이 없다 — 문법만 grammar_focus_revised 를 들고 온다.
+						// 빈 칸을 그리느니 정답을 말해 준다(player.answerIs 는 이미 있는 문구다)
+						explanation: t("player.answerIs", {
+							answer: pick(q, q.answer_index),
+						}),
+					}))}
 				onExit={() => router.history.back()}
 				onRetry={
 					unresolved.length > 0

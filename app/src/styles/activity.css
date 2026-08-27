@@ -505,6 +505,8 @@
 .activity-frame .tag { display:inline-flex; height:24px; align-items:center; padding:0 10px; border-radius:6px; font-size:12px; font-weight:700; }
 .activity-frame .tag.w { background:var(--color-background-wrong); color:var(--color-fill-wrong); }
 .activity-frame .tag.e { background:var(--color-text-heading); color:#fff; }
+/* 건너뜀 — 오답이 아니라 **안 푼 것**이라 오답의 빨강을 쓰지 않는다 */
+.activity-frame .tag.s { background:var(--color-background-base); color:var(--color-text-sub); }
 .activity-frame .rep-head { background:var(--color-fill-primary); color:#fff; padding:12px 16px; }
 .activity-frame .rep-head h2 { margin:0; font-size:20px; }
 .activity-frame .rep-head p { margin:0; font-size:14px; color:var(--blue-100); }

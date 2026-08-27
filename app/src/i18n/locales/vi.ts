@@ -478,6 +478,8 @@ const vi = {
 		backToLessons: "Về danh sách bài",
 		// 결과 화면 오답 목록
 		wrongItem: "Câu sai {{index}}",
+		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
+		skippedItem: "Đã bỏ qua {{index}}",
 		explanation: "Giải thích {{index}}",
 		showMore: "Xem thêm",
 		hardItem: "Hay sai",

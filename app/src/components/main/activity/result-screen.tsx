@@ -8,9 +8,17 @@ import {
 } from "./shell";
 
 export interface WrongItem {
-	/** 학생이 고른 답 */
+	/**
+	 * 왜 미해결로 남았나.
+	 *
+	 * **건너뛴 것은 오답이 아니다** — 안 푼 것이다(shell_spec §28 · 기획 확정
+	 * 2026-08-27). 전에는 둘을 같은 「오답 N」으로 그려서, 건너뛴 카드는 고른
+	 * 답 자리가 **빈 줄**로 남았다. 라벨도 사실과 달랐다.
+	 */
+	kind?: "wrong" | "skipped";
+	/** 학생이 고른 답. 건너뛴 문항은 고른 것이 없어 비운다 */
 	picked: string;
-	/** 왜 틀렸는지 */
+	/** 왜 틀렸는지 — 건너뛴 문항에서는 정답 안내다 */
 	explanation: string;
 }
 
@@ -88,10 +96,19 @@ export function ResultScreen({
 				<div className="scroll-area" style={{ padding: 16 }}>
 					{wrongs.map((w, i) => (
 						<div className="wrong-card" key={`${w.picked}-${w.explanation}`}>
-							<span className="tag w">
-								{t("result.wrongItem", { index: i + 1 })}
+							{/* 번호는 자리대로 매긴다 — 아래 「해설 N」과 짝이 맞아야 한다 */}
+							<span className={`tag ${w.kind === "skipped" ? "s" : "w"}`}>
+								{t(
+									w.kind === "skipped"
+										? "result.skippedItem"
+										: "result.wrongItem",
+									{ index: i + 1 },
+								)}
 							</span>
-							<p style={{ margin: "8px 0 0", fontSize: 16 }}>{w.picked}</p>
+							{/* 건너뛴 문항은 고른 답이 없다 — 빈 줄을 그리지 않는다 */}
+							{w.picked && (
+								<p style={{ margin: "8px 0 0", fontSize: 16 }}>{w.picked}</p>
+							)}
 							<span className="tag e" style={{ marginTop: 10 }}>
 								{t("result.explanation", { index: i + 1 })}
 							</span>

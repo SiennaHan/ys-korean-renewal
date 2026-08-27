@@ -489,6 +489,8 @@ const ko = {
 		backToLessons: "과 목록으로",
 		// 결과 화면 오답 목록
 		wrongItem: "오답 {{index}}",
+		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
+		skippedItem: "건너뜀 {{index}}",
 		explanation: "해설 {{index}}",
 		showMore: "더보기",
 		hardItem: "자주 틀려요",

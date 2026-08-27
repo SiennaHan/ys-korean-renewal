@@ -562,10 +562,17 @@ export default function FillBlank({
 				answered={questions.filter((q) => savedAnswers[q.id]?.correct).length}
 				graded={questions.length - skippedIds.length}
 				correct={questions.length - wrongIds.length - skippedIds.length}
+				/*
+				 * **미해결을 다 보여 준다** — 오답과 건너뜀 둘 다(§28).
+				 * 전에는 오답만 넘겨서 **건너뛴 문항이 결과에 아예 안 보였다.**
+				 * [다시 풀기] 는 그것을 포함해 돌려주는데 목록에는 없으니,
+				 * 무엇을 다시 푸는지 알 수 없었다.
+				 */
 				wrongs={questions
-					.filter((q) => firstWrong[q.id])
+					.filter((q) => unresolved.includes(q.id))
 					.map((q) => ({
-						picked: firstWrong[q.id],
+						kind: firstWrong[q.id] ? ("wrong" as const) : ("skipped" as const),
+						picked: firstWrong[q.id] ?? "",
 						// 저작용 기호식(grammar_focus)이 아니라 문장 쪽을 쓴다 — 위 타입 주석 참고.
 						// 836행 중 한 행만 비어 있어 그때만 기호식으로 돌아간다
 						explanation: q.grammar_focus_revised || q.grammar_focus,

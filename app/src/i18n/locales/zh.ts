@@ -464,6 +464,8 @@ const zh = {
 		backToLessons: "返回课程列表",
 		// 결과 화면 오답 목록
 		wrongItem: "错题 {{index}}",
+		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
+		skippedItem: "跳过 {{index}}",
 		explanation: "解析 {{index}}",
 		showMore: "展开更多",
 		hardItem: "经常做错",

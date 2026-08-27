@@ -479,6 +479,8 @@ const en = {
 		backToLessons: "Back to lessons",
 		// 결과 화면 오답 목록
 		wrongItem: "Incorrect {{index}}",
+		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
+		skippedItem: "Skipped {{index}}",
 		explanation: "Explanation {{index}}",
 		showMore: "Show more",
 		hardItem: "Often missed",

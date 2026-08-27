@@ -481,6 +481,8 @@ const ja = {
 		backToLessons: "課の一覧へ",
 		// 결과 화면 오답 목록
 		wrongItem: "不正解 {{index}}",
+		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
+		skippedItem: "スキップ {{index}}",
 		explanation: "解説 {{index}}",
 		showMore: "もっと見る",
 		hardItem: "よく間違えます",
