@@ -4,6 +4,7 @@ import ChapterChips from "@/components/main/textbook/chapter-chips";
 import { buildBookTabs } from "@/components/main/textbook/labels";
 import { ActRow, ChapterHead } from "@/components/main/textbook/module-list";
 import PaywallPanel from "@/components/main/textbook/paywall-panel";
+import i18n from "@/i18n";
 import { books } from "@/shared/data/book";
 import { chapters } from "@/shared/data/chapter";
 import { addressOfModule } from "@/shared/data/jamo";
@@ -196,7 +197,21 @@ export default function Jamo() {
 												key={mod.id}
 												item={{
 													id: `${mod.scene_type}/${mod.code}`,
-													title: mod.title,
+													/*
+													 * 활동 이름은 **UI 문구다**(shell_spec §31) — 원장의
+													 * 한국어를 그대로 쓰면 영어로 써도 이 여섯만 한국어로
+													 * 남는다(2026-08-27까지 그랬다). 교재학습 목록은 이미
+													 * `catalog.act.*` 를 쓰고 있었고 자모만 빠져 있었다.
+													 *
+													 * 키는 `scene_type` 이다 — `JAMO_SUBS` 와 같은 이름이라
+													 * 새 지도를 만들지 않는다. 없는 갈래가 오면 원장 이름으로
+													 * 돌아간다(자모 글자·낱말은 학습 대상이라 한국어가 맞다).
+													 */
+													title: i18n.exists(
+														`catalog.jamoAct.${mod.scene_type}`,
+													)
+														? t(`catalog.jamoAct.${mod.scene_type}`)
+														: mod.title,
 													// 자모는 아직 진행 기록을 읽지 않는다 — 비운 자리로 둔다
 													state: "none",
 												}}

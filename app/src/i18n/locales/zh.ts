@@ -288,6 +288,19 @@ const zh = {
 			"mission-chat": "AI 任务对话",
 			flashcard: "单词卡片",
 		},
+		/**
+		 * 자모 활동 이름 — **UI 문구다**(shell_spec §31: 활동 지시문·앱바·버튼은 UI 언어).
+		 * 자모 글자 자체(ㅏ · ㄱ)와 낱말은 학습 대상이라 한국어로 남는다.
+		 * 키는 원장의 `scene_type` 이고 순서는 `shared/data/jamo.ts` 의 JAMO_SUBS 와 같다.
+		 */
+		jamoAct: {
+			"listen-repeat": "听发音跟读",
+			write: "组成音节",
+			"listen-repeat2": "听单词跟读",
+			"read-write": "书写单词",
+			listen: "听并选出正确的",
+			write3: "组成音节",
+		},
 		noModules: "这里还没有学习活动",
 	},
 	home: {

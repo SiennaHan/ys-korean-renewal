@@ -307,6 +307,19 @@ const ko = {
 			"mission-chat": "AI 미션 대화",
 			flashcard: "단어 플래시카드",
 		},
+		/**
+		 * 자모 활동 이름 — **UI 문구다**(shell_spec §31: 활동 지시문·앱바·버튼은 UI 언어).
+		 * 자모 글자 자체(ㅏ · ㄱ)와 낱말은 학습 대상이라 한국어로 남는다.
+		 * 키는 원장의 `scene_type` 이고 순서는 `shared/data/jamo.ts` 의 JAMO_SUBS 와 같다.
+		 */
+		jamoAct: {
+			"listen-repeat": "발음 듣고 따라하기",
+			write: "자음-모음 조합하기",
+			"listen-repeat2": "단어 듣고 따라하기",
+			"read-write": "단어 쓰기",
+			listen: "듣고 맞는 것 고르기",
+			write3: "자음-모음 조합하기",
+		},
 		noModules: "학습할 활동이 없어요",
 	},
 	home: {
