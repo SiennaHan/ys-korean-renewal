@@ -32,13 +32,24 @@ export interface Location {
 	grammar: string[];
 	entryMessages: EntryMessage[];
 }
+/**
+ * 대화 한 줄의 번역.
+ *
+ * 원래는 평평한 문자열 하나(영어)였다 — 그래서 🌐 를 눌러도 앱 언어와 무관하게
+ * 늘 영어가 나왔다(2026-08-27 기획자 확인). 지금은 봄소풍의 `hint` 와 같은 꼴,
+ * 언어별 짝이다. **문자열도 계속 읽는다** — 운영 DB 의 `ko_seoul_puzzle_step.data`
+ * 에는 씨드를 다시 넣기 전까지 옛 꼴이 남아 있고, 그때도 영어가 나와야 한다.
+ * 고르는 곳은 seoul-puzzle-view.tsx 의 `pickTrans` 하나뿐이다.
+ */
+export type SpTranslation = string | Record<string, string>;
+
 export interface Puzzle {
 	friendMsg: string;
-	friendMsgT: string;
+	friendMsgT: SpTranslation;
 	selfMsg: string | null;
-	selfMsgT: string | null;
+	selfMsgT: SpTranslation | null;
 	friendMsg2: string | null;
-	friendMsg2T: string | null;
+	friendMsg2T: SpTranslation | null;
 	hintText: string;
 	answer: string[];
 	distractors: string[];

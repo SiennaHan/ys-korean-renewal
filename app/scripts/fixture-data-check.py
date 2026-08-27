@@ -339,6 +339,44 @@ def check(key, fixture, spec):
 	return bad
 
 
+
+# ─── 씨드 자체의 불변식 ─────────────────────────────────────────────
+# 픽스처와의 대조가 아니라 **씨드 콘텐츠가 규약을 지키는지** 본다.
+
+SP_LANGS = ("en", "ja", "zh", "vi")
+
+
+def check_seoul_translations():
+	"""서울 퍼즐의 대화 번역이 네 언어 짝인지.
+
+	2026-08-27 까지 이 필드는 평평한 문자열(영어)이었다 — 그래서 🌐 를 눌러도
+	앱 언어와 무관하게 늘 영어가 나왔다. 지금은 언어별 짝이고, 앱은 옛 꼴도
+	읽는다(운영 DB 에 남아 있는 동안을 위해). **그 관용이 곧 함정이다** —
+	새 문항을 문자열로 적으면 아무 검사도 안 걸리고 그 줄만 조용히 영어로 돌아간다.
+	그래서 여기서 센다.
+	"""
+	data = seed("seoul_puzzles.json")
+	bad = []
+	for locId, steps in (data.get("puzzles") or {}).items():
+		for i, step in enumerate(steps):
+			for field in ("friendMsg", "selfMsg", "friendMsg2"):
+				if not step.get(field):
+					continue
+				value = step.get(field + "T")
+				where = f"{locId}[{i}].{field}T"
+				if isinstance(value, str):
+					bad.append(f"{where} 가 아직 평평한 문자열이다 — 네 언어 짝으로 적어라")
+				elif not isinstance(value, dict):
+					bad.append(f"{where} 가 없다")
+				else:
+					missing = [l for l in SP_LANGS if not value.get(l)]
+					if missing:
+						bad.append(f"{where} 에 {', '.join(missing)} 가 없다")
+	for msg in bad:
+		print(f"★ seoul_puzzles.json — {msg}")
+	return len(bad)
+
+
 def main():
 	if "--live" in sys.argv:
 		return check_live()
@@ -349,6 +387,7 @@ def main():
 
 	reg = json.loads(FIXTURES.read_text(encoding="utf-8"))
 	fails, checked = 0, 0
+	fails += check_seoul_translations()
 
 	# 등록되지 않은 짝은 조용히 넘어가지 않는다 — 표가 낡으면 검사가 사라진다
 	for key in sorted(set(ENTRIES) - set(reg)):

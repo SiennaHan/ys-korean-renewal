@@ -65,6 +65,29 @@ python seed_vocashot.py          # 5 프리셋 + 108 단어
 
 모든 시드 스크립트는 **idempotent** — id 기준 upsert. 재실행 안전.
 
+### seoul-puzzle 은 이미 배포한 뒤에도 한 번 더 시드해야 합니다 (2026-08-27)
+
+대화 줄의 번역 필드(`friendMsgT` · `selfMsgT` · `friendMsg2T`)가 **평평한 문자열
+하나(영어)** 에서 **언어별 짝**(`{en, ja, zh, vi}`)으로 바뀌었습니다. 전에는 🌐 를
+눌러도 앱 언어와 무관하게 늘 영어가 나왔습니다.
+
+- **DB 스키마 변경은 없습니다.** `ko_seoul_puzzle_step.data` 가 JSON 통째로 담는
+  TEXT 이고 Pydantic 도 `data: dict` 이라, 바뀐 것은 그 JSON 안쪽뿐입니다.
+- 그래서 필요한 것은 `python seed_seoul_puzzle.py` **한 번 더 실행**입니다.
+- **앱은 옛 꼴도 읽습니다** — 시드를 다시 넣기 전에는 그 줄만 영어가 나오고,
+  깨지지는 않습니다. 즉 배포 순서에 걸리는 일이 없습니다.
+- ⚠️ **주의** — 이 시드는 `step` 의 `data` 를 통째로 덮어씁니다. 어드민에서 문항을
+  손으로 고친 것이 있으면 그것도 씨드 값으로 돌아갑니다. 첫 배포 때와 달리 지금은
+  운영에 데이터가 이미 있으니, 고친 것이 있는지 먼저 확인하세요.
+
+확인:
+
+```bash
+curl -s http://localhost:8000/game-content/seoul-puzzle \
+  | python3 -c 'import json,sys; d=json.load(sys.stdin)["data"]; print(d["puzzles"]["hongdae"][0]["friendMsgT"])'
+# 기대: {'en': ..., 'ja': ..., 'zh': ..., 'vi': ...}  ← dict 여야 한다. str 이면 시드가 안 됐다
+```
+
 데이터 확인:
 
 ```bash

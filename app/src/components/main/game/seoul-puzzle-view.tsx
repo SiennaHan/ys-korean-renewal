@@ -5,6 +5,7 @@ import {
 	type NavDir,
 	type Puzzle,
 	SP_KEYFRAMES_CSS,
+	type SpTranslation,
 	isUnlocked,
 	resolveToken,
 } from "@/components/main/game/seoul-puzzle";
@@ -696,7 +697,7 @@ export function SpPuzzleView({
 	onRetry,
 	onNext,
 }: SpPuzzleViewProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	return (
 		<div
 			style={{
@@ -861,7 +862,7 @@ export function SpPuzzleView({
 				<ChatBubble
 					type="friend"
 					text={resolvedPuzzle.friendMsg}
-					translation={resolvedPuzzle.friendMsgT}
+					translation={pickTrans(i18n.language, resolvedPuzzle.friendMsgT)}
 					idx={0}
 					transVisible={transVisible}
 					toggleTrans={onToggleTrans}
@@ -871,7 +872,7 @@ export function SpPuzzleView({
 					<ChatBubble
 						type="self"
 						text={resolvedPuzzle.selfMsg}
-						translation={resolvedPuzzle.selfMsgT || ""}
+						translation={pickTrans(i18n.language, resolvedPuzzle.selfMsgT)}
 						idx={1}
 						transVisible={transVisible}
 						toggleTrans={onToggleTrans}
@@ -882,7 +883,7 @@ export function SpPuzzleView({
 					<ChatBubble
 						type="friend"
 						text={resolvedPuzzle.friendMsg2}
-						translation={resolvedPuzzle.friendMsg2T || ""}
+						translation={pickTrans(i18n.language, resolvedPuzzle.friendMsg2T)}
 						idx={2}
 						transVisible={transVisible}
 						toggleTrans={onToggleTrans}
@@ -1360,6 +1361,22 @@ export function SpPuzzleView({
 			</div>
 		</div>
 	);
+}
+
+/**
+ * 대화 줄의 번역에서 **앱 언어**를 고른다. 없으면 영어로 떨어진다.
+ *
+ * 문자열이 그대로 오는 갈래를 남겨 둔 이유는 `SpTranslation` 의 주석에 있다 —
+ * 운영 DB 에 옛 꼴이 남아 있는 동안에도 영어가 나와야 한다.
+ * 앱 언어가 한국어일 때도 영어다 — 줄 자체가 한국어라 한국어 번역은 없다.
+ */
+function pickTrans(
+	lang: string,
+	v: SpTranslation | null | undefined,
+): string {
+	if (!v) return "";
+	if (typeof v === "string") return v;
+	return v[lang.split("-")[0]] ?? v.en ?? "";
 }
 
 // ── Chat Bubble Sub-component (puzzle 화면 전용) ──────────────────────────────

@@ -274,11 +274,21 @@
 		"bukchon": [
 			{
 				"friendMsg": "북촌이야! 골목에서 사진 찍고 싶지 않아?",
-				"friendMsgT": "This is Bukchon! Don't you want to take photos in the alley?",
+				"friendMsgT": {
+					"en": "This is Bukchon! Don't you want to take photos in the alley?",
+					"ja": "北村だよ！路地で写真撮りたくない？",
+					"zh": "这里是北村！不想在小巷里拍照吗？",
+					"vi": "Đây là Bukchon! Bạn không muốn chụp ảnh trong hẻm sao?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "골목에서 사진 찍고 싶다고 말해봐요!",
-				"friendMsg2T": "Say you want to take photos in the alley!",
+				"friendMsg2T": {
+					"en": "Say you want to take photos in the alley!",
+					"ja": "路地で写真を撮りたいと言ってみましょう！",
+					"zh": "说说你想在小巷里拍照吧！",
+					"vi": "Hãy nói rằng bạn muốn chụp ảnh trong hẻm!"
+				},
 				"hintText": "골목에서 사진을 찍고 싶은 상황이에요",
 				"answer": [
 					"골목에서",
@@ -296,11 +306,21 @@
 			},
 			{
 				"friendMsg": "점심 뭐 먹고 싶어?",
-				"friendMsgT": "What do you want to eat for lunch?",
+				"friendMsgT": {
+					"en": "What do you want to eat for lunch?",
+					"ja": "お昼は何が食べたい？",
+					"zh": "午饭想吃什么？",
+					"vi": "Trưa nay bạn muốn ăn gì?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "먹고 싶은 음식을 말해봐요!",
-				"friendMsg2T": "Say what you want to eat!",
+				"friendMsg2T": {
+					"en": "Say what you want to eat!",
+					"ja": "食べたい料理を言ってみましょう！",
+					"zh": "说说你想吃的食物吧！",
+					"vi": "Hãy nói món bạn muốn ăn!"
+				},
 				"hintText": "먹고 싶은 음식을 말하는 상황이에요",
 				"answer": [
 					"저는",
@@ -318,11 +338,21 @@
 			},
 			{
 				"friendMsg": "북촌에서 뭐 하고 싶어?",
-				"friendMsgT": "What do you want to do in Bukchon?",
+				"friendMsgT": {
+					"en": "What do you want to do in Bukchon?",
+					"ja": "北村で何がしたい？",
+					"zh": "你想在北村做什么？",
+					"vi": "Bạn muốn làm gì ở Bukchon?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "한옥 카페에서 쉬고 싶다고 말해봐요!",
-				"friendMsg2T": "Say you want to rest at a hanok café!",
+				"friendMsg2T": {
+					"en": "Say you want to rest at a hanok café!",
+					"ja": "韓屋カフェで休みたいと言ってみましょう！",
+					"zh": "说说你想在韩屋咖啡厅休息吧！",
+					"vi": "Hãy nói rằng bạn muốn nghỉ ở quán cà phê hanok!"
+				},
 				"hintText": "한옥 카페에서 쉬고 싶은 상황이에요",
 				"answer": [
 					"한옥",
@@ -339,11 +369,21 @@
 			},
 			{
 				"friendMsg": "기념품 어디서 사고 싶어?",
-				"friendMsgT": "Where do you want to buy souvenirs?",
+				"friendMsgT": {
+					"en": "Where do you want to buy souvenirs?",
+					"ja": "お土産はどこで買いたい？",
+					"zh": "纪念品想在哪里买？",
+					"vi": "Bạn muốn mua quà lưu niệm ở đâu?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "어디에서 사고 싶은지 말해봐요!",
-				"friendMsg2T": "Say where you want to buy them!",
+				"friendMsg2T": {
+					"en": "Say where you want to buy them!",
+					"ja": "どこで買いたいか言ってみましょう！",
+					"zh": "说说你想在哪里买吧！",
+					"vi": "Hãy nói bạn muốn mua ở đâu!"
+				},
 				"hintText": "기념품을 사고 싶은 장소를 말하는 상황이에요",
 				"answer": [
 					"북촌에서",
@@ -363,11 +403,21 @@
 		"bukhansan": [
 			{
 				"friendMsg": "북한산 등산 출발! 힘들어?",
-				"friendMsgT": "Bukhansan hike, let's go! Are you tired?",
+				"friendMsgT": {
+					"en": "Bukhansan hike, let's go! Are you tired?",
+					"ja": "北漢山の登山、出発！しんどい？",
+					"zh": "北汉山登山出发！累吗？",
+					"vi": "Bắt đầu leo núi Bukhansan! Bạn có mệt không?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "친구에게 물 준다고 말해봐요!",
-				"friendMsg2T": "Say you give water to your friend!",
+				"friendMsg2T": {
+					"en": "Say you give water to your friend!",
+					"ja": "友だちに水をあげると言ってみましょう！",
+					"zh": "说说你要给朋友水吧！",
+					"vi": "Hãy nói rằng bạn đưa nước cho bạn mình!"
+				},
 				"hintText": "친구에게 물을 주는 상황이에요",
 				"answer": [
 					"친구에게",
@@ -384,11 +434,21 @@
 			},
 			{
 				"friendMsg": "저기 산악회 아저씨한테 길 물어봐!",
-				"friendMsgT": "Ask that hiking club uncle for directions!",
+				"friendMsgT": {
+					"en": "Ask that hiking club uncle for directions!",
+					"ja": "あそこの山岳会のおじさんに道を聞いてみて！",
+					"zh": "去问那边登山会的大叔路吧！",
+					"vi": "Hãy hỏi đường chú ở câu lạc bộ leo núi kia!"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "아저씨에게 물어본다고 말해봐요!",
-				"friendMsg2T": "Say you're asking the uncle!",
+				"friendMsg2T": {
+					"en": "Say you're asking the uncle!",
+					"ja": "おじさんに聞くと言ってみましょう！",
+					"zh": "说说你要问大叔吧！",
+					"vi": "Hãy nói rằng bạn sẽ hỏi chú ấy!"
+				},
 				"hintText": "산악회 아저씨에게 길을 묻는 상황이에요",
 				"answer": [
 					"아저씨에게",
@@ -405,11 +465,21 @@
 			},
 			{
 				"friendMsg": "정상까지 얼마나 걸려?",
-				"friendMsgT": "How long does it take to the summit?",
+				"friendMsgT": {
+					"en": "How long does it take to the summit?",
+					"ja": "頂上までどれくらいかかる？",
+					"zh": "到山顶要多久？",
+					"vi": "Lên đỉnh mất bao lâu?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "세 시간쯤 걸린다고 말해봐요!",
-				"friendMsg2T": "Say it takes about three hours!",
+				"friendMsg2T": {
+					"en": "Say it takes about three hours!",
+					"ja": "三時間くらいかかると言ってみましょう！",
+					"zh": "说说大约要三个小时吧！",
+					"vi": "Hãy nói là mất khoảng ba tiếng!"
+				},
 				"hintText": "정상까지 소요 시간을 말하는 상황이에요",
 				"answer": [
 					"세",
@@ -427,11 +497,21 @@
 			},
 			{
 				"friendMsg": "저기 가게 있어! 이거 얼마야?",
-				"friendMsgT": "There's a shop! How much is this?",
+				"friendMsgT": {
+					"en": "There's a shop! How much is this?",
+					"ja": "あそこにお店がある！これいくら？",
+					"zh": "那边有商店！这个多少钱？",
+					"vi": "Kia có cửa hàng! Cái này bao nhiêu?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "가격을 물어봐요!",
-				"friendMsg2T": "Ask the price!",
+				"friendMsg2T": {
+					"en": "Ask the price!",
+					"ja": "値段を聞いてみましょう！",
+					"zh": "问一下价格吧！",
+					"vi": "Hãy hỏi giá!"
+				},
 				"hintText": "산 위 매점에서 가격을 물어보는 상황이에요",
 				"answer": [
 					"이거",
@@ -449,11 +529,21 @@
 		"ddp": [
 			{
 				"friendMsg": "DDP야! 여기 옷 가게 엄청 많아!",
-				"friendMsgT": "This is DDP! So many clothing stores here!",
+				"friendMsgT": {
+					"en": "This is DDP! So many clothing stores here!",
+					"ja": "DDPだよ！ここ、服屋がすごく多い！",
+					"zh": "这里是DDP！服装店超多！",
+					"vi": "Đây là DDP! Ở đây nhiều cửa hàng quần áo lắm!"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "옷 가게와 신발 가게가 있다고 말해봐요!",
-				"friendMsg2T": "Say there are clothing and shoe stores!",
+				"friendMsg2T": {
+					"en": "Say there are clothing and shoe stores!",
+					"ja": "服屋と靴屋があると言ってみましょう！",
+					"zh": "说说这里有服装店和鞋店吧！",
+					"vi": "Hãy nói rằng có cửa hàng quần áo và cửa hàng giày!"
+				},
 				"hintText": "두 가게가 있다고 말하는 상황이에요",
 				"answer": [
 					"옷",
@@ -471,11 +561,21 @@
 			},
 			{
 				"friendMsg": "DDP 몇 시에 열어?",
-				"friendMsgT": "What time does DDP open?",
+				"friendMsgT": {
+					"en": "What time does DDP open?",
+					"ja": "DDPは何時に開く？",
+					"zh": "DDP几点开门？",
+					"vi": "DDP mở cửa lúc mấy giờ?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "열 시에 연다고 말해봐요!",
-				"friendMsg2T": "Say it opens at 10!",
+				"friendMsg2T": {
+					"en": "Say it opens at 10!",
+					"ja": "十時に開くと言ってみましょう！",
+					"zh": "说说十点开门吧！",
+					"vi": "Hãy nói là mở cửa lúc mười giờ!"
+				},
 				"hintText": "DDP 오픈 시간을 말하는 상황이에요",
 				"answer": [
 					"열",
@@ -492,11 +592,21 @@
 			},
 			{
 				"friendMsg": "DDP 보통 몇 시에 와?",
-				"friendMsgT": "What time do you usually come to DDP?",
+				"friendMsgT": {
+					"en": "What time do you usually come to DDP?",
+					"ja": "DDPには普段何時に来る？",
+					"zh": "你平时几点来DDP？",
+					"vi": "Bạn thường đến DDP lúc mấy giờ?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "두 시에 온다고 말해봐요!",
-				"friendMsg2T": "Say you come at 2!",
+				"friendMsg2T": {
+					"en": "Say you come at 2!",
+					"ja": "二時に来ると言ってみましょう！",
+					"zh": "说说你两点来吧！",
+					"vi": "Hãy nói là bạn đến lúc hai giờ!"
+				},
 				"hintText": "보통 오는 시간을 말하는 상황이에요",
 				"answer": [
 					"두",
@@ -516,11 +626,21 @@
 		"gwangjang": [
 			{
 				"friendMsg": "여기 김치 한번 먹어봐! 맛있어!",
-				"friendMsgT": "Try the kimchi here! It's delicious!",
+				"friendMsgT": {
+					"en": "Try the kimchi here! It's delicious!",
+					"ja": "ここのキムチ、食べてみて！おいしいよ！",
+					"zh": "尝尝这里的泡菜！很好吃！",
+					"vi": "Thử kimchi ở đây đi! Ngon lắm!"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "김치 안 먹는다고 말해봐요!",
-				"friendMsg2T": "Say you don't eat kimchi!",
+				"friendMsg2T": {
+					"en": "Say you don't eat kimchi!",
+					"ja": "キムチは食べないと言ってみましょう！",
+					"zh": "说说你不吃泡菜吧！",
+					"vi": "Hãy nói rằng bạn không ăn kimchi!"
+				},
 				"hintText": "음식을 먹지 않는다고 말하는 상황이에요",
 				"answer": [
 					"저는",
@@ -539,11 +659,21 @@
 			},
 			{
 				"friendMsg": "여기 음식 매워 보여. 괜찮아?",
-				"friendMsgT": "The food here looks spicy. Are you okay?",
+				"friendMsgT": {
+					"en": "The food here looks spicy. Are you okay?",
+					"ja": "ここの料理、辛そう。大丈夫？",
+					"zh": "这里的菜看起来很辣。没问题吗？",
+					"vi": "Món ở đây trông cay lắm. Bạn ổn không?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "맵지 않다고 말해봐요!",
-				"friendMsg2T": "Say it's not spicy!",
+				"friendMsg2T": {
+					"en": "Say it's not spicy!",
+					"ja": "辛くないと言ってみましょう！",
+					"zh": "说说不辣吧！",
+					"vi": "Hãy nói là không cay!"
+				},
 				"hintText": "음식이 맵지 않다고 말하는 상황이에요",
 				"answer": [
 					"한국",
@@ -562,11 +692,21 @@
 			},
 			{
 				"friendMsg": "오늘 날씨 덥지 않아?",
-				"friendMsgT": "Isn't it hot today?",
+				"friendMsgT": {
+					"en": "Isn't it hot today?",
+					"ja": "今日、暑くない？",
+					"zh": "今天不热吗？",
+					"vi": "Hôm nay không nóng sao?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "덥지 않다고 말해봐요!",
-				"friendMsg2T": "Say it's not hot!",
+				"friendMsg2T": {
+					"en": "Say it's not hot!",
+					"ja": "暑くないと言ってみましょう！",
+					"zh": "说说不热吧！",
+					"vi": "Hãy nói là không nóng!"
+				},
 				"hintText": "날씨가 덥지 않다고 말하는 상황이에요",
 				"answer": [
 					"날씨가",
@@ -584,11 +724,21 @@
 			},
 			{
 				"friendMsg": "시장에 사람이 많지 않아?",
-				"friendMsgT": "Aren't there many people in the market?",
+				"friendMsgT": {
+					"en": "Aren't there many people in the market?",
+					"ja": "市場、人が多くない？",
+					"zh": "市场里人不多吗？",
+					"vi": "Chợ không đông người sao?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "많지 않다고 말해봐요!",
-				"friendMsg2T": "Say there aren't many!",
+				"friendMsg2T": {
+					"en": "Say there aren't many!",
+					"ja": "多くないと言ってみましょう！",
+					"zh": "说说不多吧！",
+					"vi": "Hãy nói là không đông!"
+				},
 				"hintText": "시장에 사람이 많지 않다고 말하는 상황이에요",
 				"answer": [
 					"시장에",
@@ -609,11 +759,26 @@
 		"gyeongbok": [
 			{
 				"friendMsg": "경복궁에 도착했어! 지갑 잘 챙겼어?",
-				"friendMsgT": "We're at Gyeongbokgung! Did you keep your wallet safe?",
+				"friendMsgT": {
+					"en": "We're at Gyeongbokgung! Did you keep your wallet safe?",
+					"ja": "景福宮に着いた！財布はちゃんと持ってる？",
+					"zh": "到景福宫了！钱包带好了吗？",
+					"vi": "Đến Gyeongbokgung rồi! Bạn giữ ví cẩn thận chưa?"
+				},
 				"selfMsg": "네, 가방에 있어요!",
-				"selfMsgT": "Yes, it's in my bag!",
+				"selfMsgT": {
+					"en": "Yes, it's in my bag!",
+					"ja": "はい、かばんにあります！",
+					"zh": "是的，在包里！",
+					"vi": "Vâng, nó ở trong túi!"
+				},
 				"friendMsg2": "지갑이 어디 있는지 말해봐요!",
-				"friendMsg2T": "Say where your wallet is!",
+				"friendMsg2T": {
+					"en": "Say where your wallet is!",
+					"ja": "財布がどこにあるか言ってみましょう！",
+					"zh": "说说钱包在哪里吧！",
+					"vi": "Hãy nói ví ở đâu!"
+				},
 				"hintText": "가방 안에 지갑이 있는 상황이에요",
 				"answer": [
 					"지갑이",
@@ -630,11 +795,21 @@
 			},
 			{
 				"friendMsg": "저기 매표소 보여? 화장실도 있을 것 같아!",
-				"friendMsgT": "See the ticket booth? There might be a restroom too!",
+				"friendMsgT": {
+					"en": "See the ticket booth? There might be a restroom too!",
+					"ja": "あそこのチケット売り場、見える？トイレもありそう！",
+					"zh": "看到那边的售票处了吗？好像也有洗手间！",
+					"vi": "Bạn thấy phòng bán vé kia không? Có lẽ cũng có nhà vệ sinh!"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "직원한테 물어봐요!",
-				"friendMsg2T": "Ask the staff!",
+				"friendMsg2T": {
+					"en": "Ask the staff!",
+					"ja": "係の人に聞いてみましょう！",
+					"zh": "问一下工作人员吧！",
+					"vi": "Hãy hỏi nhân viên!"
+				},
 				"hintText": "매표소 직원 앞에 서 있어요",
 				"answer": [
 					"화장실이",
@@ -651,11 +826,26 @@
 			},
 			{
 				"friendMsg": "저기 기념품 가게 있다! 연필도 팔아.",
-				"friendMsgT": "There's a souvenir shop! They sell pencils.",
+				"friendMsgT": {
+					"en": "There's a souvenir shop! They sell pencils.",
+					"ja": "あそこにお土産屋がある！鉛筆も売ってるよ。",
+					"zh": "那边有纪念品店！也卖铅笔。",
+					"vi": "Kia có cửa hàng quà lưu niệm! Cũng bán bút chì nữa."
+				},
 				"selfMsg": "볼펜도 있어요?",
-				"selfMsgT": "Do they have pens too?",
+				"selfMsgT": {
+					"en": "Do they have pens too?",
+					"ja": "ボールペンもありますか？",
+					"zh": "也有圆珠笔吗？",
+					"vi": "Có cả bút bi không?"
+				},
 				"friendMsg2": "들어가서 확인해봐요!",
-				"friendMsg2T": "Go in and check!",
+				"friendMsg2T": {
+					"en": "Go in and check!",
+					"ja": "入って確かめてみましょう！",
+					"zh": "进去确认一下吧！",
+					"vi": "Hãy vào xem thử!"
+				},
 				"hintText": "가게 안에 연필과 볼펜이 모두 있네요",
 				"answer": [
 					"연필이",
@@ -673,11 +863,21 @@
 			},
 			{
 				"friendMsg": "배고프지 않아? 근처 식당 찾아보자!",
-				"friendMsgT": "Aren't you hungry? Let's find a restaurant!",
+				"friendMsgT": {
+					"en": "Aren't you hungry? Let's find a restaurant!",
+					"ja": "お腹すいてない？近くの食堂を探そう！",
+					"zh": "不饿吗？找找附近的餐厅吧！",
+					"vi": "Bạn không đói sao? Tìm nhà hàng gần đây đi!"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "식당이 어디 있는지 말해봐요!",
-				"friendMsg2T": "Say where the restaurant is!",
+				"friendMsg2T": {
+					"en": "Say where the restaurant is!",
+					"ja": "食堂がどこにあるか言ってみましょう！",
+					"zh": "说说餐厅在哪里吧！",
+					"vi": "Hãy nói nhà hàng ở đâu!"
+				},
 				"hintText": "서점 근처에 식당이 있어요",
 				"answer": [
 					"식당이",
@@ -697,11 +897,21 @@
 		"hangang": [
 			{
 				"friendMsg": "한강이다! 치킨 시키자 🍗",
-				"friendMsgT": "Han River! Let's order chicken 🍗",
+				"friendMsgT": {
+					"en": "Han River! Let's order chicken 🍗",
+					"ja": "漢江だ！チキン頼もう 🍗",
+					"zh": "到汉江了！点炸鸡吧 🍗",
+					"vi": "Sông Hàn đây! Gọi gà rán đi 🍗"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "뭐 먹는지 말해봐요!",
-				"friendMsg2T": "Say what you're eating!",
+				"friendMsg2T": {
+					"en": "Say what you're eating!",
+					"ja": "何を食べるか言ってみましょう！",
+					"zh": "说说你吃什么吧！",
+					"vi": "Hãy nói bạn ăn gì!"
+				},
 				"hintText": "한강에서 점심에 먹을 메뉴를 말하는 상황이에요",
 				"answer": [
 					"점심에",
@@ -718,11 +928,21 @@
 			},
 			{
 				"friendMsg": "저기 친구가 커피 마시고 있어.",
-				"friendMsgT": "My friend is drinking coffee over there.",
+				"friendMsgT": {
+					"en": "My friend is drinking coffee over there.",
+					"ja": "あそこで友だちがコーヒーを飲んでるよ。",
+					"zh": "那边朋友在喝咖啡。",
+					"vi": "Bạn mình đang uống cà phê ở kia."
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "친구가 뭐 하는지 말해봐요!",
-				"friendMsg2T": "Say what the friend is doing!",
+				"friendMsg2T": {
+					"en": "Say what the friend is doing!",
+					"ja": "友だちが何をしているか言ってみましょう！",
+					"zh": "说说朋友在做什么吧！",
+					"vi": "Hãy nói bạn ấy đang làm gì!"
+				},
 				"hintText": "친구가 무엇을 마시는지 말하는 상황이에요",
 				"answer": [
 					"친구가",
@@ -739,11 +959,21 @@
 			},
 			{
 				"friendMsg": "한국어 공부해? 잘 되고 있어?",
-				"friendMsgT": "Are you studying Korean? Going well?",
+				"friendMsgT": {
+					"en": "Are you studying Korean? Going well?",
+					"ja": "韓国語、勉強してる？うまくいってる？",
+					"zh": "你在学韩语吗？学得顺利吗？",
+					"vi": "Bạn học tiếng Hàn à? Có ổn không?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "한국어 공부한다고 말해봐요!",
-				"friendMsg2T": "Say you're studying Korean!",
+				"friendMsg2T": {
+					"en": "Say you're studying Korean!",
+					"ja": "韓国語を勉強すると言ってみましょう！",
+					"zh": "说说你学韩语吧！",
+					"vi": "Hãy nói rằng bạn học tiếng Hàn!"
+				},
 				"hintText": "한국어를 공부하고 있다고 말하는 상황이에요",
 				"answer": [
 					"저는",
@@ -760,11 +990,21 @@
 			},
 			{
 				"friendMsg": "저기 사람들이 뭐 읽고 있어?",
-				"friendMsgT": "What are those people reading over there?",
+				"friendMsgT": {
+					"en": "What are those people reading over there?",
+					"ja": "あそこの人たちは何を読んでるの？",
+					"zh": "那边的人们在读什么？",
+					"vi": "Những người kia đang đọc gì?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "친구가 뭐 하는지 말해봐요!",
-				"friendMsg2T": "Say what the friend is doing!",
+				"friendMsg2T": {
+					"en": "Say what the friend is doing!",
+					"ja": "友だちが何をしているか言ってみましょう！",
+					"zh": "说说朋友在做什么吧！",
+					"vi": "Hãy nói bạn ấy đang làm gì!"
+				},
 				"hintText": "잔디밭에서 친구가 책을 읽고 있어요",
 				"answer": [
 					"친구가",
@@ -783,11 +1023,21 @@
 		"hongdae": [
 			{
 				"friendMsg": "안녕하세요! 저는 김연세예요. 😊",
-				"friendMsgT": "Hello! I'm Kim Yonsei. 😊",
+				"friendMsgT": {
+					"en": "Hello! I'm Kim Yonsei. 😊",
+					"ja": "こんにちは！私はキム・ヨンセです。😊",
+					"zh": "你好！我是金延世。😊",
+					"vi": "Xin chào! Tôi là Kim Yonsei. 😊"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "이름이 뭐예요?",
-				"friendMsg2T": "What is your name?",
+				"friendMsg2T": {
+					"en": "What is your name?",
+					"ja": "お名前は何ですか？",
+					"zh": "你叫什么名字？",
+					"vi": "Bạn tên là gì?"
+				},
 				"hintText": "처음 만난 자리에서 이름을 소개하는 상황이에요",
 				"answer": [
 					"저는",
@@ -803,11 +1053,21 @@
 			},
 			{
 				"friendMsg": "반가워요! 어느 나라 사람이에요?",
-				"friendMsgT": "Nice to meet you! Where are you from?",
+				"friendMsgT": {
+					"en": "Nice to meet you! Where are you from?",
+					"ja": "はじめまして！どの国の人ですか？",
+					"zh": "很高兴认识你！你是哪国人？",
+					"vi": "Rất vui được gặp bạn! Bạn là người nước nào?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "나라를 말해봐요!",
-				"friendMsg2T": "Say your country!",
+				"friendMsg2T": {
+					"en": "Say your country!",
+					"ja": "国を言ってみましょう！",
+					"zh": "说说你的国家吧！",
+					"vi": "Hãy nói tên nước của bạn!"
+				},
 				"hintText": "처음 만난 자리에서 국적을 소개하는 상황이에요",
 				"answer": [
 					"저는",
@@ -825,11 +1085,21 @@
 			},
 			{
 				"friendMsg": "저는 학생이에요. 직업이 뭐예요?",
-				"friendMsgT": "I'm a student. What is your job?",
+				"friendMsgT": {
+					"en": "I'm a student. What is your job?",
+					"ja": "私は学生です。お仕事は何ですか？",
+					"zh": "我是学生。你的职业是什么？",
+					"vi": "Tôi là học sinh. Bạn làm nghề gì?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "직업을 말해봐요!",
-				"friendMsg2T": "Say your job!",
+				"friendMsg2T": {
+					"en": "Say your job!",
+					"ja": "職業を言ってみましょう！",
+					"zh": "说说你的职业吧！",
+					"vi": "Hãy nói nghề của bạn!"
+				},
 				"hintText": "처음 만난 자리에서 직업을 소개하는 상황이에요",
 				"answer": [
 					"저는",
@@ -845,11 +1115,21 @@
 			},
 			{
 				"friendMsg": "저 사람이 선생님이에요?",
-				"friendMsgT": "Is that person a teacher?",
+				"friendMsgT": {
+					"en": "Is that person a teacher?",
+					"ja": "あの人は先生ですか？",
+					"zh": "那个人是老师吗？",
+					"vi": "Người kia là giáo viên phải không?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "아니라고 말해봐요!",
-				"friendMsg2T": "Say no!",
+				"friendMsg2T": {
+					"en": "Say no!",
+					"ja": "違うと言ってみましょう！",
+					"zh": "说不是吧！",
+					"vi": "Hãy nói là không phải!"
+				},
 				"hintText": "저 사람의 직업을 부정하는 상황이에요",
 				"answer": [
 					"아니요,",
@@ -868,11 +1148,21 @@
 		"museum": [
 			{
 				"friendMsg": "저기 직원 있어! 뭔가 물어봐.",
-				"friendMsgT": "There's a staff member! Ask something.",
+				"friendMsgT": {
+					"en": "There's a staff member! Ask something.",
+					"ja": "あそこに係の人がいる！何か聞いてみて。",
+					"zh": "那边有工作人员！问点什么吧。",
+					"vi": "Kia có nhân viên! Hỏi gì đi."
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "잠깐만 기다리라고 말해봐요!",
-				"friendMsg2T": "Tell them to wait a moment!",
+				"friendMsg2T": {
+					"en": "Tell them to wait a moment!",
+					"ja": "少し待ってくださいと言ってみましょう！",
+					"zh": "说请稍等一下吧！",
+					"vi": "Hãy nói họ đợi một chút!"
+				},
 				"hintText": "직원에게 잠깐 기다리라고 안내하는 상황이에요",
 				"answer": [
 					"잠깐만",
@@ -888,11 +1178,21 @@
 			},
 			{
 				"friendMsg": "여기 빈자리 있어! 잠깐 앉자.",
-				"friendMsgT": "There's an empty seat here! Let's sit for a moment.",
+				"friendMsgT": {
+					"en": "There's an empty seat here! Let's sit for a moment.",
+					"ja": "ここ、空いてる席がある！ちょっと座ろう。",
+					"zh": "这里有空位！坐一会儿吧。",
+					"vi": "Ở đây có chỗ trống! Ngồi một lát đi."
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "앉으라고 말해봐요!",
-				"friendMsg2T": "Say to sit down!",
+				"friendMsg2T": {
+					"en": "Say to sit down!",
+					"ja": "座ってくださいと言ってみましょう！",
+					"zh": "说请坐吧！",
+					"vi": "Hãy mời họ ngồi!"
+				},
 				"hintText": "상대방에게 앉으라고 안내하는 상황이에요",
 				"answer": [
 					"여기",
@@ -908,11 +1208,21 @@
 			},
 			{
 				"friendMsg": "박물관이 몇 층까지 있어?",
-				"friendMsgT": "How many floors does the museum have?",
+				"friendMsgT": {
+					"en": "How many floors does the museum have?",
+					"ja": "博物館は何階まであるの？",
+					"zh": "博物馆有几层？",
+					"vi": "Bảo tàng có đến tầng mấy?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "몇 층부터 몇 층까지 있는지 말해봐요!",
-				"friendMsg2T": "Say which floors there are!",
+				"friendMsg2T": {
+					"en": "Say which floors there are!",
+					"ja": "何階から何階まであるか言ってみましょう！",
+					"zh": "说说从几层到几层吧！",
+					"vi": "Hãy nói từ tầng mấy đến tầng mấy!"
+				},
 				"hintText": "박물관 층 범위를 설명하는 상황이에요",
 				"answer": [
 					"1층부터",
@@ -930,11 +1240,21 @@
 			},
 			{
 				"friendMsg": "박물관 몇 시부터 몇 시까지야?",
-				"friendMsgT": "What are the museum's opening hours?",
+				"friendMsgT": {
+					"en": "What are the museum's opening hours?",
+					"ja": "博物館は何時から何時まで？",
+					"zh": "博物馆从几点到几点？",
+					"vi": "Bảo tàng mở từ mấy giờ đến mấy giờ?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "운영 시간을 말해봐요!",
-				"friendMsg2T": "Say the opening hours!",
+				"friendMsg2T": {
+					"en": "Say the opening hours!",
+					"ja": "開館時間を言ってみましょう！",
+					"zh": "说说开放时间吧！",
+					"vi": "Hãy nói giờ mở cửa!"
+				},
 				"hintText": "박물관 운영 시간을 말하는 상황이에요 (열 시~여섯 시)",
 				"answer": [
 					"열",
@@ -955,11 +1275,21 @@
 		"myeongdong": [
 			{
 				"friendMsg": "저기 봐요! 저게 뭐예요?",
-				"friendMsgT": "Look at that bag over there! What is that?",
+				"friendMsgT": {
+					"en": "Look over there! What is that?",
+					"ja": "あそこを見て！あれは何ですか？",
+					"zh": "看那边！那是什么？",
+					"vi": "Xem kia đi! Cái kia là gì?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "저것이 뭔지 말해봐요!",
-				"friendMsg2T": "Say what that is!",
+				"friendMsg2T": {
+					"en": "Say what that is!",
+					"ja": "あれが何か言ってみましょう！",
+					"zh": "说说那是什么吧！",
+					"vi": "Hãy nói cái kia là gì!"
+				},
 				"hintText": "멀리 있는 물건을 가리키는 상황이에요",
 				"answer": [
 					"저것은",
@@ -974,11 +1304,21 @@
 			},
 			{
 				"friendMsg": "이 책 연세 씨 거예요?",
-				"friendMsgT": "Is this book yours, Yonsei?",
+				"friendMsgT": {
+					"en": "Is this book yours, Yonsei?",
+					"ja": "この本、ヨンセさんのですか？",
+					"zh": "这本书是延世的吗？",
+					"vi": "Sách này của bạn Yonsei phải không?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "아니라고 말해봐요!",
-				"friendMsg2T": "Say it's not yours!",
+				"friendMsg2T": {
+					"en": "Say it's not yours!",
+					"ja": "違うと言ってみましょう！",
+					"zh": "说不是吧！",
+					"vi": "Hãy nói là không phải!"
+				},
 				"hintText": "이 물건이 내 것이 아니라고 말하는 상황이에요",
 				"answer": [
 					"이것은",
@@ -997,11 +1337,21 @@
 			},
 			{
 				"friendMsg": "저 사람이 의사예요?",
-				"friendMsgT": "Is that person a doctor?",
+				"friendMsgT": {
+					"en": "Is that person a doctor?",
+					"ja": "あの人は医者ですか？",
+					"zh": "那个人是医生吗？",
+					"vi": "Người kia là bác sĩ phải không?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "아니라고 말해봐요!",
-				"friendMsg2T": "Say no!",
+				"friendMsg2T": {
+					"en": "Say no!",
+					"ja": "違うと言ってみましょう！",
+					"zh": "说不是吧！",
+					"vi": "Hãy nói là không phải!"
+				},
 				"hintText": "저 사람의 직업을 부정하는 상황이에요",
 				"answer": [
 					"존슨",
@@ -1019,11 +1369,21 @@
 			},
 			{
 				"friendMsg": "이것은 교과서예요?",
-				"friendMsgT": "Is this a textbook?",
+				"friendMsgT": {
+					"en": "Is this a textbook?",
+					"ja": "これは教科書ですか？",
+					"zh": "这是教科书吗？",
+					"vi": "Đây là sách giáo khoa phải không?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "아니라고 말해봐요!",
-				"friendMsg2T": "Say it's not!",
+				"friendMsg2T": {
+					"en": "Say it's not!",
+					"ja": "違うと言ってみましょう！",
+					"zh": "说不是吧！",
+					"vi": "Hãy nói là không phải!"
+				},
 				"hintText": "물건이 교과서가 아니라고 말하는 상황이에요",
 				"answer": [
 					"이것은",
@@ -1042,11 +1402,21 @@
 		"seongsu": [
 			{
 				"friendMsg": "여기 유명한 카페야! 뭐 마실까?",
-				"friendMsgT": "This is a famous café! What shall we drink?",
+				"friendMsgT": {
+					"en": "This is a famous café! What shall we drink?",
+					"ja": "ここ、有名なカフェだよ！何を飲もうか？",
+					"zh": "这是有名的咖啡厅！喝什么呢？",
+					"vi": "Đây là quán cà phê nổi tiếng! Uống gì nhỉ?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "음료를 제안해봐요!",
-				"friendMsg2T": "Suggest a drink!",
+				"friendMsg2T": {
+					"en": "Suggest a drink!",
+					"ja": "飲み物を提案してみましょう！",
+					"zh": "提议一种饮料吧！",
+					"vi": "Hãy đề xuất một món uống!"
+				},
 				"hintText": "카페에서 음료를 고르는 상황이에요",
 				"answer": [
 					"아메리카노",
@@ -1062,11 +1432,21 @@
 			},
 			{
 				"friendMsg": "이 카페 메뉴에 뭐 있어?",
-				"friendMsgT": "What's on the menu here?",
+				"friendMsgT": {
+					"en": "What's on the menu here?",
+					"ja": "このカフェのメニューには何がある？",
+					"zh": "这家咖啡厅的菜单上有什么？",
+					"vi": "Thực đơn quán này có gì?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "커피하고 물 있다고 말해봐요!",
-				"friendMsg2T": "Say there's coffee and water!",
+				"friendMsg2T": {
+					"en": "Say there's coffee and water!",
+					"ja": "コーヒーと水があると言ってみましょう！",
+					"zh": "说说有咖啡和水吧！",
+					"vi": "Hãy nói là có cà phê và nước!"
+				},
 				"hintText": "메뉴에 있는 것을 말하는 상황이에요",
 				"answer": [
 					"커피하고",
@@ -1084,11 +1464,21 @@
 			},
 			{
 				"friendMsg": "오늘 점심 뭐 먹을까?",
-				"friendMsgT": "What shall we eat for lunch today?",
+				"friendMsgT": {
+					"en": "What shall we eat for lunch today?",
+					"ja": "今日のお昼、何を食べようか？",
+					"zh": "今天午饭吃什么呢？",
+					"vi": "Trưa nay ăn gì nhỉ?"
+				},
 				"selfMsg": null,
 				"selfMsgT": null,
 				"friendMsg2": "삼겹살하고 된장찌개 먹어요!",
-				"friendMsg2T": "Say you eat samgyeopsal and doenjang jjigae!",
+				"friendMsg2T": {
+					"en": "Say you eat samgyeopsal and doenjang jjigae!",
+					"ja": "サムギョプサルとテンジャンチゲを食べましょう！",
+					"zh": "吃五花肉和大酱汤吧！",
+					"vi": "Ăn thịt ba chỉ nướng và canh tương đi!"
+				},
 				"hintText": "점심 메뉴를 제안하는 상황이에요",
 				"answer": [
 					"삼겹살하고",
