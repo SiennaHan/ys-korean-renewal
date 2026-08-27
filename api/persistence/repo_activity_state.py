@@ -108,7 +108,34 @@ async def complete(userId: str, bookId: int, chapterSeq: int, menuType: str, sub
         row.graded_count = gradedCount
     if correctCount is not None:
         row.correct_count = correctCount
-    row.state = "completed"
-    row.completed_at = datetime.utcnow()
+
+    # **완료 = 건너뛴 문항 없이 모두 응답** (shell_spec §1 전이표 · 2026-08-27 확정).
+    #
+    # 전에는 마지막 문항에 닿기만 하면 완료였다. 그러면 다 건너뛰고 끝까지 넘긴
+    # 것도 완료로 남는다 — 과 목록에 체크가 붙고 "다 했다" 고 보인다.
+    #
+    # `answeredCount` 는 **클라이언트가 건너뛴 것을 빼고 보낸다**(예:
+    # `fill-blank.tsx` 의 `questions.length - skippedCount`). 그래서 여기서
+    # 총 문항 수와 견주면 건너뛴 것이 남았는지 알 수 있다.
+    #
+    # 못 세는 경우는 완료로 본다 — `total_items` 가 없거나(진입 때 문항 수를
+    # 몰랐다) `answeredCount` 를 안 보낸 활동이다. 여기서 막으면 **셀 수 없는
+    # 활동이 영원히 미완료**가 된다. 세지 못하는 것과 안 한 것은 다르다.
+    #
+    # **`row.answered_count` 가 아니라 넘어온 `answeredCount` 를 본다.** 칸의
+    # 기본값이 0 이라 행을 읽으면 "안 보냈다" 와 "0 을 보냈다" 가 같아진다 —
+    # 그러면 응답 수를 안 보내는 활동이 전부 미완료로 남는다(실측으로 잡았다).
+    total = row.total_items
+    allAnswered = (total is None or total <= 0
+                   or answeredCount is None
+                   or answeredCount >= total)
+
+    if allAnswered:
+        row.state = "completed"
+        row.completed_at = datetime.utcnow()
+    else:
+        # 끝까지 갔지만 건너뛴 것이 남았다. 결과 화면은 뜨고 [다시 풀기]가
+        # 그 문항을 가리킨다 — 돌아가 풀면 그때 완료가 된다(시나리오 14)
+        row.state = "in_progress"
     db.flush()
     return row
