@@ -55,7 +55,20 @@ export function ResultScreen({
 			<ActivityAppBar lesson={lesson} onExit={onExit} />
 			<main className="activity-content" style={{ padding: 0 }}>
 				<div className="result-head">
-					<h2>{t("result.title")}</h2>
+					{/*
+					 * 제목이 상태를 말한다 — 정본 §28 이 "완전 정답 · 내일 복습 ·
+					 * 미해결 있음" 셋으로 화면을 갈라 두었는데 구현은 셋에 같은
+					 * 제목("다 했어요!")을 쓰고 있었다. 완료 기준이 바뀌면서
+					 * **0개를 풀어도 "다 했어요!"** 가 되어 바로 아랫줄
+					 * ("6개 중 0개 풀었어요")과 한 화면에서 어긋났다(2026-08-27).
+					 *
+					 * 다 풀었을 때도 "다 맞았어요" 라고는 하지 않는다 — 채점하지
+					 * 않는 활동(자모 여섯·롤플레잉·플래시카드)이 있어서 맞았는지를
+					 * 이 자리에서 단정할 수 없다.
+					 */}
+					<h2>
+						{t(answered >= total ? "result.title" : "result.titlePartial")}
+					</h2>
 					<p>{t("result.answered", { total, answered })}</p>
 					<div className={`stat-row ${completionOnly ? "single" : ""}`}>
 						<div>

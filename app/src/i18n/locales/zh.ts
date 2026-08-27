@@ -453,7 +453,9 @@ const zh = {
 		hintPeekLabel: "提示 — 短暂显示要组合的字",
 	},
 	result: {
-		title: "完成了！",
+		title: "做得好！",
+		/** 건너뛴 문항이 남아 활동이 아직 완료가 아닐 때 */
+		titlePartial: "还有没做完的",
 		accuracy: "{{total}}题中答对{{correct}}题",
 		perfect: "全部答对，做得好！",
 		toPractice: "{{count}}题待练习",

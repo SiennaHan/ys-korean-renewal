@@ -478,7 +478,9 @@ const ko = {
 		hintPeekLabel: "힌트 — 만들 글자를 잠깐 보여 줍니다",
 	},
 	result: {
-		title: "다 했어요!",
+		title: "잘 했어요!",
+		/** 건너뛴 문항이 남아 활동이 아직 완료가 아닐 때 */
+		titlePartial: "아직 남았어요",
 		accuracy: "{{total}}개 중 {{correct}}개 맞았어요",
 		perfect: "다 맞았어요. 잘했어요!",
 		toPractice: "다시 풀 문제 {{count}}개",

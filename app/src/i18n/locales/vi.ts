@@ -467,7 +467,9 @@ const vi = {
 		hintPeekLabel: "Gợi ý — hiện nhanh chữ cần ghép",
 	},
 	result: {
-		title: "Hoàn thành!",
+		title: "Làm tốt lắm!",
+		/** 건너뛴 문항이 남아 활동이 아직 완료가 아닐 때 */
+		titlePartial: "Vẫn còn lại",
 		accuracy: "Đúng {{correct}}/{{total}} câu",
 		perfect: "Đúng hết. Làm tốt lắm!",
 		toPractice: "{{count}} câu cần luyện lại",

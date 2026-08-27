@@ -255,6 +255,13 @@ export default function WordLearning({
 	const [currentPage, setCurrentPage] = useState(0);
 	/** questionId → selected answer index (from server) */
 	const [savedAnswers, setSavedAnswers] = useState<Record<number, number>>({});
+	/*
+	 * 건너뛴 문항. **어휘 퀴즈에는 이것이 없었다**(2026-08-27까지) — 헤더 → 가
+	 * 문항을 넘기지 않고 `router.history.back()` 으로 **활동을 나가 버렸다.**
+	 * shell_spec §23 은 → 를 "현재 문항을 넘긴다" 로 정했고, 형제 셋
+	 * (`fill-blank`·`listen-answer`·`read-answer`)은 그렇게 돈다.
+	 */
+	const [skipped, setSkipped] = useState<number[]>([]);
 	/** 정답 후 3초 자동 이동 타이머 */
 	const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -392,19 +399,29 @@ export default function WordLearning({
 	 * 결과로 넘어갈 때 한 번 완료를 알린다. 세 수의 뜻은 dev_spec §2.1 —
 	 * answered 는 응답 수, graded 는 채점 대상, correct 는 **첫 시도** 정답이다.
 	 */
-	const reported = useRef(false);
+	/*
+	 * 보낸 **값을 기억한다** — 건너뛴 문항이 남으면 서버가 완료로 안 치고,
+	 * 돌아가 풀면 그때 완료가 되어야 하기 때문이다(shell_spec 시나리오 14).
+	 * 불리언 하나로 막으면 돌아가 풀어도 다시 안 보내 영원히 미완료다.
+	 */
+	const sentSig = useRef<string | null>(null);
 	useEffect(() => {
-		if (phase !== "result" || reported.current) return;
-		reported.current = true;
+		if (phase !== "result") return;
 		const wrongCount = quizzes.filter(
 			(q) => firstWrong[q.id] !== undefined,
 		).length;
+		const skippedCount = quizzes.filter((q) => skipped.includes(q.id)).length;
+		const answeredCount = quizzes.length - skippedCount;
+		const correctCount = quizzes.length - wrongCount - skippedCount;
+		const sig = `${answeredCount}/${correctCount}`;
+		if (sentSig.current === sig) return;
+		sentSig.current = sig;
 		void complete({
-			answeredCount: quizzes.length,
-			gradedCount: quizzes.length,
-			correctCount: quizzes.length - wrongCount,
+			answeredCount,
+			gradedCount: answeredCount,
+			correctCount,
 		});
-	}, [phase, quizzes, firstWrong, complete]);
+	}, [phase, quizzes, firstWrong, skipped, complete]);
 
 	// page 0 = word list, pages 1..N = quiz questions
 	const totalPages = 1 + quizzes.length;
@@ -432,9 +449,17 @@ export default function WordLearning({
 		[sharedAudio],
 	);
 
+	/**
+	 * 단어 목록 화면(0쪽)의 헤더 → .
+	 *
+	 * **활동을 나가지 않는다.** shell_spec §23 은 → 를 "현재 문항을 넘긴다" 로
+	 * 정했는데, 2026-08-27 까지 이 활동만 `router.history.back()` 이라 **나가는
+	 * 문**이었다. 목록 쪽에는 넘길 문항이 없으므로 "이 화면을 넘긴다" 로 읽어
+	 * 퀴즈 첫 장으로 보낸다. 나가는 것은 왼쪽 ✕ 가 한다.
+	 */
 	const handleSkip = useCallback(() => {
-		router.history.back();
-	}, [router]);
+		setCurrentPage(1);
+	}, []);
 
 	/** 하단 AudioRecorder에서 녹음 결과가 올라오면 선택된 단어에 저장 */
 	const handleRecordResult = useCallback(
@@ -512,8 +537,17 @@ export default function WordLearning({
 	if (phase === "result") {
 		const pick = (q: (typeof quizzes)[number], idx: number) =>
 			[q.selection1, q.selection2, q.selection3, q.selection4][idx] ?? "";
-		const missed = quizzes.filter((q) => firstWrong[q.id] !== undefined);
-		const wrongIds = missed.map((q) => q.id);
+		// 건너뛴 것은 오답이 아니라 **안 푼 것**이다 — 미해결에는 들어가고
+		// 정답 수·분모에서는 빠진다(형제 셋과 같은 규칙)
+		const missed = quizzes.filter(
+			(q) => firstWrong[q.id] !== undefined || skipped.includes(q.id),
+		);
+		const wrongIds = quizzes
+			.filter((q) => firstWrong[q.id] !== undefined)
+			.map((q) => q.id);
+		const skippedIds = quizzes
+			.filter((q) => skipped.includes(q.id))
+			.map((q) => q.id);
 		return (
 			<ResultScreen
 				lesson={chapterLabel}
@@ -521,10 +555,12 @@ export default function WordLearning({
 				answered={
 					quizzes.filter((q) => savedAnswers[q.id] !== undefined).length
 				}
-				graded={quizzes.length}
-				correct={quizzes.length - wrongIds.length}
+				graded={quizzes.length - skippedIds.length}
+				correct={quizzes.length - wrongIds.length - skippedIds.length}
 				wrongs={missed.map((q) => ({
-					picked: pick(q, firstWrong[q.id]),
+					// 건너뛴 문항은 고른 답이 없다 — 자리를 비운다
+					picked:
+						firstWrong[q.id] !== undefined ? pick(q, firstWrong[q.id]) : "",
 					// 이 원장에는 해설이 없다 — 빈 칸을 그리느니 정답을 말해 준다
 					explanation: t("player.answerIs", {
 						answer: pick(q, q.answer_index),
@@ -532,16 +568,19 @@ export default function WordLearning({
 				}))}
 				onExit={() => router.history.back()}
 				onRetry={
-					wrongIds.length > 0
+					missed.length > 0
 						? () => {
+								// 오답과 **건너뛴 것**을 함께 되돌린다
+								const unresolved = missed.map((q) => q.id);
 								setSavedAnswers((prev) => {
 									const next = { ...prev };
-									for (const id of wrongIds) delete next[id];
+									for (const id of unresolved) delete next[id];
 									return next;
 								});
 								setFirstWrong({});
-								for (const id of wrongIds) tried.current.delete(id);
-								setRetryOnly(wrongIds);
+								for (const id of unresolved) tried.current.delete(id);
+								setSkipped([]);
+								setRetryOnly(unresolved);
 								// 0 은 단어 목록이라 퀴즈 첫 장은 1 이다
 								setCurrentPage(1);
 								setPhase("solving");
@@ -575,7 +614,33 @@ export default function WordLearning({
 			<WordQuizPageView
 				lesson={chapterLabel}
 				onExit={() => router.history.back()}
-				onSkip={handleSkip}
+				// shell_spec §23 — 헤더 → 는 "현재 문항을 넘긴다". 형제 셋과 같다
+				onSkip={() => {
+					if (!quiz) return;
+					setSkipped((prev) =>
+						prev.includes(quiz.id) ? prev : [...prev, quiz.id],
+					);
+					/*
+					 * 건너뛴 문항을 다시 풀기에 예약한다. 화면 안에만 두면 그
+					 * 화면을 벗어날 때 사라진다(2026-08-27 · 형제 셋과 같은 처리).
+					 * 서버는 건너뜀에 학습 기록 행을 만들지 않는다 — 만들면
+					 * 진행률이 건너뛰기만으로 오른다.
+					 */
+					if (bookId && chapterSeq) {
+						saveLearningRecord({
+							bookId,
+							chapterSeq,
+							menuType: "word",
+							questionId: quiz.id,
+							selectedAnswer: "",
+							isCorrect: false,
+							skipped: true,
+							review,
+						});
+					}
+					if (hasNext) setCurrentPage((p) => p + 1);
+					else setPhase("result");
+				}}
 				current={quizIndex}
 				total={quizzes.length}
 				onJump={(index) => setCurrentPage(index + 1)}
@@ -625,10 +690,16 @@ export default function WordLearning({
 				}
 				primary={{
 					label: hasNext ? t("player.next") : t("player.showResult"),
+					// 건너뛴 문항도 "이 문항에서 할 일은 끝났다" 로 친다 —
+					// 안 그러면 건너뛰고도 결과로 못 넘어가 갇힌다
 					on: hasNext
-						? quiz !== undefined && savedAnswers[quiz.id] !== undefined
+						? quiz !== undefined &&
+							(savedAnswers[quiz.id] !== undefined || skipped.includes(quiz.id))
 						: quizzes.length > 0 &&
-							quizzes.every((q) => savedAnswers[q.id] !== undefined),
+							quizzes.every(
+								(q) =>
+									savedAnswers[q.id] !== undefined || skipped.includes(q.id),
+							),
 					onClick: hasNext
 						? () => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
 						: () => setPhase("result"),

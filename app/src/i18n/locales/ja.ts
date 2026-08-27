@@ -470,7 +470,9 @@ const ja = {
 		hintPeekLabel: "ヒント — 作る文字を少しだけ表示します",
 	},
 	result: {
-		title: "終わりました！",
+		title: "よくできました！",
+		/** 건너뛴 문항이 남아 활동이 아직 완료가 아닐 때 */
+		titlePartial: "まだ残っています",
 		accuracy: "{{total}}問中 {{correct}}問 正解",
 		perfect: "全問正解です。よくできました！",
 		toPractice: "もう一度 {{count}}問",

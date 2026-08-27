@@ -468,7 +468,9 @@ const en = {
 		hintPeekLabel: "Hint — briefly shows the letter to build",
 	},
 	result: {
-		title: "Done!",
+		title: "Well done!",
+		/** 건너뛴 문항이 남아 활동이 아직 완료가 아닐 때 */
+		titlePartial: "Not finished yet",
 		accuracy: "{{correct}} of {{total}} correct",
 		perfect: "All correct. Nice work!",
 		toPractice: "{{count}} to practice again",
