@@ -182,6 +182,13 @@ class KoQrScan(Base) :
 
 
 class KoDailyActivity(Base) :
+    """하루 한 줄. 홈의 주간 학습 시간 · 스트릭 · 이어하기가 여기서 나온다.
+
+    **행이 있다 ≠ 공부했다.** 이 행은 학습 세션 핑이 만든다 — 활동 화면에 들어가면
+    즉시 한 번 돈다(`use-study-session-ping.ts`). 그래서 아무것도 안 풀고 열어만
+    봐도 행이 생긴다. 스트릭이 이 행의 존재로 판정되던 때에는 **열기만 해도
+    스트릭이 올랐다.** `responded` 가 그 둘을 가른다.
+    """
     __tablename__  = "ko_daily_activity"
     id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
     user_id        = Column(String(45),   nullable=False, index=True)
@@ -189,11 +196,24 @@ class KoDailyActivity(Base) :
     study_seconds  = Column(Integer,      nullable=False, default=0)
     modules_done   = Column(Integer,      nullable=False, default=0)
     words_learned  = Column(Integer,      nullable=False, default=0)
+    # **그날 문항에 응답하고 채점 결과까지 봤나** — 스트릭의 기준이다
+    # (기획 확정 2026-08-27 · shell_spec §1). 화면은 채점한 뒤에
+    # `saveLearningRecord` 를 부르므로, 그 호출이 곧 "응답 + 결과 확인" 이다.
+    # 건너뛰기는 학습 기록을 안 만들므로 여기도 안 켜진다.
+    responded      = Column(Boolean,      nullable=False, default=False)
     last_book_id   = Column(Integer,      nullable=True)
     last_chapter_seq = Column(Integer,    nullable=True)
     last_menu_type = Column(String(20),   nullable=True)
     created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
     updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        # 하루 한 줄. `migration_dashboard.sql` 은 처음부터 이 키를 걸어 뒀는데
+        # **모델에는 없어서**, DB 를 어떻게 만들었느냐에 따라 스키마가 갈렸다
+        # (`createAllTables()` 로 만든 DB 에는 없었다 — 2026-08-27 실측).
+        # 없으면 `ensureExists` 의 읽고-쓰기 사이에 요청이 겹쳐 하루가 두 줄이 되고,
+        # 학습 시간이 두 줄로 갈려 주간 차트가 실제보다 적게 나온다.
+        UniqueConstraint("user_id", "activity_date", name="uq_user_date"),
+    )
 
 
 class KoGameProgress(Base) :

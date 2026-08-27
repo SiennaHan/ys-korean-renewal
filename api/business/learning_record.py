@@ -103,6 +103,14 @@ async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, q
             today = datetime.now(KST).strftime("%Y-%m-%d")
             # 마지막 학습 지점은 재시도에도 갱신한다 — 다시 푸는 것도 학습이다
             await repo_daily_activity.updateLastStudy(userId, today, bookId, chapterSeq, menuType, db)
+            # **스트릭의 기준** — 그날 응답이 하나라도 있었나(기획 확정 2026-08-27).
+            #
+            # **건너뜀은 응답이 아니다.** 위 `if skipped:` 갈래는 기록 행만 안 만들고
+            # **여기까지 그대로 흘러온다** — 처음에 "일찍 돌아가니 안 닿는다" 고 적어
+            # 두었다가 실제로 굴려 보고 틀린 것을 알았다(건너뛰기만 했는데 스트릭이
+            # 1 이 됐다). 그래서 여기서 다시 가른다.
+            if not skipped:
+                await repo_daily_activity.markResponded(userId, today, db)
             # 학습 단어 수는 누적값이라 첫 시도에만 센다. 전에는 재시도마다 +1 이라
             # 같은 문항을 세 번 고치면 세 단어를 배운 것으로 찍혔다 (dev_spec §2.1)
             # 건너뛴 것은 배운 것이 아니다 — 위 skipped 주석과 같은 이유
