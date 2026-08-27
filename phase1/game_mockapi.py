@@ -59,6 +59,19 @@ ROUTES={
  '/game-content/vocashot/presets':        lambda: [],
 }
 
+def _free_games():
+    """열린 게임 목록. 기본은 free_scope.py 그대로다.
+
+    `MOCK_FREE_GAMES=all` 을 주면 다섯 다 열린 것으로 낸다 — **유료 게임 화면을
+    브라우저에서 볼 때만** 쓴다. 이 스위치가 없으면 유료 게임을 볼 때마다
+    api/shared/free_scope.py 를 손으로 고쳐야 했고, 그 편집은 되돌리는 걸
+    잊으면 프로덕션의 무료 범위가 되어 그대로 나간다. 목에만 두는 이유다.
+    """
+    if os.environ.get('MOCK_FREE_GAMES') == 'all':
+        return ['vocashot','spring-picnic','seoul-puzzle','card-sort','particle-sniper']
+    return list(free_scope.FREE_GAMES)
+
+
 class H(BaseHTTPRequestHandler):
     def _send(self, obj, code=200):
         b=json.dumps(obj, ensure_ascii=False).encode()
@@ -209,7 +222,7 @@ class H(BaseHTTPRequestHandler):
                 'books':list(free_scope.FREE_BOOKS),
                 'chapters':{str(k):list(v) for k,v in free_scope.FREE_CHAPTERS.items()},
                 'jamo_chapters':list(free_scope.FREE_JAMO_CHAPTERS),
-                'games':list(free_scope.FREE_GAMES),
+                'games':_free_games(),
                 'clips':free_scope.FREE_CLIPS,
                 'expires_at':None}})
         if path.startswith('/game-progress/'):

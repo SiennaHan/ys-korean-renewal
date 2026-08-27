@@ -1,4 +1,8 @@
 import { ArrowLeft } from "lucide-react";
+import {
+	gameLessonLabel,
+	gameLevelLabel,
+} from "@/components/main/textbook/labels";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -79,7 +83,7 @@ export function ParticleSniperLevelView({
 							className="mb-1 font-bold text-xl"
 							style={{ color: meta.color }}
 						>
-							{level}
+							{gameLevelLabel(t, level)}
 						</div>
 						<div
 							className="text-xs leading-relaxed"
@@ -157,7 +161,7 @@ export function ParticleSniperLessonView({
 				className="mb-1 ps-lesson-title font-bold text-2xl"
 				style={{ color: meta.color }}
 			>
-				{level}
+				{gameLevelLabel(t, level)}
 			</h2>
 			<p
 				className="mb-6 ps-lesson-note text-[#7878A0] text-sm"
@@ -184,7 +188,7 @@ export function ParticleSniperLessonView({
 									className="mb-1 font-bold"
 									style={{ fontFamily: "Pretendard, sans-serif" }}
 								>
-									{lesson}
+									{gameLessonLabel(t, lesson)}
 								</div>
 								<div className="flex flex-wrap gap-1">
 									{entry.new_particles.map((p) => (
@@ -438,7 +442,7 @@ export function ParticleSniperResultView({
 				<div className="ps-result-hero">
 					<div className="ps-result-grade">{grade}</div>
 					<div className="ps-result-stage">
-						{level} · {lesson}
+						{gameLevelLabel(t, level)} · {gameLessonLabel(t, lesson)}
 					</div>
 					<div className="ps-result-score">
 						{t("game.particleSniper.points", { score: score.toLocaleString() })}

@@ -9,6 +9,10 @@ import {
 	Map,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+	gameLessonLabel,
+	gameLevelLabel,
+} from "@/components/main/textbook/labels";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -31,9 +35,14 @@ export interface GameEntry {
 	/**
 	 * 저장된 진행을 한 줄로 만든다. 아직 한 판도 안 했으면 null 을 돌려
 	 * 설명이 그대로 남게 한다 — 목업의 조사 스나이퍼가 그 상태다.
+	 *
+	 * `t` 를 받는다 — 이 줄도 UI 문구라 앱 언어를 따라야 한다(shell_spec §31).
+	 * 점수는 `{{score, number}}` 로 넘겨 자릿수 구분을 i18next 가 언어별로 찍게 한다.
 	 */
-	progress: (rows: GameProgressRecord[]) => string | null;
+	progress: (rows: GameProgressRecord[], t: T) => string | null;
 }
+
+type T = (key: string, opts?: Record<string, unknown>) => string;
 
 /** 점수가 가장 높은 행 */
 const topScore = (rows: GameProgressRecord[]) =>
@@ -42,6 +51,18 @@ const topScore = (rows: GameProgressRecord[]) =>
 			r.score != null && (!best || r.score > (best.score ?? 0)) ? r : best,
 		null,
 	);
+
+/**
+ * `"2급_4과"` 를 보여 줄 꼴로. **stage_id 자체는 건드리지 않는다** — 쌓인 진도의
+ * 키다(labels.ts 의 gameLevelLabel 주석 참고).
+ */
+const stageLabel = (t: T, stageId: string) =>
+	stageId
+		.split("_")
+		.map((part, i) =>
+			i === 0 ? gameLevelLabel(t, part) : gameLessonLabel(t, part),
+		)
+		.join(" ");
 
 export const GAMES: GameEntry[] = [
 	{
@@ -52,10 +73,13 @@ export const GAMES: GameEntry[] = [
 		iconBg: "bg-[#FFF3E0]",
 		iconColor: "text-[#FF6D00]",
 		// stage_id 는 lv{급}
-		progress: (rows) => {
+		progress: (rows, t) => {
 			const top = topScore(rows);
 			if (!top?.score) return null;
-			return `${top.stage_id.replace("lv", "")}급 최고 ${top.score.toLocaleString("ko-KR")}점`;
+			return t("game.list.bestAt", {
+				stage: gameLevelLabel(t, top.stage_id.replace("lv", "")),
+				score: top.score,
+			});
 		},
 	},
 	{
@@ -66,11 +90,14 @@ export const GAMES: GameEntry[] = [
 		iconBg: "bg-[#FFF0F5]",
 		iconColor: "text-[#D4537E]",
 		// 봄소풍은 마지막 판을 _meta 행의 extra 에 남긴다 (lastFriend · lastLv)
-		progress: (rows) => {
+		progress: (rows, t) => {
 			const meta = rows.find((r) => r.stage_id === "_meta");
 			const friend = meta?.extra?.lastFriend;
 			if (!friend) return null;
-			return `${friend} · ${meta?.extra?.lastLv ?? 1}단계까지 했어요`;
+			return t("game.list.picnicProgress", {
+				friend,
+				stage: meta?.extra?.lastLv ?? 1,
+			});
 		},
 	},
 	{
@@ -81,10 +108,13 @@ export const GAMES: GameEntry[] = [
 		iconBg: "bg-[#E8F5E9]",
 		iconColor: "text-[#2E7D32]",
 		// 장소마다 한 행씩 쌓인다. _meta 행은 세지 않는다
-		progress: (rows) => {
+		progress: (rows, t) => {
 			const places = rows.filter((r) => r.stage_id !== "_meta");
 			if (places.length === 0) return null;
-			return `10곳 중 ${places.length}곳 다녀왔어요`;
+			return t("game.list.puzzleProgress", {
+				total: 10,
+				count: places.length,
+			});
 		},
 	},
 	{
@@ -95,10 +125,13 @@ export const GAMES: GameEntry[] = [
 		iconBg: "bg-[#FFF8E1]",
 		iconColor: "text-[#F9A825]",
 		// stage_id 는 {급}_{과}
-		progress: (rows) => {
+		progress: (rows, t) => {
 			const top = topScore(rows);
 			if (!top?.score) return null;
-			return `${top.stage_id.replace("_", " ")} 최고 ${top.score.toLocaleString("ko-KR")}점`;
+			return t("game.list.bestAt", {
+				stage: stageLabel(t, top.stage_id),
+				score: top.score,
+			});
 		},
 	},
 	{
@@ -108,10 +141,13 @@ export const GAMES: GameEntry[] = [
 		Icon: Crosshair,
 		iconBg: "bg-[#E8EAF6]",
 		iconColor: "text-[#5C6BC0]",
-		progress: (rows) => {
+		progress: (rows, t) => {
 			const top = topScore(rows);
 			if (!top?.score) return null;
-			return `${top.stage_id.replace("_", " ")} 최고 ${top.score.toLocaleString("ko-KR")}점`;
+			return t("game.list.bestAt", {
+				stage: stageLabel(t, top.stage_id),
+				score: top.score,
+			});
 		},
 	},
 ];

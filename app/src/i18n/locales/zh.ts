@@ -227,8 +227,35 @@ const zh = {
 		vi: "Tiếng Việt",
 	},
 	game: {
+		/**
+		 * 어휘 카드 마스터 — UI 문구만. 낱말·카테고리 이름은 학습 대상이라
+		 * 원장의 한국어를 그대로 쓴다. 한국어 값은 목업(game__cs_*)에 적힌 글자 그대로다.
+		 */
+		cardSort: {
+			title: "词汇卡片大师",
+			lead: "把卡片分到正确的类别里。",
+			pickGrade: "选择级别",
+			pickLesson: "选择课",
+			cumNote: "从已学类别中累计出题",
+			upTo: "到{{lesson}}",
+			preview: "本轮类别预览",
+			noCategory: "到该课没有类别",
+			roundCategory: "本轮类别",
+			allDone: "所有卡片都处理完了！",
+			bestScore: "最高分 {{score, number}}分",
+			accuracy: "准确率",
+			correctCards: "答对卡片",
+			maxCombo: "最大连击",
+			totalCards: "处理卡片",
+			rareCards: "稀有卡片",
+			cards: "{{n}}张",
+			again: "再挑战",
+			pickLevelAgain: "选择级别",
+		},
 		/** 게임 다섯이 함께 쓰는 문구 */
 		common: {
+			/** 점수 숫자 옆에 따로 붙는 단위 — 숫자와 글씨 크기가 달라 한 문장으로 못 묶는다 */
+			pointsUnit: "分",
 			loading: "加载中...",
 			notPicked: "未选择",
 		},
@@ -263,6 +290,13 @@ const zh = {
 			pickLesson: "选择课",
 		},
 		list: {
+			/**
+			 * 둘째 줄의 진행. 만드는 곳은 game/list-view.tsx 의 GAMES[].progress.
+			 * stage 는 그쪽에서 급·과 라벨로 옮겨 넣는다 — stage_id 원문이 아니다.
+			 */
+			bestAt: "{{stage}} 最高{{score, number}}分",
+			picnicProgress: "{{friend}} · 已到第{{stage}}阶段",
+			puzzleProgress: "{{total}}个地点中已去{{count}}个",
 			title: "游戏",
 			vocashot: {
 				name: "VocaShot",

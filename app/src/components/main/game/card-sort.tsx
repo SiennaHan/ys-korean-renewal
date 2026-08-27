@@ -23,6 +23,7 @@ import {
 } from "@/components/main/game/card-sort-view";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useScreenFocus } from "./use-screen-focus";
 
 // ─── 타입 ──────────────────────────────────────────────
@@ -94,6 +95,7 @@ function comboMultiplier(combo: number): number {
 
 // ─── 메인 컴포넌트 ──────────────────────────────────────
 export default function CardSort() {
+	const { t } = useTranslation();
 	const nav = useNavigate();
 	const sound = useSoundEffects();
 
@@ -442,7 +444,7 @@ export default function CardSort() {
 					justifyContent: "center",
 				}}
 			>
-				로딩 중...
+				{t("game.common.loading")}
 			</div>
 		);
 	}
@@ -462,7 +464,7 @@ export default function CardSort() {
 		<div
 			ref={rootRef}
 			tabIndex={-1}
-			aria-label="어휘 카드 마스터"
+			aria-label={t("game.cardSort.title")}
 			className="game-frame ux-dark-stage"
 			data-screen={screenId}
 			style={{

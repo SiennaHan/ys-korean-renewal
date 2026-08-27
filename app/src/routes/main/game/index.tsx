@@ -6,6 +6,7 @@ import PaywallPanel from "@/components/main/textbook/paywall-panel";
 import { useEntitlement } from "@/shared/store/entitlement-store";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/main/game/")({
 	component: GamePage,
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/main/game/")({
 /** 게임 목록 — 받아 오고 배선한다. 그리는 일은 list-view.tsx 가 한다 */
 function GamePage() {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const [progress, setProgress] = useState<Record<string, string | null>>({});
 	/*
 	 * 게임에서 나오면 이 목록으로 돌아오는데, 그때 초점이 `<body>` 로 떨어진다.
@@ -44,7 +46,7 @@ function GamePage() {
 			const entries = await Promise.all(
 				GAMES.map(async (g) => {
 					const rows = await getGameProgress(g.key);
-					return [g.key, rows.length ? g.progress(rows) : null] as const;
+					return [g.key, rows.length ? g.progress(rows, t) : null] as const;
 				}),
 			);
 			if (alive) setProgress(Object.fromEntries(entries));
@@ -52,7 +54,8 @@ function GamePage() {
 		return () => {
 			alive = false;
 		};
-	}, []);
+		/* t 는 언어를 바꾸면 바뀐다 — 그때 둘째 줄도 다시 만들어야 한다 */
+	}, [t]);
 
 	if (lockedShown) {
 		/* 전체 화면으로 쓰므로 감싸는 틀이 필요하다 — game-gate.tsx 의 주석 참고 */

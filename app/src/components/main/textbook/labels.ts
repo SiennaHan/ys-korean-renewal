@@ -64,3 +64,26 @@ export const ACT_SECTIONS = [
 export function actLabel(t: T, id: string): string {
 	return t(`catalog.act.${id}`);
 }
+
+
+/**
+ * 게임이 데이터 키로 들고 있는 급·과 문자열을 **표시용 라벨**로 바꾼다.
+ *
+ * 게임 셋은 급·과를 한국어 문자열째로 쥐고 있다 — 어휘 카드는
+ * `vocab["2급"]["4과"]` 로 찾고, 조사 스나이퍼는 서버가 `id="1급"` ·
+ * `lesson_name="4과"` 를 내고, 게임 진도는 `stage_id="2급_4과"` 로 쌓인다.
+ * **그 값은 식별자라 못 바꾼다** — 바꾸면 원장 조회와 쌓인 진도가 어긋난다.
+ * 그래서 값은 그대로 두고 **보여 줄 때만** 여기서 옮긴다.
+ *
+ * 숫자를 못 읽으면 받은 문자열을 그대로 낸다 — 모르는 꼴을 지어내지 않는다.
+ */
+export function gameLevelLabel(t: T, raw: string | number): string {
+	const n = typeof raw === "number" ? raw : Number(String(raw).match(/\d+/)?.[0]);
+	return Number.isFinite(n) ? t("catalog.bookTab", { level: n }) : String(raw);
+}
+
+/** 위와 같은 사정의 과 라벨 — "4과" · 4 둘 다 받는다 */
+export function gameLessonLabel(t: T, raw: string | number): string {
+	const n = typeof raw === "number" ? raw : Number(String(raw).match(/\d+/)?.[0]);
+	return Number.isFinite(n) ? t("catalog.chapterChip", { seq: n }) : String(raw);
+}

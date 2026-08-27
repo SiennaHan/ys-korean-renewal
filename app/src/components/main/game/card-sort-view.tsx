@@ -1,5 +1,10 @@
 import type { CardSortVocab } from "@/api/game-content";
+import {
+	gameLessonLabel,
+	gameLevelLabel,
+} from "@/components/main/textbook/labels";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 /**
  * 어휘 카드 마스터 — **표시만** 담당하는 화면들. 판을 굴리는 일은
@@ -10,6 +15,11 @@ import { ArrowLeft } from "lucide-react";
  * game/particle-sniper-view.tsx 와 같은 꼴이다.
  */
 
+/**
+ * 급·과는 **원장 조회 키**다 — `vocab["2급"]["4과"]` 로 찾고 진도는
+ * `stage_id="2급_4과"` 로 쌓인다. 그래서 값은 한국어째로 두고 보여 줄 때만
+ * gameLevelLabel·gameLessonLabel 로 옮긴다(shell_spec §31).
+ */
 export type Grade = "2급" | "3급" | "4급" | "5급";
 
 export const GRADES: Grade[] = ["2급", "3급", "4급", "5급"];
@@ -71,6 +81,7 @@ export function CardSortLevelView({
 	onStart,
 	onBack,
 }: CardSortLevelViewProps) {
+	const { t } = useTranslation();
 	const previewCategories = getCumulativeCategories(
 		vocab,
 		selectedGrade,
@@ -132,13 +143,13 @@ export function CardSortLevelView({
 						letterSpacing: 1,
 					}}
 				>
-					어휘 카드 마스터
+					{t("game.cardSort.title")}
 				</div>
 			</div>
 			<div className="cs-level-subtitle" style={{ textAlign: "center" }}>
 				{/* 목업이 문구도 바꾼다 — 무엇을 하는 게임인지 말해 준다 */}
 				<div style={{ fontSize: 12, color: "#7878A0", marginTop: 4 }}>
-					카드를 알맞은 카테고리로 분류해 보세요.
+					{t("game.cardSort.lead")}
 				</div>
 			</div>
 
@@ -150,7 +161,7 @@ export function CardSortLevelView({
 						className="cs-section-label"
 						style={{ fontSize: 12, color: "#7878A0", marginBottom: 8 }}
 					>
-						급 선택
+						{t("game.cardSort.pickGrade")}
 					</div>
 					<div style={{ display: "flex", gap: 8 }}>
 						{GRADES.map((g) => (
@@ -176,7 +187,7 @@ export function CardSortLevelView({
 									transition: "0.2s",
 								}}
 							>
-								{g}
+								{gameLevelLabel(t, g)}
 							</button>
 						))}
 					</div>
@@ -188,9 +199,13 @@ export function CardSortLevelView({
 						className="cs-section-label"
 						style={{ fontSize: 12, color: "#7878A0", marginBottom: 8 }}
 					>
-						과 선택 —{" "}
-						<span style={{ color: "#FFE500" }}>{selectedLesson}과까지</span>{" "}
-						배운 카테고리 누적 출제
+						{t("game.cardSort.pickLesson")} —{" "}
+						<span style={{ color: "#FFE500" }}>
+							{t("game.cardSort.upTo", {
+								lesson: gameLessonLabel(t, selectedLesson),
+							})}
+						</span>{" "}
+						{t("game.cardSort.cumNote")}
 					</div>
 					<div
 						style={{
@@ -230,7 +245,7 @@ export function CardSortLevelView({
 										position: "relative",
 									}}
 								>
-									{n}과
+									{gameLessonLabel(t, n)}
 									{hasNew && (
 										<span
 											style={{
@@ -257,7 +272,7 @@ export function CardSortLevelView({
 					className="cs-section-label"
 					style={{ fontSize: 12, color: "#7878A0", marginBottom: 8 }}
 				>
-					이번 라운드 카테고리 미리보기
+					{t("game.cardSort.preview")}
 				</div>
 				<div
 					className="cs-preview-row"
@@ -265,7 +280,7 @@ export function CardSortLevelView({
 				>
 					{previewKeys.length === 0 ? (
 						<div style={{ fontSize: 13, color: "#444" }}>
-							해당 과까지 카테고리 없음
+							{t("game.cardSort.noCategory")}
 						</div>
 					) : (
 						previewKeys.map((cat) => {
@@ -332,6 +347,7 @@ export function CardSortIntroView({
 	categoryColors,
 	introCountdown,
 }: CardSortIntroViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div
 			className="cs-intro-shell"
@@ -353,7 +369,7 @@ export function CardSortIntroView({
 					className="cs-intro-label"
 					style={{ fontSize: 13, color: "#7878A0" }}
 				>
-					이번 라운드 카테고리
+					{t("game.cardSort.roundCategory")}
 				</div>
 				<div
 					className="cs-intro-categories"
@@ -455,6 +471,7 @@ export function CardSortPlayView({
 	onFinish,
 	onBack,
 }: CardSortPlayViewProps) {
+	const { t } = useTranslation();
 	return (
 		<div
 			className="cs-play-shell"
@@ -693,7 +710,8 @@ export function CardSortPlayView({
 									letterSpacing: 1,
 								}}
 							>
-								{currentCard.grade} · {currentCard.lesson}
+								{gameLevelLabel(t, currentCard.grade)} ·{" "}
+								{gameLessonLabel(t, currentCard.lesson)}
 							</div>
 
 							{/* 단어 */}
@@ -732,7 +750,7 @@ export function CardSortPlayView({
 						}}
 					>
 						<div style={{ color: "#7878A0", fontSize: 16 }}>
-							모든 카드를 처리했어요!
+							{t("game.cardSort.allDone")}
 						</div>
 						<button
 							type="button"
@@ -749,7 +767,7 @@ export function CardSortPlayView({
 								cursor: "pointer",
 							}}
 						>
-							결과 보기
+							{t("player.showResult")}
 						</button>
 					</div>
 				)}
@@ -853,6 +871,7 @@ export function CardSortResultView({
 	onLevelSelect,
 	onExit,
 }: CardSortResultViewProps) {
+	const { t, i18n } = useTranslation();
 	return (
 		<div
 			className="cs-result-shell"
@@ -897,7 +916,10 @@ export function CardSortResultView({
 								marginTop: 4,
 							}}
 						>
-							{selectedGrade} · {selectedLesson}과까지
+							{gameLevelLabel(t, selectedGrade)} ·{" "}
+							{t("game.cardSort.upTo", {
+								lesson: gameLessonLabel(t, selectedLesson),
+							})}
 						</div>
 					</div>
 
@@ -912,14 +934,14 @@ export function CardSortResultView({
 							textAlign: "center",
 						}}
 					>
-						{stats.score.toLocaleString()}
+						{stats.score.toLocaleString(i18n.language)}
 						<span style={{ fontSize: 16, color: "#7878A0", marginLeft: 4 }}>
-							점
+							{t("game.common.pointsUnit")}
 						</span>
 						{/* 목업이 넣은 자리 — 최고 점수 */}
 						{bestScore !== null && (
 							<div className="cs-best-score">
-								최고 점수 {bestScore.toLocaleString("ko-KR")}점
+								{t("game.cardSort.bestScore", { score: bestScore })}
 							</div>
 						)}
 					</div>
@@ -941,14 +963,23 @@ export function CardSortResultView({
 				>
 					{[
 						[
-							"정확도",
+							t("game.cardSort.accuracy"),
 							`${stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0}%`,
 						],
 						// 목업이 정확도 다음에 끼워 넣는 행이다
-						["맞힌 카드", `${stats.correct}장`],
-						["최대 콤보", `×${stats.maxCombo}`],
-						["처리 카드", `${stats.total}장`],
-						["레어 카드", `${stats.rareCorrect} / ${stats.rareTotal}`],
+						[
+							t("game.cardSort.correctCards"),
+							t("game.cardSort.cards", { n: stats.correct }),
+						],
+						[t("game.cardSort.maxCombo"), `×${stats.maxCombo}`],
+						[
+							t("game.cardSort.totalCards"),
+							t("game.cardSort.cards", { n: stats.total }),
+						],
+						[
+							t("game.cardSort.rareCards"),
+							`${stats.rareCorrect} / ${stats.rareTotal}`,
+						],
 					].map(([label, value]) => (
 						<div
 							key={label}
@@ -997,7 +1028,7 @@ export function CardSortResultView({
 						cursor: "pointer",
 					}}
 				>
-					다시 도전
+					{t("game.cardSort.again")}
 				</button>
 				<button
 					type="button"
@@ -1016,7 +1047,7 @@ export function CardSortResultView({
 						cursor: "pointer",
 					}}
 				>
-					레벨 선택
+					{t("game.cardSort.pickLevelAgain")}
 				</button>
 			</div>
 			<button
@@ -1037,7 +1068,7 @@ export function CardSortResultView({
 					cursor: "pointer",
 				}}
 			>
-				나가기
+				{t("player.exit")}
 			</button>
 		</div>
 	);
