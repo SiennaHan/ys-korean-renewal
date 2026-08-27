@@ -86,7 +86,6 @@ import {
 	Passage,
 	QuestionText,
 	SyllableRow,
-	WordFocus,
 	WordPicture,
 } from "@/components/main/activity/stimulus";
 import { WordPreviewList } from "@/components/main/activity/word-preview";

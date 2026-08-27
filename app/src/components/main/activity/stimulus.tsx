@@ -10,30 +10,6 @@ import { IconVolume } from "./icons";
  * 손댈 곳이 여기로 좁혀지도록 모아 두었다.
  */
 
-/** 낱말 하나를 크게. 어휘 문제가 한국어를 물을 때 */
-export function WordFocus({
-	word,
-	onPlay,
-}: {
-	word: string;
-	onPlay?: () => void;
-}) {
-	const { t } = useTranslation();
-	return (
-		<div className="word-focus">
-			<strong>{word}</strong>
-			<button
-				type="button"
-				className="sound-icon"
-				data-action="audio"
-				aria-label={t("player.playAudio")}
-				onClick={onPlay}
-			>
-				<IconVolume />
-			</button>
-		</div>
-	);
-}
 
 /** 뜻을 묻는 반대 방향. 소리가 없으므로 버튼도 없다 */
 export function MeaningFocus({ children }: { children: ReactNode }) {

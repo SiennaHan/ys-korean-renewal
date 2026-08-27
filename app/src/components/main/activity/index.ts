@@ -85,7 +85,6 @@ export {
 	Passage,
 	QuestionText,
 	SyllableRow,
-	WordFocus,
 	WordPicture,
 } from "./stimulus";
 export {

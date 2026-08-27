@@ -17,6 +17,7 @@ import {
 	ActivityFrame,
 	AudioPair,
 	Dock,
+	HeardRow,
 	MouthVideo,
 	PracticeBrowser,
 	ProblemCard,
@@ -62,6 +63,7 @@ export function JamoPronounceView({
 	words,
 	onPick,
 	isDone,
+	heard,
 	footer,
 	next,
 	after,
@@ -82,6 +84,15 @@ export function JamoPronounceView({
 	words: string[];
 	onPick?: (word: string) => void;
 	isDone?: (word: string) => boolean;
+	/**
+	 * 녹음을 마친 뒤 "이렇게 들렸어요" 한 줄. 없으면 안 그린다.
+	 *
+	 * 정본(`screens_SOT.html` 의 `speakView`)이 녹음을 마치면 이 줄을 띄우는데
+	 * 제품은 **판정 색만 바꾸고 무엇으로 들렸는지는 안 보여 줬다**(2026-08-27).
+	 * 틀렸다는 것만 알고 왜 틀렸는지는 모르는 화면이었다. 목업 캡처가 녹음 전
+	 * 상태라 대조에도 안 걸렸다.
+	 */
+	heard?: { text: string; ok: boolean };
 	footer: ReactNode;
 	/** shell_spec §26 — 첫 녹음을 마치면 [다음]이 활성 */
 	next?: { enabled: boolean; onClick?: () => void };
@@ -110,6 +121,8 @@ export function JamoPronounceView({
 						onPick={onPick}
 					/>
 				</PracticeBrowser>
+
+				{heard && <HeardRow heard={heard.text} ok={heard.ok} />}
 			</ActivityBody>
 
 			<ActivityFooter>
@@ -317,6 +330,7 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 				const hit = tabList?.find((x) => x.tab_name === name);
 				if (hit) onTabClick(hit.id);
 			}}
+			heard={resultWord ? { text: resultWord, ok: isSucceed } : undefined}
 			words={shown.map((x) => x.content)}
 			onPick={(word) => {
 				const hit = shown.find((x) => x.content === word);

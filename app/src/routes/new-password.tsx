@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/ui/language-selector";
+import { MAIL_RESET_READY } from "@/shared/feature-gates";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Check, CircleAlert, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
@@ -9,9 +10,7 @@ export const Route = createFileRoute("/new-password")({
 	component: NewPasswordPage,
 });
 
-/**
- * 메일 발송이 붙었나. **붙기 전에는 아래 폼을 그리지 않는다.**
- *
+/*
  * 이 화면은 재설정 링크를 눌러야 닿는다 — 그런데 그 메일을 보낼 수단이 없다
  * (BLOCKERS §7). 그래서 지금은 **앱 안에 여기로 오는 길이 하나도 없고**,
  * 주소를 직접 친 사람이나 낡은 링크를 가진 사람만 닿는다.
@@ -20,10 +19,10 @@ export const Route = createFileRoute("/new-password")({
  * 실제로는 아무 일도 일어나지 않았다(`NewPasswordForm` 의 TODO).
  * `phase1/draft_auth.html` 규칙 01: 못 하는 것을 할 수 있는 것처럼 말하지 않는다.
  *
- * **메일이 붙으면 여기를 true 로 바꾸고** `NewPasswordForm` 의 TODO 를 채운다.
+ * **깃발은 `shared/feature-gates.ts` 에 있다** — `/check-email` 도 같은 것을
+ * 본다(2026-08-27). 여기 따로 두면 메일이 붙었을 때 한쪽만 살아난다.
  * 폼은 지우지 않았다 — 그때 그대로 쓴다.
  */
-const MAIL_RESET_READY = false;
 
 function NewPasswordPage() {
 	return MAIL_RESET_READY ? <NewPasswordForm /> : <NewPasswordBlocked />;
