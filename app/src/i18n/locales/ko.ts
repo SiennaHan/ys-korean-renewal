@@ -169,6 +169,28 @@ const ko = {
 		},
 	},
 	mypage: {
+		/** 회원 탈퇴 — 처리방침 제6조. 지우는 범위는 api/shared/withdrawal_scope.py 가 정본 */
+		withdraw: {
+			title: "회원 탈퇴",
+			lead: "탈퇴하면 아래가 모두 지워집니다.",
+			lossRecords: "학습 기록 — 푼 문항 · 진도 · 복습 큐 · 게임 기록",
+			lossChat: "AI 대화 내용과 첨삭",
+			lossVoice: "녹음한 음성 파일",
+			lossInquiry: "보낸 문의와 첨부한 화면 캡처",
+			irreversible:
+				"되돌릴 수 없습니다. 같은 이메일로 다시 가입할 수는 있지만, 지워진 기록은 돌아오지 않습니다.",
+			next: "다음",
+			confirmLead: "계정을 지우려면 비밀번호를 한 번 더 입력해 주세요.",
+			password: "비밀번호",
+			passwordPlaceholder: "비밀번호를 입력하세요",
+			showPassword: "비밀번호 보기",
+			hidePassword: "비밀번호 숨기기",
+			submit: "탈퇴하기",
+			submitting: "지우는 중…",
+			wrongPassword: "비밀번호가 올바르지 않습니다.",
+			serverError: "지금은 처리할 수 없습니다. 잠시 후 다시 시도해 주세요.",
+		},
+		withdrawEntry: "회원 탈퇴",
 		back: "뒤로 가기",
 		title: "마이 페이지",
 		language: "언어",

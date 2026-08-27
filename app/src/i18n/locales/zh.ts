@@ -151,6 +151,28 @@ const zh = {
 		},
 	},
 	mypage: {
+		/** 회원 탈퇴 — 처리방침 제6조. 지우는 범위는 api/shared/withdrawal_scope.py 가 정본 */
+		withdraw: {
+			title: "注销账号",
+			lead: "注销后以下内容将全部删除。",
+			lossRecords: "学习记录 — 已答题目·进度·复习队列·游戏记录",
+			lossChat: "AI 对话内容与批改",
+			lossVoice: "录制的语音文件",
+			lossInquiry: "发送的咨询与附带的截图",
+			irreversible:
+				"无法撤销。可以用同一邮箱重新注册，但已删除的记录不会恢复。",
+			next: "下一步",
+			confirmLead: "请再次输入密码以删除账号。",
+			password: "密码",
+			passwordPlaceholder: "请输入密码",
+			showPassword: "显示密码",
+			hidePassword: "隐藏密码",
+			submit: "注销账号",
+			submitting: "正在删除…",
+			wrongPassword: "密码不正确。",
+			serverError: "现在无法处理，请稍后再试。",
+		},
+		withdrawEntry: "注销账号",
 		back: "返回",
 		title: "我的页面",
 		language: "语言",

@@ -15,6 +15,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QrRouteImport } from './routes/qr'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NewPasswordRouteImport } from './routes/new-password'
+import { Route as MyWithdrawRouteImport } from './routes/my-withdraw'
 import { Route as MyProfileRouteImport } from './routes/my-profile'
 import { Route as MyPasswordRouteImport } from './routes/my-password'
 import { Route as MainRouteImport } from './routes/main'
@@ -94,6 +95,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const NewPasswordRoute = NewPasswordRouteImport.update({
   id: '/new-password',
   path: '/new-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyWithdrawRoute = MyWithdrawRouteImport.update({
+  id: '/my-withdraw',
+  path: '/my-withdraw',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyProfileRoute = MyProfileRouteImport.update({
@@ -368,6 +374,7 @@ export interface FileRoutesByFullPath {
   '/main': typeof MainRouteWithChildren
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
+  '/my-withdraw': typeof MyWithdrawRoute
   '/new-password': typeof NewPasswordRoute
   '/privacy': typeof PrivacyRoute
   '/qr': typeof QrRoute
@@ -425,6 +432,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
+  '/my-withdraw': typeof MyWithdrawRoute
   '/new-password': typeof NewPasswordRoute
   '/privacy': typeof PrivacyRoute
   '/qr': typeof QrRoute
@@ -482,6 +490,7 @@ export interface FileRoutesById {
   '/main': typeof MainRouteWithChildren
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
+  '/my-withdraw': typeof MyWithdrawRoute
   '/new-password': typeof NewPasswordRoute
   '/privacy': typeof PrivacyRoute
   '/qr': typeof QrRoute
@@ -542,6 +551,7 @@ export interface FileRouteTypes {
     | '/main'
     | '/my-password'
     | '/my-profile'
+    | '/my-withdraw'
     | '/new-password'
     | '/privacy'
     | '/qr'
@@ -599,6 +609,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/my-password'
     | '/my-profile'
+    | '/my-withdraw'
     | '/new-password'
     | '/privacy'
     | '/qr'
@@ -655,6 +666,7 @@ export interface FileRouteTypes {
     | '/main'
     | '/my-password'
     | '/my-profile'
+    | '/my-withdraw'
     | '/new-password'
     | '/privacy'
     | '/qr'
@@ -714,6 +726,7 @@ export interface RootRouteChildren {
   MainRoute: typeof MainRouteWithChildren
   MyPasswordRoute: typeof MyPasswordRoute
   MyProfileRoute: typeof MyProfileRoute
+  MyWithdrawRoute: typeof MyWithdrawRoute
   NewPasswordRoute: typeof NewPasswordRoute
   PrivacyRoute: typeof PrivacyRoute
   QrRoute: typeof QrRoute
@@ -794,6 +807,13 @@ declare module '@tanstack/react-router' {
       path: '/new-password'
       fullPath: '/new-password'
       preLoaderRoute: typeof NewPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-withdraw': {
+      id: '/my-withdraw'
+      path: '/my-withdraw'
+      fullPath: '/my-withdraw'
+      preLoaderRoute: typeof MyWithdrawRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/my-profile': {
@@ -1211,6 +1231,7 @@ const rootRouteChildren: RootRouteChildren = {
   MainRoute: MainRouteWithChildren,
   MyPasswordRoute: MyPasswordRoute,
   MyProfileRoute: MyProfileRoute,
+  MyWithdrawRoute: MyWithdrawRoute,
   NewPasswordRoute: NewPasswordRoute,
   PrivacyRoute: PrivacyRoute,
   QrRoute: QrRoute,

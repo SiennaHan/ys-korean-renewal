@@ -122,6 +122,11 @@ class PasswordChangeRequest(BaseModel):
     new_password: str
 
 
+class WithdrawRequest(BaseModel):
+    """탈퇴는 되돌릴 수 없다 — 토큰만으로는 안 되고 비밀번호를 다시 받는다"""
+    password: str
+
+
 # ── School ──
 
 class SchoolCreateRequest(BaseModel):

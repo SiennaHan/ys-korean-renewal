@@ -155,3 +155,23 @@ export async function changePassword(
 		return { success: false, error: "server_error" };
 	}
 }
+
+/**
+ * 회원 탈퇴 — 계정과 그 계정이 만든 것을 지운다.
+ *
+ * **되돌릴 수 없다.** 그래서 비밀번호를 다시 받는다 — 토큰만 믿으면 남의 기기를
+ * 잠깐 만진 사람이 계정을 지울 수 있다. 서버가 지우는 범위는
+ * `api/shared/withdrawal_scope.py` 가 정본이다.
+ */
+export async function withdrawAccount(
+	password: string,
+): Promise<{ success: boolean; error?: "wrong_password" | "server_error" }> {
+	try {
+		const response = await api.post("/auth/withdraw", { password });
+		if (!response.result) return { success: false, error: "wrong_password" };
+		return { success: true };
+	} catch (error) {
+		console.error(error);
+		return { success: false, error: "server_error" };
+	}
+}

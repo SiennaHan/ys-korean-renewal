@@ -160,6 +160,29 @@ const en = {
 		},
 	},
 	mypage: {
+		/** 회원 탈퇴 — 처리방침 제6조. 지우는 범위는 api/shared/withdrawal_scope.py 가 정본 */
+		withdraw: {
+			title: "Delete account",
+			lead: "Deleting your account removes all of this.",
+			lossRecords:
+				"Learning records — answers, progress, review queue, game results",
+			lossChat: "AI conversations and their feedback",
+			lossVoice: "Voice recordings you made",
+			lossInquiry: "Messages you sent us and any screenshots attached",
+			irreversible:
+				"This cannot be undone. You can sign up again with the same email, but the records will not come back.",
+			next: "Next",
+			confirmLead: "Enter your password once more to delete the account.",
+			password: "Password",
+			passwordPlaceholder: "Enter your password",
+			showPassword: "Show password",
+			hidePassword: "Hide password",
+			submit: "Delete account",
+			submitting: "Deleting…",
+			wrongPassword: "That password is not correct.",
+			serverError: "We cannot do this right now. Please try again in a moment.",
+		},
+		withdrawEntry: "Delete account",
 		back: "Back",
 		title: "My Page",
 		language: "Language",

@@ -169,6 +169,14 @@ class H(BaseHTTPRequestHandler):
         # (.env 가 이 목을 본다) 어드민 계정은 실서버 것이라 여기서 안 먹는다.
         # 로그인이 필요한 화면(마이페이지)을 감사·확인하려고 계약(LoginToken)대로
         # 토큰과 사용자만 낸다. **인증을 흉내 낼 뿐 인증이 아니다.**
+        # 회원 탈퇴 — 실서버는 지운 행 수를 표별로 낸다.
+        # **여기서는 아무것도 안 지운다**(목에는 DB 가 없다). 비밀번호도 안 본다 —
+        # 위 로그인과 같은 사정이다. 화면 흐름을 확인하기 위한 것뿐이다.
+        if self.path.rstrip('/') == '/auth/withdraw':
+            n = int(self.headers.get('Content-Length', 0))
+            self.rfile.read(n) if n else b''
+            return self._send({'result':True,'code':200,'message':None,'data':{
+                'deleted':{'ko_user':1},'file_delete_failed':0}})
         if self.path.rstrip('/') == '/user/sign/login':
             n = int(self.headers.get('Content-Length', 0))
             body = json.loads(self.rfile.read(n) or b'{}')

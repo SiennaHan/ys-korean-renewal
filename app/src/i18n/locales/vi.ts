@@ -160,6 +160,29 @@ const vi = {
 		},
 	},
 	mypage: {
+		/** 회원 탈퇴 — 처리방침 제6조. 지우는 범위는 api/shared/withdrawal_scope.py 가 정본 */
+		withdraw: {
+			title: "Xoá tài khoản",
+			lead: "Xoá tài khoản sẽ xoá toàn bộ những mục sau.",
+			lossRecords:
+				"Hồ sơ học tập — câu đã làm, tiến độ, hàng ôn tập, kết quả trò chơi",
+			lossChat: "Nội dung hội thoại với AI và phần nhận xét",
+			lossVoice: "Các tệp ghi âm của bạn",
+			lossInquiry: "Câu hỏi bạn đã gửi và ảnh chụp màn hình đính kèm",
+			irreversible:
+				"Không thể hoàn tác. Bạn có thể đăng ký lại bằng email cũ, nhưng dữ liệu đã xoá sẽ không quay lại.",
+			next: "Tiếp theo",
+			confirmLead: "Nhập lại mật khẩu để xoá tài khoản.",
+			password: "Mật khẩu",
+			passwordPlaceholder: "Nhập mật khẩu",
+			showPassword: "Hiện mật khẩu",
+			hidePassword: "Ẩn mật khẩu",
+			submit: "Xoá tài khoản",
+			submitting: "Đang xoá…",
+			wrongPassword: "Mật khẩu không đúng.",
+			serverError: "Hiện chưa xử lý được. Vui lòng thử lại sau.",
+		},
+		withdrawEntry: "Xoá tài khoản",
 		back: "Quay lại",
 		title: "Trang cá nhân",
 		language: "Ngôn ngữ",

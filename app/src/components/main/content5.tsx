@@ -101,6 +101,21 @@ export default function Content5() {
 					{t("mypage.signOut")}
 				</span>
 			</button>
+
+			{/*
+			 * 회원 탈퇴 — 처리방침 제6조가 "탈퇴할 수 있습니다" 를 적으려면 길이
+			 * 있어야 한다. 로그아웃과 붙여 두되 **카드 밖에 작게** 둔다.
+			 * 되돌릴 수 없는 일이라 실수로 눌리는 자리에 두지 않는다.
+			 */}
+			<button
+				type="button"
+				onClick={() => navigate({ to: "/my-withdraw" })}
+				className="mt-[16px] flex h-[40px] w-full items-center justify-center"
+			>
+				<span className="text-[13px] text-text-sub leading-[19px] underline">
+					{t("mypage.withdrawEntry")}
+				</span>
+			</button>
 		</div>
 	);
 }
