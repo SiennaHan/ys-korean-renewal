@@ -114,12 +114,26 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 	const [isLastPage, setIsLastPage] = useState(false);
 	const [isExit, setIsExit] = useState(false);
 
+	/*
+	 * 응답한 문항. **건너뛴 것을 빼려면 이것이 있어야 한다** — 서버가 완료를
+	 * 이 수로 판정한다(use-jamo-activity-state.ts 의 `countAnswered` 주석).
+	 * 여기서 세는 지점: 따라쓰기를 끝냈으면(`isWriteDone`).
+	 *
+	 * §28 은 자모 쓰기를 "써서 제출했으면 — 판정과 무관하게 센다" 로 정했다.
+	 * **이 화면에는 "틀린 제출" 이 없다** — `HangulTracingCanvas` 는 획순을 따라
+	 * 긋는 판이라 획이 맞을 때까지 다시 긋거나 건너뛰는 것뿐이고, 제출이라는
+	 * 사건 자체가 성공과 같은 순간이다. 그래서 이 지점이 곧 "풀었다" 다.
+	 * (자유 필기 OCR 은 `word-write` 쪽이다 — 거기는 못 읽어도 센다.)
+	 */
+	const answered = useRef(new Set<number>());
+
 	/* 활동 상태 — 진입 · 위치 저장 · 완료. `sub` 는 훅이 주소에서 읽는다 */
 	useJamoActivityState({
 		total: problemList.length,
 		index: problemIndex,
 		onResume: setProblemIndex,
 		done: isExit,
+		countAnswered: () => answered.current.size,
 	});
 
 	const exit = () => router.history.back();
@@ -159,6 +173,7 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 	};
 
 	const isWriteDone = () => {
+		answered.current.add(problemIndex);
 		setIsSucceed(true);
 		if (problemIndex === problemList.length - 1) {
 			setIsExit(true);

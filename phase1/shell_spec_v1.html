@@ -258,6 +258,7 @@
   <p>활동 1개 완료 기준으로 바꾸면 <b>스트릭이 지금보다 오르기 어려워진다.</b>
      G1에서 구 학습 기록을 폐기하기로 했으므로 <b>기존 사용자의 스트릭이 줄어드는 문제는 발생하지 않는다.</b></p>
   <p class="qa">활동 하나가 평균 5문항(과당 26.7 ÷ 5종)이라 <b>5분 남짓</b>이다. 문항 1개는 너무 헐겁고 과 1개는 너무 무겁다.</p>
+</details>
 </div>
 
 <h3>활동별 예외</h3>
@@ -355,7 +356,8 @@
   <tr><td><b>통계 카드 2개</b></td>
       <td><b>주 — "푼 문항 16/18"</b>(<code>answeredCount/totalItems</code>) ·
           부 — "정답률 75%"(<code>correctCount/gradedCount</code>).<br>
-          <b><code>gradedCount == 0</code>이면 정답률은 "—"</b> — 발음(자모 <code>sub=1</code>·<code>3</code>)과 플래시카드.<br>
+          <b><code>gradedCount == 0</code>이면 정답률은 "—"</b> — <b>자모 여섯 전부</b>(<code>sub=1~6</code>)와 플래시카드.<br>
+          <span class="qa"><b>자모 전체로 넓혔다</b> — 기획 확정 2026-08-27. 초안은 발음(<code>sub=1</code>·<code>3</code>)만 뺐다. 이유는 <b>이 문서 값 §28</b>.</span><br>
           <span class="qa">지표의 <b>주가 정답률이 아니라 "풀었나"</b>인 이유는
           <b>이 문서 값 §28</b> 참조 —
           재시도형이라 정답률이 변별력을 잃고, 정답률이 아예 없는 활동도 있다</span></td></tr>
@@ -1862,8 +1864,11 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
   <ul>
     <li><b>재시도형이라 끝나면 대부분 맞는다</b> — 정답률은 <b>첫 시도 기준</b>이라
         "다시 풀어서 다 맞혔는데 왜 8/10이지?"가 된다.</li>
-    <li><b>정답률이 없는 활동이 있다</b> — 발음(자모 <code>sub=1</code>·<code>3</code>)은 STT 오판이 잦아
-        채점하지 않는다. 플래시카드도 자기 평가라 정오답이 없다.</li>
+    <li><b>정답률이 없는 활동이 있다</b> — <b>자모 여섯은 전부 채점하지 않는다</b>
+        <span class="qa">기획 확정 2026-08-27</span>. 발음(<code>sub=1</code>·<code>3</code>)은 STT 오판이 잦고,
+        쓰기(<code>sub=2·4·6</code>)는 OCR 판정이 같은 사정이며, 고르기(<code>sub=5</code>)까지 같이 뺀다 —
+        <b>자모는 한글을 처음 익히는 자리라 점수를 매길 자리가 아니다.</b>
+        플래시카드도 자기 평가라 정오답이 없다.</li>
     <li>초급 학습자가 첫 주에 보는 화면이다. <b>했다는 사실</b>이 점수보다 앞선다.</li>
   </ul>
   <div class="tablewrap"><table>
@@ -1874,19 +1879,32 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
         <td><code>correctCount</code> / <code>gradedCount</code>.
             <b><code>gradedCount == 0</code>이면 <code>—</code></b></td></tr>
   </table></div>
-  <p><code>gradedCount</code>는 <b>채점 대상 문항 수</b>다 — 발음 문항을 뺀 값.
-     자모 <code>sub=1</code>·<code>3</code>과 플래시카드는 <code>0</code>이라 정답률이 <code>—</code>가 되고,
-     <b>화면 분기는 그것뿐</b>이다. 별도 결과 화면을 만들지 않는다.</p>
+  <p><code>gradedCount</code>는 <b>채점 대상 문항 수</b>다 — 채점하지 않는 문항을 뺀 값.
+     <b>자모 여섯</b>(<code>sub=1~6</code>)과 <b>플래시카드</b>·<b>롤플레잉</b>은 <code>0</code>이라
+     정답률이 <code>—</code>가 되고, <b>화면 분기는 그것뿐</b>이다. 별도 결과 화면을 만들지 않는다.</p>
+  <div class="rule" style="margin-top:12px">
+    <div class="t">자모를 채점하지 않는다 <span class="qa">기획 확정 2026-08-27</span></div>
+    <p>초안은 자모 쓰기(<code>sub=2·4·6</code>)와 고르기(<code>sub=5</code>)의 <code>gradedCount</code>를
+       <b>문항 수</b>로 두었다. <b>재지 않기로 정했다</b> — 여섯 다 <code>0</code>이다.</p>
+    <p><b>0%로 보이는 것이 안 재는 것보다 나쁘다.</b> 분모만 있고 분자가 없으면 결과 화면이
+       <b>"정답률 0%"</b>로 그린다. 그건 "다 틀렸다"는 말이고 사실이 아니다.
+       <code>—</code>는 <b>재지 않았다</b>는 뜻이라 사실에 맞다.</p>
+    <p>구현 쪽 사정도 같은 방향이었다 — 자모 여섯 화면 중
+       <code>saveLearningRecord</code>를 부르는 것이 <b>0개</b>다. 첫 시도 정답을 아는 화면이 없다.
+       그것을 넣어야 할 이유가 이 결정으로 사라졌다.</p>
+  </div>
   <div class="rule" style="margin-top:12px">
     <div class="t">활동마다 <b>"풀었다"의 기준</b>을 못박는다</div>
     <p>진행률이 주 지표이므로 <b>무엇이 1로 세어지는지</b>가 활동마다 명확해야 한다.
        기준은 하나다 — <b>학습자가 그 문항에 무언가를 했으면 응답</b>이다. <b>잘했는지는 묻지 않는다.</b></p>
     <div class="tablewrap"><table>
       <tr><th>활동</th><th>1문항</th><th><code>answeredCount</code> +1 조건</th><th><code>gradedCount</code></th></tr>
-      <tr><td>어휘 · 문법 · 듣기 · 읽기<br>자모 <code>sub=5</code></td><td>문항 1개</td>
+      <tr><td>어휘 · 문법 · 듣기 · 읽기</td><td>문항 1개</td>
           <td>선택지를 <b>한 번이라도 눌렀으면</b> — 오답이어도 센다</td><td>= 문항 수</td></tr>
+      <tr><td><b>자모 고르기</b> <span class="qa"><code>sub=5</code></span></td><td>문항 1개</td>
+          <td>선택지를 <b>한 번이라도 눌렀으면</b> — 오답이어도 센다</td><td class="n"><b>0</b></td></tr>
       <tr><td>자모 쓰기 <span class="qa"><code>sub=2·4·6</code></span></td><td>글자 · 단어 1개</td>
-          <td><b>써서 제출했으면</b> — OCR이 못 읽어도 센다</td><td>= 문항 수</td></tr>
+          <td><b>써서 제출했으면</b> — OCR이 못 읽어도 센다</td><td class="n"><b>0</b></td></tr>
       <tr><td><b>자모 발음</b> <span class="qa"><code>sub=1·3</code></span></td><td>자모 · 단어 1개</td>
           <td><b>녹음했으면</b> — STT 판정과 무관하다</td><td class="n"><b>0</b></td></tr>
       <tr><td><b>플래시카드</b></td><td>카드 1장</td>

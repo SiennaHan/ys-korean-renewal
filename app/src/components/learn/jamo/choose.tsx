@@ -171,12 +171,20 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isExit, setIsExit] = useState(false);
 
+	/*
+	 * 응답한 문항. **건너뛴 것을 빼려면 이것이 있어야 한다** — 서버가 완료를
+	 * 이 수로 판정한다(use-jamo-activity-state.ts 의 `countAnswered` 주석).
+	 * 여기서 세는 지점: 선택지를 한 번이라도 눌렀으면 — 오답이어도 센다 (shell_spec §28)
+	 */
+	const answered = useRef(new Set<number>());
+
 	/* 활동 상태 — 진입 · 위치 저장 · 완료. `sub` 는 훅이 주소에서 읽는다 */
 	useJamoActivityState({
 		total: problemList.length,
 		index: problemIndex,
 		onResume: setProblemIndex,
 		done: isExit,
+		countAnswered: () => answered.current.size,
 	});
 
 	const exit = () => {
@@ -232,6 +240,7 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	 * 목업과 다른 활동 전부가 한 번 누르면 결과가 나오는 방식이라 여기도 맞췄다.
 	 */
 	const selectWord = (picked: string) => {
+		answered.current.add(problemIndex);
 		sound.playClick();
 		setWord(picked);
 		if (picked === problem?.answer_1) {

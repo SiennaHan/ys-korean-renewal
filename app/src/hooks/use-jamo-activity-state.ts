@@ -13,20 +13,21 @@ import { useEffect, useRef } from "react";
  * 써서, 하나를 끝내면 나머지도 완료로 보이고 이어할 위치가 서로를 덮는다.
  * `menuType` 은 여섯 모두 `"jamo"` 다(dev_spec §10 의 8종 중 하나).
  *
- * ## 정답률은 아직 안 센다 — 일부러다
+ * ## 자모는 채점하지 않는다 — 확정이다, 미완이 아니다
  *
- * §28 은 자모 쓰기(`sub` 2·4·6)와 고르기(`sub` 5)의 `gradedCount` 를 문항 수로
- * 정했다. 그런데 **여섯 화면 중 어느 것도 첫 시도 정답을 기록하지 않는다** —
- * `saveLearningRecord` 를 부르는 자모 화면이 0개다(자모는 학습 기록이 아예 없다).
- * 분모만 채우면 결과 화면이 **0%** 로 그린다. 그건 "못 맞혔다" 는 거짓말이고,
- * `gradedCount == 0` 이면 "—" 로 나오는 것이 사실에 맞다.
+ * **여섯 다 `gradedCount = 0` 이고 결과의 정답률은 "—" 다.**
+ * 기획 확정 2026-08-27 — shell_spec §28 · dev_spec §11 도 같은 판에 고쳤다.
+ * 발음(`sub` 1·3)은 STT, 쓰기(`sub` 2·4·6)는 OCR 판정이고 고르기(`sub` 5)까지
+ * 같이 뺀다. 한글을 처음 익히는 자리라 점수를 매길 자리가 아니다.
  *
- * 그래서 지금은 셋 다 0 으로 두고 진행 위치와 응답 수만 사실대로 쓴다.
- * 첫 시도 기록을 여섯에 넣는 것은 따로 할 일이다 — BLOCKERS.md §9-c.
+ * **0 으로 두는 것이 재는 것보다 정확하다.** 분모만 채우면 화면이 "정답률 0%" 로
+ * 그리는데 그건 "다 틀렸다" 는 말이고 사실이 아니다. `—` 는 "재지 않았다" 다.
  *
- * ## 발음(`sub` 1·3)은 원래 0 이다
+ * 그러니 **여기에 첫 시도 정답 기록을 넣지 마라.** 여섯 화면 중
+ * `saveLearningRecord` 를 부르는 것이 0개인데 그것은 빠뜨린 것이 아니라
+ * 이 결정과 맞는 상태다. `correctCount` 도 같은 이유로 0 이다.
  *
- * STT 오판이 잦아 채점하지 않기로 확정돼 있다(§28 · §26). 이쪽은 임시가 아니다.
+ * 플래시카드·롤플레잉도 같은 이유로 0 이다(자기 평가 · STT).
  */
 export function useJamoActivityState(opts: {
 	/** 전체 문항 수. 아직 모르면 0 을 넘긴다 */
@@ -37,6 +38,19 @@ export function useJamoActivityState(opts: {
 	onResume: (index: number) => void;
 	/** 마지막 문항까지 끝냈나 */
 	done: boolean;
+	/**
+	 * **응답한 문항 수를 센다.** 완료 시점에 한 번 불린다(그래서 함수다 —
+	 * 값으로 받으면 세는 쪽이 매 응답마다 다시 렌더해야 한다).
+	 *
+	 * 전에 여기서 `answeredCount` 로 `total` 을 그대로 보냈다. **그때는 서버가
+	 * "마지막 문항에 닿으면 완료" 였으므로 티가 안 났는데**, 2026-08-27 에 완료 기준이
+	 * **「건너뛴 문항 없이 모두 응답」** 으로 바뀌면서(`repo_activity_state.complete`)
+	 * 그 값이 곧 완료 판정이 됐다 — `total` 을 보내면 **다 건너뛰고 끝까지 넘긴 것도
+	 * 완료**가 되어, 그 기준을 세운 이유가 자모에서만 사라진다.
+	 *
+	 * 그래서 필수다. `enter-only` 는 완료를 안 보내므로 `() => 0` 이면 된다.
+	 */
+	countAnswered: () => number;
 	/**
 	 * `"enter-only"` — 진입만 알리고 위치도 완료도 보내지 않는다.
 	 *
@@ -50,7 +64,7 @@ export function useJamoActivityState(opts: {
 	 */
 	mode?: "linear" | "enter-only";
 }) {
-	const { total, index, onResume, done } = opts;
+	const { total, index, onResume, done, countAnswered } = opts;
 	const enterOnly = opts.mode === "enter-only";
 	const { level, lesson, sub } = useSearch({ from: "/learn/jamo" });
 
@@ -88,22 +102,33 @@ export function useJamoActivityState(opts: {
 	/*
 	 * 끝냈을 때 한 번 완료를 알린다.
 	 *
-	 * `answeredCount` 는 **끝까지 갔으니 문항 수 전부**다 — 자모는 건너뛰어도
-	 * 다음으로 넘어가므로 응답하지 않은 문항이 섞일 수 있는데, 그것을 가려내려면
-	 * 화면마다 응답 여부를 세야 한다. 지금은 세는 자리가 없어 전부로 둔다.
-	 * 이 값이 진행률의 분자이므로 **덜 세는 것보다 과하게 세는 쪽으로 기울었다는
-	 * 것을 알고 두는 것**이다 — 위 정답률과 같은 자리에서 같이 고칠 일이다.
+	 * `answeredCount` 는 화면이 센 **실제 응답 수**다 — 건너뛴 문항은 빠진다.
+	 * 서버가 이 값을 `total_items` 와 견주어 완료인지 판정하므로(위 `countAnswered`
+	 * 주석) 여기서 부풀리면 건너뛴 활동이 완료로 남는다.
 	 */
-	const reported = useRef(false);
+	const answeredRef = useRef(countAnswered);
+	answeredRef.current = countAnswered;
+
+	/*
+	 * **한 번만 보내면 안 된다.** 건너뛴 문항이 남으면 서버가 `in_progress` 로 두고
+	 * (`repo_activity_state.complete`), 학습자가 진행바로 돌아가 그것을 풀면 그때
+	 * 완료가 되어야 한다 — shell_spec 시나리오 14. 처음엔 `reported` 불리언 하나로
+	 * 막았는데, 그러면 **돌아가 풀어도 다시 안 보내서 영원히 미완료**였다.
+	 * 브라우저에서 실제로 그렇게 나왔다(a=4 로 멈춤).
+	 *
+	 * 그래서 보낸 **값**을 기억한다 — 응답 수가 늘면 다시 보내고, 같으면 안 보낸다.
+	 * `index` 를 의존성에 두는 것이 방아쇠다: 문항을 옮길 때마다 다시 세어 본다.
+	 * (자모는 끝에 닿아도 `isExit` 이 참으로 남으므로 `done` 만으로는 안 돈다.)
+	 */
+	const sentAnswered = useRef<number | null>(null);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: `index` 는 몸통에서 안 읽는다 — **일부러 넣은 재실행 방아쇠**다. 응답 수는 ref 안의 Set 이라 늘어도 렌더가 안 나므로, 문항을 옮기는 것을 방아쇠로 삼아 다시 세어 본다. 빼면 건너뛴 문항을 돌아가 풀어도 완료가 다시 안 나간다(위 주석의 a=4 멈춤)
 	useEffect(() => {
-		if (enterOnly || !done || reported.current || total === 0) return;
-		reported.current = true;
-		void complete({
-			answeredCount: total,
-			gradedCount: 0,
-			correctCount: 0,
-		});
-	}, [done, total, complete, enterOnly]);
+		if (enterOnly || !done || total === 0) return;
+		const answeredCount = answeredRef.current();
+		if (sentAnswered.current === answeredCount) return;
+		sentAnswered.current = answeredCount;
+		void complete({ answeredCount, gradedCount: 0, correctCount: 0 });
+	}, [done, total, index, complete, enterOnly]);
 
 	return { practice };
 }

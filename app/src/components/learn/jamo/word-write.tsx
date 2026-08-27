@@ -234,6 +234,7 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 		console.log("check length =>", _splitted?.length, _images.length, newSlots);
 
 		if (_splitted?.length === _images.length) {
+			if (problemId) answered.current.add(problemId);
 			setIsSucceed(true);
 			setIsExit(isLastProblem());
 		}
@@ -371,6 +372,19 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 	 * 되돌릴 때는 **묶음 탭까지 같이 맞춘다** — 탭이 어긋나면 그 탭 목록에 없는
 	 * 낱말이 열려 있고, 다음 낱말로 넘기는 길이 그 목록을 보므로 거기서 끊긴다.
 	 */
+	/*
+	 * 응답한 낱말. **건너뛴 것을 빼려면 이것이 있어야 한다** — 서버가 완료를
+	 * 이 수로 판정한다(use-jamo-activity-state.ts 의 `countAnswered` 주석).
+	 *
+	 * 이 화면은 번호가 아니라 **낱말 id** 로 센다 — 탭을 옮겨 다니므로 같은 낱말을
+	 * 두 번 써도 하나이고, 순서대로 가지 않아도 맞는다.
+	 *
+	 * 세는 지점은 음절 칸이 다 채워진 때다(`checkSucceed`) — "써서 제출했으면" 이다
+	 * (shell_spec §28). **헤더의 건너뛰기가 `next` 와 같은 함수라 그것만으로는
+	 * 가려낼 수 없다** — 그래서 건너뛴 것을 빼는 대신 쓴 것을 센다.
+	 */
+	const answered = useRef(new Set<string>());
+
 	const problemIndex = problemList.findIndex((pr) => pr.id === problemId);
 	const resumeTo = (at: number) => {
 		const target = problemList[at];
@@ -391,6 +405,7 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 		index: problemIndex < 0 ? 0 : problemIndex,
 		onResume: resumeTo,
 		done: isExit,
+		countAnswered: () => answered.current.size,
 	});
 
 	const groupName = (unit?.title ?? "").split(":")[0].trim();

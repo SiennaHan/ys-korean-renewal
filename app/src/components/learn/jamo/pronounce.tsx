@@ -190,6 +190,8 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 		index: 0,
 		onResume: () => {},
 		done: false,
+		/* 완료를 안 보내므로 세지 않는다 */
+		countAnswered: () => 0,
 		mode: "enter-only",
 	});
 

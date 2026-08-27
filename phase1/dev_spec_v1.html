@@ -663,8 +663,11 @@
             (<a href="https://claude.ai/code/artifact/4366a8cf-d915-45dc-9292-d23b91e39dbe">구현 사양</a> → <code>shell_spec_v1</code> §28 판정표)</td></tr>
     <tr><td><code>gradedCount</code></td><td class="t">int</td><td>✓</td>
         <td><b>채점 대상 문항 수</b> — 정답률의 분모.
-            발음(자모 <code>sub=1</code>·<code>3</code>) · 플래시카드 · 롤플레잉은 <b><code>0</code></b>이라
-            정답률이 <b>"—"</b>가 됩니다. 미션 대화는 <b>미션 수</b>(보통 3)이고
+            <b>자모 여섯 전부</b>(<code>sub=1~6</code>) · 플래시카드 · 롤플레잉은 <b><code>0</code></b>이라
+            정답률이 <b>"—"</b>가 됩니다 <span class="qa">자모 전체로 넓혔습니다 — 기획 확정 2026-08-27.
+            초안은 발음(<code>sub=1</code>·<code>3</code>)만 뺐습니다. 분모만 있고 분자가 없으면 화면이
+            "정답률 0%"로 그리는데 그건 "다 틀렸다"는 말이라 사실이 아닙니다 —
+            <code>shell_spec_v1</code> §28</span>. 미션 대화는 <b>미션 수</b>(보통 3)이고
             <code>correctCount</code>는 <b>달성 수</b>입니다 —
             다만 <code>firstTryWrongCount</code>는 <b><code>0</code>으로 두어 복습 큐에 넣지 않습니다</b>
             (문항 단위로 되짚을 수 없기 때문)</td></tr>
@@ -721,9 +724,11 @@
           <td><b>건너뛴 문항만.</b> 진행을 막지 않으므로 오답이 남지 않는다</td></tr>
     </table></div>
     <div class="callout stop" style="margin-top:12px">
-      <div class="t">발음 활동은 <b>정답률에서만</b> 빠집니다 — 진행률에는 들어갑니다</div>
-      <p>자모 <code>sub=1</code>(자모 듣고 따라하기) · <code>sub=3</code>(단어 듣고 따라하기)는
-         STT 판정을 쓰지만 <b>진행을 막지 않고 채점하지도 않습니다</b>(<code>shell_spec_v1</code> §26).
+      <div class="t">자모는 <b>정답률에서만</b> 빠집니다 — 진행률에는 들어갑니다</div>
+      <p><b>자모 여섯을 채점하지 않기로 정했습니다</b> <span class="qa">기획 확정 2026-08-27</span> —
+         발음(<code>sub=1</code>·<code>3</code>)은 STT 판정, 쓰기(<code>sub=2·4·6</code>)는 OCR 판정이고,
+         고르기(<code>sub=5</code>)까지 같이 뺍니다. 한글을 처음 익히는 자리라 점수를 매길 자리가 아닙니다.
+         판정은 쓰되 <b>진행을 막지 않고 채점하지도 않습니다</b>(<code>shell_spec_v1</code> §26 · §28).
          <b>그렇다고 활동에서 통째로 빼는 것은 아닙니다</b> — 풀었는지 안 풀었는지는 셉니다.</p>
       <ul>
         <li><code>totalItems</code> · <code>answeredCount</code> — <b>정상적으로 셉니다.</b>
