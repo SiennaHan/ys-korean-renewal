@@ -85,6 +85,16 @@
 .nav-frame .chip3.locked.on { color:var(--color-background-surface); }
 .nav-frame .chip3 .lk { width:12px; height:12px; margin-left:5px; vertical-align:-1px; display:inline-block; }
 
+/* 결제 안내를 **화면 하나로** 쓸 때 감싸는 틀.
+   `.paywall` 자체는 교재학습 화면 안(과 제목 아래)에 들어가도록 위 여백만 있다 —
+   그대로 전체 화면에 쓰면 맨 위에 붙고 아래가 텅 빈다(2026-08-27 에 게임 문에서 그랬다).
+   게임처럼 감싸는 것이 없는 자리에서는 이 틀이 가운데로 세운다 */
+.nav-frame .paywall-page {
+  min-height:100%; display:flex; flex-direction:column; justify-content:center;
+  padding-bottom:var(--space-6);
+}
+.nav-frame .paywall-page > .paywall { margin-top:0; }
+
 .nav-frame .paywall { position:relative; margin:var(--space-4) var(--gutter) 0; padding:26px 22px 22px;
   overflow:hidden; border:1px solid var(--nav-tint-line); border-radius:18px;
   background:linear-gradient(180deg,var(--nav-tint-fill) 0, var(--color-background-surface) 46%);

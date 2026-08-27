@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from accepter import auth
+from accepter.entitlement_guard import RequireGame
 from accepter.base import makeResponse
 from accepter.game_content_models import (
     SeoulPuzzleLocationCreate,
@@ -13,7 +14,7 @@ from business import seoul_puzzle
 router = APIRouter()
 
 
-@router.get("")
+@router.get("", dependencies=[Depends(RequireGame("seoul-puzzle"))])
 async def get_content():
     return makeResponse(await seoul_puzzle.getContent())
 

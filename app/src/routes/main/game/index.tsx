@@ -55,12 +55,15 @@ function GamePage() {
 	}, []);
 
 	if (lockedShown) {
+		/* 전체 화면으로 쓰므로 감싸는 틀이 필요하다 — game-gate.tsx 의 주석 참고 */
 		return (
-			<PaywallPanel
-				entitlement={entitlement}
-				onBack={() => setLockedShown(null)}
-				onSignIn={() => navigate({ to: "/login" })}
-			/>
+			<div className="paywall-page">
+				<PaywallPanel
+					entitlement={entitlement}
+					onBack={() => setLockedShown(null)}
+					onSignIn={() => navigate({ to: "/login" })}
+				/>
+			</div>
 		);
 	}
 

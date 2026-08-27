@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from accepter import auth
+from accepter.entitlement_guard import RequireGame
 from accepter.base import makeResponse
 from accepter.game_content_models import (
     CardSortCategoryCreate,
@@ -15,17 +16,17 @@ from business import card_sort
 router = APIRouter()
 
 
-@router.get("/categories")
+@router.get("/categories", dependencies=[Depends(RequireGame("card-sort"))])
 async def list_categories():
     return makeResponse(await card_sort.getCategories())
 
 
-@router.get("/vocab")
+@router.get("/vocab", dependencies=[Depends(RequireGame("card-sort"))])
 async def list_vocab():
     return makeResponse(await card_sort.getVocab())
 
 
-@router.get("/rare")
+@router.get("/rare", dependencies=[Depends(RequireGame("card-sort"))])
 async def list_rare():
     return makeResponse(await card_sort.getRare())
 

@@ -122,6 +122,12 @@ export async function authFetch(
 	const url = `${BASE_URL}${endpoint}`;
 	const response = await fetch(url, { ...init, headers });
 
+	/*
+	 * **402 는 여기서 걸러지지 않는다.** 서버가 유료 콘텐츠를 막을 때 쓰는 코드다
+	 * (`accepter/entitlement_guard.py`). 세션은 멀쩡하고 구독만 없는 상태이므로
+	 * 지우면 안 된다 — 403 으로 냈다가 **구독하지 않은 사람이 로그아웃되는** 일이
+	 * 생길 뻔했다. 이 저장소에서 403 은 `auth.JWTBearer` 의 인증 실패다.
+	 */
 	if (response.status === 401 || response.status === 403) {
 		// 토큰과 사용자를 **같이** 지운다. 하나만 지우면 앱이 반쪽 상태가 된다.
 		// guestId 는 남긴다 — 게스트의 서버 기록을 가리키는 이름이라,

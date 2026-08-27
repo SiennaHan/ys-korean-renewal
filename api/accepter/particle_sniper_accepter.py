@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from accepter import auth
+from accepter.entitlement_guard import RequireGame
 from accepter.base import makeResponse
 from accepter.game_content_models import (
     ParticleSniperLessonCreate,
@@ -13,12 +14,12 @@ from business import particle_sniper
 router = APIRouter()
 
 
-@router.get("/levels")
+@router.get("/levels", dependencies=[Depends(RequireGame("particle-sniper"))])
 async def list_levels():
     return makeResponse(await particle_sniper.getLevels())
 
 
-@router.get("/sentences")
+@router.get("/sentences", dependencies=[Depends(RequireGame("particle-sniper"))])
 async def list_sentences():
     return makeResponse(await particle_sniper.getSentences())
 
