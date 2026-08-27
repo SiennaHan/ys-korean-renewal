@@ -7,6 +7,17 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import os.path as _p
 SEED = _p.join(_p.dirname(_p.abspath(__file__)), '..', 'api', 'seed_data')
 
+# 무료 경계는 **정본을 그대로 읽는다.** 손으로 베끼면 갈라진다 —
+# 이 저장소가 가장 자주 실패한 자리이고, free_scope.py 머리말도 그렇게 못 박았다.
+# 전에는 여기 같은 값을 적어 두고 "정본을 봐라" 는 주석만 달았는데, 그건
+# 사람 기억에 기대는 방식이라 다음 사람이 한쪽만 고치면 조용히 어긋난다.
+# free_scope.py 는 표준 라이브러리만 쓰므로 api 의 venv 없이도 읽힌다.
+import importlib.util as _ilu
+_FS_PATH = _p.join(_p.dirname(_p.abspath(__file__)), '..', 'api', 'shared', 'free_scope.py')
+_spec = _ilu.spec_from_file_location('free_scope', _FS_PATH)
+free_scope = _ilu.module_from_spec(_spec)
+_spec.loader.exec_module(free_scope)
+
 # 게임 진행 — 서버는 upsert 에서 max() 로 최고 점수를 유지한다. 같게 흉내낸다.
 # {game_name: {stage_id: row}}
 GAME_PROGRESS = {}
@@ -183,15 +194,15 @@ class H(BaseHTTPRequestHandler):
         # 열린 범위 — 실서버의 api/business/entitlement.py 와 **같은 값**을 낸다.
         # 없으면 알 수 없는 경로로 떨어져 {} 를 내는데, 그건 앱에서 "전부 잠김"
         # 으로 읽힌다(2026-08-26 확인 — 무료인 1급 4과에도 자물쇠가 붙었다).
-        # 값은 api/shared/free_scope.py 가 정본이다. 여기 손대기 전에 그쪽을 봐라.
+        # 값은 위에서 free_scope.py 를 그대로 읽어 온다 — 베끼지 않는다.
         if path.rstrip('/') == '/entitlement':
             return self._send({'result':True,'code':200,'message':None,'data':{
                 'source':'guest',
-                'books':[],
-                'chapters':{'1':[4],'2':[1],'3':[1]},
-                'jamo_chapters':[1],
-                'games':['vocashot','spring-picnic'],
-                'clips':True,
+                'books':list(free_scope.FREE_BOOKS),
+                'chapters':{str(k):list(v) for k,v in free_scope.FREE_CHAPTERS.items()},
+                'jamo_chapters':list(free_scope.FREE_JAMO_CHAPTERS),
+                'games':list(free_scope.FREE_GAMES),
+                'clips':free_scope.FREE_CLIPS,
                 'expires_at':None}})
         if path.startswith('/game-progress/'):
             game = path[len('/game-progress/'):]
