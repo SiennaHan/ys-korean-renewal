@@ -84,6 +84,15 @@ class MigrateRequest(BaseModel):
 
 # ── Admin Auth ──
 
+class InquiryRequest(BaseModel):
+    """문의 — 답장 주소를 본문에서 받는다. 게스트는 계정 이메일이 없다"""
+    replyEmail: str
+    topic: str
+    message: str
+    lang: Optional[str] = None
+    fromPath: Optional[str] = None
+
+
 class StudentSignupRequest(BaseModel):
     """학생 자체 회원가입 — access_and_pricing_v1 §08 의 1번 · §09 의 4단계
 

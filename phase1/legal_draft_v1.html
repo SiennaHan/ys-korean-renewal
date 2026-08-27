@@ -146,14 +146,21 @@
 <table>
   <thead><tr><th>무엇</th><th>지금</th><th>해야 할 일</th></tr></thead>
   <tbody>
-    <tr><td>음성 파일 공개</td><td><code>ACL='public-read'</code></td>
-      <td>비공개로 바꾸고 필요할 때만 서명된 임시 주소를 낸다. <b>이것만은 초안과 무관하게 고쳐야 한다</b></td></tr>
-    <tr><td>전량 보관</td><td><code>SHADOW_SAMPLE_RATE = 1.0</code></td>
-      <td>엔진 비교가 목적이면 표본이면 된다. 목적과 비율을 정하고 처리방침에 그대로 적는다</td></tr>
-    <tr><td>보관 기간</td><td>없다 — 지운 적이 없다</td>
-      <td>항목별 기간을 정한다(§03 의 표에 자리를 비워 뒀다). 정해야 파기 조항을 쓸 수 있다</td></tr>
-    <tr><td>버킷 이름</td><td><span class="file">pulley-mock</span></td>
-      <td>운영 버킷을 따로 둔다. 이름이 mock 인 곳에 회원 음성이 쌓이고 있다</td></tr>
+    <tr><td>음성 파일 공개</td><td><span class="pill done">고쳤다</span> 2026-08-27</td>
+      <td><span class="file">private_upload_to_s3</span> 를 따로 두어 학습자 음성만 비공개로 올린다.
+      들으려면 <span class="file">presign</span>(기본 5분). TTS 는 앱이 재생하므로 공개 그대로다.<br>
+      <b>이미 올라간 파일은 아직 공개다</b> — <span class="file">tools/lock_existing_stt_audio.py</span> 를
+      자격증명이 있는 데서 돌려야 한다. <b>버킷의 Block Public Access 도 같이 봐라</b></td></tr>
+    <tr><td>전량 보관</td><td><span class="pill done">고쳤다</span> 2026-08-27</td>
+      <td>환경에서 받는다 — <span class="file">STT_SHADOW_SAMPLE_RATE</span>(기본 0.1) ·
+      <span class="file">STT_SHADOW_ENABLED</span>. 비율을 정하면 아래 제3조 5번에 그대로 적는다</td></tr>
+    <tr><td>보관 기간</td><td><span class="pill open">기계만 만들었다</span></td>
+      <td><span class="file">tools/prune_stt_shadow.py</span> 와 <span class="file">STT_SHADOW_RETENTION_DAYS</span>.
+      <b>기본 0 이라 지금은 아무것도 안 지운다</b> — 기간은 기획이 정할 값이라 비워 뒀다.
+      정하면 크론에 걸어야 한다</td></tr>
+    <tr><td>버킷 이름</td><td><span class="pill open">환경으로 뺐다</span></td>
+      <td><span class="file">S3_BUCKET</span> 으로 받는다. 기본값이 <span class="file">pulley-mock</span> 인 것은
+      지금 그 버킷을 쓰고 있어서다 — <b>운영에서 값을 주어야 한다</b></td></tr>
   </tbody>
 </table>
 </div>
@@ -166,7 +173,10 @@
   <thead><tr><th>빈칸</th><th>무엇</th></tr></thead>
   <tbody>
     <tr><td><span class="blank">사업자</span></td><td>상호 · 대표자 · 주소 · 사업자등록번호 · 통신판매업 신고번호</td></tr>
-    <tr><td><span class="blank">문의처</span></td><td>고객센터 메일과 전화. <b>지금 앱에 고객센터 주소가 없다</b> — 재설정 화면도 이것을 기다린다(BLOCKERS §7)</td></tr>
+    <tr><td>문의처</td><td><span class="pill done">만들었다</span> 2026-08-27 — 앱의 <span class="file">/inquiry</span>.
+      <b>전화를 두지 않는다</b>(이용자 상당수가 국외라 통화가 현실적이지 않다 · 기획 확정).
+      글로 받아 슬랙으로 꽂는다. <b>로그인 없이도 보낼 수 있다</b> — 비밀번호를 잊은 사람이
+      이 길을 가장 필요로 한다. MY 화면과 비밀번호 재설정 화면에서 들어간다</td></tr>
     <tr><td><span class="blank">보호책임자</span></td><td>개인정보 보호책임자 이름·직책·연락처(법정 필수 기재)</td></tr>
     <tr><td><span class="blank">가격</span></td><td>월 구독료와 통화. 구독·월 단위까지는 확정(<span class="file">access_and_pricing_v1</span> §07)</td></tr>
     <tr><td><span class="blank">환불</span></td><td>청약철회 기간과 예외. 디지털 콘텐츠는 전자상거래법에 특칙이 있어 <b>변호사 확인이 필요하다</b></td></tr>
@@ -278,8 +288,10 @@ PG 가 직접 받고 우리는 거래 식별자만 보관하는 형태가 되어
 
   <h4>제6조 (회원의 권리)</h4>
   <p>회원은 언제든지 자신의 개인정보를 열람·정정·삭제·처리정지 요구할 수 있고, 탈퇴할 수 있습니다.
-  <span class="blank">문의처</span> 로 요청하시면 지체 없이 처리합니다.</p>
-  <p class="qa">지금 앱에 <b>탈퇴 화면도 열람 화면도 없다</b>(확인함). 권리를 적는다면 그 길도 만들어야 한다.</p>
+  앱의 <b>문의하기</b>로 요청하시면 지체 없이 처리합니다.</p>
+  <p class="qa">요청을 <b>받을 길은 생겼다</b>(2026-08-27 · <span class="file">/inquiry</span>) — 사람이 읽고 처리하는 방식이다.
+  다만 앱에 <b>스스로 탈퇴하거나 내 데이터를 내려받는 화면은 없다.</b> 문의로만 처리한다면
+  그 처리 절차(누가·며칠 안에)를 정해 두어야 한다.</p>
 
   <h4>제7조 (기기에 저장되는 정보)</h4>
   <p>로그인 상태 유지를 위해 브라우저에 토큰을 저장합니다(30일). 「이메일 저장」을 켜면 이메일이

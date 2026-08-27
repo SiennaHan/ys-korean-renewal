@@ -351,6 +351,32 @@ class KoVocashotPreset(Base) :
     updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 
 
+class KoInquiry(Base) :
+    """문의 — 학습자가 보내는 글. 슬랙으로도 꽂히지만 **정본은 이 표다.**
+
+    전화를 두지 않는다(이용자 상당수가 국외다). 답장을 보내려면 이메일이
+    있어야 하는데 **게스트는 계정이 없다** — 그래서 `reply_email` 을 따로 받는다.
+    로그인한 사람은 계정 이메일이 기본으로 채워지지만 고칠 수 있다.
+    """
+    __tablename__  = "ko_inquiry"
+    id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
+    # 로그인 사용자면 user id, 게스트면 게스트 id. 익명 문의는 받지 않는다(토큰은 있다)
+    user_id        = Column(String(50),   nullable=False, index=True)
+    # 답장 받을 주소. 게스트도 답을 받으려면 적어야 한다
+    reply_email    = Column(String(100),  nullable=False)
+    # 화면에서 고른 갈래 — 결제 · 계정 · 학습 내용 · 오류 · 그 밖
+    topic          = Column(String(30),   nullable=False, index=True)
+    message        = Column(String(2000), nullable=False)
+    # 어느 언어로 썼나. 답장을 그 언어로 하기 위해서다
+    lang           = Column(String(5),    nullable=True)
+    # 어느 화면에서 보냈나. 재현에 쓴다
+    from_path      = Column(String(200),  nullable=True)
+    # 슬랙에 꽂혔나. 실패해도 문의는 남는다 — 나중에 다시 보낼 수 있게 표시만 한다
+    notified       = Column(Boolean,      nullable=False, default=False, index=True)
+    status         = Column(String(20),   nullable=False, default="open", index=True)
+    created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), index=True)
+
+
 class KoActivityState(Base) :
     """활동 상태 — dev_spec_v1 §2.1
 

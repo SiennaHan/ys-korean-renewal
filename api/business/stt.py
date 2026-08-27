@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import os
 import random
 import re
 import time
@@ -15,8 +16,12 @@ from util import s3utils
 from xternal import openai, rtzr, tutorus
 
 # shadow 수집 on/off 및 샘플링 비율(1.0 = 전부). 데이터 충분히 모으면 낮추거나 끄면 됨.
-SHADOW_ENABLED = True
-SHADOW_SAMPLE_RATE = 1.0
+# 엔진 비교(shadow)를 얼마나 켤지. **환경에서 받는다.**
+# 전에는 코드에 True · 1.0 이 박혀 있어 **모든 학습자 음성이 전량 보관**됐다
+# (2026-08-27 발견 — BLOCKERS). 비교가 목적이면 표본이면 된다.
+# 기본을 0.1 로 둔다 — 켜 두되 열에 하나만. 끄려면 STT_SHADOW_ENABLED=0.
+SHADOW_ENABLED = os.getenv("STT_SHADOW_ENABLED", "1") not in ("0", "false", "False")
+SHADOW_SAMPLE_RATE = float(os.getenv("STT_SHADOW_SAMPLE_RATE", "0.1"))
 SHADOW_DIR = "stt/shadow"
 
 
@@ -126,7 +131,9 @@ async def _run_shadow(
 
     if audio_bytes:
         try:
-            audio_url = await s3utils.public_upload_to_s3(
+            # **비공개로 올린다.** 학습자의 목소리다 — 주소를 아는 사람이
+            # 로그인 없이 듣게 두면 안 된다. 들으려면 presign 이 필요하다
+            audio_url = await s3utils.private_upload_to_s3(
                 audio_bytes, SHADOW_DIR, f"{uuid4().hex}.webm", "audio/webm"
             )
         except Exception as e:
@@ -198,11 +205,81 @@ async def listShadow(limit: int, offset: int, kind: str):
     with sessionScope() as db:
         items, total = await repo_stt.listShadow(db, limit, offset, kind)
         summary = await repo_stt.countSummary(db)
+        # 음성은 비공개다. 어드민이 들을 수 있게 **짧게 사는 주소**로 바꿔 낸다 —
+        # 목록에 담긴 채로 새어 나가도 몇 분 뒤에는 못 듣는다
+        def _withPresigned(row):
+            d = jsonable_encoder(row)
+            if d.get("audio_url"):
+                try:
+                    d["audio_url"] = s3utils.presign(d["audio_url"])
+                except Exception as e:
+                    print(f"[stt-shadow] presign 실패 — {e!r}")
+                    d["audio_url"] = None
+            return d
+
         return {
-            "items": [jsonable_encoder(i) for i in items],
+            "items": [_withPresigned(i) for i in items],
             "total": total,
             "limit": limit,
             "offset": offset,
             "kind": kind,
             **summary,
         }
+
+
+# ── 보관 기간 ─────────────────────────────────────────────────────────
+# 며칠 지나면 지울지. **기간은 개인정보 처리방침에 적을 값이라 기획이 정한다** —
+# 여기서는 기계만 만들고 값은 환경에서 받는다(phase1/legal_draft_v1.html §03 제4조).
+# 0 이면 지우지 않는다 — 정해지지 않았을 때 마음대로 지워 버리지 않기 위해서다.
+SHADOW_RETENTION_DAYS = int(os.getenv("STT_SHADOW_RETENTION_DAYS", "0"))
+
+
+async def pruneShadow(days: int = None, limit: int = 500, dryRun: bool = False):
+    """보관 기간이 지난 음성과 그 행을 지운다.
+
+    **음성 파일을 먼저 지우고 행을 지운다.** 반대로 하면 주소를 잃어버려
+    S3 에 파일만 남는다 — 지워야 할 것이 조용히 살아남는 쪽이 더 나쁘다.
+
+    저절로 돌지 않는다. `api/tools/prune_stt_shadow.py` 를 **크론에 걸어야 한다** —
+    요청 처리 중에 몰래 돌리면 언제 지워지는지 아무도 모르게 된다.
+    """
+    from datetime import datetime, timedelta
+
+    days = SHADOW_RETENTION_DAYS if days is None else days
+    if days <= 0:
+        return {"skipped": "보관 기간이 정해지지 않았다 (STT_SHADOW_RETENTION_DAYS)"}
+
+    cutoff = datetime.utcnow() - timedelta(days=days)
+    with sessionScope() as db:
+        rows = await repo_stt.listShadowOlderThan(db, cutoff, limit)
+        targets = [(r.id, r.audio_url) for r in rows]
+
+    if dryRun:
+        return {"days": days, "would_delete": len(targets), "cutoff": cutoff.isoformat()}
+
+    # **성공한 것만 골라 지운다.** 처음에 실패 개수만 세었더니 하나라도 실패하면
+    # 잘 지워진 것까지 행이 남았다 — 그러면 다음 번에 이미 없는 파일을 또 지우려 든다
+    okIds, audioFailed = [], 0
+    for _id, url in targets:
+        if not url:
+            okIds.append(_id)  # 음성이 없는 행. 지울 파일도 없다
+            continue
+        try:
+            await s3utils.delete_object(url)
+            okIds.append(_id)
+        except Exception as e:
+            audioFailed += 1
+            print(f"[stt-shadow] 음성 삭제 실패 — id[{_id}] {e!r}")
+
+    # 파일을 못 지운 행은 남긴다. 행을 먼저 지우면 주소를 잃어 S3 에 파일만 남는다
+    with sessionScope() as db:
+        rowsDeleted = await repo_stt.deleteShadowByIds(db, okIds)
+    audioDeleted = len([1 for i, u in targets if u and i in set(okIds)])
+
+    return {
+        "days": days,
+        "cutoff": cutoff.isoformat(),
+        "audio_deleted": audioDeleted,
+        "audio_failed": audioFailed,
+        "rows_deleted": rowsDeleted,
+    }

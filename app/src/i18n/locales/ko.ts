@@ -26,6 +26,32 @@ const ko = {
 		serverError: "서버 연결에 실패했습니다.",
 	},
 	/** 학생 자체 회원가입 — 목업 phase1/draft_auth.html 의 가입 화면 */
+	/** 문의하기 — 전화 없이 글로 받는다. 보낸 글은 슬랙으로 꽂힌다 */
+	inquiry: {
+		title: "문의하기",
+		back: "뒤로",
+		lead: "무엇이든 적어 주세요. 답장은 아래 적어 주신 주소로 드립니다.",
+		topic: "무엇에 대한 문의인가요?",
+		topic_payment: "결제·구독",
+		topic_account: "계정·로그인",
+		topic_content: "학습 내용",
+		topic_bug: "잘 안 돼요",
+		topic_etc: "그 밖의 것",
+		email: "답장 받을 이메일",
+		emailHint: "이 주소로만 답장을 보냅니다",
+		message: "내용",
+		messagePlaceholder: "무슨 일이 있었는지 적어 주세요. 어느 화면이었는지 알려 주시면 더 빨리 찾습니다.",
+		send: "보내기",
+		sending: "보내는 중…",
+		doneTitle: "잘 받았습니다",
+		doneBody: "{{email}} 로 답장 드리겠습니다.",
+		doneNumber: "문의 번호 #{{id}}",
+		doneBack: "돌아가기",
+		err_emailInvalid: "이메일 주소를 다시 확인해 주세요.",
+		err_messageRequired: "내용을 적어 주세요.",
+		err_messageTooLong: "내용이 너무 깁니다. 조금 줄여 주세요.",
+		err_inquiryFailed: "보내지 못했습니다. 잠시 후 다시 시도해 주세요.",
+	},
 	signup: {
 		title: "회원가입",
 		back: "뒤로",
@@ -71,6 +97,10 @@ const ko = {
 		continueWeb: "웹에서 계속하기",
 	},
 	resetPassword: {
+		blockedDescription: "지금은 메일로 보내 드릴 수 없습니다.",
+		blockedHow: "메일 발송 준비가 끝나지 않았습니다. 기관 소속이면 학교 담당자에게, 개인 계정이면 문의하기로 알려 주시면 재설정해 드립니다.",
+		blockedContact: "문의하기",
+		blockedBack: "로그인으로 돌아가기",
 		title: "비밀번호 재설정",
 		description:
 			"이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.",

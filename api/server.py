@@ -15,7 +15,7 @@ from accepter import auth_accepter, admin_accepter, school_accepter, student_acc
 from accepter import dashboard_accepter, study_session_accepter, speech_accepter, game_progress_accepter
 from accepter import spring_picnic_accepter, particle_sniper_accepter, card_sort_accepter, seoul_puzzle_accepter, vocashot_accepter
 from accepter import qr_accepter
-from accepter import activity_accepter, review_queue_accepter, entitlement_accepter
+from accepter import activity_accepter, review_queue_accepter, entitlement_accepter, inquiry_accepter
 from persistence.database import createAllTables
 
 load_dotenv(override=True)
@@ -119,6 +119,9 @@ app.include_router(
 )
 app.include_router(
     entitlement_accepter.router, prefix="/entitlement", tags=["entitlement"], responses={404: {"description": "Not found"}},
+)
+app.include_router(
+    inquiry_accepter.router, prefix="/inquiry", tags=["inquiry"], responses={404: {"description": "Not found"}},
 )
 
 app.include_router(

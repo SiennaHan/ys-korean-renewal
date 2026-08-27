@@ -8,10 +8,10 @@ import asyncio
 import base64
 import re
 
-import requests
 
 from persistence.database import sessionScope
 from persistence import repo_stt
+from util import s3utils
 from xternal import tutorus
 
 # 규격서 §4.3 의 proficiencyScore.name → 프런트에서 쓸 키
@@ -126,13 +126,6 @@ async def evaluatePronunciation(
     return summary
 
 
-def _download(url: str) -> bytes:
-    resp = requests.get(url, timeout=20)
-    if resp.status_code != 200:
-        raise tutorus.TutorusError(f"오디오 다운로드 실패({resp.status_code}).", 502)
-    return resp.content
-
-
 async def evaluateShadow(shadow_id: int) -> dict:
     """STT shadow 행의 실제 학생 음성을 발음평가한다 (어드민 온디맨드).
 
@@ -153,7 +146,9 @@ async def evaluateShadow(shadow_id: int) -> dict:
     if not reference:
         raise tutorus.TutorusError("기준으로 삼을 전사문이 없습니다.", 400)
 
-    audio_bytes = await asyncio.to_thread(_download, audio_url)
+    # 음성이 비공개가 됐으므로(2026-08-27) HTTP GET 이 아니라 S3 로 직접 읽는다.
+    # `object_bytes` 가 옛 공개 URL 도 키로 바꿔 받으므로 예전 행도 그대로 된다
+    audio_bytes = await s3utils.object_bytes(audio_url)
     result = await tutorus.evaluate(reference, audio_bytes)
 
     summary = summarize(result)
