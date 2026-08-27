@@ -489,10 +489,17 @@ export default function AiRoleplay({
 	 * (§28: 롤플레잉·플래시카드·자모 발음은 정답률이 "—" 다). 그래서
 	 * `correctCount` 도 0 이다. 세는 것은 "했나" 뿐이다.
 	 */
-	const reported = useRef(false);
+	/*
+	 * **한 번만 보내면 안 된다.** 끝내지 않은 시나리오가 남으면 서버가 완료로
+	 * 치지 않고 `in_progress` 로 둔다(`repo_activity_state.complete` · shell_spec §1).
+	 * 진행바로 그 시나리오에 돌아가 마치면 **그때 완료가 되어야 한다**.
+	 * `reported` 불리언 하나로 막으면 돌아가 마쳐도 다시 안 보내서 영원히 미완료다.
+	 *
+	 * 그래서 보낸 **값**을 기억한다 — 마친 대사 수가 늘면 다시 보낸다.
+	 */
+	const sentAnswered = useRef<number | null>(null);
 	useEffect(() => {
-		if (playState !== "done" || hasNext || reported.current) return;
-		reported.current = true;
+		if (playState !== "done" || hasNext) return;
 		const answered = scenarios.reduce(
 			(sum, sc, i) =>
 				sc.turns[0] && completedScenarios.has(sc.turns[0].id)
@@ -500,6 +507,8 @@ export default function AiRoleplay({
 					: sum,
 			0,
 		);
+		if (sentAnswered.current === answered) return;
+		sentAnswered.current = answered;
 		void complete({
 			answeredCount: answered,
 			gradedCount: 0,

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi.encoders import jsonable_encoder
 from persistence.database import sessionScope
-from persistence import repo_learning_record, repo_daily_activity, repo_review_queue
+from persistence import repo_learning_record, repo_daily_activity, repo_review_queue, repo_activity_state
 
 KST = timezone(timedelta(hours=9))
 
@@ -84,6 +84,19 @@ async def saveRecord(userId: str, bookId: int, chapterSeq: int, menuType: str, q
             # 표가 없는 환경에서도 학습 기록은 남아야 하므로 삼키되, **찍는다.**
             # 조용히 넘기던 탓에 위의 조건 버그가 오래 안 보였다
             print(f"[review-queue] 예약·제거 실패 — user[{userId}] q[{questionId}] {e!r}")
+
+        # 응답이 다 찼으면 활동을 완료로 올린다.
+        #
+        # **다시 풀기 세션은 `POST /activity/complete` 를 안 부른다**(§3.3) — 그런데
+        # 새 완료 기준(§1)에서는 건너뛴 문항을 그 세션에서 풀어야 완료가 된다.
+        # 그래서 문항이 기록될 때마다 서버가 스스로 본다. 성적은 안 덮는다.
+        if not skipped:
+            try:
+                await repo_activity_state.markCompletedIfAllAnswered(
+                    userId, bookId, chapterSeq, menuType, sub, db
+                )
+            except Exception as e:
+                print(f"[activity-state] 완료 재판정 실패 — user[{userId}] {e!r}")
 
         # 일별 활동 갱신 (출석 자동 기록) — 테이블 미생성 시에도 학습 기록은 정상 저장
         try:

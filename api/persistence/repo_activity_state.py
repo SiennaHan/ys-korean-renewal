@@ -4,6 +4,7 @@
 """
 from datetime import datetime
 
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -138,4 +139,51 @@ async def complete(userId: str, bookId: int, chapterSeq: int, menuType: str, sub
         # 그 문항을 가리킨다 — 돌아가 풀면 그때 완료가 된다(시나리오 14)
         row.state = "in_progress"
     db.flush()
+    return row
+
+
+async def markCompletedIfAllAnswered(userId: str, bookId: int, chapterSeq: int,
+                                     menuType: str, sub: int, db: Session):
+    """응답이 다 찼으면 완료로 올린다. **성적(세 수)은 건드리지 않는다.**
+
+    왜 여기가 필요한가 — 완료를 알리는 `complete()` 는 **다시 풀기 세션에서는
+    아예 안 불린다**(`use-activity-state.ts` 의 `retry` · shell_spec §3.3).
+    그런데 새 완료 기준(§1, 2026-08-27)에서는 건너뛴 문항이 남으면 미완료이고,
+    학습자는 그것을 **다시 풀기에서 푼다.** 그 세션이 아무 말도 안 하면 활동은
+    영원히 미완료다 — 브라우저에서 실제로 그렇게 나왔다(6/6 을 풀었는데
+    `in_progress`).
+
+    그래서 **문항이 하나 기록될 때마다** 서버가 스스로 본다. 다시 풀기 세션도
+    `learning-record` 는 보내므로 이 경로로 완료가 올라간다.
+
+    **건너뛴 문항은 이 표에 행이 없다**(`business/learning_record.py`, 2026-08-27).
+    그래서 행 수가 곧 "건너뛰지 않고 응답한 문항 수" 다 — 새 기준이 요구하는 바로 그 수다.
+
+    `learning-record` 를 안 쓰는 활동(자모·롤플레잉·플래시카드·미션대화)에서는
+    행이 0 이라 이 함수가 아무 일도 하지 않는다. 그쪽은 자기 `complete()` 경로가
+    값을 다시 보내는 방식으로 이미 처리된다.
+
+    **`sub` 로 못 거른다 — `ko_learning_record` 에 그 칸이 없다**(확인함).
+    지금은 문제가 안 된다. `sub` 를 여럿 쓰는 것은 자모뿐이고(여섯), 자모는
+    이 표에 아무것도 안 쓰기 때문이다. **자모가 학습 기록을 남기게 되면 여기부터
+    고쳐야 한다** — 안 그러면 여섯 하위활동의 응답이 한 덩어리로 세어져,
+    하나만 다 풀어도 여섯이 전부 완료로 올라간다. 인자로는 받아 두었다.
+    """
+    row = await findOne(userId, bookId, chapterSeq, menuType, sub, db)
+    if row is None or row.state == "completed":
+        return row
+    total = row.total_items
+    if not total or total <= 0:
+        return row
+    answered = db.query(func.count(model.KoLearningRecord.id)).filter(
+        model.KoLearningRecord.user_id == userId,
+        model.KoLearningRecord.book_id == bookId,
+        model.KoLearningRecord.chapter_seq == chapterSeq,
+        model.KoLearningRecord.menu_type == menuType,
+    ).scalar() or 0
+    if answered >= total:
+        row.state = "completed"
+        row.completed_at = datetime.utcnow()
+        # 세 수는 덮지 않는다 — 원래 세션이 보낸 성적이 정본이다
+        db.flush()
     return row

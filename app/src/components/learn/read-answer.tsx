@@ -307,20 +307,34 @@ export default function ReadAnswer({
 	 * 결과로 넘어갈 때 한 번 완료를 알린다. 세 수의 뜻은 dev_spec §2.1 —
 	 * answered 는 응답 수, graded 는 채점 대상, correct 는 **첫 시도** 정답이다.
 	 */
-	const reported = useRef(false);
+	/*
+	 * **한 번만 보내면 안 된다.** 건너뛴 문항이 남으면 서버가 완료로 치지 않고
+	 * `in_progress` 로 둔다(`repo_activity_state.complete` · shell_spec §1).
+	 * 학습자가 [다시 풀기]나 진행바로 돌아가 그것을 풀면 **그때 완료가 되어야
+	 * 한다**(시나리오 14). `reported` 불리언 하나로 막으면 돌아가 풀어도 다시
+	 * 안 보내서 **영원히 미완료**다 — 완료 기준을 바꾸면서 생긴 구멍이고,
+	 * 자모 쪽(`use-jamo-activity-state`)이 먼저 같은 자리를 밟았다.
+	 *
+	 * 그래서 보낸 **값**을 기억한다. 수가 달라지면 다시 보내고 같으면 안 보낸다.
+	 */
+	const sentSig = useRef<string | null>(null);
 	useEffect(() => {
-		if (phase !== "result" || reported.current) return;
-		reported.current = true;
+		if (phase !== "result") return;
 		// wrongAttempts 는 틀린 차례대로 담는 Set 이라 비어 있지 않으면 첫 시도 오답이다.
 		// 결과 화면의 firstWrongOf 와 같은 판정인데 그쪽은 그 블록 안에만 있어서 여기서 다시 센다
 		const wrongCount = questions.filter(
 			(q) => (wrongAttempts[q.id]?.size ?? 0) > 0,
 		).length;
 		const skippedCount = questions.filter((q) => skipped.includes(q.id)).length;
+		const answeredCount = questions.length - skippedCount;
+		const correctCount = questions.length - wrongCount - skippedCount;
+		const sig = `${answeredCount}/${correctCount}`;
+		if (sentSig.current === sig) return;
+		sentSig.current = sig;
 		void complete({
-			answeredCount: questions.length - skippedCount,
-			gradedCount: questions.length - skippedCount,
-			correctCount: questions.length - wrongCount - skippedCount,
+			answeredCount,
+			gradedCount: answeredCount,
+			correctCount,
 		});
 	}, [phase, questions, wrongAttempts, skipped, complete]);
 

@@ -521,16 +521,30 @@ export default function FillBlank({
 	 * 서버가 ko_learning_record 로 다시 셀 수도 있지만 그러면 건너뜀을 알 수 없다 —
 	 * 그 표에는 남지 않기 때문이다. 그래서 화면이 세어 보낸다.
 	 */
-	const reported = useRef(false);
+	/*
+	 * **한 번만 보내면 안 된다.** 건너뛴 문항이 남으면 서버가 완료로 치지 않고
+	 * `in_progress` 로 둔다(`repo_activity_state.complete` · shell_spec §1).
+	 * 학습자가 [다시 풀기]나 진행바로 돌아가 그것을 풀면 **그때 완료가 되어야
+	 * 한다**(시나리오 14). `reported` 불리언 하나로 막으면 돌아가 풀어도 다시
+	 * 안 보내서 **영원히 미완료**다 — 완료 기준을 바꾸면서 생긴 구멍이고,
+	 * 자모 쪽(`use-jamo-activity-state`)이 먼저 같은 자리를 밟았다.
+	 *
+	 * 그래서 보낸 **값**을 기억한다. 수가 달라지면 다시 보내고 같으면 안 보낸다.
+	 */
+	const sentSig = useRef<string | null>(null);
 	useEffect(() => {
-		if (phase !== "result" || reported.current) return;
-		reported.current = true;
+		if (phase !== "result") return;
 		const wrongCount = questions.filter((q) => firstWrong[q.id]).length;
 		const skippedCount = questions.filter((q) => skipped.includes(q.id)).length;
+		const answeredCount = questions.length - skippedCount;
+		const correctCount = questions.length - wrongCount - skippedCount;
+		const sig = `${answeredCount}/${correctCount}`;
+		if (sentSig.current === sig) return;
+		sentSig.current = sig;
 		void complete({
-			answeredCount: questions.length - skippedCount,
-			gradedCount: questions.length - skippedCount,
-			correctCount: questions.length - wrongCount - skippedCount,
+			answeredCount,
+			gradedCount: answeredCount,
+			correctCount,
 		});
 	}, [phase, questions, firstWrong, skipped, complete]);
 
