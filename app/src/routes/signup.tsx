@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import i18n from "@/i18n";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Check, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Check, CircleAlert, Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -76,45 +76,45 @@ function SignUpPage() {
 	};
 
 	return (
-		<div className="flex min-h-full flex-col bg-white">
-			<div className="flex items-center justify-between px-4 pt-3">
+		<div className="auth-page">
+			<div className="auth-topbar">
 				<button
 					type="button"
 					onClick={() => navigate({ to: "/login" })}
 					aria-label={t("signup.back")}
-					className="p-1 text-gray-500 hover:text-gray-700"
+					className="auth-back"
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
 				<LanguageSelector />
 			</div>
 
-			<div className="flex flex-1 flex-col items-center px-6 pt-6 pb-8">
-				<div className="w-full max-w-sm space-y-6">
-					<h1 className="font-bold text-2xl text-gray-900">
-						{t("signup.title")}
-					</h1>
+			<main className="auth-main auth-main--flow">
+				<div className="auth-panel">
+					<div className="auth-heading">
+						<h1 className="auth-title">{t("signup.title")}</h1>
+					</div>
 
 					{/*
 					 * 잃을 것이 없다고 먼저 말한다 — 게스트 진행을 계정으로 옮기기로
 					 * 정했고(access_and_pricing_v1 §07 의 2번) signUpStudent 가 guestId 를
 					 * 같이 보낸다. 실제로 옮겨지므로 이 문장은 거짓이 아니다.
 					 */}
-					<div className="rounded-xl bg-blue-50 px-4 py-3">
-						<p className="font-semibold text-blue-700 text-sm">
-							{t("signup.carryTitle")}
-						</p>
-						<p className="mt-1 text-blue-600/80 text-xs leading-relaxed">
-							{t("signup.carryBody")}
-						</p>
+					<div className="auth-info">
+						<p className="auth-info-title">{t("signup.carryTitle")}</p>
+						<p className="auth-info-body">{t("signup.carryBody")}</p>
 					</div>
 
-					<form onSubmit={handleSignUp} className="space-y-5">
-						<div className="space-y-1.5">
-							<label
-								htmlFor="signup-email"
-								className="block font-medium text-gray-700 text-sm"
-							>
+					<form onSubmit={handleSignUp} className="auth-form">
+						{error && (
+							<p className="auth-alert" role="alert">
+								<CircleAlert aria-hidden="true" />
+								<span>{error}</span>
+							</p>
+						)}
+
+						<div className="auth-field">
+							<label htmlFor="signup-email" className="auth-label">
 								{t("signup.email")}
 							</label>
 							<input
@@ -124,19 +124,16 @@ function SignUpPage() {
 								onChange={(e) => setEmail(e.target.value)}
 								placeholder={t("login.emailPlaceholder")}
 								required
-								className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+								className="auth-input"
 							/>
-							<p className="text-gray-500 text-xs">{t("signup.emailHint")}</p>
+							<p className="auth-hint">{t("signup.emailHint")}</p>
 						</div>
 
-						<div className="space-y-1.5">
-							<label
-								htmlFor="signup-password"
-								className="block font-medium text-gray-700 text-sm"
-							>
+						<div className="auth-field">
+							<label htmlFor="signup-password" className="auth-label">
 								{t("signup.password")}
 							</label>
-							<div className="relative">
+							<div className="auth-input-wrap">
 								<input
 									id="signup-password"
 									type={showPassword ? "text" : "password"}
@@ -144,7 +141,7 @@ function SignUpPage() {
 									onChange={(e) => setPassword(e.target.value)}
 									placeholder={t("login.passwordPlaceholder")}
 									required
-									className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+									className="auth-input auth-input--with-action"
 								/>
 								<button
 									type="button"
@@ -154,7 +151,7 @@ function SignUpPage() {
 											? "signup.hidePassword"
 											: "signup.showPassword",
 									)}
-									className="-translate-y-1/2 absolute top-1/2 right-3 text-gray-400 hover:text-gray-600"
+									className="auth-visibility"
 								>
 									{showPassword ? (
 										<EyeOff className="h-5 w-5" />
@@ -168,39 +165,26 @@ function SignUpPage() {
 							 * 하면 무엇이 모자란지 모른다. 판정은 서버도 한다 — 앱을 안 거치고
 							 * 부를 수 있기 때문이다(user_business.checkPassword)
 							 */}
-							<ul className="space-y-1 pt-1">
+							<ul className="auth-requirements">
 								{PASSWORD_RULES.map((rule) => {
 									const met = !misses.includes(rule.key);
 									return (
 										<li
 											key={rule.key}
-											className="flex items-center gap-2 text-xs"
+											className={`auth-requirement${met ? " is-met" : ""}`}
 										>
-											<span
-												className={`flex h-4 w-4 items-center justify-center rounded-full border ${
-													met
-														? "border-green-600 bg-green-600 text-white"
-														: "border-gray-300 text-transparent"
-												}`}
-											>
+											<span className="auth-requirement-icon">
 												<Check className="h-3 w-3" />
 											</span>
-											<span
-												className={met ? "text-green-700" : "text-gray-500"}
-											>
-												{t(`signup.rule_${rule.key}`)}
-											</span>
+											<span>{t(`signup.rule_${rule.key}`)}</span>
 										</li>
 									);
 								})}
 							</ul>
 						</div>
 
-						<div className="space-y-1.5">
-							<label
-								htmlFor="signup-name"
-								className="block font-medium text-gray-700 text-sm"
-							>
+						<div className="auth-field">
+							<label htmlFor="signup-name" className="auth-label">
 								{t("signup.name")}
 							</label>
 							<input
@@ -210,28 +194,27 @@ function SignUpPage() {
 								onChange={(e) => setName(e.target.value)}
 								placeholder={t("signup.namePlaceholder")}
 								required
-								className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+								className="auth-input"
 							/>
-							<p className="text-gray-500 text-xs">{t("signup.nameHint")}</p>
+							<p className="auth-hint">{t("signup.nameHint")}</p>
 						</div>
 
 						{/* 필수 동의. 문서가 아직 없어서 주소가 비면 링크를 걸지 않는다 */}
-						<div className="space-y-1.5">
-							<label className="flex cursor-pointer items-start gap-2">
+						<div className="auth-field">
+							<label className="auth-check-label">
 								<input
 									type="checkbox"
 									checked={agreed}
 									onChange={(e) => setAgreed(e.target.checked)}
-									className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/20"
 								/>
-								<span className="text-gray-600 text-sm">
+								<span>
 									{TERMS_URL && PRIVACY_URL ? (
 										<>
 											<a
 												href={TERMS_URL}
 												target="_blank"
 												rel="noreferrer"
-												className="text-blue-600 underline"
+												className="auth-link"
 											>
 												{t("signup.terms")}
 											</a>
@@ -240,7 +223,7 @@ function SignUpPage() {
 												href={PRIVACY_URL}
 												target="_blank"
 												rel="noreferrer"
-												className="text-blue-600 underline"
+												className="auth-link"
 											>
 												{t("signup.privacy")}
 											</a>
@@ -249,21 +232,13 @@ function SignUpPage() {
 									) : (
 										`${t("signup.terms")}${t("signup.and")}${t("signup.privacy")}${t("signup.agreeSuffix")}`
 									)}
-									<span className="ml-1 text-red-500 text-xs">
-										{t("signup.required")}
-									</span>
+									<span className="auth-required">{t("signup.required")}</span>
 								</span>
 							</label>
 							{!(TERMS_URL && PRIVACY_URL) && (
-								<p className="text-amber-700 text-xs">
-									{t("signup.termsMissing")}
-								</p>
+								<p className="auth-legal-note">{t("signup.termsMissing")}</p>
 							)}
 						</div>
-
-						{error && (
-							<p className="text-center text-red-500 text-sm">{error}</p>
-						)}
 
 						<Button
 							type="submit"
@@ -271,24 +246,24 @@ function SignUpPage() {
 							size="lg"
 							full
 							disabled={!canSubmit}
-							className="rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
+							className="auth-primary"
 						>
 							{isLoading ? t("signup.submitting") : t("signup.submit")}
 						</Button>
 					</form>
 
-					<p className="text-center text-gray-500 text-sm">
+					<p className="auth-switch">
 						{t("signup.haveAccount")}{" "}
 						<button
 							type="button"
 							onClick={() => navigate({ to: "/login" })}
-							className="text-blue-600 hover:underline"
+							className="auth-link"
 						>
 							{t("signup.goLogin")}
 						</button>
 					</p>
 				</div>
-			</div>
+			</main>
 		</div>
 	);
 }

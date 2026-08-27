@@ -27,7 +27,7 @@ export function LanguageSelector() {
 	};
 
 	return (
-		<div ref={containerRef} className="relative">
+		<div ref={containerRef} className="language-select">
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
@@ -36,20 +36,17 @@ export function LanguageSelector() {
 						setIsOpen(false);
 					}
 				}}
-				className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-gray-100"
+				className="language-select-trigger"
 			>
-				<span className="text-base">{currentLang.flag}</span>
-				<span className="font-medium">{t(`language.${currentLang.code}`)}</span>
+				<span className="language-select-flag">{currentLang.flag}</span>
+				<span>{t(`language.${currentLang.code}`)}</span>
 				<ChevronDown
-					className={cn(
-						"h-4 w-4 text-gray-500 transition-transform",
-						isOpen && "rotate-180",
-					)}
+					className={cn("language-select-chevron", isOpen && "is-open")}
 				/>
 			</button>
 
 			{isOpen && (
-				<div className="absolute right-0 z-50 mt-1 min-w-[140px] overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+				<div className="language-select-menu">
 					{LANGUAGES.map((lang) => (
 						<button
 							key={lang.code}
@@ -57,12 +54,11 @@ export function LanguageSelector() {
 							onMouseDown={(e) => e.preventDefault()}
 							onClick={() => handleSelect(lang.code)}
 							className={cn(
-								"flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50",
-								i18n.language === lang.code &&
-									"bg-blue-50 font-medium text-blue-600",
+								"language-select-option",
+								i18n.language === lang.code && "is-active",
 							)}
 						>
-							<span className="text-base">{lang.flag}</span>
+							<span className="language-select-flag">{lang.flag}</span>
 							<span>{t(`language.${lang.code}`)}</span>
 						</button>
 					))}

@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal @ 4492a5c -->
+<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal @ 8287188 -->
 <!-- 왜: 수집 항목·제3자·국외 이전은 전부 이 파일들을 읽고 적은 관찰이다. 코드가 바뀌면 이 표가 낡는다 -->
 <title>이용약관 · 개인정보 처리방침 초안</title>
 <style>
@@ -208,6 +208,11 @@
     <tr><td><b>음성</b></td><td><b>녹음 파일과 전사 텍스트</b> — 발음 평가·따라 말하기·AI 대화에서 생긴다</td>
       <td>S3 <span class="file">pulley-mock/korean/stt/shadow/</span> · <span class="file">ko_stt_shadow</span>
         <span class="qa">위 §01 을 보라 — 지금은 공개 읽기다</span></td></tr>
+    <tr><td>문의</td><td>문의 내용 · 답장 받을 이메일 · 갈래 · 작성 언어 · 보낸 화면 ·
+      <b>회원이 붙인 화면 캡처</b></td>
+      <td><span class="file">ko_inquiry</span> · <span class="file">ko_inquiry_file</span> ·
+      S3 <span class="file">korean/inquiry/</span>
+      <span class="qa">캡처는 <b>비공개</b>다. 슬랙에는 하루 사는 임시 주소로 붙는다</span></td></tr>
     <tr><td>게임·단어장</td><td>점수 · 진행 · 담은 낱말</td>
       <td><span class="file">ko_game_progress</span> · <span class="file">ko_user_flashcard</span></td></tr>
     <tr><td>QR 유입</td><td><b>IP 주소 · 접속 국가·도시 · 브라우저 정보 · 기기 지문 해시</b></td>

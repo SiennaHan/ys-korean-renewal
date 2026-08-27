@@ -27,3 +27,22 @@ async def listPending(db: Session, limit: int = 100):
         .limit(limit)
         .all()
     )
+
+
+async def addFile(db: Session, inquiryId: int, s3Key: str, mime: str, size: int):
+    row = model.KoInquiryFile(
+        inquiry_id=inquiryId, s3_key=s3Key, mime=mime, bytes=size
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return row
+
+
+async def listFiles(db: Session, inquiryId: int):
+    return (
+        db.query(model.KoInquiryFile)
+        .filter(model.KoInquiryFile.inquiry_id == inquiryId)
+        .order_by(model.KoInquiryFile.id.asc())
+        .all()
+    )

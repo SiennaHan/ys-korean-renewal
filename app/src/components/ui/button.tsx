@@ -4,19 +4,25 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonStyles = cva(
-	"inline-flex h-9 select-none items-center justify-center gap-2 rounded-md px-4 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&>svg]:size-4",
+	"inline-flex h-9 select-none items-center justify-center gap-2 rounded-[10px] px-4 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-2 disabled:pointer-events-none [&>svg]:size-4",
 	{
 		variants: {
 			variant: {
-				primary: "bg-[#037] text-white hover:bg-gray-300 active:bg-gray-500",
+				primary:
+					"bg-fill-primary text-text-inverse hover:bg-fill-primary-hover active:bg-fill-primary-pressed disabled:bg-background-disable disabled:text-text-disable",
 				secondary:
-					"active:bg-gray:400 bg-gray-100 text-gray-900 hover:bg-gray-200",
-				outline: "border border-gray-300 text-gray-900 hover:bg-gray-50",
-				ghost: "text-gray-900 hover:bg-gray-100",
-				destructive: "bg-red-600 text-white hover:bg-red-700",
-				link: "h-auto p-0 text-blue-600 underline-offset-4 hover:underline",
-				success: "bg-green-600 text-white hover:bg-green-700",
-				warning: "bg-yellow-500 text-white hover:bg-yellow-600",
+					"bg-background-base text-text-strong hover:bg-background-sunken active:bg-line-normal disabled:text-text-disable",
+				outline:
+					"border border-line-normal bg-background-surface text-text-strong hover:bg-background-base disabled:text-text-disable",
+				ghost:
+					"text-text-strong hover:bg-background-base disabled:text-text-disable",
+				destructive:
+					"bg-fill-wrong text-text-inverse hover:brightness-95 disabled:bg-background-disable disabled:text-text-disable",
+				link: "h-auto p-0 text-text-primary underline-offset-4 hover:underline",
+				success:
+					"bg-fill-correct text-text-inverse hover:brightness-95 disabled:bg-background-disable disabled:text-text-disable",
+				warning:
+					"bg-fill-caution text-text-inverse hover:brightness-95 disabled:bg-background-disable disabled:text-text-disable",
 			},
 			size: {
 				sm: "h-8 px-3 text-sm",

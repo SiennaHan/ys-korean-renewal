@@ -377,6 +377,26 @@ class KoInquiry(Base) :
     created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), index=True)
 
 
+class KoInquiryFile(Base) :
+    """문의에 붙인 화면 캡처.
+
+    **비공개 S3 에 둔다.** 학습자가 자기 화면을 찍어 보내는 것이라 이름·이메일·
+    학습 기록이 그대로 담길 수 있다. 공개 읽기로 두면 주소를 아는 사람이 다 본다
+    (2026-08-27 에 음성에서 겪은 일이다 — BLOCKERS).
+
+    `s3_key` 는 URL 이 아니라 **키**다. 볼 때 `s3utils.presign` 으로 짧게 사는
+    주소를 만든다.
+    """
+    __tablename__  = "ko_inquiry_file"
+    id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
+    inquiry_id     = Column(Integer,      ForeignKey("ko_inquiry.id"), nullable=False, index=True)
+    s3_key         = Column(String(300),  nullable=False)
+    mime           = Column(String(50),   nullable=False)
+    # 올린 크기(바이트). 나중에 보관 용량을 세거나 한도를 조절할 때 쓴다
+    bytes          = Column(Integer,      nullable=False, default=0)
+    created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
+
+
 class KoActivityState(Base) :
     """활동 상태 — dev_spec_v1 §2.1
 

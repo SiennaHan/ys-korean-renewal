@@ -36,7 +36,7 @@ def _whoFrom(authorization: Optional[str]) -> str:
 async def create_inquiry(body: InquiryRequest, authorization: Optional[str] = Header(None)):
     data, error = await inquiry.createInquiry(
         _whoFrom(authorization), body.replyEmail, body.topic, body.message,
-        body.lang, body.fromPath,
+        body.lang, body.fromPath, body.files,
     )
     if error:
         return makeResponse({"error": error})

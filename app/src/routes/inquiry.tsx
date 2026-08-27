@@ -1,8 +1,12 @@
 import {
+	INQUIRY_FILE_TYPES,
 	INQUIRY_MAX,
+	INQUIRY_MAX_FILES,
+	INQUIRY_MAX_FILE_BYTES,
 	INQUIRY_TOPICS,
 	type InquiryTopic,
 	sendInquiry,
+	toDataUrl,
 } from "@/api/inquiry";
 import { useAuth } from "@/components/sign/sign-provider";
 import { Button } from "@/components/ui/button";
@@ -12,8 +16,8 @@ import {
 	useNavigate,
 	useRouter,
 } from "@tanstack/react-router";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, CheckCircle2, ImagePlus, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/inquiry")({
@@ -35,24 +39,86 @@ export const Route = createFileRoute("/inquiry")({
  * **전화가 없다.** 이용자 상당수가 국외라 통화가 현실적이지 않아 글로 받는다
  * (기획 확정 2026-08-27). 보낸 글은 슬랙으로 꽂힌다.
  *
- * **게스트도 보낼 수 있다.** 그래서 답장 주소를 직접 받는다 — 로그인한 사람은
- * 계정 이메일이 미리 채워지지만 고칠 수 있다.
+ * **게스트도, 로그인 못 하는 사람도 보낼 수 있다.** 그래서 답장 주소를 직접
+ * 받는다 — 로그인한 사람은 계정 이메일이 미리 채워지지만 고칠 수 있다.
+ *
+ * 옷은 인증 화면군과 같은 것을 입는다(`styles/auth.css`) — 비밀번호 재설정에서
+ * 바로 넘어오는 화면이라 나란히 놓았을 때 튀면 안 된다.
  */
 function InquiryPage() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const router = useRouter();
 	const { from } = Route.useSearch();
-
 	const { user } = useAuth();
+
 	const [replyEmail, setReplyEmail] = useState(user?.email ?? "");
 	const [topic, setTopic] = useState<InquiryTopic>("etc");
 	const [message, setMessage] = useState("");
 	const [error, setError] = useState("");
 	const [sending, setSending] = useState(false);
 	const [sentId, setSentId] = useState<number | null>(null);
+	/**
+	 * 캡처가 몇 장 유실됐나.
+	 *
+	 * **말하지 않으면 보낸 사람만 캡처를 보냈다고 안다.** 저장은 접수와 따로
+	 * 실패할 수 있어서(비공개 저장소에 못 닿는 경우) 그때는 솔직히 알린다 —
+	 * 글은 이미 접수됐으므로 "실패" 가 아니라 "캡처만 안 붙었다" 다.
+	 */
+	const [lostShots, setLostShots] = useState(0);
+
+	/**
+	 * 화면 캡처. 미리 보여 주려고 `preview`(blob URL)를 같이 든다.
+	 *
+	 * **고른 즉시 base64 로 바꿔 둔다** — 보낼 때 한꺼번에 바꾸면 큰 그림 셋을
+	 * 읽는 동안 버튼이 멈춘 것처럼 보인다.
+	 */
+	const [shots, setShots] = useState<
+		{ id: string; name: string; preview: string; dataUrl: string }[]
+	>([]);
+	const fileRef = useRef<HTMLInputElement>(null);
 
 	const canSend = replyEmail.trim() !== "" && message.trim() !== "" && !sending;
+
+	const handlePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const picked = [...(e.target.files ?? [])];
+		/* 같은 파일을 다시 고를 수 있게 비운다 — 안 비우면 두 번째 선택이 안 먹는다 */
+		e.target.value = "";
+		if (!picked.length) return;
+		setError("");
+
+		if (shots.length + picked.length > INQUIRY_MAX_FILES) {
+			setError(t("inquiry.err_fileTooMany", { max: INQUIRY_MAX_FILES }));
+			return;
+		}
+		const added: typeof shots = [];
+		for (const file of picked) {
+			if (!INQUIRY_FILE_TYPES.includes(file.type)) {
+				setError(t("inquiry.err_fileType"));
+				return;
+			}
+			if (file.size > INQUIRY_MAX_FILE_BYTES) {
+				setError(t("inquiry.err_fileTooBig"));
+				return;
+			}
+			added.push({
+				id: `${file.name}-${file.size}-${added.length}`,
+				name: file.name,
+				preview: URL.createObjectURL(file),
+				dataUrl: await toDataUrl(file),
+			});
+		}
+		setShots((prev) => [...prev, ...added]);
+	};
+
+	const removeShot = (id: string) => {
+		setShots((prev) => {
+			const gone = prev.find((s) => s.id === id);
+			/* blob URL 은 놔두면 탭이 닫힐 때까지 메모리에 남는다 */
+			if (gone) URL.revokeObjectURL(gone.preview);
+			return prev.filter((s) => s.id !== id);
+		});
+	};
 
 	const handleSend = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -64,6 +130,7 @@ function InquiryPage() {
 			message,
 			lang: i18n.language,
 			fromPath: from ?? "-",
+			files: shots.map((s) => s.dataUrl),
 		});
 		setSending(false);
 		if (!res.success) {
@@ -72,75 +139,79 @@ function InquiryPage() {
 			setError(i18n.exists(key) ? t(key) : code);
 			return;
 		}
+		setLostShots(Math.max(0, (res.filesAttempted ?? 0) - (res.files ?? 0)));
 		setSentId(res.id ?? 0);
 	};
 
 	/* 보낸 뒤 — 언제 답이 오는지 말하지 않는다. 약속할 수 있는 것만 적는다 */
 	if (sentId !== null) {
 		return (
-			<div className="flex min-h-full flex-col bg-white">
-				<div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
-					<CheckCircle2 className="h-12 w-12 text-blue-600" />
-					<h1 className="font-bold text-gray-900 text-xl">
-						{t("inquiry.doneTitle")}
-					</h1>
-					<p className="text-gray-500 text-sm leading-relaxed">
-						{t("inquiry.doneBody", { email: replyEmail })}
-					</p>
-					<p className="text-gray-400 text-xs">
-						{t("inquiry.doneNumber", { id: sentId })}
-					</p>
-					<Button
-						type="button"
-						variant="outline"
-						size="lg"
-						onClick={() => navigate({ to: "/main" })}
-						className="mt-2 rounded-lg border-gray-300 text-gray-700"
-					>
-						{t("inquiry.doneBack")}
-					</Button>
-				</div>
+			<div className="auth-page">
+				<div className="auth-topbar auth-topbar--end" />
+				<main className="auth-main auth-main--center">
+					<div className="auth-panel auth-panel--center">
+						<div className="auth-success-icon">
+							<CheckCircle2 aria-hidden="true" />
+						</div>
+						<div className="auth-heading">
+							<h1 className="auth-title">{t("inquiry.doneTitle")}</h1>
+							<p className="auth-description">
+								{t("inquiry.doneBody", { email: replyEmail })}
+							</p>
+						</div>
+						{lostShots > 0 && (
+							<p className="auth-alert">
+								{t("inquiry.doneShotsLost", { count: lostShots })}
+							</p>
+						)}
+						<p className="auth-hint">
+							{t("inquiry.doneNumber", { id: sentId })}
+						</p>
+						<Button
+							variant="outline"
+							size="lg"
+							full
+							onClick={() => navigate({ to: "/main" })}
+							className="auth-secondary"
+						>
+							{t("inquiry.doneBack")}
+						</Button>
+					</div>
+				</main>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex min-h-full flex-col bg-white">
-			<div className="flex items-center px-4 pt-3">
+		<div className="auth-page">
+			<div className="auth-topbar">
 				<button
 					type="button"
 					onClick={() => router.history.back()}
 					aria-label={t("inquiry.back")}
-					className="p-1 text-gray-500 hover:text-gray-700"
+					className="auth-back"
 				>
-					<ArrowLeft className="h-5 w-5" />
+					<ArrowLeft />
 				</button>
 			</div>
 
-			<div className="flex flex-1 flex-col items-center px-6 pt-4 pb-8">
-				<div className="w-full max-w-sm space-y-6">
-					<div>
-						<h1 className="font-bold text-2xl text-gray-900">
-							{t("inquiry.title")}
-						</h1>
-						<p className="mt-2 text-gray-500 text-sm leading-relaxed">
-							{t("inquiry.lead")}
-						</p>
+			<main className="auth-main auth-main--flow">
+				<div className="auth-panel">
+					<div className="auth-heading">
+						<h1 className="auth-title">{t("inquiry.title")}</h1>
+						<p className="auth-description">{t("inquiry.lead")}</p>
 					</div>
 
-					<form onSubmit={handleSend} className="space-y-5">
-						<div className="space-y-1.5">
-							<label
-								htmlFor="inquiry-topic"
-								className="block font-medium text-gray-700 text-sm"
-							>
+					<form onSubmit={handleSend} className="auth-form">
+						<div className="auth-field">
+							<label htmlFor="inquiry-topic" className="auth-label">
 								{t("inquiry.topic")}
 							</label>
 							<select
 								id="inquiry-topic"
 								value={topic}
 								onChange={(e) => setTopic(e.target.value as InquiryTopic)}
-								className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+								className="auth-select"
 							>
 								{INQUIRY_TOPICS.map((v) => (
 									<option key={v} value={v}>
@@ -150,11 +221,8 @@ function InquiryPage() {
 							</select>
 						</div>
 
-						<div className="space-y-1.5">
-							<label
-								htmlFor="inquiry-email"
-								className="block font-medium text-gray-700 text-sm"
-							>
+						<div className="auth-field">
+							<label htmlFor="inquiry-email" className="auth-label">
 								{t("inquiry.email")}
 							</label>
 							<input
@@ -164,16 +232,13 @@ function InquiryPage() {
 								onChange={(e) => setReplyEmail(e.target.value)}
 								placeholder="test@gmail.com"
 								required
-								className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+								className="auth-input"
 							/>
-							<p className="text-gray-500 text-xs">{t("inquiry.emailHint")}</p>
+							<p className="auth-hint">{t("inquiry.emailHint")}</p>
 						</div>
 
-						<div className="space-y-1.5">
-							<label
-								htmlFor="inquiry-message"
-								className="block font-medium text-gray-700 text-sm"
-							>
+						<div className="auth-field">
+							<label htmlFor="inquiry-message" className="auth-label">
 								{t("inquiry.message")}
 							</label>
 							<textarea
@@ -183,18 +248,65 @@ function InquiryPage() {
 									setMessage(e.target.value.slice(0, INQUIRY_MAX))
 								}
 								placeholder={t("inquiry.messagePlaceholder")}
-								rows={7}
 								required
-								className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+								className="auth-textarea"
 							/>
-							<p className="text-right text-gray-400 text-xs">
+							<p className="auth-counter">
 								{message.length} / {INQUIRY_MAX}
 							</p>
 						</div>
 
-						{error && (
-							<p className="text-center text-red-500 text-sm">{error}</p>
-						)}
+						{/*
+						 * 화면 캡처 — 글로만 설명하기 어려운 것이 많다.
+						 * **비공개로 저장된다**(학습자 화면에는 이름·이메일·기록이 담긴다).
+						 */}
+						<div className="auth-field">
+							<span className="auth-label">{t("inquiry.shots")}</span>
+							<p className="auth-hint">
+								{t("inquiry.shotsHint", { max: INQUIRY_MAX_FILES })}
+							</p>
+
+							{shots.length > 0 && (
+								<ul className="inquiry-shots">
+									{shots.map((shot) => (
+										<li key={shot.id} className="inquiry-shot">
+											<img src={shot.preview} alt={shot.name} />
+											<button
+												type="button"
+												onClick={() => removeShot(shot.id)}
+												aria-label={t("inquiry.shotRemove", {
+													name: shot.name,
+												})}
+												className="inquiry-shot-remove"
+											>
+												<X aria-hidden="true" />
+											</button>
+										</li>
+									))}
+								</ul>
+							)}
+
+							{shots.length < INQUIRY_MAX_FILES && (
+								<button
+									type="button"
+									onClick={() => fileRef.current?.click()}
+									className="inquiry-shot-add"
+								>
+									<ImagePlus aria-hidden="true" />
+									{t("inquiry.shotAdd")}
+								</button>
+							)}
+							<input
+								ref={fileRef}
+								type="file"
+								accept={INQUIRY_FILE_TYPES.join(",")}
+								multiple
+								onChange={handlePick}
+								className="inquiry-shot-input"
+							/>
+						</div>
+
+						{error && <p className="auth-alert">{error}</p>}
 
 						<Button
 							type="submit"
@@ -202,13 +314,13 @@ function InquiryPage() {
 							size="lg"
 							full
 							disabled={!canSend}
-							className="rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
+							className="auth-primary"
 						>
 							{sending ? t("inquiry.sending") : t("inquiry.send")}
 						</Button>
 					</form>
 				</div>
-			</div>
+			</main>
 		</div>
 	);
 }

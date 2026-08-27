@@ -22,22 +22,57 @@ export type InquiryTopic = (typeof INQUIRY_TOPICS)[number];
 /** 서버와 같은 값. 서버도 2000자에서 자른다 */
 export const INQUIRY_MAX = 2000;
 
+/**
+ * 화면 캡처 첨부 — 서버(`business/inquiry.py`)와 같은 한도다.
+ *
+ * **두 곳에 있는 것이 맞다.** 화면은 고르는 즉시 알려 주려고, 서버는 앱을 안
+ * 거치고 부를 수 있어서. 서버는 mime 을 **매직 바이트로 다시 본다** —
+ * `image/png` 이라고 써 놓고 아무것이나 넣을 수 있기 때문이다.
+ */
+export const INQUIRY_FILE_TYPES = ["image/png", "image/jpeg", "image/webp"];
+export const INQUIRY_MAX_FILES = 3;
+export const INQUIRY_MAX_FILE_BYTES = 5 * 1024 * 1024;
+
+/** 파일을 `data:image/png;base64,...` 로. 서버가 그 꼴을 받는다 */
+export function toDataUrl(file: File): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => resolve(String(reader.result));
+		reader.onerror = () => reject(reader.error);
+		reader.readAsDataURL(file);
+	});
+}
+
 export async function sendInquiry(input: {
 	replyEmail: string;
 	topic: InquiryTopic;
 	message: string;
 	lang: string;
 	fromPath: string;
-}): Promise<{ success: boolean; id?: number; error?: string }> {
+	/** `data:image/…;base64,…` 최대 3장 */
+	files?: string[];
+}): Promise<{
+	success: boolean;
+	id?: number;
+	/** 실제로 저장된 캡처 수 */
+	files?: number;
+	/** 보내려 한 캡처 수. 저장된 것보다 많으면 화면이 그것을 말해야 한다 */
+	filesAttempted?: number;
+	error?: string;
+}> {
 	try {
-		const res = await api.post<{ id: number } | { error: string }>(
-			"/inquiry",
-			input,
-		);
+		const res = await api.post<
+			{ id: number; files: number; filesAttempted: number } | { error: string }
+		>("/inquiry", input);
 		if (!res.result || !res.data)
 			return { success: false, error: "inquiryFailed" };
 		if ("error" in res.data) return { success: false, error: res.data.error };
-		return { success: true, id: res.data.id };
+		return {
+			success: true,
+			id: res.data.id,
+			files: res.data.files,
+			filesAttempted: res.data.filesAttempted,
+		};
 	} catch (error) {
 		console.error(error);
 		return { success: false, error: "inquiryFailed" };

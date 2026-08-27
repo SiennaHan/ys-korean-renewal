@@ -13,44 +13,33 @@ function CheckEmailPage() {
 	const navigate = useNavigate();
 
 	return (
-		<div className="flex min-h-full flex-col bg-white">
-			{/* Header */}
-			<div className="flex justify-end px-4 pt-3">
+		<div className="auth-page">
+			<div className="auth-topbar auth-topbar--end">
 				<LanguageSelector />
 			</div>
 
-			{/* Content */}
-			<div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
-				<div className="w-full max-w-sm space-y-6 text-center">
-					{/* Icon */}
-					<div className="flex justify-center">
-						<div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
-							<Mail className="h-8 w-8 text-blue-600" />
-						</div>
+			<main className="auth-main auth-main--center">
+				<div className="auth-panel auth-panel--center">
+					<div className="auth-success-icon">
+						<Mail aria-hidden="true" />
 					</div>
 
-					{/* Title & Description */}
-					<div className="space-y-2">
-						<h1 className="font-bold text-2xl text-gray-900">
-							{t("checkEmail.title")}
-						</h1>
-						<p className="text-gray-500 text-sm">
-							{t("checkEmail.description")}
-						</p>
+					<div className="auth-heading">
+						<h1 className="auth-title">{t("checkEmail.title")}</h1>
+						<p className="auth-description">{t("checkEmail.description")}</p>
 					</div>
 
-					{/* OK Button */}
 					<Button
 						variant="primary"
 						size="lg"
 						full
 						onClick={() => navigate({ to: "/login" })}
-						className="rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
+						className="auth-primary"
 					>
 						{t("checkEmail.ok")}
 					</Button>
 				</div>
-			</div>
+			</main>
 		</div>
 	);
 }

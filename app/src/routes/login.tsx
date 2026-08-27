@@ -3,7 +3,7 @@ import { useAuth } from "@/components/sign/sign-provider";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff } from "lucide-react";
+import { CircleAlert, Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -88,30 +88,27 @@ function LoginPage() {
 	};
 
 	return (
-		<div className="flex min-h-full flex-col bg-white">
-			{/* Header with language selector */}
-			<div className="flex justify-end px-4 pt-3">
+		<div className="auth-page">
+			<div className="auth-topbar auth-topbar--end">
 				<LanguageSelector />
 			</div>
 
-			{/* Content */}
-			<div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
-				<div className="w-full max-w-sm space-y-8">
-					{/* Title */}
-					<div>
-						<h1 className="font-bold text-2xl text-gray-900">
-							{t("login.title")}
-						</h1>
+			<main className="auth-main auth-main--center">
+				<div className="auth-panel">
+					<div className="auth-heading">
+						<h1 className="auth-title">{t("login.title")}</h1>
 					</div>
 
-					{/* Form */}
-					<form onSubmit={handleLogin} className="space-y-5">
-						{/* Email */}
-						<div className="space-y-1.5">
-							<label
-								htmlFor="email"
-								className="block font-medium text-gray-700 text-sm"
-							>
+					<form onSubmit={handleLogin} className="auth-form">
+						{error && (
+							<p className="auth-alert" role="alert">
+								<CircleAlert aria-hidden="true" />
+								<span>{error}</span>
+							</p>
+						)}
+
+						<div className="auth-field">
+							<label htmlFor="email" className="auth-label">
 								{t("login.email")}
 							</label>
 							<input
@@ -121,19 +118,15 @@ function LoginPage() {
 								onChange={(e) => setEmail(e.target.value)}
 								placeholder={t("login.emailPlaceholder")}
 								required
-								className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+								className="auth-input"
 							/>
 						</div>
 
-						{/* Password */}
-						<div className="space-y-1.5">
-							<label
-								htmlFor="password"
-								className="block font-medium text-gray-700 text-sm"
-							>
+						<div className="auth-field">
+							<label htmlFor="password" className="auth-label">
 								{t("login.password")}
 							</label>
-							<div className="relative">
+							<div className="auth-input-wrap">
 								<input
 									id="password"
 									type={showPassword ? "text" : "password"}
@@ -141,12 +134,17 @@ function LoginPage() {
 									onChange={(e) => setPassword(e.target.value)}
 									placeholder={t("login.passwordPlaceholder")}
 									required
-									className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+									className="auth-input auth-input--with-action"
 								/>
 								<button
 									type="button"
 									onClick={() => setShowPassword(!showPassword)}
-									className="-translate-y-1/2 absolute top-1/2 right-3 text-gray-400 hover:text-gray-600"
+									aria-label={t(
+										showPassword
+											? "signup.hidePassword"
+											: "signup.showPassword",
+									)}
+									className="auth-visibility"
 								>
 									{showPassword ? (
 										<EyeOff className="h-5 w-5" />
@@ -157,55 +155,38 @@ function LoginPage() {
 							</div>
 						</div>
 
-						{/* 아이디 저장 · 비밀번호 재설정 — 한 줄에 좌우로 */}
-						<div className="flex items-center justify-between">
-							<label className="flex cursor-pointer items-center gap-2">
+						<div className="auth-inline-row">
+							<label className="auth-check-label">
 								<input
 									type="checkbox"
 									checked={rememberEmail}
 									onChange={(e) => setRememberEmail(e.target.checked)}
-									className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/20"
 								/>
-								<span className="text-gray-600 text-sm">
-									{t("login.rememberEmail")}
-								</span>
+								<span>{t("login.rememberEmail")}</span>
 							</label>
-							<div>
-								<button
-									type="button"
-									onClick={() => navigate({ to: "/reset-password" })}
-									className="text-blue-600 text-sm hover:underline"
-								>
-									{t("login.resetPassword")}
-								</button>
-							</div>
+							<button
+								type="button"
+								onClick={() => navigate({ to: "/reset-password" })}
+								className="auth-link"
+							>
+								{t("login.resetPassword")}
+							</button>
 						</div>
 
-						{/* Error */}
-						{error && (
-							<p className="text-center text-red-500 text-sm">{error}</p>
-						)}
-
-						{/* Login button */}
 						<Button
 							type="submit"
 							variant="primary"
 							size="lg"
 							full
 							disabled={isLoading}
-							className="rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
+							className="auth-primary"
 						>
 							{isLoading ? t("login.loggingIn") : t("login.loginButton")}
 						</Button>
 					</form>
 
-					{/* 또는 — 둘러보기 */}
-					<div className="space-y-5">
-						<div className="flex items-center gap-3">
-							<span className="h-px flex-1 bg-gray-200" />
-							<span className="text-gray-400 text-xs">{t("login.or")}</span>
-							<span className="h-px flex-1 bg-gray-200" />
-						</div>
+					<div className="auth-support">
+						<div className="auth-separator">{t("login.or")}</div>
 
 						<Button
 							type="button"
@@ -214,13 +195,16 @@ function LoginPage() {
 							full
 							onClick={handleBrowse}
 							disabled={isLoading || isEntering}
-							className="rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100"
+							className="auth-secondary"
 						>
 							{isEntering ? t("login.guestEntering") : t("login.guestButton")}
 						</Button>
 
 						{browseError && (
-							<p className="text-center text-red-500 text-sm">{browseError}</p>
+							<p className="auth-alert" role="alert">
+								<CircleAlert aria-hidden="true" />
+								<span>{browseError}</span>
+							</p>
 						)}
 
 						{/*
@@ -229,19 +213,19 @@ function LoginPage() {
 						 * (학교가 엑셀로 일괄 등록했다). 페이월의 「로그인 / 회원가입」도
 						 * 이 화면으로 오므로 여기가 유일한 입구다
 						 */}
-						<p className="text-center text-gray-500 text-sm">
+						<p className="auth-switch">
 							{t("login.noAccount")}{" "}
 							<button
 								type="button"
 								onClick={() => navigate({ to: "/signup" })}
-								className="text-blue-600 hover:underline"
+								className="auth-link"
 							>
 								{t("login.goSignUp")}
 							</button>
 						</p>
 					</div>
 				</div>
-			</div>
+			</main>
 		</div>
 	);
 }

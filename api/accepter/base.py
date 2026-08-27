@@ -91,6 +91,9 @@ class InquiryRequest(BaseModel):
     message: str
     lang: Optional[str] = None
     fromPath: Optional[str] = None
+    # 화면 캡처. `data:image/png;base64,...` 꼴로 최대 3장.
+    # png·jpeg·webp 만 받고 **매직 바이트로 다시 확인한다**
+    files: Optional[List[str]] = None
 
 
 class StudentSignupRequest(BaseModel):

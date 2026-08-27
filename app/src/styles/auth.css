@@ -1,0 +1,735 @@
+/* 인증 화면군 — 로그인 · 가입 · 재설정 요청 · 메일 안내 · 새 비밀번호
+ *
+ * 색은 Tailwind 기본 팔레트가 아니라 tokens.css 의 semantic 층만 본다.
+ * 인증은 상태가 많은 화면이라 파랑·초록·빨강을 글자 덩어리 전체에 쓰지 않고,
+ * 주 행동과 작은 상태 표식에만 제한한다.
+ */
+.auth-page {
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	background: var(--color-background-surface);
+	color: var(--color-text-strong);
+}
+
+.auth-topbar {
+	min-height: 56px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 16px 0;
+}
+
+.auth-topbar--end {
+	justify-content: flex-end;
+}
+
+.auth-back {
+	width: 40px;
+	height: 40px;
+	display: grid;
+	place-items: center;
+	border: 0;
+	border-radius: 12px;
+	background: transparent;
+	color: var(--color-icon-normal);
+	cursor: pointer;
+}
+
+.auth-back:hover {
+	background: var(--color-background-base);
+	color: var(--color-icon-strong);
+}
+
+.auth-back:focus-visible,
+.auth-visibility:focus-visible,
+.auth-link:focus-visible,
+.language-select-trigger:focus-visible,
+.language-select-option:focus-visible {
+	outline: 2px solid var(--color-line-focus);
+	outline-offset: 2px;
+}
+
+.auth-back svg {
+	width: 22px;
+	height: 22px;
+	stroke-width: 2;
+}
+
+.auth-main {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	padding: 22px 24px 36px;
+}
+
+.auth-main--center {
+	align-items: center;
+}
+
+.auth-main--flow {
+	align-items: flex-start;
+	padding-top: 16px;
+}
+
+.auth-panel {
+	width: 100%;
+	max-width: 360px;
+	display: flex;
+	flex-direction: column;
+	gap: 28px;
+}
+
+.auth-panel--center {
+	align-items: stretch;
+	text-align: center;
+}
+
+.auth-heading {
+	display: grid;
+	gap: 8px;
+}
+
+.auth-title {
+	margin: 0;
+	color: var(--color-text-heading);
+	font-size: 26px;
+	line-height: 36px;
+	font-weight: 700;
+	letter-spacing: -0.025em;
+}
+
+.auth-description {
+	margin: 0;
+	color: var(--color-text-sub);
+	font-size: 14px;
+	line-height: 22px;
+	font-weight: 500;
+}
+
+.auth-info {
+	padding: 16px;
+	border-radius: 14px;
+	background: color-mix(
+		in srgb,
+		var(--color-background-choice) 58%,
+		var(--color-background-surface)
+	);
+	text-align: left;
+}
+
+.auth-info-title {
+	margin: 0;
+	color: var(--color-text-heading);
+	font-size: 14px;
+	line-height: 21px;
+	font-weight: 700;
+}
+
+.auth-info-body {
+	margin: 5px 0 0;
+	color: var(--color-text-sub);
+	font-size: 13px;
+	line-height: 20px;
+	font-weight: 500;
+}
+
+.auth-form {
+	display: grid;
+	gap: 22px;
+}
+
+.auth-field {
+	display: grid;
+	gap: 8px;
+}
+
+.auth-label {
+	color: var(--color-text-strong);
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: 600;
+}
+
+.auth-input-wrap {
+	position: relative;
+}
+
+.auth-input {
+	width: 100%;
+	height: 52px;
+	padding: 0 16px;
+	border: 1px solid var(--color-primitive-blue-gray-200);
+	border-radius: 12px;
+	background: var(--color-background-surface);
+	color: var(--color-text-strong);
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: 500;
+	transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.auth-input--with-action {
+	padding-right: 50px;
+}
+
+.auth-input::placeholder {
+	color: var(--color-text-disable);
+}
+
+.auth-input:hover {
+	border-color: var(--color-primitive-blue-gray-300);
+}
+
+.auth-input:focus {
+	border-color: var(--color-line-focus);
+	outline: 0;
+	box-shadow: 0 0 0 3px
+		color-mix(in srgb, var(--color-line-focus) 14%, transparent);
+}
+
+.auth-input[aria-invalid="true"] {
+	border-color: var(--color-fill-wrong);
+}
+
+/* 문의하기 — 갈래 고르기와 여러 줄 입력. `.auth-input` 과 같은 옷을 입되
+   높이만 다르다(select 는 화살표 자리, textarea 는 여러 줄) */
+.auth-select {
+	width: 100%;
+	height: 52px;
+	padding: 0 40px 0 16px;
+	border: 1px solid var(--color-primitive-blue-gray-200);
+	border-radius: 12px;
+	background: var(--color-background-surface);
+	color: var(--color-text-strong);
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: 500;
+	appearance: none;
+	/* 기본 화살표를 지웠으니 하나 그려 준다. 지우기만 하면 무엇을 고르는 칸인지 안 보인다 */
+	background-image: linear-gradient(45deg, transparent 50%, var(--color-icon-normal) 50%),
+		linear-gradient(135deg, var(--color-icon-normal) 50%, transparent 50%);
+	background-position: calc(100% - 20px) 24px, calc(100% - 15px) 24px;
+	background-size: 5px 5px, 5px 5px;
+	background-repeat: no-repeat;
+	transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.auth-select:hover {
+	border-color: var(--color-primitive-blue-gray-300);
+}
+
+.auth-select:focus {
+	border-color: var(--color-line-focus);
+	outline: 0;
+	box-shadow: 0 0 0 3px
+		color-mix(in srgb, var(--color-line-focus) 14%, transparent);
+}
+
+.auth-textarea {
+	width: 100%;
+	min-height: 168px;
+	padding: 14px 16px;
+	border: 1px solid var(--color-primitive-blue-gray-200);
+	border-radius: 12px;
+	background: var(--color-background-surface);
+	color: var(--color-text-strong);
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: 500;
+	font-family: inherit;
+	resize: vertical;
+	transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.auth-textarea::placeholder {
+	color: var(--color-text-disable);
+}
+
+.auth-textarea:hover {
+	border-color: var(--color-primitive-blue-gray-300);
+}
+
+.auth-textarea:focus {
+	border-color: var(--color-line-focus);
+	outline: 0;
+	box-shadow: 0 0 0 3px
+		color-mix(in srgb, var(--color-line-focus) 14%, transparent);
+}
+
+/* 남은 글자 수. 오른쪽에 조용히 */
+.auth-counter {
+	margin: 0;
+	color: var(--color-text-disable);
+	font-size: 12px;
+	line-height: 18px;
+	text-align: right;
+}
+
+.auth-visibility {
+	position: absolute;
+	top: 50%;
+	right: 12px;
+	width: 36px;
+	height: 36px;
+	display: grid;
+	place-items: center;
+	transform: translateY(-50%);
+	border: 0;
+	border-radius: 10px;
+	background: transparent;
+	color: var(--color-icon-normal);
+	cursor: pointer;
+}
+
+.auth-visibility:hover {
+	background: var(--color-background-base);
+	color: var(--color-icon-strong);
+}
+
+.auth-visibility svg {
+	width: 20px;
+	height: 20px;
+	stroke-width: 2;
+}
+
+.auth-hint {
+	margin: 0;
+	color: var(--color-text-sub);
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: 500;
+}
+
+.auth-requirements {
+	display: grid;
+	gap: 7px;
+	margin: 2px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.auth-requirement {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	color: var(--color-text-sub);
+	font-size: 13px;
+	line-height: 18px;
+	font-weight: 500;
+}
+
+.auth-requirement-icon {
+	width: 18px;
+	height: 18px;
+	flex: none;
+	display: grid;
+	place-items: center;
+	border: 1px solid var(--color-primitive-blue-gray-300);
+	border-radius: 50%;
+	color: transparent;
+	transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s
+		ease;
+}
+
+.auth-requirement-icon svg {
+	width: 11px;
+	height: 11px;
+	stroke-width: 2.8;
+}
+
+.auth-requirement.is-met {
+	color: var(--color-text-strong);
+}
+
+.auth-requirement.is-met .auth-requirement-icon {
+	border-color: var(--color-fill-correct);
+	background: var(--color-fill-correct);
+	color: var(--color-icon-inverse);
+}
+
+.auth-inline-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.auth-check-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	color: var(--color-text-sub);
+	font-size: 14px;
+	line-height: 21px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.auth-check-label input {
+	width: 18px;
+	height: 18px;
+	flex: none;
+	margin: 1px 0 0;
+	accent-color: var(--color-fill-primary);
+}
+
+.auth-required {
+	display: inline-flex;
+	align-items: center;
+	margin-left: 5px;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--color-background-wrong);
+	color: var(--color-fill-wrong);
+	font-size: 10px;
+	line-height: 16px;
+	font-weight: 700;
+	vertical-align: 1px;
+}
+
+.auth-legal-note {
+	margin: 0;
+	padding: 10px 12px;
+	border-radius: 10px;
+	background: var(--color-background-base);
+	color: var(--color-text-sub);
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: 500;
+}
+
+.auth-alert {
+	display: flex;
+	align-items: flex-start;
+	gap: 9px;
+	margin: 0;
+	padding: 11px 12px;
+	border-radius: 10px;
+	background: var(--color-background-wrong);
+	color: var(--color-text-strong);
+	font-size: 13px;
+	line-height: 19px;
+	font-weight: 600;
+	text-align: left;
+}
+
+.auth-alert svg {
+	width: 18px;
+	height: 18px;
+	flex: none;
+	margin-top: 1px;
+	color: var(--color-icon-wrong);
+	stroke-width: 2;
+}
+
+.auth-primary,
+.auth-secondary {
+	width: 100%;
+	min-height: 52px;
+	padding: 12px 18px;
+	border-radius: 12px;
+	font-size: 16px;
+	line-height: 22px;
+	font-weight: 700;
+}
+
+.auth-primary {
+	border: 0;
+	background: var(--color-fill-primary);
+	color: var(--color-text-inverse);
+}
+
+.auth-primary:hover:not(:disabled) {
+	background: var(--color-fill-primary-hover);
+}
+
+.auth-primary:active:not(:disabled) {
+	background: var(--color-fill-primary-pressed);
+}
+
+.auth-primary:disabled {
+	background: var(--color-background-disable);
+	color: var(--color-text-disable);
+	opacity: 1;
+}
+
+.auth-secondary {
+	border: 1px solid var(--color-line-normal);
+	background: var(--color-background-surface);
+	color: var(--color-text-strong);
+}
+
+.auth-secondary:hover:not(:disabled) {
+	background: var(--color-background-base);
+}
+
+.auth-link {
+	padding: 2px;
+	border: 0;
+	background: transparent;
+	color: var(--color-text-primary);
+	font-size: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.auth-link:hover {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.auth-separator {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: var(--color-text-disable);
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.auth-separator::before,
+.auth-separator::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: var(--color-line-normal);
+}
+
+.auth-support {
+	display: grid;
+	gap: 18px;
+}
+
+.auth-switch {
+	margin: 0;
+	color: var(--color-text-sub);
+	font-size: 14px;
+	line-height: 21px;
+	font-weight: 500;
+	text-align: center;
+}
+
+.auth-success-icon {
+	width: 64px;
+	height: 64px;
+	display: grid;
+	place-items: center;
+	margin: 0 auto;
+	border-radius: 20px;
+	background: color-mix(
+		in srgb,
+		var(--color-background-choice) 58%,
+		var(--color-background-surface)
+	);
+	color: var(--color-fill-primary);
+}
+
+.auth-success-icon svg {
+	width: 28px;
+	height: 28px;
+	stroke-width: 1.9;
+}
+
+/* 언어 선택 — 인증 화면과 MY가 같은 컴포넌트를 쓴다. */
+.language-select {
+	position: relative;
+}
+
+.language-select-trigger {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	min-height: 40px;
+	padding: 7px 10px;
+	border: 0;
+	border-radius: 11px;
+	background: transparent;
+	color: var(--color-text-strong);
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.language-select-trigger:hover {
+	background: var(--color-background-base);
+}
+
+.language-select-flag {
+	font-size: 16px;
+	line-height: 1;
+}
+
+.language-select-chevron {
+	width: 17px;
+	height: 17px;
+	color: var(--color-icon-normal);
+	transition: transform 0.16s ease;
+}
+
+.language-select-chevron.is-open {
+	transform: rotate(180deg);
+}
+
+.language-select-menu {
+	position: absolute;
+	top: calc(100% + 4px);
+	right: 0;
+	z-index: 50;
+	min-width: 150px;
+	overflow: hidden;
+	padding: 5px;
+	border: 1px solid var(--color-line-normal);
+	border-radius: 12px;
+	background: var(--color-background-surface);
+	box-shadow: 0 12px 32px rgba(33, 49, 65, 0.12);
+}
+
+.language-select-option {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	min-height: 40px;
+	padding: 8px 10px;
+	border: 0;
+	border-radius: 9px;
+	background: transparent;
+	color: var(--color-text-strong);
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: 500;
+	text-align: left;
+	cursor: pointer;
+}
+
+.language-select-option:hover {
+	background: var(--color-background-base);
+}
+
+.language-select-option.is-active {
+	background: color-mix(
+		in srgb,
+		var(--color-background-choice) 52%,
+		var(--color-background-surface)
+	);
+	color: var(--color-text-primary);
+	font-weight: 700;
+}
+
+@media (max-width: 350px) {
+	.auth-main {
+		padding-right: 20px;
+		padding-left: 20px;
+	}
+
+	.auth-panel {
+		gap: 24px;
+	}
+
+	.auth-title {
+		font-size: 24px;
+		line-height: 34px;
+	}
+
+	.auth-form {
+		gap: 20px;
+	}
+}
+
+/* 문의하기의 화면 캡처 */
+.inquiry-shots {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 8px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.inquiry-shot {
+	position: relative;
+	width: 72px;
+	height: 72px;
+	border: 1px solid var(--color-primitive-blue-gray-200);
+	border-radius: 10px;
+	overflow: hidden;
+	background: var(--color-background-base);
+}
+
+.inquiry-shot img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.inquiry-shot-remove {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	width: 22px;
+	height: 22px;
+	display: grid;
+	place-items: center;
+	border: 0;
+	border-radius: 50%;
+	/* 그림 위에 얹히므로 밝은 캡처에서도 보이게 어둡게 깐다 */
+	background: rgb(0 0 0 / 55%);
+	color: #fff;
+	cursor: pointer;
+}
+
+.inquiry-shot-remove svg {
+	width: 13px;
+	height: 13px;
+}
+
+.inquiry-shot-add {
+	margin-top: 8px;
+	min-height: 44px;
+	padding: 0 14px;
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	border: 1px dashed var(--color-primitive-blue-gray-300);
+	border-radius: 12px;
+	background: transparent;
+	color: var(--color-text-sub);
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.inquiry-shot-add:hover {
+	border-color: var(--color-line-focus);
+	color: var(--color-text-strong);
+}
+
+.inquiry-shot-add svg {
+	width: 17px;
+	height: 17px;
+}
+
+/* 기본 파일 입력은 감춘다. 위 버튼이 대신 누른다.
+   display:none 이 아니라 화면 밖으로 보내야 초점과 폼 검증이 살아 있다 */
+.inquiry-shot-input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.auth-input,
+	.auth-requirement-icon,
+	.language-select-chevron {
+		transition-duration: 0.01ms;
+	}
+}
