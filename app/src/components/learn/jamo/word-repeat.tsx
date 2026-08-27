@@ -26,6 +26,7 @@ import AudioRecorder from "@/components/problem/audio-recorder";
 import { JamoHeader, ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
+import { useJamoActivityState } from "@/hooks/use-jamo-activity-state";
 import { chapters } from "@/shared/data/chapter";
 import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
@@ -161,6 +162,14 @@ export default function JamoWordRepeat({ moduleCode }: { moduleCode: string }) {
 
 	const [isSucceed, setIsSucceed] = useState(false);
 	const [isExit, setIsExit] = useState(false);
+
+	/* 활동 상태 — 진입 · 위치 저장 · 완료. `sub` 는 훅이 주소에서 읽는다 */
+	useJamoActivityState({
+		total: problemList.length,
+		index: problemIndex,
+		onResume: setProblemIndex,
+		done: isExit,
+	});
 
 	const init = () => {
 		setIsSucceed(false);

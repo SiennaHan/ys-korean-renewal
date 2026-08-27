@@ -90,18 +90,25 @@ async def complete(userId: str, bookId: int, chapterSeq: int, menuType: str, sub
     세 수는 넘어온 값이 있을 때만 쓴다. 서버가 ko_learning_record 로 다시 셀 수도
     있지만, 발음처럼 채점하지 않는 활동은 그 표에 안 남아서 클라이언트가 아는 것이
     더 정확하다.
+
+    **이미 완료한 활동이면 세 수도 덮지 않는다** — shell_spec §32. 완료한 활동에
+    다시 들어온 것은 연습 세션이고, 연습 결과로 원래 성적이 바뀌면 안 된다.
+    클라이언트가 연습에서 이 API 를 아예 안 부르는 것이 1차 방어이고
+    (`use-activity-state.ts`), 여기가 2차다 — 한쪽만으로는 못 막는다.
     """
     row = await findOne(userId, bookId, chapterSeq, menuType, sub, db)
     if row is None:
         return None
+    if row.state == "completed":
+        # 연습 세션이다. 아무것도 바꾸지 않고 최초 기록을 그대로 낸다
+        return row
     if answeredCount is not None:
         row.answered_count = answeredCount
     if gradedCount is not None:
         row.graded_count = gradedCount
     if correctCount is not None:
         row.correct_count = correctCount
-    if row.state != "completed":
-        row.state = "completed"
-        row.completed_at = datetime.utcnow()
+    row.state = "completed"
+    row.completed_at = datetime.utcnow()
     db.flush()
     return row

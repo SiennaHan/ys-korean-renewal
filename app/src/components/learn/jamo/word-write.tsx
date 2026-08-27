@@ -22,6 +22,7 @@ import {
 	ThumbWordCards,
 	WordPicture,
 } from "@/components/main/activity";
+import { useJamoActivityState } from "@/hooks/use-jamo-activity-state";
 import { useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -362,6 +363,35 @@ export default function JamoWordWrite({ moduleCode }: { moduleCode: string }) {
 			selectWord(item);
 		}
 	}, []);
+
+	/*
+	 * 활동 상태 — 진입 · 위치 저장 · 완료.
+	 *
+	 * 이 화면은 위치를 번호가 아니라 **낱말 id** 로 쥐므로 목록에서 번호를 찾는다.
+	 * 되돌릴 때는 **묶음 탭까지 같이 맞춘다** — 탭이 어긋나면 그 탭 목록에 없는
+	 * 낱말이 열려 있고, 다음 낱말로 넘기는 길이 그 목록을 보므로 거기서 끊긴다.
+	 */
+	const problemIndex = problemList.findIndex((pr) => pr.id === problemId);
+	const resumeTo = (at: number) => {
+		const target = problemList[at];
+		if (!target) return;
+		const owner = tabList.find((tab) =>
+			tabItemList.some(
+				(it) => it.group_id === tab.id && it.problem_id === target.id,
+			),
+		);
+		if (owner) {
+			setSelectedTab(owner.id);
+			seteSlectedTabItems(tabItemList.filter((it) => it.group_id === owner.id));
+		}
+		selectWord(target);
+	};
+	useJamoActivityState({
+		total: problemList.length,
+		index: problemIndex < 0 ? 0 : problemIndex,
+		onResume: resumeTo,
+		done: isExit,
+	});
 
 	const groupName = (unit?.title ?? "").split(":")[0].trim();
 	const lesson = [

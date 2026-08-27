@@ -27,6 +27,7 @@ import AudioRecorder from "@/components/problem/audio-recorder";
 import { JamoHeader, ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
+import { useJamoActivityState } from "@/hooks/use-jamo-activity-state";
 import { chapters } from "@/shared/data/chapter";
 import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
@@ -178,6 +179,19 @@ export default function JamoPronounce({ moduleCode }: { moduleCode: string }) {
 	const [resultWord, setResultWord] = useState<undefined | string>(undefined);
 	const [isSucceed, setIsSucceed] = useState(false);
 	const [isExit, setIsExit] = useState(false);
+
+	/*
+	 * 활동 상태 — **진입만** 알린다. 이 화면은 순서대로 푸는 활동이 아니라
+	 * 낱말을 골라 다니며 발음해 보는 자리다(목업 진행바 0칸). 자세한 이유는
+	 * use-jamo-activity-state.ts 의 `mode` 주석에 있다.
+	 */
+	useJamoActivityState({
+		total: problemList.length,
+		index: 0,
+		onResume: () => {},
+		done: false,
+		mode: "enter-only",
+	});
 
 	const init = () => {
 		setVideoSrc(undefined);

@@ -18,6 +18,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
  *
  * `retry` 가 참이면 진입을 부르지 않는다. 결과 화면의 [다시 풀기] 는 문항 집합이
  * 다른 별개 세션이므로(shell_spec §3.3) 저장된 위치를 쓰면 엉뚱한 데서 시작한다.
+ *
+ * **연습 세션(`practice`)에서는 아무것도 쓰지 않는다** — shell_spec §32.
+ * 이미 완료한 활동에 다시 들어온 것이므로 처음 끝냈을 때의 기록을 보존해야 한다.
+ * 진입은 부르지만(그래야 연습인지 알 수 있다) 위치는 0 에서 시작하고
+ * `progress`·`complete` 는 보내지 않는다. 대신 `learning-record` 는 그대로 보낸다 —
+ * 새로 틀린 문항은 오늘의 다시 풀기 목록에 들어가야 한다(그 호출은 화면이 한다).
+ *
+ * **연습을 안 막았을 때 이렇게 됐다** — 한 번 더 풀어 본 결과가 `complete` 로
+ * 나가서 `answered/graded/correct` 를 덮는다. 즉 **복습하면 원래 성적이 사라진다.**
+ * 서버 `repo_activity_state.complete()` 도 같은 판에 세 수를 안 덮게 고쳤다 —
+ * 어느 한쪽만으로는 못 막는다(다른 클라이언트가 붙을 수 있다).
  */
 export function useActivityState(opts: {
 	bookId: number | undefined;
@@ -46,9 +57,13 @@ export function useActivityState(opts: {
 		enterActivity({ bookId, chapterSeq, menuType, sub }, totalItems).then(
 			(res: ActivityState | null) => {
 				if (!alive) return;
-				setStartIndex(res?.currentItemIndex ?? 0);
-				setPractice(res?.practice ?? false);
-				sentIndex.current = res?.currentItemIndex ?? 0;
+				const isPractice = res?.practice ?? false;
+				/* 연습 세션은 저장값이 아니라 처음부터다 — shell_spec §32.
+				   서버는 저장된 위치를 그대로 주므로 여기서 0 으로 만든다 */
+				const at = isPractice ? 0 : (res?.currentItemIndex ?? 0);
+				setStartIndex(at);
+				setPractice(isPractice);
+				sentIndex.current = at;
 			},
 		);
 		return () => {
@@ -58,7 +73,7 @@ export function useActivityState(opts: {
 
 	const saveProgress = useCallback(
 		(index: number) => {
-			if (!bookId || !chapterSeq || retry) return;
+			if (!bookId || !chapterSeq || retry || practice) return;
 			/*
 			 * **진입 응답이 오기 전에는 보내지 않는다.**
 			 *
@@ -73,7 +88,7 @@ export function useActivityState(opts: {
 			sentIndex.current = index;
 			void saveActivityProgress({ bookId, chapterSeq, menuType, sub }, index);
 		},
-		[bookId, chapterSeq, menuType, sub, retry, startIndex],
+		[bookId, chapterSeq, menuType, sub, retry, startIndex, practice],
 	);
 
 	const complete = useCallback(
@@ -82,10 +97,10 @@ export function useActivityState(opts: {
 			gradedCount: number;
 			correctCount: number;
 		}) => {
-			if (!bookId || !chapterSeq || retry) return null;
+			if (!bookId || !chapterSeq || retry || practice) return null;
 			return completeActivity({ bookId, chapterSeq, menuType, sub }, counts);
 		},
-		[bookId, chapterSeq, menuType, sub, retry],
+		[bookId, chapterSeq, menuType, sub, retry, practice],
 	);
 
 	return { startIndex, practice, saveProgress, complete };

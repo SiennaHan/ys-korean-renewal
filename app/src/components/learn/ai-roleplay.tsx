@@ -11,6 +11,7 @@ import {
 	RoleplayScreen,
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
+import { useActivityState } from "@/hooks/use-activity-state";
 import { type RoleplayTurn, getScenarios } from "@/shared/data/roleplay";
 import { getTTSAudio, prefetchTTSAudio } from "@/shared/tts-cache";
 import { useRouter } from "@tanstack/react-router";
@@ -91,6 +92,70 @@ export default function AiRoleplay({
 			setCompletedScenarios(set);
 		});
 	}, [bookId, chapterSeq]);
+
+	/*
+	 * 활동 상태 — 진입 · 이동 저장 · 완료.
+	 *
+	 * **롤플레잉의 1문항은 "내 차례" 한 번이다** — shell_spec §1 · §3.4 · §28 이
+	 * 세 곳에서 "문항 = 대화 턴" 이라고 적었고, 목업(`activity__role.html`)의
+	 * 진행바 칸 둘도 그 대화의 "나" 줄이 둘인 것과 맞는다.
+	 *
+	 * **시나리오로 세면 안 된다** — 원장을 세어 보면 이 활동이 있는 117과 중
+	 * 74과가 시나리오가 하나뿐이다. 그 과들은 분모가 1 이 되어 진행률이 뜻을 잃는다.
+	 *
+	 * 세는 기준은 시나리오의 `mode` 다(학습자가 고르는 방향 탭이 아니다). 탭을
+	 * 뒤집으면 내 차례 수가 2 ↔ 3 으로 바뀌는데, 그때마다 분모가 흔들리면 안 된다.
+	 */
+	const practiceTurnsOf = useCallback((turnsOfScenario: RoleplayTurn[]) => {
+		const userFirst = turnsOfScenario[0]?.mode === "user-first";
+		return turnsOfScenario.filter((t) =>
+			userFirst ? t.turn_seq % 2 === 1 : t.turn_seq % 2 === 0,
+		).length;
+	}, []);
+
+	/** 시나리오마다 [시작 문항 번호, 문항 수] — 이어하기와 완료 수가 같은 표를 본다 */
+	const spans = useMemo(() => {
+		let at = 0;
+		return scenarios.map((sc) => {
+			const n = practiceTurnsOf(sc.turns);
+			const span = { from: at, count: n };
+			at += n;
+			return span;
+		});
+	}, [scenarios, practiceTurnsOf]);
+	const totalTurns = spans.reduce((sum, sp) => sum + sp.count, 0);
+
+	const { startIndex, saveProgress, complete } = useActivityState({
+		bookId,
+		chapterSeq,
+		menuType: "roleplay",
+		totalItems: totalTurns || null,
+	});
+
+	/*
+	 * 이어하기는 **시나리오 경계까지만** 되돌린다.
+	 *
+	 * 시나리오에 들어가면 첫 턴부터 TTS 가 순서대로 재생되므로 중간 턴은 되살릴
+	 * 지점이 아니다 — 소리를 건너뛰고 세 번째 대사에 앉혀 놓으면 앞 맥락이 없다.
+	 * 그래서 저장하는 값도 그 시나리오의 첫 문항 번호다. 문항 단위로 세는 것과
+	 * 시나리오 단위로 되돌리는 것은 어긋나지 않는다 — 분모는 문항이고,
+	 * 되돌리는 위치가 그 문항들 중 시나리오가 시작하는 자리일 뿐이다.
+	 */
+	const jumped = useRef(false);
+	useEffect(() => {
+		if (jumped.current || startIndex === null) return;
+		jumped.current = true;
+		if (startIndex <= 0) return;
+		const at = spans.findIndex(
+			(sp) => startIndex >= sp.from && startIndex < sp.from + sp.count,
+		);
+		if (at > 0) setScenarioIdx(at);
+	}, [startIndex, spans]);
+
+	useEffect(() => {
+		const span = spans[scenarioIdx];
+		if (span) saveProgress(span.from);
+	}, [scenarioIdx, spans, saveProgress]);
 
 	const scenario = scenarios[scenarioIdx];
 	const turns: RoleplayTurn[] = scenario?.turns ?? [];
@@ -417,6 +482,30 @@ export default function AiRoleplay({
 
 	const hasPrev = scenarioIdx > 0;
 	const hasNext = scenarioIdx < scenarios.length - 1;
+
+	/*
+	 * 마지막 시나리오를 끝냈을 때 한 번 완료를 알린다.
+	 * `gradedCount` 는 0 이다 — STT 판정이 진행을 막지 않으므로 채점하지 않는다
+	 * (§28: 롤플레잉·플래시카드·자모 발음은 정답률이 "—" 다). 그래서
+	 * `correctCount` 도 0 이다. 세는 것은 "했나" 뿐이다.
+	 */
+	const reported = useRef(false);
+	useEffect(() => {
+		if (playState !== "done" || hasNext || reported.current) return;
+		reported.current = true;
+		const answered = scenarios.reduce(
+			(sum, sc, i) =>
+				sc.turns[0] && completedScenarios.has(sc.turns[0].id)
+					? sum + (spans[i]?.count ?? 0)
+					: sum,
+			0,
+		);
+		void complete({
+			answeredCount: answered,
+			gradedCount: 0,
+			correctCount: 0,
+		});
+	}, [playState, hasNext, scenarios, spans, completedScenarios, complete]);
 
 	if (!scenario) {
 		return (

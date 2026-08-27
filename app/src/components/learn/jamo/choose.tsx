@@ -30,6 +30,7 @@ import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import { ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
+import { useJamoActivityState } from "@/hooks/use-jamo-activity-state";
 import { chapters } from "@/shared/data/chapter";
 import { jamoProblems } from "@/shared/data/jamo";
 import { modules } from "@/shared/data/module";
@@ -169,6 +170,14 @@ export default function JamoChoose({ moduleCode }: { moduleCode: string }) {
 	]);
 	const [isDisabled, setIsDisabled] = useState(true);
 	const [isExit, setIsExit] = useState(false);
+
+	/* 활동 상태 — 진입 · 위치 저장 · 완료. `sub` 는 훅이 주소에서 읽는다 */
+	useJamoActivityState({
+		total: problemList.length,
+		index: problemIndex,
+		onResume: setProblemIndex,
+		done: isExit,
+	});
 
 	const exit = () => {
 		router.history.back();

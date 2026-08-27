@@ -34,6 +34,7 @@ import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import { JamoHeader, ProblemHeader } from "@/components/problem/scene/header";
 import { ModuleTitle } from "@/components/problem/scene/title";
 import { env } from "@/config/env";
+import { useJamoActivityState } from "@/hooks/use-jamo-activity-state";
 import { combineHangul } from "@/lib/hangul-utils";
 import { chapters } from "@/shared/data/chapter";
 import { jamoProblems } from "@/shared/data/jamo";
@@ -112,6 +113,14 @@ export default function JamoCombine3({ moduleCode }: { moduleCode: string }) {
 	);
 	const [isLastPage, setIsLastPage] = useState(false);
 	const [isExit, setIsExit] = useState(false);
+
+	/* 활동 상태 — 진입 · 위치 저장 · 완료. `sub` 는 훅이 주소에서 읽는다 */
+	useJamoActivityState({
+		total: problemList.length,
+		index: problemIndex,
+		onResume: setProblemIndex,
+		done: isExit,
+	});
 
 	const exit = () => router.history.back();
 

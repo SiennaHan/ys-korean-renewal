@@ -8,6 +8,7 @@ import { useSharedAudio } from "@/components/audio/audio-provider";
 import FlashcardResult from "@/components/learn/flashcard-result";
 import { FlashcardScreen, LoadingScreen } from "@/components/main/activity";
 import { env } from "@/config/env";
+import { useActivityState } from "@/hooks/use-activity-state";
 import { flashcards } from "@/shared/data/flashcard";
 import {
 	type FlashcardWord,
@@ -96,6 +97,49 @@ function RouteComponent() {
 	const rotate = useTransform(x, [-200, 0, 200], [-12, 0, 12]);
 	/** 애니메이션 도중 중복 판정을 막는 동기 잠금 */
 	const animatingRef = useRef(false);
+
+	/*
+	 * **분모는 전체 카드 수다.** `cardData` 는 "모르는 단어만 다시" 에서 부분집합으로
+	 * 바뀌므로 그것을 `totalItems` 로 보내면 서버의 분모가 그때 줄어든다 —
+	 * 진행률이 조용히 커진다. 그래서 갈라 둔다.
+	 */
+	const [deckSize, setDeckSize] = useState<number | null>(null);
+
+	/*
+	 * 활동 상태 — 진입 · 이동 저장 · 완료 (shell_spec §1 "플래시카드 그대로 적용",
+	 * 문항 = 카드 1장).
+	 *
+	 * **전에는 위치를 카드 기록 수에서 유추했다** — `setCurrentIndex(savedList.length)`.
+	 * `api/activity.ts` 머리가 적어 둔 바로 그 방식이고, 어긋나는 자리가 있다:
+	 * 같은 카드를 두 번 넘기면 서버는 upsert 라 길이가 안 늘어 위치가 멈춘다.
+	 * 이제 위치는 활동 상태가 쥐고, 카드 기록은 알아요/몰라요 자체만 쥔다.
+	 *
+	 * "모르는 단어만 다시" 는 문항 집합이 다른 별개 세션이라 `retry` 다 —
+	 * 그 세션의 위치를 저장하면 다음에 엉뚱한 데서 시작한다.
+	 */
+	const { startIndex, saveProgress, complete } = useActivityState({
+		bookId: level,
+		chapterSeq: lesson,
+		menuType: "flashcard",
+		totalItems: deckSize,
+		retry: repeatStatus === "repeat",
+	});
+
+	/** 서버가 준 위치로 한 번만 옮긴다. "다시" 로 돌아오면 다시 한 번 허용한다 */
+	const jumpedFor = useRef<number | null>(null);
+	useEffect(() => {
+		if (jumpedFor.current === runKey || startIndex === null) return;
+		if (cardData.length === 0) return;
+		jumpedFor.current = runKey;
+		if (startIndex > 0 && startIndex < cardData.length) {
+			setCurrentIndex(startIndex);
+		}
+	}, [startIndex, runKey, cardData.length]);
+
+	/** 카드를 넘기면 알린다. ✕ 로 나가도 이 값이 이미 저장돼 있다 */
+	useEffect(() => {
+		saveProgress(currentIndex);
+	}, [currentIndex, saveProgress]);
 
 	const currentCard = cardData[currentIndex];
 
@@ -213,6 +257,7 @@ function RouteComponent() {
 				flashcard_words.filter((item) => item.flashcard_id === flashcardId) ??
 				[];
 			setCardData(_cardData);
+			setDeckSize(_cardData.length || null);
 
 			// Ensure UserFlashcard record exists on server
 			const existing = await getUserFlashcard(flashcardId, cardType);
@@ -251,13 +296,29 @@ function RouteComponent() {
 					.filter((item) => item.status === "known")
 					.map((item) => item.card_id);
 				setKnownWords(knowns);
-				if (savedList.length > 0) setCurrentIndex(savedList.length);
+				// 위치는 활동 상태가 쥔다 — 위 훅의 주석 참고. 여기서 세지 않는다
 				if (savedList.length >= _cardData.length) goResult();
 			}
 		};
 		fetchData();
 		// runKey 가 바뀌면 다시 읽는다 — 결과에서 "다시" 로 돌아온 경우다
 	}, [runKey]);
+
+	/*
+	 * 결과로 넘어갈 때 한 번 완료를 알린다.
+	 * `gradedCount` 는 0 이다 — 자기 평가라 정오답이 없다(§28). "몰라요" 도 응답이므로
+	 * 둘을 합쳐 센다. 한 바퀴 돌면 몰랐던 카드가 있어도 다 푼 것이다.
+	 */
+	const reported = useRef(false);
+	useEffect(() => {
+		if (phase !== "result" || reported.current) return;
+		reported.current = true;
+		void complete({
+			answeredCount: knownWords.length + unknownWords.length,
+			gradedCount: 0,
+			correctCount: 0,
+		});
+	}, [phase, knownWords.length, unknownWords.length, complete]);
 
 	if (phase === "result") {
 		return (

@@ -34,6 +34,7 @@ export default function MissionDialog({
 	lesson,
 	onClose,
 	onReport,
+	onMissionState,
 }: {
 	dialogId: string;
 	lesson: string;
@@ -41,6 +42,17 @@ export default function MissionDialog({
 	onClose: () => void;
 	/** 리포트 단계로 */
 	onReport: () => void;
+	/**
+	 * 미션 몇 개 중 몇 개를 달성했는지 위로 알린다 — 활동 완료 기록에 쓴다
+	 * (shell_spec §1: 미션 대화는 `gradedCount`=미션 수 · `correctCount`=달성 수).
+	 *
+	 * `onReport` 에 실어 보내지 않은 이유는 그 콜백이 채팅 메시지 컴포넌트까지
+	 * `goReport` 로 내려가 있어서다 — 서명을 바꾸면 그 길 전체가 같이 바뀐다.
+	 */
+	onMissionState?: (state: {
+		missionCount: number;
+		achievedCount: number;
+	}) => void;
 }) {
 	const sound = useSoundEffects();
 	const { playUrl, unlock } = useSharedAudio();
@@ -208,6 +220,22 @@ export default function MissionDialog({
 		setTextareaValue("");
 		await uploadMsg(msg);
 	}, [textareaValue, unlock, uploadMsg]);
+
+	/*
+	 * 달성 수를 위로 올린다.
+	 *
+	 * **`completedList` 를 그대로 세면 안 된다** — 서버 응답을 이어 붙이므로
+	 * (`[...prev, ...res.completed_missions]`) 같은 미션이 두 번 들어올 수 있다.
+	 * 이 과의 미션 키워드와 교집합을 중복 없이 센다.
+	 */
+	useEffect(() => {
+		if (!onMissionState) return;
+		const done = new Set(completedList);
+		onMissionState({
+			missionCount: missionList.length,
+			achievedCount: missionList.filter((m) => done.has(m.keyword)).length,
+		});
+	}, [completedList, missionList, onMissionState]);
 
 	const goReport = onReport;
 	const hasUserProgress =
