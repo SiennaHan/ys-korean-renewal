@@ -22,10 +22,19 @@ export type PaywallKind = "guest" | "member" | "expired" | "school";
  */
 export function paywallKind(
 	ent: Entitlement | null,
-	isSignedIn: boolean,
+	/**
+	 * **계정이 있는 사람인가** — `useAuth().isLoggedInUser` 다.
+	 *
+	 * `isSignedIn` 을 쓰면 안 된다. 그것은 `!!getAccessToken()` 이라 **게스트도
+	 * 참**이다(게스트도 JWT 를 받는다). 처음에 그걸 넘겼다가 게스트가 잠긴 과를
+	 * 눌렀을 때 「먼저 로그인해 주세요」 대신 결제 안내가 떴다 — §06 이
+	 * "게스트는 로그인 먼저. 계정 없이 결제하면 기기를 바꿀 때 잃는다" 로
+	 * 정한 것을 정면으로 어긴다. 브라우저에서 눌러 보고서야 드러났다.
+	 */
+	hasAccount: boolean,
 ): PaywallKind {
 	if (ent?.source === "school") return "school";
-	if (!isSignedIn) return "guest";
+	if (!hasAccount) return "guest";
 	// 산 적이 있고 기간이 지났다 — 기록이 남아 있다는 말을 먼저 해야 한다
 	if (ent?.expires_at && new Date(ent.expires_at).getTime() < Date.now())
 		return "expired";
@@ -48,8 +57,8 @@ export default function PaywallPanel({
 	onSignIn: () => void;
 }) {
 	const { t } = useTranslation();
-	const { isSignedIn } = useAuth();
-	const kind = paywallKind(entitlement, isSignedIn);
+	const { isLoggedInUser } = useAuth();
+	const kind = paywallKind(entitlement, isLoggedInUser);
 	const title = t(`paywall.${kind}Title`);
 	const body = t(`paywall.${kind}Body`);
 	const purchasable = kind === "member" || kind === "expired";
