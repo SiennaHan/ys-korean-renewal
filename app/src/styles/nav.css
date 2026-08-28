@@ -23,11 +23,10 @@
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
 
   /* 토큰에 대응이 없어 리터럴로 남긴 목업 색 */
-  --blue-100: #a2d1ff;
-  --blue-300: #59acff;
-  --blue-gray-200: #d7dbe3;
-  --blue-gray-400: #adb3be;
-  --blue-gray-800: #4b505a;
+  /* --blue-100 · --blue-300 · --blue-gray-200 은 아무도 안 써서 지웠다(2026-08-28).
+     남은 둘은 값이 토큰을 가리킨다 — 전에는 primitive 와 같은 hex 를 다시 적어 뒀다 */
+  --blue-gray-400: var(--color-primitive-blue-gray-400);
+  --blue-gray-800: var(--color-primitive-blue-gray-800);
     /*
      * 아래는 화면 곳곳에 흩어져 있던 hex 를 뜻 단위로 모은 것이다(2026-08-26).
      * 거의 같은 값이 여럿이었다 — 테두리로 쓰던 #e4f1ff·#e5f2ff 는 1 차이라
@@ -37,7 +36,7 @@
      */
     --nav-text-mute: #6b7b8d;
     --nav-text-faint: #9ba5b0;
-    --nav-line-faint: #c8ccd3;
+    --nav-line-faint: var(--color-icon-faint);
     --nav-tint-line: #e4f1ff;
     --nav-tint-fill: #eef6ff;
     --nav-tint-fill-hover: #e7f3ff;

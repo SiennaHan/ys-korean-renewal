@@ -690,7 +690,7 @@
 	border-radius: 50%;
 	/* 그림 위에 얹히므로 밝은 캡처에서도 보이게 어둡게 깐다 */
 	background: rgb(0 0 0 / 55%);
-	color: #fff;
+	color: var(--color-text-inverse);
 	cursor: pointer;
 }
 

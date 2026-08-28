@@ -1,4 +1,4 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 68d32d0 -->
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ e0130f0 -->
 
 # DESIGN.md — 학생앱 디자인
 
@@ -96,21 +96,22 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 토큰 파일이 스스로 정한 규칙은 **"화면 코드는 semantic 만 쓴다. primitive 를 화면에서
 직접 쓰는 것은 예외 취급한다"** 이다.
 
-**그런데 지켜지지 않는다.** 토큰화됐다는 CSS 셋에 하드코딩 hex 가 **63개** 있고,
-그중 **28개는 primitive 토큰 값의 정확한 복제**다.
+**오래 지켜지지 않았다.** 2026-08-28 아침까지 토큰화됐다는 CSS 셋에 hex 가 **63개**
+있었고 그중 **28개가 primitive 토큰 값의 정확한 복제**였다 — `#a2d1ff` = blue-100 꼴.
 
-| 파일 | hex | 그중 primitive 값과 같은 것 |
+**그날 28개를 다 걷었다**(§8 의 9번). 지금은 hex 35개가 남고 **복제는 0** 이다.
+`app/scripts/token-literal-check.py` 가 그것을 센다(`pnpm check:css`).
+
+걷은 방식은 셋이었다.
+
+| 무엇 | 수 | 어떻게 |
 |---|---|---|
-| `activity.css` | 35 | **21** |
-| `nav.css` | 27 | **6** |
-| `auth.css` | 1 | **1** |
+| 로컬 별칭이 primitive 를 다시 적음<br>(`--blue-100: #a2d1ff`) | 11 | 값을 `var(--color-primitive-…)` 로. 셋(`nav.css` 의 `--blue-100`·`--blue-300`·`--blue-gray-200`)은 **아무도 안 써서 지웠다** |
+| `#fff` 직접 사용 | 12 | 속성에 따라 갈랐다 — `background` 는 `--color-background-surface`, `color` 는 `--color-text-inverse` |
+| `#f9fafc` 직접 사용 | 5 | **쓸 semantic 이 없어서 만들었다** — `--color-background-subtle`(white-50). 흰 카드 *안*에서 한 겹 눌러 앉힌 면(지문·안내·음절 칸)이고, 기존 `sunken`(blue-gray-100)보다 훨씬 옅다 |
 
-가장 많이 복제된 것 — `#ffffff`(12회) = `--color-primitive-white-100`,
-`#f9fafc`(5회) = `white-50`, `#a2d1ff` = `blue-100`, `#59acff` = `blue-300`,
-`#d7dbe3` = `blue-gray-200`, `#adb3be` = `blue-gray-400`, `#4b505a` = `blue-gray-800`.
-
-`.activity-frame .chip-opt.on` 의 `background:#e9f2fc` 처럼 **토큰에 없는 색**도
-섞여 있다.
+**남은 35개는 토큰 밖 색이다** — `.chip-opt.on` 의 `#e9f2fc` 처럼 팔레트에 아예 없는
+값. 그것을 팔레트로 데려올지는 **다른 물음**이고 아직 안 정했다.
 
 <details><summary>다시 재는 법</summary>
 
@@ -326,7 +327,7 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 
 ## 7. 무엇이 이 디자인을 지키나 — 그리고 못 지키나
 
-`pnpm check:css` 는 이제 넷을 돌린다.
+`pnpm check:css` 는 이제 다섯을 돌린다.
 
 | 검사 | 보는 것 | **못 보는 것** |
 |---|---|---|
@@ -335,11 +336,13 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 | `fixed-box-check.py` | 고정 px 폭 칸에 변수가 들어가는 자리 | 실제로 넘치는지(폰트 없이는 못 센다) |
 | `spacing-grid-check.py` | 간격이 4의 배수 눈금 위인지 | 그 간격이 **보기 좋은지** |
 | `design-values-check.py` | §8 에서 **정한 일곱**이 CSS 에서 그 값인지 · 셀렉터가 그대로인지 | 아직 안 정한 여덟 |
+| `token-literal-check.py` | 토큰 값을 hex 로 **다시 적은** 자리 | **팔레트 밖 색**(지금 35곳) |
 | `check_docs.py` | 문서의 참조·숫자·낡은 표현·관찰 기준 | 문서가 맞는 말인지 |
 
 **여전히 아무도 안 보는 축.**
 
-- 색이 **토큰 밖**인지 — §2.1 의 리터럴 복제 28개가 그래서 남아 있다(§8 의 9번)
+- **팔레트에 아예 없는 색**을 쓰는지 — 지금 35곳이다. 토큰 *복제*는 검사가 잡지만,
+  토큰 *밖* 색은 아직 아무도 안 센다
 - **아직 안 정한 여덟** — 정하지 않은 것은 검사할 수도 없다
 - 어떤 화면이 **실제로 보기 좋은지** — 이것은 끝내 사람이 본다
 
@@ -352,7 +355,7 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 
 **여기가 2단계의 입구다.** `정할 값` 이 비어 있으면 아직 규범이 아니다.
 
-**1·2·3·4·6·7·8 은 2026-08-28 에 정해졌다.** 채워진 줄은 규범이다.
+**1·2·3·4·6·7·8·9·14 는 2026-08-28 에 정해졌다.** 채워진 줄은 규범이다.
 
 **그리고 그 일곱은 기계가 지킨다** — `app/scripts/design-values-check.py` 가 17자리를
 세고 `pnpm check:css` 가 같이 돌린다. 값을 되돌리거나, 비활성을 흐림으로 바꾸거나,
@@ -378,7 +381,7 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 기본 여백은 **16px**, 그 밖의 간격도 **웬만하면 4의 배수**로 둔다.
 **소급 적용은 아직 하지 않았다** — 지금 어긋난 양이 크고 목업에서 온 값이라
 같이 옮겨야 한다. 실측은 아래 8-c.
-| 9 | 토큰 리터럴 복제 28개를 걷을까 | 걷는다 · 둔다 | 토큰 파일이 스스로 "semantic 만 쓴다" 고 정해 뒀다 | | primitive 값 대조 검사 |
+| 9 | 토큰 리터럴 복제 28개를 걷을까 | 걷는다 · 둔다 | 토큰 파일이 스스로 "semantic 만 쓴다" 고 정해 뒀다 | **걷었다** ✔ (2026-08-28) | `token-literal-check.py` ✔ |
 | 10 | 빈 상태·로딩·에러를 공통 컴포넌트로 뺄까 | 지금 46파일에 흩어짐 | 공통 정의가 없다 | | — |
 | 11 | 토스트를 토큰으로 데려올까 | Tailwind 기본 팔레트 | **토큰과 가장 먼 컴포넌트** | | — |
 | 12 | `components/ui/*` 8개(shadcn oklch)를 흡수할까 걷어낼까 | 흡수 · 제거 | 11곳에서 쓴다. 토큰과 별개 뿌리 | | — |

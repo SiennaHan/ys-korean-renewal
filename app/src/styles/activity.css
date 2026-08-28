@@ -30,11 +30,14 @@
   position: relative;
 
   /* 토큰에 대응이 없어 리터럴로 남긴 목업 색 */
-  --blue-100: #a2d1ff;
-  --blue-300: #59acff;
-  --blue-gray-200: #d7dbe3;
-  --blue-gray-400: #adb3be;
-  --blue-gray-800: #4b505a;
+  /* 목업이 쓰던 이름을 그대로 두되 **값은 토큰을 가리킨다** — 전에는 primitive 와
+     같은 hex 를 여기 다시 적어 두어서, 브랜드 색이 바뀌어도 이쪽은 안 따라왔다
+     (DESIGN.md 의 9번, 2026-08-28) */
+  --blue-100: var(--color-primitive-blue-100);
+  --blue-300: var(--color-primitive-blue-300);
+  --blue-gray-200: var(--color-primitive-blue-gray-200);
+  --blue-gray-400: var(--color-primitive-blue-gray-400);
+  --blue-gray-800: var(--color-primitive-blue-gray-800);
 
   /* 대응이 있는데도 이름을 남겨 둔 것들.
      목업은 이 색들을 SVG 속성과 인라인 style 에 직접 적어 두는데(리포트 레이더,
@@ -415,12 +418,12 @@
 .activity-frame .chip-opt.on { background:#e9f2fc; color:var(--color-fill-primary); }
 .activity-frame .chip-opt.ok { background:var(--color-background-correct); color:var(--color-text-strong); }
 .activity-frame .chip-opt.no { background:var(--color-background-wrong); color:var(--color-text-strong); }
-.activity-frame .focus-note { margin-top:8px; border-radius:10px; background:#f9fafc; padding:8px 12px; font-size:13px; line-height:1.6; color:var(--color-text-sub); }
-.activity-frame .passage { border-radius:12px; background:#f9fafc; padding:16px; font-size:15px; line-height:1.75; color:var(--color-text-strong); white-space:pre-line; }
+.activity-frame .focus-note { margin-top:8px; border-radius:10px; background:var(--color-background-subtle); padding:8px 12px; font-size:13px; line-height:1.6; color:var(--color-text-sub); }
+.activity-frame .passage { border-radius:12px; background:var(--color-background-subtle); padding:16px; font-size:15px; line-height:1.75; color:var(--color-text-strong); white-space:pre-line; }
 .activity-frame .q-text { margin:0 0 12px; font-size:16px; line-height:24px; font-weight:600; color:var(--color-text-strong); }
 .activity-frame /* 자모 발음 · 단어 듣고 따라 · 단어 읽고 쓰기 */
   .mouth-video { aspect-ratio:16/9; width:100%; border-radius:10px; background:#f8faff; display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; position:relative; overflow:hidden; }
-.activity-frame .mouth-video::after { content:"▶"; position:absolute; width:48px; height:48px; border-radius:50%; background:rgba(1,128,255,.9); color:#fff; display:grid; place-items:center; font-size:16px; }
+.activity-frame .mouth-video::after { content:"▶"; position:absolute; width:48px; height:48px; border-radius:50%; background:rgba(1,128,255,.9); color:var(--color-text-inverse); display:grid; place-items:center; font-size:16px; }
 .activity-frame .audio-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .activity-frame .audio-pair > button { height:40px; border:0; border-radius:8px; display:flex; align-items:center; justify-content:space-between; padding:0 2px; font-size:16px; font-weight:600; cursor:pointer; }
 .activity-frame .audio-pair .src { background:var(--color-background-choice); color:var(--color-fill-primary); }
@@ -436,7 +439,7 @@
 .activity-frame .jamo-tabs button { width:27px; height:27px; border-radius:7px; border:0; background:transparent; color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }
 .activity-frame .jamo-tabs button.on { background:var(--color-background-surface); color:var(--color-fill-primary-pressed); }
 .activity-frame .word-cards { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; padding-top:8px; }
-.activity-frame .word-cards button { height:52px; border-radius:10px; border:1px solid var(--color-line-control); background:#fff; position:relative; font-size:18px; font-weight:600; color:var(--color-text-heading); cursor:pointer; }
+.activity-frame .word-cards button { height:52px; border-radius:10px; border:1px solid var(--color-line-control); background:var(--color-background-surface); position:relative; font-size:18px; font-weight:600; color:var(--color-text-heading); cursor:pointer; }
 .activity-frame .word-cards button.on { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
 .activity-frame .word-cards b { position:absolute; top:3px; right:3px; width:14px; height:14px; border-radius:50%; background:var(--color-line-normal); }
 .activity-frame .word-cards button.done b { background:var(--color-fill-correct); }
@@ -447,12 +450,12 @@
 .activity-frame .audio-bar i { width:38px; display:grid; place-items:center; }
 .activity-frame .audio-bar i svg { width:20px; height:20px; }
 .activity-frame .syl-row { display:flex; gap:8px; }
-.activity-frame .syl { position:relative; flex:1; height:96px; border:0; border-radius:8px; background:#f9fafc; display:grid; place-items:center; cursor:pointer; }
+.activity-frame .syl { position:relative; flex:1; height:96px; border:0; border-radius:8px; background:var(--color-background-subtle); display:grid; place-items:center; cursor:pointer; }
 .activity-frame .syl span { font-size:60px; font-weight:700; color:#ddd; line-height:1; }
 .activity-frame .syl svg { position:absolute; inset:0; width:100%; height:100%; }
 .activity-frame .syl path { fill:none; stroke:var(--color-text-strong); stroke-linecap:round; stroke-linejoin:round; opacity:.85; }
 .activity-frame .modal { position:absolute; inset:0; z-index:20; background:rgba(24,26,32,.5); display:flex; align-items:center; justify-content:center; padding:16px; }
-.activity-frame .modal-box { width:100%; background:#fff; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; }
+.activity-frame .modal-box { width:100%; background:var(--color-background-surface); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; }
 /* 목업에 없는 것 — 마이크가 막혔다고 알리는 알림. 목업의 modal 자리를 그대로 쓰되
    글자만 있던 전체 화면과 달리 무슨 일인지·어떻게 하는지·무엇을 할 수 있는지를 담는다 */
 .activity-frame .modal-box.notice { align-items:center; text-align:center; padding:24px 16px 16px; gap:8px; }
@@ -482,15 +485,15 @@
 .activity-frame .heard-row b { font-size:20px; font-weight:700; color:var(--color-text-strong); }
 .activity-frame .heard-row.ok { background:var(--color-background-correct); }
 .activity-frame /* 결과 · 리포트 · 브리핑 · 예외 */
-  .result-head { background:var(--color-fill-primary); color:#fff; padding:20px 16px 16px; }
+  .result-head { background:var(--color-fill-primary); color:var(--color-text-inverse); padding:20px 16px 16px; }
 .activity-frame .result-head h2 { margin:0; font-size:24px; line-height:1.4; }
 .activity-frame .result-head p { margin:2px 0 12px; font-size:14px; color:var(--blue-100); }
 .activity-frame .stat-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .activity-frame .stat-row.single { grid-template-columns:1fr; }
-.activity-frame .stat-row div { background:#fff; border-radius:12px; padding:12px; text-align:center; }
+.activity-frame .stat-row div { background:var(--color-background-surface); border-radius:12px; padding:12px; text-align:center; }
 .activity-frame .stat-row span { display:block; font-size:12px; color:var(--color-text-sub); }
 .activity-frame .stat-row strong { font-size:24px; color:var(--color-text-strong); }
-.activity-frame .wrong-card { border-radius:12px; border:0; background:#fff; padding:12px; }
+.activity-frame .wrong-card { border-radius:12px; border:0; background:var(--color-background-surface); padding:12px; }
 .activity-frame .flash-result-content { padding:0; }
 .activity-frame .flash-result-stat button { border:0; border-radius:12px; padding:12px; background:var(--color-background-surface); text-align:center; cursor:pointer; }
 .activity-frame .flash-result-stat button:first-child strong { color:var(--color-text-strong); }
@@ -504,13 +507,13 @@
 .activity-frame .flash-result-ring span { color:var(--color-text-sub); font-size:13px; line-height:18px; font-weight:600; }
 .activity-frame .tag { display:inline-flex; height:24px; align-items:center; padding:0 8px; border-radius:6px; font-size:12px; font-weight:700; }
 .activity-frame .tag.w { background:var(--color-background-wrong); color:var(--color-fill-wrong); }
-.activity-frame .tag.e { background:var(--color-text-heading); color:#fff; }
+.activity-frame .tag.e { background:var(--color-text-heading); color:var(--color-text-inverse); }
 /* 건너뜀 — 오답이 아니라 **안 푼 것**이라 오답의 빨강을 쓰지 않는다 */
 .activity-frame .tag.s { background:var(--color-background-base); color:var(--color-text-sub); }
-.activity-frame .rep-head { background:var(--color-fill-primary); color:#fff; padding:12px 16px; }
+.activity-frame .rep-head { background:var(--color-fill-primary); color:var(--color-text-inverse); padding:12px 16px; }
 .activity-frame .rep-head h2 { margin:0; font-size:20px; }
 .activity-frame .rep-head p { margin:0; font-size:14px; color:var(--blue-100); }
-.activity-frame .rep-tabs { display:grid; grid-template-columns:1fr 1fr; height:46px; background:#fff; }
+.activity-frame .rep-tabs { display:grid; grid-template-columns:1fr 1fr; height:46px; background:var(--color-background-surface); }
 .activity-frame .rep-tabs button { border:0; border-bottom:2px solid var(--color-line-control); background:transparent; display:grid; place-items:center; color:var(--color-text-sub); font-size:14px; font-weight:600; cursor:pointer; }
 .activity-frame .rep-tabs button.on { color:var(--color-fill-primary); border-bottom-color:var(--color-fill-primary); }
 .activity-frame .report-card { padding:8px; border-radius:10px; background:var(--color-background-surface); }
@@ -521,18 +524,18 @@
 .activity-frame .report-empty { min-height:160px; display:grid; place-items:center; border-radius:12px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:14px; }
 .activity-frame .report-loading { position:absolute; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(246,247,248,.88); color:var(--color-text-strong); font-size:14px; font-weight:600; }
 .activity-frame .report-loading::before { content:""; width:34px; height:34px; border:3px solid var(--color-line-normal); border-top-color:var(--color-fill-primary); border-radius:50%; animation:record-spin .8s linear infinite; }
-.activity-frame .as-row { border-radius:12px; background:#f9fafc; padding:12px; font-size:14px; }
+.activity-frame .as-row { border-radius:12px; background:var(--color-background-subtle); padding:12px; font-size:14px; }
 .activity-frame .as-row span.k { display:inline-block; border-radius:5px; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); padding:2px 8px; font-weight:600; font-size:13px; }
 .activity-frame .as-row p { margin:8px 0 0; line-height:1.6; color:var(--color-text-strong); }
-.activity-frame .brief-title { background:#fff; padding:12px 16px 20px; }
+.activity-frame .brief-title { background:var(--color-background-surface); padding:12px 16px 20px; }
 .activity-frame .brief-title h2 { margin:0; font-size:20px; font-weight:600; color:var(--color-text-strong); }
 .activity-frame .brief-title p { margin:0; font-size:14px; color:var(--color-text-sub); }
 .activity-frame .brief-sec { padding:0 16px; margin-top:16px; }
 .activity-frame .brief-sec > h3 { margin:0 0 8px; font-size:16px; font-weight:600; color:var(--color-text-strong); }
-.activity-frame .brief-card { background:#fff; border-radius:10px; padding:12px; }
+.activity-frame .brief-card { background:var(--color-background-surface); border-radius:10px; padding:12px; }
 .activity-frame .scene-img { height:132px; border-radius:8px; overflow:hidden; background:var(--color-background-base); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; margin-bottom:16px; }
 .activity-frame .scene-img img { width:100%; height:100%; display:block; object-fit:contain; }
-.activity-frame .scene-text { background:#f9fafc; border-radius:6px; padding:16px; text-align:center; font-size:14px; }
+.activity-frame .scene-text { background:var(--color-background-subtle); border-radius:6px; padding:16px; text-align:center; font-size:14px; }
 .activity-frame .kw-line { display:flex; align-items:center; gap:8px; }
 .activity-frame .kw-line b { width:100px; flex:none; text-align:center; font-size:14px; font-weight:700; color:var(--color-fill-primary-pressed); background:var(--color-background-choice); border-radius:5px; padding:4px 0; }
 .activity-frame .kw-line span { flex:1; font-size:14px; color:var(--blue-gray-800); }
