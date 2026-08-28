@@ -247,7 +247,7 @@
 
   <!-- 결제 (없음) -->
   <rect class="bxStop" x="150" y="496" width="452" height="52" rx="10"/>
-  <text class="t1" x="166" y="517">결제 <tspan class="tS">없음 — 코드 0줄 · PG 미정 · 가격 미정</tspan></text>
+  <text class="t1" x="166" y="517">결제 <tspan class="tS">없음 — 코드 0줄 · PG 미정 · 가격 월 6달러</tspan></text>
   <text class="t2" x="166" y="535">ko_purchase · POST /purchase/webhook · ko_entitlement 전부 미착수</text>
 
   <path class="lnStop" d="M376 548 L376 582"/>
@@ -323,12 +323,15 @@
     (<span class="file">access_and_pricing_v1</span> §08 의 3번 · §09 의 7단계)</div></div></li>
 </ol>
 
-<h2><span class="n">05</span>아직 정하지 않은 것 둘 + 구현 차이 하나</h2>
+<h2><span class="n">05</span>아직 정하지 않은 것 하나 + 구현 차이 하나</h2>
 <div class="tablewrap">
 <table>
   <thead><tr><th>물음</th><th>상태</th></tr></thead>
   <tbody>
-    <tr><td><b>가격</b></td><td><span class="pill open">미정</span> 구독·월 단위까지는 정해졌다(2026-08-26). 남은 것은 금액 하나</td></tr>
+    <tr><td><b>가격</b></td><td><span class="pill done">확정 2026-08-28</span> <b>월 6달러</b>다.
+      구독·월 단위는 2026-08-26 에 정해졌고 금액이 이번에 붙었다.
+      <b>금액이 답하지 않은 것</b> — 통화 표기(학습자가 en·ja·zh·vi 넷이다) · 세금 포함 여부 ·
+      첫 달 할인·체험 기간. 셋 다 결제를 붙일 때 같이 정한다</td></tr>
     <tr><td><b>PG</b></td><td><span class="pill open">뒤로 밀기로 정했다 (2026-08-26)</span> <span class="file">access_and_pricing_v1</span> §09 의 1~4단계는 PG 없이 다 된다.
       권고는 <span class="file">access_and_pricing_v1</span> §08 에 있다 — 국내는 토스페이먼츠·포트원, 해외는 Stripe</td></tr>
     <tr><td><b>QR 을 어디에 떨어뜨리나</b></td>
