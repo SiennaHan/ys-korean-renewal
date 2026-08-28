@@ -1,4 +1,4 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ edba97f -->
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ a21e98d -->
 
 # DESIGN.md — 학생앱 디자인
 
@@ -147,11 +147,20 @@ BlinkMacSystemFont, sans-serif` 다.
 색과 타이포는 토큰인데 **간격·radius 토큰은 `tokens.css` 에 아예 없다.** 그래서
 화면군마다 자기 값을 쓴다.
 
+**2026-08-28 에 간격을 4의 배수로 스냅했다**(아래 5-b · 8-c). 그 전후다.
+
 | | 서로 다른 값 | 총 횟수 | 가장 많은 값 |
 |---|---|---|---|
-| `border-radius` | **22종** | 143 | `12px` (32회), `50%` (26), `10px` (16), `8px` (9) |
-| `gap` | **21종** | 108 | `8px` (23), `12px` (14), `10px` (11), `6px` (9) |
-| `padding` | **34종** | 231 | `16px` (36), `12px` (29), `14px` (18), `10px` (14) |
+| `border-radius` | 22종 → **22종** | 143 | `12px` (33회), `50%` (26), `10px` (16), `8px` (10) |
+| `gap` | 21종 → **13종** | 108 | `8px` (47), `4px` (23), `12px` (18) |
+| `padding` | 34종 → **20종** | 231 | `12px` (58), `8px` (44), `16px` (42) |
+
+**gap 은 21→13, padding 은 34→20 으로 줄었다.** radius 는 그대로 22종인데, 이번
+결정이 정한 것은 **버튼·카드·칩의 radius** 지 전체 radius 눈금이 아니기 때문이다 —
+다른 자리의 `10` `6` `9` `14` 는 손대지 않았다.
+
+> radius 를 셀 때 `var(--d-btn-r, 12px)` 는 **폴백을 풀어서** 센다. 안 풀면 변수
+> 하나가 새 값처럼 잡혀 22종이 26종으로 보인다(실제로 한 번 그렇게 나왔다).
 
 화면군별 radius 갈래 수:
 
@@ -161,9 +170,10 @@ BlinkMacSystemFont, sans-serif` 다.
 | `nav.css` | 10종 | **변수 2개**(`--radius-card:14` · `--radius-control:9`) + 리터럴 |
 | `auth.css` | 8종 | 리터럴 |
 
-`nav.css` 만 프레임 안에 자기 눈금을 둔다 — `--gutter:16` · `--radius-card:14` ·
-`--radius-control:9` · `--space-1..6`(4·8·12·16·24). **이것이 지금 이 앱에 있는
-유일한 간격 눈금이고, 한 화면군 안에만 산다.**
+`nav.css` 만 프레임 안에 자기 눈금을 둔다 — `--gutter:16` · `--radius-card:16` ·
+`--radius-control:12`(2026-08-28 에 활동 쪽으로 맞췄다) · `--space-1..6`(4·8·12·16·24).
+**간격 토큰은 여전히 여기에만 있다** — 다만 값은 이제 전 화면군이 4의 배수 눈금을
+지키고, `app/scripts/spacing-grid-check.py` 가 그것을 센다(`pnpm check:css`).
 
 <details><summary>다시 재는 법</summary>
 
