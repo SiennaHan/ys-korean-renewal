@@ -56,7 +56,6 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 | **내비·홈·교재학습·자모 목록** | `styles/nav.css` (268줄) | `.nav-frame .*` | semantic 토큰 | ○ |
 | **인증** (로그인·가입·재설정) | `styles/auth.css` (748줄) | `.auth-*` | semantic 토큰 | ✕ |
 | **표현클립** | 없음 — Tailwind 인라인 | 없음 | semantic 토큰 유틸 + 임의값 | ○ |
-| **레거시 교재 트리** `/book/**` | 없음 — Tailwind 인라인 | 없음 | **임의값·기본 팔레트** | ✕ |
 | **MY · 법적 · 문의 · QR** | 없음 — Tailwind 인라인 | 없음 | 섞임 | ✕ |
 | ~~게임 다섯~~ | ~~`game.css`·`vocashot.css`~~ | — | — | **범위 밖** (§0) |
 
@@ -65,16 +64,17 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 1. **목업 이관 세대**(활동·내비) — 목업 CSS 를 클래스 이름째로 가져오고 색만 토큰으로
    바꿨다. 수치가 목업에 근거가 있다.
 2. **토큰 세대**(인증) — 처음부터 semantic 토큰만 보고 썼다. 목업 캡처는 없다.
-3. **Tailwind 인라인 세대**(레거시 교재·MY·QR) — 클래스 이름도 CSS 파일도 없다.
-   부채가 여기 몰려 있다(§8-b).
+3. **Tailwind 인라인 세대**(MY·법적·문의·QR) — 클래스 이름도 CSS 파일도 없다.
+   부채가 여기 몰려 있다(§8-b). **가장 더럽던 레거시 교재 트리는 2026-08-28 에
+   지웠다** — 그것만으로 임의값이 162 → 100 이 됐다.
 
 표현클립은 3세대의 꼴을 쓰지만 색은 토큰 유틸리티를 쓴다 — 중간이다.
 **2026-08-28 기준 아직 만드는 중이라 값이 굳지 않았다.**
 
-> **레거시 교재 트리는 죽은 화면이 아니다.** `/book/$id` · `/book/chapter/$id` ·
-> `/book/chapter/unit/$id` 세 층이 살아서 옛 동선을 그린다(BLOCKERS.md). 다만 목업
-> 대조 밖이라 **아무 검사도 이 화면들의 생김새를 보지 않는다.** §8 의 물음 하나가
-> 이것이다.
+> **레거시 교재 트리 `/book/**` 는 2026-08-28 에 지웠다.** 19개 라우트 중 10개가
+> 리다이렉트, 9개가 실제로 그리는 화면이었는데 **저장소 어디에서도 그리로 가는
+> 링크가 없었다** — 주소를 쳐야 닿았다. 그러면서 임의값의 37%를 지고 있었고
+> semantic 토큰은 한 번도 쓰지 않았다. §8 의 14번이 그 결정이다.
 
 ---
 
@@ -222,9 +222,10 @@ BlinkMacSystemFont, sans-serif` 다.
 
 - `lucide-react` — **48 파일**에서 쓴다. 사실상 기본 아이콘 세트.
 - `app/src/assets/icons.tsx` — 129줄의 자체 SVG. 목업이 그린 것들.
-- `app/src/components/ui/*` **8개**(`button` · `dialog` · `assess-chart` ·
-  `circular-progress` · `book-header` · `header-back-button` ·
-  `language-selector` · `settings-page`) — **shadcn 잔재다.** `cva` 로 짜였고
+- `app/src/components/ui/*` **6개**(`button` · `dialog` · `assess-chart` ·
+  `circular-progress` · `language-selector` · `settings-page`) — **shadcn 잔재다.**
+  둘(`book-header` · `header-back-button`)은 레거시 교재 트리와 함께 2026-08-28 에
+  지웠다 — 그 라우트들만 쓰고 있었다. `cva` 로 짜였고
   `globals.css` 의 oklch 변수 계보에 붙어 있다. **토큰과 다른 뿌리**이고 아직
   11곳에서 `--primary` 등을 쓴다.
 
@@ -382,11 +383,12 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 | 11 | 토스트를 토큰으로 데려올까 | Tailwind 기본 팔레트 | **토큰과 가장 먼 컴포넌트** | | — |
 | 12 | `components/ui/*` 8개(shadcn oklch)를 흡수할까 걷어낼까 | 흡수 · 제거 | 11곳에서 쓴다. 토큰과 별개 뿌리 | | — |
 | 13 | 다크모드 죽은 코드를 지울까 | `dark:` 2곳 | 켜는 장치가 없다 | | — |
-| 14 | **레거시 교재 트리 `/book/**` 를 규범 대상으로 볼까, 얼릴까** | 대상 · 동결 | **살아 있는데 대조 밖** — 부채가 가장 몰린 곳 | | — |
+| 14 | 레거시 교재 트리 `/book/**` | 규범 대상 · 동결 · 삭제 | 링크가 0곳 — 주소를 쳐야 닿았다. 임의값의 37%를 지고 semantic 토큰은 0회 | **지웠다** ✔ (2026-08-28) | — |
 | 15 | `prefers-reduced-motion` 을 전 화면군에 걸까 | 지금 2/6 | 활동·인증만 있다 | | — |
 
-**14번이 가장 크다.** 얼리기로 하면 아래 부채 대부분이 규범 밖으로 나가고, 대상으로
-삼으면 이관 작업이 이 문서에서 가장 큰 덩어리가 된다.
+**14번이 가장 컸고, 지우는 것으로 끝났다**(2026-08-28). 셋 중 어느 쪽도 화면을
+손보는 일이었는데 **그 화면에 들어가는 길이 없었다** — 라우트 19개, 링크 0곳.
+지우자 임의값이 62개, Tailwind 기본색이 22개 한 번에 빠졌고 번들이 204KB 줄었다.
 
 ### 8-c. 정한 값을 따르려면 무엇이 바뀌나 (2026-08-28 적용분)
 
@@ -415,12 +417,14 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 
 ### 8-b. 근거가 되는 측정치
 
-게임을 뺀 `app/src` 의 tsx **137개** 기준(2026-08-28).
+게임을 뺀 `app/src` 의 tsx **116개** 기준(2026-08-28, 레거시 교재 트리를 지운 뒤).
+**개발 도구도 뺀다** — `components/dev/`(디자인 결정 패널)는 프로덕션에 안 나가므로
+제품 부채가 아니다. 안 빼면 그 파일 하나가 hex 20 · 인라인 style 7 을 얹는다.
 
 | 무엇 | 수 | 몰려 있는 곳 |
 |---|---|---|
-| 임의값 `bg-[#hex]` 류 | **162** | `routes/book/**` · `components/learn/jamo/**` · `chat-text.tsx` |
-| Tailwind 기본 색 클래스 | **63** | `app-layout` · `routes/book/**` · `qr` · `toast` |
+| 임의값 `bg-[#hex]` 류 | **100** (레거시 삭제 전 162) | `components/learn/jamo/**` · `chat-text.tsx` |
+| Tailwind 기본 색 클래스 | **41** (전 63) | `app-layout` · `qr` · `toast` |
 | semantic 토큰 유틸리티 | **137** | `ui/button` · `my-profile` · `content4/5` |
 | 인라인 `style={{` | **50** (중 20은 스토리 파일) | 활동 화면 몇 곳 |
 | 하드코딩 `"#hex"` (tsx) | **31** | `chat-text` · `assess-chart` · 자모 넷 |
@@ -432,7 +436,7 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 <details><summary>다시 재는 법</summary>
 
 `app/src` 의 `*.tsx` 에서 `routeTree.gen` 과 `components/main/game/` ·
-`routes/main/game/` · `components/draw/` 를 뺀 뒤,
+`routes/main/game/` · `components/draw/` · `components/dev/` 를 뺀 뒤,
 `bg|text|border|…-\[#hex\]` · Tailwind 기본 팔레트 클래스 ·
 `bg|text|border-(text|background|fill|line|icon)-*` · `style={{` · `"#hex"` 를 센다.
 </details>
