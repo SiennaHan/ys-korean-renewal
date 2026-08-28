@@ -65,7 +65,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		async (blob: Blob) => {
 			if (blob.size === 0) {
 				setRecordState("idle");
-				addToast(t("activity.rec_empty"));
+				addToast(t("activity.rec_empty"), "error");
 				return;
 			}
 
@@ -79,7 +79,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 				const text = String(sttMsg ?? "").trim();
 				if (!text) {
 					setRecordState("idle");
-					addToast(t("activity.rec_noText"));
+					addToast(t("activity.rec_noText"), "error");
 					return;
 				}
 
@@ -89,7 +89,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 			} catch {
 				if (reqId !== transcribeReqIdRef.current) return;
 				setRecordState("idle");
-				addToast(t("activity.rec_sttFailed"));
+				addToast(t("activity.rec_sttFailed"), "error");
 			}
 		},
 		[addToast, options, t],
@@ -100,7 +100,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		setRecordState("preparing");
 		if (typeof MediaRecorder === "undefined") {
 			setRecordState("idle");
-			addToast(t("activity.rec_unsupported"));
+			addToast(t("activity.rec_unsupported"), "error");
 			return;
 		}
 
@@ -108,7 +108,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		const granted = await requestPermission();
 		if (!granted) {
 			setRecordState("idle");
-			addToast(t("activity.rec_needMic"));
+			addToast(t("activity.rec_needMic"), "error");
 			return;
 		}
 
@@ -168,7 +168,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		} catch {
 			clearRecorderResources();
 			setRecordState("idle");
-			addToast(t("activity.rec_startFailed"));
+			addToast(t("activity.rec_startFailed"), "error");
 		}
 	}, [
 		addToast,
@@ -185,7 +185,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		const recorder = mediaRecorderRef.current;
 		if (!recorder || recorder.state === "inactive") {
 			setRecordState("idle");
-			addToast(t("activity.rec_notStarted"));
+			addToast(t("activity.rec_notStarted"), "error");
 			return;
 		}
 

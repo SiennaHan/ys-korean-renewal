@@ -1,4 +1,4 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 30a8031 -->
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 691839e -->
 
 # DESIGN.md — 학생앱 디자인
 
@@ -52,8 +52,8 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 
 | 화면군 | CSS | 클래스 접두사 | 색 출처 | 목업 대조 |
 |---|---|---|---|---|
-| **학습 활동** | `styles/activity.css` (563줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
-| **내비·홈·교재학습·자모 목록** | `styles/nav.css` (268줄) | `.nav-frame .*` | semantic 토큰 | ○ |
+| **학습 활동** | `styles/activity.css` (574줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
+| **내비·홈·교재학습·자모 목록** | `styles/nav.css` (271줄) | `.nav-frame .*` | semantic 토큰 | ○ |
 | **인증** (로그인·가입·재설정) | `styles/auth.css` (748줄) | `.auth-*` | semantic 토큰 | ✕ |
 | **표현클립** | 없음 — Tailwind 인라인 | 없음 | semantic 토큰 유틸 + 임의값 | ○ |
 | **MY · 법적 · 문의 · QR** | 없음 — Tailwind 인라인 | 없음 | 섞임 | ✕ |
@@ -300,11 +300,18 @@ BlinkMacSystemFont, sans-serif` 다.
 | **칩** | `.chip-opt` radius `8px` · padding `10px 16px` | `.chip3` `height:32px` · radius `9px` · padding `0 12px` | — |
 | **카드** | `.problem-card` radius `16px` · padding `18px` | `--radius-card` = `14px` | `.auth-panel` `max-width:360px` · gap `28px` |
 | **모달** | `.activity-confirm` 바텀시트, radius `20px 20px 0 0` | — | — |
-| **토스트** | — | — | — |
+| **토스트** | 화면군에 안 산다 — `components/toast/` 하나가 전 화면 공용. radius `12px` · padding `16px` · 글자 14px · 최대폭 320 · 배경 `--color-fill-wrong`(오류) / `--color-text-strong`(안내) | 〃 | 〃 |
 
-**토스트는 어느 화면군에도 없다.** `components/toast/toast.tsx` 가 Tailwind
-인라인으로 따로 산다 — `rounded-lg` · `max-w-xs` · `p-4` · `shadow-lg`, 색은
-Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.**
+**토스트는 어느 화면군에도 없다** — `components/toast/` 하나가 전 화면 공용이라
+가로 비교할 상대가 없다. 그래서 위 줄은 셋이 같은 값이다.
+
+**2026-08-28 에 토큰으로 데려왔다**(§8 물음 11). 그 전에는 `bg-red-400` 꼴 Tailwind
+기본 팔레트에 `rounded-lg`(=10px, `globals.css` 의 `--radius:0.625rem` — **shadcn
+잔재**)를 썼다. 이 앱에서 토큰과 가장 멀었던 컴포넌트다.
+
+**목업이 없다.** 그래서 `parity:activity` 도 이 컴포넌트를 안 본다 — 값이 어긋나도
+아무도 안 센다. 고칠 때는 화면을 열어 직접 띄워 보는 수밖에 없는데, 토스트를 띄우는
+길이 전부 서버 오류 경로라 그것도 쉽지 않다.
 
 카드 radius 가 **16(활동) · 14(내비) · 12(클립의 `rounded-[10px]` 도 있다)** 로
 갈린다. 칩 radius 도 **8(활동) · 9(내비)** 로 1px 다르다.
@@ -422,7 +429,7 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 같이 옮겨야 한다. 실측은 아래 8-c.
 | 9 | 토큰 리터럴 복제 28개를 걷을까 | 걷는다 · 둔다 | 토큰 파일이 스스로 "semantic 만 쓴다" 고 정해 뒀다 | **걷었다** ✔ (2026-08-28) | `token-literal-check.py` ✔ |
 | 10 | 빈 상태·로딩·에러를 공통 컴포넌트로 뺄까 | 지금 46파일에 흩어짐 | 공통 정의가 없다 | | — |
-| 11 | 토스트를 토큰으로 데려올까 | Tailwind 기본 팔레트 | **토큰과 가장 먼 컴포넌트** | | — |
+| 11 | 토스트를 토큰으로 데려올까 | Tailwind 기본 팔레트 | **토큰과 가장 먼 컴포넌트** | **오류 `--color-fill-wrong` · 안내 `--color-text-strong`, radius 12** ✔ (갈래를 넷 → 둘로 줄였다 — 아래 11-b) | 검사 없음 — 목업이 없어 `parity` 밖이고, `design-values-check.py` 는 CSS 만 본다 |
 | 12 | `components/ui/*` 8개(shadcn oklch)를 흡수할까 걷어낼까 | 흡수 · 제거 | 11곳에서 쓴다. 토큰과 별개 뿌리 | | — |
 | 13 | 다크모드 죽은 코드를 지울까 | `dark:` 2곳 | 켜는 장치가 없다 | | — |
 | 14 | 레거시 교재 트리 `/book/**` | 규범 대상 · 동결 · 삭제 | 링크가 0곳 — 주소를 쳐야 닿았다. 임의값의 37%를 지고 semantic 토큰은 0회 | **지웠다** ✔ (2026-08-28) | — |
@@ -431,6 +438,33 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 **14번이 가장 컸고, 지우는 것으로 끝났다**(2026-08-28). 셋 중 어느 쪽도 화면을
 손보는 일이었는데 **그 화면에 들어가는 길이 없었다** — 라우트 19개, 링크 0곳.
 지우자 임의값이 62개, Tailwind 기본색이 22개 한 번에 빠졌고 번들이 204KB 줄었다.
+
+### 11-b. 토스트 — 갈래를 넷에서 둘로 줄인 이유 (2026-08-28)
+
+**넷 중 셋은 한 번도 안 떴다.** `success` · `error` · `warning` · `info` 가 있었는데
+`addToast` 호출 10곳이 **전부 `type` 을 안 넘겨** 기본값 `info`(회색)로 떨어졌다.
+그리고 그 10곳이 전부 오류 문구였다 — 즉 **오류가 회색으로 뜨고 있었다.**
+
+안 쓰이는 갈래는 안 쓰이는 만큼 안 검수된다. `warning` 은 `bg-yellow-400` 에 흰
+글자라 대비 **1.6:1** 이었다 — 떴으면 아무도 못 읽었다.
+
+그래서 **오류 · 안내 둘만** 남겼다. 10곳 전부에 `"error"` 를 명시로 넘긴다. 기본값은
+`info`(중립)로 남겨 뒀다 — 새 호출부가 실수로 빨강을 띄우는 것보다 중립이 안전하다.
+
+| | 배경 | 글자 | 흰 글자 대비 |
+|---|---|---|---|
+| 오류 | `--color-fill-wrong` `#f15f49` | `--color-text-inverse` | **3.2:1** |
+| 안내 | `--color-text-strong` `#383a3f` | 〃 | 11.4:1 |
+
+**오류 3.2:1 은 WCAG AA(본문 4.5:1)에 못 미친다.** 팔레트에 이보다 짙은 빨강이
+없어서 안에서는 못 고친다 — 고치려면 팔레트에 색을 들이거나(§8 물음 11 재개),
+배경을 짙은 중립으로 두고 빨강을 아이콘·띠로만 쓰는 쪽으로 가야 한다.
+**전보다는 나아졌다** — `bg-gray-400` 에 흰 글자는 2.6:1 이었다.
+
+**같은 판에 실행 시점 버그 하나를 찾았다.** 토스트 id 가 `Date.now()` 라서 같은
+밀리초에 둘을 띄우면 id 가 겹쳤다 — React 가 키 충돌을 뱉고, 먼저 걸린 타이머가
+id 로 지우므로 **둘이 같이 사라졌다.** 세는 수로 바꿨다. **게이트 넷은 전부 통과하고
+있었다** — 화면을 열어 콘솔을 보고서야 나왔다. §7 이 말하는 자리 그대로다.
 
 ### 8-c. 정한 값을 따르려면 무엇이 바뀌나 (2026-08-28 적용분)
 

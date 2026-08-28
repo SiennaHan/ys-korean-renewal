@@ -166,7 +166,7 @@ export default function MissionDialog({
 		async (rawMsg: string) => {
 			const msg = rawMsg.trim();
 			if (msg.length < 2) {
-				addToast(t("missionChat.errTooShort"));
+				addToast(t("missionChat.errTooShort"), "error");
 				return;
 			}
 
@@ -205,7 +205,7 @@ export default function MissionDialog({
 		}
 		if (recording.recordState === "done") {
 			if (!recording.recordedMsg) {
-				addToast(t("missionChat.errNoRecording"));
+				addToast(t("missionChat.errNoRecording"), "error");
 				recording.terminate();
 				return;
 			}

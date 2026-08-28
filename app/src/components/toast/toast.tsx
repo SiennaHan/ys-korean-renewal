@@ -10,12 +10,14 @@ interface ToastProps {
 const Toast: React.FC<ToastProps> = ({ toast }) => {
 	const dispatch = useToastDispatch();
 
-	// 타입에 따른 스타일과 아이콘 설정
-	const typeStyles = {
-		success: "bg-green-400",
-		error: "bg-red-400",
-		info: "bg-gray-400",
-		warning: "bg-yellow-400",
+	/*
+	 * 색은 semantic 토큰에서 온다 — 전에는 Tailwind 기본 팔레트(bg-red-400 꼴)를
+	 * 써서 브랜드 색이 바뀌어도 안 따라왔다. tokens.css 가 "화면 코드는 semantic
+	 * 만 쓴다" 고 정해 둔 자리다.
+	 */
+	const typeStyles: Record<ToastType["type"], string> = {
+		error: "bg-fill-wrong text-text-inverse",
+		info: "bg-text-strong text-text-inverse",
 	};
 
 	const removeToast = () => {
@@ -24,10 +26,14 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
 
 	// duration 기반으로 자동 사라지기 로직은 useToast 훅에서 처리했습니다.
 
+	/*
+	 * radius 12 는 정한 값이다(DESIGN.md 「정해야 할 물음」 2 — 버튼·선택지와 같은
+	 * 눈금). rounded-lg 를 쓰면 10px 이 된다 — 그 눈금은 globals.css 의
+	 * `--radius:0.625rem`, 즉 **shadcn 잔재**라서 우리 눈금(8·12·16)과 다르다.
+	 */
 	return (
 		<div
-			className={`mb-3 flex w-full max-w-xs items-center justify-between rounded-lg p-4 text-white shadow-lg transition-opacity duration-300 ease-out ${typeStyles[toast.type]}
-      `}
+			className={`mb-3 flex w-full max-w-xs items-center justify-between rounded-[12px] p-4 shadow-lg transition-opacity duration-300 ease-out ${typeStyles[toast.type]}`}
 			role="alert"
 		>
 			<p className="flex-grow font-medium text-sm">{toast.message}</p>

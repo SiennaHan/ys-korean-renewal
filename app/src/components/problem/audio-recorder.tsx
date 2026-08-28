@@ -147,7 +147,7 @@ const AudioRecorder = (props: Props) => {
 				props.setResult(true, resultMsg ?? "", url ?? "");
 			} catch (error) {
 				console.error("API 호출 중 오류 발생:", error);
-				addToast(t("activity.analyzeFailed"));
+				addToast(t("activity.analyzeFailed"), "error");
 			} finally {
 				handleCancelOrDelete();
 			}
