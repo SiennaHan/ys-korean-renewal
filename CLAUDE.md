@@ -10,16 +10,27 @@
 
 - **화면은 거의 다 됐다.** 목업대로 들어가 있고 목업 대조가 통과한다.
   새로 그리자고 제안하지 마라
-- **서버도 됐다 (2026-08-28 갱신).** `api/business/` 에 리뉴얼 모듈이 줄줄이 있고
+- **서버도 됐다 (2026-08-29 갱신).** `api/business/` 에 리뉴얼 모듈이 줄줄이 있고
   (`entitlement` · `review_queue` · `activity_state` · `learning_record` ·
-  `user_withdraw` · `dashboard`) 라우터가 28개다. `ko_activity_state` ·
-  `ko_review_queue` 도 신설됐다 — `BLOCKERS.md` §6.
+  `user_withdraw` · `dashboard` · `signup_code_business` · `student_business`).
+  **수를 여기 적지 않는다** — 전에 "라우터가 28개" 로 박아 뒀다가 내가 하나 늘리면서
+  낡았다. 세려면 `grep -c include_router api/server.py` 다.
+  `ko_activity_state` · `ko_review_queue` · `ko_signup_code*` 셋도 신설됐다 —
+  `BLOCKERS.md` §6 · §10.
   **여기 오래 "api/ 에 리뉴얼 코드가 아직 없다" 고 적혀 있었다.** 이 파일은 세션마다
   자동으로 읽히므로, 그 한 줄 때문에 모든 새 세션이 "서버는 아직" 으로 시작했다
+- **기관 코드와 학기 종료는 끝났다 (2026-08-28).** 학교가 어드민에서 코드를 발급하고
+  학생이 그것으로 가입한다. 학기가 끝나면 어드민에서 접근을 끊고, 그러면 무료 범위로
+  내려가며 학생에게 모달로 알린다. **계약 학교는 전 급이다.** 명세는
+  `phase1/admin_spec_v1.html` — **전에는 어드민 문서가 아예 없었다**
 - **남은 것은 결제와 교재 콘텐츠 DB 이전 둘이다.** 결제는 코드 0줄이고 가격만
   정해졌다(월 6달러, 2026-08-28) — PG·통화·세금은 아직. 교재 문항은 여전히 앱
   번들이다(`dev_spec_v1` §16 의 5번)
-- 개발자에게 넘길 문서는 **셋뿐**이다 — `phase1/INDEX.md` §6
+- **어드민에는 게이트가 없다.** `cd admin && pnpm typecheck` 가 통과하지 않고
+  (`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. **둘 다
+  리뉴얼 전부터다.** 그래서 어드민을 고칠 때는 앱과 달리 **검사가 아무것도 말해 주지
+  않는다** — 눌러서 확인해라. 남은 위험은 `admin_spec_v1` §06 · `developer_tasks.md` DEV-14
+- 개발자에게 넘길 묶음은 `phase1/INDEX.md` §6 이 정한다. **여기 「셋뿐」이라고 적혀 있었는데 그 절은 넷을 세고 있었다** — 수를 두 곳에 두지 않는다
 
 ## `phase1/` 은 폴더 이름일 뿐이다 — 지금은 Phase 1 이 아니다
 

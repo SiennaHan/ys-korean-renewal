@@ -489,8 +489,15 @@
   <tr><td>새 교재 콘텐츠 반영</td><td>저작 진행 중 — <b>Phase 2</b></td></tr>
   <tr><td><code>item_id</code> 체계 이관</td><td>콘텐츠 DB 이관과 함께 — <b>Phase 2</b></td></tr>
   <tr><td><code>content_counts</code> 하드코딩 폐지</td><td>동상 — <b>Phase 2</b></td></tr>
-  <tr><td>B2C 접근 제어 실동작</td><td>게이트 <b>배선만</b>(단일 함수 자리) 두고 판정은 항상 통과. 활성화는 <b>Phase 2.5</b></td></tr>
-  <tr><td>어드민 학습 리포트</td><td><b>Phase 3</b></td></tr>
+  <tr><td>B2C 접근 제어 실동작</td><td><b>이 줄은 낡았다.</b> 「판정은 항상 통과」가 아니다 —
+    <code>GET /entitlement</code> 가 실제로 판정하고 앱이 잠금을 그린다(2026-08-26).
+    <b>2026-08-28 부터 기관 학생은 전 급</b>이고 학기가 끝나면 무료 범위로 내려간다.
+    남은 것은 <b>개인 결제</b>다 — <code>ko_entitlement</code> 가 없어 <code>purchase</code> 를 담을 곳이 없다.
+    자세한 것은 <span class="file">access_and_pricing_v1</span> · <span class="file">admin_spec_v1</span> §05</td></tr>
+  <tr><td>어드민 학습 리포트</td><td><b>절반이 들어왔다(2026-08-28).</b> 학생 목록에
+    활동 일수·학습 시간·완료 수·마지막 활동일·최근 급·과가 붙었다 —
+    <span class="file">admin_spec_v1</span> §5.3. <b>합계와 진도까지고 문항 단위는 내지 않는다</b>(기획 확정).
+    문항 단위 리포트는 여전히 <b>Phase 3</b></td></tr>
   <tr><td>발음평가 저장·노출</td><td>G4 결정 대기 — <b>Phase 3</b></td></tr>
   <tr><td>VocaShot 개인 플레이 전환</td><td>게임 영역, 셸 밖 — 별도 작업</td></tr>
 </table></div>

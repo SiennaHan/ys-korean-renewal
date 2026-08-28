@@ -1,0 +1,360 @@
+<meta charset="utf-8">
+<!-- 관찰: admin/src/routes, api/accepter/student_accepter.py, api/accepter/signup_code_accepter.py, api/business/signup_code_business.py, api/accepter/auth.py @ f12a893 -->
+<!-- 왜: 이 문서의 역할·화면·한도·권한 경계는 전부 그 코드를 읽고 적은 관찰이다 -->
+<title>어드민 — 학교가 스스로 하는 일과, 마스터만 하는 일</title>
+<style>
+  :root {
+    --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f7;
+    --ink:#181c24; --ink-2:#4e5666; --ink-3:#89909f;
+    --line:#e2e6ed; --accent:#1f5fd6; --accent-soft:#e8f0ff;
+    --bad:#b3261e; --bad-soft:#fdecea; --good:#1c6b42; --good-soft:#e8f5ee;
+    --warn:#8a5a00; --warn-soft:#fdf4e3;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 10px 26px rgba(16,24,40,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+      --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+      --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+      --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+      --warn:#e0ab52; --warn-soft:#2c2417;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#10131a; --surface:#181c24; --surface-2:#1f242e;
+    --ink:#e8ebf2; --ink-2:#a7afbe; --ink-3:#727a8a;
+    --line:#2a303b; --accent:#7fb0ff; --accent-soft:#16233a;
+    --bad:#f19b93; --bad-soft:#331d1b; --good:#7ed3a3; --good-soft:#14291e;
+    --warn:#e0ab52; --warn-soft:#2c2417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    font-size:15.5px; line-height:1.74; }
+  main { max-width:860px; margin:0 auto; padding:52px 22px 100px; }
+
+  header.doc { padding-bottom:26px; border-bottom:2px solid var(--ink); margin-bottom:34px; }
+  .eyebrow { font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent); font-weight:800; margin-bottom:10px; }
+  h1 { font-size:30px; line-height:1.28; margin:0 0 12px; font-weight:800;
+    letter-spacing:-.015em; text-wrap:balance; }
+  .lead { color:var(--ink-2); font-size:15.5px; max-width:64ch; margin:0; }
+  .lead b { color:var(--ink); }
+
+  h2 { font-size:20px; font-weight:800; margin:56px 0 4px; letter-spacing:-.01em;
+    display:flex; align-items:baseline; gap:10px; }
+  h2 .n { font-size:13px; font-weight:800; color:var(--accent);
+    font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+  h3 { font-size:15.5px; font-weight:700; margin:26px 0 4px; }
+  p { margin:10px 0; }
+  .qa { color:var(--ink-3); font-size:13.5px; }
+
+  code { font-family:ui-monospace,Menlo,monospace; font-size:.85em;
+    background:var(--surface-2); padding:1.5px 6px; border-radius:5px; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin:14px 0 6px; font-size:13.5px; }
+  th { text-align:left; font-size:11.5px; letter-spacing:.05em; color:var(--ink-3);
+    font-weight:700; padding:8px 10px 6px; border-bottom:2px solid var(--line); white-space:nowrap; }
+  td { padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td code { white-space:nowrap; }
+
+  .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+    background:var(--surface); border-radius:12px; padding:16px 20px; margin:18px 0;
+    box-shadow:var(--shadow); }
+  .callout.bad { border-left-color:var(--bad); }
+  .callout.good { border-left-color:var(--good); }
+  .callout.warn { border-left-color:var(--warn); }
+  .callout .t { font-weight:800; font-size:14px; margin-bottom:6px; }
+  .callout.bad .t { color:var(--bad); }
+  .callout.good .t { color:var(--good); }
+  .callout.warn .t { color:var(--warn); }
+  .callout p { font-size:14.5px; margin:7px 0; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px; margin:16px 0 6px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:5px; }
+  .card .k { font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:800; color:var(--ink-3); }
+  .card .nm { font-size:15px; font-weight:700; line-height:1.4; }
+  .card .nm a { text-decoration:none; }
+  .card .nm a:hover { text-decoration:underline; }
+  .card .d { font-size:13px; color:var(--ink-2); line-height:1.6; }
+
+  ol.path { list-style:none; counter-reset:step; padding:0; margin:16px 0 6px;
+    display:flex; flex-direction:column; gap:10px; }
+  ol.path li { counter-increment:step; display:grid; grid-template-columns:30px 1fr;
+    gap:12px; align-items:start; }
+  ol.path li::before { content:counter(step); grid-column:1;
+    width:30px; height:30px; border-radius:50%; background:var(--accent-soft);
+    color:var(--accent); font-size:13px; font-weight:800; display:grid; place-items:center;
+    font-variant-numeric:tabular-nums; }
+  ol.path .h { font-weight:700; }
+  ol.path .d { color:var(--ink-2); font-size:14px; }
+
+  ul { padding-left:22px; margin:10px 0; }
+  li { margin:6px 0; }
+  li::marker { color:var(--ink-3); }
+
+  .pill { display:inline-block; font-size:11px; font-weight:800; border-radius:99px;
+    padding:1.5px 9px; white-space:nowrap; }
+  .pill.done { background:var(--good-soft); color:var(--good); }
+  .pill.open { background:var(--warn-soft); color:var(--warn); }
+  .pill.stop { background:var(--bad-soft); color:var(--bad); }
+  .pill.file { background:var(--accent-soft); color:var(--accent); }
+</style>
+<main>
+<header class="doc">
+  <div class="eyebrow">명세 · 2026-08-29</div>
+  <h1>어드민 — 학교가 스스로 하는 일과, 마스터만 하는 일</h1>
+  <p class="lead"><b>어드민에는 명세가 없었다.</b> 저장소의 어느 문서도 「어드민이 무엇을 하는
+  화면인가」에 답하지 않았고, 언급은 게임 콘텐츠 넣는 법·QR 통계처럼 <b>다른 문서의 곁가지로만</b>
+  흩어져 있었다. 2026-08-28 에 기관 발급 코드와 학기 종료가 들어오면서 어드민은
+  <b>학교가 직접 쓰는 도구</b>가 됐다 — 그래서 규칙을 한 곳에 적는다.</p>
+  <p class="lead">이 문서는 새로 설계하지 않는다. <b>구현을 읽어 규칙으로 고정</b>하고,
+  <b>권한 경계</b>와 <b>아직 위험한 곳</b>을 가려낸다. 화면 목록·역할 이름·한도 값은 전부
+  <span class="file">admin/src/routes/</span> 와 <span class="file">api/</span> 에서 읽었다.</p>
+</header>
+
+<h2><span class="n">01</span>역할이 셋이다 — 그런데 문이 둘뿐이다</h2>
+
+<p>역할 문자열은 <span class="file">api/accepter/auth.py</span> 가 쥔다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>역할</th><th>무엇</th><th>학교 경계</th></tr></thead>
+  <tbody>
+    <tr><td><code>master_admin</code></td><td>우리 쪽 운영자. 학교를 만들고 관리자를 승인한다</td>
+      <td><b>없다.</b> 모든 학교를 본다</td></tr>
+    <tr><td><code>school_admin</code></td><td>학교 담당자. 자기 학교의 코드와 학생을 다룬다</td>
+      <td><b>토큰의 학교로 고정</b></td></tr>
+    <tr><td><code>student_admin</code></td><td>학생 관리만 하는 보조 계정</td>
+      <td><b>토큰의 학교로 고정</b></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa"><b>문(guard)은 둘뿐이다</b> — <code>AdminRequired</code>(셋 다 통과)와
+<code>MasterAdminRequired</code>(마스터만). 즉 <b>역할이 셋인데 문이 둘이므로,
+「학교 관리자와 학생 관리자를 가르는 일」은 문이 아니라 각 엔드포인트 안에서 해야 한다.</b>
+이 어긋남이 실제로 구멍을 만들었다 — 아래 §02.</p>
+
+<h2><span class="n">02</span>학교 경계는 검사가 아니라 덮어쓰기다 — 이유가 있다</h2>
+
+<p>학생 관련 엔드포인트는 요청에 담긴 <code>school_code</code> 를
+<b>검사하지 않고 토큰의 학교로 덮는다</b>(<span class="file">student_accepter._mySchool</span>).</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th>왜 그렇게 했나</th></tr></thead>
+  <tbody>
+    <tr><td><b>검사 방식이면</b></td>
+      <td>"요청의 학교가 내 학교와 같은가" 를 <b>엔드포인트마다</b> 물어야 한다. 필드가 늘면
+      빠뜨린다 — <b>실제로 그렇게 뚫려 있었다.</b> <code>/student/batch</code> 와
+      <code>/student/upload</code> 가 검사를 하지 않아 <b>아무 학교 관리자가 남의 학교 학생을
+      만들고 고치고 지울 수 있었다</b>(2026-08-28 에 막았다)</td></tr>
+    <tr><td><b>덮어쓰기면</b></td>
+      <td>요청이 무엇을 보내든 <b>결과가 하나</b>다. 새 필드가 늘어도 경계는 그대로다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">같은 날 두 번째 구멍도 막았다 — <code>AdminRequired</code> 는
+<code>student_admin</code> 을 통과시키는데 덮어쓰기는 <code>school_admin</code> 만 보고 있었다.
+그래서 <b>학생 관리자는 남의 학교를 볼 수 있었다.</b> §01 의 "역할 셋 · 문 둘" 이
+이런 식으로 새는 자리다 — <b>문을 늘리는 것이 아니라, 문이 통과시키는 역할 전부를
+경계 함수가 알고 있어야 한다.</b></p>
+
+<h2><span class="n">03</span>화면 — 무엇이 마스터용이고 무엇이 학교용인가</h2>
+
+<p>라우트는 <span class="file">admin/src/routes/</span> 에 있다. 수를 여기 적지 않는다 —
+세려면 <code>ls admin/src/routes/*.tsx</code> 다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>화면</th><th>누가</th><th>무엇</th></tr></thead>
+  <tbody>
+    <tr><td><span class="file">login</span> · <span class="file">signup</span></td><td>공통</td>
+      <td>가입은 <b>승인 대기</b>로 들어간다(<code>is_approved</code>) — 마스터가 켜 줘야 쓸 수 있다</td></tr>
+    <tr><td><span class="file">admin</span></td><td><b>마스터</b></td>
+      <td>관리자 목록·승인·역할. 학교 관리자를 만드는 곳이다</td></tr>
+    <tr><td><span class="file">school</span></td><td><b>마스터</b></td>
+      <td>학교와 반(급) 목록. <b>여기서 <code>school_code</code> 를 고칠 수 있는 것이 위험하다</b> — §06</td></tr>
+    <tr><td><span class="file">signup-code</span></td><td>마스터 · 학교</td>
+      <td><b>2026-08-28 신설.</b> 기관 발급 코드 — §04</td></tr>
+    <tr><td><span class="file">student</span></td><td>마스터 · 학교 · 학생관리</td>
+      <td>학생 목록·엑셀 일괄 등록·활동 현황·<b>학기 종료</b>·탈퇴 — §05</td></tr>
+    <tr><td><span class="file">qr-stats</span> · <span class="file">stt-shadow</span> ·
+        <span class="file">tts-test</span> · <span class="file">game/</span></td><td><b>마스터</b></td>
+      <td>운영 도구. 학교가 볼 것이 아니다 — 다만 <b>화면 자체를 숨기는 장치는 확인하지 않았다</b>(§06)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">04</span>기관 발급 코드 — 학교가 뿌리고 학생이 스스로 들어온다</h2>
+
+<p>학교가 코드 한 장을 만들어 반에 공유하고, 학생은 로그인 화면의
+「학교/기관 코드가 있어요」로 들어가 그 코드로 가입한다. 그러면 <b>그 학교의 학생</b>이 된다.</p>
+
+<h3>4.1 코드는 Crockford Base32 다 — 이유는 "정규화가 명세돼 있어서" 다</h3>
+
+<p>알파벳에 <b><code>I</code>·<code>L</code>·<code>O</code>·<code>U</code> 가 없다.</b>
+그리고 입력 정규화가 규격에 적혀 있다 — <code>O</code>→<code>0</code>,
+<code>I</code>·<code>L</code>→<code>1</code>, 하이픈 제거
+(<span class="file">api/util/codeutils.py</span>).</p>
+
+<p class="qa">직접 고른 알파벳이 아니라 <b>남이 정한 규격</b>을 쓴 이유가 이것이다. 학교가 코드를
+칠판에 적고 학생이 손으로 옮겨 치는데, <b>사람이 헷갈리는 글자를 어떻게 되돌릴지</b>를
+우리가 즉흥으로 정하면 앱·서버·어드민이 서로 다르게 정한다.
+<b>저장하는 값도 정규화된 꼴이어야 한다</b> — 씨드에 <code>O</code> 가 든 코드를 손으로 넣으면
+조회가 <code>0</code> 으로 바꿔 찾아서 「코드가 없습니다」가 난다.</p>
+
+<h3>4.2 한도는 역할로 갈린다</h3>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th><code>school_admin</code></th><th><code>master_admin</code></th></tr></thead>
+  <tbody>
+    <tr><td>한 장에 몇 명</td><td><b>500명까지</b></td><td>제한 없음</td></tr>
+    <tr><td>기한</td><td><b>92일까지</b> ("3개월" — 7·8·9월이 92일로 가장 길다)</td><td>10년</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">값은 <span class="file">business/signup_code_business.py</span> 의
+<code>SCHOOL_MAX_USES</code>·<code>SCHOOL_MAX_DAYS</code> 가 정본이다.
+<b>왜 한도를 두나</b> — 코드는 반에 공유되는 물건이라 새는 것을 막을 수 없다.
+막을 수 있는 것은 <b>새더라도 몇 명·며칠까지인가</b>다.</p>
+
+<h3>4.3 자리를 세는 것이 어려운 부분이었다</h3>
+
+<p>"남은 자리가 있으면 하나 줄인다" 를 <b>읽고 나서 쓰면</b> 동시에 들어온 사람들이
+같은 자리를 본다. 2자리 코드에 열 명이 들어갈 수 있다 — <b>재현했다.</b></p>
+
+<p>그래서 <b>조건부 UPDATE 한 문장</b>으로 센다 — 자리·상태·기한을 <code>WHERE</code> 에 넣고
+<code>used_count</code> 를 올린 뒤, <b>1행이 바뀌었는지</b>로 성공을 판정한다
+(<span class="file">persistence/repo_signup_code.py</span> 의 <code>consumeSeat</code>).
+InnoDB 가 락 대기 뒤 커밋된 값으로 <code>WHERE</code> 를 다시 재기 때문에 이것이 성립한다.</p>
+
+<h3>4.4 코드의 기한은 입장만 막는다</h3>
+
+<p><b>코드가 만료돼도 이미 들어온 학생은 그대로다.</b> 코드 기한을 학생 권한의 기한으로
+쓰면, 학기 코드가 만료되는 날 그 코드로 들어온 학생 <b>전원이 동시에 잠긴다.</b>
+학생의 이용 기간은 <b>다른 칸</b>이 쥔다 — §05.</p>
+
+<h3>4.5 실패는 200 으로 돌려준다</h3>
+
+<p>앱과 어드민 <b>둘 다 401·403 에서 세션을 지운다.</b> 그래서 "코드가 틀렸다" 를 403 으로
+내면 <b>학생이 로그아웃된다.</b> 코드 관련 거절은 전부 HTTP 200 + <code>result:false</code> 다.
+같은 이유로 IP 당 실패 제한(10분 창)도 429 가 아니라 200 으로 낸다 —
+429 를 내면 앱의 응답 처리기가 통째로 던져서 이유가 「가입 실패」로 뭉개진다.</p>
+
+<h2><span class="n">05</span>학기 종료 — 계정 정지와 다른 칸이어야 했다</h2>
+
+<p>학교 어드민이 학생을 골라 <b>접근 권한을 끊는다</b>(<code>PATCH /student/access</code>).
+그러면 <code>ko_user.access_ended_at</code> 이 찍히고 <b>다음 요청부터</b> 그 학생의 범위가
+무료로 내려간다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th>왜 <code>is_active</code> 를 쓰지 않았나</th></tr></thead>
+  <tbody>
+    <tr><td><b>토큰이 30일이다</b></td>
+      <td><code>is_active</code> 를 보는 곳은 <b>로그인뿐</b>이다. 권한 판정은 그 칸을 보지 않는다.
+      그래서 그 칸을 내려도 <b>이미 켜 둔 앱은 최대 30일 동안 전 급 그대로</b>다</td></tr>
+    <tr><td><b>말할 기회가 없어진다</b></td>
+      <td>그 칸을 내리면 <b>로그인 자체가 막힌다.</b> 그러면 「학기가 끝났습니다」라고 설명할 기회도,
+      지난 학기 기록을 보여 줄 기회도 없다 — 기획이 요구한 둘이 바로 그것이었다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>5.1 끊긴 학생이 보는 것</h3>
+
+<ul>
+  <li><b>로그인은 된다.</b> 지난 학기 기록도 그대로 보인다</li>
+  <li>앱에 들어올 때 <b>모달이 한 번</b> 뜬다 — 처음엔 홈의 정보 카드였는데
+    <b>아무도 읽지 않아서</b> 덮는 모달로 바꿨다(2026-08-28)</li>
+  <li>잠긴 것을 누르면 페이월이 같은 말을 다시 한다 —
+    <span class="file">paywall_SOT</span> 의 다섯째 상태다.
+    <b>「범위에 없다」가 아니라 「기간이 끝났다」</b>여야 한다. 어제까지 볼 수 있었던 수업이다</li>
+</ul>
+
+<h3>5.2 삭제는 기본이 아니다</h3>
+
+<p><b>기본은 접근만 끊고 데이터는 남긴다</b>(기획 확정 2026-08-28). 다음 학기에 다시 등록하는
+학생이 자기 풀이 기록을 잇는 편이 낫다. <b>자동 만료도 자동 탈퇴도 없다</b> —
+사람이 어드민에서 끊어야 한다.</p>
+
+<p>진짜 지우는 길은 따로 있다(<code>POST /student/withdraw</code>). 범위는 <b>본인 탈퇴와 같다</b> —
+<span class="file">api/shared/withdrawal_scope.py</span> 가 정본이다.</p>
+
+<p class="qa"><b>전에는 어드민의 「삭제」가 <code>ko_user</code> 행만 지웠다.</b> 탈퇴용으로 만들어 둔
+지우기 범위를 쓰지 않아서 학습 기록이 고아로 남았다 — <b>재현했고 고아 4행이었다.</b>
+2026-08-28 에 같은 경로를 쓰게 고쳤다. <b>다만 코드 사용 기록(<code>ko_signup_code_use</code>)은
+아직 남는다</b> — §06.</p>
+
+<h3>5.3 학생 현황은 합계와 진도까지다</h3>
+
+<p>학생 목록에 활동 요약이 붙는다 — 활동 일수·총 학습 시간·완료 수·마지막 활동일·
+가장 최근에 끝낸 급·과. <b>문항 단위는 내지 않는다</b>(기획 확정).</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>세는 데 함정이 있던 것</th><th>어떻게 했나</th></tr></thead>
+  <tbody>
+    <tr><td><b>「행이 있다」가 「공부했다」가 아니다</b></td>
+      <td><span class="file">ko_daily_activity</span> 의 행은 학습 세션 핑이 만든다 —
+      <b>활동 화면을 열어만 봐도 하루가 생긴다.</b> 그래서 활동 일수는
+      <code>responded</code> 가 참인 행만 센다</td></tr>
+    <tr><td><b>진도는 "가장 큰 번호" 가 아니다</b></td>
+      <td>학생은 앞 과로 돌아가기도 한다. <b>가장 최근에 끝낸</b> 과를 낸다</td></tr>
+    <tr><td><b>두 수의 기준이 다르다</b></td>
+      <td>활동 일수는 응답한 날, 학습 시간은 열어 둔 시간이다.
+      <b>나란히 놓으면 같은 기준으로 읽히므로</b> 화면과 타입에 그 차이를 적었다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">06</span>아직 위험한 곳</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>왜 위험한가</th></tr></thead>
+  <tbody>
+    <tr><td><b>학교 코드를 고칠 수 있다</b></td>
+      <td><code>PATCH /school/{id}</code> 로 <code>school_code</code> 를 바꾸면
+      <span class="file">ko_user.school_code</span> 는 따라오지 않는다 —
+      <b>그 학교 학생 전원이 조용히 고아가 된다.</b> FK 가 아니라 값으로 잇고 있다.
+      막지도 않고 경고도 없다</td></tr>
+    <tr><td><b>코드 사용 기록이 탈퇴 뒤에도 남는다</b></td>
+      <td><code>ko_signup_code_use</code> 가 지우기 범위에 없다.
+      탈퇴한 학생의 <code>user_id</code> 가 남아 이미 없는 계정을 가리킨다 — <b>재현했다.</b>
+      지울지, 행은 남기고 학생 식별자만 비울지 <b>정해야 한다</b>
+      (처리방침 제4조가 탈퇴 시 파기를 약속한다)</td></tr>
+    <tr><td><b>운영 도구가 학교에 보이는지 확인하지 않았다</b></td>
+      <td>QR 통계·STT 표본·TTS 시험은 마스터용인데,
+      <b>학교 계정으로 그 화면을 여는 것을 막는지 눌러서 확인하지 않았다.</b>
+      서버 쪽 문은 있지만 화면이 숨겨지는지는 다른 문제다</td></tr>
+    <tr><td><b>어드민 빌드가 유틸리티 CSS 를 내지 않는다</b></td>
+      <td><code>pnpm build</code> 결과에 Tailwind 유틸리티가 없다.
+      <b>내가 만들기 전부터 그랬다</b> — 기존 화면의 클래스도 같이 없다.
+      개발 서버에서는 보이므로 <b>배포본에서만 어긋난다</b></td></tr>
+    <tr><td><b>어드민 타입 검사가 통과하지 않는다</b></td>
+      <td>오류 13개가 <span class="file">routes/game/vocashot/host.$pin.tsx</span> 한 파일에 있다.
+      <b>이것도 이전부터다.</b> 그래서 어드민은 <b>게이트가 없는 상태</b>다 —
+      앱과 달리 무엇을 깨도 검사가 말해 주지 않는다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">위 다섯 중 <b>앞 둘은 데이터가 조용히 어긋나는 종류</b>고,
+뒤 셋은 <b>확인 장치가 없는 종류</b>다. 어느 쪽도 화면을 보고는 알 수 없다.</p>
+
+</main>

@@ -26,7 +26,7 @@
 
 > **개발자는** 기획 문서를 처음부터 훑어 과업을 추측하지 말고
 > **[`phase1/developer_tasks.md`](phase1/developer_tasks.md)**부터 읽는다.
-> `PD-01~10`은 기획이 먼저 답할 것, `DEV-01~13`은 구현 카드이며 각 카드에 완료 판정과
+> `PD-01~10`은 기획이 먼저 답할 것, `DEV-01~14`는 구현 카드이며 각 카드에 완료 판정과
 > 반환 산출물이 적혀 있다.
 
 ## 어느 문서가 무엇에 답하나 → **[phase1/INDEX.md](phase1/INDEX.md)**
@@ -50,7 +50,7 @@
 |---|---|
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
-| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 여기 들어왔다(`BLOCKERS.md` §10). 그 전에는 "범위 밖" 이었다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
+| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. **명세는 `phase1/admin_spec_v1.html` 이다**(전에는 어드민 문서가 없었다). **어드민에는 게이트가 없다** — `pnpm typecheck` 가 통과하지 않고(`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. 둘 다 리뉴얼 전부터다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
 | `phase1/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `phase1/INDEX.md`.<br>그 밖에 인계 메모(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
@@ -95,7 +95,7 @@ cd app && pnpm install && pnpm dev
 |---|---|
 | 1 파이썬 의존성 | `api/.venv`. `requirements.txt` 에 `httpx` 가 빠져 있어 넣었다 |
 | 2 `api/.env` | **`DB_*` 다섯과 `JWT_SECRET` 뿐.** 본보기가 `api/.env.example` 이다.<br>**`JWT_SECRET` 은 base64 여야 한다** — `auth.py:38` 이 `b64decode` 한다. 아무 문자열이면 로그인이 500 이다 |
-| 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**스키마는 안 넣는다** — `createAllTables()` 가 표를 스스로 만든다(2026-08-27 기준 **30개**. 세려면 `grep -c '^class Ko' api/persistence/model.py`) |
+| 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**표는 안 넣는다** — `createAllTables()` 가 표를 스스로 만든다. **칸은 아니다** — 기존 표에 칼럼을 더하는 마이그레이션은 손으로 돌려야 한다(`api/migration_*.sql`. `BLOCKERS.md` §6-b)(2026-08-29 기준 **33개**. 세려면 `grep -c '^class Ko' api/persistence/model.py`) |
 | 4 외부 키 | **하나도 없어도 된다.** 2026-08-26 에 로드 때 자격증명을 요구하던 다섯 곳을<br>요청 시점으로 옮겼다 — `BLOCKERS.md` §6-b |
 
 **앱까지 붙여서 화면에서 돌렸다.** 게스트 로그인 → 홈 → 교재학습 → 활동 →
