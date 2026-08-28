@@ -54,7 +54,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 # 저장소의 문. CLAUDE.md 는 세션마다 자동으로 읽히므로 여기 적힌 수가
 # 틀리면 피해가 가장 크다 — 그래서 검사 대상에 넣는다.
-DOORS = [ROOT / "CLAUDE.md", ROOT / "README.md", ROOT / "BLOCKERS.md"]
+DOORS = [ROOT / "CLAUDE.md", ROOT / "README.md", ROOT / "BLOCKERS.md",
+         ROOT / "DESIGN.md"]
 
 # 문서 이름에 붙는 확장자 없는 형태도 인용에 쓰인다
 NAME_RE = r"[A-Za-z0-9_.가-힣-]+"
@@ -504,6 +505,7 @@ def observation_baselines() -> list[str]:
         ROOT / "README.md",
         ROOT / "BLOCKERS.md",
         ROOT / "CLAUDE.md",
+        ROOT / "DESIGN.md",
     ]:
         if not f.exists():
             continue
