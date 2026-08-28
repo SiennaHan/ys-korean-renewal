@@ -9,8 +9,9 @@ interface DialogProps {
 }
 
 /**
- * 가운데 뜨는 모달. 쓰는 곳은 둘이다 —
- * `learn/jamo/word-write.tsx` · `routes/book/chapter/unit/write2/$code.tsx`.
+ * 가운데 뜨는 모달. 쓰는 곳은 `learn/jamo/word-write.tsx` 하나다 —
+ * 둘째였던 `routes/book/chapter/unit/write2/$code.tsx` 는 레거시 교재 트리와 함께
+ * 2026-08-28 에 지웠다.
  *
  * 접근성으로 고친 것 (2026-08-24)
  *   · **Esc 로 닫힌다.** 전에는 바깥을 마우스로 누르는 것이 닫는 유일한 방법이라

@@ -40,7 +40,8 @@ import { type LearnSearch, parseLearnSearch } from "./-search";
 /**
  * 단어 플래시카드 — 명세 §4
  *
- * 구 경로 /book/chapter/unit/flashcard/$id 에서 옮겨 왔다. 그쪽은 리다이렉트만 남는다.
+ * 구 경로 /book/chapter/unit/flashcard/$id 에서 옮겨 왔다.
+ * 그 리다이렉트도 2026-08-28 에 지웠다 — 이제 /book 주소는 하나도 없다.
  * URL 에서 콘텐츠 ID 를 걷어내고 급·과만 받는다 — 세트는 여기서 찾는다.
  */
 export const Route = createFileRoute("/learn/flashcard")({
