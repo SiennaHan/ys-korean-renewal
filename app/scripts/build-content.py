@@ -98,6 +98,54 @@ def cell(v):
     return v
 
 
+# ── 검수 상태 ────────────────────────────────────────────────────────────────
+#
+# **G1 은 "reviewed 만 학생에게 낸다" 로 정했는데 그대로는 성립하지 않는다.**
+# 원장을 세어 보면 `reviewed` 가 거의 없다 — 미션 대화 117행은 **0개**이고
+# (전부 `fixed_v29`), 자모 529행도 0개다. 그대로 걸면 **이미 배선까지 끝난 화면이
+# 통째로 빈다.** 실제 상태 값이 두 갈래가 아니라 여럿이기 때문이다:
+#
+#   auto_checked · draft · reviewed · deleted
+#   fixed_v14~v29 · authored_v21/v23 · tagged_v20 · filled_v19 · added_v17
+#
+# 그래서 **내보내지 않을 것만 정한다**(기획 확정 2026-08-28 — "예외 상태를 둔다").
+# 나머지는 낸다. 저작이 진행 중인 것을 학생이 보는 것과, 지운 것을 학생이 보는 것은
+# 무게가 다르다 — 뒤쪽만 막는다.
+DROP_STATUS = {"deleted"}
+
+# 위 목록에 없는 값이 나오면 **조용히 내보내지 않고 알린다.** 새 상태가 생겼는데
+# 아무도 모르는 채 학생에게 가는 것이 지금까지의 문제였다.
+KNOWN_STATUS = {
+    "auto_checked", "draft", "reviewed", "deleted",
+    "tagged_v20", "filled_v19", "added_v17", "authored_v21", "authored_v23",
+} | {f"fixed_v{n}" for n in range(10, 40)}
+
+# **이전한 콘텐츠의 예외.** 자모 529행은 전부 `draft` 인데 저작 전이라는 뜻이 아니다 —
+# 구 앱 `problem.ts` 를 **그대로 옮긴 것**이고 화면이 보는 값이 바뀌지 않았다
+# (BLOCKERS.md §2). 검수로 남은 것은 받침·겹받침 낱자 목록뿐이다.
+# 여기 이름으로 적어 두는 이유는, 나중에 "draft 는 다 막자" 가 나왔을 때
+# **이 시트가 왜 다른지**를 그 자리에서 알 수 있게 하기 위해서다.
+PORTED_AS_IS = {
+    "n8_jamo": "구 앱 problem.ts 를 그대로 이전(2026-08-24). draft 는 '저작 전'이 아니다",
+}
+
+
+def drop_unshippable(sheet, rows):
+    """내보내지 않을 행을 걸러 낸다. (남은 행, 뺀 수, 처음 보는 상태) 를 준다."""
+    if not rows or "review_status" not in rows[0]:
+        return rows, 0, set()
+    kept, dropped, unknown = [], 0, set()
+    for r in rows:
+        st = str(r.get("review_status") or "").strip()
+        if st and st not in KNOWN_STATUS:
+            unknown.add(st)
+        if st in DROP_STATUS:
+            dropped += 1
+            continue
+        kept.append(r)
+    return kept, dropped, unknown
+
+
 def read_sheet(ws):
     it = ws.iter_rows(values_only=True)
     head = [KEY_FIX.get(str(h).strip(), str(h).strip()) if h is not None else "" for h in next(it)]
@@ -203,6 +251,8 @@ def main():
     wb = openpyxl.load_workbook(ledger, read_only=True, data_only=True)
 
     warnings: list[tuple[str, int, str, str]] = []
+    warnings_status: list[tuple[str, list[str]]] = []
+    dropped_total = 0
     plan = [(s, f"{s}.json") for s in CONTENT_SHEETS] + list(EXTRA_SHEETS.items())
     for sheet, filename in plan:
         if sheet not in wb.sheetnames:
@@ -215,6 +265,9 @@ def main():
 
         path = OUT_DIR / filename
         prev = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        rows, dropped, unknown = drop_unshippable(sheet, rows)
+        if unknown:
+            warnings_status.append((sheet, sorted(unknown)))
         derive_from_prompt(sheet, rows)
         rows = coerce(rows, int_columns(rows, prev))
         derived = carry(sheet, rows, prev)
@@ -223,7 +276,9 @@ def main():
         before = len(prev) if prev else 0
         delta = f"{before} → {len(rows)}" if before != len(rows) else f"{len(rows)}"
         new_cols = [k for k in rows[0] if not prev or k not in prev[0]]
-        note = f" · 새 열 {len(new_cols)}" if new_cols else ""
+        dropped_total += dropped
+        note = f" · 뺀 행 {dropped}" if dropped else ""
+        note += f" · 새 열 {len(new_cols)}" if new_cols else ""
         note += f" · voice 추정 {derived}" if derived else ""
         same = path.exists() and path.read_text(encoding="utf-8") == text
         mark = "같음" if same else ("쓸 것" if args.check else "썼음")
@@ -235,6 +290,13 @@ def main():
         for line, key, val in odd_quotes(sheet, rows):
             warnings.append((sheet, line, key, val))
 
+    if dropped_total:
+        print(f"\n원장에서 지운 행 {dropped_total}개를 내보내지 않았다 (review_status = deleted)")
+    if warnings_status:
+        print("\n⚠️  처음 보는 review_status — 내보내기는 했지만 규칙에 없다")
+        print("    scripts/build-content.py 의 KNOWN_STATUS 에 넣거나, 막을 것이면 DROP_STATUS 로.")
+        for sheet, vals in warnings_status:
+            print(f"    {sheet}: {', '.join(vals)}")
     if warnings:
         print(f"\n⚠️  따옴표가 홀수인 한글 칸 {len(warnings)}개 — 엑셀이 여는 \' 를 먹었을 수 있다")
         print("    셀 맨 앞의 \' 는 서식 지시로 읽혀 값에서 사라진다. 원장에서 되돌려라.")

@@ -78,6 +78,48 @@
     게이트가 전체에서 어디인지는 <span class="file">masterplan_v3</span> §5 를 봐라.</div>
 </header>
 
+<div class="callout good">
+  <div class="t">공개 게이트를 생성기에 넣었다 — ②로 정했다 <span class="pill">기획 확정 2026-08-28</span></div>
+  <p>어긋남을 짚은 것은 옳았다. 다만 <b>①(reviewed 만 내보낸다)은 그대로는 성립하지 않는다</b> —
+  원장을 세어 보면 상태 값이 두 갈래가 아니라 여럿이고 <code>reviewed</code> 는 거의 없다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>시트</th><th><code>reviewed</code></th><th>실제로 붙어 있는 값</th></tr>
+    <tr><td><code>n7_mission_chat</code></td><td><b>0 / 117</b></td><td>전부 <code>fixed_v29</code> — <b>검수 완료된 것이다</b></td></tr>
+    <tr><td><code>n8_jamo</code></td><td><b>0 / 529</b></td><td>전부 <code>draft</code></td></tr>
+    <tr><td><code>n1_word_list</code></td><td>4 / 2890</td><td><code>auto_checked</code> · <code>draft</code> · <code>fixed_v17·18</code> · <code>filled_v19</code> · <code>added_v17</code> · <code>deleted</code></td></tr>
+    <tr><td><code>n4_blank_question</code></td><td>70 / 836</td><td><code>tagged_v20</code> 759 · <code>authored_v21</code> · <code>fixed_v22·24</code></td></tr>
+  </table></div>
+  <p><b>①로 걸면 이미 배선까지 끝난 화면이 통째로 빈다</b> — 미션 대화 117행이 0개이기 때문이다.
+  상태 값이 <code>draft → auto_checked → reviewed</code> 한 줄로 흐르지 않고
+  <b>판 번호가 붙은 상태</b>(<code>fixed_v14~29</code> · <code>authored_v21/23</code> ·
+  <code>tagged_v20</code> · <code>filled_v19</code>)로 갈라져 있다.</p>
+
+  <p>그래서 <b>내보내지 않을 것만 정했다.</b> 나머지는 낸다 —
+  저작이 진행 중인 것을 학생이 보는 것과 <b>지운 것을 학생이 보는 것은 무게가 다르다.</b></p>
+  <div class="tablewrap"><table>
+    <tr><th>정한 것</th><th>내용</th></tr>
+    <tr><td><b>막는다</b></td><td><code>review_status = deleted</code> 뿐이다</td></tr>
+    <tr><td><b>낸다</b></td><td>그 밖 전부 — <code>draft</code> 포함</td></tr>
+    <tr><td><b>알린다</b></td><td>규칙에 없는 값이 나오면 <b>조용히 내보내지 않고 경고한다</b>.
+      새 상태가 생겼는데 아무도 모르는 채 학생에게 가는 것이 지금까지의 문제였다</td></tr>
+    <tr><td><b>예외를 이름으로</b></td><td><code>PORTED_AS_IS</code> 에 <code>n8_jamo</code> 를 적었다 —
+      "구 앱 <code>problem.ts</code> 를 그대로 이전(2026-08-24). <b>draft 는 '저작 전' 이 아니다</b>".
+      나중에 "draft 는 다 막자" 가 나왔을 때 <b>이 시트가 왜 다른지</b>를 그 자리에서 알 수 있게 한 것이다</td></tr>
+  </table></div>
+
+  <div class="callout bad">
+    <div class="t">그 김에 나온 것 — 지운 행 52개가 학생에게 가고 있었다</div>
+    <p><code>deleted</code> 로 표시된 <b>54행 중 52행이 이미 제품 번들에 있었다</b>
+    (어휘 42 · 어휘문제 8 · 롤플레잉 1 · 듣기대본 1). 원장에서 지운 것을 학생이 보고 있었다는 뜻이다.
+    <b>이쪽이 draft 보다 급했다.</b></p>
+    <p>빼기 전에 <b>다른 시트가 그 id 를 가리키는지 전수로 확인했다</b> — 끊기는 참조는 없었다.
+    빼고 나서 어휘 화면을 열어 정상인 것도 봤다.</p>
+  </div>
+  <p class="qa">규칙은 <code>app/scripts/build-content.py</code> 의 <code>DROP_STATUS</code> ·
+  <code>KNOWN_STATUS</code> · <code>PORTED_AS_IS</code> 셋에 있고, 왜 그렇게 정했는지도 그 자리에 적혀 있다.
+  <b>원장은 고치지 않았다</b> — 상태 값을 다시 붙이는 것은 콘텐츠 결정이라 기획자의 몫이다.</p>
+</div>
+
 <h2 id="s1"><span class="no">1</span>판정 기준</h2>
 <p class="lead">"좋은 활동인가"로 판단하면 다 남기게 된다. 콘텐츠 저작이 임계 경로이므로 <b>저작 부담을 지불할 값어치가 있는가</b>로 판단한다.</p>
 <ol>

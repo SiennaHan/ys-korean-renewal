@@ -6096,22 +6096,6 @@
 		"voice": "male"
 	},
 	{
-		"id": 382,
-		"book_id": 2,
-		"chapter": 14,
-		"script_id": 84,
-		"seq": 6,
-		"speaker": "직원",
-		"gender": "여",
-		"text": "네, 잠시만 기다리세요. 선생님 전화번호는 010-2049-5867입니다.",
-		"item_id": "LL-2-14-011",
-		"review_status": "deleted",
-		"source_page": "",
-		"change_note": "신판은 다섯 턴 구성 — 남는 줄 폐기",
-		"hold_reason": "",
-		"voice": "female"
-	},
-	{
 		"id": 383,
 		"book_id": 2,
 		"chapter": 14,
