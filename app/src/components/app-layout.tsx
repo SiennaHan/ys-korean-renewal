@@ -34,7 +34,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 				.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 			`}</style>
 
-			<div className="relative flex h-dvh w-full justify-center overflow-hidden bg-gray-100 dark:bg-gray-900">
+			<div className="relative flex h-dvh w-full justify-center overflow-hidden bg-gray-100">
 				<motion.div
 					initial={false}
 					animate={{ maxWidth: widthStyle }}
@@ -43,7 +43,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 						stiffness: 300,
 						damping: 30,
 					}}
-					className="hide-scrollbar relative flex h-full w-full flex-col overflow-y-auto bg-white shadow-2xl dark:bg-black"
+					className="hide-scrollbar relative flex h-full w-full flex-col overflow-y-auto bg-white shadow-2xl"
 					style={
 						{
 							"--app-width": widthStyle,

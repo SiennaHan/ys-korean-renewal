@@ -238,9 +238,11 @@ BlinkMacSystemFont, sans-serif` 다.
 - 미디어 쿼리는 사실상 없다 — 게임 밖에서는 `prefers-reduced-motion` 하나뿐이다.
   **폭 두 개를 앱이 직접 잡으므로 CSS 브레이크포인트가 필요 없는 구조다.**
 
-**다크모드는 없다.** `dark:` 변형이 `app-layout.tsx` 두 곳에 있지만 **켜는 장치가
-없어 죽은 코드다.** `globals.css` 에는 shadcn 이 남긴 oklch 변수 64개가 있는데
-이것도 별개 계보다(§2.6).
+**다크모드는 없다** — 그리고 **2026-08-28 에 그 흔적을 걷어냈다**(§8 물음 13).
+`globals.css` 의 `.dark` 34줄, `@custom-variant dark`, `app-layout.tsx` 의 `dark:`
+두 곳이 같이 갔다. **셋을 같이 걷어야 한다** — `@custom-variant` 만 지우면 `dark:`
+가 Tailwind 기본 변형(`prefers-color-scheme`)으로 되돌아가, 여태 죽어 있던 다크
+규칙이 **OS 가 다크인 사용자에게 갑자기 켜진다.**
 
 ### 2.5 모션
 
@@ -262,12 +264,13 @@ BlinkMacSystemFont, sans-serif` 다.
 
 - `lucide-react` — **48 파일**에서 쓴다. 사실상 기본 아이콘 세트.
 - `app/src/assets/icons.tsx` — 129줄의 자체 SVG. 목업이 그린 것들.
-- `app/src/components/ui/*` **6개**(`button` · `dialog` · `assess-chart` ·
-  `circular-progress` · `language-selector` · `settings-page`) — **shadcn 잔재다.**
-  둘(`book-header` · `header-back-button`)은 레거시 교재 트리와 함께 2026-08-28 에
-  지웠다 — 그 라우트들만 쓰고 있었다. `cva` 로 짜였고
-  `globals.css` 의 oklch 변수 계보에 붙어 있다. **토큰과 다른 뿌리**이고 아직
-  11곳에서 `--primary` 등을 쓴다.
+- `app/src/components/ui/*` **5개**(`button` · `dialog` · `circular-progress` ·
+  `language-selector` · `settings-page`) — 이름은 shadcn 이지만 **색은 이미 우리
+  토큰이다.** 2026-08-28 에 세어 보니 다섯 중 shadcn 색을 쓰는 파일이 하나도 없고
+  `button.tsx` 는 우리 토큰만 33회 쓴다. 남은 것은 `cva` 라는 짜임새뿐이다.
+  셋은 2026-08-28 에 지웠다 — `book-header` · `header-back-button` 은 레거시 교재
+  트리와 함께(그 라우트들만 쓰고 있었다), `assess-chart` 는 **import 하는 파일이
+  0곳**이라 죽어 있었다(91줄 · hex 6).
 
 ---
 
@@ -307,7 +310,7 @@ BlinkMacSystemFont, sans-serif` 다.
 
 **2026-08-28 에 토큰으로 데려왔다**(§8 물음 11). 그 전에는 `bg-red-400` 꼴 Tailwind
 기본 팔레트에 `rounded-lg`(=10px, `globals.css` 의 `--radius:0.625rem` — **shadcn
-잔재**)를 썼다. 이 앱에서 토큰과 가장 멀었던 컴포넌트다.
+잔재**)를 썼다. 그 `--radius` 계보는 같은 날 걷어냈다(물음 12). 이 앱에서 토큰과 가장 멀었던 컴포넌트다.
 
 **목업이 없다.** 그래서 `parity:activity` 도 이 컴포넌트를 안 본다 — 값이 어긋나도
 아무도 안 센다. 고칠 때는 화면을 열어 직접 띄워 보는 수밖에 없는데, 토스트를 띄우는
@@ -430,8 +433,8 @@ BlinkMacSystemFont, sans-serif` 다.
 | 9 | 토큰 리터럴 복제 28개를 걷을까 | 걷는다 · 둔다 | 토큰 파일이 스스로 "semantic 만 쓴다" 고 정해 뒀다 | **걷었다** ✔ (2026-08-28) | `token-literal-check.py` ✔ |
 | 10 | 빈 상태·로딩·에러를 공통 컴포넌트로 뺄까 | 지금 46파일에 흩어짐 | 공통 정의가 없다 | | — |
 | 11 | 토스트를 토큰으로 데려올까 | Tailwind 기본 팔레트 | **토큰과 가장 먼 컴포넌트** | **오류 `--color-fill-wrong` · 안내 `--color-text-strong`, radius 12** ✔ (갈래를 넷 → 둘로 줄였다 — 아래 11-b) | 검사 없음 — 목업이 없어 `parity` 밖이고, `design-values-check.py` 는 CSS 만 본다 |
-| 12 | `components/ui/*` 8개(shadcn oklch)를 흡수할까 걷어낼까 | 흡수 · 제거 | 11곳에서 쓴다. 토큰과 별개 뿌리 | | — |
-| 13 | 다크모드 죽은 코드를 지울까 | `dark:` 2곳 | 켜는 장치가 없다 | | — |
+| 12 | shadcn oklch 계보를 흡수할까 걷어낼까 | 흡수 · 제거 · 동결 | 실측하니 산 자리가 셋뿐이고 기대는 자리는 0곳 | **걷어냈다** ✔ (2026-08-28 · 아래 12-b) | 검사 없음 — 다시 들어오면 `check:css` 가 아니라 사람이 봐야 한다 |
+| 13 | 다크모드 죽은 코드를 지울까 | `dark:` 2곳 | 켜는 장치가 없다 | **지웠다** ✔ (2026-08-28 · 12번과 같은 판) | — |
 | 14 | 레거시 교재 트리 `/book/**` | 규범 대상 · 동결 · 삭제 | 링크가 0곳 — 주소를 쳐야 닿았다. 임의값의 37%를 지고 semantic 토큰은 0회 | **지웠다** ✔ (2026-08-28) | — |
 | 15 | `prefers-reduced-motion` 을 전 화면군에 걸까 | 지금 2/6 | 활동·인증만 있다 | | — |
 
@@ -466,6 +469,41 @@ BlinkMacSystemFont, sans-serif` 다.
 id 로 지우므로 **둘이 같이 사라졌다.** 세는 수로 바꿨다. **게이트 넷은 전부 통과하고
 있었다** — 화면을 열어 콘솔을 보고서야 나왔다. §7 이 말하는 자리 그대로다.
 
+### 12-b. shadcn oklch 계보 — 왜 걷어냈나 (2026-08-28)
+
+**110줄이 있었는데 닿는 자리는 셋뿐이었다.** `globals.css` 218줄 중 `:root` 의
+oklch 35줄 · `.dark` 34줄 · `@theme inline` 38줄, 즉 **파일의 절반**이 shadcn
+계보였다. 실제로 무엇이 그것을 쓰는지 세어 보니:
+
+| 자리 | 크기 |
+|---|---|
+| `routes/__root.tsx` 오류·업데이트 화면 | 유틸리티 **6회 3종** |
+| 비게임 `rounded-sm/md/lg/xl` (`--radius` 눈금) | **7회** — `HangulCanvas` 3 · `qr` 2 · `__root` 2 |
+| `* { @apply border-border outline-ring/50 }` | 1줄, **모든 요소**. 기대는 자리 **0곳** |
+| `var(--primary)` 꼴 직접 사용 | **0곳** |
+| `components/ui/*` | shadcn 색 **0회** — 이름만 shadcn 이었다 |
+
+**`components/ui/*` 가 이 계보에 붙어 있다는 것이 이 문서의 오해였다.** 다섯 파일
+어디에도 shadcn 색이 없고 `button.tsx` 는 우리 토큰만 33회 쓴다. 전에 여기 "8개 ·
+11곳" 이라고 적혀 있었는데 **둘 다 틀렸다** — 파일은 그때 이미 6개였고(둘은 `/book`
+과 함께 지워졌다), "11곳" 은 `bg-background-base` 같은 **우리 토큰을 잘라 센 것**이다.
+이름이 겹치는 자리라 경계를 안 잡고 세면 이렇게 된다.
+
+**radius 가 이 계보의 진짜 값어치였고, 그게 손해였다.** `--radius:0.625rem` 이
+만드는 눈금은 sm 6 · md 8 · lg 10 · xl 14 다. 우리가 정한 눈금은 8(칩) ·
+12(컨트롤) · 16(카드)인데 **거기에 12가 없다.** 그래서 토스트에서 두 번 발목을
+잡혔다. 쓰던 7곳은 전부 명시 값으로 옮겼다.
+
+**게임 두 곳은 바뀐다.** `particle-sniper-view` 의 `rounded-xl` 두 곳이 14px →
+**12px** 이 된다. 게임은 규범 범위 밖이라 마크업을 안 건드렸는데, 목업 대조가
+클래스 이름을 보므로 `rounded-[14px]` 로 못 박으면 대조가 깨진다(실제로 깨졌다).
+**목업 캡처에는 `--radius` 도 Tailwind 도 없어서** 그 값은 오직 앱 CSS 에서 온다 —
+즉 목업과 앱이 갈라지는 것이 아니라 둘 다 12가 된다. 2px 이고 우리 눈금 쪽이다.
+
+**남은 것** — `rounded-sm` · `rounded-md` 는 이제 쓰는 곳이 없어 아예 생성되지
+않는다(쓰면 0px 이 된다). `rounded-lg` · `rounded-xl` 은 Tailwind 기본값 8 · 12 다.
+새 코드는 `rounded-[8px]` 꼴로 우리 눈금을 명시하는 편이 낫다.
+
 ### 8-c. 정한 값을 따르려면 무엇이 바뀌나 (2026-08-28 적용분)
 
 **"정했다" 고 자동으로 바뀌지 않는다.** 화면군마다 자기 값을 리터럴로 쥐고 있었기
@@ -493,18 +531,18 @@ id 로 지우므로 **둘이 같이 사라졌다.** 세는 수로 바꿨다. **�
 
 ### 8-b. 근거가 되는 측정치
 
-게임을 뺀 `app/src` 의 tsx **116개** 기준(2026-08-28, 레거시 교재 트리를 지운 뒤).
+게임을 뺀 `app/src` 의 tsx **116개** 기준(2026-08-28 마지막 실측).
 **개발 도구도 뺀다** — `components/dev/`(디자인 결정 패널)는 프로덕션에 안 나가므로
 제품 부채가 아니다. 안 빼면 그 파일 하나가 hex 20 · 인라인 style 7 을 얹는다.
 
 | 무엇 | 수 | 몰려 있는 곳 |
 |---|---|---|
 | 임의값 `bg-[#hex]` 류 | **100** (레거시 삭제 전 162) | `components/learn/jamo/**` · `chat-text.tsx` |
-| Tailwind 기본 색 클래스 | **41** (전 63) | `app-layout` · `qr` · `toast` |
-| semantic 토큰 유틸리티 | **137** | `ui/button` · `my-profile` · `content4/5` |
+| Tailwind 기본 색 클래스 | **37** (전 63 → 41 → 37) · 14파일 | `app-layout` 6 · `qr` 6 · `jamo/choose` 4 · `problem/scene/header` 4 |
+| semantic 토큰 유틸리티 | **153** (전 137 — 토스트와 `__root` 오류 화면이 들어왔다) | `ui/button` · `my-profile` · `content4/5` |
 | 인라인 `style={{` | **50** (중 20은 스토리 파일) | 활동 화면 몇 곳 |
-| 하드코딩 `"#hex"` (tsx) | **31** | `chat-text` · `assess-chart` · 자모 넷 |
-| 하드코딩 hex (토큰화된 CSS) | **63**, 그중 **28**이 토큰 값 복제 | `activity.css` 35 · `nav.css` 27 |
+| 하드코딩 `"#hex"` (tsx) | **25** (전 31 — 죽은 `assess-chart` 를 지우며 6이 빠졌다) | `chat-text` · 자모 넷 |
+| 하드코딩 hex (토큰화된 CSS) | **18** (전 63) · 토큰 값 복제 **0** | 남은 18은 팔레트 밖이거나 `mask-image` 의 `#000` 이다 |
 
 > `tokens.css` 주석은 이 부채를 **389 · 998** 로 적고 있다. **낡았다** — 게임까지
 > 포함해도 69 · 189 다. 이관이 그만큼 진행됐다는 뜻이다.

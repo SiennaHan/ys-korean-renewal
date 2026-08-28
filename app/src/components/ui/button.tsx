@@ -4,7 +4,7 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonStyles = cva(
-	"inline-flex h-9 select-none items-center justify-center gap-2 rounded-[10px] px-4 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-2 disabled:pointer-events-none [&>svg]:size-4",
+	"inline-flex h-9 select-none items-center justify-center gap-2 rounded-[12px] px-4 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-line-focus focus-visible:ring-offset-2 disabled:pointer-events-none [&>svg]:size-4",
 	{
 		variants: {
 			variant: {

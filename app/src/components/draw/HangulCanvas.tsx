@@ -281,7 +281,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 
 	return (
 		<div className="flex flex-col items-center justify-center">
-			<div className="w-full max-w-sm rounded-xl bg-white">
+			<div className="w-full max-w-sm rounded-[16px] bg-white">
 				{/* Signature Canvas Area */}
 				<div className="canvas-dialog-head">
 					<span>{t("player.drawWithFinger")}</span>
@@ -383,7 +383,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
 
 				{/* Signature Data Output */}
 				{/* {signatureData && (
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-[12px]">
             <h3 className="text-sm font-bold text-green-700 mb-2">
               ✅ 저장된 서명 데이터 (Base64) - 배경 투명
             </h3>
@@ -391,7 +391,7 @@ export default function HangulCanvas({ text, returnImage, onClose }: Props) {
                 <img 
                     src={signatureData} // 저장된 Base64 데이터를 이미지 소스로 사용하여 화면에 출력
                     alt="Captured Signature" 
-                    className="max-w-full h-auto border-4 border-gray-700 rounded-md shadow-lg bg-gray-200"
+                    className="max-w-full h-auto border-4 border-gray-700 rounded-[8px] shadow-lg bg-gray-200"
                     style={{ maxHeight: '150px' }}
                 />
             </div>

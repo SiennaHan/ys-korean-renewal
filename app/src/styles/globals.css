@@ -32,117 +32,28 @@
 
 @plugin 'tailwindcss-animate';
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * shadcn 의 oklch 계보를 걷어냈다 — 2026-08-28 (DESIGN.md 「정해야 할 물음」 12).
+ *
+ * 여기에 `:root` 의 oklch 35줄 · `.dark` 34줄 · `@theme inline` 38줄, 모두 110줄이
+ * 있었다. 이 파일의 절반이다. **그런데 실제로 닿는 자리는 셋뿐이었다** —
+ * `__root.tsx` 오류 화면의 유틸리티 6회, 비게임 `rounded-*` 7회, 그리고
+ * 모든 요소에 걸려 있던 `* { @apply border-border outline-ring/50 }` 한 줄.
+ * 그 한 줄에 **기대는 자리는 0곳이었다**(tsx 0 · CSS 0, 직접 셌다).
+ *
+ * `components/ui/*` 여섯은 이름만 shadcn 이었다 — shadcn 색을 쓰는 파일이 하나도
+ * 없고 `button.tsx` 는 이미 우리 토큰만 쓴다(33회).
+ *
+ * `.dark` 와 `@custom-variant dark` 도 같이 갔다(물음 13). **셋을 같이 걷어야 한다** —
+ * `@custom-variant` 만 지우면 `dark:` 가 Tailwind 기본 변형(`prefers-color-scheme`)
+ * 으로 되돌아가, 여태 죽어 있던 다크 규칙이 **OS 가 다크인 사용자에게 갑자기 켜진다.**
+ * 그래서 `app-layout.tsx` 의 `dark:` 두 곳도 같은 판에 지웠다.
+ *
+ * radius 는 `--radius:0.625rem` 이 만들던 8·10·14 눈금이었다. 우리 눈금은
+ * 8(칩) · 12(컨트롤) · 16(카드)이고, 이 계보가 12 를 못 내주는 바람에 토스트에서
+ * 두 번 발목을 잡았다. `rounded-*` 를 쓰던 자리는 전부 명시 값으로 옮겼다.
+ */
 
-:root {
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.145 0 0);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(60.29% 0.313 247.45);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
-	--secondary-foreground: oklch(0.205 0 0);
-	--muted: oklch(0.97 0 0);
-	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
-	--accent-foreground: oklch(0.205 0 0);
-	--destructive: oklch(0.577 0.245 27.325);
-	--destructive-foreground: oklch(0.577 0.245 27.325);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
-	--ring: oklch(0.708 0 0);
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
-	--radius: 0.625rem;
-	--sidebar: oklch(0.985 0 0);
-	--sidebar-foreground: oklch(0.145 0 0);
-	--sidebar-primary: oklch(0.205 0 0);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.97 0 0);
-	--sidebar-accent-foreground: oklch(0.205 0 0);
-	--sidebar-border: oklch(0.922 0 0);
-	--sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-	--background: oklch(0.145 0 0);
-	--foreground: oklch(0.985 0 0);
-	--card: oklch(0.145 0 0);
-	--card-foreground: oklch(0.985 0 0);
-	--popover: oklch(0.145 0 0);
-	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.985 0 0);
-	--primary-foreground: oklch(0.205 0 0);
-	--secondary: oklch(0.269 0 0);
-	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.269 0 0);
-	--muted-foreground: oklch(0.708 0 0);
-	--accent: oklch(0.269 0 0);
-	--accent-foreground: oklch(0.985 0 0);
-	--destructive: oklch(0.396 0.141 25.723);
-	--destructive-foreground: oklch(0.637 0.237 25.331);
-	--border: oklch(0.269 0 0);
-	--input: oklch(0.269 0 0);
-	--ring: oklch(0.439 0 0);
-	--chart-1: oklch(0.488 0.243 264.376);
-	--chart-2: oklch(0.696 0.17 162.48);
-	--chart-3: oklch(0.769 0.188 70.08);
-	--chart-4: oklch(0.627 0.265 303.9);
-	--chart-5: oklch(0.645 0.246 16.439);
-	--sidebar: oklch(0.205 0 0);
-	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.269 0 0);
-	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(0.269 0 0);
-	--sidebar-ring: oklch(0.439 0 0);
-}
-
-@theme inline {
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-card: var(--card);
-	--color-card-foreground: var(--card-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-destructive-foreground: var(--destructive-foreground);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-ring: var(--ring);
-	--color-chart-1: var(--chart-1);
-	--color-chart-2: var(--chart-2);
-	--color-chart-3: var(--chart-3);
-	--color-chart-4: var(--chart-4);
-	--color-chart-5: var(--chart-5);
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
-	--color-sidebar: var(--sidebar);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-ring: var(--sidebar-ring);
-}
 
 @theme {
 	/* 버튼 클릭 피드백 — 즉시 완료되는 동작(캐시 재생 등)에도 눌림이 보이도록 살짝 커졌다 복귀 */
@@ -157,15 +68,15 @@
 }
 
 @layer base {
-	* {
-		@apply border-border outline-ring/50;
-	}
-	/* html {
-    overscroll-behavior: none;
-  }
-	body {
-		@apply bg-background text-foreground;
-	} */
+	/*
+	 * 여기 `* { @apply border-border outline-ring/50 }` 가 있었다 — 모든 요소의
+	 * 기본 테두리색·초점색을 shadcn 팔레트로 잡던 한 줄이다. 기대는 자리가 0곳이라
+	 * 같이 걷었다(위 주석). 두께만 주고 색을 안 준 자리는 tsx·CSS 통틀어 없었고,
+	 * 초점 링은 `auth.css` 와 `ui/button.tsx` 가 각자 `--color-line-focus` 를 쓴다.
+	 *
+	 * 주석으로 잠자던 `body { @apply bg-background text-foreground }` 도 같은 이유로
+	 * 지웠다 — 가리키던 변수가 이제 없다.
+	 */
 	html,
 	body {
 		/* 화면 전체를 박스에 가두어 브라우저의 강제 스크롤 방지 */

@@ -76,15 +76,15 @@ function RootErrorComponent({ error, reset }: ErrorComponentProps) {
 		return (
 			<div className="mx-auto flex min-h-[50vh] max-w-xl flex-col items-center justify-center px-6 text-center">
 				<h1 className="font-bold text-2xl">{t("app.updatingTitle")}</h1>
-				<p className="mt-2 text-muted-foreground text-sm">
+				<p className="mt-2 text-text-sub text-sm">
 					{t("app.updatingBody")}
 				</p>
 				<button
-					className="mt-4 rounded-md bg-primary px-4 py-2 text-primary-foreground"
+					className="mt-4 rounded-[12px] bg-fill-primary px-4 py-2 text-text-inverse"
 					onClick={() => window.location.reload()}
 					type="button"
 				>
-					새로고침
+					{t("app.reload")}
 				</button>
 			</div>
 		);
@@ -93,13 +93,13 @@ function RootErrorComponent({ error, reset }: ErrorComponentProps) {
 	return (
 		<div className="mx-auto flex min-h-[50vh] max-w-xl flex-col items-center justify-center px-6 text-center">
 			<h1 className="font-bold text-2xl">{t("app.errorTitle")}</h1>
-			<p className="mt-2 text-muted-foreground text-sm">{t("app.errorBody")}</p>
+			<p className="mt-2 text-text-sub text-sm">{t("app.errorBody")}</p>
 			<button
-				className="mt-4 rounded-md bg-primary px-4 py-2 text-primary-foreground"
+				className="mt-4 rounded-[12px] bg-fill-primary px-4 py-2 text-text-inverse"
 				onClick={() => reset()}
 				type="button"
 			>
-				다시 시도
+				{t("app.retry")}
 			</button>
 		</div>
 	);

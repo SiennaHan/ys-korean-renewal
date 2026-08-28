@@ -28,8 +28,9 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
 
 	/*
 	 * radius 12 는 정한 값이다(DESIGN.md 「정해야 할 물음」 2 — 버튼·선택지와 같은
-	 * 눈금). rounded-lg 를 쓰면 10px 이 된다 — 그 눈금은 globals.css 의
-	 * `--radius:0.625rem`, 즉 **shadcn 잔재**라서 우리 눈금(8·12·16)과 다르다.
+	 * 눈금). 이 자리가 `rounded-lg` 였을 때는 10px 이었다 — globals.css 의
+	 * `--radius:0.625rem` 이 만들던 8·10·14 눈금이고, 우리 눈금에 12 가 없었다.
+	 * 그 계보는 2026-08-28 에 걷어냈다(물음 12).
 	 */
 	return (
 		<div

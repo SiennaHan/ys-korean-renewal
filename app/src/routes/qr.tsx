@@ -60,7 +60,7 @@ function QrRedirectPage() {
 						{t("qr.errorDescription")}
 					</p>
 					<button
-						className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white"
+						className="mt-7 flex w-full items-center justify-center gap-2 rounded-[12px] bg-blue-600 px-4 py-3 font-semibold text-white"
 						onClick={() => void registerAndRedirect()}
 						type="button"
 					>
@@ -68,7 +68,7 @@ function QrRedirectPage() {
 						{t("qr.retry")}
 					</button>
 					<button
-						className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700"
+						className="mt-3 flex w-full items-center justify-center gap-2 rounded-[12px] border border-gray-200 px-4 py-3 font-semibold text-gray-700"
 						onClick={continueToWeb}
 						type="button"
 					>
