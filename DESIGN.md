@@ -1,4 +1,4 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 4be1049 -->
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 30a8031 -->
 
 # DESIGN.md — 학생앱 디자인
 
@@ -127,7 +127,26 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 | ΔE 7.6 · 12.2 | 2 | 안 걷었다 — `--nav-text-mute`, 만료 페이월의 주황. 일부러 고른 색으로 보인다 |
 | 역할이 안 맞음 | 2 | 안 걷었다 — `.role-order` 테두리와 `.syl` 글자색은 역할을 맞추면 ΔE 8.8·11.5 가 된다 |
 
-지금 팔레트 밖은 **14곳**(마스크 12 제외). 나머지는 아직 안 정했다.
+**그리고 여덟 곳이 "옅은 파랑" 한 무리였다.** `#e9f2fc` · `#eef6ff` · `#f0f7ff` ·
+`#e7f3ff` · `#e4f1ff` · `#dcecff` — 선택됨 · 지금 차례 · 오늘 할 일 카드 · tint 선.
+**같은 뜻인데 값이 여섯이었다.** 팔레트에서 가장 옅은 파랑이 `blue-50`(#dbedff)이라
+그보다 옅은 자리가 없어서 화면들이 각자 지어 쓴 것이다.
+
+**2026-08-28 에 자리를 만들어 모았다.**
+
+| 새로 만든 것 | 값 | 무엇 |
+|---|---|---|
+| `--color-primitive-blue-25` | `#e9f3fe` | 여덟 곳의 **평균색**. 팔레트에 들인 새 색이다 |
+| `--color-background-tint` | blue-25 | 옅은 파란 강조 면 — 선택된 행·칩, 지금 차례, 오늘 할 일 |
+| `--color-background-tint-hover` | blue-50 | 그 면의 hover. **합치지 않은 이유** — 오늘 할 일 카드의 hover 피드백이 사라진다 |
+| `--color-line-tint` | blue-50 | tint 면의 테두리. 면보다 한 단 진해야 선으로 읽힌다 |
+
+그러면서 **없는 토큰을 부르던 자리 하나**도 없어졌다 —
+`.preview-row.on` 이 `var(--color-background-selected, #E9F2FC)` 였는데
+**`--color-background-selected` 는 `tokens.css` 에 없다.** 늘 폴백만 쓰이고 있었다.
+
+지금 팔레트 밖은 **6곳**(마스크 12 제외). `#ddd`(자모 큰 글자) · `--nav-text-mute` ·
+`--nav-text-faint` · nav 주의 면 · 만료 표식 둘. 아직 안 정했다.
 
 > **`nav.css` 가 2026-08-26 에 같은 일을 한 번 했다** — "거의 같은 값이 여럿이었다 …
 > 눈에 보이는 차이가 아니라 **같은 뜻을 여러 값으로 적어 둔 것**이었다". 이번 9곳도
@@ -361,7 +380,7 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 
 **여전히 아무도 안 보는 축.**
 
-- **팔레트에 아예 없는 색**을 쓰는지 — 지금 14곳이다(마스크의 `#000` 12곳 제외).
+- **팔레트에 아예 없는 색**을 쓰는지 — 지금 6곳이다(마스크의 `#000` 12곳 제외).
   토큰 *복제*는 검사가 잡지만, 토큰 *밖* 색은 아직 아무도 안 센다
 - **아직 안 정한 여덟** — 정하지 않은 것은 검사할 수도 없다
 - 어떤 화면이 **실제로 보기 좋은지** — 이것은 끝내 사람이 본다

@@ -27,6 +27,7 @@
 /* ───────── activity_mockups_uiux.html 에서 그대로 ───────── */
 
   :root {
+    --blue-25:#e9f3fe; /* 2026-08-28 신설 — 옅은 파란 강조 면 */
     --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
     --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
     --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
@@ -252,9 +253,9 @@
   .script-toolbar > span { color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:600; }
   .role-order { display:flex; align-items:center; gap:4px; }
   .role-order button { height:34px; padding:0 12px; border:1px solid var(--control-border); border-radius:8px; background:var(--white); color:var(--blue-gray-600); font-size:12px; line-height:18px; font-weight:600; cursor:pointer; }
-  .role-order button.on { border-color:#dcecff; background:var(--blue-50); color:var(--blue-600); }
+  .role-order button.on { border-color:var(--blue-50); background:var(--blue-50); color:var(--blue-600); }
   .turn { display:grid; grid-template-columns:34px minmax(0,1fr) 32px; gap:8px; align-items:start; margin:0; padding:8px 8px 8px 8px; border:0; border-left:3px solid transparent; border-bottom:1px solid var(--control-border); border-radius:0; background:var(--white); }
-  .turn.current.ai,.turn.current.me { border-left-color:var(--blue-500); background:#eef6ff; }
+  .turn.current.ai,.turn.current.me { border-left-color:var(--blue-500); background:var(--blue-25); }
   .turn .who { width:34px; height:24px; display:grid; place-items:center; border-radius:6px; background:#f1f3f6; color:var(--blue-gray-800); font-size:11px; line-height:18px; font-weight:700; }
   .turn.me .who { background:var(--blue-50); color:var(--blue-600); }
   .turn .line { color:var(--blue-gray-900); font-size:15px; line-height:24px; }
@@ -298,7 +299,7 @@
   .turn[data-action] { cursor:pointer; }
 
   /* 문법 · 읽기 */
-  .blank-card { border-radius:12px; border:0; background:#f0f7ff; padding:12px 16px; font-size:18px; line-height:1.7; color:var(--blue-gray-900); font-weight:500; }
+  .blank-card { border-radius:12px; border:0; background:var(--blue-25); padding:12px 16px; font-size:18px; line-height:1.7; color:var(--blue-gray-900); font-weight:500; }
   /* 빈칸은 <u> 대신 빈 <span> 이다 — 앱이 2026-08-25 66b0e94 "빈칸 표기를 통일한다" 에서
      바꾼 것을 정본이 따라간다. 폭이 고정이라 문장마다 흔들리지 않고, 보조기술이
      투명한 전각 공백을 읽지 않는다. */
@@ -307,7 +308,7 @@
   .blank-card b.miss { color:var(--blue-gray-900); }
   .chip-wrap { display:flex; flex-wrap:wrap; gap:8px; }
   .chip-opt { border-radius:8px; border:1px solid var(--control-border); background:var(--control-surface); padding:8px 16px; font-size:15px; font-weight:500; color:var(--blue-gray-900); cursor:pointer; }
-  .chip-opt.on { background:#e9f2fc; color:var(--blue-500); }
+  .chip-opt.on { background:var(--blue-25); color:var(--blue-500); }
   .chip-opt.ok { background:var(--positive-bg); color:var(--blue-gray-900); }
   .chip-opt.no { background:var(--destructive-bg); color:var(--blue-gray-900); }
   .focus-note { margin-top:8px; border-radius:10px; background:#f9fafc; padding:8px 12px; font-size:13px; line-height:1.6; color:var(--blue-gray-600); }
@@ -435,6 +436,7 @@
 /* ───────── nav_mockup_uiux.html 에서 그대로 ───────── */
 
 :root {
+    --blue-25:#e9f3fe; /* 2026-08-28 신설 — 옅은 파란 강조 면 */
     --blue-50:#dbedff; --blue-100:#a2d1ff; --blue-300:#59acff; --blue-500:#0180ff; --blue-600:#0073e6; --blue-900:#24425f;
     --blue-gray-50:#f6f7f8; --blue-gray-100:#e5e8ec; --blue-gray-200:#d7dbe3; --blue-gray-400:#adb3be; --blue-gray-600:#7f848d; --blue-gray-800:#4b505a; --blue-gray-900:#383a3f;
     --gray-200:#eee; --gray-300:#e0e0e0; --gray-400:#bdbdbd; --white:#fff; --yellow-50:#fff8e1; --yellow-300:#ffdb5c;
@@ -507,8 +509,8 @@ button { font:inherit; }
 
   /* 오늘 할 일 — 한 자리에 세 갈래 */
   .task { display:flex; align-items:center; gap:var(--space-3); width:100%; padding:12px;
-    border:1px solid #e4f1ff; border-radius:var(--radius-card); background:#eef6ff; text-align:left; cursor:pointer; }
-  .task:hover { background:#e7f3ff; }
+    border:1px solid var(--blue-50); border-radius:var(--radius-card); background:var(--blue-25); text-align:left; cursor:pointer; }
+  .task:hover { background:var(--blue-50); }
   .task + .task { margin-top:var(--space-3); }
   .task .ic { width:48px; height:48px; border-radius:12px; flex:none; display:grid;
     place-items:center; background:var(--blue-500); color:#fff; font-size:20px; }
@@ -603,7 +605,7 @@ button { font:inherit; }
     width:100%; height:46px; padding:0 12px; border:1px solid var(--control-border); border-radius:var(--radius-control); background:var(--white);
     text-align:left; cursor:pointer; }
   .act:hover { background:var(--control-hover); }
-  .act.doing { border-color:#dcecff; background:var(--white); }
+  .act.doing { border-color:var(--blue-50); background:var(--white); }
   .act .nm { min-width:0; font-size:14px; line-height:20px; font-weight:600; color:var(--blue-900);
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .act.off { background:#F7F8FA; opacity:.55; cursor:not-allowed; }
@@ -623,7 +625,7 @@ button { font:inherit; }
   .syls { display:flex; gap:4px; margin-top:var(--space-2); padding:0; overflow-x:auto;
     overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; }
   .syls::-webkit-scrollbar { display:none; }
-  .syls div { width:28px; height:28px; flex:none; display:grid; place-items:center; border:1px solid #e5f2ff; border-radius:7px; background:#eef6ff;
+  .syls div { width:28px; height:28px; flex:none; display:grid; place-items:center; border:1px solid var(--blue-50); border-radius:7px; background:#eef6ff;
     color:var(--blue-900); font-size:14px; font-weight:700; }
   .unit .acts { margin-top:var(--space-3); gap:var(--space-2); }
   @media (max-width:350px) {

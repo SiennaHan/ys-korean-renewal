@@ -35,6 +35,11 @@
 	/* ══════════ primitive — 무슨 색인가 ══════════ */
 
 	/* blue */
+	/* 팔레트에서 가장 옅은 파랑. **2026-08-28 에 새로 들였다** —
+	   "선택됨 · 지금 차례 · 오늘 할 일" 같은 옅은 파란 강조 면을 화면들이 각자
+	   지어 쓰고 있었다(#e9f2fc · #eef6ff · #f0f7ff · #e7f3ff, 여덟 곳에 여섯 값).
+	   blue-50 보다 옅은 자리가 팔레트에 없어서 생긴 일이다. 값은 그 여덟 곳의 평균이다. */
+	--color-primitive-blue-25: #e9f3fe;
 	--color-primitive-blue-50: #dbedff;
 	--color-primitive-blue-100: #a2d1ff;
 	--color-primitive-blue-200: #7fbfff;
@@ -129,6 +134,10 @@
 	   sunken(blue-gray-100)보다 훨씬 옅다. 2026-08-28 에 이름을 붙였다 —
 	   activity.css 가 이 값을 #f9fafc 로 다섯 곳에 적어 두고 있었다(DESIGN.md 의 9번) */
 	--color-background-subtle: var(--color-primitive-white-50);
+	/* 옅은 파란 강조 면 — 선택된 행·칩, 지금 차례 말풍선, 오늘 할 일 카드.
+	   choice(선택지 기본 배경)보다 옅다 — 그쪽은 누를 것, 이쪽은 지금 그런 상태임을 알린다 */
+	--color-background-tint: var(--color-primitive-blue-25);
+	--color-background-tint-hover: var(--color-primitive-blue-50); /* 위 면의 hover */
 
 	/* fill */
 	--color-fill-primary: var(--color-primitive-blue-500); /* 주요 버튼 · 현재 위치 */
@@ -146,6 +155,7 @@
 	--color-line-control: var(--color-primitive-control-border); /* 선택지·칩·problem-card 테두리 */
 	--color-line-disable: var(--color-primitive-gray-400); /* 비활성 테두리 */
 	--color-line-focus: var(--color-primitive-blue-500); /* 키보드 포커스 링 */
+	--color-line-tint: var(--color-primitive-blue-50); /* tint 면의 테두리 — 면보다 한 단 진하다 */
 
 	/* icon */
 	--color-icon-strong: var(--color-primitive-blue-gray-900); /* 본문 아이콘 */
