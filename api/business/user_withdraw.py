@@ -75,10 +75,14 @@ async def withdrawByAdmin(userId: str):
 
 
 async def purgeAccount(userId: str, guestId: str = None):
-    """계정과 그 계정이 만든 것을 지운다. 지운 행 수를 표별로 돌려준다.
+    """계정과 그 계정이 만든 것을 지운다. 표별로 손댄 행 수를 돌려준다.
 
     **본인 확인은 여기서 하지 않는다** — 부르는 쪽이 이미 했다
     (`withdrawAccount` 는 비밀번호로, `withdrawByAdmin` 은 학교 소속으로).
+
+    **한 갈래는 지우는 것이 아니다.** `ANONYMIZE_MODELS` 의 표는 행을 남기고
+    `user_id` 만 비운다 — 돌려주는 `deleted` 에서 「(user_id 비움)」이 붙은
+    항목이 그것이다. 세는 수의 뜻이 다르므로 이름으로 갈라 둔다.
     """
     uid = str(userId)
     # 게스트로 쓰던 시절의 행이 남아 있을 수 있다. 가입할 때 옮기지만
@@ -140,6 +144,22 @@ async def purgeAccount(userId: str, guestId: str = None):
             deleted[M.__tablename__] = db.query(M).filter(
                 M.user_id.in_(ids)
             ).delete(synchronize_session=False)
+
+    # ── ③-b 지우지 않고 사람만 지우는 표 ──
+    #
+    # **행은 남는다.** `ko_signup_code_use` 는 좌석 회계의 정본이고, 탈퇴해도
+    # 자리를 안 돌려주기로 했으므로(§10) 행을 지우면 `used_count` 와 영구히
+    # 어긋난다. 까닭 전부는 `withdrawal_scope.ANONYMIZE_MODELS` 위에 있다.
+    #
+    # **여기는 `ids` 를 쓰지 않는다.** 저 목록은 게스트 id 문자열이 섞여 있는데
+    # 이 표의 `user_id` 만 Integer 다(나머지 열다섯은 String). 문자열을 섞어
+    # `in_()` 하면 MySQL 이 조용히 0 으로 바꿔 **엉뚱한 행을 건드린다.**
+    # 게스트는 코드로 가입할 수 없으니 애초에 게스트 id 로 된 행이 없다.
+    with sessionScope() as db:
+        for M in withdrawal_scope.ANONYMIZE_MODELS:
+            deleted[f"{M.__tablename__} (user_id 비움)"] = db.query(M).filter(
+                M.user_id == int(userId)
+            ).update({"user_id": None}, synchronize_session=False)
 
     # ── ④ 계정. 맨 마지막이다 ──
     # 앞이 실패해 예외로 빠져도 계정은 남아 다시 시도할 수 있다.

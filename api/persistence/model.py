@@ -299,15 +299,27 @@ class KoSignupCodeUse(Base) :
     ① `ko_user` 만 보면 엑셀로 등록된 학생과 코드로 가입한 학생이 구별되지 않는다
     ② 학생이 탈퇴하면 `ko_user` 행이 사라져 흔적이 없어진다
     ③ 카운터가 어긋났을 때 맞춰 볼 근거가 된다
+
+    **탈퇴해도 이 행은 지우지 않는다** — 위 ②·③ 이 곧 그 경우를 위한 것이다.
+    대신 `user_id` 를 NULL 로 비워 개인 연결만 끊는다(기획 확정 2026-08-28).
+    경계는 `shared/withdrawal_scope.py` 의 `ANONYMIZE_MODELS` 한 곳에만 있다.
     """
     __tablename__  = "ko_signup_code_use"
     id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
     code_id        = Column(Integer,      nullable=False)   # 인덱스는 아래에서 이름을 직접 준다
-    user_id        = Column(Integer,      nullable=False)   # ko_user.id
+    # ko_user.id. **탈퇴하면 NULL 이 된다** — 행은 좌석 회계로 남고 사람만 지워진다.
+    # `user_id` 를 가진 표 열여섯 중 **여기만 Integer 다**(나머지는 String(45~50)).
+    # 그래서 탈퇴 판정이 게스트 id 를 섞어 `in_()` 하는 목록을 여기에는 쓰지 않는다 —
+    # 게스트는 코드로 가입할 수 없으므로 애초에 이 표에 행이 없다.
+    user_id        = Column(Integer,      nullable=True)
     school_code    = Column(String(20),   nullable=False)   # 가입 당시 값의 스냅샷
     used_at        = Column(DateTime,     nullable=False, default=func.utc_timestamp())
     __table_args__ = (
-        # 한 계정은 한 번만 쓴다. 논리적으로 하나여야 하는 것은 DB 가 지키게 한다
+        # 한 계정은 한 번만 쓴다. 논리적으로 하나여야 하는 것은 DB 가 지키게 한다.
+        #
+        # **탈퇴한 자리가 여럿이어도 부딪히지 않는다** — MySQL 의 유니크 인덱스는
+        # NULL 을 서로 다른 값으로 본다. `user_id` 를 0 같은 묘비값으로 채웠다면
+        # 같은 코드에서 둘째 탈퇴가 중복키로 터졌을 것이다. NULL 인 이유가 이것이다.
         UniqueConstraint("code_id", "user_id", name="uq_signup_code_user"),
         Index("ix_signup_code_use_code", "code_id"),
     )

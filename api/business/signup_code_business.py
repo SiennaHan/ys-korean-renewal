@@ -273,12 +273,19 @@ async def listUses(callerUserId, codeId: int):
         uses = await repo_signup_code.findUses(row.id, db)
         out = []
         for u in uses:
-            user = await repo_user.findById(u.user_id, db)
+            # **`user_id` 가 NULL 일 수 있다** — 탈퇴하면 행은 남고 사람만 지워진다
+            # (`shared/withdrawal_scope.ANONYMIZE_MODELS`). 그대로 넘겨도 터지지는
+            # 않지만 `id == NULL` 은 SQL 에서 참이 될 수 없는 조건이라, 없는 것을
+            # 확인하려고 질의를 한 번 더 하는 꼴이 된다. 묻기 전에 가른다.
+            user = await repo_user.findById(u.user_id, db) if u.user_id else None
             out.append({
                 "userId": u.user_id,
                 "name": user.name if user else None,
                 "email": user.email if user else None,
                 "usedAt": u.used_at,
+                # 자리는 찼는데 사람이 없는 칸이다. 화면이 「탈퇴한 회원」으로
+                # 그릴 수 있게 사실을 그대로 준다 — 이름이 빈 것과 다른 일이다
+                "withdrawn": u.user_id is None,
             })
         return jsonable_encoder(out), None
 
