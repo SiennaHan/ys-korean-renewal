@@ -2,6 +2,7 @@ import { getGuestId } from "@/api/api";
 import { createReport, listReport } from "@/api/report";
 import { clips } from "@/shared/data/clip";
 import { MoreVertical, Search, X } from "lucide-react";
+import type { ReactNode } from "react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -440,6 +441,180 @@ const reportError = async (
 	await createReport(request);
 };
 
+/**
+ * 표현 클립 — **표시만** 한다. 검색·재생·신고는 아래 `Content4` 가 쥔다.
+ *
+ * 가른 이유는 다른 화면과 같다 — **목업 대조가 이것을 그린다.** 대조는 제품이 실제로
+ * 그리는 컴포넌트에 픽스처를 넣어 정적 HTML 로 만들고 캡처와 견주는데, 상태와 훅이
+ * 섞인 채로는 그릴 수가 없다. 이 화면은 그동안 대조 밖에 있었다
+ * (`clip_spec_v1` §07 · `masterplan_v3` §15 "목업 없음").
+ *
+ * 재생 중인 카드 자리에는 `playerSlot` 이 들어간다 — `VideoPlayer` 는 유튜브
+ * 플레이어와 감시자를 들고 있어 순수하지 않다. 자모 화면의 `after` 와 같은 방식이다.
+ */
+export function ClipView({
+	title,
+	searchWord,
+	onSearchChanged,
+	onClear,
+	/** 검색어가 두 자 이상인가 — 칩과 결과가 이때만 나온다 */
+	searching,
+	category,
+	onCategorySelect,
+	/**
+	 * 지금 **그리는** 결과. 상한이 아니다 — 몇 개인지는 `total` 이 말한다.
+	 * 끝까지 열리되 그리는 것은 본 만큼이다(`clip_spec_v1` §05 의 2번)
+	 */
+	items,
+	total,
+	/** 재생 중인 것. 이 카드 자리에 `playerSlot` 이 들어간다 */
+	playing,
+	playerSlot,
+	onPlay,
+	onMenuClick,
+	/** 목록 끝 표식. 보이면 한 판 더 그린다 — 없으면 다 그린 것이다 */
+	tailRef,
+	showTail,
+	scrollRef,
+	/** 신고 바텀시트. 없으면 안 그린다 */
+	sheet,
+}: {
+	title: string;
+	searchWord: string;
+	onSearchChanged: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onClear: () => void;
+	searching: boolean;
+	category: CategoryType;
+	onCategorySelect: (c: CategoryType) => void;
+	items: ResultItem[];
+	total: number;
+	playing?: { youtubeId: string; start: number } | null;
+	playerSlot?: ReactNode;
+	onPlay: (v: ResultItem) => void;
+	onMenuClick: (v: ResultItem) => void;
+	tailRef?: React.Ref<HTMLDivElement>;
+	showTail?: boolean;
+	scrollRef?: React.Ref<HTMLDivElement>;
+	sheet?: ReactNode;
+}) {
+	const { t } = useTranslation();
+	const hasResults = items.length > 0;
+
+	return (
+		<div className="flex h-full w-full flex-col bg-background-base">
+			{/* 타이틀 */}
+			<div className="mt-[20px] flex h-[48px] items-center px-[16px]">
+				<span className="font-bold text-[20px] text-text-strong leading-[32px]">
+					{title}
+				</span>
+			</div>
+
+			{/* 검색 입력 */}
+			<div className="px-[16px] py-[8px]">
+				<SearchInputField
+					searchWord={searchWord}
+					onSearchChanged={onSearchChanged}
+					onClear={onClear}
+				/>
+			</div>
+
+			{/* 카테고리 칩 (검색어가 있을 때만) */}
+			{searching && (
+				<div className="px-[16px]">
+					<CategoryChips selected={category} onSelect={onCategorySelect} />
+				</div>
+			)}
+
+			{/* 컨텐츠 영역 */}
+			<div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
+				{searching && hasResults && (
+					<>
+						{/* 검색 결과 헤더 */}
+						<div className="flex items-center justify-between px-[16px] py-[12px]">
+							<span className="font-bold text-[17px] text-text-primary leading-[26px]">
+								'{searchWord}'
+							</span>
+							<span className="font-semibold text-[12px] text-text-sub leading-[18px]">
+								{t("clip.resultCount", { count: total })}
+							</span>
+						</div>
+
+						{/* 비디오 리스트 */}
+						<div className="flex flex-col gap-[16px] px-[16px] pb-[16px]">
+							{items.map((item, index) => (
+								<div key={`${item.youtubeId}-${item.start}-${index}`}>
+									{playing?.youtubeId === item.youtubeId &&
+									playing?.start === item.start ? (
+										<div className="flex flex-col gap-[8px]">
+											{playerSlot}
+											<div className="flex items-center justify-between">
+												<p className="w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]">
+													{item.title}
+												</p>
+												<button
+													type="button"
+													onClick={() => onMenuClick(item)}
+													className="flex size-[24px] shrink-0 items-center justify-center text-text-sub"
+												>
+													<MoreVertical size={16} />
+												</button>
+											</div>
+										</div>
+									) : (
+										<VideoCard
+											video={item}
+											onPlay={onPlay}
+											onMenuClick={onMenuClick}
+										/>
+									)}
+								</div>
+							))}
+							{/* 목록 끝 표식 — 보이면 한 판 더 그린다(위 감시자) */}
+							{showTail && <div ref={tailRef} className="h-[1px] w-full" />}
+						</div>
+					</>
+				)}
+
+				{/*
+				 * 빈 상태가 **둘**이다 — clip_spec_v1 §04 의 2번(기획 확정 2026-08-27).
+				 *
+				 * 전에는 하나뿐이라 **검색 전과 검색 실패에 같은 말**을 냈다 —
+				 * "배우고 싶은 표현을 검색해 보세요". 0건이 나온 사람에게는 답이 아니다.
+				 * 검색어를 되짚어 주고 다른 말로 찾아보라고 한다.
+				 */}
+				{!hasResults && (
+					<div className="mt-[-30px] flex h-full flex-col items-center justify-center px-[24px]">
+						<img
+							src="/images/search_empty_img.svg"
+							alt=""
+							className="size-[64px]"
+						/>
+						{searching ? (
+							<>
+								<p className="mt-[8px] break-keep text-center font-semibold text-[16px] text-text-heading leading-[24px]">
+									{t("clip.noResultTitle", { word: searchWord.trim() })}
+								</p>
+								<p className="mt-[4px] break-keep text-center font-medium text-[14px] text-text-sub leading-[20px]">
+									{t("clip.noResultBody")}
+								</p>
+							</>
+						) : (
+							<p className="mt-[8px] text-center font-semibold text-[16px] text-text-heading leading-[24px]">
+								{t("clip.emptyLine1")}
+								<br />
+								{t("clip.emptyLine2")}
+							</p>
+						)}
+					</div>
+				)}
+			</div>
+
+			{/* 신고 바텀시트 */}
+			{sheet}
+		</div>
+	);
+}
+
 export default function Content4() {
 	const { t } = useTranslation();
 	const [searchWord, setSearchWord] = useState("");
@@ -662,131 +837,47 @@ export default function Content4() {
 		return () => io.disconnect();
 	}, [shown, results.length]);
 
+	const shownItems = results.slice(0, shown);
+	const playingItem = shownItems.find(
+		(x) =>
+			playingVideo?.youtubeId === x.youtubeId &&
+			playingVideo?.start === x.start,
+	);
+
 	return (
-		<div className="flex h-full w-full flex-col bg-background-base">
-			{/* 타이틀 */}
-			<div className="mt-[20px] flex h-[48px] items-center px-[16px]">
-				<span className="font-bold text-[20px] text-text-strong leading-[32px]">
-					{t("clip.title")}
-				</span>
-			</div>
-
-			{/* 검색 입력 */}
-			<div className="px-[16px] py-[8px]">
-				<SearchInputField
-					searchWord={searchWord}
-					onSearchChanged={onSearchChanged}
-					onClear={onClear}
-				/>
-			</div>
-
-			{/* 카테고리 칩 (검색어가 있을 때만) */}
-			{hasSearchWord && (
-				<div className="px-[16px]">
-					<CategoryChips
-						selected={selectedCategory}
-						onSelect={onCategorySelect}
+		<ClipView
+			title={t("clip.title")}
+			searchWord={searchWord}
+			onSearchChanged={onSearchChanged}
+			onClear={onClear}
+			searching={hasSearchWord}
+			category={selectedCategory}
+			onCategorySelect={onCategorySelect}
+			items={shownItems}
+			total={results.length}
+			playing={playingVideo}
+			playerSlot={
+				playingItem ? (
+					<VideoPlayer
+						video={playingItem}
+						onClose={() => setPlayingVideo(null)}
 					/>
-				</div>
-			)}
-
-			{/* 컨텐츠 영역 */}
-			<div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-auto">
-				{hasSearchWord && hasResults && (
-					<>
-						{/* 검색 결과 헤더 */}
-						<div className="flex items-center justify-between px-[16px] py-[12px]">
-							<span className="font-bold text-[17px] text-text-primary leading-[26px]">
-								'{searchWord}'
-							</span>
-							<span className="font-semibold text-[12px] text-text-sub leading-[18px]">
-								{t("clip.resultCount", { count: results.length })}
-							</span>
-						</div>
-
-						{/* 비디오 리스트 */}
-						<div className="flex flex-col gap-[16px] px-[16px] pb-[16px]">
-							{results.slice(0, shown).map((item, index) => (
-								<div key={`${item.youtubeId}-${item.start}-${index}`}>
-									{playingVideo?.youtubeId === item.youtubeId &&
-									playingVideo?.start === item.start ? (
-										<div className="flex flex-col gap-[8px]">
-											<VideoPlayer
-												video={item}
-												onClose={() => setPlayingVideo(null)}
-											/>
-											<div className="flex items-center justify-between">
-												<p className="w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]">
-													{item.title}
-												</p>
-												<button
-													type="button"
-													onClick={() => onMenuClick(item)}
-													className="flex size-[24px] shrink-0 items-center justify-center text-text-sub"
-												>
-													<MoreVertical size={16} />
-												</button>
-											</div>
-										</div>
-									) : (
-										<VideoCard
-											video={item}
-											onPlay={onPlayVideo}
-											onMenuClick={onMenuClick}
-										/>
-									)}
-								</div>
-							))}
-							{/* 목록 끝 표식 — 보이면 한 판 더 그린다(위 감시자) */}
-							{shown < results.length && (
-								<div ref={tailRef} className="h-[1px] w-full" />
-							)}
-						</div>
-					</>
-				)}
-
-				{/*
-				 * 빈 상태가 **둘**이다 — clip_spec_v1 §04 의 2번(기획 확정 2026-08-27).
-				 *
-				 * 전에는 하나뿐이라 **검색 전과 검색 실패에 같은 말**을 냈다 —
-				 * "배우고 싶은 표현을 검색해 보세요". 0건이 나온 사람에게는 답이 아니다.
-				 * 검색어를 되짚어 주고 다른 말로 찾아보라고 한다.
-				 */}
-				{!hasResults && (
-					<div className="mt-[-30px] flex h-full flex-col items-center justify-center px-[24px]">
-						<img
-							src="/images/search_empty_img.svg"
-							alt=""
-							className="size-[64px]"
-						/>
-						{hasSearchWord ? (
-							<>
-								<p className="mt-[8px] break-keep text-center font-semibold text-[16px] text-text-heading leading-[24px]">
-									{t("clip.noResultTitle", { word: searchWord.trim() })}
-								</p>
-								<p className="mt-[4px] break-keep text-center font-medium text-[14px] text-text-sub leading-[20px]">
-									{t("clip.noResultBody")}
-								</p>
-							</>
-						) : (
-							<p className="mt-[8px] text-center font-semibold text-[16px] text-text-heading leading-[24px]">
-								{t("clip.emptyLine1")}
-								<br />
-								{t("clip.emptyLine2")}
-							</p>
-						)}
-					</div>
-				)}
-			</div>
-
-			{/* 신고 바텀시트 */}
-			{reportVideo && (
-				<ReportBottomSheet
-					video={reportVideo}
-					onClose={() => setReportVideo(null)}
-					onReport={onReport}
-				/>
-			)}
-		</div>
+				) : null
+			}
+			onPlay={onPlayVideo}
+			onMenuClick={onMenuClick}
+			tailRef={tailRef}
+			showTail={shown < results.length}
+			scrollRef={scrollRef}
+			sheet={
+				reportVideo ? (
+					<ReportBottomSheet
+						video={reportVideo}
+						onClose={() => setReportVideo(null)}
+						onReport={onReport}
+					/>
+				) : null
+			}
+		/>
 	);
 }
