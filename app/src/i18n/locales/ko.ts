@@ -629,6 +629,8 @@ const ko = {
 		tipQuiet: "조용한 곳에서 말해 보세요",
 		tipLouder: "조금 더 크게 말해 보세요",
 		canSkipHint: "잘 안 되나요? 건너뛰고 나중에 다시 만날 수 있어요.",
+		chapterUnit: "{{seq}}과 - {{title}}",
+		chapterActivity: "{{seq}}과 · {{title}}",
 	},
 	/** 활동 화면 — 지시문과 화면별 조작 문구 */
 	activity: {
@@ -699,6 +701,10 @@ const ko = {
 		comboTarget: "만들 글자",
 		hintPeek: "힌트",
 		hintPeekLabel: "힌트 — 만들 글자를 잠깐 보여 줍니다",
+		speakerMe: "나",
+		noData: "데이터가 없습니다",
+		sceneImageAlt: "상황 이미지",
+		analyzeFailed: "분석에 실패했습니다. 다시 시도해 주세요.",
 	},
 	result: {
 		title: "잘 했어요!",
@@ -741,6 +747,10 @@ const ko = {
 		finishLearning: "학습 끝내기",
 		emptySentences: "고칠 문장이 없어요.",
 		loading: "리포트를 불러오는 중이에요.",
+		emptyPronunciation: "평가할 발음 데이터가 없어요.",
+		emptyGrammar: "평가할 문법 데이터가 없어요.",
+		emptyContent: "평가할 내용 데이터가 없어요.",
+		emptyVocabulary: "평가할 어휘 데이터가 없어요.",
 	},
 	missionChat: {
 		completeTitle:
@@ -766,11 +776,16 @@ const ko = {
 		continue: "계속하기",
 		exit: "나가기",
 		viewReport: "리포트 보기",
+		briefSubtitle: "Practice with AI using the scenario.",
+		errTooShort: "메시지를 2자 이상 입력해 주세요.",
+		errNoRecording: "녹음된 내용이 없습니다.",
+		noMessage: "메시지 없음",
+		recordingWave: "녹음 중인 소리",
 	},
 	/** 미션 브리핑 — 구역 제목은 목업이 영어로 고정해 두었다 */
 	briefing: {
-		scenario: "Conversation Scenario",
-		keyword: "Mission Keyword",
+		scenario: "대화 상황",
+		keyword: "미션 키워드",
 		start: "대화 시작하기",
 	},
 	review: {
@@ -791,6 +806,26 @@ const ko = {
 		micDeniedSkip: "이 활동 건너뛰기",
 		recordAgain: "다시 말해 주세요.",
 		exitConfirmChat: "대화가 처음부터 시작돼요. 나갈까요?",
+	},
+	flashResult: {
+		titlePerfect: "단어를 다 외웠어요!",
+		titleDone: "이번 학습을 마쳤어요",
+		bodyPerfect: "이 세트의 모든 단어를 알고 있어요.",
+		bodyPartial: "모르는 단어만 모아 다시 연습할 수 있어요.",
+		unknownWords: "모르는 단어",
+		knownWords: "아는 단어",
+		knowRate: "알아요",
+		tapNumbersHint:
+			"숫자를 누르면 아는 단어와 모르는 단어 목록을 확인할 수 있어요.",
+		retryUnknown: "모르는 단어 다시",
+		finish: "학습 끝내기",
+	},
+	app: {
+		updatingTitle: "앱 업데이트 중입니다",
+		updatingBody: "배포 직후 파일 버전이 바뀌어 화면을 불러오지 못했습니다.",
+		reload: "새로고침",
+		errorTitle: "오류가 발생했습니다",
+		errorBody: "잠시 후 다시 시도해 주세요.",
 	},
 } as const;
 

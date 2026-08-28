@@ -54,6 +54,7 @@ export default function MissionReport({
 		[],
 	);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: t 를 넣으면 언어를 바꿀 때마다 getReport 가 다시 날아가고 리포트가 빈 골격으로 깜빡인다. t 는 평가 항목이 비었을 때의 대체 문구에만 쓰인다 — 이미 그려진 리포트의 그 문구가 옛 언어로 남는 것은 감수한다
 	useEffect(() => {
 		let mounted = true;
 		/* 로컬 목이나 리포트 생성 서버가 응답하지 않아도 화면 전체를 영원히
@@ -112,19 +113,19 @@ export default function MissionReport({
 				{
 					axis: "pronunciation",
 					text:
-						assessment.pronunciation_correct ?? "평가할 발음 데이터가 없어요.",
+						assessment.pronunciation_correct ?? t("report.emptyPronunciation"),
 				},
 				{
 					axis: "grammar",
-					text: assessment.grammar_correct ?? "평가할 문법 데이터가 없어요.",
+					text: assessment.grammar_correct ?? t("report.emptyGrammar"),
 				},
 				{
 					axis: "content",
-					text: assessment.context_natural ?? "평가할 내용 데이터가 없어요.",
+					text: assessment.context_natural ?? t("report.emptyContent"),
 				},
 				{
 					axis: "vocabulary",
-					text: assessment.vocabulary_natural ?? "평가할 어휘 데이터가 없어요.",
+					text: assessment.vocabulary_natural ?? t("report.emptyVocabulary"),
 				},
 			]);
 

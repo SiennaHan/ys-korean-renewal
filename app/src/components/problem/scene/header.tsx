@@ -1,5 +1,6 @@
 import { useRouter } from "@tanstack/react-router";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface HeaderInterface {
 	chapterSeq?: number;
@@ -7,6 +8,7 @@ interface HeaderInterface {
 }
 
 export function ProblemHeader(props: HeaderInterface) {
+	const { t } = useTranslation();
 	const router = useRouter();
 	const goBack = () => {
 		router.history.back();
@@ -23,9 +25,10 @@ export function ProblemHeader(props: HeaderInterface) {
 					<X />
 				</button>
 				<div className="flex items-center text-[#888] text-[14px]">
-					{props.chapterSeq}
-					{"과 - "}
-					{props.unitTitle}
+					{t("player.chapterUnit", {
+						seq: props.chapterSeq,
+						title: props.unitTitle,
+					})}
 				</div>
 				<div className="w-[48px]" />
 			</div>
@@ -34,6 +37,7 @@ export function ProblemHeader(props: HeaderInterface) {
 }
 
 export function JamoHeader(props: HeaderInterface) {
+	const { t } = useTranslation();
 	const router = useRouter();
 	const goBack = () => {
 		router.history.back();
@@ -50,9 +54,10 @@ export function JamoHeader(props: HeaderInterface) {
 					<X />
 				</button>
 				<div className="flex items-center text-[#888] text-[14px]">
-					{props.chapterSeq}
-					{"과 - "}
-					{props.unitTitle}
+					{t("player.chapterUnit", {
+						seq: props.chapterSeq,
+						title: props.unitTitle,
+					})}
 				</div>
 				<div className="w-[48px]" />
 			</div>

@@ -320,7 +320,7 @@
   <tr><th>요소</th><th>규격</th></tr>
   <tr><td>✕ 버튼</td><td>탭하면 항상 <code>current_item_index</code> 저장 후 이전 화면으로. 확인 다이얼로그 없음(저장되니 안전) — 구 앱의 "저장 없이 나가기"를 완전히 제거</td></tr>
   <tr><td>앱바 제목</td><td>중앙, <b><code>{급} {과}</code></b>만 (예: <code>1급 4과</code> / <code>Level 1 Lesson 4</code>) <span class="pill new">v2.4 개정</span><br><span class="qa">초안은 <code>{과} · {활동명}</code>이었다. 활동명은 <b>지시문(Title)이 이미 말하고 있어</b> 중복이고, 실제 화면에서 <code>[모음 1] ㅏ,ㅓ,ㅗ,ㅜ…</code>처럼 <b>말줄임으로 잘리고 있었다</b>(자모·플래시카드·미션대화 3곳). 과 제목·학습 대상은 넣지 않는다.</span></td></tr>
-  <tr><td>진행 세그먼트바</td><td>문항 수만큼 분할된 바. 각 세그먼트 상태 4종: <b>회색 <code>Gray/300</code></b>(미응답) · <b>초록 <code>Positive</code></b>(첫 시도 정답) · <b>빨강 <code>Destructive</code></b>(첫 시도 오답 → 복습큐 예약) · <b><code>Blue/500</code>이고 조금 긴 칸</b>(현재 위치). <b>높이 6의 얇은 선</b>이라 <b>칸 안에 아이콘이 들어가지 않는다</b> — 정오답 구분은 피드백 pill 문구와 결과 화면이 담당한다(§7 정정). <b>결과가 지나온 자리에 남는다</b> — 구 앱의 점(dot) 진행 표시를 대체. <b>문항 수에 따라 표시 방식이 바뀐다</b> — 아래 참조</td></tr>
+  <tr><td>진행 세그먼트바</td><td>문항 수만큼 분할된 바. 상태는 <b>지나감 · 현재 · 미응답</b> 세 가지뿐이다. 지나온 칸은 파랑, 현재 칸은 조금 길게, 미응답은 회색으로 표시한다. <b>정답·오답 색과 아이콘을 진행바에 남기지 않는다.</b> 재시도형 문제의 답을 누적 공개하지 않고, 답 상태는 선택지·피드백·결과 화면에서만 말한다. 높이 5 · 칸 간격 4이며 문항 수에 따른 표시 방식은 아래를 따른다.</td></tr>
 </table></div>
 <h4>활동별 진행 표시 정책 <span class="pill new">2026-08-25 확정</span></h4>
 <p>진행바는 화면마다 임의로 넣지 않고 아래 네 유형으로 구분한다. <b>어휘 미리보기는 퀴즈의 0번 문항이 아니라 준비 화면</b>이므로 진행바와 퀴즈 분모에서 제외한다.</p>
@@ -346,8 +346,8 @@
 <h3>3.2 피드백 (문항 응답 직후) <span class="pill new">S1 확정 반영</span></h3>
 <p><b>즉시 채점</b>이다 — 선택지를 누르는 순간 판정한다. 별도 [정답 확인] 동작은 없다.</p>
 <ul>
-  <li><b>정답</b>: 세그먼트에 <b>✓ + <code>Positive</code></b> · pill "아주 잘 했어요!" · 효과음(축하 연출 없이 소리만) · 하단 <b>[다음] 활성화</b>. <b>자동 진행하지 않는다</b> — 기존 디자인이 버튼 활성화 방식이고, 자동으로 넘기면 맞혔다는 확인을 할 틈이 없다.</li>
-  <li><b>오답</b>: 세그먼트에 <b>✕ + <code>Destructive</code></b> · pill "다시 해보세요" · <b>선택지가 좌우로 진동</b>(±6px · 300ms) · 효과음. <b>정답을 공개하지 않고</b> 그 선택지를 비활성으로도 만들지 않는다 — 맞힐 때까지 다시 고른다. <b>같은 오답을 또 눌러도 진동과 소리가 매번 다시 난다.</b></li>
+  <li><b>정답</b>: 고른 선택지에 ✓ + <code>Positive</code> · pill "아주 잘 했어요!" · 효과음(축하 연출 없이 소리만) · 하단 <b>[다음] 활성화</b>. 진행바는 답 상태가 아니라 지나온 위치만 갱신한다. <b>자동 진행하지 않는다.</b></li>
+  <li><b>오답</b>: 고른 선택지에 ✕ + <code>Destructive</code> · pill "다시 해보세요" · <b>선택지가 좌우로 진동</b>(±6px · 300ms) · 효과음. <b>정답을 공개하지 않고</b> 그 선택지를 비활성으로도 만들지 않는다. 약 2초 뒤 선택지와 pill은 기본 상태로 돌아오며 진행바에는 오답 흔적을 남기지 않는다.</li>
   <li><b>skip</b>: 헤더 우측, 전 활동 동일 위치. 세그먼트는 회색 유지(오답 처리 안 함) + 해당 문항은 다시 풀기 목록에 <code>skipped</code> 사유로 예약</li>
 </ul>
 <p class="qa">색만으로 구분하지 않는 이유는 §7(접근성) — 초록–빨강은 적록색각이상에서 구별되지 않으므로 <b>아이콘이 주 신호</b>다. 문구는 §8 대조표를 따른다. 진동 규격과 <code>prefers-reduced-motion</code> 대체안은 <b>이 문서 구조 §14.3</b>.</p>
@@ -379,7 +379,7 @@
 <div class="tablewrap"><table>
   <tr><th>활동</th><th>문항 단위</th><th>입력 방식</th><th>셸 커스터마이징</th></tr>
   <tr><td>단어 학습·빈칸 채우기·듣기·읽기</td><td>행 1개</td><td>탭 선택</td><td>없음 — 셸 그대로</td></tr>
-  <tr><td>플래시카드</td><td>카드 1장</td><td>스와이프(아는/모르는)</td><td>진행바는 유지하되 정오답 대신 <span style="color:var(--accent)">파랑=알아요</span>/<span style="color:var(--warn)">노랑=몰라요</span>로 색 의미만 교체. <b>자기 평가라 의미색(<code>Positive</code>/<code>Destructive</code>)을 쓰지 않는다</b> — 기존 플래시카드 디자인 그대로</td></tr>
+  <tr><td>플래시카드</td><td>카드 1장</td><td>스와이프(아는/모르는)</td><td>진행 표시는 카드 순서만 말하고 알아요/몰라요 판정을 누적 색으로 남기지 않는다. <b>자기 평가라 의미색(<code>Positive</code>/<code>Destructive</code>)을 쓰지 않는다.</b></td></tr>
   <tr><td>AI 롤플레잉</td><td>대화 턴 1개</td><td>음성(마이크)</td><td>대본 아래 마이크 존 추가. 종료 뒤 1초를 더 담아 <b>자동 저장·분석</b>하고, 결과에서 <b>내 녹음 듣기 · 다시 녹음 · 다음 대사</b>를 분리한다. STT 일치 여부는 진행을 막지 않는다</td></tr>
   <tr><td>AI 미션 대화</td><td>미션 키워드 1개</td><td>음성+키보드</td><td>진행 세그먼트가 문항이 아니라 미션 키워드 개수만큼(보통 3개). 결과 화면은 <b>기존 리포트 화면 유지</b>(§1 예외)</td></tr>
   <tr><td>자모 6종</td><td>글자/단어 1개</td><td>탭·필기(OCR)</td><td>필기 유형(쓰기)은 캔버스가 콘텐츠 영역을 차지, 피드백은 OCR 결과 Correct/Incorrect. <b>선택지 수가 문항마다 다르다</b> — 아래 참조</td></tr>
@@ -498,12 +498,12 @@
     <li><b>문항 화면</b> — 피드백 pill의 <b>문구</b>("아주 잘 했어요!" / "다시 해보세요"). 색이 아니라 글자다.</li>
     <li><b>결과 화면</b> — 오답 목록의 <code>[오답 N]</code> 칩 + 고른 답 + 해설. 전부 글자다.</li>
   </ul>
-  <p><b>진행바는 "어디까지 왔나"가 주된 일</b>이고 정오답은 보조 신호로 남긴다 —
+  <p><b>진행바는 "어디까지 왔나"만 말한다.</b> 정오답 신호는 남기지 않는다 —
      <b>진행률을 주 지표로 올린 결정</b>(<b>이 문서 값 §28</b>)과도 맞는다.
      현재 위치는 색이 아니라 <b>칸 길이 10</b>으로 구분한다.</p>
 </div>
 <ul>
-  <li>진행 세그먼트에 <code>aria-label</code>: "3번 문항, 정답" / "4번 문항, 오답" — 스크린리더로 진행 상황 파악 가능</li>
+  <li>진행 세그먼트의 <code>aria-label</code>은 "3번 문항, 완료" / "4번 문항, 현재"처럼 위치 상태만 말한다. 정오답을 읽지 않는다.</li>
   <li>스크린리더는 진동·효과음을 받지 못한다. 오답 pill을 <code>aria-live</code>로 두되, <b>같은 문구를 반복 고지</b>하려면 영역을 비웠다 다시 채운다(동일 텍스트는 재고지하지 않는 리더가 있다).</li>
   <li><code>prefers-reduced-motion: reduce</code>일 때 진동 대신 테두리 200ms 1회 깜빡으로 대체 — <b>현재 코드에 이 분기가 없다.</b> activity.css 에 <code>@media (prefers-reduced-motion:reduce)</code> 블록이 <b>하나 있는데 녹음 버튼 펄스만 끈다</b> — 오답 신호 분기는 없다.</li>
   <li>피드백은 색 변화만이 아니라 텍스트로도 명시("정답이에요" / "정답은 ○○예요")</li>
@@ -685,8 +685,8 @@
   <tr><td><code>Blue/50</code></td><td><span class="sw" style="background:#DBEDFF"></span>#DBEDFF</td><td>눌림 상태 · 보조 버튼</td></tr>
   <tr><td><code>Blue/900</code></td><td><span class="sw" style="background:#24425F"></span>#24425F</td><td>활동 지시문 제목</td></tr>
   <tr><td colspan="3" style="background:var(--code-bg);font-weight:700;font-size:12px">의미색 — 채점 결과</td></tr>
-  <tr><td><code>Positive</code></td><td><span class="sw" style="background:#11C378"></span>#11C378</td><td><b>정답</b> — 진행바 칸 · 선택지 테두리 · 피드백</td></tr>
-  <tr><td><code>Destructive</code></td><td><span class="sw" style="background:#F15F49"></span>#F15F49</td><td><b>오답</b> — 진행바 칸 · 선택지 테두리 · 피드백</td></tr>
+  <tr><td><code>Positive</code></td><td><span class="sw" style="background:#11C378"></span>#11C378</td><td><b>정답</b> — 선택지 테두리 · 피드백. 진행바에는 쓰지 않는다</td></tr>
+  <tr><td><code>Destructive</code></td><td><span class="sw" style="background:#F15F49"></span>#F15F49</td><td><b>오답</b> — 선택지 테두리 · 피드백. 진행바에는 쓰지 않는다</td></tr>
   <tr><td><code>Cautionary</code></td><td><span class="sw" style="background:#F98900"></span>#F98900</td><td><b>주의</b> — 다시 풀기 대상 · 3회 이상 틀린 문항</td></tr>
   <tr><td><code>Green/50</code></td><td><span class="sw" style="background:#E7FBCE"></span>#E7FBCE</td><td>정답 피드백 배경</td></tr>
   <tr><td><code>Red/50</code></td><td><span class="sw" style="background:#FFE8E8"></span>#FFE8E8</td><td>오답 피드백 배경</td></tr>
@@ -988,7 +988,7 @@
   <div class="tablewrap"><table>
     <tr><th>무엇</th><th>정의</th><th>쓰임</th></tr>
     <tr><td><b>첫 시도 오답</b></td><td>처음에 틀렸던 문항. <b>재시도로 맞혀도 남는다</b></td>
-        <td>정답률 · 진행바 칸 색 · <b>복습 큐 예약</b> → 내일 홈에서 만난다</td></tr>
+        <td>정답률 · <b>복습 큐 예약</b> → 내일 홈에서 만난다. 진행바는 답 상태를 저장하지 않는다</td></tr>
     <tr><td><b>미해결 항목</b></td><td>활동이 끝난 시점에도 <b>여전히 해소되지 않은 것</b></td>
         <td><b>결과 화면 [다시 풀기] 버튼의 노출 조건</b></td></tr>
   </table></div>
@@ -1446,7 +1446,7 @@ y=648  마이크 영역                  360×92
 <p><b>§14의 상태표가 그대로 스토리 목록이 된다.</b> 새로 설계할 것이 없다.</p>
 <div class="tablewrap"><table>
   <tr><th>컴포넌트</th><th>스토리</th><th>근거</th></tr>
-  <tr><td>ProgressBar</td><td>2모드 × 4상태</td><td>§14.1</td></tr>
+  <tr><td>ProgressBar</td><td>2모드 × 3상태(지나감·현재·미응답)</td><td>§14.1</td></tr>
   <tr><td>ChoiceList</td><td>2정렬(center/start) × 5상태 + 2·3·4개 + 긴 문장 + <b>오답 순간 상태</b></td><td>§14.2</td></tr>
   <tr><td>FeedbackLayer</td><td>3상태</td><td>§14.3</td></tr>
   <tr><td>ResultScreen</td><td>3상태</td><td>§14.4</td></tr>
@@ -1823,7 +1823,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
 <h3>기록</h3>
 <ul>
   <li><b>첫 시도만 기록</b>한다. 두 번째 이후 시도는 기록하지 않는다.</li>
-  <li>정답률 · 진행바 칸 색 · 복습 큐 예약이 <b>모두 첫 시도 기준</b>이다.</li>
+  <li>정답률 · 복습 큐 예약은 <b>첫 시도 기준</b>이다. 진행바는 첫 시도 정오답과 무관하게 위치만 표시한다.</li>
   <li><b>재시도로 맞혀도 복습 큐에 남는다.</b></li>
   <li><b>발음 활동은 예외</b> — 위 규칙이 적용되지 않는다.</li>
 </ul>

@@ -56,7 +56,7 @@ const SWIPE_VELOCITY_THRESHOLD = 500;
 const FLY_OUT_DISTANCE = 500;
 
 function RouteComponent() {
-	const { i18n } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { level, lesson } = Route.useSearch();
 	const flashcardId = Number(
 		flashcards.find((f) => f.book_id === level && f.chapter === lesson)?.id ??
@@ -144,9 +144,10 @@ function RouteComponent() {
 	const currentCard = cardData[currentIndex];
 
 	// 상단 바에 적히는 줄. 세트 제목이 원장에 없으면 활동 이름으로 대신한다
-	const lessonLabel = `${flashcardModule?.chapter ?? lesson}과 · ${
-		flashcardModule?.title ?? "플래시카드"
-	}`;
+	const lessonLabel = t("player.chapterActivity", {
+		seq: flashcardModule?.chapter ?? lesson,
+		title: flashcardModule?.title ?? t("catalog.act.flashcard"),
+	});
 
 	const putData = async (cardId: string, status: "known" | "unknown") => {
 		await upsertUserFlashcardWord({

@@ -58,7 +58,7 @@ export function BriefingScreen({
 								{content.sceneImageUrl ? (
 									<img src={content.sceneImageUrl} alt="" />
 								) : (
-									<span aria-hidden="true">상황 이미지</span>
+									<span aria-hidden="true">{t("activity.sceneImageAlt")}</span>
 								)}
 							</div>
 							<div className="scene-text">

@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
+import { useTranslation } from "react-i18next";
 
 import { postSpeaking } from "@/api/analyzeApi";
 import { MicIcon } from "@/assets/icons";
@@ -53,6 +54,7 @@ const AudioRecorder = (props: Props) => {
 	// const API_ENDPOINT = `${env.SPEAK_API_URL}/analyze/sound`;
 	// const API_ENDPOINT = `${env.KOREAN_API_URL}/stt/convert`
 
+	const { t } = useTranslation();
 	const { addToast } = useToast();
 	const [recorderStatus, setRecorderStatus] = useState<RecorderStatus>("idle");
 	/** 마이크가 막혀 알림을 띄운 상태 */
@@ -145,7 +147,7 @@ const AudioRecorder = (props: Props) => {
 				props.setResult(true, resultMsg ?? "", url ?? "");
 			} catch (error) {
 				console.error("API 호출 중 오류 발생:", error);
-				addToast("분석에 실패했습니다. 다시시도해 주세요");
+				addToast(t("activity.analyzeFailed"));
 			} finally {
 				handleCancelOrDelete();
 			}

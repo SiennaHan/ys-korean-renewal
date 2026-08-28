@@ -43,7 +43,7 @@ export default function FlashcardResult({
 	/** 모르는 단어만 다시 — 카드 화면으로 되돌린다 */
 	onRetry: () => void;
 }) {
-	const { i18n } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { cardType } = useSelectedCardTypeStore();
 
 	const [sheetStatus, setSheetStatus] = useState<"known" | "unknown">(
@@ -131,28 +131,31 @@ export default function FlashcardResult({
 		<>
 			<ActivityFrame>
 				<ActivityAppBar
-					lesson={`${currentCard?.chapter ?? ""}과 · ${currentCard?.title ?? "플래시카드"}`}
+					lesson={t("player.chapterActivity", {
+						seq: currentCard?.chapter ?? "",
+						title: currentCard?.title ?? t("catalog.act.flashcard"),
+					})}
 					onExit={onClose}
 				/>
 				<main className="activity-content flash-result-content">
 					<div className="result-head">
 						<h2>
 							{percentage === 100
-								? "단어를 다 외웠어요!"
-								: "이번 학습을 마쳤어요"}
+								? t("flashResult.titlePerfect")
+								: t("flashResult.titleDone")}
 						</h2>
 						<p>
 							{percentage === 100
-								? "이 세트의 모든 단어를 알고 있어요."
-								: "모르는 단어만 모아 다시 연습할 수 있어요."}
+								? t("flashResult.bodyPerfect")
+								: t("flashResult.bodyPartial")}
 						</p>
 						<div className="stat-row flash-result-stat">
 							<button type="button" onClick={() => openSheet("unknown")}>
-								<span>모르는 단어</span>
+								<span>{t("flashResult.unknownWords")}</span>
 								<strong>{unknownWords.length}</strong>
 							</button>
 							<button type="button" onClick={() => openSheet("known")}>
-								<span>아는 단어</span>
+								<span>{t("flashResult.knownWords")}</span>
 								<strong>{knownWords.length}</strong>
 							</button>
 						</div>
@@ -163,30 +166,36 @@ export default function FlashcardResult({
 							style={{ "--flash-rate": percentage } as CSSProperties}
 						>
 							<strong>{percentage}%</strong>
-							<span>알아요</span>
+							<span>{t("flashResult.knowRate")}</span>
 						</div>
-						<p>
-							숫자를 누르면 아는 단어와 모르는 단어 목록을 확인할 수 있어요.
-						</p>
+						<p>{t("flashResult.tapNumbersHint")}</p>
 					</div>
 				</main>
 				<ActivityFooter>
 					<Dock mainStyle={{ gap: 12 }}>
 						{percentage < 100 && (
 							<PrimaryButton
-								label="모르는 단어 다시"
+								label={t("flashResult.retryUnknown")}
 								on
 								onClick={handleRestart}
 							/>
 						)}
-						<PrimaryButton label="학습 끝내기" on onClick={onClose} />
+						<PrimaryButton
+							label={t("flashResult.finish")}
+							on
+							onClick={onClose}
+						/>
 					</Dock>
 				</ActivityFooter>
 			</ActivityFrame>
 			<BottomSheet
 				isOpen={isOpenSheet}
 				onClose={onCloseSheet}
-				title={sheetStatus === "known" ? "아는 단어" : "모르는 단어"}
+				title={
+					sheetStatus === "known"
+						? t("flashResult.knownWords")
+						: t("flashResult.unknownWords")
+				}
 				count={sheetData.length}
 			>
 				<div>

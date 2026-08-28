@@ -12,6 +12,7 @@ import {
 	createRootRoute,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const CHUNK_RELOAD_KEY = "chunk-reload-attempted";
 
@@ -49,6 +50,7 @@ function RootComponent() {
 }
 
 function RootErrorComponent({ error, reset }: ErrorComponentProps) {
+	const { t } = useTranslation();
 	const chunkError = isChunkLoadError(error);
 
 	useEffect(() => {
@@ -66,9 +68,9 @@ function RootErrorComponent({ error, reset }: ErrorComponentProps) {
 	if (chunkError) {
 		return (
 			<div className="mx-auto flex min-h-[50vh] max-w-xl flex-col items-center justify-center px-6 text-center">
-				<h1 className="font-bold text-2xl">앱 업데이트 중입니다</h1>
+				<h1 className="font-bold text-2xl">{t("app.updatingTitle")}</h1>
 				<p className="mt-2 text-muted-foreground text-sm">
-					배포 직후 파일 버전이 바뀌어 화면을 불러오지 못했습니다.
+					{t("app.updatingBody")}
 				</p>
 				<button
 					className="mt-4 rounded-md bg-primary px-4 py-2 text-primary-foreground"
@@ -83,10 +85,8 @@ function RootErrorComponent({ error, reset }: ErrorComponentProps) {
 
 	return (
 		<div className="mx-auto flex min-h-[50vh] max-w-xl flex-col items-center justify-center px-6 text-center">
-			<h1 className="font-bold text-2xl">오류가 발생했습니다</h1>
-			<p className="mt-2 text-muted-foreground text-sm">
-				잠시 후 다시 시도해 주세요.
-			</p>
+			<h1 className="font-bold text-2xl">{t("app.errorTitle")}</h1>
+			<p className="mt-2 text-muted-foreground text-sm">{t("app.errorBody")}</p>
 			<button
 				className="mt-4 rounded-md bg-primary px-4 py-2 text-primary-foreground"
 				onClick={() => reset()}

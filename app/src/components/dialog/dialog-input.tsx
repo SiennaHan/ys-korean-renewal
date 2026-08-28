@@ -84,7 +84,10 @@ export function DialogInput({
 		<div className="chat-compose">
 			{/* Audio visualizer */}
 			{mediaRecorder && (
-				<div className="chat-visualizer" aria-label="녹음 중인 소리">
+				<div
+					className="chat-visualizer"
+					aria-label={t("missionChat.recordingWave")}
+				>
 					<LiveAudioVisualizer
 						mediaRecorder={mediaRecorder}
 						width={120}

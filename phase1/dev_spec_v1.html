@@ -132,6 +132,14 @@
   </tbody></table>
 </header>
 
+<div class="mergehead" style="margin-top:0">
+  <p><b>현재 구현 상태 · 2026-08-28.</b> 이 문서의 “신설·만들 것” 표시는 최초 개발 계약의 표기이며
+  현재 미구현을 뜻하지 않는다. <code>ko_activity_state</code>·<code>ko_review_queue</code>,
+  활동 상태 API, 다시 풀기, 라우트 통합, 공통 활동 프레임, 홈 연결은 구현됐다.
+  이 문서는 이제 <b>필드 계약과 회귀 기준</b>으로 사용한다. 남은 서버 제품 기능은 결제·메일·표현클립 신고·MY 요약이며,
+  현재 우선순위는 <code>BLOCKERS.md</code> §0이 주인이다.</p>
+</div>
+
 <!-- ═══════ 만들 것 — Phase1_dev_spec_v1.html ═══════ -->
 <section class="part" id="part-dev" aria-label="만들 것">
 <main>
@@ -143,7 +151,7 @@
 
 <div class="callout good">
   <div class="t">Phase 1의 범위와 전제</div>
-  <p><b>콘텐츠 없이 셸만 먼저 만든다.</b> 새 교재 콘텐츠(1급)는 아직 저작 중이므로, Phase 1은 <b>구 앱 콘텐츠를 그대로 꽂은 채</b> 셸·상태·라우트만 교체해 검증한다. 콘텐츠 교체는 Phase 2다.</p>
+  <p><b>아래는 착수 당시 전제다.</b> 셸·상태·라우트를 먼저 교체하는 단계는 끝났고 새 교재 파생 JSON도 제품에 배선됐다.</p>
   <p>따라서 이 문서는 <b>콘텐츠 스키마를 건드리지 않는다</b> — 기존 <code>ko_learning_record</code>의 <code>question_id</code>(Integer)를 그대로 쓰고, Phase 2에서 새 <code>item_id</code> 체계로 이관한다.</p>
 </div>
 

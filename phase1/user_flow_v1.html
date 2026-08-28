@@ -143,7 +143,7 @@
   <thead><tr><th>어디서</th><th>어디에 떨어지나</th><th>지금 상태</th></tr></thead>
   <tbody>
     <tr><td><b>책의 QR</b></td>
-      <td><code>/qr</code> → 스캔 기록 → <code>PUBLIC_QR_WEB_REDIRECT_URL</code>(비어 있으면 <code>/</code>)</td>
+      <td><code>/qr</code> → 스캔 기록 → <b>홈</b>. 현재 구현은 <code>PUBLIC_QR_WEB_REDIRECT_URL</code>(비어 있으면 <code>/</code>)을 사용하므로 홈 보장 보정이 남았다</td>
       <td><span class="pill open">책 신원이 없다</span> <code>/qr/scan</code> 이 받는 것은 <code>accessUrl</code> 하나다.
         어느 급·과의 QR 이었는지 아무도 읽지 않는다 — 아래 05</td></tr>
     <tr><td><b>직접 방문</b></td><td><code>/</code></td><td><span class="pill done">된다</span></td></tr>
@@ -282,7 +282,7 @@
     <tr><td>로그인</td><td><code>routes/login.tsx</code></td><td><code>POST /sign/login</code></td><td><span class="pill done">된다</span></td></tr>
     <tr><td>회원가입</td><td><code>routes/signup.tsx</code></td><td><code>POST /user/sign/up</code></td>
       <td><span class="pill done">됐다</span>(2026-08-27). 게스트 기록이 가입과 함께 따라온다.
-      <b>약관·개인정보 처리방침 두 문서가 없어 아직 배포하면 안 된다</b></td></tr>
+      <b>초안은 있으나 법률 검토를 마친 최종 문서와 링크가 없어 아직 배포하면 안 된다</b></td></tr>
     <tr><td>비밀번호 재설정</td><td><code>reset-password</code> · <code>new-password</code></td><td>메일 발송 수단</td>
       <td><span class="pill open">화면은 솔직해졌다</span>(2026-08-27) — 못 한다고 말하고 문의하기로 보낸다.
       <b>없는 것은 화면이 아니라 메일 발송 수단</b>이다. <code>new-password</code> 의 폼은
@@ -304,11 +304,11 @@
     <div class="d"><code>POST /user/sign/up</code> 과 <code>/signup</code> 화면을 만들었다
     (<span class="file">access_and_pricing_v1</span> §09 의 4단계). 승인 없이 바로 활성이고 <code>school_code</code> 를 비워
     개인 구매자로 잡힌다. 게스트로 푼 것은 가입과 함께 계정으로 따라온다.
-    <b>대신 새 조건이 생겼다 — 약관·개인정보 처리방침 두 문서가 없으면 배포하면 안 된다</b></div></div></li>
+    <b>대신 새 조건이 생겼다 — 법률 검토를 마친 최종 약관·개인정보 처리방침과 실제 링크가 있어야 한다</b></div></div></li>
   <li><div><div class="h"><s>잠금이 없어서 벽이 아예 안 선다</s> — 풀렸다 (2026-08-26)</div>
     <div class="d"><code>GET /entitlement</code> 와 앱의 잠금을 만들었다(<span class="file">access_and_pricing_v1</span> §09 의 1~3단계).
-    <b>다만 표시일 뿐이다</b> — 콘텐츠를 내주는 라우트에 권한이 없어서 주소로는 여전히 새 나간다(<span class="file">access_and_pricing_v1</span> §08 의 3번).
-    막는 것은 서버의 일이고 결제와 같이 온다</div></div></li>
+    유료 게임 콘텐츠 라우트는 현재 <span class="file">RequireGame</span>으로 막혔다. 교재 문항은 번들 콘텐츠라
+    잠긴 활동 URL을 직접 여는 경우까지 차단되는지 별도 회귀 검증이 필요하다</div></div></li>
   <li><div><div class="h">결제가 없다</div>
     <div class="d"><code>payment</code>·<code>subscription</code>·PG 이름 어느 것도 <code>api/</code> 와 <code>app/src</code> 에 없다.
     가격과 PG 도 아직 안 정했다 — 아래 05</div></div></li>
@@ -323,7 +323,7 @@
     (<span class="file">access_and_pricing_v1</span> §08 의 3번 · §09 의 7단계)</div></div></li>
 </ol>
 
-<h2><span class="n">05</span>아직 정하지 않은 것 셋</h2>
+<h2><span class="n">05</span>아직 정하지 않은 것 둘 + 구현 차이 하나</h2>
 <div class="tablewrap">
 <table>
   <thead><tr><th>물음</th><th>상태</th></tr></thead>
@@ -332,14 +332,14 @@
     <tr><td><b>PG</b></td><td><span class="pill open">뒤로 밀기로 정했다 (2026-08-26)</span> <span class="file">access_and_pricing_v1</span> §09 의 1~4단계는 PG 없이 다 된다.
       권고는 <span class="file">access_and_pricing_v1</span> §08 에 있다 — 국내는 토스페이먼츠·포트원, 해외는 Stripe</td></tr>
     <tr><td><b>QR 을 어디에 떨어뜨리나</b></td>
-      <td><span class="pill open">미정</span> 지금은 <code>/</code> 다. <b>QR 이 결제와 무관한 것은 이미 정해졌지만</b>(라이선스 키 안은 폐기),
-      <b>어디에 착지시킬지는 정해진 적이 없다.</b> 그 과로 보내려면 QR 에 급·과를 박고 <code>/qr</code> 이 읽어
-      <code>/learn/*</code> 로 넘겨야 한다 — 지금 <code>/qr/scan</code> 이 받는 것은 <code>accessUrl</code> 하나다</td></tr>
+      <td><span class="pill done">홈으로 확정</span> QR은 결제·특정 과 잠금 해제와 무관하며 스캔 뒤 홈으로 보낸다.
+      다만 현재 <code>/qr</code>의 기본값 <code>/</code>은 비로그인 사용자를 <code>/login</code>으로 보낼 수 있다.
+      게스트 세션을 만든 뒤 <code>/main</code>으로 보내거나 같은 결과를 보장하도록 구현해야 한다</td></tr>
   </tbody>
 </table>
 </div>
-<p class="qa">셋 다 <span class="file">access_and_pricing_v1</span> §09 의 1~4단계를 막지 않는다. QR 착지점만은 <b>1~3단계와 같이 정하면 싸다</b> —
-무료 과를 데이터로 표시하는 그 작업이 "어느 과로 보낼 수 있나" 를 이미 알기 때문이다.</p>
+<p class="qa">가격과 PG는 <span class="file">access_and_pricing_v1</span> §09 의 결제 전 단계와 별개다.
+QR은 특정 과가 아니라 홈으로 확정됐으므로 무료 과를 URL에 싣는 설계는 하지 않는다.</p>
 
 <h2><span class="n">06</span>순서 — 기획자 확정 2026-08-26</h2>
 <ol class="path">
@@ -351,8 +351,8 @@
   <li><div><div class="h"><span class="file">access_and_pricing_v1</span> §09 의 4단계 — 학생 자체 회원가입 <span class="pill done">됐다</span></div>
     <div class="d">2026-08-27 — <code>POST /user/sign/up</code> 과 <code>/signup</code> 화면.
     승인 없이 바로 활성이고 게스트 기록이 가입과 함께 따라온다. <b>막힘 1 이 풀렸다</b> —
-    QR 유입자가 계정을 가질 수 있다. 다만 <b>약관·개인정보 처리방침 두 문서가 없으면
-    배포하면 안 된다</b>(<span class="file">legal_draft_v1</span>)</div></div></li>
+    QR 유입자가 계정을 가질 수 있다. 다만 <b>법률 검토를 마친 최종 약관·개인정보 처리방침과 실제 링크가 없으면
+    배포하면 안 된다</b>(초안은 <span class="file">legal_draft_v1</span>)</div></div></li>
 </ol>
 <p class="qa">결제(그 뒤)는 가격과 PG 가 정해진 다음이다. 메일(5단계)은 결제와 무관하게
 재설정 때문에 이미 필요하다 — <span class="pill file">BLOCKERS.md</span> §7.</p>

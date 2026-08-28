@@ -2,6 +2,7 @@ import { postChat, streamTts } from "@/api/chat";
 import { useSharedAudio } from "@/components/audio/audio-provider";
 import { getCachedTtsBlob, putCachedTtsPcm } from "@/shared/tts-cache";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	AlertUserMsgBox,
 	BotMsgBox,
@@ -47,6 +48,7 @@ export default function ChatMessage({
 	voice,
 	feedback,
 }: ChatMsgProps) {
+	const { t } = useTranslation();
 	const [resMsg, setResMsg] = useState<string | null>(null);
 	const [lastText, setLastText] = useState<string | null>(null);
 	const [isAudioLoading, setIsAudioLoading] = useState(false);
@@ -94,6 +96,7 @@ export default function ChatMessage({
 		[playBlob, playPcmStream, unlock, voice],
 	);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: t 를 넣으면 안 된다 — 이 콜백은 아래 useEffect 의 의존성이고, 그 몸통이 postChat 을 부른다. 언어를 바꾸면 t 의 정체가 바뀌어 fetchData 가 새로 만들어지고, 효과가 다시 돌아 **같은 말이 서버로 한 번 더 날아간다.** t 는 여기서 응답이 비었을 때의 대체 문구에만 쓰이므로 클로저가 한 박자 낡아도 화면이 틀리지 않는다
 	const fetchData = useCallback(
 		async (userMsg: string) => {
 			setResponding(true);
@@ -108,7 +111,7 @@ export default function ChatMessage({
 				// 텍스트는 도착 즉시 표시하고 스크롤한 뒤, 음성은 이어서 재생한다.
 				// (fetchAudio 를 void 로 fire-and-forget 하면 자동재생이 불안정해져
 				//  스트림이 재생되지 않는 경우가 있어, await 로 재생 흐름을 유지한다.)
-				setResMsg(response.answer ?? "메시지 없음");
+				setResMsg(response.answer ?? t("missionChat.noMessage"));
 				setTimeout(() => scrollToBottom(), 100);
 				await fetchAudio(response.answer);
 			}

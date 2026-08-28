@@ -15,6 +15,7 @@ import {
 	parseMissionDetail,
 } from "@/shared/data/mission-chat";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { type LearnSearch, parseLearnSearch } from "./-search";
 
 export const Route = createFileRoute("/learn/mission-chat")({
@@ -30,6 +31,7 @@ function RouteComponent() {
 	 * 하나뿐이라(실측 117개 · 과마다 하나) 원장을 (급, 과)로 바로 찾는다 —
 	 * 구 앱처럼 모듈→유닛→챕터를 거쳐 코드를 되짚을 필요가 없다.
 	 */
+	const { t } = useTranslation();
 	const { level, lesson } = Route.useSearch();
 	const navigate = useNavigate();
 	const router = useRouter();
@@ -111,7 +113,7 @@ function RouteComponent() {
 		return (
 			<MissionDialog
 				dialogId={dialogId}
-				lesson={`${level}급 ${lesson}과`}
+				lesson={t("player.lessonTitle", { level, lesson })}
 				onClose={() => navigate({ to: "/main/textbook" })}
 				onReport={() => setPhase("report")}
 				onMissionState={handleMissionState}
@@ -123,7 +125,7 @@ function RouteComponent() {
 		return (
 			<MissionReport
 				dialogId={dialogId}
-				lesson={`${level}급 ${lesson}과`}
+				lesson={t("player.lessonTitle", { level, lesson })}
 				onRetry={() => setPhase("chat")}
 				onExit={() => navigate({ to: "/main/textbook" })}
 			/>
@@ -132,10 +134,10 @@ function RouteComponent() {
 
 	return (
 		<BriefingScreen
-			lesson={`${level}급 ${lesson}과`}
+			lesson={t("player.lessonTitle", { level, lesson })}
 			content={{
 				title: "상황에 맞는 대화를 연습하세요.",
-				titleTranslated: "Practice with AI using the scenario.",
+				titleTranslated: t("missionChat.briefSubtitle"),
 				scene: dialog?.situation_ko ?? "",
 				sceneTranslated: dialog?.situation_en ?? "",
 				sceneImageUrl: dialog ? scenarioImgUrl : undefined,

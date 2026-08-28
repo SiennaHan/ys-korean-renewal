@@ -21,6 +21,7 @@ import { dialogs } from "@/shared/data/dialog";
 import { dialog_keywords } from "@/shared/data/dialog_keyword";
 import { getTTSAudio } from "@/shared/tts-cache";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * AI 미션 대화 — 대화 단계 (명세 §4)
@@ -54,6 +55,7 @@ export default function MissionDialog({
 		achievedCount: number;
 	}) => void;
 }) {
+	const { t } = useTranslation();
 	const sound = useSoundEffects();
 	const { playUrl, unlock } = useSharedAudio();
 	const { addToast } = useToast();
@@ -164,7 +166,7 @@ export default function MissionDialog({
 		async (rawMsg: string) => {
 			const msg = rawMsg.trim();
 			if (msg.length < 2) {
-				addToast("메시지를 2자 이상 입력해 주세요.");
+				addToast(t("missionChat.errTooShort"));
 				return;
 			}
 
@@ -188,7 +190,7 @@ export default function MissionDialog({
 
 			recording.terminate();
 		},
-		[addSttMsg, addToast, checkMission, recording, sound],
+		[addSttMsg, addToast, checkMission, recording, sound, t],
 	);
 
 	// --- Event handlers ---
@@ -203,13 +205,13 @@ export default function MissionDialog({
 		}
 		if (recording.recordState === "done") {
 			if (!recording.recordedMsg) {
-				addToast("녹음된 내용이 없습니다.");
+				addToast(t("missionChat.errNoRecording"));
 				recording.terminate();
 				return;
 			}
 			await uploadMsg(recording.recordedMsg);
 		}
-	}, [addToast, recording, uploadMsg]);
+	}, [addToast, recording, t, uploadMsg]);
 
 	const handleSendText = useCallback(async () => {
 		await unlock();

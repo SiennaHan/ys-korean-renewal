@@ -519,7 +519,7 @@ export default function AiRoleplay({
 	if (!scenario) {
 		return (
 			<div className="flex h-full flex-col items-center justify-center bg-white">
-				<p className="text-[#888] text-[14px]">데이터가 없습니다</p>
+				<p className="text-[#888] text-[14px]">{t("activity.noData")}</p>
 			</div>
 		);
 	}
@@ -543,7 +543,7 @@ export default function AiRoleplay({
 		const practice = isPracticeTurn(turn.turn_seq);
 		return {
 			id: turn.id,
-			who: practice ? "나" : "AI",
+			who: practice ? t("activity.speakerMe") : "AI",
 			mine: practice,
 			ko: turn.ko,
 		};

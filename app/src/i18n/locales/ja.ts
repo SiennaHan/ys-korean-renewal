@@ -79,7 +79,8 @@ const ja = {
 		carryBody:
 			"見て回りながら学習した記録がこのアカウントに移ります。もう一度解く必要はありません。",
 		email: "メールアドレス",
-		emailHint: "パスワードを忘れたときはこの住所に再設定リンクを送ります",
+		emailHint:
+			"パスワードを忘れたときはこのメールアドレスに再設定リンクを送ります",
 		password: "パスワード",
 		showPassword: "パスワードを表示",
 		hidePassword: "パスワードを隠す",
@@ -193,7 +194,7 @@ const ja = {
 		languageSetting: "言語設定",
 		signOut: "ログアウト",
 		changePhoto: "プロフィール写真の変更",
-		email: "メール",
+		email: "メールアドレス",
 		editProfile: "プロフィール変更",
 		changePassword: "パスワード変更",
 		profileInfo: {
@@ -254,8 +255,8 @@ const ja = {
 			myTrip: "{{name}}さんのソウル旅行 🗺️",
 			progress: "{{done}} / {{total}} 場所クリア",
 			review: "復習する →",
-			canTry: "挑戦できます",
-			locked: "ロック",
+			canTry: "挑戦可能",
+			locked: "ロック中",
 			bookUnit: "延世1巻 {{unit}}",
 			toMap: "← 地図",
 			toLocInfo: "← 場所の情報",
@@ -287,8 +288,8 @@ const ja = {
 			welcome2: "ようこそ！",
 			intro1: "韓国語でソウルを旅しながら",
 			intro2: "新しい表現を身につけましょう。",
-			nameLabel: "名前 (Korean or English)",
-			namePlaceholder: "例: 유리, Emily…",
+			nameLabel: "名前（Korean or English）",
+			namePlaceholder: "例：유리, Emily…",
 			startTrip: "ソウル旅行をはじめる →",
 			nameNote: "名前はゲーム内の会話で使われます。",
 			aria: "ソウル旅行パズル",
@@ -300,11 +301,11 @@ const ja = {
 		 */
 		springPicnic: {
 			lastMission:
-				"前回のミッション: {{friend}} {{emoji}} {{score}}点 · {{date}}",
+				"前回のミッション：{{friend}} {{emoji}} {{score}}点 · {{date}}",
 			date: "{{month}}月{{day}}日",
 			title: "🌸 春のピクニック数字ミッション",
 			subLine1: "友だちとピクニックを楽しみながら",
-			subLine2: "韓国語の数字ミッションをやりきろう！",
+			subLine2: "韓国語の数字ミッションをやりきりましょう！",
 			start: "はじめる 🌸",
 			easy: "🌱 やさしい",
 			hard: "🌸 むずかしい",
@@ -312,7 +313,7 @@ const ja = {
 			pickSub: "友だちと難易度を選びます",
 			retry: "🔄 もう一度！",
 			tryAgain: "惜しい！もう一度どうぞ。",
-			answerLabel: "正解:",
+			answerLabel: "正解：",
 			doneMission: "ミッション完了！🎉",
 			showResult: "結果を見る →",
 			nextOk: "次の問題 🌸",
@@ -458,7 +459,7 @@ const ja = {
 			},
 			springPicnic: {
 				name: "春のピクニック 数字ミッション",
-				description: "友達と韓国語の数字を練習しましょう",
+				description: "友だちと韓国語の数字を練習しましょう",
 			},
 			seoulPuzzle: {
 				name: "ソウル旅行パズル",
@@ -503,7 +504,7 @@ const ja = {
 		jamoTab: "ハングル",
 		bookTab: "{{level}}級",
 		sectionBasic: "基礎学習",
-		sectionAdvanced: "応用学習",
+		sectionAdvanced: "発展学習",
 		act: {
 			word: "単語を学ぶ",
 			roleplay: "AIロールプレイ",
@@ -531,7 +532,7 @@ const ja = {
 	home: {
 		greeting: "こんにちは、",
 		guestName: "ようこそ",
-		userName: "{{name}} さん",
+		userName: "{{name}}さん",
 		streakDays: "{{count}}日",
 		streakTail: "連続で学習中",
 		taskResume: "続きから学習する",
@@ -573,7 +574,7 @@ const ja = {
 		expiredTitle: "続きから、もう一度始めましょう",
 		expiredBody:
 			"学習記録はそのまま保存されています。再開すればすぐに続きを学べます。",
-		expiredCta: "購読を再開",
+		expiredCta: "定期購読を再開",
 		schoolKicker: "学校の利用範囲",
 		schoolTitle: "学校の利用範囲に含まれていません",
 		schoolBody:
@@ -586,7 +587,7 @@ const ja = {
 		textbook: "教材学習",
 		game: "ゲーム",
 		clip: "表現クリップ",
-		my: "MY",
+		my: "マイ",
 	},
 	player: {
 		exit: "終了",
@@ -622,6 +623,8 @@ const ja = {
 		tipQuiet: "静かな場所で話してみましょう",
 		tipLouder: "もう少し大きく話してみましょう",
 		canSkipHint: "うまくいきませんか？スキップして後でもう一度できます。",
+		chapterUnit: "第{{seq}}課 - {{title}}",
+		chapterActivity: "第{{seq}}課 · {{title}}",
 	},
 	/** 활동 화면 — 지시문과 화면별 조작 문구 */
 	activity: {
@@ -638,8 +641,8 @@ const ja = {
 		instrReading: "読んで質問に答えてください。",
 		instrWriteSelect: "音を聞いて文字を作りましょう。",
 		instrWriteTrace: "文字を筆順どおりに書いてみましょう。",
-		instrSpeak: "聞いて続けて言ってみましょう。",
-		instrWordRep: "単語を聞いて続けて言ってみましょう。",
+		instrSpeak: "聞いて真似して言ってみましょう。",
+		instrWordRep: "単語を聞いて真似して言ってみましょう。",
 		instrReadWrite: "単語を読んで書いてください。",
 		toQuiz: "問題を解く",
 		flashFront: "カードを押して意味を見る",
@@ -649,7 +652,7 @@ const ja = {
 		picture: "画像",
 		practiceList: "学習リスト",
 		practiceSet: "学習グループ",
-		myRecording: "私の録音",
+		myRecording: "自分の録音",
 		recordIdleSub: "文を言ってみましょう",
 		preparingTitle: "準備中",
 		preparingSub: "まもなく始まります",
@@ -681,7 +684,7 @@ const ja = {
 		roleReplayMine: "自分の録音を聞く",
 		roleRetry: "もう一度録音",
 		roleNextTurn: "次のセリフ",
-		myPronunciation: "私の発音",
+		myPronunciation: "自分の発音",
 		jamoInitial: "最初に来る音",
 		jamoMedial: "真ん中に来る音",
 		jamoFinal: "パッチムに来る音",
@@ -692,6 +695,10 @@ const ja = {
 		comboTarget: "作る文字",
 		hintPeek: "ヒント",
 		hintPeekLabel: "ヒント — 作る文字を少しだけ表示します",
+		speakerMe: "私",
+		noData: "データがありません",
+		sceneImageAlt: "場面の画像",
+		analyzeFailed: "分析に失敗しました。もう一度お試しください。",
 	},
 	result: {
 		title: "よくできました！",
@@ -709,7 +716,7 @@ const ja = {
 		skippedItem: "スキップ {{index}}",
 		explanation: "解説 {{index}}",
 		showMore: "もっと見る",
-		hardItem: "よく間違えます",
+		hardItem: "間違えやすい",
 
 		// 통계 카드 2개 — 주 진행률 / 부 정답률(없으면 "—")
 		kAnswered: "解いた問題",
@@ -724,7 +731,7 @@ const ja = {
 		keywordsDone: "達成キーワード",
 		score: "スコア",
 		tabEvaluation: "評価",
-		tabSentences: "私の文へのフィードバック",
+		tabSentences: "自分の文へのフィードバック",
 		axisPronunciation: "発音",
 		axisGrammar: "文法",
 		axisContent: "内容",
@@ -734,6 +741,10 @@ const ja = {
 		finishLearning: "学習を終える",
 		emptySentences: "修正が必要な文はありません。",
 		loading: "レポートを読み込み中…",
+		emptyPronunciation: "評価できる発音データがありません。",
+		emptyGrammar: "評価できる文法データがありません。",
+		emptyContent: "評価できる内容データがありません。",
+		emptyVocabulary: "評価できる語彙データがありません。",
 	},
 	missionChat: {
 		completeTitle:
@@ -751,18 +762,23 @@ const ja = {
 		keyboard: "キーボードで入力",
 		discard: "録音を破棄",
 		sendRecorded: "送信する",
-		exitTitle: "会話を終了しますか？",
+		exitTitle: "会話を中断しますか？",
 		exitBody: "入力または録音した内容は保存されません。",
 		finishTitle: "会話を終えますか？",
 		finishBody: "未完了のミッションがあってもレポートを確認できます。",
 		continue: "続ける",
-		exit: "終了",
+		exit: "中断する",
 		viewReport: "レポートを見る",
+		briefSubtitle: "シナリオに沿ってAIと会話を練習しましょう。",
+		errTooShort: "メッセージは2文字以上入力してください。",
+		errNoRecording: "録音された内容がありません。",
+		noMessage: "メッセージなし",
+		recordingWave: "録音中の音",
 	},
 	/** 미션 브리핑 — 구역 제목은 목업이 영어로 고정해 두었다 */
 	briefing: {
-		scenario: "Conversation Scenario",
-		keyword: "Mission Keyword",
+		scenario: "会話の場面",
+		keyword: "ミッションキーワード",
 		start: "会話を始める",
 	},
 	review: {
@@ -783,7 +799,28 @@ const ja = {
 			"ブラウザの設定でマイクをオンにしてから\nもう一度お試しください。",
 		micDeniedSkip: "この活動をスキップ",
 		recordAgain: "もう一度話してください。",
-		exitConfirmChat: "会話は最初から始まります。終了しますか？",
+		exitConfirmChat: "会話は最初から始まります。中断しますか？",
+	},
+	flashResult: {
+		titlePerfect: "単語をすべて覚えました！",
+		titleDone: "今回の学習を終えました",
+		bodyPerfect: "このセットの単語をすべて知っています。",
+		bodyPartial: "わからなかった単語だけ集めてもう一度練習できます。",
+		unknownWords: "わからない単語",
+		knownWords: "わかる単語",
+		knowRate: "わかる",
+		tapNumbersHint:
+			"数字を押すと、わかる単語とわからない単語の一覧を確認できます。",
+		retryUnknown: "わからない単語をもう一度",
+		finish: "学習を終える",
+	},
+	app: {
+		updatingTitle: "アプリを更新しています",
+		updatingBody:
+			"リリース直後にファイルのバージョンが変わり、画面を読み込めませんでした。",
+		reload: "再読み込み",
+		errorTitle: "エラーが発生しました",
+		errorBody: "しばらくしてからもう一度お試しください。",
 	},
 } as const;
 
