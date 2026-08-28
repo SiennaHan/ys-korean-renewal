@@ -344,10 +344,13 @@ def check(key, fixture, spec):
 # 픽스처와의 대조가 아니라 **씨드 콘텐츠가 규약을 지키는지** 본다.
 
 SP_LANGS = ("en", "ja", "zh", "vi")
+# 상황 설명은 활동 지시문이라 한국어도 있어야 한다(shell_spec §31) —
+# 대화 줄은 그 자체가 한국어라 한국어 번역이 없다. 그래서 두 목록이 다르다.
+SP_HINT_LANGS = ("ko", *SP_LANGS)
 
 
 def check_seoul_translations():
-	"""서울 퍼즐의 대화 번역이 네 언어 짝인지.
+	"""서울 퍼즐의 대화 번역과 상황 설명이 언어 짝인지.
 
 	2026-08-27 까지 이 필드는 평평한 문자열(영어)이었다 — 그래서 🌐 를 눌러도
 	앱 언어와 무관하게 늘 영어가 나왔다. 지금은 언어별 짝이고, 앱은 옛 꼴도
@@ -357,21 +360,29 @@ def check_seoul_translations():
 	"""
 	data = seed("seoul_puzzles.json")
 	bad = []
+
+	def want(where, value, langs):
+		if isinstance(value, str):
+			bad.append(
+				f"{where} 가 아직 평평한 문자열이다 — {'·'.join(langs)} 짝으로 적어라"
+			)
+		elif not isinstance(value, dict):
+			bad.append(f"{where} 가 없다")
+		else:
+			missing = [l for l in langs if not value.get(l)]
+			if missing:
+				bad.append(f"{where} 에 {', '.join(missing)} 가 없다")
+
+	for loc in data.get("locations") or []:
+		for j, msg in enumerate(loc.get("entryMessages") or []):
+			want(f"{loc['id']}.entryMessages[{j}].t", msg.get("t"), SP_LANGS)
+
 	for locId, steps in (data.get("puzzles") or {}).items():
 		for i, step in enumerate(steps):
 			for field in ("friendMsg", "selfMsg", "friendMsg2"):
-				if not step.get(field):
-					continue
-				value = step.get(field + "T")
-				where = f"{locId}[{i}].{field}T"
-				if isinstance(value, str):
-					bad.append(f"{where} 가 아직 평평한 문자열이다 — 네 언어 짝으로 적어라")
-				elif not isinstance(value, dict):
-					bad.append(f"{where} 가 없다")
-				else:
-					missing = [l for l in SP_LANGS if not value.get(l)]
-					if missing:
-						bad.append(f"{where} 에 {', '.join(missing)} 가 없다")
+				if step.get(field):
+					want(f"{locId}[{i}].{field}T", step.get(field + "T"), SP_LANGS)
+			want(f"{locId}[{i}].hintText", step.get("hintText"), SP_HINT_LANGS)
 	for msg in bad:
 		print(f"★ seoul_puzzles.json — {msg}")
 	return len(bad)

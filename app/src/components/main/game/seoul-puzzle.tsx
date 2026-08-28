@@ -1,4 +1,5 @@
 import { getSeoulPuzzleContent } from "@/api/game-content";
+import { pickTrans } from "@/components/main/game/seoul-puzzle-view";
 import { useTranslation } from "react-i18next";
 import { getGameProgress, saveGameProgress } from "@/api/game-progress";
 import {
@@ -20,6 +21,8 @@ export type NavDir = "forward" | "back";
 export interface EntryMessage {
 	type: "friend" | "self";
 	text: string;
+	/** 언어별 번역. 없으면 🌐 가 안 나온다 — 옛 데이터가 그렇다 */
+	t?: SpTranslation;
 }
 export interface Location {
 	id: string;
@@ -40,6 +43,11 @@ export interface Location {
  * 언어별 짝이다. **문자열도 계속 읽는다** — 운영 DB 의 `ko_seoul_puzzle_step.data`
  * 에는 씨드를 다시 넣기 전까지 옛 꼴이 남아 있고, 그때도 영어가 나와야 한다.
  * 고르는 곳은 seoul-puzzle-view.tsx 의 `pickTrans` 하나뿐이다.
+ *
+ * 상황 설명(`hintText`)도 같은 꼴을 쓴다 — 다만 그쪽은 **`ko` 키가 있다.**
+ * 대화 줄은 그 자체가 한국어라 한국어 번역이 없지만, 상황 설명은 활동 지시문이라
+ * 앱 언어를 따라야 하고(shell_spec §31) 한국어일 때 한국어가 나와야 한다.
+ * `pickTrans` 의 차례 `[언어] → en → ko` 가 두 경우를 다 맞춘다.
  */
 export type SpTranslation = string | Record<string, string>;
 
@@ -50,12 +58,19 @@ export interface Puzzle {
 	selfMsgT: SpTranslation | null;
 	friendMsg2: string | null;
 	friendMsg2T: SpTranslation | null;
-	hintText: string;
+	hintText: SpTranslation;
 	answer: string[];
 	distractors: string[];
 	grammar: string;
 	tip: string;
 }
+/**
+ * 화면에 넘기는 꼴 — playerName 을 넣고 상황 설명의 언어까지 골라 놓은 것.
+ * 대화 번역(`*T`)은 **고르지 않고 그대로 넘긴다** — 🌐 를 누를 때 비로소 보이므로
+ * 고르는 자리가 화면(ChatBubble 호출부)이다.
+ */
+export type ResolvedPuzzle = Omit<Puzzle, "hintText"> & { hintText: string };
+
 interface SavedState {
 	playerName: string;
 	completed: string[];
@@ -832,7 +847,7 @@ function Confetti({ show }: { show: boolean }) {
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function SeoulPuzzle() {
 	const nav = useNavigate();
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [screen, setScreen] = useState<Screen>("name");
 
 	const [navDir, setNavDir] = useState<NavDir>("forward");
@@ -858,6 +873,11 @@ export default function SeoulPuzzle() {
 	const [streak, setStreak] = useState(0);
 	const [showConfetti, setShowConfetti] = useState(false);
 	const [transVisible, setTransVisible] = useState<Set<number>>(new Set());
+	/*
+	 * 진입 화면의 🌐 는 따로 센다. 퍼즐 화면과 같은 Set 을 쓰면 진입에서 펼친 것이
+	 * 첫 문제로 따라 들어간다 — 둘 다 idx 0·1·2 를 쓰기 때문이다.
+	 */
+	const [entryTrans, setEntryTrans] = useState<Set<number>>(new Set());
 
 	const [locations, setLocations] = useState<Location[]>([]);
 	const [puzzlesMap, setPuzzlesMap] = useState<Record<string, Puzzle[]>>({});
@@ -1011,11 +1031,12 @@ export default function SeoulPuzzle() {
 			friendMsg: rt(raw.friendMsg),
 			friendMsg2: raw.friendMsg2 ? rt(raw.friendMsg2) : null,
 			selfMsg: raw.selfMsg ? rt(raw.selfMsg) : null,
-			hintText: rt(raw.hintText),
+			hintText: rt(pickTrans(i18n.language, raw.hintText)),
 			answer: raw.answer.map(rt),
 			distractors: raw.distractors.map(rt),
 		};
-	}, [currentLoc, puzzleIdx, playerName, puzzlesMap]);
+		/* i18n.language — 상황 설명의 언어를 여기서 고른다 */
+	}, [currentLoc, puzzleIdx, playerName, puzzlesMap, i18n.language]);
 
 	// ── Puzzle loading ──
 	function loadPuzzle(i: number) {
@@ -1218,6 +1239,15 @@ export default function SeoulPuzzle() {
 	}
 
 	// ── Toggle translation ──
+	function toggleEntryTrans(idx: number) {
+		setEntryTrans((prev) => {
+			const s = new Set(prev);
+			if (s.has(idx)) s.delete(idx);
+			else s.add(idx);
+			return s;
+		});
+	}
+
 	function toggleTrans(idx: number) {
 		setTransVisible((prev) => {
 			const s = new Set(prev);
@@ -1495,6 +1525,8 @@ export default function SeoulPuzzle() {
 							locations={locations}
 							grammars={[...new Set(puzzlesMap[loc.id].map((p) => p.grammar))]}
 							navDir={navDir}
+							entryTrans={entryTrans}
+							onToggleEntryTrans={toggleEntryTrans}
 							onMapBack={() => navigate("map", "back")}
 							onStart={startPuzzles}
 						/>

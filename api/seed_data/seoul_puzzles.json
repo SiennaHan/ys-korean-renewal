@@ -15,15 +15,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "안녕하세요! 저는 김연세예요. 😊"
+					"text": "안녕하세요! 저는 김연세예요. 😊",
+					"t": {
+						"en": "Hello! I'm Kim Yonsei. 😊",
+						"ja": "こんにちは！私はキム・ヨンセです。😊",
+						"zh": "你好！我是金延世。😊",
+						"vi": "Xin chào! Tôi là Kim Yonsei. 😊"
+					}
 				},
 				{
 					"type": "self",
-					"text": "안녕하세요! 저는 [이름]이에요."
+					"text": "안녕하세요! 저는 [이름]이에요.",
+					"t": {
+						"en": "Hello! I'm [이름].",
+						"ja": "こんにちは！私は[이름]です。",
+						"zh": "你好！我是[이름]。",
+						"vi": "Xin chào! Tôi là [이름]."
+					}
 				},
 				{
 					"type": "friend",
-					"text": "반가워요! 같이 카페 가요!"
+					"text": "반가워요! 같이 카페 가요!",
+					"t": {
+						"en": "Nice to meet you! Let's go to a café together!",
+						"ja": "はじめまして！一緒にカフェに行きましょう！",
+						"zh": "很高兴认识你！一起去咖啡厅吧！",
+						"vi": "Rất vui được gặp bạn! Cùng đi quán cà phê nhé!"
+					}
 				}
 			]
 		},
@@ -42,15 +60,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "명동에 왔어! 여기 쇼핑 천국이야 🛍️"
+					"text": "명동에 왔어! 여기 쇼핑 천국이야 🛍️",
+					"t": {
+						"en": "We're in Myeongdong! This place is a shopping paradise 🛍️",
+						"ja": "明洞に来たよ！ここはショッピング天国 🛍️",
+						"zh": "来明洞了！这里是购物天堂 🛍️",
+						"vi": "Đến Myeongdong rồi! Đây là thiên đường mua sắm 🛍️"
+					}
 				},
 				{
 					"type": "self",
-					"text": "와, 가게가 정말 많아요!"
+					"text": "와, 가게가 정말 많아요!",
+					"t": {
+						"en": "Wow, there are so many stores!",
+						"ja": "わあ、お店が本当に多いですね！",
+						"zh": "哇，商店真多！",
+						"vi": "Ồ, nhiều cửa hàng thật!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "뭐 사고 싶어? 같이 골라보자."
+					"text": "뭐 사고 싶어? 같이 골라보자.",
+					"t": {
+						"en": "What do you want to buy? Let's pick together.",
+						"ja": "何が買いたい？一緒に選ぼう。",
+						"zh": "想买什么？一起挑吧。",
+						"vi": "Bạn muốn mua gì? Cùng chọn nhé."
+					}
 				}
 			]
 		},
@@ -69,15 +105,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "경복궁 도착! 여기서 한복도 빌려 입을 수 있어 😊"
+					"text": "경복궁 도착! 여기서 한복도 빌려 입을 수 있어 😊",
+					"t": {
+						"en": "We're at Gyeongbokgung! You can rent a hanbok here too 😊",
+						"ja": "景福宮に到着！ここでは韓服も借りられるよ 😊",
+						"zh": "到景福宫了！这里还能租韩服 😊",
+						"vi": "Đến Gyeongbokgung rồi! Ở đây còn thuê được hanbok nữa 😊"
+					}
 				},
 				{
 					"type": "self",
-					"text": "정말요? 완전 좋아요!"
+					"text": "정말요? 완전 좋아요!",
+					"t": {
+						"en": "Really? That sounds great!",
+						"ja": "本当ですか？すごくいいですね！",
+						"zh": "真的吗？太好了！",
+						"vi": "Thật sao? Tuyệt quá!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "근데 먼저 주변 좀 파악해보자."
+					"text": "근데 먼저 주변 좀 파악해보자.",
+					"t": {
+						"en": "But let's get our bearings first.",
+						"ja": "でも、まず周りを確認してみよう。",
+						"zh": "不过先看看周围吧。",
+						"vi": "Nhưng trước tiên hãy xem quanh đây đã."
+					}
 				}
 			]
 		},
@@ -96,15 +150,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "한강이다! 여기서 치킨 먹어야지 🍗"
+					"text": "한강이다! 여기서 치킨 먹어야지 🍗",
+					"t": {
+						"en": "The Han River! We have to eat chicken here 🍗",
+						"ja": "漢江だ！ここではチキンを食べなきゃ 🍗",
+						"zh": "到汉江了！这里当然要吃炸鸡 🍗",
+						"vi": "Sông Hàn đây! Ở đây phải ăn gà rán chứ 🍗"
+					}
 				},
 				{
 					"type": "self",
-					"text": "저도 배고파요!"
+					"text": "저도 배고파요!",
+					"t": {
+						"en": "I'm hungry too!",
+						"ja": "私もお腹すきました！",
+						"zh": "我也饿了！",
+						"vi": "Tôi cũng đói rồi!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "자리 잡고 주문해보자."
+					"text": "자리 잡고 주문해보자.",
+					"t": {
+						"en": "Let's find a spot and order.",
+						"ja": "場所を取って注文しよう。",
+						"zh": "找个位子点餐吧。",
+						"vi": "Tìm chỗ ngồi rồi gọi món nhé."
+					}
 				}
 			]
 		},
@@ -123,15 +195,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "광장시장! 여기 먹거리 진짜 많아 😋"
+					"text": "광장시장! 여기 먹거리 진짜 많아 😋",
+					"t": {
+						"en": "Gwangjang Market! There's so much to eat here 😋",
+						"ja": "広蔵市場！ここは食べ物が本当に多いよ 😋",
+						"zh": "广藏市场！这里吃的真多 😋",
+						"vi": "Chợ Gwangjang! Ở đây nhiều đồ ăn lắm 😋"
+					}
 				},
 				{
 					"type": "self",
-					"text": "냄새 너무 좋아요!"
+					"text": "냄새 너무 좋아요!",
+					"t": {
+						"en": "It smells so good!",
+						"ja": "においがすごくいいですね！",
+						"zh": "味道好香！",
+						"vi": "Thơm quá!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "뭐가 먹고 싶어? 같이 골라보자."
+					"text": "뭐가 먹고 싶어? 같이 골라보자.",
+					"t": {
+						"en": "What do you want to eat? Let's pick together.",
+						"ja": "何が食べたい？一緒に選ぼう。",
+						"zh": "想吃什么？一起挑吧。",
+						"vi": "Bạn muốn ăn gì? Cùng chọn nhé."
+					}
 				}
 			]
 		},
@@ -150,15 +240,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "성수동 왔어! 요즘 핫한 동네야 ✨"
+					"text": "성수동 왔어! 요즘 핫한 동네야 ✨",
+					"t": {
+						"en": "We're in Seongsu! It's the hot neighborhood these days ✨",
+						"ja": "聖水洞に来たよ！最近人気の街なんだ ✨",
+						"zh": "来圣水洞了！最近很火的街区 ✨",
+						"vi": "Đến Seongsu rồi! Khu này dạo này hot lắm ✨"
+					}
 				},
 				{
 					"type": "self",
-					"text": "카페도 많고 예쁘다!"
+					"text": "카페도 많고 예쁘다!",
+					"t": {
+						"en": "So many cafés, and it's pretty!",
+						"ja": "カフェも多くてきれいですね！",
+						"zh": "咖啡厅又多又漂亮！",
+						"vi": "Nhiều quán cà phê mà lại đẹp nữa!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "저기 식당 들어가볼까?"
+					"text": "저기 식당 들어가볼까?",
+					"t": {
+						"en": "Shall we go into that restaurant?",
+						"ja": "あそこの食堂に入ってみようか？",
+						"zh": "要不要进那家餐厅？",
+						"vi": "Mình vào nhà hàng kia nhé?"
+					}
 				}
 			]
 		},
@@ -177,15 +285,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "국립중앙박물관이야! 한국 역사 다 있어 🏛️"
+					"text": "국립중앙박물관이야! 한국 역사 다 있어 🏛️",
+					"t": {
+						"en": "This is the National Museum of Korea! All of Korean history is here 🏛️",
+						"ja": "国立中央博物館だよ！韓国の歴史が全部ある 🏛️",
+						"zh": "这是国立中央博物馆！韩国历史都在这里 🏛️",
+						"vi": "Đây là Bảo tàng Quốc gia Hàn Quốc! Cả lịch sử Hàn Quốc đều ở đây 🏛️"
+					}
 				},
 				{
 					"type": "self",
-					"text": "엄청 크다!"
+					"text": "엄청 크다!",
+					"t": {
+						"en": "It's huge!",
+						"ja": "すごく大きい！",
+						"zh": "好大啊！",
+						"vi": "To thật đấy!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "1층부터 구경해보자."
+					"text": "1층부터 구경해보자.",
+					"t": {
+						"en": "Let's start looking from the first floor.",
+						"ja": "一階から見てみよう。",
+						"zh": "从一楼开始看吧。",
+						"vi": "Xem từ tầng một nhé."
+					}
 				}
 			]
 		},
@@ -204,15 +330,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "북촌한옥마을이야. 전통 한옥이 진짜 많아 🏯"
+					"text": "북촌한옥마을이야. 전통 한옥이 진짜 많아 🏯",
+					"t": {
+						"en": "This is Bukchon Hanok Village. There are so many traditional hanok 🏯",
+						"ja": "北村韓屋村だよ。伝統的な韓屋が本当に多い 🏯",
+						"zh": "这是北村韩屋村。传统韩屋真多 🏯",
+						"vi": "Đây là làng hanok Bukchon. Nhiều nhà hanok truyền thống lắm 🏯"
+					}
 				},
 				{
 					"type": "self",
-					"text": "사진 찍고 싶어요!"
+					"text": "사진 찍고 싶어요!",
+					"t": {
+						"en": "I want to take photos!",
+						"ja": "写真を撮りたいです！",
+						"zh": "我想拍照！",
+						"vi": "Tôi muốn chụp ảnh!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "골목길 같이 걸어보자."
+					"text": "골목길 같이 걸어보자.",
+					"t": {
+						"en": "Let's walk the alleys together.",
+						"ja": "路地を一緒に歩いてみよう。",
+						"zh": "一起走走小巷吧。",
+						"vi": "Cùng đi dạo trong hẻm nhé."
+					}
 				}
 			]
 		},
@@ -231,15 +375,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "DDP야! 밤에 오면 야경이 진짜 예뻐 🌙"
+					"text": "DDP야! 밤에 오면 야경이 진짜 예뻐 🌙",
+					"t": {
+						"en": "This is DDP! The night view is beautiful if you come at night 🌙",
+						"ja": "DDPだよ！夜に来ると夜景が本当にきれい 🌙",
+						"zh": "这是DDP！晚上来夜景特别美 🌙",
+						"vi": "Đây là DDP! Buổi tối đến thì cảnh đêm đẹp lắm 🌙"
+					}
 				},
 				{
 					"type": "self",
-					"text": "건물 모양이 특이해요!"
+					"text": "건물 모양이 특이해요!",
+					"t": {
+						"en": "The building has an unusual shape!",
+						"ja": "建物の形が変わっていますね！",
+						"zh": "建筑的形状很特别！",
+						"vi": "Hình dáng toà nhà đặc biệt thật!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "구경하고 쇼핑도 하자."
+					"text": "구경하고 쇼핑도 하자.",
+					"t": {
+						"en": "Let's look around and shop too.",
+						"ja": "見て回って、買い物もしよう。",
+						"zh": "逛逛也买点东西吧。",
+						"vi": "Vừa tham quan vừa mua sắm nhé."
+					}
 				}
 			]
 		},
@@ -257,15 +419,33 @@
 			"entryMessages": [
 				{
 					"type": "friend",
-					"text": "북한산 등산 출발! 힘들어도 포기하지 마 💪"
+					"text": "북한산 등산 출발! 힘들어도 포기하지 마 💪",
+					"t": {
+						"en": "Bukhansan hike, let's go! Don't give up even if it's tough 💪",
+						"ja": "北漢山の登山、出発！しんどくてもあきらめないで 💪",
+						"zh": "北汉山登山出发！再累也别放弃 💪",
+						"vi": "Bắt đầu leo Bukhansan! Mệt cũng đừng bỏ cuộc nhé 💪"
+					}
 				},
 				{
 					"type": "self",
-					"text": "열심히 해볼게요!"
+					"text": "열심히 해볼게요!",
+					"t": {
+						"en": "I'll do my best!",
+						"ja": "がんばってみます！",
+						"zh": "我会努力的！",
+						"vi": "Tôi sẽ cố gắng!"
+					}
 				},
 				{
 					"type": "friend",
-					"text": "천천히 올라가면서 얘기하자."
+					"text": "천천히 올라가면서 얘기하자.",
+					"t": {
+						"en": "Let's talk as we go up slowly.",
+						"ja": "ゆっくり登りながら話そう。",
+						"zh": "慢慢往上走边聊吧。",
+						"vi": "Vừa đi từ từ vừa nói chuyện nhé."
+					}
 				}
 			]
 		}
@@ -289,7 +469,13 @@
 					"zh": "说说你想在小巷里拍照吧！",
 					"vi": "Hãy nói rằng bạn muốn chụp ảnh trong hẻm!"
 				},
-				"hintText": "골목에서 사진을 찍고 싶은 상황이에요",
+				"hintText": {
+					"ko": "골목에서 사진을 찍고 싶은 상황이에요",
+					"en": "You want to take photos in the alley.",
+					"ja": "路地で写真を撮りたい場面です。",
+					"zh": "你想在小巷里拍照。",
+					"vi": "Bạn muốn chụp ảnh trong hẻm."
+				},
 				"answer": [
 					"골목에서",
 					"사진을",
@@ -321,7 +507,13 @@
 					"zh": "说说你想吃的食物吧！",
 					"vi": "Hãy nói món bạn muốn ăn!"
 				},
-				"hintText": "먹고 싶은 음식을 말하는 상황이에요",
+				"hintText": {
+					"ko": "먹고 싶은 음식을 말하는 상황이에요",
+					"en": "You're saying what you want to eat.",
+					"ja": "食べたい料理を言う場面です。",
+					"zh": "你要说想吃的食物。",
+					"vi": "Bạn nói món mình muốn ăn."
+				},
 				"answer": [
 					"저는",
 					"불고기를",
@@ -353,7 +545,13 @@
 					"zh": "说说你想在韩屋咖啡厅休息吧！",
 					"vi": "Hãy nói rằng bạn muốn nghỉ ở quán cà phê hanok!"
 				},
-				"hintText": "한옥 카페에서 쉬고 싶은 상황이에요",
+				"hintText": {
+					"ko": "한옥 카페에서 쉬고 싶은 상황이에요",
+					"en": "You want to rest at a hanok café.",
+					"ja": "韓屋カフェで休みたい場面です。",
+					"zh": "你想在韩屋咖啡厅休息。",
+					"vi": "Bạn muốn nghỉ ở quán cà phê hanok."
+				},
 				"answer": [
 					"한옥",
 					"카페에서",
@@ -384,7 +582,13 @@
 					"zh": "说说你想在哪里买吧！",
 					"vi": "Hãy nói bạn muốn mua ở đâu!"
 				},
-				"hintText": "기념품을 사고 싶은 장소를 말하는 상황이에요",
+				"hintText": {
+					"ko": "기념품을 사고 싶은 장소를 말하는 상황이에요",
+					"en": "You're saying where you want to buy souvenirs.",
+					"ja": "お土産を買いたい場所を言う場面です。",
+					"zh": "你要说想买纪念品的地方。",
+					"vi": "Bạn nói nơi muốn mua quà lưu niệm."
+				},
 				"answer": [
 					"북촌에서",
 					"기념품을",
@@ -418,7 +622,13 @@
 					"zh": "说说你要给朋友水吧！",
 					"vi": "Hãy nói rằng bạn đưa nước cho bạn mình!"
 				},
-				"hintText": "친구에게 물을 주는 상황이에요",
+				"hintText": {
+					"ko": "친구에게 물을 주는 상황이에요",
+					"en": "You're giving water to your friend.",
+					"ja": "友だちに水をあげる場面です。",
+					"zh": "你要给朋友水。",
+					"vi": "Bạn đưa nước cho bạn mình."
+				},
 				"answer": [
 					"친구에게",
 					"물을",
@@ -449,7 +659,13 @@
 					"zh": "说说你要问大叔吧！",
 					"vi": "Hãy nói rằng bạn sẽ hỏi chú ấy!"
 				},
-				"hintText": "산악회 아저씨에게 길을 묻는 상황이에요",
+				"hintText": {
+					"ko": "산악회 아저씨에게 길을 묻는 상황이에요",
+					"en": "You're asking the hiking club man for directions.",
+					"ja": "山岳会のおじさんに道を聞く場面です。",
+					"zh": "你向登山会的大叔问路。",
+					"vi": "Bạn hỏi đường chú ở câu lạc bộ leo núi."
+				},
 				"answer": [
 					"아저씨에게",
 					"길을",
@@ -480,7 +696,13 @@
 					"zh": "说说大约要三个小时吧！",
 					"vi": "Hãy nói là mất khoảng ba tiếng!"
 				},
-				"hintText": "정상까지 소요 시간을 말하는 상황이에요",
+				"hintText": {
+					"ko": "정상까지 소요 시간을 말하는 상황이에요",
+					"en": "You're saying how long it takes to the summit.",
+					"ja": "頂上までの所要時間を言う場面です。",
+					"zh": "你要说到山顶需要的时间。",
+					"vi": "Bạn nói thời gian lên tới đỉnh."
+				},
 				"answer": [
 					"세",
 					"시간쯤",
@@ -512,7 +734,13 @@
 					"zh": "问一下价格吧！",
 					"vi": "Hãy hỏi giá!"
 				},
-				"hintText": "산 위 매점에서 가격을 물어보는 상황이에요",
+				"hintText": {
+					"ko": "산 위 매점에서 가격을 물어보는 상황이에요",
+					"en": "You're asking the price at the shop on the mountain.",
+					"ja": "山の上の売店で値段を聞く場面です。",
+					"zh": "你在山上的小卖部问价格。",
+					"vi": "Bạn hỏi giá ở quầy trên núi."
+				},
 				"answer": [
 					"이거",
 					"얼마예요?"
@@ -544,7 +772,13 @@
 					"zh": "说说这里有服装店和鞋店吧！",
 					"vi": "Hãy nói rằng có cửa hàng quần áo và cửa hàng giày!"
 				},
-				"hintText": "두 가게가 있다고 말하는 상황이에요",
+				"hintText": {
+					"ko": "두 가게가 있다고 말하는 상황이에요",
+					"en": "You're saying there are two kinds of stores.",
+					"ja": "二つのお店があると言う場面です。",
+					"zh": "你要说有两种商店。",
+					"vi": "Bạn nói có hai cửa hàng."
+				},
 				"answer": [
 					"옷",
 					"가게와",
@@ -576,7 +810,13 @@
 					"zh": "说说十点开门吧！",
 					"vi": "Hãy nói là mở cửa lúc mười giờ!"
 				},
-				"hintText": "DDP 오픈 시간을 말하는 상황이에요",
+				"hintText": {
+					"ko": "DDP 오픈 시간을 말하는 상황이에요",
+					"en": "You're saying what time DDP opens.",
+					"ja": "DDPの開く時間を言う場面です。",
+					"zh": "你要说DDP的开门时间。",
+					"vi": "Bạn nói giờ mở cửa của DDP."
+				},
 				"answer": [
 					"열",
 					"시에",
@@ -607,7 +847,13 @@
 					"zh": "说说你两点来吧！",
 					"vi": "Hãy nói là bạn đến lúc hai giờ!"
 				},
-				"hintText": "보통 오는 시간을 말하는 상황이에요",
+				"hintText": {
+					"ko": "보통 오는 시간을 말하는 상황이에요",
+					"en": "You're saying what time you usually come.",
+					"ja": "いつも来る時間を言う場面です。",
+					"zh": "你要说平时来的时间。",
+					"vi": "Bạn nói giờ mình thường đến."
+				},
 				"answer": [
 					"두",
 					"시에",
@@ -641,7 +887,13 @@
 					"zh": "说说你不吃泡菜吧！",
 					"vi": "Hãy nói rằng bạn không ăn kimchi!"
 				},
-				"hintText": "음식을 먹지 않는다고 말하는 상황이에요",
+				"hintText": {
+					"ko": "음식을 먹지 않는다고 말하는 상황이에요",
+					"en": "You're saying you don't eat that food.",
+					"ja": "その料理を食べないと言う場面です。",
+					"zh": "你要说你不吃那种食物。",
+					"vi": "Bạn nói mình không ăn món đó."
+				},
 				"answer": [
 					"저는",
 					"김치를",
@@ -674,7 +926,13 @@
 					"zh": "说说不辣吧！",
 					"vi": "Hãy nói là không cay!"
 				},
-				"hintText": "음식이 맵지 않다고 말하는 상황이에요",
+				"hintText": {
+					"ko": "음식이 맵지 않다고 말하는 상황이에요",
+					"en": "You're saying the food is not spicy.",
+					"ja": "料理が辛くないと言う場面です。",
+					"zh": "你要说菜不辣。",
+					"vi": "Bạn nói món ăn không cay."
+				},
 				"answer": [
 					"한국",
 					"음식이",
@@ -707,7 +965,13 @@
 					"zh": "说说不热吧！",
 					"vi": "Hãy nói là không nóng!"
 				},
-				"hintText": "날씨가 덥지 않다고 말하는 상황이에요",
+				"hintText": {
+					"ko": "날씨가 덥지 않다고 말하는 상황이에요",
+					"en": "You're saying the weather is not hot.",
+					"ja": "天気が暑くないと言う場面です。",
+					"zh": "你要说天气不热。",
+					"vi": "Bạn nói thời tiết không nóng."
+				},
 				"answer": [
 					"날씨가",
 					"덥지",
@@ -739,7 +1003,13 @@
 					"zh": "说说不多吧！",
 					"vi": "Hãy nói là không đông!"
 				},
-				"hintText": "시장에 사람이 많지 않다고 말하는 상황이에요",
+				"hintText": {
+					"ko": "시장에 사람이 많지 않다고 말하는 상황이에요",
+					"en": "You're saying the market is not crowded.",
+					"ja": "市場に人が多くないと言う場面です。",
+					"zh": "你要说市场人不多。",
+					"vi": "Bạn nói chợ không đông người."
+				},
 				"answer": [
 					"시장에",
 					"사람이",
@@ -779,7 +1049,13 @@
 					"zh": "说说钱包在哪里吧！",
 					"vi": "Hãy nói ví ở đâu!"
 				},
-				"hintText": "가방 안에 지갑이 있는 상황이에요",
+				"hintText": {
+					"ko": "가방 안에 지갑이 있는 상황이에요",
+					"en": "The wallet is inside the bag.",
+					"ja": "かばんの中に財布がある場面です。",
+					"zh": "钱包在包里。",
+					"vi": "Ví ở trong túi."
+				},
 				"answer": [
 					"지갑이",
 					"가방에",
@@ -810,7 +1086,13 @@
 					"zh": "问一下工作人员吧！",
 					"vi": "Hãy hỏi nhân viên!"
 				},
-				"hintText": "매표소 직원 앞에 서 있어요",
+				"hintText": {
+					"ko": "매표소 직원 앞에 서 있어요",
+					"en": "You're standing in front of the ticket booth staff.",
+					"ja": "チケット売り場の係の人の前に立っています。",
+					"zh": "你站在售票处工作人员面前。",
+					"vi": "Bạn đang đứng trước nhân viên phòng vé."
+				},
 				"answer": [
 					"화장실이",
 					"어디에",
@@ -846,7 +1128,13 @@
 					"zh": "进去确认一下吧！",
 					"vi": "Hãy vào xem thử!"
 				},
-				"hintText": "가게 안에 연필과 볼펜이 모두 있네요",
+				"hintText": {
+					"ko": "가게 안에 연필과 볼펜이 모두 있네요",
+					"en": "The shop has both pencils and pens.",
+					"ja": "お店には鉛筆もボールペンもあります。",
+					"zh": "店里铅笔和圆珠笔都有。",
+					"vi": "Cửa hàng có cả bút chì và bút bi."
+				},
 				"answer": [
 					"연필이",
 					"있어요.",
@@ -878,7 +1166,13 @@
 					"zh": "说说餐厅在哪里吧！",
 					"vi": "Hãy nói nhà hàng ở đâu!"
 				},
-				"hintText": "서점 근처에 식당이 있어요",
+				"hintText": {
+					"ko": "서점 근처에 식당이 있어요",
+					"en": "There's a restaurant near the bookstore.",
+					"ja": "書店の近くに食堂があります。",
+					"zh": "书店附近有餐厅。",
+					"vi": "Gần hiệu sách có nhà hàng."
+				},
 				"answer": [
 					"식당이",
 					"서점",
@@ -912,7 +1206,13 @@
 					"zh": "说说你吃什么吧！",
 					"vi": "Hãy nói bạn ăn gì!"
 				},
-				"hintText": "한강에서 점심에 먹을 메뉴를 말하는 상황이에요",
+				"hintText": {
+					"ko": "한강에서 점심에 먹을 메뉴를 말하는 상황이에요",
+					"en": "You're saying what to eat for lunch at the Han River.",
+					"ja": "漢江でお昼に食べるものを言う場面です。",
+					"zh": "你要说在汉江吃的午饭。",
+					"vi": "Bạn nói món ăn trưa ở sông Hàn."
+				},
 				"answer": [
 					"점심에",
 					"김밥을",
@@ -943,7 +1243,13 @@
 					"zh": "说说朋友在做什么吧！",
 					"vi": "Hãy nói bạn ấy đang làm gì!"
 				},
-				"hintText": "친구가 무엇을 마시는지 말하는 상황이에요",
+				"hintText": {
+					"ko": "친구가 무엇을 마시는지 말하는 상황이에요",
+					"en": "You're saying what your friend is drinking.",
+					"ja": "友だちが何を飲んでいるか言う場面です。",
+					"zh": "你要说朋友在喝什么。",
+					"vi": "Bạn nói bạn mình đang uống gì."
+				},
 				"answer": [
 					"친구가",
 					"커피를",
@@ -974,7 +1280,13 @@
 					"zh": "说说你学韩语吧！",
 					"vi": "Hãy nói rằng bạn học tiếng Hàn!"
 				},
-				"hintText": "한국어를 공부하고 있다고 말하는 상황이에요",
+				"hintText": {
+					"ko": "한국어를 공부하고 있다고 말하는 상황이에요",
+					"en": "You're saying you're studying Korean.",
+					"ja": "韓国語を勉強していると言う場面です。",
+					"zh": "你要说你在学韩语。",
+					"vi": "Bạn nói mình đang học tiếng Hàn."
+				},
 				"answer": [
 					"저는",
 					"한국어를",
@@ -1005,7 +1317,13 @@
 					"zh": "说说朋友在做什么吧！",
 					"vi": "Hãy nói bạn ấy đang làm gì!"
 				},
-				"hintText": "잔디밭에서 친구가 책을 읽고 있어요",
+				"hintText": {
+					"ko": "잔디밭에서 친구가 책을 읽고 있어요",
+					"en": "Your friend is reading a book on the lawn.",
+					"ja": "芝生で友だちが本を読んでいます。",
+					"zh": "朋友在草地上看书。",
+					"vi": "Bạn của bạn đang đọc sách trên bãi cỏ."
+				},
 				"answer": [
 					"친구가",
 					"책을",
@@ -1038,7 +1356,13 @@
 					"zh": "你叫什么名字？",
 					"vi": "Bạn tên là gì?"
 				},
-				"hintText": "처음 만난 자리에서 이름을 소개하는 상황이에요",
+				"hintText": {
+					"ko": "처음 만난 자리에서 이름을 소개하는 상황이에요",
+					"en": "You're introducing your name on first meeting.",
+					"ja": "初対面で名前を紹介する場面です。",
+					"zh": "初次见面时介绍名字。",
+					"vi": "Bạn giới thiệu tên khi mới gặp."
+				},
 				"answer": [
 					"저는",
 					"[이름]이에요."
@@ -1068,7 +1392,13 @@
 					"zh": "说说你的国家吧！",
 					"vi": "Hãy nói tên nước của bạn!"
 				},
-				"hintText": "처음 만난 자리에서 국적을 소개하는 상황이에요",
+				"hintText": {
+					"ko": "처음 만난 자리에서 국적을 소개하는 상황이에요",
+					"en": "You're saying where you're from on first meeting.",
+					"ja": "初対面で国籍を紹介する場面です。",
+					"zh": "初次见面时介绍国籍。",
+					"vi": "Bạn giới thiệu quốc tịch khi mới gặp."
+				},
 				"answer": [
 					"저는",
 					"미국",
@@ -1100,7 +1430,13 @@
 					"zh": "说说你的职业吧！",
 					"vi": "Hãy nói nghề của bạn!"
 				},
-				"hintText": "처음 만난 자리에서 직업을 소개하는 상황이에요",
+				"hintText": {
+					"ko": "처음 만난 자리에서 직업을 소개하는 상황이에요",
+					"en": "You're introducing your job on first meeting.",
+					"ja": "初対面で職業を紹介する場面です。",
+					"zh": "初次见面时介绍职业。",
+					"vi": "Bạn giới thiệu nghề nghiệp khi mới gặp."
+				},
 				"answer": [
 					"저는",
 					"의사예요."
@@ -1130,7 +1466,13 @@
 					"zh": "说不是吧！",
 					"vi": "Hãy nói là không phải!"
 				},
-				"hintText": "저 사람의 직업을 부정하는 상황이에요",
+				"hintText": {
+					"ko": "저 사람의 직업을 부정하는 상황이에요",
+					"en": "You're saying that's not that person's job.",
+					"ja": "あの人の職業を否定する場面です。",
+					"zh": "你要否定那个人的职业。",
+					"vi": "Bạn phủ định nghề nghiệp của người kia."
+				},
 				"answer": [
 					"아니요,",
 					"선생님이",
@@ -1163,7 +1505,13 @@
 					"zh": "说请稍等一下吧！",
 					"vi": "Hãy nói họ đợi một chút!"
 				},
-				"hintText": "직원에게 잠깐 기다리라고 안내하는 상황이에요",
+				"hintText": {
+					"ko": "직원에게 잠깐 기다리라고 안내하는 상황이에요",
+					"en": "You're asking the staff member to wait a moment.",
+					"ja": "係の人に少し待つように言う場面です。",
+					"zh": "你请工作人员稍等一下。",
+					"vi": "Bạn mời nhân viên đợi một chút."
+				},
 				"answer": [
 					"잠깐만",
 					"기다리세요."
@@ -1193,7 +1541,13 @@
 					"zh": "说请坐吧！",
 					"vi": "Hãy mời họ ngồi!"
 				},
-				"hintText": "상대방에게 앉으라고 안내하는 상황이에요",
+				"hintText": {
+					"ko": "상대방에게 앉으라고 안내하는 상황이에요",
+					"en": "You're inviting the other person to sit down.",
+					"ja": "相手に座るように勧める場面です。",
+					"zh": "你请对方坐下。",
+					"vi": "Bạn mời người kia ngồi."
+				},
 				"answer": [
 					"여기",
 					"앉으세요."
@@ -1223,7 +1577,13 @@
 					"zh": "说说从几层到几层吧！",
 					"vi": "Hãy nói từ tầng mấy đến tầng mấy!"
 				},
-				"hintText": "박물관 층 범위를 설명하는 상황이에요",
+				"hintText": {
+					"ko": "박물관 층 범위를 설명하는 상황이에요",
+					"en": "You're explaining which floors the museum has.",
+					"ja": "博物館の階の範囲を説明する場面です。",
+					"zh": "你要说明博物馆的楼层范围。",
+					"vi": "Bạn giải thích bảo tàng có những tầng nào."
+				},
 				"answer": [
 					"1층부터",
 					"3층까지",
@@ -1255,7 +1615,13 @@
 					"zh": "说说开放时间吧！",
 					"vi": "Hãy nói giờ mở cửa!"
 				},
-				"hintText": "박물관 운영 시간을 말하는 상황이에요 (열 시~여섯 시)",
+				"hintText": {
+					"ko": "박물관 운영 시간을 말하는 상황이에요 (열 시~여섯 시)",
+					"en": "You're saying the museum's opening hours (10 to 6).",
+					"ja": "博物館の開館時間を言う場面です（十時〜六時）。",
+					"zh": "你要说博物馆的开放时间（十点～六点）。",
+					"vi": "Bạn nói giờ mở cửa của bảo tàng (10 giờ ~ 6 giờ)."
+				},
 				"answer": [
 					"열",
 					"시부터",
@@ -1290,7 +1656,13 @@
 					"zh": "说说那是什么吧！",
 					"vi": "Hãy nói cái kia là gì!"
 				},
-				"hintText": "멀리 있는 물건을 가리키는 상황이에요",
+				"hintText": {
+					"ko": "멀리 있는 물건을 가리키는 상황이에요",
+					"en": "You're pointing at something far away.",
+					"ja": "遠くにある物を指す場面です。",
+					"zh": "你要指远处的东西。",
+					"vi": "Bạn chỉ vào vật ở xa."
+				},
 				"answer": [
 					"저것은",
 					"가방이에요."
@@ -1319,7 +1691,13 @@
 					"zh": "说不是吧！",
 					"vi": "Hãy nói là không phải!"
 				},
-				"hintText": "이 물건이 내 것이 아니라고 말하는 상황이에요",
+				"hintText": {
+					"ko": "이 물건이 내 것이 아니라고 말하는 상황이에요",
+					"en": "You're saying this thing isn't yours.",
+					"ja": "この物が自分のものではないと言う場面です。",
+					"zh": "你要说这个东西不是你的。",
+					"vi": "Bạn nói vật này không phải của mình."
+				},
 				"answer": [
 					"이것은",
 					"제",
@@ -1352,7 +1730,13 @@
 					"zh": "说不是吧！",
 					"vi": "Hãy nói là không phải!"
 				},
-				"hintText": "저 사람의 직업을 부정하는 상황이에요",
+				"hintText": {
+					"ko": "저 사람의 직업을 부정하는 상황이에요",
+					"en": "You're saying that's not that person's job.",
+					"ja": "あの人の職業を否定する場面です。",
+					"zh": "你要否定那个人的职业。",
+					"vi": "Bạn phủ định nghề nghiệp của người kia."
+				},
 				"answer": [
 					"존슨",
 					"씨는",
@@ -1384,7 +1768,13 @@
 					"zh": "说不是吧！",
 					"vi": "Hãy nói là không phải!"
 				},
-				"hintText": "물건이 교과서가 아니라고 말하는 상황이에요",
+				"hintText": {
+					"ko": "물건이 교과서가 아니라고 말하는 상황이에요",
+					"en": "You're saying the thing is not a textbook.",
+					"ja": "その物が教科書ではないと言う場面です。",
+					"zh": "你要说那个东西不是教科书。",
+					"vi": "Bạn nói vật đó không phải sách giáo khoa."
+				},
 				"answer": [
 					"이것은",
 					"교과서가",
@@ -1417,7 +1807,13 @@
 					"zh": "提议一种饮料吧！",
 					"vi": "Hãy đề xuất một món uống!"
 				},
-				"hintText": "카페에서 음료를 고르는 상황이에요",
+				"hintText": {
+					"ko": "카페에서 음료를 고르는 상황이에요",
+					"en": "You're choosing a drink at the café.",
+					"ja": "カフェで飲み物を選ぶ場面です。",
+					"zh": "你在咖啡厅选饮料。",
+					"vi": "Bạn chọn đồ uống ở quán cà phê."
+				},
 				"answer": [
 					"아메리카노",
 					"마실까요?"
@@ -1447,7 +1843,13 @@
 					"zh": "说说有咖啡和水吧！",
 					"vi": "Hãy nói là có cà phê và nước!"
 				},
-				"hintText": "메뉴에 있는 것을 말하는 상황이에요",
+				"hintText": {
+					"ko": "메뉴에 있는 것을 말하는 상황이에요",
+					"en": "You're saying what's on the menu.",
+					"ja": "メニューにあるものを言う場面です。",
+					"zh": "你要说菜单上有什么。",
+					"vi": "Bạn nói trên thực đơn có gì."
+				},
 				"answer": [
 					"커피하고",
 					"물이",
@@ -1479,7 +1881,13 @@
 					"zh": "吃五花肉和大酱汤吧！",
 					"vi": "Ăn thịt ba chỉ nướng và canh tương đi!"
 				},
-				"hintText": "점심 메뉴를 제안하는 상황이에요",
+				"hintText": {
+					"ko": "점심 메뉴를 제안하는 상황이에요",
+					"en": "You're suggesting what to have for lunch.",
+					"ja": "お昼のメニューを提案する場面です。",
+					"zh": "你要提议午饭吃什么。",
+					"vi": "Bạn đề xuất món ăn trưa."
+				},
 				"answer": [
 					"삼겹살하고",
 					"된장찌개를",

@@ -3,7 +3,7 @@ import {
 	type Location,
 	MapSvg,
 	type NavDir,
-	type Puzzle,
+	type ResolvedPuzzle,
 	SP_KEYFRAMES_CSS,
 	type SpTranslation,
 	isUnlocked,
@@ -338,6 +338,9 @@ export interface SpEntryViewProps {
 	/** 이 장소의 퍼즐들이 가르치는 문법 — 중복은 부모가 이미 걸러서 넘긴다 */
 	grammars: string[];
 	navDir: NavDir;
+	/** 🌐 를 눌러 번역을 펼친 줄. 퍼즐 화면과 따로 센다 — 화면이 다르다 */
+	entryTrans: Set<number>;
+	onToggleEntryTrans: (idx: number) => void;
 	onMapBack: () => void;
 	onStart: () => void;
 }
@@ -345,6 +348,8 @@ export interface SpEntryViewProps {
 export function SpEntryView({
 	loc,
 	playerName,
+	entryTrans,
+	onToggleEntryTrans,
 	completed,
 	currentLoc,
 	locations,
@@ -353,7 +358,7 @@ export function SpEntryView({
 	onMapBack,
 	onStart,
 }: SpEntryViewProps) {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	return (
 		<div
 			style={{
@@ -483,6 +488,24 @@ export function SpEntryView({
 					>
 						{loc.entryMessages.map((m, i) => {
 							const txt = resolveToken(m.text, playerName);
+							/*
+							 * 🌐 는 목업(game__sp_entry)에 없다 — 화면이 앞서 나간 자리라
+							 * screen_promotions.md 에 적었다. 겉 말풍선은 목업 그대로 두고
+							 * 안쪽만 퍼즐 화면과 같은 BubbleInner 를 쓴다.
+							 */
+							const inner = (
+								<BubbleInner
+									type={m.type}
+									text={txt}
+									translation={resolveToken(
+										pickTrans(i18n.language, m.t),
+										playerName,
+									)}
+									idx={i}
+									transVisible={entryTrans}
+									toggleTrans={onToggleEntryTrans}
+								/>
+							);
 							if (m.type === "friend") {
 								return (
 									<div
@@ -520,8 +543,9 @@ export function SpEntryView({
 												color: C.text,
 												maxWidth: 240,
 											}}
-											dangerouslySetInnerHTML={{ __html: txt }}
-										/>
+										>
+											{inner}
+										</div>
 									</div>
 								);
 							}
@@ -542,7 +566,7 @@ export function SpEntryView({
 											maxWidth: 240,
 										}}
 									>
-										{txt}
+										{inner}
 									</div>
 								</div>
 							);
@@ -644,7 +668,7 @@ export interface SpPuzzleViewProps {
 	puzzleIdx: number;
 	totalPuzzles: number;
 	/** playerName 이 이미 반영된, 표시용으로 다 풀어 놓은 문제 */
-	resolvedPuzzle: Puzzle;
+	resolvedPuzzle: ResolvedPuzzle;
 	slotWords: string[];
 	shuffledChips: string[];
 	trayUsed: Set<number>;
@@ -1368,44 +1392,44 @@ export function SpPuzzleView({
  *
  * 문자열이 그대로 오는 갈래를 남겨 둔 이유는 `SpTranslation` 의 주석에 있다 —
  * 운영 DB 에 옛 꼴이 남아 있는 동안에도 영어가 나와야 한다.
- * 앱 언어가 한국어일 때도 영어다 — 줄 자체가 한국어라 한국어 번역은 없다.
+ * 차례는 `[앱 언어] → en → ko` 다. 대화 줄에는 `ko` 키가 없으므로 앱 언어가
+ * 한국어면 영어가 나온다(줄 자체가 한국어라 한국어 번역이 없다). 상황 설명은
+ * `ko` 를 갖고 있어 한국어면 한국어가 나온다 — 같은 함수가 둘을 다 맞춘다.
  */
-function pickTrans(
+export function pickTrans(
 	lang: string,
 	v: SpTranslation | null | undefined,
 ): string {
 	if (!v) return "";
 	if (typeof v === "string") return v;
-	return v[lang.split("-")[0]] ?? v.en ?? "";
+	return v[lang.split("-")[0]] ?? v.en ?? v.ko ?? "";
 }
 
-// ── Chat Bubble Sub-component (puzzle 화면 전용) ──────────────────────────────
-interface ChatBubbleProps {
-	type: "friend" | "self";
-	text: string;
-	translation: string;
-	idx: number;
-	transVisible: Set<number>;
-	toggleTrans: (idx: number) => void;
-}
-
-function ChatBubble({
+/**
+ * 말풍선 **안쪽** — 글, 🌐, 펼친 번역.
+ *
+ * 겉(아바타·배경·모서리)은 화면마다 다르다. 진입 화면의 자기 말풍선은
+ * `ux-travel-header` 가 붙어 그라데이션을 받고(game.css 581행) 퍼즐 화면 것은
+ * 안 받는다 — 그래서 겉까지 한 컴포넌트로 묶으면 진입 화면 색이 바뀐다.
+ * 안쪽만 뽑아 두 화면이 같이 쓴다. 🌐 를 두 군데 따로 적지 않으려는 것이다.
+ */
+function BubbleInner({
 	type,
 	text,
 	translation,
 	idx,
 	transVisible,
 	toggleTrans,
-}: ChatBubbleProps) {
-	const { t } = useTranslation();
-	const bubbleC = {
-		navy: "#16213e",
-		bg2: "#f0f2f5",
-		text: "#111827",
-	};
+}: {
+	type: "friend" | "self";
+	text: string;
+	translation: string;
+	idx: number;
+	transVisible: Set<number>;
+	toggleTrans: (idx: number) => void;
+}) {
 	const showTrans = transVisible.has(idx);
-
-	const inner = (
+	return (
 		<div>
 			<div
 				style={{
@@ -1459,6 +1483,43 @@ function ChatBubble({
 				</div>
 			)}
 		</div>
+	);
+}
+
+// ── Chat Bubble Sub-component (puzzle 화면 전용) ──────────────────────────────
+interface ChatBubbleProps {
+	type: "friend" | "self";
+	text: string;
+	translation: string;
+	idx: number;
+	transVisible: Set<number>;
+	toggleTrans: (idx: number) => void;
+}
+
+function ChatBubble({
+	type,
+	text,
+	translation,
+	idx,
+	transVisible,
+	toggleTrans,
+}: ChatBubbleProps) {
+	const { t } = useTranslation();
+	const bubbleC = {
+		navy: "#16213e",
+		bg2: "#f0f2f5",
+		text: "#111827",
+	};
+
+	const inner = (
+		<BubbleInner
+			type={type}
+			text={text}
+			translation={translation}
+			idx={idx}
+			transVisible={transVisible}
+			toggleTrans={toggleTrans}
+		/>
 	);
 
 	if (type === "friend") {

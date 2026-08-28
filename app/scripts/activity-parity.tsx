@@ -116,6 +116,7 @@ import {
 	SpMapView,
 	SpPuzzleView,
 	SpTravelHeader,
+	pickTrans,
 } from "@/components/main/game/seoul-puzzle-view";
 import {
 	PcGameView,
@@ -1468,7 +1469,8 @@ const SP_PUZZLE = {
 	friendMsg: SP_RT(SP_RAW.friendMsg),
 	friendMsg2: SP_RAW.friendMsg2 ? SP_RT(SP_RAW.friendMsg2) : null,
 	selfMsg: SP_RAW.selfMsg ? SP_RT(SP_RAW.selfMsg) : null,
-	hintText: SP_RT(SP_RAW.hintText),
+	/* 앱과 같은 선택기를 쓴다 — 대조는 한국어로 그린다 */
+	hintText: SP_RT(pickTrans("ko", SP_RAW.hintText)),
 	answer: SP_RAW.answer.map(SP_RT),
 	distractors: SP_RAW.distractors.map(SP_RT),
 };
@@ -1511,6 +1513,9 @@ SCREENS.game__sp_entry = (
 			completed={new Set()}
 			currentLoc="hongdae"
 			locations={SP_LOCATIONS as any}
+			/* 🌐 는 접혀 있다 — 목업 캡처도 접힌 상태다 */
+			entryTrans={new Set()}
+			onToggleEntryTrans={() => {}}
 			grammars={[
 				"이에요/예요",
 				"은/는",

@@ -231,6 +231,9 @@ class _SeoulEntryMessage(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["friend", "self"]
     text: str = Field(..., min_length=1)
+    # 언어별 번역. 화면의 🌐 가 앱 언어를 따라 고른다(en/ja/zh/vi — 한국어는 text 자체다).
+    # 없어도 받는다 — 옛 데이터에는 이 키가 없고, 그때는 🌐 가 안 나온다.
+    t: Optional[dict[str, str]] = None
 
 
 class SeoulPuzzleLocationCreate(BaseModel):
