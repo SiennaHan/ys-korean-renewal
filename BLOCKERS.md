@@ -1512,7 +1512,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ c41b8f2 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 385628c -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -1737,7 +1737,7 @@ enter    startIndex=1 · sentIndex=1
 > `35,000,000원` 까지 있어서 긴 값이 알약을 넘쳐 오른쪽 문장 위로 올라탔다.
 > 정사각형을 버리고 내용을 감싸는 알약으로 바꿨다(짧은 값은 지금도 38px 정사각형이다).
 >
-> **이 자리도 게이트 다섯이 전부 통과했다.** 목업 대조는 마크업만 견주고,
+> **이 자리도 게이트가 전부 통과했다.** 목업 대조는 마크업만 견주고,
 > `fixture-data-check.py` 는 값의 모양만 본다 — 둘 다 **글자가 칸에 들어가는지는
 > 세지 않는다.** 위 카드 높이 때와 똑같은 구멍이다. 두 번 겪었으니 그 축을 센다:
 > `app/scripts/fixed-box-check.py` 가 **고정 px 폭인데 안에 변수가 들어가는 칸**을
