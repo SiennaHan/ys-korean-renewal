@@ -708,41 +708,47 @@
      <b>상태·진행·종료를 다루는 <code>ActivityShell</code> 은 2번 없이는 완결되지 않는다.</b></p>
 </div>
 
-<h2 id="s9"><span class="no">9</span>확정 디자인이 앱에 얼마나 들어갔나</h2>
-  <p class="note"><b>CSS 규칙·클래스 수는 손으로 센 실측이고 시점 기록이다</b>(2026-08-26 재측 — legacy 행이 169·84 에서 163·100 으로 어긋나 있었다). 검사가 견주지 않으므로 시간이 지나면 낡는다. 다시 세려면 그 문서의 <code>&lt;style&gt;</code> 안에서 <code>{…}</code> 덩어리와 <code>.이름</code> 을 세면 된다.<br>「앱 반영」의 <b>대조 수만 기계가 쥔다</b> — <code>check_docs.py</code> 의 <code>[숫자 주장]</code> 이고 주인은 <code>CLAUDE.md</code> 다.</p>
+<h2 id="s9"><span class="no">9</span>목업 이식 — 이렇게 끝났다</h2>
+
+<p class="lead">이 절의 제목은 <b>"확정 디자인이 앱에 얼마나 들어갔나"</b> 였다.
+<b>2026-08-28 에 다시 재니 그 물음이 끝났다</b> — 앱 화면 클래스는 전부 들어갔다.
+그래서 「얼마나」 대신 <b>「어떻게 끝났고 그 과정에서 무엇을 배웠나」</b>로 다시 썼다.
+진척 수치는 이 절 끝에 접어 두었다.</p>
+
+<h3>다시 잰 결과 (2026-08-28)</h3>
+<p><code>screens_SOT</code> 의 <code>&lt;style&gt;</code> 클래스 <b>341개 중 318개(93%)</b>가
+앱 소스에 있다. <b>중요한 것은 없는 23개의 정체다</b> — 하나씩 봤더니
+<b>앱 화면 클래스가 하나도 없다.</b></p>
 <div class="tablewrap"><table>
-  <tr><th>목업</th><th>담당 범위</th><th class="n">CSS 규칙</th><th class="n">클래스</th><th>앱 반영</th></tr>
-  <tr><td><code>screens_SOT</code> <b>활동 절</b></td><td>활동 20화면 — 기본 8 · 자모 6 · 문항 밖 3 · 예외 3</td>
-      <td class="n">342</td><td class="n">168</td><td><span class="pill ok">대조 통과</span> — 수는 <code>CLAUDE.md</code> 의 “화면 수가 넷이다” 표가 쥔다</td></tr>
-  <tr><td>같은 문서 <b>게임 절</b></td><td>게임 17화면</td>
-      <td class="n">315</td><td class="n">98</td><td>구현됨 · 대조 밖</td></tr>
-  <tr><td><code>legacy_shell_mockup</code></td><td>공통 셸</td>
-      <td class="n">163</td><td class="n">100</td><td><span class="pill stop">0</span></td></tr>
-  <tr><td>같은 문서 <b>VocaShot 절</b></td><td>VocaShot 플레이</td>
-      <td class="n">156</td><td class="n">71</td><td>구현됨 · <b>시작 화면은 대조 안</b></td></tr>
-  <tr><td>같은 문서 <b>홈·목록 절</b></td><td>하단 내비 · 홈 · 교재학습 · 자모</td>
-      <td class="n">139</td><td class="n">67</td><td><span class="pill ok">대조 5</span></td></tr>
-  <tr><td><code>_superseded/vocashot_mockup_uiux</code></td><td>VocaShot 시작·결과</td>
-      <td class="n">108</td><td class="n">57</td><td><span class="pill stop">0</span></td></tr>
+  <tr><th>없는 것</th><th>수</th><th>정체</th></tr>
+  <tr><td><code>device-wrap</code> · <code>doc</code> · <code>kicker</code> · <code>workbench</code> ·
+          <code>overview-*</code> · <code>deck-btn</code> · <code>deckhead</code> · <code>spec</code> ·
+          <code>tune</code> · <code>log</code> · <code>mk</code> · <code>folded</code> ·
+          <code>control-group</code> · <code>control-label</code> · <code>note-section</code></td>
+      <td class="n">18</td>
+      <td><b>프로토타입 껍데기</b> — 목업 파일 자신의 UI다. 앱에 있으면 오히려 이상하다</td></tr>
+  <tr><td><code>caption</code></td><td class="n">1</td>
+      <td>같은 껍데기 — <code>390 × 720 · 어휘 문제</code> 같은 캡처 라벨</td></tr>
+  <tr><td><code>avatar</code> · <code>bubble-wrap</code> · <code>ox-row</code> · <code>net</code></td>
+      <td class="n">4</td>
+      <td><b>목업 안에서도 죽은 CSS</b> — 규칙만 있고 마크업에 0회 등장한다.
+          <b>지금은 두기로 했다</b>(2026-08-28) — 목업은 시각 정본이라 손대는 것 자체가 위험하고,
+          <b>목업 대조는 마크업만 보므로 CSS 삭제를 검사가 못 잡는다.</b>
+          걷어낼 때는 사람이 눈으로 확인해야 한다</td></tr>
 </table></div>
-<p><b>합쳐서 CSS 규칙 1,229개 · 클래스 545개.</b>
-   <b>이 절은 2026-08-19 실측이었고 그 뒤 뒤집혔다</b> — 그때는 앱 소스에 이 클래스가
-   하나도 없었다. 2026-08-21 다시 세면 <code>screens_SOT</code> 의 클래스 283개 중
-   <b>224개(79%)</b>가 앱 소스에 있다.
-   기계가 판정하는 것은 <code>pnpm parity:activity</code> 뿐이고 <b>목업 캡처 전부가
-   일치한다</b>. 지금 수와 갈래별 분해는 <code>README.md</code> 에 있다(숫자의 주인).</p>
-<p><b>캡처 스무 개가 다 들어왔다 (2026-08-24)</b> — 커밋 <code>d1a7cfb</code> 가 답을
-   갖고 있었다. 캡처는 <b>목업의 빌더 함수를 직접 불러 뜬 것</b>이고("stop
-   hand-writing markup") 활동 22 + 내비 5 + VocaShot 3 + 게임 17 이다.
-   <b>처음부터 47이 목표였고 이제 47이 들어가 있다.</b></p>
-<p>게임 넷과 목록을 <b>표시와 상태로 갈라</b> 넣었다 —
-   <code>particle-sniper-view</code> · <code>card-sort-view</code> ·
-   <code>spring-picnic-view</code> · <code>seoul-puzzle-view</code> ·
-   <code>list-view</code>. 통짜였을 때는 정적으로 그리면 로딩 화면밖에 안 나왔다.
-   게임 캡처가 끼고 있는 구 배포판 라우트 레이아웃 껍데기는 비교기가 벗는다
-   (<code>drop_game_wrapper</code> 와 화면별 <code>SCREEN_ROOT</code>).</p>
-<p><b>값은 대조 자체가 아니라 대조가 드러낸 것에 있었다.</b> 화면을 넣을 때마다 앱이
-   목업에서 벗어난 자리가 나왔다 — VocaShot 의 <b>그리지 않던 마크업 여덟 자리</b>,
+
+<div class="callout">
+  <b>지금 이 축을 누가 지키나 — 둘인데 보는 것이 다르다.</b><br>
+  <code>pnpm parity:activity</code> 는 <b>구현이 목업과 같은 마크업인가</b>를 본다.
+  <b>CSS 값은 안 본다</b> — 색·간격·radius 가 갈려도 통과한다.<br>
+  <span class="file">../DESIGN.md</span> 는 <b>앱의 디자인이 규범을 따르나</b>를 본다.
+  이식 진척이 아니라 <b>규범 준수</b>이고, 아직 진행 중이다(그 문서 §8).<br>
+  <b>이 절은 셋째 축이다</b> — 이식이 어떻게 끝났나. <b>끝난 일이라 더 안 자란다.</b>
+</div>
+
+<h3>값은 대조 자체가 아니라 대조가 드러낸 것에 있었다</h3>
+<p>화면을 넣을 때마다 앱이 목업에서 벗어난 자리가 나왔다 —
+   VocaShot 의 <b>그리지 않던 마크업 여덟 자리</b>,
    조사 스나이퍼 과 선택의 낡은 상한(8 → 20), 게임 목록의 <b>아이콘 색 배정</b>이
    통째로 달랐던 것(서울=파랑·카드=초록·조사=보라 → 목업은 서울=초록·카드=호박·
    조사=인디고). 셋 다 목업을 따랐다. 죽어 있던 <code>game.css</code> 42줄
@@ -751,15 +757,50 @@
    남겨 둔 애매한 자리는 <code>BLOCKERS.md</code> §3-b 에 적었다.</p>
 <p class="qa"><b>넣자마자 하나 잡았다.</b> VocaShot 시작 화면의 뒤로가기가 목업은 svg 화살표인데
    앱은 글자 <code>←</code> 였다. 목업이 기준이므로 앱을 고쳤다 — 대조를 넣는 값어치가 이것이다.</p>
-<p class="qa">셸은 클래스 86개 중 25개(29%)만 앱에 있다.</p>
+<p>게임 넷과 목록을 <b>표시와 상태로 갈라</b> 넣은 것도 이 과정에서 나왔다 —
+   <code>particle-sniper-view</code> · <code>card-sort-view</code> ·
+   <code>spring-picnic-view</code> · <code>seoul-puzzle-view</code> ·
+   <code>list-view</code>. 통짜였을 때는 정적으로 그리면 <b>로딩 화면밖에 안 나왔다.</b>
+   게임 캡처가 끼고 있는 구 배포판 라우트 레이아웃 껍데기는 비교기가 벗는다
+   (<code>drop_game_wrapper</code> 와 화면별 <code>SCREEN_ROOT</code>).</p>
 
 <div class="card stop">
   <div class="t">이게 두 번째다</div>
   <p>게임에서 같은 일이 먼저 있었다 — 게임 목업(지금은 <code>screens_SOT</code> 의 게임 절)을 검증용 산출물로만 다루고
      <b>앱에 옮기는 일을 구현 목록에 넣지 않았다</b>. 그때 원인을 "목업이 덧씌우는 층이라서"로 적었는데,
      이번엔 <b>목업을 아예 열지 않았다</b>. 원인이 다르고, 둘 다 같은 결과를 냈다.</p>
-  <p class="qa">그래서 아래 계획의 1순위는 컴포넌트가 아니라 <b>목업을 읽는 일</b>이다.</p>
+  <p class="qa"><b>그래서 새 화면을 만들 때 1순위는 컴포넌트가 아니라 목업을 읽는 일이다.</b>
+     이 교훈은 이식이 끝난 뒤에도 남는다 — 목업 없는 화면(MY · 표현클립 상태)을 만들 때
+     같은 실수가 세 번째로 날 자리다.</p>
 </div>
+
+<details><summary>이 절이 낡았던 기록 — 이식 진척 수치</summary>
+<p><b>2026-08-28 까지 이 자리에는 이식 진척 표가 있었다.</b> 그 표는 목업별로
+CSS 규칙과 클래스를 <b>손으로 세어</b> 적은 것이었고, 검사가 견주지 않아 계속 낡았다
+(2026-08-26 재측에서 legacy 행이 169·84 → 163·100 으로 어긋나 있었다).
+<b>이식이 끝난 지금 그 수는 더 이상 물음이 아니다.</b></p>
+<div class="tablewrap"><table>
+  <tr><th>목업</th><th>담당 범위</th><th class="n">CSS 규칙</th><th class="n">클래스</th><th>당시 앱 반영</th></tr>
+  <tr><td><code>screens_SOT</code> <b>활동 절</b></td><td>활동 20화면 — 기본 8 · 자모 6 · 문항 밖 3 · 예외 3</td>
+      <td class="n">342</td><td class="n">168</td><td>대조 통과</td></tr>
+  <tr><td>같은 문서 <b>게임 절</b></td><td>게임 17화면</td><td class="n">315</td><td class="n">98</td><td>구현됨 · 대조 밖</td></tr>
+  <tr><td><code>legacy_shell_mockup</code></td><td>공통 셸</td><td class="n">163</td><td class="n">100</td><td>0</td></tr>
+  <tr><td>같은 문서 <b>VocaShot 절</b></td><td>VocaShot 플레이</td><td class="n">156</td><td class="n">71</td><td>구현됨</td></tr>
+  <tr><td>같은 문서 <b>홈·목록 절</b></td><td>하단 내비 · 홈 · 교재학습 · 자모</td><td class="n">139</td><td class="n">67</td><td>대조 5</td></tr>
+  <tr><td><code>_superseded/vocashot_mockup_uiux</code></td><td>VocaShot 시작·결과</td><td class="n">108</td><td class="n">57</td><td>0</td></tr>
+</table></div>
+<p>합쳐서 CSS 규칙 <b>1,229개</b> · 클래스 <b>545개</b>. 이 절은 2026-08-19 실측으로
+시작했고 그때는 앱 소스에 이 클래스가 <b>하나도 없었다</b>. 2026-08-21 에 다시 세니
+<code>screens_SOT</code> 의 클래스 283개 중 <b>224개(79%)</b> 였고,
+2026-08-28 에는 341개 중 <b>318개(93%)</b> 이면서 나머지가 전부 껍데기·죽은 규칙이다.</p>
+<p><b>캡처가 다 들어온 것은 2026-08-24 다</b> — 커밋 <code>d1a7cfb</code> 가 답을 갖고 있었다.
+캡처는 <b>목업의 빌더 함수를 직접 불러 뜬 것</b>이다("stop hand-writing markup").</p>
+<p class="qa"><b>「셸은 클래스 86개 중 25개(29%)만 앱에 있다」는 문장도 여기 있었다.</b>
+그 셸은 <code>legacy_shell_mockup</code> 인데, <b>그 문서는 활동 셸의 시각 정본이 아니다</b> —
+앱 반영 0 이 <b>의도된 상태</b>다(§2 · <code>INDEX.md</code>). 29% 가 <b>메워야 할 구멍처럼
+읽히던 것이 문제였다.</b></p>
+</details>
+
 
 <h2 id="s10"><span class="no">10</span>목업 실측 — 활동 20화면의 구조</h2>
 <p>소스의 빌더 함수를 그대로 읽었다. 공통 골격이 있고 <b>응답 영역만 활동별로 갈린다</b>.</p>
