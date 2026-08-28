@@ -89,6 +89,7 @@ import {
 	WordPicture,
 } from "@/components/main/activity/stimulus";
 import { WordPreviewList } from "@/components/main/activity/word-preview";
+import { ClipView } from "@/components/main/content4";
 import Jamo from "@/components/main/course-list/jamo";
 import {
 	CardSortIntroView,
@@ -1619,6 +1620,94 @@ const outDir = join(
  * 매번 비우고 다시 쓴다. 화면을 목록에서 빼면 옛 출력이 남아, 대조 쪽은
  * 그 파일을 보고 계속 검사한다 — 실제로 한 번 겪었다.
  */
+/*
+ * ── 표현클립 ─────────────────────────────────────────────────────────────
+ * 이 화면은 2026-08-27 까지 대조 밖에 있었다 — 상태와 훅이 섞여 있어 그릴 수가
+ * 없었다(`clip_spec_v1` §07). `ClipView` 로 가르면서 들어왔다.
+ *
+ * 재생기(`VideoPlayer`)는 유튜브 플레이어와 감시자를 들고 있어 순수하지 않다.
+ * 목업도 같은 자리를 빈 상자로 그리므로 여기서도 같은 상자를 넣는다 —
+ * **대조하는 것은 플레이어가 아니라 그 자리에 무엇이 놓이는가**다.
+ */
+const CLIP_ITEMS = [
+	{
+		id: 1,
+		title: "[SUB] 전세계 누비는 아이브 LA에서 만남👸 'XOXZ'로 컴백한",
+		youtubeId: "7CYcM4P9Dt0",
+		start: 1413,
+		end: 1416,
+		content: "네 감사합니다 정말",
+		word: "감사합니다",
+		category: "Entertainment",
+	},
+	{
+		id: 2,
+		title: "[리무진서비스] EP.78 세븐틴 준 | SEVENTEEN JUN | LIMBO",
+		youtubeId: "dVZh5Bfu8eU",
+		start: 393,
+		end: 397,
+		content: "아 감사합니다 잘 먹겠습니다",
+		word: "감사합니다",
+		category: "Entertainment",
+	},
+	{
+		id: 3,
+		title: "[클로즈업 북한] “장마당도 위축…이 악물고 삽니다” / KBS",
+		youtubeId: "qrC3Y-T8Afo",
+		start: 1067,
+		end: 1070,
+		content: "말씀 감사합니다",
+		word: "감사합니다",
+		category: "News",
+	},
+];
+const CLIP_BASE = {
+	title: "표현 클립",
+	searchWord: "감사합니다",
+	onSearchChanged: () => {},
+	onClear: () => {},
+	category: "All" as const,
+	onCategorySelect: () => {},
+	onPlay: () => {},
+	onMenuClick: () => {},
+};
+
+SCREENS.clip__empty = (
+	<ClipView
+		{...CLIP_BASE}
+		searchWord=""
+		searching={false}
+		items={[]}
+		total={0}
+	/>
+);
+SCREENS.clip__results = (
+	<ClipView {...CLIP_BASE} searching items={CLIP_ITEMS} total={619} showTail />
+);
+SCREENS.clip__noresult = (
+	<ClipView
+		{...CLIP_BASE}
+		searchWord="ㅋㅋ쿠퓨"
+		searching
+		items={[]}
+		total={0}
+	/>
+);
+SCREENS.clip__playing = (
+	<ClipView
+		{...CLIP_BASE}
+		searching
+		items={CLIP_ITEMS}
+		total={619}
+		playing={{ youtubeId: CLIP_ITEMS[0].youtubeId, start: CLIP_ITEMS[0].start }}
+		playerSlot={
+			<div className="overflow-hidden rounded-[12px] bg-white">
+				<div style={{ height: 185 }} />
+			</div>
+		}
+	/>
+);
+
 rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 

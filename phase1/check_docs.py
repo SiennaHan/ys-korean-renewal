@@ -168,7 +168,7 @@ def parity_screens() -> dict[str, int]:
     게임 넷도 같은 꼴로 들어와서, 46화면을 "활동 22 + 내비 24" 라고 찍고
     있었다 — 내비는 다섯뿐이다.
     """
-    out = {"활동": 0, "내비": 0, "VocaShot": 0, "게임": 0}
+    out = {"활동": 0, "내비": 0, "VocaShot": 0, "게임": 0, "표현클립": 0}
     f = APP / "scripts" / "activity-parity.tsx"
     if not f.exists():
         return out
@@ -192,6 +192,8 @@ def parity_screens() -> dict[str, int]:
                 out["VocaShot"] += 1
             elif name.startswith("game__"):
                 out["게임"] += 1
+            elif name.startswith("clip__"):
+                out["표현클립"] += 1
             else:
                 # 접두사가 없는 것은 활동으로 본다 — 옛 꼴이 그랬다
                 out["활동"] += 1
