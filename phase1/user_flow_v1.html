@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ f4cb5c3 -->
+<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ 59fcb4c -->
 <!-- 왜: §02 의 착지점과 §05 의 "막힘" 은 전부 이 파일들을 읽고 적은 관찰이다 -->
 <title>유저 플로우 — 진입에서 결제까지 한 장</title>
 <style>
@@ -148,8 +148,8 @@
         어느 급·과의 QR 이었는지 아무도 읽지 않는다 — 아래 05</td></tr>
     <tr><td><b>직접 방문</b></td><td><code>/</code></td><td><span class="pill done">된다</span></td></tr>
     <tr><td><b>어학당 학생</b></td>
-      <td><code>/login</code></td>
-      <td><span class="pill done">된다</span> 계정은 학교가 만든다(<code>POST /student/batch</code> · <code>/upload</code>, 둘 다 관리자 전용)</td></tr>
+      <td><code>/login</code> · <b><code>/join</code></b></td>
+      <td><span class="pill done">된다</span> 계정은 학교가 만든다(<code>POST /student/batch</code> · <code>/upload</code>, 둘 다 관리자 전용)<br><b>2026-08-28 — 길이 하나 더 생겼다.</b> 학교가 어드민에서 코드를 발급하면 학생이 <code>/join</code> 에 그것을 넣고 <b>스스로 계정을 만든다</b>. 로그인 화면 아래의 「코드 입력」이나 인쇄된 QR(<code>/join?code=…</code>)로 들어온다 — <code>BLOCKERS.md</code> §10</td></tr>
     <tr><td><b>비밀번호 재설정 메일</b></td>
       <td><code>/reset-password</code> → <code>/new-password</code></td>
       <td><span class="pill open">메일이 안 나간다</span> <b>화면은 이제 그렇다고 말한다</b>(2026-08-27) —
@@ -195,7 +195,7 @@
   <rect class="bx" x="212" y="30" width="150" height="34" rx="8"/>
   <text class="t1" x="224" y="52">직접 방문</text>
   <rect class="bx" x="382" y="30" width="200" height="34" rx="8"/>
-  <text class="t1" x="394" y="52">어학당 학생 <tspan class="t2">(학교가 계정 발급)</tspan></text>
+  <text class="t1" x="394" y="52">어학당 학생 <tspan class="t2">(학교 발급 · 코드 가입)</tspan></text>
   <rect class="bxStop" x="602" y="30" width="222" height="34" rx="8"/>
   <text class="t1" x="614" y="52">재설정 메일 <tspan class="tS">메일 안 나감</tspan></text>
 

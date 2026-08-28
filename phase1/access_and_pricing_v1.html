@@ -239,6 +239,15 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
 </div>
 
 <h2><span class="n">04</span>권한 판정은 한 곳에서만</h2>
+<p><b>2026-08-28 — 기관 소속이 되는 길이 둘이다.</b>
+학교가 어드민에서 일괄 등록하거나(<span class="file">POST /student/batch</span> ·
+<span class="file">/upload</span>), 학교가 발급한 <b>기관 코드</b>로 학생이 스스로 가입한다
+(<span class="file">POST /user/sign/up/code</span>). 어느 쪽이든 결과는 같다 —
+<span class="file">ko_user.school_code</span> 가 채워지고 이 응답이
+<span class="file">school</span> 을 낸다. <b>앱은 학교 코드를 보내지 않는다 —
+코드만 보내고 서버가 학교를 정한다.</b> 코드의 표와 규칙은
+<span class="file">BLOCKERS.md</span> §10 에 있다.</p>
+
 <p>권한 출처가 둘이고 앞으로 늘 수도 있다(체험판 · 쿠폰 · 학교 계약 갱신).
 그래서 <b>앱이 권한을 계산하지 않는다.</b> 서버가 "열린 범위" 를 내고 앱은 그것만 믿는다.</p>
 
@@ -320,7 +329,7 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
       <td>잠긴 과 → <b>로그인 먼저</b>. 계정 없이 결제하면 기기를 바꿀 때 잃는다</td></tr>
     <tr><td><b>로그인만</b></td><td>같음 + 누적 학습기록</td>
       <td>잠긴 과 → <b>결제 화면</b></td></tr>
-    <tr><td><b>기관 학생</b></td><td>학교 계약 범위</td>
+    <tr><td><b>기관 학생</b></td><td>학교 계약 범위 — <b>2026-08-28 부터 전 급</b>(§07 의 3번)</td>
       <td>계약 밖 → <b>"학교에 문의" 문구.</b> 결제 화면을 띄우면 안 된다 —
         이미 학교가 낸 돈이다</td></tr>
     <tr><td><b>개인 결제</b></td><td>산 급 전부</td><td>—</td></tr>
@@ -358,9 +367,20 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
     같은 문항이 로그인 계정에 이미 있으면 유니크 제약에 걸린다 — 그때는 게스트 쪽을 버린다.
     <b>로그인 계정의 기록이 첫 시도</b>이고 첫 시도를 보존하는 것이 확정 규칙이다
     (<span class="file">dev_spec_v1</span> §2.1).</div></div></li>
-  <li><div><div class="h">기관 학생의 범위는 전 급인가, 계약한 급인가 <span class="pill done">권고대로 확정 2026-08-26</span></div>
-    <div class="d"><b>계약한 급만.</b> 전 권으로 하면 단순하지만 1급 수업만 하는 학교에도
-    8급을 주는 것이다.<br>
+  <li><div><div class="h">기관 학생의 범위는 전 급인가, 계약한 급인가 <span class="pill done">다시 확정 2026-08-28</span></div>
+    <div class="d"><b>계약 학교는 모든 급.</b> 기획자가 2026-08-28 에 정했다 —
+    "어차피 보통 학교는 모든 급을 계약해. 그래서 크게 의미는 없고, 계약한 학교는
+    모든 급을 주는게 맞아."<br>
+    <b>구현됐다 (2026-08-28).</b> <span class="file">api/shared/full_scope.py</span> 가 값을 들고
+    <span class="file">business/entitlement.py</span> 의 학교 분기가 그것을 낸다 — 급 1~8 ·
+    자모 1·2·3과 · 게임 다섯 · 클립. 판정 조건은 여전히
+    <span class="file">role=="student" and school_code</span> 하나뿐이라
+    <b>엑셀로 등록된 기존 기관 학생에게도 그대로 적용된다.</b>
+    되돌리려면 환경변수 <span class="file">SCHOOL_FULL_SCOPE=false</span> 하나면 된다.<br>
+    <b>전에는 이렇게 적혀 있었다 (2026-08-26 확정).</b> "계약한 급만. 전 권으로 하면
+    단순하지만 1급 수업만 하는 학교에도 8급을 주는 것이다." 그 판단은 아래 실측 위에
+    서 있었는데, 범위를 가르지 않기로 하면서
+    <b><span class="file">class_levels</span> 는 여전히 아무도 안 읽는다.</b><br>
     <b>새 칸을 더하기 전에 볼 것이 있다 (2026-08-26 실측).</b>
     <span class="file">ko_school</span> 에 <span class="file">class_levels</span>
     <span class="file">String(200)</span> 이 <b>이미 있다.</b> 학교를 만들 때 값이 들어가는데

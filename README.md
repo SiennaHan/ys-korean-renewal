@@ -41,7 +41,7 @@
 |---|---|
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
-| `admin/` | 어드민. 이번 리뉴얼 범위 밖이다 |
+| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 여기 들어왔다(`BLOCKERS.md` §10). 그 전에는 "범위 밖" 이었다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
 | `phase1/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `phase1/INDEX.md`.<br>그 밖에 인계 메모(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는

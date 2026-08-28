@@ -217,10 +217,29 @@ function LoginPage() {
 							{t("login.noAccount")}{" "}
 							<button
 								type="button"
-								onClick={() => navigate({ to: "/signup" })}
+								onClick={() => navigate({ to: "/signup", search: { code: undefined } })}
 								className="auth-link"
 							>
 								{t("login.goSignUp")}
+							</button>
+						</p>
+
+						{/*
+							* 기관 발급 코드로 들어오는 길 — 2026-08-28.
+							* **같은 `.auth-switch` 꼴을 하나 더 둔다.** 새 관례를 만들지 않는다.
+							*
+							* 로그인 폼에 코드 칸을 넣지는 않는다 — `draft_auth.html` 규칙 04 가
+							* 「로그인은 갈래를 만들지 않는다」고 적었고, 링크 한 줄은 칸이 아니다.
+							* 「로그인하지 않고 둘러보기」도 그대로 둔다(규칙 06 — 유일한 출구다).
+						*/}
+						<p className="auth-switch">
+							{t("login.hasCode")}{" "}
+							<button
+								type="button"
+								onClick={() => navigate({ to: "/join", search: { code: undefined } })}
+								className="auth-link"
+							>
+								{t("login.goCode")}
 							</button>
 						</p>
 					</div>

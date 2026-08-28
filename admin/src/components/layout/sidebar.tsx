@@ -8,6 +8,7 @@ import {
 	LogOut,
 	School,
 	Shield,
+	Ticket,
 	Users,
 	Volume2,
 } from "lucide-react";
@@ -25,6 +26,14 @@ const allMenuItems = [
 		path: "/school",
 		icon: School,
 		roles: ["master_admin"],
+	},
+	{
+		label: "코드발급",
+		path: "/signup-code",
+		icon: Ticket,
+		// **student_admin 은 뺀다** — 발급 주체는 마스터와 학교 관리자 둘뿐이다
+		// (기획 2026-08-28). 서버도 같은 규칙으로 한 번 더 막는다.
+		roles: ["master_admin", "school_admin"],
 	},
 	{
 		label: "학생관리",

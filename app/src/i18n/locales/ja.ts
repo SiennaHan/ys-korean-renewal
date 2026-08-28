@@ -7,6 +7,8 @@ const ja = {
 		passwordPlaceholder: "パスワードを入力してください",
 		noAccount: "まだアカウントがありませんか？",
 		goSignUp: "会員登録",
+		hasCode: "学校・機関のコードをお持ちですか？",
+		goCode: "コード入力",
 		resetPassword: "パスワードを再設定",
 		rememberEmail: "メールアドレスを保存",
 		loginButton: "ログイン",
@@ -111,6 +113,39 @@ const ja = {
 			"登録の応答が正しくありません。しばらくしてからもう一度お試しください。",
 		haveAccount: "すでにアカウントをお持ちですか？",
 		goLogin: "ログイン",
+	},
+	/** 機関コードで入る道 — /join と /signup?code= */
+	joinCode: {
+		title: "学校コードの入力",
+		lead: "学校から受け取ったコードを入力すると、その学校の学生として登録できます。",
+		label: "コード",
+		placeholder: "ABCD-2345",
+		hint: "大文字と数字です。小文字で入力しても大丈夫です。",
+		submit: "コードを確認",
+		checking: "確認中...",
+		foundTitle: "{{school}} のコードです",
+		foundBody: "このコードで登録すると {{school}} の学生になります。",
+		foundContinue: "この学校で登録する",
+		retype: "コードを入力し直す",
+		bannerChecking: "学校を確認しています...",
+		bannerTitle: "{{school}} の学生として登録します",
+		bannerBody:
+			"学校から受け取ったコードで入られました。メールアドレスと名前だけ決めてください。",
+		withoutCode: "コードなしで登録する",
+		withoutCodeNote:
+			"コードなしで登録すると学校とつながりません。あとからコードを入れる方法はまだありません。",
+		retry: "再試行",
+		err_codeRequired: "コードを入力してください。",
+		err_codeInvalid:
+			"コードが見つかりません。学校から受け取ったとおりに入力してください。",
+		err_codeFull: "このコードは定員に達しました。学校のご担当者にお問い合わせください。",
+		err_codeExpired:
+			"このコードは利用期間が終了しました。学校のご担当者に新しいコードをお求めください。",
+		err_codeNotStarted: "このコードはまだ使えません。学校のご担当者にお問い合わせください。",
+		err_codePaused: "このコードは現在使えません。学校のご担当者にお問い合わせください。",
+		err_codeDisabled: "このコードはもう使えません。学校のご担当者にお問い合わせください。",
+		err_tooManyTries: "何度も間違えました。しばらくしてからもう一度お試しください。",
+		err_codeCheckFailed: "確認できませんでした。しばらくしてからもう一度お試しください。",
 	},
 	qr: {
 		redirecting: "ウェブページに移動しています",

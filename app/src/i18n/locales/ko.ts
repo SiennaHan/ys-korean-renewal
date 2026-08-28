@@ -7,6 +7,8 @@ const ko = {
 		passwordPlaceholder: "비밀번호를 입력하세요",
 		noAccount: "아직 계정이 없으세요?",
 		goSignUp: "회원가입",
+		hasCode: "학교/기관용 코드를 가지고 있어요?",
+		goCode: "코드 입력",
 		resetPassword: "비밀번호 재설정",
 		/**
 		 * 같은 화면의 입력칸이 "이메일" 이므로 "아이디" 라 부르지 않는다 —
@@ -116,6 +118,51 @@ const ko = {
 			"가입 응답이 올바르지 않습니다. 잠시 후 다시 시도해 주세요.",
 		haveAccount: "이미 계정이 있으세요?",
 		goLogin: "로그인",
+	},
+	/**
+	 * 기관 발급 코드로 들어오는 길 — /join 과 /signup?code=
+	 *
+	 * **오류 문구가 여기 한 곳에 있다.** 두 화면이 같은 코드를 받으므로
+	 * `signup.err_*` 에 베껴 두면 한쪽만 고쳐진다.
+	 *
+	 * 말투는 login·signup 을 따른다(-습니다 체). paywall 의 -어요 체가 아니다 —
+	 * 이 화면들은 인증 화면군이라 나란히 놓인다.
+	 */
+	joinCode: {
+		title: "학교 코드 입력",
+		lead: "학교에서 받은 코드를 입력하시면 그 학교 학생으로 가입할 수 있습니다.",
+		label: "코드",
+		placeholder: "ABCD-2345",
+		hint: "대문자와 숫자로 되어 있습니다. 소문자로 입력해도 됩니다.",
+		submit: "코드 확인",
+		checking: "확인하는 중...",
+		foundTitle: "{{school}} 코드입니다",
+		foundBody: "이 코드로 가입하면 {{school}} 학생이 됩니다.",
+		foundContinue: "이 학교로 가입하기",
+		retype: "코드 다시 입력",
+		bannerChecking: "학교를 확인하는 중...",
+		bannerTitle: "{{school}} 학생으로 가입합니다",
+		bannerBody:
+			"학교에서 받은 코드로 들어오셨습니다. 이메일과 이름만 정하시면 됩니다.",
+		withoutCode: "코드 없이 가입하기",
+		withoutCodeNote:
+			"코드 없이 가입하면 학교와 연결되지 않습니다. 나중에 코드를 넣는 길은 아직 없습니다.",
+		retry: "다시 시도",
+		err_codeRequired: "코드를 입력해 주세요.",
+		err_codeInvalid:
+			"코드를 찾을 수 없습니다. 학교에서 받은 그대로 다시 입력해 주세요.",
+		err_codeFull: "이 코드는 정원이 모두 찼습니다. 학교 담당자에게 문의해 주세요.",
+		err_codeExpired:
+			"이 코드는 사용 기간이 끝났습니다. 학교 담당자에게 새 코드를 받아 주세요.",
+		err_codeNotStarted:
+			"이 코드는 아직 사용할 수 없습니다. 학교 담당자에게 문의해 주세요.",
+		err_codePaused:
+			"이 코드는 지금 사용할 수 없습니다. 학교 담당자에게 문의해 주세요.",
+		err_codeDisabled:
+			"이 코드는 더 이상 사용할 수 없습니다. 학교 담당자에게 문의해 주세요.",
+		err_tooManyTries:
+			"여러 번 틀렸습니다. 잠시 후 다시 시도해 주세요.",
+		err_codeCheckFailed: "확인하지 못했습니다. 잠시 후 다시 시도해 주세요.",
 	},
 	qr: {
 		redirecting: "웹 페이지로 이동 중입니다",

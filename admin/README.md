@@ -58,6 +58,12 @@ Defined in `.env` (see `.env.example`):
 | `PUBLIC_APPSYNC_ENDPOINT` | AWS AppSync GraphQL endpoint |
 | `PUBLIC_APPSYNC_REGION` | AppSync region |
 | `PUBLIC_APPSYNC_API_KEY` | AppSync API key |
+| `PUBLIC_STUDENT_APP_URL` | Student app origin. Used for the join link and QR on the printed signup-code card. If empty the card says so instead of printing a broken link |
+
+> **All five must be set.** RSBuild only inlines `PUBLIC_*` variables that exist at
+> startup; a missing one is left as a literal `process.env.X` and the app dies with
+> `process is not defined` on load. There is no `.env.example` in this repo yet —
+> copy the table above.
 
 ## Project Structure
 
@@ -77,6 +83,7 @@ src/
 - `/login`, `/signup` — auth (admin signup requires master-admin approval)
 - `/admin` — admin management (관리자)
 - `/school` — school & class-level management (학교관리)
+- `/signup-code` — institution signup codes: issue, list, pause, copy/print (코드발급). Master and school admins only
 - `/student` — student management + batch/Excel registration (학생관리)
 - `/stt-shadow` — STT shadow comparison monitoring
 - `/qr-stats` — anonymous QR scan analytics (master admin only)

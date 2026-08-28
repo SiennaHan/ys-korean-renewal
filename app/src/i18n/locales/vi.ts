@@ -7,6 +7,8 @@ const vi = {
 		passwordPlaceholder: "Nhập mật khẩu",
 		noAccount: "Chưa có tài khoản?",
 		goSignUp: "Đăng ký",
+		hasCode: "Bạn có mã của trường hoặc tổ chức?",
+		goCode: "Nhập mã",
 		resetPassword: "Đặt lại mật khẩu",
 		rememberEmail: "Ghi nhớ email",
 		loginButton: "Đăng nhập",
@@ -107,6 +109,42 @@ const vi = {
 			"Phản hồi đăng ký không hợp lệ. Vui lòng thử lại sau giây lát.",
 		haveAccount: "Đã có tài khoản?",
 		goLogin: "Đăng nhập",
+	},
+	/** Lối vào bằng mã của tổ chức — /join và /signup?code= */
+	joinCode: {
+		title: "Nhập mã trường",
+		lead: "Nhập mã do trường cấp để đăng ký làm học viên của trường đó.",
+		label: "Mã",
+		placeholder: "ABCD-2345",
+		hint: "Gồm chữ in hoa và số. Nhập chữ thường cũng được.",
+		submit: "Kiểm tra mã",
+		checking: "Đang kiểm tra...",
+		foundTitle: "Đây là mã của {{school}}",
+		foundBody: "Đăng ký bằng mã này bạn sẽ là học viên của {{school}}.",
+		foundContinue: "Đăng ký với trường này",
+		retype: "Nhập lại mã",
+		bannerChecking: "Đang xác nhận trường...",
+		bannerTitle: "Đăng ký làm học viên {{school}}",
+		bannerBody:
+			"Bạn đã vào bằng mã của trường. Chỉ cần chọn email và tên là xong.",
+		withoutCode: "Đăng ký không dùng mã",
+		withoutCodeNote:
+			"Nếu đăng ký không dùng mã, bạn sẽ không được liên kết với trường. Hiện chưa có cách thêm mã sau.",
+		retry: "Thử lại",
+		err_codeRequired: "Vui lòng nhập mã.",
+		err_codeInvalid:
+			"Không tìm thấy mã này. Vui lòng nhập đúng như trường đã cấp.",
+		err_codeFull: "Mã này đã hết chỗ. Vui lòng liên hệ người phụ trách của trường.",
+		err_codeExpired:
+			"Mã này đã hết hạn. Vui lòng xin mã mới từ người phụ trách của trường.",
+		err_codeNotStarted:
+			"Mã này chưa dùng được. Vui lòng liên hệ người phụ trách của trường.",
+		err_codePaused:
+			"Hiện không dùng được mã này. Vui lòng liên hệ người phụ trách của trường.",
+		err_codeDisabled:
+			"Mã này không còn dùng được. Vui lòng liên hệ người phụ trách của trường.",
+		err_tooManyTries: "Bạn đã thử quá nhiều lần. Vui lòng thử lại sau ít phút.",
+		err_codeCheckFailed: "Không kiểm tra được. Vui lòng thử lại sau.",
 	},
 	qr: {
 		redirecting: "Đang chuyển đến trang web",

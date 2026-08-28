@@ -12,6 +12,7 @@ import {
 	migrateGuestData,
 	signUpStudent,
 } from "@/api/sign";
+import { signUpWithCode } from "@/api/join-code";
 import type React from "react";
 import {
 	type ReactNode,
@@ -41,6 +42,7 @@ interface AuthContextType {
 		email: string,
 		password: string,
 		name: string,
+		code?: string,
 	) => Promise<{ success: boolean; error?: string }>;
 	guestSign: () => Promise<boolean>;
 	login: (
@@ -143,8 +145,17 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		email: string,
 		password: string,
 		name: string,
+		code?: string,
 	): Promise<{ success: boolean; error?: string }> => {
-		const result = await signUpStudent(email, password, name);
+		/*
+		 * 기관 발급 코드가 있으면 다른 라우트로 간다 — 그쪽은 코드가 가리키는
+		 * 학교를 계정에 박는다. **여기서 갈라 두는 이유는 뒷정리 때문이다.**
+		 * 화면이 `signUpWithCode` 를 직접 부르면 위 주석이 말하는 둘(user 설정 ·
+		 * 게스트 id 정리)이 또 빠진다.
+		 */
+		const result = code
+			? await signUpWithCode(code, email, password, name)
+			: await signUpStudent(email, password, name);
 		if (!result.success || !result.user) {
 			return { success: false, error: result.error };
 		}

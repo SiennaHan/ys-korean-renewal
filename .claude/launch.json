@@ -20,6 +20,16 @@
         "dev"
       ],
       "port": 3000
+    },
+    {
+      "name": "korean-admin",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--dir",
+        "admin",
+        "dev"
+      ],
+      "port": 3001
     }
   ]
 }

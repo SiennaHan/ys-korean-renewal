@@ -7,6 +7,8 @@ const en = {
 		passwordPlaceholder: "Enter your password",
 		noAccount: "No account yet?",
 		goSignUp: "Sign up",
+		hasCode: "Have a school or institution code?",
+		goCode: "Enter code",
 		resetPassword: "Reset password",
 		rememberEmail: "Remember my email",
 		loginButton: "Sign in",
@@ -107,6 +109,39 @@ const en = {
 			"The sign-up response was not valid. Please try again in a moment.",
 		haveAccount: "Already have an account?",
 		goLogin: "Sign in",
+	},
+	/** Institution code path — /join and /signup?code= */
+	joinCode: {
+		title: "Enter school code",
+		lead: "Enter the code from your school to sign up as a student there.",
+		label: "Code",
+		placeholder: "ABCD-2345",
+		hint: "Capital letters and numbers. Lowercase works too.",
+		submit: "Check code",
+		checking: "Checking...",
+		foundTitle: "This is a {{school}} code",
+		foundBody: "Signing up with this code makes you a {{school}} student.",
+		foundContinue: "Sign up with this school",
+		retype: "Enter a different code",
+		bannerChecking: "Checking your school...",
+		bannerTitle: "Signing up as a {{school}} student",
+		bannerBody:
+			"You came in with a code from your school. Just choose an email and a name.",
+		withoutCode: "Sign up without a code",
+		withoutCodeNote:
+			"Signing up without a code means you will not be linked to a school. There is no way to add a code later yet.",
+		retry: "Try again",
+		err_codeRequired: "Please enter the code.",
+		err_codeInvalid:
+			"We could not find that code. Please type it exactly as your school gave it.",
+		err_codeFull: "This code is full. Please contact your school.",
+		err_codeExpired:
+			"This code has expired. Please ask your school for a new one.",
+		err_codeNotStarted: "This code is not active yet. Please contact your school.",
+		err_codePaused: "This code cannot be used right now. Please contact your school.",
+		err_codeDisabled: "This code can no longer be used. Please contact your school.",
+		err_tooManyTries: "Too many attempts. Please try again in a few minutes.",
+		err_codeCheckFailed: "We could not check the code. Please try again shortly.",
 	},
 	qr: {
 		redirecting: "Redirecting to the website",

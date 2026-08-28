@@ -20,6 +20,7 @@ import { Route as MyProfileRouteImport } from './routes/my-profile'
 import { Route as MyPasswordRouteImport } from './routes/my-password'
 import { Route as MainRouteImport } from './routes/main'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as InquiryRouteImport } from './routes/inquiry'
 import { Route as CheckEmailRouteImport } from './routes/check-email'
 import { Route as IndexRouteImport } from './routes/index'
@@ -101,6 +102,11 @@ const MainRoute = MainRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InquiryRoute = InquiryRouteImport.update({
@@ -243,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/check-email': typeof CheckEmailRoute
   '/inquiry': typeof InquiryRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/main': typeof MainRouteWithChildren
   '/my-password': typeof MyPasswordRoute
@@ -283,6 +290,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/check-email': typeof CheckEmailRoute
   '/inquiry': typeof InquiryRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/my-password': typeof MyPasswordRoute
   '/my-profile': typeof MyProfileRoute
@@ -321,6 +329,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/check-email': typeof CheckEmailRoute
   '/inquiry': typeof InquiryRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/main': typeof MainRouteWithChildren
   '/my-password': typeof MyPasswordRoute
@@ -363,6 +372,7 @@ export interface FileRouteTypes {
     | '/'
     | '/check-email'
     | '/inquiry'
+    | '/join'
     | '/login'
     | '/main'
     | '/my-password'
@@ -403,6 +413,7 @@ export interface FileRouteTypes {
     | '/'
     | '/check-email'
     | '/inquiry'
+    | '/join'
     | '/login'
     | '/my-password'
     | '/my-profile'
@@ -440,6 +451,7 @@ export interface FileRouteTypes {
     | '/'
     | '/check-email'
     | '/inquiry'
+    | '/join'
     | '/login'
     | '/main'
     | '/my-password'
@@ -481,6 +493,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CheckEmailRoute: typeof CheckEmailRoute
   InquiryRoute: typeof InquiryRoute
+  JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
   MainRoute: typeof MainRouteWithChildren
   MyPasswordRoute: typeof MyPasswordRoute
@@ -582,6 +595,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inquiry': {
@@ -834,6 +854,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CheckEmailRoute: CheckEmailRoute,
   InquiryRoute: InquiryRoute,
+  JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
   MainRoute: MainRouteWithChildren,
   MyPasswordRoute: MyPasswordRoute,

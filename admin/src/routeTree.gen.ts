@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TtsTestRouteImport } from './routes/tts-test'
 import { Route as StudentRouteImport } from './routes/student'
 import { Route as SttShadowRouteImport } from './routes/stt-shadow'
+import { Route as SignupCodeRouteImport } from './routes/signup-code'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SchoolRouteImport } from './routes/school'
 import { Route as QrStatsRouteImport } from './routes/qr-stats'
@@ -38,6 +39,11 @@ const StudentRoute = StudentRouteImport.update({
 const SttShadowRoute = SttShadowRouteImport.update({
   id: '/stt-shadow',
   path: '/stt-shadow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupCodeRoute = SignupCodeRouteImport.update({
+  id: '/signup-code',
+  path: '/signup-code',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/qr-stats': typeof QrStatsRoute
   '/school': typeof SchoolRoute
   '/signup': typeof SignupRoute
+  '/signup-code': typeof SignupCodeRoute
   '/stt-shadow': typeof SttShadowRoute
   '/student': typeof StudentRoute
   '/tts-test': typeof TtsTestRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/qr-stats': typeof QrStatsRoute
   '/school': typeof SchoolRoute
   '/signup': typeof SignupRoute
+  '/signup-code': typeof SignupCodeRoute
   '/stt-shadow': typeof SttShadowRoute
   '/student': typeof StudentRoute
   '/tts-test': typeof TtsTestRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/qr-stats': typeof QrStatsRoute
   '/school': typeof SchoolRoute
   '/signup': typeof SignupRoute
+  '/signup-code': typeof SignupCodeRoute
   '/stt-shadow': typeof SttShadowRoute
   '/student': typeof StudentRoute
   '/tts-test': typeof TtsTestRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/qr-stats'
     | '/school'
     | '/signup'
+    | '/signup-code'
     | '/stt-shadow'
     | '/student'
     | '/tts-test'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/qr-stats'
     | '/school'
     | '/signup'
+    | '/signup-code'
     | '/stt-shadow'
     | '/student'
     | '/tts-test'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/qr-stats'
     | '/school'
     | '/signup'
+    | '/signup-code'
     | '/stt-shadow'
     | '/student'
     | '/tts-test'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   QrStatsRoute: typeof QrStatsRoute
   SchoolRoute: typeof SchoolRoute
   SignupRoute: typeof SignupRoute
+  SignupCodeRoute: typeof SignupCodeRoute
   SttShadowRoute: typeof SttShadowRoute
   StudentRoute: typeof StudentRoute
   TtsTestRoute: typeof TtsTestRoute
@@ -246,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/stt-shadow'
       fullPath: '/stt-shadow'
       preLoaderRoute: typeof SttShadowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup-code': {
+      id: '/signup-code'
+      path: '/signup-code'
+      fullPath: '/signup-code'
+      preLoaderRoute: typeof SignupCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   QrStatsRoute: QrStatsRoute,
   SchoolRoute: SchoolRoute,
   SignupRoute: SignupRoute,
+  SignupCodeRoute: SignupCodeRoute,
   SttShadowRoute: SttShadowRoute,
   StudentRoute: StudentRoute,
   TtsTestRoute: TtsTestRoute,

@@ -1,3 +1,4 @@
+import { joinCodeErrorKey, normalizeCode, verifyJoinCode } from "@/api/join-code";
 import { PASSWORD_RULES, passwordMisses } from "@/api/sign";
 import { useAuth } from "@/components/sign/sign-provider";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,13 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/signup")({
+	/*
+	 * 기관 발급 코드는 **URL 로 들고 온다**(`inquiry.tsx` 와 같은 관례).
+	 * localStorage 에 두면 학교 컴퓨터에서 다음 사람이 그 학교로 가입한다.
+	 */
+	validateSearch: (search: Record<string, unknown>) => ({
+		code: typeof search.code === "string" ? search.code : undefined,
+	}),
 	component: SignUpPage,
 });
 
@@ -37,10 +45,42 @@ function SignUpPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
+	const { code: codeFromUrl } = Route.useSearch();
+	const code = normalizeCode(codeFromUrl ?? "");
+
+	/*
+	 * **코드를 여기서 다시 확인한다.** 학교 이름을 URL 로 들고 오지 않는 이유는
+	 * 같은 사실이 두 곳에 있게 되기 때문이다. 덤으로 "폼을 붙들고 있는 사이
+	 * 마지막 자리가 찼다" 도 제자리에서 잡힌다.
+	 */
+	const [codeSchool, setCodeSchool] = useState<string | null>(null);
+	const [codeError, setCodeError] = useState<string | null>(null);
+	const [codeChecking, setCodeChecking] = useState(!!code);
+
 	const [showPassword, setShowPassword] = useState(false);
 	const [agreed, setAgreed] = useState(false);
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		if (!code) return;
+		let alive = true;
+		setCodeChecking(true);
+		void verifyJoinCode(code).then((res) => {
+			if (!alive) return;
+			setCodeChecking(false);
+			if (res.valid) {
+				setCodeSchool(res.schoolName ?? null);
+				setCodeError(null);
+				return;
+			}
+			const key = joinCodeErrorKey(res.reason);
+			setCodeError(key && i18n.exists(key) ? t(key) : (res.reason ?? t("joinCode.err_codeCheckFailed")));
+		});
+		return () => {
+			alive = false;
+		};
+	}, [code, t]);
 
 	/* 이미 계정이 있으면 여기 있을 일이 없다 */
 	useEffect(() => {
@@ -59,7 +99,7 @@ function SignUpPage() {
 		e.preventDefault();
 		setError("");
 		setIsLoading(true);
-		const res = await signUp(email, password, name);
+		const res = await signUp(email, password, name, code || undefined);
 		setIsLoading(false);
 		if (!res.success) {
 			/*
@@ -102,11 +142,62 @@ function SignUpPage() {
 					 * 정했고(access_and_pricing_v1 §07 의 2번) signUpStudent 가 guestId 를
 					 * 같이 보낸다. 실제로 옮겨지므로 이 문장은 거짓이 아니다.
 					 */}
+					{/*
+					 * **상자는 하나로 유지한다.** 375px 에서 정보 상자가 둘이면
+					 * 폼이 접힘 아래로 밀린다. 코드로 들어왔으면 학교를 먼저 말하고
+					 * 기록이 따라온다는 말을 이어 붙인다 — 둘 다 참이다.
+					 */}
 					<div className="auth-info">
-						<p className="auth-info-title">{t("signup.carryTitle")}</p>
-						<p className="auth-info-body">{t("signup.carryBody")}</p>
+						{code && codeChecking ? (
+							<p className="auth-info-title">{t("joinCode.bannerChecking")}</p>
+						) : code && codeSchool ? (
+							<>
+								<p className="auth-info-title">
+									{t("joinCode.bannerTitle", { school: codeSchool })}
+								</p>
+								<p className="auth-info-body">
+									{t("joinCode.bannerBody")} {t("signup.carryBody")}
+								</p>
+							</>
+						) : (
+							<>
+								<p className="auth-info-title">{t("signup.carryTitle")}</p>
+								<p className="auth-info-body">{t("signup.carryBody")}</p>
+							</>
+						)}
 					</div>
 
+					{/*
+					 * **코드가 못 쓰는 것이면 폼을 그리지 않는다.** 채우게 두고
+					 * 제출할 때 막으면 학생이 헛수고를 한다. 대신 갈 곳을 둘 준다 —
+					 * 다시 넣기와, 코드 없이 가기(그게 막다른 길이라는 말과 함께).
+					 */}
+					{code && codeError ? (
+						<div className="auth-form">
+							<p className="auth-alert" role="alert">
+								<CircleAlert aria-hidden="true" />
+								<span>{codeError}</span>
+							</p>
+							<Button
+								type="button"
+								size="lg"
+								full
+								onClick={() => navigate({ to: "/join", search: { code } })}
+							>
+								{t("joinCode.retype")}
+							</Button>
+							<div className="auth-support">
+								<button
+									type="button"
+									onClick={() => navigate({ to: "/signup", search: { code: undefined } })}
+									className="auth-link"
+								>
+									{t("joinCode.withoutCode")}
+								</button>
+								<p className="auth-hint">{t("joinCode.withoutCodeNote")}</p>
+							</div>
+						</div>
+					) : (
 					<form onSubmit={handleSignUp} className="auth-form">
 						{error && (
 							<p className="auth-alert" role="alert">
@@ -237,6 +328,7 @@ function SignUpPage() {
 							{isLoading ? t("signup.submitting") : t("signup.submit")}
 						</Button>
 					</form>
+					)}
 
 					<p className="auth-switch">
 						{t("signup.haveAccount")}{" "}
