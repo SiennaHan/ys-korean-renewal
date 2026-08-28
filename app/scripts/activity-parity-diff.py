@@ -15,12 +15,8 @@ IGNORED = {
     "어휘 문제 그림 경로": "같은 그림인데 사는 곳이 다르다 — 목업은 프로토타입 옆의"
     " ../illust/images/… 를 보고, 앱은 서버가 내는 /textbook/{급}/… 를 본다."
     " 파일 이름은 같다(b1_ch6_p63_10.png). .word-pic img 의 src 만 건너뛴다",
-    "한 칸 진행막대": "칸이 하나뿐이면 늘 꽉 찬 줄이라 어디쯤인지를 말해 주지 못한다."
-    " 그려도 자리만 먹으므로 뺐다 (wordPreview · write3 · write3_canvas)",
     "레이더 viewBox": "목업은 220 폭. 축 이름을 번역하면 좌우로 넘쳐 잘려서"
     " -30 0 280 210 으로 넓혔다. 그려지는 크기는 max-width 를 같이 키워 그대로다",
-    'aria-label 닫기': "목업이 스스로 갈렸다 — shell() 은 닫기, gapAppbar() 는 나가기."
-    " 눈에 보이지 않는 글자라 i18n 이 정한 player.exit(나가기) 하나로 모았다",
     "탭 바": "nav 화면의 목업 캡처에는 탭 바가 들어 있는데, 그 화면의 컴포넌트는"
     " 탭 바를 그리지 않는다 — 레이아웃(routes/main.tsx)이 그린다. 그래서 뺀다",
     "목업 데모 속성": "목업 자체를 돌리기 위한 갈고리다 — data-lv · data-lang ·"
@@ -49,7 +45,6 @@ IGNORED = {
     " 다섯 행 전부 인라인 style 비교만 건너뛴다(클래스·글자는 그대로 대조한다)",
 }
 # 위 aria-label 만 봐준다. 다른 aria-label 이 다르면 그대로 드러난다
-EXIT_LABELS = {"닫기", "나가기"}
 
 # 목업 마크업이 SVG·인라인 style 에 직접 적어 둔 원색 이름 → 앱의 semantic 토큰.
 # CSS 이관은 스타일시트만 옮기므로 이 이름들은 앱에 없다. 값은 같다.
@@ -251,8 +246,6 @@ class Flat(HTMLParser):
         # 위 IGNORED "어휘 문제 그림 경로" 참조 — 파일 이름만 남기고 뿌리는 버린다
         if tag == "img" and "src" in a and self._word_pic_depth == self.d:
             a["src"] = a["src"].rsplit("/", 1)[-1]
-        if a.get("aria-label") in EXIT_LABELS:
-            a["aria-label"] = "(나가기)"
         # 위 IGNORED "운석 낙하 시간" 참조 — 앱만 인라인으로 준다
         if "animation-duration" in a.get("style", ""):
             a["style"] = re.sub(r"animation-duration:[^;]*;?", "", a["style"]).strip()
@@ -341,24 +334,6 @@ def drop_record_limit(rows):
     return out
 
 
-def drop_single_progress(rows):
-    """칸이 하나뿐인 진행막대 블록을 통째로 지운다"""
-    out, i = [], 0
-    while i < len(rows):
-        line = rows[i]
-        if line.strip().startswith('<div class="progress-wrap'):
-            block = [line]
-            j = i + 1
-            indent = len(line) - len(line.lstrip())
-            while j < len(rows) and (len(rows[j]) - len(rows[j].lstrip())) > indent:
-                block.append(rows[j])
-                j += 1
-            if sum(1 for b in block if b.strip().startswith("<i")) <= 1:
-                i = j
-                continue
-        out.append(line)
-        i += 1
-    return out
 
 
 # 게임 캡처만 끼고 있는 껍데기 — 구 배포판의 라우트 레이아웃이다.
@@ -501,7 +476,7 @@ for f in sorted(glob.glob(os.path.join(out, "*.html"))):
     def prep(html):
         rows = flat(strip_app_wrapper(html))
         rows = drop_above_root(rows, root) if root else drop_game_wrapper(rows)
-        return drop_record_limit(drop_single_progress(drop_tabbar(rows)))
+        return drop_record_limit(drop_tabbar(rows))
 
     a = prep(open(ref, encoding="utf-8").read())
     b = prep(open(f, encoding="utf-8").read())
