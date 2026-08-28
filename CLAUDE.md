@@ -196,10 +196,10 @@ git show <커밋> --unified=0 -- 'app/src/**/*.tsx' | grep -E '^[-+].*\}, \['
 - `@tanstack/react-router` 셋은 캐럿 없이 **정확히 `1.136.8`** 이다. 올리면 React 19 의
   `use` 를 써서 죽는다 (이 앱은 React 18.3.1)
 - `app/src/shared/data/n*.json` — 산출물이다. 위 표를 봐라
-- 자모는 **검수 전이지만 배관은 끝났다 (2026-08-24).** `n8_jamo` 529행이 전부
-  `draft` 인데 화면은 이미 그 JSON 을 읽는다 — 내용이 `problem.ts` 와 같으니
-  검수가 배관을 막지 않는다. 라우트도 하나로 합쳤다(`/learn/jamo?level&lesson&group&sub`).
-  검수로 남은 것은 받침·겹받침 낱자 목록뿐이다 — `BLOCKERS.md` §2 · §2-c
+- 자모는 **검수도 배관도 끝났다.** 배관은 2026-08-24, **검수는 2026-08-28 에 확정**됐다 —
+  받침·겹받침 포함 529행 전부다. 원장 **v41** 에서 `review_status` 가 `reviewed` 다.
+  라우트도 하나로 합쳤다(`/learn/jamo?level&lesson&group&sub`).
+  **전에 여기 "검수 전 · 받침·겹받침만 남았다" 로 적혀 있었다** — `BLOCKERS.md` §2 · §2-c
 
 ## 공개 금지
 
