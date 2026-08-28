@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # from slowapi.middleware import SlowAPIMiddleware
 
 from accepter import chat_accepter, user_accepter, root_accepter, tts_accepter, dialog_accepter, stt_accepter, report_accepter, flashcard_accepter
-from accepter import auth_accepter, admin_accepter, school_accepter, student_accepter, learning_record_accepter
+from accepter import auth_accepter, admin_accepter, school_accepter, student_accepter, learning_record_accepter, signup_code_accepter
 from accepter import dashboard_accepter, study_session_accepter, speech_accepter, game_progress_accepter
 from accepter import spring_picnic_accepter, particle_sniper_accepter, card_sort_accepter, seoul_puzzle_accepter, vocashot_accepter
 from accepter import qr_accepter
@@ -99,6 +99,10 @@ app.include_router(
 
 app.include_router(
     student_accepter.router, prefix="/student", tags=["student"], responses={404: {"description": "Not found"}},
+)
+
+app.include_router(
+    signup_code_accepter.router, prefix="/signup-code", tags=["signup-code"], responses={404: {"description": "Not found"}},
 )
 
 app.include_router(

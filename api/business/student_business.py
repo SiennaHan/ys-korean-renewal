@@ -128,3 +128,23 @@ async def deleteStudent(studentId: int):
         if not deleted:
             return None, "학생을 찾을 수 없습니다."
         return {"success": True}, None
+
+
+async def checkStudentSchool(studentId: int, callerSchoolCode: str):
+    """이 학생을 내가 고치거나 지울 수 있나. 문제가 없으면 None.
+
+    `admin_business.checkSchoolAdminPermission` 과 같은 모양이다. 그쪽은 관리자
+    행을 보고 이쪽은 학생 행을 본다 — 전에는 학생 쪽에 대응물이 아예 없어서
+    **아무 학교 관리자가 남의 학교 학생을 고치고 지울 수 있었다**(2026-08-28 에 막음).
+
+    `callerSchoolCode` 가 None 이면 마스터라 제한이 없다.
+    **없는 학생과 남의 학교 학생에 같은 문구를 낸다** — 다르게 말하면 id 를 훑어
+    남의 학교에 학생이 몇 명인지 셀 수 있다.
+    """
+    with sessionScope() as db:
+        target = await repo_user.findById(studentId, db)
+        if not target or target.role != "student":
+            return "학생을 찾을 수 없습니다."
+        if callerSchoolCode and target.school_code != callerSchoolCode:
+            return "학생을 찾을 수 없습니다."
+        return None

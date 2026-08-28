@@ -248,6 +248,84 @@ class KoUser(Base) :
     updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 
 
+class KoSignupCode(Base) :
+    """기관 발급 코드 한 장. 학교가 어드민에서 찍고 학생이 앱에서 넣는다.
+
+    **`ko_school.school_code` 와 다른 것이다.** 그쪽은 학교의 이름표라 안 바뀌고
+    재사용되는데, 이 표의 `code` 는 수량과 기한이 붙은 일회성 배포물이다.
+    그래서 표 이름을 `ko_school_code` 로 짓지 않았다 — 헷갈리면 사고가 난다.
+
+    `code` 의 UNIQUE 가 두 일을 겸한다 — 학생 검증의 조회 경로이자
+    발급 경합의 심판이다. 생성은 「조회하고 없으면 삽입」이 아니라
+    **삽입해 보고 IntegrityError 면 다시 만든다.**
+    """
+    __tablename__     = "ko_signup_code"
+    id                = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
+    # 이름을 직접 준다 — `unique=True, index=True` 로 두면 SQLAlchemy 가
+    # `ix_ko_signup_code_code` 를 만들고 마이그레이션 SQL 과 이름이 갈린다
+    code              = Column(String(16),   nullable=False)
+    school_code       = Column(String(20),   nullable=False)  # ko_school.school_code. FK 아님 — ko_user 와 같은 관례
+    label             = Column(String(100),  nullable=True)   # 발급자 메모 — "2026 봄학기 1급 A반"
+    max_uses          = Column(Integer,      nullable=False)
+    used_count        = Column(Integer,      nullable=False, default=0)
+    starts_at         = Column(DateTime,     nullable=True)   # NULL 이면 즉시 유효
+    expires_at        = Column(DateTime,     nullable=False)  # 지나면 **입장만** 막는다
+    status            = Column(String(10),   nullable=False, default="active")  # active | paused | revoked
+    issued_by_user_id = Column(Integer,      nullable=False)
+    issued_by_role    = Column(String(20),   nullable=False)  # 발급 당시 역할을 박제한다
+    created_at        = Column(DateTime,     nullable=False, default=func.utc_timestamp())
+    updated_at        = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        # 학생 검증의 조회 경로이자 발급 경합의 심판이다
+        UniqueConstraint("code", name="uq_signup_code_code"),
+        # 어드민 목록은 늘 "우리 학교 것을 최신순" 이다. 두 칸 복합이라 정렬까지 덮는다
+        Index("ix_signup_code_school", "school_code", "created_at"),
+        Index("ix_signup_code_issuer", "issued_by_user_id"),
+        # status 단독 인덱스는 만들지 않는다 — 값이 셋뿐이라 선택도가 없다
+    )
+
+
+class KoSignupCodeUse(Base) :
+    """누가 언제 그 코드로 가입했나.
+
+    **`used_count` 는 파생값이고 이 표가 정본이다.** 따로 두는 이유 셋 —
+    ① `ko_user` 만 보면 엑셀로 등록된 학생과 코드로 가입한 학생이 구별되지 않는다
+    ② 학생이 탈퇴하면 `ko_user` 행이 사라져 흔적이 없어진다
+    ③ 카운터가 어긋났을 때 맞춰 볼 근거가 된다
+    """
+    __tablename__  = "ko_signup_code_use"
+    id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
+    code_id        = Column(Integer,      nullable=False)   # 인덱스는 아래에서 이름을 직접 준다
+    user_id        = Column(Integer,      nullable=False)   # ko_user.id
+    school_code    = Column(String(20),   nullable=False)   # 가입 당시 값의 스냅샷
+    used_at        = Column(DateTime,     nullable=False, default=func.utc_timestamp())
+    __table_args__ = (
+        # 한 계정은 한 번만 쓴다. 논리적으로 하나여야 하는 것은 DB 가 지키게 한다
+        UniqueConstraint("code_id", "user_id", name="uq_signup_code_user"),
+        Index("ix_signup_code_use_code", "code_id"),
+    )
+
+
+class KoSignupCodeAttempt(Base) :
+    """코드 시도 로그 — 무차별 대입을 막는 실체.
+
+    **프로세스 메모리로는 못 센다.** `start.sh` 가 `gunicorn -w 4` 라
+    한도가 실효 4배가 되고 배포마다 초기화된다.
+
+    **시도한 코드 값은 저장하지 않는다.** 저장하면 이 표가 곧 유효 코드 목록의
+    부분집합이 된다. 차단 판정과 공격 탐지에는 성패 여부만 있으면 된다.
+    `ip_hash` 는 `business/qr_tracking.py` 의 `_hash`(HMAC-SHA256) 결과다.
+    """
+    __tablename__  = "ko_signup_code_attempt"
+    id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
+    ip_hash        = Column(String(64),   nullable=False)
+    ok             = Column(Boolean,      nullable=False, default=False)
+    tried_at       = Column(DateTime,     nullable=False, default=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_signup_code_attempt_ip_time", "ip_hash", "tried_at"),
+    )
+
+
 class KoSpringPicnicFriend(Base) :
     __tablename__  = "ko_spring_picnic_friend"
     id             = Column(String(20),   nullable=False, primary_key=True)

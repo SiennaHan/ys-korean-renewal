@@ -58,6 +58,56 @@ def checkPassword(password: str) -> list[str]:
     return [name for name, ok in PASSWORD_RULES if not ok(password)]
 
 
+def _validateSignup(email: str, password: str, name: str):
+    """가입 입력 검사. `(이메일, 이름, 오류코드)` — 오류가 없으면 셋째가 None.
+
+    **오류는 한국어 문장이 아니라 코드로 낸다.** 이 앱을 쓰는 사람은 전부
+    한국어를 배우는 중이고 화면은 5개 언어다 — 영어 화면에서 한국어 오류가
+    뜨면 무엇이 잘못됐는지 읽을 수가 없다. 앱이 `signup.err_*` 로 옮긴다.
+
+    **코드 가입과 이 함수를 같이 쓴다.** 복사해 두면 한쪽만 고쳐진다.
+    """
+    email = (email or "").strip().lower()
+    name = (name or "").strip()
+    if not _EMAIL.match(email):
+        return email, name, "emailInvalid"
+    if not name:
+        return email, name, "nameRequired"
+    if checkPassword(password or ""):
+        return email, name, "passwordWeak"
+    return email, name, None
+
+
+async def _finishSignup(userId, userEmail, userName, schoolCode, guestId):
+    """가입이 끝난 뒤 — 게스트 기록을 옮기고 토큰을 낸다. 두 가입 경로가 같이 쓴다.
+
+    **게스트 이전이 실패해도 가입은 성공이다**(§07 의 2번) — 계정이 생겼는데
+    "가입 실패" 라고 말하면 다시 가입할 수도 없다.
+
+    학생 토큰에는 `school_code` 를 싣지 않는다(`auth.signJwt` 의 payload).
+    `getEntitlement` 가 매번 DB 를 읽으므로 넣을 이유가 없고, 넣으면 30일 낡는
+    두 번째 진실이 생긴다.
+    """
+    migrated = None
+    if guestId:
+        try:
+            migrated = await migrateGuestData(str(userId), guestId)
+        except Exception as e:
+            print(f"[signup] 게스트 이전 실패 — user[{userId}] guest[{guestId}] {e!r}")
+
+    return {
+        "token": auth.signJwt(str(userId), None, ["student"]),
+        "user": {
+            "id": userId,
+            "email": userEmail,
+            "name": userName,
+            "role": "student",
+            "schoolCode": schoolCode,
+        },
+        "migrated": migrated,
+    }
+
+
 async def signUpStudent(email: str, password: str, name: str, guestId: str = None):
     """학생이 스스로 계정을 만든다 — access_and_pricing_v1 §08 의 1번 · §09 의 4단계.
 
@@ -70,19 +120,9 @@ async def signUpStudent(email: str, password: str, name: str, guestId: str = Non
     `school_code` 를 비운다 — 그래야 `GET /entitlement` 가 `guest` 를 내고
     앱이 결제를 안내한다. 학교 소속이면 `school` 이 되어 「학교에 문의」가 뜬다.
     """
-    email = (email or "").strip().lower()
-    name = (name or "").strip()
-
-    # **오류는 한국어 문장이 아니라 코드로 낸다.** 이 앱을 쓰는 사람은 전부
-    # 한국어를 배우는 중이고 화면은 5개 언어다 — 영어 화면에서 한국어 오류가
-    # 뜨면 무엇이 잘못됐는지 읽을 수가 없다. 앱이 `signup.err_*` 로 옮긴다.
-    # 다른 엔드포인트는 아직 한국어 문장을 내므로 앱이 모르는 값은 그대로 보여 준다.
-    if not _EMAIL.match(email):
-        return None, "emailInvalid"
-    if not name:
-        return None, "nameRequired"
-    if checkPassword(password or ""):
-        return None, "passwordWeak"
+    email, name, err = _validateSignup(email, password, name)
+    if err:
+        return None, err
 
     with sessionScope() as db:
         if await repo_user.findByEmail(email, db):
@@ -101,26 +141,105 @@ async def signUpStudent(email: str, password: str, name: str, guestId: str = Non
         # 세션 안에서 값으로 뽑는다 — 블록을 나온 뒤 읽으면 DetachedInstanceError 다
         userId, userEmail, userName = created.id, created.email, created.name
 
-    # 둘러보며 푼 것을 옮긴다(§07 의 2번). **실패해도 가입은 성공이다** —
-    # 계정이 생겼는데 "가입 실패" 라고 말하면 다시 가입할 수도 없다
-    migrated = None
-    if guestId:
-        try:
-            migrated = await migrateGuestData(str(userId), guestId)
-        except Exception as e:
-            print(f"[signup] 게스트 이전 실패 — user[{userId}] guest[{guestId}] {e!r}")
+    return await _finishSignup(userId, userEmail, userName, None, guestId), None
 
-    return {
-        "token": auth.signJwt(str(userId), None, ["student"]),
-        "user": {
-            "id": userId,
-            "email": userEmail,
-            "name": userName,
-            "role": "student",
-            "schoolCode": None,
-        },
-        "migrated": migrated,
-    }, None
+
+async def signUpStudentWithCode(code: str, email: str, password: str, name: str,
+                                guestId: str = None, ipHash: str = None):
+    """기관 발급 코드로 가입한다 — 그 학교 학생이 된다.
+
+    **`signUpStudent` 에 `code` 를 얹지 않고 따로 둔 이유** — 저쪽 docstring 이
+    "`school_code` 를 비운다" 를 계약으로 못 박고 있다. 같은 함수가 때에 따라
+    채우면 그 문장이 거짓이 된다. 대신 검사·해시·게스트 이전은 같이 쓴다.
+
+    **앱은 `school_code` 를 보내지 않는다.** 코드만 보내고 서버가 학교를 알아낸다.
+    클라이언트가 준 학교를 그대로 쓰면 누구나 아무 학교 학생이 될 수 있다.
+
+    순서가 중요하다.
+
+        검사 → **해시** → 트랜잭션 열기 → 코드 조회 → 이메일 중복 →
+        좌석 확보(조건부 UPDATE) → ko_user INSERT → 사용 이력 INSERT → 커밋
+
+    해시를 트랜잭션 밖에서 먼저 하는 이유 — bcrypt 12라운드는 250ms 이상이라
+    좌석 잠금을 쥔 채 하면 서른 명이 직렬화되어 `read_timeout: 10` 에 먼저 걸린다.
+    그러면 「정원이 찼다」가 아니라 커넥션 오류로 터진다.
+
+    한 트랜잭션인 이유 — 이메일 중복으로 되돌아갈 때 **좌석도 같이 돌아온다.**
+    자리만 사라지고 계정은 없는 상태가 생기지 않는다.
+    """
+    from persistence import repo_signup_code   # 순환 import 를 피해 여기서 부른다
+    from util import codeutils
+
+    normalized = codeutils.normalizeCode(code)
+    if not normalized:
+        return None, "codeRequired"
+
+    email, name, err = _validateSignup(email, password, name)
+    if err:
+        return None, err
+
+    # 좌석 잠금 밖에서 미리 끝낸다
+    passwordHash = hashPassword(password)
+
+    with sessionScope() as db:
+        if ipHash and await repo_signup_code.countRecentFails(ipHash, db) >= repo_signup_code.FAIL_LIMIT:
+            return None, "tooManyTries"
+
+        row = await repo_signup_code.findByCode(normalized, db)
+        if not row:
+            if ipHash:
+                await repo_signup_code.recordAttempt(ipHash, False, db)
+            return None, "codeInvalid"
+
+        if await repo_user.findByEmail(email, db):
+            # 흔한 실패다. 남의 좌석을 건드리기 전에 먼저 걸러낸다
+            return None, "emailTaken"
+
+        # **세션 안에서 값으로 뽑는다.** 블록을 나온 뒤 row 의 칸을 읽으면
+        # DetachedInstanceError 다 — 그러면 계정은 만들어졌는데 응답이 터진다
+        # (실제로 한 번 그랬다: 학생 하나가 생기고 500 이 났다).
+        codeId, codeSchool = row.id, row.school_code
+
+        if not await repo_signup_code.consumeSeat(codeId, db):
+            if ipHash:
+                await repo_signup_code.recordAttempt(ipHash, False, db)
+            return None, _whyUnavailable(row)
+
+        user = model.KoUser()
+        user.email = email
+        user.password_hash = passwordHash
+        user.name = name
+        user.role = "student"
+        user.school_code = codeSchool           # **코드가 정한다. 요청이 아니다**
+        user.is_approved = True
+        user.is_active = True
+        created = await repo_user.createUser(user, db)
+        userId, userEmail, userName = created.id, created.email, created.name
+
+        await repo_signup_code.recordUse(codeId, userId, codeSchool, db)
+        if ipHash:
+            await repo_signup_code.recordAttempt(ipHash, True, db)
+
+    return await _finishSignup(userId, userEmail, userName, codeSchool, guestId), None
+
+
+def _whyUnavailable(row):
+    """좌석을 못 잡은 이유. 앱이 5개 언어로 옮기도록 코드로 낸다.
+
+    **`row` 는 UPDATE 전에 읽은 값이라 `used_count` 가 한 박자 낡을 수 있다.**
+    그래서 「정원이 찼다」를 마지막 갈래로 둔다 — 다른 이유가 없으면 그것이다.
+    """
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    if row.status == "revoked":
+        return "codeDisabled"
+    if row.status == "paused":
+        return "codePaused"
+    if row.expires_at and row.expires_at <= now:
+        return "codeExpired"
+    if row.starts_at and row.starts_at > now:
+        return "codeNotStarted"
+    return "codeFull"
 
 
 # ── 게스트 → 계정 이전 ─────────────────────────────────────────

@@ -4,32 +4,81 @@
 출처가 무엇이든(무료 · 학교 계약 · 개인 결제) 앱이 받는 모양은 같으므로,
 출처가 늘어도 앱은 고치지 않는다.
 
-지금 단계(§09 의 2번)에서는 **늘 무료 범위만 낸다.** `ko_entitlement` 표가
-아직 없어서 학교 계약도 개인 결제도 담을 곳이 없다.
+**2026-08-28 부터 기관 학생은 전 범위를 받는다.** 그 전에는 여기도 무료 범위를
+냈다 — `ko_entitlement` 표가 없어 학교 계약을 담을 곳이 없다는 이유였고, 그래서
+기관 학생이 받는 것은 안내 문구뿐이었다. 계약 학교는 모든 급을 준다는 확정
+(기획 2026-08-28)이 나오면서 표 없이도 판정할 수 있게 됐다 — `school_code` 가
+있으면 전 급이다. 값은 `shared/full_scope.py`.
 
-다만 `source` 는 지금부터 제대로 가른다. §06 이 **기관 학생에게 결제 화면을
-띄우면 안 된다** 고 못 박았기 때문이다 — 학교가 이미 낸 돈이다. 로그인한
-사용자의 `role`·`school_code` 를 보고 `school` 을 내면 앱이 결제 대신
-「학교에 문의」를 띄운다. 여기서 `guest` 로 뭉개면 그 규칙이 첫날부터 깨진다.
+개인 결제는 여전히 담을 곳이 없다. `purchase` 는 `ko_entitlement` 가 생긴 뒤다.
+
+`source` 를 제대로 가르는 것은 그 전부터 지켜 온 규칙이다. §06 이 **기관 학생에게
+결제 화면을 띄우면 안 된다** 고 못 박았기 때문이다 — 학교가 이미 낸 돈이다.
+
+**되돌리는 길을 열어 두었다** — 환경변수 `SCHOOL_FULL_SCOPE=false` 면 전 범위를
+끄고 예전처럼 무료 범위를 낸다. 이 변경은 전 학교의 전 학생에게 즉시 보이고
+**엑셀로 등록된 기존 기관 학생에게도 그대로 적용되므로**, 배포 없이 되돌릴 수
+있어야 한다(`xternal/tutorus.py` 의 `PRONUNCIATION_ENABLED` 와 같은 방식).
 """
+import os
+
 from fastapi.encoders import jsonable_encoder
 
 from persistence import repo_user
 from persistence.database import sessionScope
-from shared import free_scope
+from shared import free_scope, full_scope
+
+# 기본은 켜짐. 사고가 나면 `.env` 한 줄과 재시작으로 끈다
+SCHOOL_FULL_SCOPE = os.environ.get("SCHOOL_FULL_SCOPE", "true").lower() in {"1", "true", "yes"}
+
+
+def _scope(source: str, *, books, chapters, jamoChapters, games, clips, expiresAt=None):
+    """§04 의 7키. **모양은 여기 한 곳에만 있다.**
+
+    앱이 엄격히 검증해서 키가 하나만 빠져도 응답을 통째로 거절하고
+    잠금을 아예 그리지 않는다(`app/src/api/entitlement.ts`). 그래서 모양을
+    두 곳에 적어 두면 한쪽만 고쳐졌을 때 화면이 조용히 비어 버린다.
+    """
+    return {
+        "source": source,
+        "books": list(books),
+        "chapters": {str(k): list(v) for k, v in chapters.items()},
+        "jamo_chapters": list(jamoChapters),
+        "games": list(games),
+        "clips": clips,
+        "expires_at": expiresAt,
+    }
+
+
+def _schoolScope():
+    """기관 학생 — 전 급 · 자모 전부 · 게임 전부.
+
+    **`expires_at` 은 None 이다.** 코드의 기한을 여기 넣으면 학기 코드가
+    만료되는 날 그 코드로 가입한 학생 전원이 잠긴다. 코드의 기한은
+    **입장(가입)만** 막는다는 것이 확정 규칙이다. 학기 종료 시 접근 회수는
+    따로 만든다.
+    """
+    return _scope(
+        "school",
+        books=full_scope.ALL_BOOKS,
+        chapters={},          # 전 급이 열렸으니 예외 목록은 뜻이 없다
+        jamoChapters=full_scope.ALL_JAMO_CHAPTERS,
+        games=full_scope.ALL_GAMES,
+        clips=full_scope.ALL_CLIPS,
+    )
 
 
 def _freeScope(source: str, expiresAt=None):
     """무료 범위를 §04 의 모양으로 낸다. 열린 범위는 출처와 무관하게 같은 꼴이다."""
-    return {
-        "source": source,
-        "books": list(free_scope.FREE_BOOKS),
-        "chapters": {str(k): list(v) for k, v in free_scope.FREE_CHAPTERS.items()},
-        "jamo_chapters": list(free_scope.FREE_JAMO_CHAPTERS),
-        "games": list(free_scope.FREE_GAMES),
-        "clips": free_scope.FREE_CLIPS,
-        "expires_at": expiresAt,
-    }
+    return _scope(
+        source,
+        books=free_scope.FREE_BOOKS,
+        chapters=free_scope.FREE_CHAPTERS,
+        jamoChapters=free_scope.FREE_JAMO_CHAPTERS,
+        games=free_scope.FREE_GAMES,
+        clips=free_scope.FREE_CLIPS,
+        expiresAt=expiresAt,
+    )
 
 
 async def getEntitlement(userId: str, roles: list[str] | None = None):
@@ -62,10 +111,13 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
         return _freeScope("guest")
 
     if role == "student" and schoolCode:
-        # **학교 계약 범위는 아직 담을 곳이 없다**(ko_entitlement 미착수).
-        # 그래서 지금 내주는 범위는 무료와 같다 — 다만 source 가 school 이라
-        # 앱이 결제 화면 대신 「학교에 문의」를 띄운다(§06).
-        return _freeScope("school")
+        # 학교가 등록했거나 기관 코드로 들어온 학생이다. **계약 학교는 모든 급**
+        # (기획 2026-08-28). 조건이 `school_code` 하나뿐이라 **엑셀로 등록된
+        # 기존 학생에게도 그대로 적용된다** — 백필도 마이그레이션도 없다.
+        #
+        # 전에는 여기서도 `_freeScope("school")` 을 냈다. 범위는 무료와 같고
+        # source 만 달라 앱이 「학교에 문의」를 띄우게 하는 용도였다.
+        return _schoolScope() if SCHOOL_FULL_SCOPE else _freeScope("school")
 
     # 개인 계정. 결제가 없으므로 아직 무료 범위다 — 잠긴 것을 누르면 결제로 간다
     return _freeScope("guest")

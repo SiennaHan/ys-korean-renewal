@@ -140,6 +140,44 @@ class SchoolUpdateRequest(BaseModel):
     class_levels: Optional[str] = None
 
 
+# ── SignupCode (기관 발급 코드) ──
+#
+# **날짜만 받는다.** 어드민은 "2026-11-30 까지" 를 뜻하고, 그것을 UTC 자정으로
+# 저장하면 한국 시간 11월 30일 오전 9시에 막힌다. 그 날 끝까지로 바꾸는 일은
+# business 한 곳에서만 한다(`signup_code_business.parseDayRange`).
+
+class SignupCodeCreateRequest(BaseModel):
+    school_code: Optional[str] = None   # school_admin 이 보내면 무시하고 자기 학교로 덮는다
+    max_uses: int
+    expires_on: str                     # "YYYY-MM-DD" — 그 날 끝까지
+    starts_on: Optional[str] = None
+    label: Optional[str] = None
+
+class SignupCodeUpdateRequest(BaseModel):
+    max_uses: Optional[int] = None
+    expires_on: Optional[str] = None
+    label: Optional[str] = None
+    status: Optional[str] = None        # active | paused
+
+class SignupCodeVerifyRequest(BaseModel):
+    code: str
+
+class StudentSignupWithCodeRequest(BaseModel):
+    """기관 발급 코드로 가입 — `StudentSignupRequest` 에 `code` 가 붙은 것.
+
+    **모델을 합치지 않는다.** `StudentSignupRequest` 는 `school_code` 를 비우는
+    것이 계약이고 이쪽은 코드가 정한 학교를 채운다. 같은 모델로 두면 그 차이가
+    안 보여서 다음 사람이 잘못 부른다 — `AdminSignupRequest` 와 가른 것과 같은 이유다.
+
+    **`school_code` 는 받지 않는다.** 받으면 누구나 아무 학교 학생이 될 수 있다.
+    """
+    code: str
+    email: str
+    password: str
+    name: str
+    guestId: Optional[str] = None
+
+
 # ── ClassLevel ──
 
 class ClassLevelCreateRequest(BaseModel):
