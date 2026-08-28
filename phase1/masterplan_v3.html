@@ -178,7 +178,153 @@
     지금 막힌 것은 <span class="file">BLOCKERS.md</span> 다.</div>
 </header>
 
+
+<h2 id="s0"><span class="no">0</span>이 앱은 무엇인가 — 처음 읽는 사람을 위해</h2>
+
+<p class="lead">이 절은 <b>제품을 모르는 사람</b>을 위한 것이다. 나머지 절은 전부
+"무엇이 정본인가 · 무엇이 막혔나 · 무엇이 바뀌었나" 를 말하는데, 정작
+<b>이 앱으로 누가 무엇을 하는지</b>가 저장소 어디에도 없었다(2026-08-28 에 채웠다).
+아래는 전부 코드와 콘텐츠에서 확인한 것이고, 각 줄마다 확인처를 적었다.</p>
+
+<h3>한 문단으로</h3>
+<p><b>한국어를 배우는 외국인 학습자</b>가 <b>연세 글로벌 한국어 교재</b>를 휴대폰으로
+학습하는 앱이다. 교재의 과(課)를 열면 그 과의 어휘·문법·듣기·읽기·말하기가
+<b>활동 일곱 종</b>으로 쪼개져 있고, 하나씩 풀면 진도와 복습 큐가 쌓인다.
+교재 밖에는 게임 다섯과 표현클립이 따로 있다. 화면은 <b>375px 세로 한 장</b>을
+기준으로 만들었다 — 태블릿은 폭만 넓힌다.</p>
+
+<h3>누가 쓰나 — 세 갈래다</h3>
+<div class="tablewrap"><table>
+  <tr><th>갈래</th><th>어떻게 들어오나</th><th>무엇이 열리나</th></tr>
+  <tr><td><b>게스트</b></td><td>로그인 없이 「둘러보기」</td>
+      <td>무료 범위만. 기록은 남지만 계정에 묶이지 않는다</td></tr>
+  <tr><td><b>개인 구독자</b></td><td>이메일로 가입 → 구독</td>
+      <td>한글부터 8급까지 전부. <b>월 6달러</b>로 정해졌다(2026-08-28, §5)</td></tr>
+  <tr><td><b>기관(학교) 학생</b></td><td>학교가 준 <b>기관 코드</b>로 가입</td>
+      <td>학교가 산 범위만. <b>학기가 끝나면 닫힌다</b> — 그때는 결제 버튼을 안 보여 준다.
+          학교가 낼 일이지 학생이 낼 일이 아니다</td></tr>
+</table></div>
+<p class="meta">확인처 — <span class="file">api/business/entitlement.py</span> ·
+<span class="file">api/shared/free_scope.py</span> ·
+<span class="file">app/src/i18n/locales/ko.ts</span> 의 <code>paywall</code> 여섯 갈래.
+기획 정본은 <span class="file">access_and_pricing_v1.html</span>.</p>
+
+<h3>무엇으로 배우나 — 교재의 모양</h3>
+<div class="tablewrap"><table>
+  <tr><th>층</th><th>단위</th><th>안에 무엇이</th></tr>
+  <tr><td><b>한글</b></td><td>자모 낱자</td>
+      <td>교재 이전 단계. 자음·모음·받침·겹받침을 소리와 획순으로 익힌다</td></tr>
+  <tr><td><b>1급 ~ 8급</b></td><td>교재 8권</td>
+      <td>1급만 12과, 2~8급은 각 15과다 — <b>1급의 1~3과가 한글 파트</b>라 일반 활동이 없다</td></tr>
+  <tr><td>과(課)</td><td>학습의 최소 단위</td>
+      <td>한 과가 「기초학습」 다섯 + 「심화학습」 둘로 펼쳐진다</td></tr>
+</table></div>
+<p class="meta">확인처 — <span class="file">app/src/shared/data/n*.json</span> 의
+<code>book_id</code> · <code>chapter</code>. <b>문항 수는 여기 적지 않는다</b> —
+시트마다 계속 늘어나므로 세려면
+<code>python3 app/scripts/build-content.py --check</code> 가 찍는다(§1 과 같은 이유다).</p>
+
+<h3>한 과를 열면 무엇을 하나 — 활동 일곱</h3>
+<div class="tablewrap"><table>
+  <tr><th>묶음</th><th>활동</th><th>학습자가 하는 일</th></tr>
+  <tr><td rowspan="5"><b>기초학습</b></td>
+      <td>단어 학습하기</td><td>그 과의 어휘를 뜻·소리·그림으로 보고, 이어서 퀴즈로 확인한다</td></tr>
+  <tr><td>AI 롤플레잉</td><td>주어진 배역으로 말하고, 발음을 평가받는다</td></tr>
+  <tr><td>듣고 질문에 답하기</td><td>대화를 듣고 문항에 답한다</td></tr>
+  <tr><td>빈칸 채우기</td><td>문장의 빈칸에 맞는 표현을 고른다 — 그 과의 문법이 초점이다</td></tr>
+  <tr><td>읽고 질문에 답하기</td><td>지문을 읽고 문항에 답한다</td></tr>
+  <tr><td rowspan="2"><b>심화학습</b></td>
+      <td>AI 미션 대화</td><td>상황과 미션을 받아 AI 와 자유롭게 대화하고 첨삭을 받는다</td></tr>
+  <tr><td>단어 플래시카드</td><td>「알아요 / 몰라요」로 넘기며 어휘를 다진다</td></tr>
+</table></div>
+<p>한글 파트는 활동이 따로 다섯이다 — <b>발음 듣고 따라하기 · 자음-모음 조합하기 ·
+단어 듣고 따라하기 · 단어 쓰기 · 듣고 맞는 것 고르기</b>. 쓰기는 손가락으로 획을 그린다.</p>
+<p class="meta">확인처 — <span class="file">app/src/i18n/locales/ko.ts</span> 의
+<code>catalog.act</code> · <code>catalog.jamoAct</code>, 라우트는
+<span class="file">app/src/routes/learn/*</span>.</p>
+
+<h3>화면 다섯 — 아래 탭 바가 곧 제품의 목차다</h3>
+<div class="tablewrap"><table>
+  <tr><th>탭</th><th>무엇을 보여 주나</th></tr>
+  <tr><td><b>홈</b></td>
+      <td>연속 학습일 · <b>오늘 할 일 한 자리</b>(이어서 학습하기 / 다시 풀 문항 / 시작하기) ·
+          학습 현황 · 주간 학습 시간 막대</td></tr>
+  <tr><td><b>교재학습</b></td>
+      <td>한글 · 1급~8급 탭 → 과 목록 → 그 과의 활동 일곱. 잠긴 과에는 자물쇠가 붙는다</td></tr>
+  <tr><td><b>게임</b></td><td>아래 다섯. 교재 진도와 별개로 아무 때나 들어간다</td></tr>
+  <tr><td><b>표현클립</b></td>
+      <td>예능·영화·드라마에서 딴 짧은 한국어 표현을 검색해서 본다.
+          유튜브 임베드라 <b>전부 무료</b>이고, 유입의 첫 화면 노릇을 한다</td></tr>
+  <tr><td><b>MY</b></td><td>언어 설정 · 문의하기 · 약관 · 회원 탈퇴</td></tr>
+</table></div>
+
+<h3>게임 다섯</h3>
+<div class="tablewrap"><table>
+  <tr><th>이름</th><th>무엇을 하나</th><th>무료</th></tr>
+  <tr><td>VocaShot</td><td>운석을 맞히며 어휘를 익힌다</td><td><span class="pill ok">무료</span></td></tr>
+  <tr><td>봄소풍 숫자미션</td><td>친구들과 한국어 숫자를 연습한다</td><td><span class="pill ok">무료</span></td></tr>
+  <tr><td>서울 여행 퍼즐</td><td>서울을 여행하며 문장을 완성한다</td><td><span class="pill wait">구독</span></td></tr>
+  <tr><td>어휘 카드 마스터</td><td>카드를 분류하며 어휘를 익힌다</td><td><span class="pill wait">구독</span></td></tr>
+  <tr><td>조사 스나이퍼</td><td>빠르게 조사를 맞힌다</td><td><span class="pill wait">구독</span></td></tr>
+</table></div>
+<p class="meta">게임 둘만 무료인 이유 — <b>교재에 묶이지 않아 아무 급이나 즐길 수 있는 것</b>이라
+맛보기로 값이 크다. 확인처는 <span class="file">api/shared/free_scope.py</span>,
+게임 명세는 <span class="file">games_spec_v1.html</span>.</p>
+
+<h3>학습이 도는 법 — 복습 큐</h3>
+<p>문항을 틀리거나 건너뛰면 <b>복습 큐</b>에 들어간다. 다만 <b>그날 안에는 다시 안 준다</b> —
+<code>available_at</code> 이 다음 날 0시라 홈에 「오늘 틀리거나 건너뛴 문항은 내일 만나요」로 뜬다.
+방금 틀린 것을 곧바로 다시 주면 답을 외워서 맞히기 때문이다.</p>
+
+<h3>무엇이 무료인가 — 경계는 한 파일에만 있다</h3>
+<div class="tablewrap"><table>
+  <tr><th>영역</th><th>무료 범위</th></tr>
+  <tr><td>한글</td><td>1과</td></tr>
+  <tr><td>교재</td><td>1급 <b>4과</b> · 2급 1과 · 3급 1과. 4급 이상은 없다</td></tr>
+  <tr><td>게임</td><td>VocaShot · 봄소풍 숫자미션</td></tr>
+  <tr><td>표현클립</td><td>전부</td></tr>
+</table></div>
+<p><b>1급만 4과인 데는 이유가 있다.</b> 1~3과가 한글 파트라 일반 활동이 하나도 없다 —
+「1급 1과」를 무료로 열면 맛보기가 빈 화면이 된다.</p>
+<p class="meta"><b>이 값을 여기 말고 다른 곳에 또 적지 마라.</b> 정본은
+<span class="file">api/shared/free_scope.py</span> 한 곳이고, 판정 코드는 그 값을 읽을 뿐
+계산하지 않는다. 기획 정본은 <span class="file">access_and_pricing_v1.html</span> §02 다.</p>
+
+<h3>다섯 언어 — 무엇이 번역되고 무엇이 안 되나</h3>
+<p>화면 언어는 <b>한국어 · 영어 · 일본어 · 중국어 · 베트남어</b> 다섯이다.
+규칙은 하나뿐이고 <span class="file">shell_spec_v1.html</span> §31 이 정본이다.</p>
+<div class="callout">
+  <b>학습 대상은 한국어로 고정한다</b> — 문항 · 선택지 · 지문 · 대화문 · 자모.
+  <b>그 밖은 UI 언어를 따른다</b> — 앱바 · 버튼 · 지시문 · 오류 안내.<br>
+  베트남어 학습자에게 「빈칸을 채우세요」는 베트남어로 뜨지만, 채울 문장은 한국어다.
+  <b>그 문장이 곧 학습 대상이기 때문이다.</b>
+</div>
+
+<h3>무엇으로 만들어졌나</h3>
+<div class="tablewrap"><table>
+  <tr><th>층</th><th>무엇</th><th>알아 둘 것</th></tr>
+  <tr><td>앱</td><td>React 18 · TanStack Router · Tailwind v4 · rsbuild</td>
+      <td>라우터는 <b>캐럿 없이 정확히 1.136.8</b> 이다 — 올리면 React 19 의 <code>use</code> 를 써서 죽는다</td></tr>
+  <tr><td>서버</td><td>FastAPI (<span class="file">api/</span>)</td>
+      <td>활동 상태 · 복습 큐 · 권한 판정 · 문의 · 탈퇴</td></tr>
+  <tr><td>콘텐츠</td><td>원장 xlsx → <span class="file">app/src/shared/data/n*.json</span></td>
+      <td><b>JSON 은 산출물이다.</b> 고칠 것은 원장이고 <code>build-content.py</code> 로 다시 만든다</td></tr>
+  <tr><td>패키지</td><td><b>pnpm 전용</b></td>
+      <td><code>npm install</code> 을 하지 마라 — <code>package-lock.json</code> 이 생기면 프로덕션 빌드가 깨진다</td></tr>
+</table></div>
+
+<h3>어디로 이어 읽나</h3>
+<div class="tablewrap"><table>
+  <tr><td><b>지금 막힌 것</b></td><td><span class="file">BLOCKERS.md</span></td></tr>
+  <tr><td>무엇이 비었나</td><td>이 문서 <b>§2 덮개 지도</b></td></tr>
+  <tr><td>지금 무엇을 만들고 있나</td><td>이 문서 <b>§3 전체 지도</b> · <b>§12 계획</b></td></tr>
+  <tr><td>화면이 어떻게 생겨야 하나</td><td><span class="file">../DESIGN.md</span>(전 화면군 규범) ·
+      <span class="file">shell_spec_v1.html</span>(학습 셸 명세)</td></tr>
+  <tr><td>어느 문서가 무엇에 답하나</td><td><span class="file">INDEX.md</span></td></tr>
+</table></div>
+
 <h2 id="s1"><span class="no">1</span>지금 어디까지 왔나</h2>
+<p class="qa"><b>이 앱이 무엇인지 모르고 여기 왔다면 §0 을 먼저 읽어라.</b> 아래는 "무엇이 얼마나 됐나" 이지 "무엇을 만드는가" 가 아니다.</p>
 <div class="tablewrap"><table>
   <tr><th>구분</th><th>상태</th><th>산출물</th></tr>
   <tr><td>현행 파악</td><td><span class="pill done">완료</span></td><td>역기획서 v1.2 (소스 4종 전수 조사) · 현행 인터랙티브 목업</td></tr>
@@ -186,7 +332,7 @@
   <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). <b>구독·월 단위로 정해졌다 (2026-08-26)</b> · <b>가격도 정해졌다 — 월 6달러 (2026-08-28)</b></td></tr>
   <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>루트의 <code>글로벌_교재기반_콘텐츠_v*.xlsx</code> 중 가장 높은 번호</b>다 — 번호를 여기 적지 않는다(적었다가 이 문서만 낡았다). 앱에 반영된 문항 수는 <b>여기 적지 않는다</b> — 시트마다 계속 늘어난다. 세려면 <code>python3 app/scripts/build-content.py --check</code> 가 시트별 행 수를 찍는다.<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비)이고 <b>브리핑 화면까지 배선됐다</b> — 실제 AI 대화만 아직 구 데이터(<code>ko_chat_dialog</code>)를 쓴다(BLOCKERS §8). 자모 529 는 <span class="pill done">배선 완료</span>(2026-08-24) — 화면 여섯이 <code>n8_jamo</code> 를 읽는다. 남은 검수는 받침·겹받침 낱자 목록뿐이고 배관을 막지 않는다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b · §2-c)</td></tr>
   <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업. <b>목업이 시각 정본</b>이고 Figma 를 대체했다<br><span class="note">CSS 규칙 수는 §9 가 쥔다 — 손으로 센 시점 기록이라 여기 또 적으면 갈린다(실제로 1,229 로 남아 있었다).</span></td></tr>
-  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 이식 <b>완료</b> — 수는 <code>CLAUDE.md</code> 표가 쥔다(§15 의 합계다. 여기 “24개 · handoff §02” 로 적혀 있었는데 둘 다 낡았다) · 활동 컴포넌트 전부로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
+  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 이식 <b>완료</b> — 수는 <code>CLAUDE.md</code> 표가 쥔다(§15 의 합계다) · 활동 컴포넌트 전부로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
   <tr><td>개발 — 서버</td><td><span class="pill done">핵심 학습 상태 완료</span></td><td><b>DB 2종 · 활동 상태 API · 복습 큐를 만들고 활동과 홈에 연결했다</b> — <code>ko_activity_state</code> · <code>ko_review_queue</code>, <code>/activity/enter·progress·complete·chapter</code> · <code>/review-queue</code>. 홈은 <code>reviewCount</code>와 <code>reviewReady</code>를 실제 응답에서 받는다.<br><span class="note">남은 서버 작업은 결제, 메일 발송, 표현클립 신고, MY 누적 요약과 운영 안전장치다. 아래의 “DB·API 미착수” 문단은 과거 계획 기록이다.</span></td></tr>
   <tr><td>B2C·결제</td><td><span class="pill now">잠금까지 됐다</span></td><td>경계·권한 판정·신설 DB·API 는 정해졌다(<span class="file">access_and_pricing_v1</span>). <b>§09 의 1~3단계를 만들었다 (2026-08-26)</b> — 무료 경계를 데이터로, <code>GET /entitlement</code>, 앱의 자물쇠와 안내 넷(5개 언어). <b>결제는 여전히 코드 0줄</b>이다 — <b>가격은 월 6달러로 정해졌고(2026-08-28)</b> PG 는 아직이다. <b>4단계(학생 자체 회원가입)도 됐다 (2026-08-27)</b> — BLOCKERS §9-a-4. 남은 것은 결제(PG 미정)와 <b>약관·개인정보 처리방침 두 문서</b>다</td></tr>
 </table></div>
@@ -202,6 +348,8 @@
   지금 무엇을 먼저 집을지는 <b>BLOCKERS §0 현재 스냅샷</b>을 본다.</p>
 </div>
 
+<details><summary>이 절이 낡았던 기록</summary><p>「개발 — 화면」 칸에 <b>"24개 · handoff §02"</b> 라고 적혀 있었는데 둘 다 낡은 값이었다 — 화면 수는 그 뒤로 늘었고 인계 절 번호도 바뀌었다. <b>그래서 지금은 수를 여기 안 적는다</b> — 주인은 <span class="file">README.md</span> 이고, 세려면 <code>python3 phase1/check_docs.py</code> 가 첫 줄에 찍는다.</p><p>「디자인」 칸에는 CSS 규칙 수가 <b>1,229</b> 로 남아 있었다. 손으로 센 시점 기록이라 금방 갈렸다 — 지금은 §9 만 쥔다.</p></details>
+
 <h2 id="s2"><span class="no">2</span>덮개 지도 — 무엇이 비었나</h2>
 <p>영역 × 산출물이다. <b>빈 칸이 곧 빠진 기획이다.</b> 어느 문서가 무엇에 답하는지(역할별 목록)는 <b>이 문서 §14</b> 에 있다.</p>
 <h3>덮개 지도 — 어느 영역이 무엇을 갖췄나</h3>
@@ -209,7 +357,7 @@
 <table>
   <thead><tr><th>영역</th><th>기획 (왜·무엇)</th><th>명세 (어떻게)</th><th>목업 (시각 정본)</th><th>API·DB</th></tr></thead>
   <tbody>
-    <tr><td><b>활동 셸</b></td><td>shell_spec_v1 §1·3</td><td>shell_spec_v1 §11~§34</td><td>screens_SOT (활동 절)<br><span class="note">여기 <code>legacy_shell_mockup</code> 을 적어 뒀는데 <b>틀렸다</b>(2026-08-26 정정) — 그 문서는 <b>앱 반영 0</b> 이라고 아래 표가 스스로 적는다. 앱의 활동 셸을 실제로 지키는 것은 <code>pnpm parity:activity</code> 가 견주는 <code>screens_SOT</code> 의 활동 절이다.</span></td><td>dev_spec_v1 §2·5</td></tr>
+    <tr><td><b>활동 셸</b></td><td>shell_spec_v1 §1·3</td><td>shell_spec_v1 §11~§34</td><td>screens_SOT (활동 절)</td><td>dev_spec_v1 §2·5</td></tr>
     <tr><td><b>활동 8종</b></td><td>G1_content_gate_v1</td><td>_superseded/mockup_read_v1 <span class="pill stop">폐기</span><br>규격은 <code>parity:activity</code> 가 지킨다</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §11</td></tr>
     <tr><td><b>자모</b></td><td>jamo_authoring_spec_v1</td><td>jamo_authoring_spec_v1 §3·4</td><td>screens_SOT(활동)</td><td>dev_spec_v1 §4 <span class="pill ok">통합했다 2026-08-24</span></td></tr>
     <tr><td><b>홈·내비</b></td><td>asis_v1</td><td><span class="pill open">없음</span></td><td>screens_SOT(홈·목록)</td><td>dev_spec_v1 §14</td></tr>
@@ -218,11 +366,12 @@
     <tr><td><b>VocaShot</b></td><td>games_spec_v1</td><td>games_spec_v1 §16</td><td>screens_SOT(VocaShot)</td><td>기존 API 로 충분</td></tr>
     <tr><td><b>표현클립</b></td><td>asis_v1 §5</td><td><span class="pill done">clip_spec_v1</span></td><td><span class="pill stop">없음</span></td><td><span class="pill open">clip_spec_v1 §06</span></td></tr>
     <tr><td><b>MY</b></td><td>my_learning_summary_v1</td><td>my_learning_summary_v1 §4</td><td><span class="pill stop">없음</span></td><td>my_learning_summary_v1 §4</td></tr>
-    <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>access_and_pricing_v1 §04·05</td><td><span class="pill done">paywall_SOT</span> 결제 안내 넷(2026-08-27 시각 정본 승격) · <span class="pill done">draft_auth</span> 로그인·가입·재설정 (2026-08-26)<br><b>화면이 다 구현됐다 (2026-08-27)</b> — 잠금·페이월 넷·자체 회원가입·문의하기. <b>남은 것은 결제와 메일</b>이다.<br><span class="note">로그인·가입·재설정이 “없음” 으로 남아 있었다 — 같은 날 <code>draft_auth</code> 가 생겼는데 이 칸만 안 따라왔다(2026-08-26 정정).</span></td><td>access_and_pricing_v1 §05</td></tr>
+    <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>access_and_pricing_v1 §04·05</td><td><span class="pill done">paywall_SOT</span> 결제 안내 넷(2026-08-27 시각 정본 승격) · <span class="pill done">draft_auth</span> 로그인·가입·재설정 (2026-08-26)<br><b>화면이 다 구현됐다 (2026-08-27)</b> — 잠금·페이월 넷·자체 회원가입·문의하기. <b>남은 것은 결제와 메일</b>이다.</td><td>access_and_pricing_v1 §05</td></tr>
     <tr><td><b>콘텐츠 파이프</b></td><td>G1_content_gate_v1 §6~11</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
-    <tr><td><b>다국어</b></td><td><span class="pill open">없음</span></td><td>shell_spec_v1 §4 · dev_spec_v1 §6</td><td>—</td><td>—</td></tr>
+    <tr><td><b>디자인 규범</b></td><td><span class="file">../DESIGN.md</span> §0~§7 <span class="pill done">2026-08-28</span></td><td><span class="file">../DESIGN.md</span> §8 — 열다섯 물음 중 <b>열둘이 정해졌다</b></td><td><span class="file">design_decisions_SOT.html</span> 결정판</td><td>—</td></tr>
+    <tr><td><b>다국어</b></td><td>shell_spec_v1 §31 — <b>학습 대상은 한국어 고정, 그 밖은 UI 언어</b></td><td>shell_spec_v1 §4 · dev_spec_v1 §6</td><td>—</td><td><span class="file">i18n_검수_20260828.md</span> — 다섯 언어 훑은 결과</td></tr>
     <tr><td><b>접근성</b></td><td>—</td><td>shell_spec_v1 §7</td><td>—</td><td>—</td></tr>
-    <tr><td><b>오프라인·오류</b></td><td>—</td><td>shell_spec_v1 §6</td><td>screens_SOT (상태 화면) — <code>activity__loading</code> · <code>activity__failed</code> · <code>activity__micdenied</code><br><span class="note">여기 <code>shell_spec_v1 §29</code> 만 적혀 있었는데 그건 명세 절이지 목업이 아니다(2026-08-26 정정). 목업 셋이 있고 <code>parity:activity</code> 가 지킨다.</span></td><td>dev_spec_v1 §15</td></tr>
+    <tr><td><b>오프라인·오류</b></td><td>—</td><td>shell_spec_v1 §6</td><td>screens_SOT (상태 화면) — <code>activity__loading</code> · <code>activity__failed</code> · <code>activity__micdenied</code></td><td>dev_spec_v1 §15</td></tr>
     <tr><td><b>알림·리텐션</b></td><td><span class="pill done">정했다</span> <b>푸시·PWA 를 만들지 않는다</b></td><td colspan="3">밖으로 나가는 것은 <b>메일 넷만</b>(재설정 · 영수증 · 환불 · 구독 만료). 재방문 유도는 앱 안의 연속 학습일로 한다 — <span class="file">BLOCKERS.md</span> §7</td></tr>
     <tr><td><b>어드민</b></td><td><span class="file">_superseded/renewal_plan_v0.2</span> §7</td><td colspan="3">이번 리뉴얼 <b>범위 밖</b>으로 선언됐다 — 의도된 공백이다</td></tr>
   </tbody>
@@ -243,12 +392,10 @@
   ② <b>MY 화면의 목업이 없다.</b> 설계는 있고 그림이 없다.<br>
   결제 안내는 2026-08-27 에 <span class="file">paywall_SOT</span> v1.1로 승격했다 — 결제 안내 넷과 목록의 자물쇠.
   로그인·가입·재설정도 같은 날 <span class="file">draft_auth</span> 로 채웠다 —
-  화면 일곱과 규칙 일곱. <span class="note">여기 "로그인·가입·재설정 화면은 여전히
-  없다" 로 남아 있었다 — §15 의 표는 같은 날 정정됐는데 이 문장만 안 따라왔다
-  (2026-08-26 정정). <b>2026-08-27 에 붙었다</b> — 학생 자체 회원가입 API
+  화면 일곱과 규칙 일곱. <b>2026-08-27 에 붙었다</b> — 학생 자체 회원가입 API
   (<span class="file">POST /user/sign/up</span>)와 <span class="file">/signup</span> 화면이 생겼다.
-  여기 "그림만 있다 · 붙일 곳이 없다" 로 남아 있었다. 같은 날 문의하기
-  (<span class="file">/inquiry</span>)도 생겨서 재설정 화면이 빈손으로 돌려보내지 않는다.</span></p>
+  같은 날 문의하기(<span class="file">/inquiry</span>)도 생겨서 재설정 화면이
+  빈손으로 돌려보내지 않는다.</p>
   <p class="qa">교재학습은 2026-08-21 에 채웠다 — <span class="file">textbook_tab_spec_v1</span>.
   화면은 이미 다 있었고 비어 있던 것은 <b>적어 둔 규칙</b>이었다. 쓰면서
   어긋남 여섯을 찾았다(급/권 라벨 · 한국어로 박힌 문구 아홉 · 죽은 복습 N 등).</p>
@@ -256,76 +403,113 @@
 
 
 
-<h2 id="s3"><span class="no">3</span>전체 지도 — 트랙과 임계 경로</h2>
+<details><summary>이 절이 낡았던 기록 — 칸별로</summary>
+<p><b>덮개 지도는 스스로 낡는다.</b> 새 문서가 생겨도 이 표의 칸이 저절로 따라오지 않아서, 아래 넷은 한동안 <b>이미 있는 것을 "없다" 고 말하고 있었다.</b> 본문에 섞여 있던 것을 2026-08-28 에 여기로 모았다 — 읽는 사람은 표만 보고, 고치는 사람은 여기를 본다.</p>
+<div class="tablewrap"><table><tr><th>어느 칸</th><th>무엇이 틀렸었나</th></tr>
+<tr><td><b>활동 셸 · 목업</b></td><td>여기 <code>legacy_shell_mockup</code> 을 적어 뒀는데 <b>틀렸다</b>(2026-08-26 정정) — 그 문서는 <b>앱 반영 0</b> 이라고 아래 표가 스스로 적는다. 앱의 활동 셸을 실제로 지키는 것은 <code>pnpm parity:activity</code> 가 견주는 <code>screens_SOT</code> 의 활동 절이다.</td></tr>
+<tr><td><b>인증·권한·결제 · 목업</b></td><td>로그인·가입·재설정이 “없음” 으로 남아 있었다 — 같은 날 <code>draft_auth</code> 가 생겼는데 이 칸만 안 따라왔다(2026-08-26 정정).</td></tr>
+<tr><td><b>오프라인·오류 · 목업</b></td><td>여기 <code>shell_spec_v1 §29</code> 만 적혀 있었는데 그건 명세 절이지 목업이 아니다(2026-08-26 정정). 목업 셋이 있고 <code>parity:activity</code> 가 지킨다.</td></tr>
+<tr><td><b>빈 칸을 읽는 법</b></td><td>여기 "로그인·가입·재설정 화면은 여전히 없다" 로 남아 있었다 — §15 의 표는 같은 날 정정됐는데 이 문장만 안 따라왔다(2026-08-26 정정). 그 뒤에도 "그림만 있다 · 붙일 곳이 없다" 로 남아 있었다.</td></tr>
+</table></div>
+<p class="qa">넷 다 <b>같은 고장이다</b> — 다른 곳은 고쳤는데 이 표만 안 따라왔다. 문서를 새로 만들거나 승격하면 <b>이 표의 해당 칸을 같은 판에 고쳐라.</b></p>
+</details>
+
+<h2 id="s3"><span class="no">3</span>전체 지도 — 지금 어디까지 왔고 무엇이 앞을 막나</h2>
+
+<p class="lead"><b>2026-08-28 기준으로 다시 그렸다.</b> 이 자리에 2026-08-13 판 간트가
+그대로 있었는데, 그것은 "아직 아무것도 시작하지 않은 지점" 에서 그린 지도였다 —
+지금 읽으면 전부 지난 일이다. 그때 판단이 무엇이었고 왜 맞았는지는 이 절 끝에 접어 두었다.</p>
+
 <figure>
-<svg viewBox="0 0 900 452" role="img" aria-label="리뉴얼 작업을 콘텐츠·제품개발·사업B2C 세 트랙으로 나눈 지도. 콘텐츠 저작이 전 구간에 걸친 최장 리드타임이며 임계 경로다. 게이트 G1이 콘텐츠 착수를, G2가 개발 착수를, G3가 B2C 트랙을 연다. Phase 2는 1급 콘텐츠 확보 후에, Phase 2.5는 잠글 콘텐츠가 생긴 뒤에 시작된다.">
+<svg viewBox="0 0 900 372" role="img" aria-label="네 트랙의 진행 상태 지도. 콘텐츠와 제품·개발은 사실상 끝났고, 사업·B2C 는 가격만 정해졌으며 PG 계약이 남았다. 출시 안전장치는 아직 하나도 없다. 임계 경로는 결제이며, 출시 안전장치가 그 다음이다.">
   <defs>
-    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
     </marker>
   </defs>
 
-  <!-- column headers -->
-  <text x="218" y="34" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor" opacity=".55">지금 — 결정·착수</text>
-  <text x="398" y="34" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor" opacity=".55">구축</text>
-  <text x="578" y="34" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor" opacity=".55">1차 출시</text>
-  <text x="768" y="34" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor" opacity=".55">확장</text>
+  <text x="300" y="26" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor" opacity=".55">끝났다</text>
+  <text x="560" y="26" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor" opacity=".55">지금 하는 것</text>
+  <text x="790" y="26" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor" opacity=".55">출시 전 필수</text>
+  <line x1="430" y1="38" x2="430" y2="330" stroke="currentColor" stroke-opacity=".14" stroke-dasharray="3 4"/>
+  <line x1="690" y1="38" x2="690" y2="330" stroke="currentColor" stroke-opacity=".14" stroke-dasharray="3 4"/>
 
-  <!-- column dividers -->
-  <line x1="308" y1="46" x2="308" y2="404" stroke="currentColor" stroke-opacity=".14" stroke-dasharray="3 4"/>
-  <line x1="488" y1="46" x2="488" y2="404" stroke="currentColor" stroke-opacity=".14" stroke-dasharray="3 4"/>
-  <line x1="668" y1="46" x2="668" y2="404" stroke="currentColor" stroke-opacity=".14" stroke-dasharray="3 4"/>
+  <!-- 1. 콘텐츠 -->
+  <text x="16" y="72" font-size="13" font-weight="800" fill="currentColor">콘텐츠</text>
+  <rect x="150" y="58" width="280" height="22" rx="6" fill="#2e9e6b" fill-opacity=".18" stroke="#2e9e6b" stroke-opacity=".5"/>
+  <text x="290" y="73" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">1급~8급 저작·검수 · 자모 검수 완료</text>
+  <rect x="440" y="58" width="240" height="22" rx="6" fill="currentColor" fill-opacity=".07" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="4 3"/>
+  <text x="560" y="73" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".8">교재 문항을 번들 → DB 로</text>
 
-  <!-- lane labels -->
-  <text x="112" y="167" text-anchor="end" font-size="13.5" font-weight="800" fill="currentColor">콘텐츠</text>
-  <text x="112" y="271" text-anchor="end" font-size="13.5" font-weight="800" fill="currentColor">제품·개발</text>
-  <text x="112" y="375" text-anchor="end" font-size="13.5" font-weight="800" fill="currentColor">사업·B2C</text>
+  <!-- 2. 제품·개발 -->
+  <text x="16" y="130" font-size="13" font-weight="800" fill="currentColor">제품 · 개발</text>
+  <rect x="150" y="116" width="280" height="22" rx="6" fill="#2e9e6b" fill-opacity=".18" stroke="#2e9e6b" stroke-opacity=".5"/>
+  <text x="290" y="131" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">화면 전부 · 활동 상태 · 복습 큐 · 권한 판정</text>
+  <rect x="440" y="116" width="240" height="22" rx="6" fill="currentColor" fill-opacity=".07" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="4 3"/>
+  <text x="560" y="131" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".8">디자인 규범 정리 · 메일 · 신고 · MY 요약</text>
 
-  <!-- LANE 1 : content (critical path) -->
-  <rect x="138" y="86" width="30" height="17" rx="4" fill="var(--accent)"/>
-  <text x="153" y="99" text-anchor="middle" font-size="11" font-weight="800" fill="var(--bg)">G1</text>
-  <text x="494" y="130" font-size="11" font-weight="700" fill="var(--accent)">1급 완료</text>
-  <rect x="138" y="139" width="722" height="46" rx="7" fill="var(--accent)" fill-opacity=".13" stroke="var(--accent)" stroke-width="2.5"/>
-  <text x="160" y="167" font-size="12.5" font-weight="700" fill="currentColor">급별 문항 저작 · 검수 &#160;— 최장 리드타임 (임계 경로)</text>
-  <line x1="488" y1="139" x2="488" y2="185" stroke="var(--accent)" stroke-width="2"/>
+  <!-- 3. 사업·B2C  (임계) -->
+  <text x="16" y="188" font-size="13" font-weight="800" fill="currentColor">사업 · B2C</text>
+  <rect x="150" y="174" width="280" height="22" rx="6" fill="#2e9e6b" fill-opacity=".18" stroke="#2e9e6b" stroke-opacity=".5"/>
+  <text x="290" y="189" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">무료 경계 · 권한 API · 페이월 화면 · 가격</text>
+  <rect x="700" y="174" width="185" height="22" rx="6" fill="#d8642f" fill-opacity=".16" stroke="#d8642f" stroke-opacity=".65" stroke-width="1.5"/>
+  <text x="792" y="189" text-anchor="middle" font-size="11.5" font-weight="800" fill="currentColor">PG 계약 · 결제 구현</text>
+  <line x1="430" y1="185" x2="694" y2="185" stroke="#d8642f" stroke-opacity=".55" stroke-dasharray="5 4" marker-end="url(#ar3)"/>
+  <text x="562" y="167" text-anchor="middle" font-size="10.5" font-weight="700" fill="#d8642f">계약이 앞에 있어 우리가 리드타임을 못 줄인다</text>
 
-  <!-- LANE 2 : product / dev -->
-  <rect x="138" y="243" width="140" height="46" rx="7" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".38"/>
-  <text x="158" y="271" font-size="12.5" fill="currentColor">Phase 0 · 보안 핫픽스</text>
+  <!-- 4. 출시 안전장치 -->
+  <text x="16" y="246" font-size="13" font-weight="800" fill="currentColor">출시 안전장치</text>
+  <rect x="150" y="232" width="530" height="22" rx="6" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".18" stroke-dasharray="3 4"/>
+  <text x="415" y="247" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".55">아직 하나도 없다</text>
+  <rect x="700" y="232" width="185" height="22" rx="6" fill="#d8642f" fill-opacity=".10" stroke="#d8642f" stroke-opacity="0.5"/>
+  <text x="792" y="247" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">테스트 · CI · 오류 수집</text>
 
-  <rect x="318" y="219" width="30" height="17" rx="4" fill="currentColor" fill-opacity=".55"/>
-  <text x="333" y="232" text-anchor="middle" font-size="11" font-weight="800" fill="var(--bg)">G2</text>
-  <rect x="318" y="243" width="160" height="46" rx="7" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".38"/>
-  <text x="338" y="271" font-size="12.5" fill="currentColor">Phase 1 · 공통 셸</text>
+  <!-- 5. 법률 -->
+  <text x="16" y="304" font-size="13" font-weight="800" fill="currentColor">법률</text>
+  <rect x="150" y="290" width="280" height="22" rx="6" fill="#2e9e6b" fill-opacity=".18" stroke="#2e9e6b" stroke-opacity=".5"/>
+  <text x="290" y="305" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">초안 작성 (legal_draft_v1)</text>
+  <rect x="700" y="290" width="185" height="22" rx="6" fill="#d8642f" fill-opacity=".10" stroke="#d8642f" stroke-opacity=".5"/>
+  <text x="792" y="305" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">약관 · 처리방침 확정</text>
 
-  <rect x="498" y="243" width="160" height="46" rx="7" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".38"/>
-  <text x="518" y="271" font-size="12.5" fill="currentColor">Phase 2 · 콘텐츠 연결</text>
-
-  <rect x="678" y="243" width="182" height="46" rx="7" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".38"/>
-  <text x="698" y="271" font-size="12.5" fill="currentColor">Phase 3 · 루프 완성</text>
-
-  <!-- LANE 3 : business / B2C -->
-  <rect x="318" y="323" width="30" height="17" rx="4" fill="currentColor" fill-opacity=".55"/>
-  <text x="333" y="336" text-anchor="middle" font-size="11" font-weight="800" fill="var(--bg)">G3</text>
-  <rect x="318" y="347" width="160" height="46" rx="7" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".38"/>
-  <text x="338" y="375" font-size="12.5" fill="currentColor">과금 결정 · PG 계약</text>
-
-  <rect x="678" y="347" width="182" height="46" rx="7" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".38"/>
-  <text x="698" y="375" font-size="12.5" fill="currentColor">Phase 2.5 · B2C·페이월</text>
-
-  <!-- dependency arrow : content -> Phase 2 -->
-  <path d="M 488 189 L 488 213 L 560 213 L 560 239" fill="none" stroke="currentColor" stroke-opacity=".5" marker-end="url(#ar)"/>
-  <text x="568" y="209" font-size="10.5" fill="currentColor" opacity=".62">1급 콘텐츠가 있어야 착수</text>
-
-  <!-- dependency arrow : Phase 2 -> Phase 2.5 -->
-  <path d="M 658 293 L 658 317 L 740 317 L 740 343" fill="none" stroke="currentColor" stroke-opacity=".5" marker-end="url(#ar)"/>
-  <text x="748" y="313" font-size="10.5" fill="currentColor" opacity=".62">잠글 콘텐츠가 있어야 의미</text>
-
-  <!-- footnote -->
-  <text x="138" y="432" font-size="11.5" fill="currentColor" opacity=".55">Phase 0은 어떤 결정도 기다리지 않는다 — 지금 바로 개발 요청 가능</text>
+  <line x1="150" y1="344" x2="885" y2="344" stroke="currentColor" stroke-opacity=".12"/>
+  <text x="150" y="362" font-size="11.5" font-weight="700" fill="#d8642f">주황 = 출시를 막는 것</text>
+  <text x="330" y="362" font-size="11.5" fill="currentColor" opacity=".6">초록 = 끝남 · 점선 = 진행 중이거나 미착수</text>
 </svg>
-<figcaption><b>콘텐츠 저작이 임계 경로다.</b> 개발 3단계는 서로 이어지지만 각각 몇 주 단위인 반면, 급별 문항 저작은 전 구간에 걸친다. 그런데 콘텐츠를 시작하는 데 필요한 결정(G1)은 개발 결정(G2)보다 <b>작고 먼저 내릴 수 있다</b> — 활동 라인업과 문항 스키마만 정하면 화면 설계 없이도 저작에 들어간다. 따라서 G1을 먼저 닫는 것이 전체 일정을 앞당기는 유일한 방법이다.</figcaption>
 </figure>
+
+<h3>임계 경로가 바뀌었다</h3>
+<p>v1(2026-08-13)은 <b>콘텐츠 저작</b>을 최장 리드타임으로 보고 그것을 먼저 집으라고 했다.
+그 판단은 맞았고 실제로 그렇게 진행돼 끝났다. <b>지금 가장 긴 것은 결제다</b> —
+코드가 0줄인 것보다 <b>PG 계약이 앞에 있다는 것</b>이 문제다. 계약 리드타임은
+우리가 줄일 수 없고, 그 사이 다른 트랙은 이미 기다리는 상태다.</p>
+
+<div class="callout warn">
+  <b>두 번째로 급한 것은 출시 안전장치다.</b> 단위 테스트 러너 · E2E · CI ·
+  오류 수집 · 제품 분석이 <b>하나도 없다.</b> 리드타임은 짧지만 <b>없이 나가면
+  되돌리기 어렵다</b> — 사용자가 겪은 오류를 우리가 볼 방법이 없다는 뜻이다.
+  결제를 기다리는 동안 이것을 세우는 것이 지금 가장 값싼 진전이다.
+</div>
+
+<h3>지금 무엇에 기대고 있나 — 사람이 봐야만 아는 것</h3>
+<div class="tablewrap"><table>
+  <tr><th>기계가 지키는 것</th><th>사람만 아는 것</th></tr>
+  <tr><td><code>pnpm parity:activity</code> — 구현이 목업과 같은 마크업인가</td>
+      <td><b>CSS 값은 안 본다.</b> 색·간격·radius 가 갈려도 통과한다</td></tr>
+  <tr><td><code>pnpm check:css</code> 다섯 · <code>typecheck</code> · <code>build</code></td>
+      <td>실행 시점의 동작 전부. 훅 재실행 · 타이머 · 초점</td></tr>
+  <tr><td><code>check_docs.py</code> — 참조 · 숫자 주장 · 관찰 기준</td>
+      <td>문서가 <b>맞는 말인지</b>. 이 절이 낡았던 것도 기계는 못 잡았다</td></tr>
+</table></div>
+
+<details><summary>이 절이 낡았던 기록</summary>
+<p>2026-08-28 까지 이 자리에는 2026-08-13 판 간트가 그대로 있었다. 그 지도는
+"지금 — 결정·착수 / 구축 / 1차 출시 / 확장" 네 칸으로 그려져 있었고,
+<b>"콘텐츠 저작이 임계 경로다"</b> ·
+<b>"G1 을 먼저 닫는 것이 전체 일정을 앞당기는 유일한 방법이다"</b> 라고 적고 있었다.
+그 판단은 맞았다 — 그대로 진행해 콘텐츠가 끝났다. 다만 <b>끝난 뒤로 지도를 다시
+그리지 않아서</b>, 이 문서를 처음 여는 사람에게 여전히 "콘텐츠부터 하라" 고 말하고 있었다.</p>
+</details>
+
 
 <h2 id="s4"><span class="no">4</span>이 순서인 이유 — 판단 근거 3가지</h2>
 <ol>
@@ -617,67 +801,153 @@ footer / dock   primary "다음" | "결과 보기"</pre>
    정오답은 선택지와 피드백 영역에서만 말한다. 색으로 답을 누적 공개하지 않아 재시도형 활동의
    소거법도 막는다. <span class="file">shell_spec_v1</span>의 앞 절도 이 최종 규칙으로 정정했다.</p>
 
-<h2 id="s12"><span class="no">12</span>계획</h2>
-<p class="qa"><b>아래 0~3단계는 2026-08-21 당시의 구현 계획 기록이다.</b> 화면 이식·게임 디자인·활동 상태 배선·빌드 수리는 완료됐다. 현재 작업 순서는 §18과 <span class="file">BLOCKERS.md</span> §0을 따른다.</p>
-<h3>0단계 — 읽기 <span class="pill">코드 쓰기 전</span></h3>
-<ol>
-  <li><b>활동 20화면</b>을 화면별로 DOM 구조·실측 수치로 정리한다. 소스 빌더 함수를 읽는다(브라우저 순회는 느리다).</li>
-  <li><b>나머지 목업</b>(screens_SOT 의 홈·목록·VocaShot 절 · shell · game)도 같은 방식으로 훑는다.</li>
-  <li>정리 결과를 <b>먼저 보여 드린다</b> — 구조를 제대로 이해했는지 확인받고 나서 코드를 쓴다.</li>
-  <li>§3 의 <b>어긋남 목록</b>을 확정한다. 진행바 정오답 표시는 이후 “표시하지 않음”으로 확정됐다.</li>
-</ol>
+<h2 id="s12"><span class="no">12</span>계획 — 지금 무엇을 먼저 정해야 하나</h2>
 
-<h3>1단계 — 목업 CSS 를 앱으로</h3>
-<p>Tailwind 유틸리티로 숫자를 다시 옮겨 적는 방식이 이번 실패의 원인이었다.
-   목업이 이미 <b>클래스와 CSS 로</b> 디자인을 들고 있으니 <b>그것을 정본으로 가져온다</b>.</p>
-<ul>
-  <li>목업의 CSS 를 앱 스타일시트로 이관 — 색은 <code>tokens.css</code> 의 semantic 으로 치환</li>
-  <li>클래스 이름을 목업과 <b>같게</b> 쓴다. 그래야 대조가 눈으로 된다</li>
-  <li>Storybook 스토리 = 목업 화면과 <b>1:1</b>. 다른 상태를 새로 상상하지 않는다</li>
-</ul>
+<p class="lead"><b>2026-08-28 기준으로 다시 썼다.</b> 이 자리에는 2026-08-21 판
+구현 계획(0~3단계)이 그대로 있었고, 그 단계는 전부 끝난 일이었다. 지난 판은 이 절 끝에 접어 두었다.</p>
 
-<h3>2단계 — 컴포넌트</h3>
-<div class="tablewrap"><table>
-  <tr><th>순서</th><th>대상</th><th>서버 필요</th></tr>
-  <tr><td class="n">1</td><td><code>appbar</code> · <code>progress-wrap</code> · <code>footer/dock</code> — 전 화면 공통</td><td>없음</td></tr>
-  <tr><td class="n">2</td><td><code>choice</code> · <code>chip-opt</code> — 선택지 두 종류</td><td>없음</td></tr>
-  <tr><td class="n">3</td><td><code>problem-card</code>(instruction · stimulus) · <code>feedback-slot</code></td><td>없음</td></tr>
-  <tr><td class="n">4</td><td>결과 · 리포트 · 브리핑 · 예외 3종</td><td>없음</td></tr>
-  <tr><td class="n">5</td><td><code>ActivityShell</code> — 상태·진행·종료</td><td><b>2번</b></td></tr>
-</table></div>
-
-<h3>3단계 — 게임</h3>
-<p>게임은 기획·콘텐츠가 닫혔고 <b>디자인 이식만 남았다</b>. 활동 셸과 독립이라 병행할 수 있다.</p>
-<ul>
-  <li>봄소풍 · 서울 퍼즐 — 클래스 주입 0건이라 <b>CSS 만</b> 옮기면 된다</li>
-  <li>카드 마스터 — 클래스 36개를 JSX 에 심는다</li>
-  <li>조사 스나이퍼 — <b>과녁으로 새로</b>(<code>ps-range</code> · <code>ps-reticle</code> · <code>ps-impact-*</code>). 낙하는 없어졌다</li>
-  <li>VocaShot — 개인 플레이 화면과 기계를 같이</li>
-</ul>
-
-<h3>막혀 있는 것</h3>
-<ul>
-  <li><s>koreanapi 위치·활동 상태 배선</s> — 완료</li>
-  <li><s>진행바 정오답 표시</s> — 표시하지 않는 것으로 확정</li>
-  <li><s>프로덕션 빌드 React 라우터 불일치</s> — pnpm 락파일과 1.136.8 고정으로 해결</li>
-  <li><b>현재</b> — 결제·메일·최종 법률 문서·콘텐츠 공개 게이트·출시 회귀/관측</li>
-</ul>
-
-<div class="card">
-  <div class="t">일하는 방식을 바꾼다</div>
-  <p>화면을 만드는 작업은 <b>목업을 먼저 열고 시작한다</b>. 숫자 명세는 근거를 찾을 때만 본다 —
-     정본이 아니기 때문이다. 어긋나면 <b>목업을 따르고 문서 쪽을 고친다</b>.</p>
+<div class="callout">
+  <b>지금 앞을 막는 것은 개발이 아니라 기획 결정이다.</b> 개발 카드는
+  <span class="file">developer_tasks.md</span> 에 정리돼 있는데, 그중 <b>절반 넘게가
+  기획이 값을 줄 때까지 손을 못 댄다</b>(그 문서의 <code>PD-01~10</code>).
+  개발자가 임시 값을 운영에 넣지 않기로 한 규칙이라, 답이 없으면 그냥 멈춘다.
 </div>
 
+<h3>기획자가 답할 순서 — 무거운 것부터</h3>
+<div class="tablewrap"><table>
+  <tr><th>순서</th><th>무엇을 정하나</th><th>왜 이 순서인가</th></tr>
+  <tr><td><b>1</b></td>
+      <td><b>B2C 판매 권리</b> — 교재 파생 콘텐츠를 개인에게 유료로 팔 수 있나.
+          연세 MOU·라이선스 범위 확인(<code>PD-09</code>)</td>
+      <td><b>이것이 아니면 나머지가 무의미하다.</b> 팔 권리가 없으면 결제를 만들 이유가 없고
+          사업 모델을 B2B 로 좁혀야 한다. 그런데 지금 순서에서 가장 뒤에 적혀 있었다</td></tr>
+  <tr><td><b>2</b></td>
+      <td><b>결제 상품과 사업자</b> — 통화 · 부가세·해외 VAT · 무료 체험 · 환불·해지·유예,
+          그리고 PG·상점 계정·키·웹훅(<code>PD-01</code>·<code>PD-02</code>)</td>
+      <td>가격만 정해졌다(월 6달러, 2026-08-28). <b>나머지는 전부 비어 있다.</b>
+          PG 는 계약 리드타임이 있어 우리가 못 줄인다 — §3 의 임계 경로</td></tr>
+  <tr><td><b>3</b></td>
+      <td><b>법률·사업자 정보</b> — 최종 약관·처리방침 URL, 상호·대표자·사업자번호,
+          개인정보 보호책임자, 국외 이전·보관기간(<code>PD-07</code>),
+          가입 가능 연령(<code>PD-08</code>)</td>
+      <td>유료 결제를 받으려면 있어야 한다. 초안은
+          <span class="file">legal_draft_v1.html</span> 에 있고 확정만 남았다</td></tr>
+  <tr><td><b>4</b></td>
+      <td><b>운영 정책</b> — 음성 표본 보관 일수(<code>PD-04</code>) ·
+          유료 콘텐츠 보호 수준(<code>PD-03</code>) · 콘텐츠 공개 게이트(<code>PD-05</code>) ·
+          MY 정확도 기준(<code>PD-06</code>) · 개인정보 열람 방식(<code>PD-10</code>)</td>
+      <td>출시를 막지는 않지만 <b>기본값이 이미 돌고 있다.</b> 음성 표본은 보관기간이 0이라
+          자동 삭제가 없는 채로 쌓이는 중이다 — 안 정하면 정한 것이 된다</td></tr>
+</table></div>
+<p class="meta"><b>실행 순서(A~E)와 카드별 완료 판정은 여기 적지 않는다</b> —
+<span class="file">developer_tasks.md</span> §4 가 주인이다. 두 곳에 적으면 반드시 갈린다.</p>
+
+<h3>결제를 기다리는 동안 할 수 있는 것</h3>
+<p>PG 를 기다리는 시간이 놀 시간이 아니다. 기획 결정 없이 지금 바로 되는 개발 카드가 넷 있다 —
+<b>QR 착지 · 표현클립 신고 저장 · 출시 안전장치 · 외부 AI 타임아웃</b>.
+그중 <b>출시 안전장치</b>가 §3 이 말한 두 번째 급한 것이다.</p>
+
+<h3>기획 쪽에서 지금 진행 중인 것 — 디자인 규범</h3>
+<p>화면은 다 들어갔지만 <b>"새 화면은 이렇게 만든다" 는 규범이 없었다.</b>
+같은 역할의 컴포넌트가 화면군마다 다른 값을 갖고 있었고, 그것을 재서 규범으로 바꾸는
+작업이 <span class="file">../DESIGN.md</span> 에서 돌고 있다.</p>
+<div class="tablewrap"><table>
+  <tr><th>정해진 것 (2026-08-28)</th><th>무엇이 바뀌었나</th></tr>
+  <tr><td>주 버튼 높이 <b>56</b> · 컨트롤 radius <b>12</b> · 카드 <b>16</b> · 칩 <b>8</b> · 앱바 <b>58</b></td>
+      <td>화면군마다 갈려 있던 값을 하나로. 인증·내비 쪽이 옮겨 왔다</td></tr>
+  <tr><td>비활성은 <b>흐림이 아니라 색 교체</b></td><td><code>opacity</code> 로 흐리던 자리를 바꿨다</td></tr>
+  <tr><td>간격은 <b>4의 배수</b></td><td>앱 166곳 · 목업 142곳을 눈금 위로 스냅했다</td></tr>
+  <tr><td>토스트를 토큰으로, 갈래를 <b>둘</b>로</td><td>넷 중 셋이 죽어 있었고 <b>오류가 회색으로 뜨고 있었다</b></td></tr>
+  <tr><td><b>shadcn oklch 계보 제거</b></td><td><code>globals.css</code> 110줄. 그 계보의 radius 눈금에 12가 없어 두 번 발목을 잡았다</td></tr>
+  <tr><td><b>레거시 교재 트리 <code>/book/**</code> 삭제</b></td>
+      <td>라우트 19개인데 <b>들어가는 링크가 0곳</b>이었다. 번들 204KB 가 빠졌다</td></tr>
+</table></div>
+<p class="meta">정한 값은 글로만 두면 낡으므로 검사기를 같이 붙였다 —
+<code>pnpm check:css</code> 가 다섯을 돈다(이름 대조 · 고정폭 칸 · 4의 배수 · 정한 값 · 토큰 복제).
+아직 안 정한 물음과 그 근거는 <span class="file">../DESIGN.md</span> §8 표에 있다.</p>
+
+<details><summary>이 절이 낡았던 기록</summary>
+<p>2026-08-28 까지 이 자리에는 2026-08-21 판 <b>0~3단계 구현 계획</b>이 있었다 —
+목업 DOM 을 먼저 정리하고(0단계), 목업 CSS 를 앱으로 그대로 가져오고(1단계),
+공통 컴포넌트부터 쌓고(2단계), 화면을 붙이는(3단계) 순서다.
+그 계획은 실행됐고 화면·게임·활동 상태·빌드 수리가 전부 끝났다.
+<b>1단계의 판단은 특히 값이 있었다</b> — "Tailwind 유틸리티로 숫자를 다시 옮겨 적는 방식이
+실패의 원인이었다. 목업이 이미 클래스와 CSS 로 디자인을 들고 있으니 그것을 정본으로 가져온다."
+지금 <code>parity:activity</code> 가 마크업을 눈으로 견줄 수 있는 것이 그 결정 덕분이다.</p>
+</details>
+
+
 <h2 id="s13"><span class="no">13</span>리스크</h2>
+
+<p class="lead"><b>2026-08-28 기준으로 다시 썼다.</b> 이 자리에는 2026-08-13 판 리스크
+다섯이 그대로 있었는데 — 콘텐츠 인력 · 1급 품질 기준 · "화면 설계를 먼저 붙잡음" —
+넷은 이미 지나간 일이다. 지난 판은 이 절 끝에 접어 두었다.</p>
+
 <div class="tablewrap"><table>
   <tr><th>리스크</th><th>영향</th><th>대응</th></tr>
-  <tr><td><b>콘텐츠 저작 인력 미확보</b></td><td>전체 일정이 그대로 밀림 — 임계 경로</td><td>1급 저작 소요를 실측해 8급 환산. 외주·분담 조기 판단</td></tr>
-  <tr><td><b>B2C 라이선스 불가</b></td><td>트랙 3 전체 무산, 수익 모델 재설계</td><td>가장 먼저 확인. 불가 시 B2B 집중으로 축소</td></tr>
-  <tr><td>1급 품질 기준 미정 상태로 대량 저작</td><td>전 급 재작업</td><td>1급을 표준 샘플로 확정한 뒤 확산</td></tr>
-  <tr><td>화면 설계를 먼저 붙잡음</td><td>콘텐츠 착수 지연 = 전체 지연</td><td>이 문서의 순서 준수 (G1 → G2)</td></tr>
-  <tr><td>Tutorus dev 계정 차단</td><td>발음평가 중단</td><td>정식 채택 시 계약 전환 (G4)</td></tr>
+
+  <tr><td><b>B2C 판매 권리를 아직 확인 안 했다</b><br>
+          <span class="pill risk">가장 큼</span></td>
+      <td><b>수익 모델 전체가 무산될 수 있다.</b> 교재 파생 콘텐츠를 개인에게 유료로
+          파는 것이 연세 MOU 범위 밖이면 결제·페이월·가격이 전부 헛일이 된다</td>
+      <td>가장 먼저 확인한다(<code>PD-09</code>). 불가하면 B2B(기관 판매)로 좁힌다 —
+          기관 코드·학기 만료는 이미 돌고 있으므로 그쪽은 살아남는다</td></tr>
+
+  <tr><td><b>PG 계약 리드타임</b><br><span class="pill risk">임계 경로</span></td>
+      <td>출시가 그만큼 밀린다. <b>우리가 줄일 수 없는 유일한 시간이다</b></td>
+      <td>계약 소요를 먼저 재고 그 기간을 계획에 넣는다. 기다리는 동안 §12 의
+          "지금 바로 되는 넷" 을 소진한다</td></tr>
+
+  <tr><td><b>출시 안전장치 없이 나감</b></td>
+      <td>단위 테스트 러너 · E2E · CI · 오류 수집 · 제품 분석이 하나도 없다.
+          <b>사용자가 겪은 오류를 우리가 볼 방법이 없다.</b>
+          결제가 붙으면 돈이 걸린 경로가 그 상태로 도는 것이다</td>
+      <td>결제를 기다리는 동안 세운다. 리드타임이 짧아 <b>지금이 가장 값싸다</b></td></tr>
+
+  <tr><td>교재 문항이 <b>앱 번들 안에</b> 있다</td>
+      <td>문항 하나를 고치려면 앱을 다시 배포해야 한다. 번들도 그만큼 무겁다.
+          어드민에서 콘텐츠를 고치는 길이 교재에는 아직 없다</td>
+      <td>Phase 2 의 남은 조각이다 — 콘텐츠를 DB 로 옮긴다</td></tr>
+
+  <tr><td>약관·개인정보 처리방침 <b>미확정</b></td>
+      <td>유료 결제를 받을 수 없다. 동의 증거도 남길 수 없다</td>
+      <td>초안은 <span class="file">legal_draft_v1.html</span> 에 있다.
+          <b>법률 번역은 기계 번역본을 정본으로 쓰지 않는다</b></td></tr>
+
+  <tr><td>음성 표본 <b>보관기간이 0</b></td>
+      <td>자동 삭제가 없어 그대로 쌓인다. 기존 공개 객체의 이관 여부도 미확인이다.
+          <b>안 정하면 "무기한 보관" 을 정한 것이 된다</b></td>
+      <td><code>PD-04</code> 로 보관 일수를 정한다</td></tr>
+
+  <tr><td>다섯 언어 중 <b>셋은 새 문구가 들어올 때마다 다시 흐려진다</b></td>
+      <td>2026-08-28 에 다섯 언어를 훑어 오역·용어 불일치·조판 관례까지 고쳤지만,
+          그 뒤 들어가는 문구는 같은 검수를 안 거친다.
+          <b>같은 검수에서 <code>hooks/</code> 가 통째로 빠져 있었던 적도 있다</b></td>
+      <td>언어별 담당자 승인 창구를 만든다. 훑을 때 <b>컴포넌트만 보면 안 된다</b> —
+          <code>hooks/</code> · <code>api/</code> 에도 화면에 닿는 문자열이 있다</td></tr>
+
+  <tr><td>Tutorus dev 계정 차단</td><td>발음평가 중단</td>
+      <td>정식 채택 시 계약 전환(G4) — 2026-08-13 부터 남아 있는 리스크다</td></tr>
+
+  <tr><td><b>같은 저장소를 여러 세션이 동시에 만진다</b></td>
+      <td>남의 변경이 내 커밋에 섞인다. <b>2026-08-28 에 실제로 일어났다</b> —
+          한쪽이 <code>git add .</code> 로 다른 쪽의 다국어 변경을 자기 커밋에 담았다</td>
+      <td>커밋할 때 <b>경로를 지정해서 스테이지한다.</b> 커밋 전에
+          <code>git status</code> 로 내 것이 아닌 파일이 섞였는지 본다</td></tr>
 </table></div>
+
+<details><summary>이 절이 낡았던 기록</summary>
+<p>2026-08-28 까지 이 자리에는 2026-08-13 판 리스크 다섯이 있었다 —
+<b>콘텐츠 저작 인력 미확보</b>(임계 경로) · <b>B2C 라이선스 불가</b> ·
+<b>1급 품질 기준 미정 상태로 대량 저작</b> · <b>화면 설계를 먼저 붙잡음</b> ·
+<b>Tutorus dev 계정 차단</b>.</p>
+<p>다섯 중 셋은 대응이 통해서 사라졌다 — 콘텐츠는 8급까지 저작·검수가 끝났고,
+1급을 표준 삼아 확산하는 방식이 실제로 재작업을 막았고, "화면 설계를 먼저 붙잡지 마라"
+는 경고도 지켜졌다. <b>B2C 라이선스와 Tutorus 둘은 아직 살아 있어 위 표에 남겼다.</b>
+남은 문제는 <b>지나간 리스크를 지우지 않은 것</b>이었다 — 이 문서를 처음 여는 사람에게
+여전히 "콘텐츠 인력이 가장 큰 위험" 이라고 말하고 있었다.</p>
+</details>
+
 
 <p class="qa" style="margin-top:44px">관련 문서: <a href="https://claude.ai/code/artifact/1210a6f9-f264-4da0-82fe-38f12c729af2">리뉴얼 기획서 v0.2.1</a>(무엇을 만들까) · <a href="https://claude.ai/code/artifact/1cc49b1d-4fb3-4640-a400-ac4e3ddd3c37">역기획서 v1.2</a>(현행이 어떻게 생겼나) · <a href="https://claude.ai/code/artifact/6a5df1f7-e904-4b97-9d8e-0abe34a3facf">현행 목업</a></p>
 
@@ -690,8 +960,18 @@ footer / dock   primary "다음" | "결과 보기"</pre>
   <div class="eyebrow">Phase 1 · 인계 · 2026-08-20</div>
   <h1>플레이어 공통 셸 — 어디까지 됐고 무엇이 남았나</h1>
   <p class="lead"><b>handoff_v1 을 대체한다.</b> v1 은 착수 전에 쓴 것이고, 이 문서는
-  화면 작업을 마친 뒤의 상태다. 화면 <b>24개가 목업대로 들어갔고</b>(§15 의 표) 서버 작업은
-  시작되지 않았다. 막힌 것은 저장소 루트의 <span class="file">BLOCKERS.md</span> 에 있다 —
+  화면 작업을 마친 뒤의 상태다. 화면은 목업대로 들어갔다(§15 의 표 — 수는
+  <span class="file">README.md</span> 가 쥔다).</p>
+  <div class="callout warn">
+    <b>여기 "서버 작업은 시작되지 않았다" 고 적혀 있었다 — 지금은 거짓이다</b>(2026-08-28 정정).
+    활동 상태 · 복습 큐 · 권한 판정 · 문의 · 탈퇴가 <span class="file">api/</span> 에 들어와 있다.
+    <b>이 문장 하나 때문에 새로 오는 사람이 "서버는 아직" 으로 시작했다</b> —
+    <span class="file">CLAUDE.md</span> 에도 같은 문장이 있었고 거기는 먼저 고쳤는데
+    이 문서만 안 따라왔다.<br>
+    아래 §14~§20 은 <b>2026-08-20~21 시점 기록</b>이다. 지금 상태는 §0~§13 과
+    <span class="file">BLOCKERS.md</span> §0 을 본다.
+  </div>
+  <p class="lead">막힌 것은 저장소 루트의 <span class="file">BLOCKERS.md</span> 에 있다 —
   <b>거기부터 읽어라.</b></p>
 </header>
 
