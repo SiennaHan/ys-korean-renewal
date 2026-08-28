@@ -15868,7 +15868,7 @@
 		"id": 595,
 		"book_id": 3,
 		"chapter": 15,
-		"word": "걸리다(병)",
+		"word": "감기에 걸리다",
 		"en": "catch a disease",
 		"jp": "（病気に）かかる",
 		"cn": "患病",
@@ -15880,7 +15880,7 @@
 		"item_id": "VL-3-15-001",
 		"review_status": "draft",
 		"source_page": "",
-		"change_note": "",
+		"change_note": "v42: 사람 검수 반영.",
 		"hold_reason": ""
 	},
 	{
@@ -23283,14 +23283,14 @@
 		"jp": "ジム",
 		"cn": "健身房",
 		"vi": "phòng tập gym",
-		"sound": "체력단련실[체력달련실]",
+		"sound": "",
 		"image": "b5_ch3_p35_15.jpg",
 		"category": "주제어휘",
 		"theme": "",
 		"item_id": "VL-5-3-017",
 		"review_status": "fixed_v18",
 		"source_page": "",
-		"change_note": "체력단련실→헬스장 교체 시 뜻풀이가 옛 낱말 그대로였음 / 글로벌판 삽화로 재배선(b5_ch3_p35_5.png → b5_ch3_p35_15.png, 좌표+라벨 일치)",
+		"change_note": "체력단련실→헬스장 교체 시 뜻풀이가 옛 낱말 그대로였음 / 글로벌판 삽화로 재배선(b5_ch3_p35_5.png → b5_ch3_p35_15.png, 좌표+라벨 일치) v42: 사람 검수 반영.",
 		"hold_reason": ""
 	},
 	{
@@ -49237,14 +49237,14 @@
 		"jp": "論じない（問わない）",
 		"cn": "不论；姑且不论",
 		"vi": "bất luận, không kể",
-		"sound": "",
+		"sound": "막론하다[망논하다]",
 		"image": "",
 		"category": "과제어휘",
 		"theme": "",
 		"item_id": "VL-8-15-004",
 		"review_status": "draft",
 		"source_page": "",
-		"change_note": "",
+		"change_note": "v42: 사람 검수 반영.",
 		"hold_reason": ""
 	},
 	{
