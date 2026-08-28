@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ 59fcb4c -->
+<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ bae9a3f -->
 <!-- 왜: §02 의 착지점과 §05 의 "막힘" 은 전부 이 파일들을 읽고 적은 관찰이다 -->
 <title>유저 플로우 — 진입에서 결제까지 한 장</title>
 <style>
@@ -341,6 +341,16 @@
   </tbody>
 </table>
 </div>
+<p class="qa"><b>이 문서는 「진입에서 결제까지」인데 나가는 길이 하나 생겼다</b>(2026-08-28) —
+<b>학기 종료</b>다. 학교 어드민이 학생을 골라 접근을 끊으면
+<span class="file">PATCH /student/access</span> 가 <span class="file">ko_user.access_ended_at</span> 을 찍고,
+<b>다음 요청부터</b> 그 학생의 범위가 무료로 내려간다. 로그인은 계속 되고 지난 학기 기록도 보인다 —
+<code>is_active</code> 를 내리면 로그인이 막혀서 설명할 기회가 없어지기 때문에 칸을 따로 두었다.
+학생이 보는 것은 <b>앱에 들어올 때 한 번 뜨는 모달</b>과, 잠긴 것을 눌렀을 때의
+「학교에 문의」다(<span class="file">PaywallKind</span> 의 <code>schoolExpired</code>).
+<b>자동 만료는 없다</b> — 사람이 어드민에서 끊어야 한다. 탈퇴는 별개의 길이고
+(<span class="file">POST /student/withdraw</span>) 기본은 데이터를 남기는 쪽이다.</p>
+
 <p class="qa">가격과 PG는 <span class="file">access_and_pricing_v1</span> §09 의 결제 전 단계와 별개다.
 QR은 특정 과가 아니라 홈으로 확정됐으므로 무료 과를 URL에 싣는 설계는 하지 않는다.</p>
 
@@ -348,7 +358,7 @@ QR은 특정 과가 아니라 홈으로 확정됐으므로 무료 과를 URL에 
 <ol class="path">
   <li><div><div class="h">이 문서 (한 장으로 그리기)</div><div class="d">지금 것</div></div></li>
   <li><div><div class="h"><span class="file">access_and_pricing_v1</span> §09 의 1~3단계 — 경계와 자물쇠</div>
-    <div class="d"><code>ko_chapter.is_free</code> 값 채우기 → <code>GET /entitlement</code>(늘 무료 범위만 낸다) →
+    <div class="d"><code>ko_chapter.is_free</code> 값 채우기 → <code>GET /entitlement</code>(게스트·개인은 무료 범위, <b>기관 학생은 전 급</b> — 2026-08-28) →
     앱에 잠금 붙이기 + 문구 넷을 5개 언어로. <b>결제 없이도 온전한 제품이다</b> —
     <span class="pill file">paywall_SOT</span> 의 비활성 결제 CTA가 실제 결제 흐름으로 이어지는 단계이기도 하다</div></div></li>
   <li><div><div class="h"><span class="file">access_and_pricing_v1</span> §09 의 4단계 — 학생 자체 회원가입 <span class="pill done">됐다</span></div>
