@@ -13,7 +13,7 @@
 }
 
 .auth-topbar {
-	min-height: 56px;
+	min-height: var(--d-appbar-h, 58px);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -160,7 +160,7 @@
 	height: 52px;
 	padding: 0 16px;
 	border: 1px solid var(--color-primitive-blue-gray-200);
-	border-radius: 12px;
+	border-radius: var(--d-btn-r, 12px);
 	background: var(--color-background-surface);
 	color: var(--color-text-strong);
 	font-size: 16px;
@@ -439,9 +439,9 @@
 .auth-primary,
 .auth-secondary {
 	width: 100%;
-	min-height: 52px;
+	min-height: var(--d-btn-h, 56px);
 	padding: 12px 18px;
-	border-radius: 12px;
+	border-radius: var(--d-btn-r, 12px);
 	font-size: 16px;
 	line-height: 22px;
 	font-weight: 700;

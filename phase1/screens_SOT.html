@@ -439,7 +439,7 @@
     --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
     --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
     --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
-    --radius-card:14px; --radius-control:9px;
+    --radius-card:16px; --radius-control:12px;
   }
 * { box-sizing:border-box; }
 body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
@@ -581,7 +581,7 @@ button { font:inherit; }
   .tab2 { flex:none; padding:5px 2px 7px; font-size:14px; line-height:20px; font-weight:600;
     color:var(--blue-gray-400); background:none; border:0; border-bottom:2px solid transparent; }
   .tab2.on { color:var(--blue-gray-900); border-bottom-color:var(--blue-500); }
-  .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--control-border); border-radius:var(--radius-control); font-size:13px;
+  .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--control-border); border-radius:8px; font-size:13px;
     font-weight:600; background:var(--white); color:var(--blue-gray-600); }
   .chip3.on { border-color:var(--blue-900); background:var(--blue-900); color:var(--white); }
 
@@ -646,7 +646,7 @@ button { font:inherit; }
     --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
     --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
     --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
-    --radius-card:14px; --radius-control:9px;
+    --radius-card:16px; --radius-control:12px;
   }
 * { box-sizing:border-box; }
 body { margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }
@@ -894,7 +894,7 @@ button { font:inherit; }
     --bench:#eef1f5; --bench-ink:#22262d; --bench-sub:#687180; --bench-line:#d8dde5;
     --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
     --gutter:16px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
-    --radius-card:14px; --radius-control:9px;
+    --radius-card:16px; --radius-control:12px;
   }#mk-game *{ box-sizing:border-box; }#mk-game{ margin:0; min-width:320px; background:var(--bench); color:var(--bench-ink); font-family:var(--font); }#mk-game button{ font:inherit; }#mk-game{ max-width:1040px; margin:0 auto; padding:32px 22px 72px; }#mk-game .doc{ display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,430px); gap:38px; align-items:end; margin-bottom:22px; }#mk-game .doc h1{ margin:0; font-size:32px; line-height:42px; font-weight:600; letter-spacing:-.025em; }#mk-game .doc p{ margin:0; color:var(--bench-sub); font-size:14px; line-height:22px; }#mk-game .kicker{ margin-bottom:8px; color:var(--blue-500); font-size:12px; line-height:16px; font-weight:600; letter-spacing:.08em; }#mk-game .controls{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 18px; margin-bottom:24px; padding:12px 0; border-top:1px solid var(--bench-line); border-bottom:1px solid var(--bench-line); }#mk-game .control-group{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; }#mk-game .control-label{ margin-right:6px; color:#858e9a; font-size:11px; line-height:18px; font-weight:500; }#mk-game .option{ min-height:32px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:#66707e; font-size:12px; line-height:18px; font-weight:500; cursor:pointer; }#mk-game .option:hover{ background:rgba(255,255,255,.55); }#mk-game .option[aria-pressed="true"]{ border-color:#bddafb; background:var(--white); color:var(--blue-600); font-weight:600; }#mk-game .stage{ display:grid; grid-template-columns:minmax(320px,1fr) 230px; gap:34px; align-items:start; }#mk-game .stage.overview-hidden{ display:none; }#mk-game .device-wrap{ display:flex; flex-direction:column; align-items:center; }#mk-game .device{ width:392px; padding:1px; border:1px solid #cbd2dc; border-radius:25px; background:#dde2e9; box-shadow:0 18px 46px rgba(36,52,76,.11); transition:width .18s ease; }#mk-game .screen{ position:relative; width:100%; height:720px; overflow:hidden; border-radius:23px; background:var(--blue-gray-50); display:flex; flex-direction:column; }#mk-game .caption{ margin-top:11px; color:#717b89; font-size:12px; line-height:18px; font-weight:500; font-variant-numeric:tabular-nums; }#mk-game .notes{ padding-top:8px; }#mk-game .notes h2{ margin:0 0 10px; font-size:12px; line-height:18px; font-weight:600; }#mk-game .notes p{ margin:0; color:var(--bench-sub); font-size:12px; line-height:19px; }#mk-game .notes p + p{ margin-top:9px; }#mk-game .notes b{ color:var(--bench-ink); font-weight:600; }#mk-game .note-section{ padding:0 0 22px 14px; border-left:1px solid var(--bench-line); }#mk-game .note-section + .note-section{ padding-top:22px; border-top:1px solid var(--bench-line); }#mk-game .spec{ display:grid; grid-template-columns:auto 1fr; gap:8px 12px; margin:0; font-size:12px; line-height:18px; }#mk-game .spec dt{ color:#87909d; }#mk-game .spec dd{ margin:0; text-align:right; color:#414852; font-weight:600; }#mk-game .footer{ flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--white); border-top:1px solid var(--control-border); }#mk-game .primary{ width:100%; height:56px; border:0; border-radius:12px; background:var(--gray-200); color:var(--gray-400); font-size:16px; line-height:24px; font-weight:600; }#mk-game .primary.on{ background:var(--blue-500); color:var(--white); cursor:pointer; }#mk-game .dock{ display:flex; align-items:center; gap:12px; width:100%; }#mk-game .dock .main{ flex:1; min-width:0; display:flex; justify-content:center; }#mk-game .dock .main .record-core{ width:auto; }#mk-game .dock .slot{ width:44px; height:44px; flex:none; border:0; background:transparent; color:var(--blue-500); display:grid; place-items:center; cursor:pointer; }#mk-game .dock .slot:disabled{ color:var(--blue-gray-200); cursor:default; }#mk-game .dock .slot svg{ width:26px; height:26px; }#mk-game .scroll{ flex:1 1 auto; min-height:0; overflow-y:auto; }#mk-game .scroll::-webkit-scrollbar{ display:none; }#mk-game .screen{ background:#fff; }
   
   @media (max-width:960px){#mk-game .doc{ grid-template-columns:1fr; gap:14px; }#mk-game .stage{ grid-template-columns:1fr; gap:22px; }#mk-game .notes{ padding-top:0; }

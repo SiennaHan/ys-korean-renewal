@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디자인 결정판 — 골라 보고 정한다</title>
+<!--
+  연세 글로벌 한국어 · 디자인 결정판 v1.0 (2026-08-28)
+
+  DESIGN.md 의 「정해야 할 물음」 표에서 "정할 값" 빈칸을 **눈으로 보고** 채우기 위한 판이다.
+  문서만 보고는 "주 버튼 높이 56 · 52 · 50" 중 무엇이 나은지 고를 수 없다.
+
+  ── 값은 전부 실제 코드에서 뽑았다 ──
+  후보로 뜨는 수치는 지어낸 것이 하나도 없다. app/src/styles/ 의
+  activity.css · nav.css · auth.css 에서 그대로 가져왔고, 색은 tokens.css 의
+  semantic 을 primitive 까지 풀어 박았다.
+
+  ── 글자는 내가 지어낸 자리표다 ──
+  미리보기의 문장·낱말은 **교재에서 온 것이 하나도 없다.** 이 저장소는 공개로
+  돌릴 수 없고(교재 파생 자산), 이 파일은 결정 도구라 라이선스가 걸린 글을
+  담을 이유가 없다. 생김새를 보는 데는 자리표로 충분하다.
+
+  ── 고른 뒤 ──
+  맨 아래 「결정 요약」을 복사해서 DESIGN.md 의 그 칸에 넣는다.
+  고른 값은 브라우저에 남아서 다시 열어도 그대로다.
+-->
+<style>
+  :root{
+    /* tokens.css 의 semantic 을 primitive 까지 푼 값 */
+    --surface:#ffffff; --base:#f6f7f8; --choice:#dbedff;
+    --correct:#e7fbce; --wrong:#ffe8e8; --disable:#eeeeee;
+    --text:#383a3f; --sub:#7f848d; --heading:#24425f; --text-disable:#bdbdbd;
+    --primary:#0180ff; --primary-pressed:#0073e6;
+    --line-control:#f0f2f4; --line-normal:#e5e8ec; --line-input:#d7dbe3;
+    --icon:#4b505a;
+    --font:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,sans-serif;
+
+    /* ── 고르는 값. JS 가 여기만 바꾼다 ── */
+    --btn-h:56px; --btn-r:12px;
+    --card-r:16px; --chip-r:8px; --appbar-h:58px;
+    --gap:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#eef1f4;color:var(--text);font-family:var(--font);
+    font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 20px 80px}
+
+  header h1{margin:0 0 6px;font-size:22px;line-height:1.35;color:var(--heading);letter-spacing:-.02em}
+  header p{margin:0;color:var(--sub);font-size:13.5px;max-width:62ch}
+  .warn{margin:16px 0 0;padding:12px 14px;border-radius:10px;background:#fff8e1;
+    border:1px solid #ffe790;color:#6b5a1f;font-size:13px}
+
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:26px;align-items:start;margin-top:24px}
+  @media (max-width:1080px){.cols{grid-template-columns:1fr}}
+
+  .card{background:#fff;border:1px solid #e3e7ec;border-radius:14px;padding:18px 18px 16px;margin-bottom:16px}
+  .card > h2{margin:0 0 3px;font-size:15px;color:var(--heading);letter-spacing:-.01em}
+  .card > .why{margin:0 0 14px;color:var(--sub);font-size:12.5px;line-height:1.55}
+  .card .evi{margin:10px 0 0;padding:9px 11px;border-radius:8px;background:#f7f9fb;
+    color:#5b636d;font-size:12px;line-height:1.6}
+  .card .evi b{color:var(--heading)}
+
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opt{flex:1 1 130px;min-width:120px;position:relative}
+  .opt input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0}
+  /* 자식 선택자여야 한다 — 그냥 `.opt span` 이면 안쪽 .v/.from/.tag 까지 잡아
+     테두리가 겹겹이 그려진다(2026-08-28 에 실제로 그랬다) */
+  .opt > span{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;
+    border:1.5px solid #e3e7ec;background:#fff;cursor:pointer;transition:.14s ease}
+  .opt input:checked + span{border-color:var(--primary);background:#f2f8ff;
+    box-shadow:0 0 0 3px rgba(1,128,255,.10)}
+  .opt input:focus-visible + span{outline:2px solid var(--primary);outline-offset:2px}
+  .opt .v{font-weight:700;font-size:14px;color:var(--heading)}
+  .opt .from{font-size:11.5px;color:var(--sub);line-height:1.45}
+  .opt .tag{align-self:flex-start;margin-top:3px;font-size:10.5px;font-weight:700;
+    padding:1px 6px;border-radius:20px;background:#e7fbce;color:#2f6b2f}
+  .opt .tag.now{background:var(--choice);color:#22588f}
+
+  /* ── 미리보기 ── */
+  .stage{position:sticky;top:20px}
+  .phones{display:flex;gap:18px;flex-wrap:wrap}
+  .phone{width:375px;max-width:100%;border:1px solid #dce1e7;border-radius:18px;overflow:hidden;
+    background:var(--surface);box-shadow:0 14px 40px rgba(33,49,65,.10)}
+  .phone .cap{padding:7px 12px;background:#f2f4f7;border-bottom:1px solid #e3e7ec;
+    font-size:11.5px;font-weight:700;color:var(--sub);letter-spacing:.02em}
+  .screen{display:flex;flex-direction:column;height:560px;background:var(--base)}
+
+  /* 활동 화면 — activity.css 의 값 */
+  .appbar{flex:0 0 var(--appbar-h);display:grid;grid-template-columns:44px 1fr 44px;
+    align-items:center;padding:0 9px;background:var(--surface)}
+  .icon-control{width:44px;height:44px;display:grid;place-items:center;color:var(--icon)}
+  .lesson{text-align:center;color:var(--text);font-size:16px;line-height:24px;font-weight:600}
+  .bandwrap{flex:1;overflow:auto;padding:var(--gap);display:flex;flex-direction:column;gap:var(--gap)}
+  .problem-card{padding:18px;border:1px solid var(--line-control);border-radius:var(--card-r);
+    background:var(--surface)}
+  .problem-card h2{margin:0;color:var(--heading);font-size:18px;line-height:26px;font-weight:600;
+    letter-spacing:-.01em}
+  .problem-card p{margin:6px 0 0;color:var(--sub);font-size:14px;line-height:20px}
+  .choices{display:flex;flex-direction:column;gap:8px}
+  .choice{width:100%;min-height:64px;padding:16px 48px 16px 18px;border:1px solid var(--line-control);
+    border-radius:var(--btn-r);background:var(--surface);color:var(--text);display:flex;
+    align-items:center;font-size:16px;line-height:24px;font-weight:500;text-align:left}
+  .choice.sel{background:var(--choice);border-color:#a2d1ff}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip-opt{border-radius:var(--chip-r);border:1px solid var(--line-control);background:var(--surface);
+    padding:10px 16px;font-size:15px;font-weight:500;color:var(--text)}
+  .dock{flex:none;padding:var(--gap);background:var(--surface);border-top:1px solid var(--line-normal);
+    display:flex;flex-direction:column;gap:8px}
+  .primary{width:100%;height:var(--btn-h);border:0;border-radius:var(--btn-r);
+    background:var(--primary);color:#fff;font-size:16px;line-height:24px;font-weight:600;
+    font-family:inherit;display:grid;place-items:center}
+  .primary.off{background:var(--disable);color:var(--text-disable)}
+  .primary.off.dim{background:var(--primary);color:#fff;opacity:.48}
+
+  /* 인증 화면 — auth.css 의 값 */
+  .auth-topbar{min-height:56px;display:flex;align-items:center;padding:10px 16px 0}
+  .auth-body{flex:1;padding:8px 16px 16px;display:flex;flex-direction:column;gap:24px}
+  .auth-title{margin:0;color:var(--heading);font-size:24px;line-height:34px;font-weight:700;
+    letter-spacing:-.025em}
+  .auth-field{display:grid;gap:6px}
+  .auth-label{color:var(--text);font-size:14px;line-height:20px;font-weight:600}
+  .auth-input{width:100%;height:52px;padding:0 16px;border:1px solid var(--line-input);
+    border-radius:var(--btn-r);background:var(--surface);color:var(--sub);
+    font-size:16px;line-height:24px;font-weight:500;display:flex;align-items:center}
+
+  /* 내비 화면 — nav.css 의 값 */
+  .nav-strip{display:flex;gap:11px;padding:11px 16px 7px;background:var(--surface);
+    border-bottom:1px solid var(--line-control)}
+  .chip3{flex:none;height:32px;padding:0 12px;border:1px solid var(--line-control);
+    border-radius:var(--chip-r);font-size:14px;font-weight:600;background:var(--surface);
+    color:var(--sub);display:grid;place-items:center}
+  .chip3.on{border-color:var(--heading);background:var(--heading);color:#fff}
+  .actrow{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;
+    height:46px;padding:0 13px;border:1px solid var(--line-control);border-radius:var(--chip-r);
+    background:var(--surface);font-size:14px}
+
+  /* 요약 */
+  .sum{margin-top:22px}
+  .sum textarea{width:100%;min-height:190px;padding:14px;border-radius:10px;border:1px solid #dce1e7;
+    background:#fbfcfd;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.7;
+    color:#2b3138;resize:vertical}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+  button.act{border:1px solid #d3d9e0;background:#fff;border-radius:9px;padding:8px 14px;
+    font-family:inherit;font-size:13px;font-weight:600;color:var(--heading);cursor:pointer}
+  button.act:hover{border-color:var(--primary);color:var(--primary)}
+  button.act.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+  .said{font-size:12.5px;color:#2f6b2f;font-weight:600}
+  .diff{font-size:12.5px;color:var(--sub)}
+  .diff b{color:#a5560d}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>디자인 결정판 — 골라 보고 정한다</h1>
+  <p><code>DESIGN.md</code> 의 <b>「정해야 할 물음」 표에 있는 빈칸</b>을 채우기 위한 판이다.
+     문서만 보고는 “주 버튼 높이 56 · 52 · 50” 중 무엇이 나은지 고를 수 없다.
+     왼쪽에서 고르면 오른쪽 화면이 바로 그 값으로 그려진다.</p>
+  <div class="warn">
+    <b>후보 수치는 전부 실제 코드에서 뽑은 것이다</b> — <code>activity.css</code> ·
+    <code>nav.css</code> · <code>auth.css</code>, 색은 <code>tokens.css</code>.
+    지어낸 값이 하나도 없다.<br>
+    <b>다만 미리보기의 글자는 자리표다</b> — 교재에서 온 문장·낱말은 한 글자도 넣지 않았다.
+    생김새를 보는 데는 자리표로 충분하고, 이 저장소는 공개로 돌릴 수 없다.
+  </div>
+</header>
+
+<div class="cols">
+  <!-- ─────────── 고르는 곳 ─────────── -->
+  <div>
+
+    <div class="card" data-q="btnH">
+      <h2>1 · 주 버튼 높이</h2>
+      <p class="why">화면군마다 다르다. <b>색은 이미 하나</b>(<code>--color-fill-primary</code>)인데 높이만 갈렸다.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="btnH" value="56px" checked>
+          <span><span class="v">56px</span><span class="from">학습 활동 <code>.primary</code></span><span class="tag">목업 근거 ○</span></span></label>
+        <label class="opt"><input type="radio" name="btnH" value="52px">
+          <span><span class="v">52px</span><span class="from">인증 <code>.auth-primary</code> (min-height)</span></span></label>
+        <label class="opt"><input type="radio" name="btnH" value="50px">
+          <span><span class="v">50px</span><span class="from">내비 <code>.paywall-cta</code></span><span class="tag">목업 근거 ○</span></span></label>
+      </div>
+      <p class="evi"><b>고를 때 볼 것</b> — 활동 화면은 도크에 버튼이 늘 있고, 인증은 폼 아래
+        한 번 눌리고 끝난다. 같은 높이가 두 자리에서 다 맞는지 보면 된다.</p>
+    </div>
+
+    <div class="card" data-q="btnR">
+      <h2>2 · 주 버튼 · 선택지 · 입력칸 radius</h2>
+      <p class="why">셋이 같은 값을 쓴다. <b>12 가 다수</b>(활동·인증)이고 9 는 내비만 쓴다 —
+        내비는 유일하게 변수(<code>--radius-control</code>)로 갖고 있다.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="btnR" value="12px" checked>
+          <span><span class="v">12px</span><span class="from">활동 · 인증</span><span class="tag now">지금 다수</span></span></label>
+        <label class="opt"><input type="radio" name="btnR" value="9px">
+          <span><span class="v">9px</span><span class="from">내비 <code>--radius-control</code></span></span></label>
+        <label class="opt"><input type="radio" name="btnR" value="10px">
+          <span><span class="v">10px</span><span class="from">둘 사이 · 표현클립이 쓰는 값</span></span></label>
+      </div>
+    </div>
+
+    <div class="card" data-q="btnOff">
+      <h2>3 · 비활성 버튼을 어떻게 보일까</h2>
+      <p class="why">활동·인증은 <b>색을 바꾸고</b>, 내비 <code>.paywall-cta</code> 는
+        <b>색은 그대로 두고 흐리게</b> 한다.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="btnOff" value="swap" checked>
+          <span><span class="v">색 교체</span><span class="from">회색 배경 + 회색 글자</span><span class="tag now">지금 다수</span></span></label>
+        <label class="opt"><input type="radio" name="btnOff" value="dim">
+          <span><span class="v">opacity .48</span><span class="from">파랑 그대로 흐리게</span></span></label>
+      </div>
+      <p class="evi"><b>내비가 흐림을 쓴 이유가 적혀 있다</b> — 결제 화면이 아직 없어서
+        “눌러도 조용한 것보다 눌리지 않는 것이 솔직하다”. 그 뜻을 살릴지, 한 가지로 모을지가 물음이다.</p>
+    </div>
+
+    <div class="card" data-q="cardR">
+      <h2>4 · 카드 radius</h2>
+      <p class="why">활동 16 · 내비 14 · 표현클립 10. <b>16 과 14 는 둘 다 목업 근거가 있다.</b></p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="cardR" value="16px" checked>
+          <span><span class="v">16px</span><span class="from">활동 <code>.problem-card</code></span><span class="tag">목업 근거 ○</span></span></label>
+        <label class="opt"><input type="radio" name="cardR" value="14px">
+          <span><span class="v">14px</span><span class="from">내비 <code>--radius-card</code></span><span class="tag">목업 근거 ○</span></span></label>
+        <label class="opt"><input type="radio" name="cardR" value="10px">
+          <span><span class="v">10px</span><span class="from">표현클립</span></span></label>
+      </div>
+    </div>
+
+    <div class="card" data-q="chipR">
+      <h2>5 · 칩 radius</h2>
+      <p class="why"><b>1px 차이다</b> — 활동 8, 내비 9. 눈에 보이는지부터 확인해 보면 된다.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="chipR" value="8px" checked>
+          <span><span class="v">8px</span><span class="from">활동 <code>.chip-opt</code></span></span></label>
+        <label class="opt"><input type="radio" name="chipR" value="9px">
+          <span><span class="v">9px</span><span class="from">내비 <code>.chip3</code></span></span></label>
+        <label class="opt"><input type="radio" name="chipR" value="999px">
+          <span><span class="v">알약</span><span class="from">둘 다 아닌 쪽</span></span></label>
+      </div>
+    </div>
+
+    <div class="card" data-q="appbarH">
+      <h2>6 · 앱바 높이</h2>
+      <p class="why">활동 58 · 인증 56 · 내비의 과 머리 42. <b>하는 일이 서로 달라서
+        다른 것이 뜻일 수도 있다</b> — 그것도 답이다.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="appbarH" value="58px" checked>
+          <span><span class="v">58px</span><span class="from">활동 <code>.appbar</code></span></span></label>
+        <label class="opt"><input type="radio" name="appbarH" value="56px">
+          <span><span class="v">56px</span><span class="from">인증 <code>.auth-topbar</code></span></span></label>
+      </div>
+    </div>
+
+    <div class="card" data-q="gap">
+      <h2>7 · 바깥 여백 · 요소 사이 간격</h2>
+      <p class="why"><b>지금 간격 토큰이 아예 없다.</b> 유일한 눈금이 <code>nav.css</code> 안에만
+        산다 — <code>--space-1..6</code> = 4·8·12·16·24, <code>--gutter</code> = 16.</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="gap" value="16px" checked>
+          <span><span class="v">16px</span><span class="from">nav 의 <code>--gutter</code></span><span class="tag now">지금 최다</span></span></label>
+        <label class="opt"><input type="radio" name="gap" value="12px">
+          <span><span class="v">12px</span><span class="from">둘째로 많은 값</span></span></label>
+        <label class="opt"><input type="radio" name="gap" value="20px">
+          <span><span class="v">20px</span><span class="from">더 넉넉하게</span></span></label>
+      </div>
+      <p class="evi"><b>이 물음은 값 하나가 아니라 “눈금을 토큰으로 올릴까” 다.</b>
+        여기서 고른 값은 그 눈금의 기본 여백으로 읽으면 된다.</p>
+    </div>
+
+  </div>
+
+  <!-- ─────────── 보는 곳 ─────────── -->
+  <div class="stage">
+    <div class="phones">
+
+      <div class="phone">
+        <div class="cap">학습 활동 — 고른 값이 적용된다</div>
+        <div class="screen">
+          <div class="appbar">
+            <div class="icon-control">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+            </div>
+            <div class="lesson">활동 이름</div>
+            <div class="icon-control">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </div>
+          </div>
+          <div class="bandwrap">
+            <div class="problem-card">
+              <h2>지시문이 들어가는 자리</h2>
+              <p>UI 언어로 한 줄 더 붙는 자리</p>
+            </div>
+            <div class="choices">
+              <div class="choice sel">선택지 하나</div>
+              <div class="choice">선택지 둘</div>
+              <div class="choice">선택지 셋</div>
+            </div>
+            <div class="chips">
+              <div class="chip-opt">칩 하나</div>
+              <div class="chip-opt">칩 둘</div>
+              <div class="chip-opt">칩 셋</div>
+            </div>
+          </div>
+          <div class="dock">
+            <div class="primary">확인하기</div>
+            <div class="primary off" id="offBtn">비활성일 때</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone">
+        <div class="cap">인증 · 내비 — 같은 값이 여기서도 맞나</div>
+        <div class="screen" style="background:var(--surface)">
+          <div class="auth-topbar">
+            <div class="icon-control" style="width:40px;height:40px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="auth-body">
+            <h2 class="auth-title">화면 제목이<br>두 줄로 들어가는 자리</h2>
+            <div class="auth-field">
+              <div class="auth-label">라벨</div>
+              <div class="auth-input">입력칸 자리표</div>
+            </div>
+            <div class="auth-field">
+              <div class="auth-label">라벨 둘</div>
+              <div class="auth-input">입력칸 자리표</div>
+            </div>
+            <div class="primary" style="margin-top:4px">주 버튼</div>
+          </div>
+          <div class="nav-strip">
+            <div class="chip3 on">칩</div>
+            <div class="chip3">칩</div>
+            <div class="chip3">칩</div>
+          </div>
+          <div style="padding:var(--gap);display:flex;flex-direction:column;gap:8px;background:var(--base);flex:1">
+            <div class="actrow"><span>목록 행 하나</span><span style="color:var(--sub)">›</span></div>
+            <div class="actrow"><span>목록 행 둘</span><span style="color:var(--sub)">›</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card sum">
+      <h2>결정 요약</h2>
+      <p class="why">고른 값은 브라우저에 남는다 — 닫았다 다시 열어도 그대로다.
+        아래를 복사해서 <code>DESIGN.md</code> 의 그 칸에 넣으면 그 줄이 규범이 된다.</p>
+      <p class="diff" id="diff"></p>
+      <textarea id="out" readonly spellcheck="false"></textarea>
+      <div class="row">
+        <button class="act pri" id="copy">복사</button>
+        <button class="act" id="reset">지금 값으로 되돌리기</button>
+        <span class="said" id="said"></span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  /* 지금 코드에 들어 있는 값. 무엇이 "바뀌는 결정" 인지 가르는 기준이다. */
+  var NOW = {btnH:"56px", btnR:"12px", btnOff:"swap", cardR:"16px",
+             chipR:"8px", appbarH:"58px", gap:"16px"};
+  var VAR = {btnH:"--btn-h", btnR:"--btn-r", cardR:"--card-r",
+             chipR:"--chip-r", appbarH:"--appbar-h", gap:"--gap"};
+  var LABEL = {btnH:"주 버튼 높이", btnR:"버튼·선택지·입력칸 radius",
+               btnOff:"비활성 버튼 표현", cardR:"카드 radius", chipR:"칩 radius",
+               appbarH:"앱바 높이", gap:"바깥 여백·간격"};
+  var KEY = "ys-design-decisions-v1";
+
+  function read(){
+    var o = {};
+    Object.keys(NOW).forEach(function(k){
+      var el = document.querySelector('input[name="'+k+'"]:checked');
+      o[k] = el ? el.value : NOW[k];
+    });
+    return o;
+  }
+
+  function apply(){
+    var v = read(), root = document.documentElement;
+    Object.keys(VAR).forEach(function(k){ root.style.setProperty(VAR[k], v[k]); });
+    document.getElementById("offBtn").classList.toggle("dim", v.btnOff === "dim");
+
+    var changed = Object.keys(NOW).filter(function(k){ return v[k] !== NOW[k]; });
+    document.getElementById("diff").innerHTML = changed.length
+      ? "지금과 다른 것 <b>" + changed.length + "개</b> — " +
+        changed.map(function(k){ return LABEL[k]; }).join(" · ")
+      : "전부 지금 값 그대로다 — 무언가 골라 보면 여기에 차이가 뜬다.";
+
+    var lines = ["## DESIGN.md — 정한 값 (design_decisions_SOT.html 에서 고름)", ""];
+    Object.keys(NOW).forEach(function(k){
+      var mark = v[k] === NOW[k] ? "지금과 같다" : "바뀐다 (지금 " + NOW[k] + ")";
+      lines.push("- " + LABEL[k] + ": **" + v[k] + "** — " + mark);
+    });
+    lines.push("");
+    lines.push("고르지 않은 물음은 DESIGN.md 에 그대로 남는다 —");
+    lines.push("토큰 리터럴 복제 · 빈 상태/로딩/에러 공통화 · 토스트 · shadcn 계보 ·");
+    lines.push("다크모드 죽은 코드 · reduced-motion · 레거시 교재 트리(/book/**).");
+    document.getElementById("out").value = lines.join("\n");
+
+    try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* 사생활 창 등 */ }
+  }
+
+  function restore(){
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { saved = null; }
+    if (!saved) return;
+    Object.keys(saved).forEach(function(k){
+      var el = document.querySelector('input[name="'+k+'"][value="'+saved[k]+'"]');
+      if (el) el.checked = true;
+    });
+  }
+
+  function say(msg){
+    var el = document.getElementById("said");
+    el.textContent = msg;
+    setTimeout(function(){ if (el.textContent === msg) el.textContent = ""; }, 2400);
+  }
+
+  document.addEventListener("change", function(e){
+    if (e.target && e.target.name in NOW) apply();
+  });
+
+  document.getElementById("copy").addEventListener("click", function(){
+    var ta = document.getElementById("out");
+    ta.select();
+    var done = false;
+    try { done = document.execCommand("copy"); } catch (e) { done = false; }
+    if (!done && navigator.clipboard) {
+      navigator.clipboard.writeText(ta.value).then(function(){ say("복사했다"); },
+                                                   function(){ say("복사가 막혔다 — 직접 선택해서 복사해라"); });
+      return;
+    }
+    say(done ? "복사했다" : "복사가 막혔다 — 직접 선택해서 복사해라");
+  });
+
+  document.getElementById("reset").addEventListener("click", function(){
+    Object.keys(NOW).forEach(function(k){
+      var el = document.querySelector('input[name="'+k+'"][value="'+NOW[k]+'"]');
+      if (el) el.checked = true;
+    });
+    apply();
+    say("지금 값으로 되돌렸다");
+  });
+
+  restore();
+  apply();
+})();
+</script>
+</body>
+</html>

@@ -2,8 +2,9 @@
  * 내비 · 홈 · 교재학습 · 자모 CSS — nav_mockup_uiux.html 에서 이관 (2026-08-19)
  *
  * 활동 목업과 같은 팔레트를 쓴다. 색만 tokens.css semantic 으로 치환했다.
- * 이 목업은 활동 목업과 달리 radius 를 변수로 쓴다(--radius-card 14 · --radius-control 9) —
- * 두 목업의 값이 다르므로 통일하지 않고 각자 값을 그대로 둔다.
+ * 이 목업은 활동 목업과 달리 radius 를 변수로 쓴다. **값은 2026-08-28 에 통일했다** —
+ * 카드 16 · 컨트롤 12 로, 활동 화면 쪽에 맞췄다(DESIGN.md §8 의 2·4번).
+ * 전에는 14 · 9 였고 "두 목업의 값이 다르므로 통일하지 않는다" 고 적혀 있었다.
  *
  * 글자 크기는 tokens.css 의 눈금에 맞췄다(2026-08-26). 눈금 밖이던 넷 —
  * 11 · 13 · 19 · 22 — 을 가장 가까운 눈금으로 올렸다(12 · 14 · 20 · 24).
@@ -17,7 +18,8 @@
   overflow: hidden;
   background: var(--color-background-base);
   /* 이 목업 자체가 쓰는 간격·radius. tokens.css 에는 없다 */
-  --gutter: 16px; --radius-card: 14px; --radius-control: 9px;
+  /* 2026-08-28 기획자 확정 — 카드 16 · 컨트롤 12 로 활동 화면에 맞췄다(DESIGN.md §8) */
+  --gutter: 16px; --radius-card: 16px; --radius-control: 12px;
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
 
   /* 토큰에 대응이 없어 리터럴로 남긴 목업 색 */
@@ -134,11 +136,13 @@
 .nav-frame .paywall-benefits li svg { width:13px; height:13px; stroke-width:2.8; }
 
 .nav-frame .paywall-acts { width:100%; margin-top:20px; display:flex; flex-direction:column; align-items:stretch; gap:7px; }
-.nav-frame .paywall-cta { height:50px; border-radius:var(--radius-control); border:none;
+.nav-frame .paywall-cta { height:var(--d-btn-h,56px); border-radius:var(--d-btn-r,12px); border:none;
   background:var(--color-fill-primary); color:var(--color-background-surface);
   font-size:16px; font-weight:700; cursor:pointer; }
-/* 결제 화면이 아직 없다. 눌러도 조용한 것보다 눌리지 않는 것이 솔직하다 */
-.nav-frame .paywall-cta:disabled { background:var(--color-fill-primary); opacity:.48; cursor:default; }
+/* 결제 화면이 아직 없다. 눌러도 조용한 것보다 눌리지 않는 것이 솔직하다.
+   표현은 2026-08-28 에 활동·인증과 같은 색 교체로 맞췄다 — 전에는 파랑을 흐리게 했다(DESIGN.md §8 의 3번) */
+.nav-frame .paywall-cta:disabled { background:var(--color-background-disable);
+  color:var(--color-text-disable); cursor:default; }
 .nav-frame .paywall-back { min-height:40px; padding:8px 12px; border:0; background:transparent;
   color:var(--color-text-heading); font-size:14px; line-height:20px; font-weight:600; cursor:pointer; }
 .nav-frame .paywall-back:hover { color:var(--color-fill-primary); }
@@ -213,7 +217,7 @@
 .nav-frame .tab2 { flex:none; padding:5px 2px 7px; font-size:14px; line-height:20px; font-weight:600;
     color:var(--blue-gray-400); background:none; border:0; border-bottom:2px solid transparent; }
 .nav-frame .tab2.on { color:var(--color-text-strong); border-bottom-color:var(--color-fill-primary); }
-.nav-frame .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--color-line-control); border-radius:var(--radius-control); font-size:14px;
+.nav-frame .chip3 { flex:none; height:32px; padding:0 12px; border:1px solid var(--color-line-control); border-radius:var(--d-chip-r,8px); font-size:14px;
     font-weight:600; background:var(--color-background-surface); color:var(--color-text-sub); }
 .nav-frame .chip3.on { border-color:var(--color-text-heading); background:var(--color-text-heading); color:var(--color-background-surface); }
 .nav-frame .catalog-scroll { padding-bottom:var(--space-6); scroll-padding-bottom:var(--space-6); }

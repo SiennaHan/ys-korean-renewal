@@ -1,4 +1,5 @@
 import AppLayout from "@/components/app-layout";
+import DesignDecisions from "@/components/dev/design-decisions";
 import { AudioProvider } from "@/components/audio/audio-provider";
 import { MicPermissionProvider } from "@/components/audio/mic-permission-provider";
 import { ConfettiProvider } from "@/components/effect/confetti-provider";
@@ -44,6 +45,12 @@ function RootComponent() {
 					</AudioProvider>
 				</SignProvider>
 			</AppLayout>
+			{/*
+			 * 디자인 결정판 — 개발 빌드에만 그린다. 진짜 화면 위에서 후보 값을
+			 * 바꿔 보는 도구다(DESIGN.md 의 「정해야 할 물음」). 프로덕션 번들에는
+			 * 이 조건이 상수로 접혀 통째로 빠진다.
+			 */}
+			{process.env.NODE_ENV !== "production" && <DesignDecisions />}
 			{/* <TanStackRouterDevtools position="bottom-right" /> */}
 		</>
 	);
