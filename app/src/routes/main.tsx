@@ -1,4 +1,5 @@
 import TabBar from "@/components/main/nav/tab-bar";
+import SemesterEndedModal from "@/components/main/semester-ended-modal";
 import { useAuth } from "@/components/sign/sign-provider";
 import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
@@ -8,7 +9,7 @@ export const Route = createFileRoute("/main")({
 });
 
 function MainLayout() {
-	const { isSignedIn, isLoading } = useAuth();
+	const { isSignedIn, isLoading, user } = useAuth();
 
 	// 로딩 중에는 빈 화면
 	if (isLoading) {
@@ -43,6 +44,16 @@ function MainLayout() {
 				<Outlet />
 				<TabBar />
 			</div>
+			{/*
+			 * 학기 종료 알림 — **홈이 아니라 셸에 둔다.** 마지막에 보던 탭으로
+			 * 돌아오는 학생은 홈을 안 지나가므로, 홈에 두면 그 학생은 못 본다.
+			 * 프레임 밖에 두는 것은 `nav-frame` 아래 CSS 가 탭 바 자리를
+			 * 잡아 두었기 때문이다 — 모달은 화면 전체를 덮어야 한다.
+			 *
+			 * 뜰 조건은 모달이 스스로 판정한다(권한 스토어를 직접 읽는다).
+			 * 조건이 아니면 아무것도 그리지 않으므로 여기 갈래를 두지 않는다.
+			 */}
+			<SemesterEndedModal userId={user?.id} />
 		</motion.div>
 	);
 }

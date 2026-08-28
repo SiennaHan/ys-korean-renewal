@@ -143,14 +143,20 @@ const ja = {
 		err_codeRequired: "コードを入力してください。",
 		err_codeInvalid:
 			"コードが見つかりません。学校から受け取ったとおりに入力してください。",
-		err_codeFull: "このコードは定員に達しました。学校のご担当者にお問い合わせください。",
+		err_codeFull:
+			"このコードは定員に達しました。学校のご担当者にお問い合わせください。",
 		err_codeExpired:
 			"このコードは利用期間が終了しました。学校のご担当者に新しいコードをお求めください。",
-		err_codeNotStarted: "このコードはまだ使えません。学校のご担当者にお問い合わせください。",
-		err_codePaused: "このコードは現在使えません。学校のご担当者にお問い合わせください。",
-		err_codeDisabled: "このコードはもう使えません。学校のご担当者にお問い合わせください。",
-		err_tooManyTries: "何度も間違えました。しばらくしてからもう一度お試しください。",
-		err_codeCheckFailed: "確認できませんでした。しばらくしてからもう一度お試しください。",
+		err_codeNotStarted:
+			"このコードはまだ使えません。学校のご担当者にお問い合わせください。",
+		err_codePaused:
+			"このコードは現在使えません。学校のご担当者にお問い合わせください。",
+		err_codeDisabled:
+			"このコードはもう使えません。学校のご担当者にお問い合わせください。",
+		err_tooManyTries:
+			"何度も間違えました。しばらくしてからもう一度お試しください。",
+		err_codeCheckFailed:
+			"確認できませんでした。しばらくしてからもう一度お試しください。",
 	},
 	qr: {
 		redirecting: "ウェブページに移動しています",
@@ -594,6 +600,7 @@ const ja = {
 		semesterEndedTitle: "学校のご利用期間が終了しました",
 		semesterEndedBody:
 			"無料の授業は引き続きご利用いただけます。これまでの学習記録もそのまま残っています。続けるには学校のご担当者にお問い合わせください。",
+		semesterEndedConfirm: "OK",
 	},
 	paywall: {
 		freeTag: "無料",

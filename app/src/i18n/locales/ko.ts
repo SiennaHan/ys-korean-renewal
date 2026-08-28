@@ -157,7 +157,8 @@ const ko = {
 		err_codeRequired: "코드를 입력해 주세요.",
 		err_codeInvalid:
 			"코드를 찾을 수 없습니다. 학교에서 받은 그대로 다시 입력해 주세요.",
-		err_codeFull: "이 코드는 정원이 모두 찼습니다. 학교 담당자에게 문의해 주세요.",
+		err_codeFull:
+			"이 코드는 정원이 모두 찼습니다. 학교 담당자에게 문의해 주세요.",
 		err_codeExpired:
 			"이 코드는 사용 기간이 끝났습니다. 학교 담당자에게 새 코드를 받아 주세요.",
 		err_codeNotStarted:
@@ -166,8 +167,7 @@ const ko = {
 			"이 코드는 지금 사용할 수 없습니다. 학교 담당자에게 문의해 주세요.",
 		err_codeDisabled:
 			"이 코드는 더 이상 사용할 수 없습니다. 학교 담당자에게 문의해 주세요.",
-		err_tooManyTries:
-			"여러 번 틀렸습니다. 잠시 후 다시 시도해 주세요.",
+		err_tooManyTries: "여러 번 틀렸습니다. 잠시 후 다시 시도해 주세요.",
 		err_codeCheckFailed: "확인하지 못했습니다. 잠시 후 다시 시도해 주세요.",
 	},
 	qr: {
@@ -613,6 +613,7 @@ const ko = {
 		semesterEndedTitle: "학교 이용 기간이 끝났어요",
 		semesterEndedBody:
 			"무료로 열린 수업은 계속 이용할 수 있고, 지금까지의 학습 기록도 그대로 남아 있어요. 이어서 학습하려면 학교 담당자에게 문의해 주세요.",
+		semesterEndedConfirm: "확인",
 	},
 	/**
 	 * 결제 안내(페이월) — 게스트 · 개인 · 만료 · 기관 네 상태.

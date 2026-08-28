@@ -573,6 +573,7 @@ const zh = {
 		semesterEndedTitle: "学校使用期限已结束",
 		semesterEndedBody:
 			"免费课程仍可继续使用，您此前的学习记录也都保留着。若想继续学习，请联系学校负责人。",
+		semesterEndedConfirm: "确定",
 	},
 	paywall: {
 		freeTag: "免费",

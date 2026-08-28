@@ -21,7 +21,8 @@ const vi = {
 		loggingIn: "Đang đăng nhập...",
 		serverError: "Không thể kết nối đến máy chủ.",
 		err_loginFailed: "Email hoặc mật khẩu không đúng.",
-		err_accountInactive: "Tài khoản đã bị ngừng sử dụng. Vui lòng liên hệ với chúng tôi.",
+		err_accountInactive:
+			"Tài khoản đã bị ngừng sử dụng. Vui lòng liên hệ với chúng tôi.",
 		err_loginBadResponse:
 			"Phản hồi đăng nhập không hợp lệ. Vui lòng thử lại sau.",
 		err_serverError: "Không kết nối được máy chủ.",
@@ -139,7 +140,8 @@ const vi = {
 		err_codeRequired: "Vui lòng nhập mã.",
 		err_codeInvalid:
 			"Không tìm thấy mã này. Vui lòng nhập đúng như trường đã cấp.",
-		err_codeFull: "Mã này đã hết chỗ. Vui lòng liên hệ người phụ trách của trường.",
+		err_codeFull:
+			"Mã này đã hết chỗ. Vui lòng liên hệ người phụ trách của trường.",
 		err_codeExpired:
 			"Mã này đã hết hạn. Vui lòng xin mã mới từ người phụ trách của trường.",
 		err_codeNotStarted:
@@ -593,6 +595,7 @@ const vi = {
 		semesterEndedTitle: "Thời gian sử dụng của trường đã kết thúc",
 		semesterEndedBody:
 			"Các bài học miễn phí vẫn mở và kết quả học tập của bạn vẫn còn. Để tiếp tục, vui lòng liên hệ người phụ trách của trường.",
+		semesterEndedConfirm: "OK",
 	},
 	paywall: {
 		freeTag: "Miễn phí",

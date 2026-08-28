@@ -21,7 +21,8 @@ const en = {
 		loggingIn: "Signing in...",
 		serverError: "Failed to connect to server.",
 		err_loginFailed: "That email or password is not correct.",
-		err_accountInactive: "This account has been deactivated. Please contact us.",
+		err_accountInactive:
+			"This account has been deactivated. Please contact us.",
 		err_loginBadResponse:
 			"The sign-in response was not valid. Please try again shortly.",
 		err_serverError: "Could not reach the server.",
@@ -142,11 +143,15 @@ const en = {
 		err_codeFull: "This code is full. Please contact your school.",
 		err_codeExpired:
 			"This code has expired. Please ask your school for a new one.",
-		err_codeNotStarted: "This code is not active yet. Please contact your school.",
-		err_codePaused: "This code cannot be used right now. Please contact your school.",
-		err_codeDisabled: "This code can no longer be used. Please contact your school.",
+		err_codeNotStarted:
+			"This code is not active yet. Please contact your school.",
+		err_codePaused:
+			"This code cannot be used right now. Please contact your school.",
+		err_codeDisabled:
+			"This code can no longer be used. Please contact your school.",
 		err_tooManyTries: "Too many attempts. Please try again in a few minutes.",
-		err_codeCheckFailed: "We could not check the code. Please try again shortly.",
+		err_codeCheckFailed:
+			"We could not check the code. Please try again shortly.",
 	},
 	qr: {
 		redirecting: "Redirecting to the website",
@@ -590,6 +595,7 @@ const en = {
 		semesterEndedTitle: "Your school access has ended",
 		semesterEndedBody:
 			"Free lessons are still open and everything you have studied is still here. To continue, please contact your school.",
+		semesterEndedConfirm: "OK",
 	},
 	paywall: {
 		freeTag: "Free",
