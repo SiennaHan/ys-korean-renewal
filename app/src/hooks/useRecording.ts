@@ -8,6 +8,7 @@ import {
 } from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type RecordState = RecordMode;
 type StopAction = "transcribe" | "discard";
@@ -20,6 +21,14 @@ export function useRecording(options: UseRecordingOptions = {}) {
 	const { unlock } = useSharedAudio();
 	const { requestPermission } = useMicPermission();
 	const { addToast } = useToast();
+	/*
+	 * **토스트 문구를 여기서 지어내지 않는다.** 이 앱을 쓰는 사람은 전부 한국어를
+	 * 배우는 중이고 화면은 5개 언어다 — 전에는 이 파일의 일곱 줄만 한국어로 박혀
+	 * 있어서, 같은 미션 대화 화면에서 어떤 토스트는 번역되고 어떤 것은 한국어로
+	 * 떴다(2026-08-28 에 고쳤다). i18n 검수(`phase1/i18n_검수_20260828.md`)가
+	 * 컴포넌트만 봐서 `hooks/` 가 빠져 있었다.
+	 */
+	const { t } = useTranslation();
 
 	const [recordState, setRecordState] = useState<RecordState>("idle");
 	const [recordedMsg, setRecordedMsg] = useState<string | null>(null);
@@ -56,7 +65,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		async (blob: Blob) => {
 			if (blob.size === 0) {
 				setRecordState("idle");
-				addToast("녹음 데이터가 비어있습니다. 다시 시도해 주세요.");
+				addToast(t("activity.rec_empty"));
 				return;
 			}
 
@@ -70,7 +79,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 				const text = String(sttMsg ?? "").trim();
 				if (!text) {
 					setRecordState("idle");
-					addToast("음성 인식 결과가 비어있습니다. 다시 시도해 주세요.");
+					addToast(t("activity.rec_noText"));
 					return;
 				}
 
@@ -80,10 +89,10 @@ export function useRecording(options: UseRecordingOptions = {}) {
 			} catch {
 				if (reqId !== transcribeReqIdRef.current) return;
 				setRecordState("idle");
-				addToast("음성 인식에 실패했습니다. 다시 시도해 주세요.");
+				addToast(t("activity.rec_sttFailed"));
 			}
 		},
-		[addToast, options],
+		[addToast, options, t],
 	);
 
 	const startRecording = useCallback(async () => {
@@ -91,7 +100,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		setRecordState("preparing");
 		if (typeof MediaRecorder === "undefined") {
 			setRecordState("idle");
-			addToast("현재 브라우저는 음성 녹음을 지원하지 않습니다.");
+			addToast(t("activity.rec_unsupported"));
 			return;
 		}
 
@@ -99,7 +108,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		const granted = await requestPermission();
 		if (!granted) {
 			setRecordState("idle");
-			addToast("마이크 권한이 필요합니다.");
+			addToast(t("activity.rec_needMic"));
 			return;
 		}
 
@@ -159,15 +168,14 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		} catch {
 			clearRecorderResources();
 			setRecordState("idle");
-			addToast(
-				"녹음을 시작할 수 없습니다. 브라우저/권한 설정을 확인해 주세요.",
-			);
+			addToast(t("activity.rec_startFailed"));
 		}
 	}, [
 		addToast,
 		clearPhaseTimer,
 		clearRecorderResources,
 		requestPermission,
+		t,
 		transcribeBlob,
 		unlock,
 	]);
@@ -177,7 +185,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		const recorder = mediaRecorderRef.current;
 		if (!recorder || recorder.state === "inactive") {
 			setRecordState("idle");
-			addToast("녹음이 시작되지 않았습니다. 다시 시도해 주세요.");
+			addToast(t("activity.rec_notStarted"));
 			return;
 		}
 
@@ -187,7 +195,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 			recorder.stop();
 			phaseTimerRef.current = null;
 		}, RECORD_TAIL_MS);
-	}, [addToast, clearPhaseTimer]);
+	}, [addToast, clearPhaseTimer, t]);
 
 	const terminate = useCallback(() => {
 		clearPhaseTimer();

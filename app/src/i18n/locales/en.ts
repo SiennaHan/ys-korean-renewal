@@ -20,6 +20,11 @@ const en = {
 		loginFailed: "Sign-in failed.",
 		loggingIn: "Signing in...",
 		serverError: "Failed to connect to server.",
+		err_loginFailed: "That email or password is not correct.",
+		err_accountInactive: "This account has been deactivated. Please contact us.",
+		err_loginBadResponse:
+			"The sign-in response was not valid. Please try again shortly.",
+		err_serverError: "Could not reach the server.",
 	},
 	/**
 	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
@@ -732,6 +737,14 @@ const en = {
 		noData: "No data",
 		sceneImageAlt: "Scenario image",
 		analyzeFailed: "Analysis failed. Please try again.",
+		rec_empty: "The recording is empty. Please try again.",
+		rec_noText: "No speech was recognized. Please try again.",
+		rec_sttFailed: "Speech recognition failed. Please try again.",
+		rec_unsupported: "This browser does not support voice recording.",
+		rec_needMic: "Microphone permission is required.",
+		rec_startFailed:
+			"Could not start recording. Please check your browser and permission settings.",
+		rec_notStarted: "Recording did not start. Please try again.",
 	},
 	result: {
 		title: "Well done!",

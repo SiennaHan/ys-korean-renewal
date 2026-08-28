@@ -91,6 +91,14 @@ export async function signUpStudent(
 	}
 }
 
+/**
+ * 학생 로그인.
+ *
+ * **오류는 코드로 낸다** — `signUpStudent` 와 같은 규칙이다. 전에는 이 함수와
+ * 서버 둘 다 한국어 문장을 냈고, `login.tsx` 가 그것을 그대로 보여 줘서
+ * **영어·베트남어 화면에서도 한국어 오류가 떴다**(2026-08-28 에 바꿨다).
+ * 서버도 같이 고쳤다(`user_business.loginAsStudent`).
+ */
 export async function loginAsStudent(
 	email: string,
 	password: string,
@@ -102,10 +110,10 @@ export async function loginAsStudent(
 		);
 
 		if (!response.result || !response.data) {
-			return { success: false, error: "로그인에 실패했습니다." };
+			return { success: false, error: "loginFailed" };
 		}
 
-		// 에러 응답 확인
+		// 에러 응답 확인 — 서버도 코드를 낸다(loginFailed · accountInactive)
 		if ("error" in response.data) {
 			return { success: false, error: response.data.error };
 		}
@@ -115,7 +123,7 @@ export async function loginAsStudent(
 		// 토큰이나 사용자가 없으면 성공이 아니다. 넣으면 localStorage 에
 		// 문자열 "undefined" 가 남아 앱이 부팅에서 죽는다.
 		if (!data.token || !data.user) {
-			return { success: false, error: "로그인 응답이 올바르지 않습니다." };
+			return { success: false, error: "loginBadResponse" };
 		}
 
 		setAccessToken(data.token);
@@ -123,7 +131,7 @@ export async function loginAsStudent(
 		return { success: true, user: data.user };
 	} catch (error) {
 		console.error(error);
-		return { success: false, error: "서버 연결에 실패했습니다." };
+		return { success: false, error: "serverError" };
 	}
 }
 

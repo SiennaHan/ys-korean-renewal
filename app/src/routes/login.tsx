@@ -5,6 +5,7 @@ import { LanguageSelector } from "@/components/ui/language-selector";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { CircleAlert, Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
+import i18n from "@/i18n";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/login")({
@@ -58,7 +59,18 @@ function LoginPage() {
 				removeSavedEmail();
 			}
 		} else {
-			setError(result.error || t("login.loginFailed"));
+			/*
+			 * 서버와 `sign.ts` 둘 다 **코드**를 낸다(loginFailed · accountInactive ·
+			 * loginBadResponse · serverError). 가입 화면과 같은 방식이다.
+			 * **모르는 값은 그대로 보여 준다** — 옮기지 못한다고 "로그인 실패" 로
+			 * 뭉개면 이유가 사라진다.
+			 *
+			 * 전에는 `result.error` 를 그대로 그렸고 그 값이 한국어 문장이라
+			 * 영어·베트남어 화면에도 한국어가 떴다.
+			 */
+			const code = result.error ?? "loginFailed";
+			const key = `login.err_${code}`;
+			setError(i18n.exists(key) ? t(key) : code);
 		}
 
 		setIsLoading(false);

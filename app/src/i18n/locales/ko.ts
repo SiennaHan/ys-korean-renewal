@@ -26,6 +26,12 @@ const ko = {
 		loginFailed: "로그인에 실패했습니다.",
 		loggingIn: "로그인 중...",
 		serverError: "서버 연결에 실패했습니다.",
+		/* 서버와 sign.ts 가 내는 코드. 모르는 값은 화면이 코드 그대로 보여 준다 */
+		err_loginFailed: "이메일 또는 비밀번호가 올바르지 않습니다.",
+		err_accountInactive: "사용이 중지된 계정입니다. 문의해 주세요.",
+		err_loginBadResponse:
+			"로그인 응답이 올바르지 않습니다. 잠시 후 다시 시도해 주세요.",
+		err_serverError: "서버 연결에 실패했습니다.",
 	},
 	/** 학생 자체 회원가입 — 목업 phase1/draft_auth.html 의 가입 화면 */
 	/** 문의하기 — 전화 없이 글로 받는다. 보낸 글은 슬랙으로 꽂힌다 */
@@ -752,6 +758,15 @@ const ko = {
 		noData: "데이터가 없습니다",
 		sceneImageAlt: "상황 이미지",
 		analyzeFailed: "분석에 실패했습니다. 다시 시도해 주세요.",
+		/* 녹음 — hooks/useRecording.ts. 전에는 이 일곱이 한국어로 박혀 있었다 */
+		rec_empty: "녹음 데이터가 비어있습니다. 다시 시도해 주세요.",
+		rec_noText: "음성 인식 결과가 비어있습니다. 다시 시도해 주세요.",
+		rec_sttFailed: "음성 인식에 실패했습니다. 다시 시도해 주세요.",
+		rec_unsupported: "현재 브라우저는 음성 녹음을 지원하지 않습니다.",
+		rec_needMic: "마이크 권한이 필요합니다.",
+		rec_startFailed:
+			"녹음을 시작할 수 없습니다. 브라우저/권한 설정을 확인해 주세요.",
+		rec_notStarted: "녹음이 시작되지 않았습니다. 다시 시도해 주세요.",
 	},
 	result: {
 		title: "잘 했어요!",

@@ -20,6 +20,11 @@ const vi = {
 		loginFailed: "Đăng nhập thất bại.",
 		loggingIn: "Đang đăng nhập...",
 		serverError: "Không thể kết nối đến máy chủ.",
+		err_loginFailed: "Email hoặc mật khẩu không đúng.",
+		err_accountInactive: "Tài khoản đã bị ngừng sử dụng. Vui lòng liên hệ với chúng tôi.",
+		err_loginBadResponse:
+			"Phản hồi đăng nhập không hợp lệ. Vui lòng thử lại sau.",
+		err_serverError: "Không kết nối được máy chủ.",
 	},
 	/**
 	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
@@ -734,6 +739,14 @@ const vi = {
 		noData: "Không có dữ liệu",
 		sceneImageAlt: "Ảnh tình huống",
 		analyzeFailed: "Phân tích thất bại. Vui lòng thử lại.",
+		rec_empty: "Bản ghi âm trống. Vui lòng thử lại.",
+		rec_noText: "Không nhận dạng được giọng nói. Vui lòng thử lại.",
+		rec_sttFailed: "Nhận dạng giọng nói thất bại. Vui lòng thử lại.",
+		rec_unsupported: "Trình duyệt này không hỗ trợ ghi âm.",
+		rec_needMic: "Cần quyền truy cập micro.",
+		rec_startFailed:
+			"Không thể bắt đầu ghi âm. Vui lòng kiểm tra cài đặt trình duyệt và quyền.",
+		rec_notStarted: "Ghi âm chưa bắt đầu. Vui lòng thử lại.",
 	},
 	result: {
 		title: "Làm tốt lắm!",

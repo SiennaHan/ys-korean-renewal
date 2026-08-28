@@ -21,6 +21,11 @@ const ja = {
 		loginFailed: "ログインに失敗しました。",
 		loggingIn: "ログイン中...",
 		serverError: "サーバーに接続できませんでした。",
+		err_loginFailed: "メールアドレスまたはパスワードが正しくありません。",
+		err_accountInactive: "利用停止中のアカウントです。お問い合わせください。",
+		err_loginBadResponse:
+			"ログイン応答が正しくありません。しばらくしてからもう一度お試しください。",
+		err_serverError: "サーバーに接続できませんでした。",
 	},
 	/**
 	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
@@ -734,6 +739,14 @@ const ja = {
 		noData: "データがありません",
 		sceneImageAlt: "場面の画像",
 		analyzeFailed: "分析に失敗しました。もう一度お試しください。",
+		rec_empty: "録音データが空です。もう一度お試しください。",
+		rec_noText: "音声が認識できませんでした。もう一度お試しください。",
+		rec_sttFailed: "音声認識に失敗しました。もう一度お試しください。",
+		rec_unsupported: "このブラウザは音声録音に対応していません。",
+		rec_needMic: "マイクの許可が必要です。",
+		rec_startFailed:
+			"録音を開始できません。ブラウザと権限の設定をご確認ください。",
+		rec_notStarted: "録音が開始されませんでした。もう一度お試しください。",
 	},
 	result: {
 		title: "よくできました！",

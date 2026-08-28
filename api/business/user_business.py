@@ -15,16 +15,26 @@ def verifyPassword(password: str, hashed: str) -> bool:
 
 
 async def loginAsStudent(email: str, password: str):
+    """학생 로그인.
+
+    **오류는 한국어 문장이 아니라 코드로 낸다** — `signUpStudent` 와 같은 규칙이다.
+    이 앱을 쓰는 사람은 전부 한국어를 배우는 중이고 화면은 5개 언어인데,
+    전에는 여기만 문장을 내서 **영어·베트남어 화면에서도 한국어 오류가 떴다**
+    (2026-08-28 에 바꿨다). 앱이 `login.err_*` 로 옮긴다.
+
+    **없는 계정과 틀린 비밀번호에 같은 코드를 낸다** — 다르게 말하면
+    이메일을 훑어 가입 여부를 알아낼 수 있다.
+    """
     with sessionScope() as db:
         user = await repo_user.findByEmail(email, db)
         if not user:
-            return None, "이메일 또는 비밀번호가 올바르지 않습니다."
+            return None, "loginFailed"
 
         if not user.is_active:
-            return None, "비활성화된 계정입니다."
+            return None, "accountInactive"
 
         if not verifyPassword(password, user.password_hash):
-            return None, "이메일 또는 비밀번호가 올바르지 않습니다."
+            return None, "loginFailed"
 
         token = auth.signJwt(str(user.id), None, [user.role])
         return {

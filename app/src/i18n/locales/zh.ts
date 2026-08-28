@@ -20,6 +20,10 @@ const zh = {
 		loginFailed: "登录失败。",
 		loggingIn: "登录中...",
 		serverError: "无法连接到服务器。",
+		err_loginFailed: "邮箱或密码不正确。",
+		err_accountInactive: "该账号已停用。请联系我们。",
+		err_loginBadResponse: "登录响应不正确。请稍后再试。",
+		err_serverError: "无法连接服务器。",
 	},
 	/**
 	 * 이용약관·개인정보 처리방침. **문안은 아직 없다** —
@@ -712,6 +716,13 @@ const zh = {
 		noData: "没有数据",
 		sceneImageAlt: "情景图片",
 		analyzeFailed: "分析失败，请再试一次。",
+		rec_empty: "录音数据为空。请重试。",
+		rec_noText: "未能识别语音。请重试。",
+		rec_sttFailed: "语音识别失败。请重试。",
+		rec_unsupported: "当前浏览器不支持语音录制。",
+		rec_needMic: "需要麦克风权限。",
+		rec_startFailed: "无法开始录音。请检查浏览器和权限设置。",
+		rec_notStarted: "录音未开始。请重试。",
 	},
 	result: {
 		title: "做得好！",
