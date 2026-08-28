@@ -493,7 +493,9 @@ const ko = {
 		catNews: "뉴스",
 		catLifestyle: "일상",
 		reportAudio: "발음이 잘 안 들려요",
-		reportInappropriate: "부적절한 영상 신고",
+		reportInappropriate: "선정적·폭력적 내용",
+		noResultTitle: "'{{word}}' 검색 결과가 없어요",
+		noResultBody: "다른 표현으로 찾아보세요",
 	},
 	catalog: {
 		done: "완료",

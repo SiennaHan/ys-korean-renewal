@@ -295,7 +295,8 @@ const vi = {
 		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
 		 */
 		springPicnic: {
-			lastMission: "Nhiệm vụ trước: {{friend}} {{emoji}} {{score}} điểm · {{date}}",
+			lastMission:
+				"Nhiệm vụ trước: {{friend}} {{emoji}} {{score}} điểm · {{date}}",
 			date: "{{day}}/{{month}}",
 			title: "🌸 Nhiệm vụ số — Dã ngoại mùa xuân",
 			subLine1: "Cùng bạn bè đi dã ngoại",
@@ -486,7 +487,9 @@ const vi = {
 		catNews: "Tin tức",
 		catLifestyle: "Đời sống",
 		reportAudio: "Khó nghe rõ phát âm",
-		reportInappropriate: "Báo cáo video không phù hợp",
+		reportInappropriate: "Nội dung khiêu dâm hoặc bạo lực",
+		noResultTitle: "Không có kết quả cho “{{word}}”",
+		noResultBody: "Thử một cách diễn đạt khác",
 	},
 	catalog: {
 		done: "Hoàn thành",

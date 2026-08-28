@@ -594,11 +594,26 @@ export default function Content4() {
 		setReportVideo(video);
 	};
 
+	/*
+	 * 신고 사유는 **코드로 보내고 문구는 화면이 만든다** — clip_spec_v1 §06.
+	 *
+	 * 전에는 화면에 보이는 한국어를 그대로 `error_msg` 에 실었다. 그러면
+	 * **UI 언어가 다섯인데 DB 에는 한국어만 쌓이고**, 문구를 고치는 순간
+	 * 같은 사유가 두 이름으로 갈린다(실제로 「부적절한 영상 신고」를
+	 * 「선정적·폭력적 내용」으로 좁히면서 그럴 뻔했다).
+	 *
+	 * `error_code` 가 사유이고(`audio_quality` · `inappropriate`),
+	 * `error_msg` 는 **언어를 타지 않는 고정 라벨**이다 — 사람이 DB 나 슬랙에서
+	 * 읽을 때 코드만 있으면 불편하므로 남기되 화면 문구와 잇지 않는다.
+	 */
+	const REPORT_LABEL: Record<string, string> = {
+		audio_quality: "audio quality (sync/inaudible)",
+		inappropriate: "inappropriate content (sexual/violent)",
+	};
+
 	const onReport = async (type: string) => {
 		if (!reportVideo) return;
-		const errorMsg =
-			type === "audio_quality" ? "발음이 잘 안들려요" : "부적절한 영상 신고";
-		await reportError(reportVideo, type, errorMsg);
+		await reportError(reportVideo, type, REPORT_LABEL[type] ?? type);
 		setReportVideo(null);
 	};
 
@@ -730,19 +745,36 @@ export default function Content4() {
 					</>
 				)}
 
-				{/* 빈 상태 */}
+				{/*
+				 * 빈 상태가 **둘**이다 — clip_spec_v1 §04 의 2번(기획 확정 2026-08-27).
+				 *
+				 * 전에는 하나뿐이라 **검색 전과 검색 실패에 같은 말**을 냈다 —
+				 * "배우고 싶은 표현을 검색해 보세요". 0건이 나온 사람에게는 답이 아니다.
+				 * 검색어를 되짚어 주고 다른 말로 찾아보라고 한다.
+				 */}
 				{!hasResults && (
-					<div className="mt-[-30px] flex h-full flex-col items-center justify-center">
+					<div className="mt-[-30px] flex h-full flex-col items-center justify-center px-[24px]">
 						<img
 							src="/images/search_empty_img.svg"
 							alt=""
 							className="size-[64px]"
 						/>
-						<p className="mt-[8px] text-center font-semibold text-[16px] text-text-heading leading-[24px]">
-							{t("clip.emptyLine1")}
-							<br />
-							{t("clip.emptyLine2")}
-						</p>
+						{hasSearchWord ? (
+							<>
+								<p className="mt-[8px] break-keep text-center font-semibold text-[16px] text-text-heading leading-[24px]">
+									{t("clip.noResultTitle", { word: searchWord.trim() })}
+								</p>
+								<p className="mt-[4px] break-keep text-center font-medium text-[14px] text-text-sub leading-[20px]">
+									{t("clip.noResultBody")}
+								</p>
+							</>
+						) : (
+							<p className="mt-[8px] text-center font-semibold text-[16px] text-text-heading leading-[24px]">
+								{t("clip.emptyLine1")}
+								<br />
+								{t("clip.emptyLine2")}
+							</p>
+						)}
 					</div>
 				)}
 			</div>

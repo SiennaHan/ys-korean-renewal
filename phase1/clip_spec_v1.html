@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/components/main/content4.tsx, app/src/shared/data/clip.ts, api/business/report.py, api/persistence/repo_error_report.py @ 0cb7204 -->
+<!-- 관찰: app/src/components/main/content4.tsx, app/src/shared/data/clip.ts, api/business/report.py, api/persistence/repo_error_report.py @ 5fe9a40 -->
 <!-- 왜: 이 문서의 "지금 이렇게 돈다" 는 전부 저 넷을 읽고 재서 적은 것이다. 원본이 바뀌면 §03·§04 가 낡는다 -->
 <title>표현클립 — 명세도 목업도 없던 유입의 첫 화면</title>
 <style>
@@ -214,9 +214,26 @@
 체감되는 값이 아니다. <b>문제는 검색 속도가 아니라 받는 크기</b>다(§02).</p>
 
 <h3>3.2 결과 카드</h3>
-<p>썸네일 <span class="file">hqdefault.jpg</span> 위에 <b>좌상단 시작 시각 배지</b>,
-우상단 <b>하트 아이콘</b>. 아래에 <b>맞은 대본 줄</b>(검색어 강조) + 영상 제목 + <span class="file">⋮</span>.
+<p>썸네일 <span class="file">hqdefault.jpg</span> 위에 <b>좌상단 시작 시각 배지</b>.
+아래에 <b>맞은 대본 줄</b>(검색어 강조) + 영상 제목 + <span class="file">⋮</span>.
 카드를 누르면 <b>그 자리에서 인라인 재생</b>으로 바뀐다.</p>
+<p class="qa">우상단에 <b>하트가 있었는데 뺐다</b>(2026-08-27 · §05 의 5번).
+<span class="file">onClick</span> 이 없는 장식이었다.</p>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>규칙</th><th>지금</th></tr></thead>
+  <tbody>
+    <tr><td>몇 개를 그리나</td>
+      <td><b>상한이 없다</b> — 머리글의 개수만큼 끝까지 열린다(2026-08-27 · §05 의 2번).
+        한 번에 <b>열 장</b>을 그리고, 목록 끝 표식이 시야에 들어오면 열 장을 더 그린다.
+        썸네일은 <span class="file">loading="lazy"</span></td></tr>
+    <tr><td>목록이 갈리면</td>
+      <td><b>처음 판으로 되돌리고 맨 위로 올린다</b> — 검색어·갈래·지우기 셋 다.
+        <b>맨 위로 올리는 것이 같이 있어야 한다</b>: 스크롤이 남으면 끝 표식이 곧바로
+        보여 여러 판이 연달아 그려진다(브라우저에서 마흔 장이 그려지는 것을 봤다)</td></tr>
+  </tbody>
+</table>
+</div>
 
 <h3>3.3 플레이어</h3>
 <div class="tablewrap">
@@ -246,15 +263,21 @@
 
 <h3>3.4 신고</h3>
 <p>카드의 <span class="file">⋮</span> → 바텀시트 → 사유 둘(<b>발음이 잘 안 들려요</b> ·
-<b>부적절한 영상 신고</b> — <b>이 이름은 바뀐다</b>, §05 의 6번) → <span class="file">POST /report</span>.
+<b>선정적·폭력적 내용</b>) → <span class="file">POST /report</span>.
 <span class="file">category = "video"</span> · <span class="file">target_id = youtube_id</span> ·
 <span class="file">user_id = guestId</span>.</p>
+<p class="qa">「부적절한 영상 신고」를 <b>2026-08-27 에 좁혔다</b>(§05 의 6번) — 넓은 이름이
+"내 취향이 아니다" 까지 받았다. 같은 판에 <b>사유를 코드로 보내게 했다</b>:
+<span class="file">error_code</span> 가 <span class="file">audio_quality</span> ·
+<span class="file">inappropriate</span> 이고 <span class="file">error_msg</span> 는
+<b>언어를 타지 않는 고정 라벨</b>이다. 전에는 화면의 한국어를 그대로 실어서
+<b>UI 언어가 다섯인데 DB 에는 한국어만 쌓였다</b>.</p>
 <p><b>그런데 이것이 한 번도 저장된 적이 없다</b> — §04 의 4번. 그리고 신고가 무엇을 해야 하는지는
 <b>§05 의 6번에서 뒤집혔다</b>(숨기는 것이 아니라 하위로 내리는 것이다).</p>
 
-<h2><span class="n">04</span>어긋난 것 여덟 — 전부 실측이다</h2>
-<p>§05 에서 확정된 결정으로 <b>답이 정해진 것</b>은 그 번호를 달아 뒀다.
-남은 것은 결정 없이도 고쳐야 하는 것들이다.</p>
+<h2><span class="n">04</span>어긋난 것 여덟 — 다섯은 고쳤다</h2>
+<p><b>다섯은 2026-08-27 에 고쳤다</b>(1·2·3·7·8 — 서버가 필요 없는 것들이다).
+<b>남은 셋(4·5·6)은 전부 신고</b>이고, 서버를 건드려야 한다 — §06 의 순서를 지켜야 한다.</p>
 <div class="tablewrap">
 <table>
   <thead><tr><th>#</th><th>무엇</th><th>실측</th><th>무게</th></tr></thead>
@@ -263,15 +286,15 @@
       <td>머리글은 <span class="file">results.length</span>, 목록은
         <span class="file">results.slice(0, 10)</span>. "그래서" 는 <b>1,226건</b>이라 적히고 10개가 보인다.
         더 보는 길이 없다</td>
-      <td><span class="pill done">§05-2 가 정했다</span></td></tr>
-    <tr><td>2</td><td><b>결과가 0일 때 할 말이 없다</b></td>
+      <td><span class="pill done">고쳤다 08-27</span></td></tr>
+    <tr><td>2</td><td><b>결과가 0일 때 할 말이 없었다</b></td>
       <td>빈 상태 문구가 하나뿐이라 <b>검색 전과 검색 실패에 같은 말</b>을 낸다 —
         "배우고 싶은 표현을 검색해 보세요". 0건이 나온 사람에게는 답이 아니다</td>
-      <td><span class="pill stop">문구 없음</span></td></tr>
+      <td><span class="pill done">고쳤다 08-27</span></td></tr>
     <tr><td>3</td><td><b>하트가 장식이다</b></td>
       <td>카드 우상단 하트는 <span class="file">&lt;div&gt;</span> 안의 아이콘이고
         <b><span class="file">onClick</span> 이 없다.</b> 저장하는 곳도 없다</td>
-      <td><span class="pill done">§05-5 가 정했다 — 뺀다</span></td></tr>
+      <td><span class="pill done">뺐다 08-27</span></td></tr>
     <tr><td>4</td><td><b>신고가 한 번도 저장된 적이 없다</b></td>
       <td><span class="file">ko_error_report.target_id</span> 가
         <b><span class="file">varchar(10)</span></b> 인데 <b>유튜브 ID 는 11자</b>다.
@@ -289,16 +312,20 @@
         <span class="file">reportError</span> 를 부르는데 그 길이 4번에서 막힌다.
         즉 <b>삭제된 영상·임베드 금지 영상이 스스로 걸러지지도 않는다</b></td>
       <td><span class="pill stop">죽은 기능</span></td></tr>
-    <tr><td>7</td><td><b>열면 gzip 3.0 MB 를 받고 그 절반을 아무도 읽지 않는다</b></td>
+    <tr><td>7</td><td><b>열면 gzip 3.0 MB 를 받고 그 절반을 아무도 읽지 않았다</b></td>
       <td><span class="file">script_org</span> 3.0 MB(§02).
-        무료·비로그인으로 열리는 첫 화면이라 <b>가장 인내심이 없는 순간</b>에 받는다</td>
-      <td><span class="pill stop">고칠 것</span></td></tr>
+        무료·비로그인으로 열리는 첫 화면이라 <b>가장 인내심이 없는 순간</b>에 받는다.<br>
+        <b>뺐다</b> — 파일 11 MB → 5.4 MB, 실려 나가는 <b>gzip 3.0 MB → 1.92 MB</b>.
+        절반까지는 안 줄었다(반복이 많아 gzip 이 이미 잘 줄이고 있었다)</td>
+      <td><span class="pill done">뺐다 08-27</span></td></tr>
     <tr><td>8</td><td><b>클립 한 편의 ID 가 엑셀 오류값이다</b></td>
       <td>index 27 의 <span class="file">youtube_id</span> 가
-        <b><span class="file">#NAME?</span></b> 다. 실제 ID 가
+        <b><span class="file">#NAME?</span></b> 였다. 실제 ID 가
         <span class="file">-LFpAYRYkJI</span> — <b>하이픈으로 시작해 엑셀이 수식으로 읽었다</b>.
-        <span class="file">link</span> 필드에는 제대로 남아 있어 <b>되살릴 수 있다</b></td>
-      <td><span class="pill stop">데이터 오류</span></td></tr>
+        <span class="file">link</span> 에 남아 있어 캤다.<br>
+        <b>검사를 게이트에 걸었다</b> — <span class="file">scripts/clip-data-check.py</span>.
+        전수 확인 결과 깨진 것은 이 한 편, 중복은 0건이었다</td>
+      <td><span class="pill done">고쳤다 08-27</span></td></tr>
   </tbody>
 </table>
 </div>

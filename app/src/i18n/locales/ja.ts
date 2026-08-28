@@ -299,7 +299,8 @@ const ja = {
 		 * 한국어 값은 목업(game__pc_*)에 적힌 글자 그대로다.
 		 */
 		springPicnic: {
-			lastMission: "前回のミッション: {{friend}} {{emoji}} {{score}}点 · {{date}}",
+			lastMission:
+				"前回のミッション: {{friend}} {{emoji}} {{score}}点 · {{date}}",
 			date: "{{month}}月{{day}}日",
 			title: "🌸 春のピクニック数字ミッション",
 			subLine1: "友だちとピクニックを楽しみながら",
@@ -489,7 +490,9 @@ const ja = {
 		catNews: "ニュース",
 		catLifestyle: "日常",
 		reportAudio: "発音が聞き取りにくいです",
-		reportInappropriate: "不適切な動画を報告",
+		reportInappropriate: "性的・暴力的な内容",
+		noResultTitle: "「{{word}}」の検索結果がありません",
+		noResultBody: "別の表現で探してみてください",
 	},
 	catalog: {
 		done: "完了",

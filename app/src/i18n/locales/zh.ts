@@ -474,7 +474,9 @@ const zh = {
 		catNews: "新闻",
 		catLifestyle: "日常",
 		reportAudio: "发音听不太清",
-		reportInappropriate: "举报不当视频",
+		reportInappropriate: "色情或暴力内容",
+		noResultTitle: "没有“{{word}}”的搜索结果",
+		noResultBody: "换个表达再找找看",
 	},
 	catalog: {
 		done: "完成",
