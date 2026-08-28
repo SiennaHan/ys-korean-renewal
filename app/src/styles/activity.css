@@ -148,7 +148,7 @@
 .activity-frame .combo-left { flex:1 1 auto; display:flex; align-items:baseline; gap:12px; }
 .activity-frame .combo-left strong { color:var(--color-text-strong); font-size:32px; line-height:48px; font-weight:600; }
 .activity-frame .combo-left span { color:var(--color-text-sub); font-size:14px; line-height:20px; font-weight:500; }
-.activity-frame .jamo-section { margin-top:12px; padding:12px; border:0; border-radius:12px; background:#f6f8fb; }
+.activity-frame .jamo-section { margin-top:12px; padding:12px; border:0; border-radius:12px; background:var(--color-background-subtle); }
 .activity-frame .jamo-label { display:flex; align-items:baseline; gap:8px; margin-bottom:8px; }
 .activity-frame .jamo-label i { color:var(--color-fill-primary); font-style:normal; font-size:12px; line-height:16px; font-weight:600; }
 .activity-frame .jamo-label b { color:var(--color-text-strong); font-size:14px; line-height:20px; font-weight:600; }
@@ -373,7 +373,7 @@
 .activity-frame .role-order button.on { border-color:#dcecff; background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
 .activity-frame .turn { display:grid; grid-template-columns:34px minmax(0,1fr) 32px; gap:8px; align-items:start; margin:0; padding:8px 8px 8px 8px; border:0; border-left:3px solid transparent; border-bottom:1px solid var(--color-line-control); border-radius:0; background:var(--color-background-surface); }
 .activity-frame .turn.current.ai, .activity-frame .turn.current.me { border-left-color:var(--color-fill-primary); background:#eef6ff; }
-.activity-frame .turn .who { width:34px; height:24px; display:grid; place-items:center; border-radius:6px; background:#f1f3f6; color:var(--blue-gray-800); font-size:11px; line-height:18px; font-weight:700; }
+.activity-frame .turn .who { width:34px; height:24px; display:grid; place-items:center; border-radius:6px; background:var(--color-background-base); color:var(--blue-gray-800); font-size:11px; line-height:18px; font-weight:700; }
 .activity-frame .turn.me .who { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
 .activity-frame .turn .line { color:var(--color-text-strong); font-size:15px; line-height:24px; }
 .activity-frame .turn .listen { width:32px; min-height:32px; color:var(--color-text-sub); display:grid; place-items:center; }
@@ -381,7 +381,7 @@
 .activity-frame .turn .listen button:hover { background:var(--color-background-base); }
 .activity-frame .turn .listen button:disabled { cursor:default; }
 .activity-frame .turn .listen svg { width:17px; height:17px; }
-.activity-frame .turn.future .who { background:#f7f8f9; color:var(--blue-gray-400); }
+.activity-frame .turn.future .who { background:var(--color-background-base); color:var(--blue-gray-400); }
 .activity-frame .turn.future .line { color:var(--color-text-sub); }
 .activity-frame .record-card { margin:0; padding:12px 12px 12px 52px; border-bottom:1px solid var(--color-line-control); border-radius:0; background:var(--color-background-surface); }
 .activity-frame .record-result-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px 8px; }
@@ -422,7 +422,7 @@
 .activity-frame .passage { border-radius:12px; background:var(--color-background-subtle); padding:16px; font-size:15px; line-height:1.75; color:var(--color-text-strong); white-space:pre-line; }
 .activity-frame .q-text { margin:0 0 12px; font-size:16px; line-height:24px; font-weight:600; color:var(--color-text-strong); }
 .activity-frame /* 자모 발음 · 단어 듣고 따라 · 단어 읽고 쓰기 */
-  .mouth-video { aspect-ratio:16/9; width:100%; border-radius:10px; background:#f8faff; display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; position:relative; overflow:hidden; }
+  .mouth-video { aspect-ratio:16/9; width:100%; border-radius:10px; background:var(--color-background-subtle); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; position:relative; overflow:hidden; }
 .activity-frame .mouth-video::after { content:"▶"; position:absolute; width:48px; height:48px; border-radius:50%; background:rgba(1,128,255,.9); color:var(--color-text-inverse); display:grid; place-items:center; font-size:16px; }
 .activity-frame .audio-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .activity-frame .audio-pair > button { height:40px; border:0; border-radius:8px; display:flex; align-items:center; justify-content:space-between; padding:0 2px; font-size:16px; font-weight:600; cursor:pointer; }
@@ -432,7 +432,7 @@
 .activity-frame .audio-pair .mine.no { color:var(--color-fill-wrong); }
 .activity-frame .audio-pair i { width:36px; display:grid; place-items:center; }
 .activity-frame .audio-pair i svg { width:22px; height:22px; }
-.activity-frame .practice-browser { margin-top:16px; padding:12px; border-radius:16px; background:#f4f7fb; }
+.activity-frame .practice-browser { margin-top:16px; padding:12px; border-radius:16px; background:var(--color-background-subtle); }
 .activity-frame .practice-nav { min-height:34px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .activity-frame .practice-label { color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:500; }
 .activity-frame .jamo-tabs { display:flex; align-items:center; gap:3px; padding:2px; border-radius:9px; background:var(--color-line-normal); }
@@ -466,10 +466,10 @@
 .activity-frame .modal-box.notice .modal-tools { width:100%; margin-top:8px; }
 .activity-frame .modal-box.notice .modal-tools button { height:44px; font-size:14px; font-weight:600; }
 .activity-frame .modal-box.notice .modal-tools .go { background:var(--color-fill-primary); color:var(--color-background-surface); }
-.activity-frame .modal-canvas { aspect-ratio:1; border-radius:12px; background:#f6f8fb; border:0; position:relative; display:grid; place-items:center; }
+.activity-frame .modal-canvas { aspect-ratio:1; border-radius:12px; background:var(--color-background-subtle); border:0; position:relative; display:grid; place-items:center; }
 .activity-frame .modal-canvas span { font-size:150px; font-weight:400; color:var(--color-background-disable); line-height:1; }
 .activity-frame .modal-tools { display:flex; gap:12px; }
-.activity-frame .modal-tools button { flex:1; height:36px; border-radius:8px; background:#f4f6f9; border:0; color:var(--color-text-sub); font-size:13px; }
+.activity-frame .modal-tools button { flex:1; height:36px; border-radius:8px; background:var(--color-background-base); border:0; color:var(--color-text-sub); font-size:13px; }
 .activity-frame .wcards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; padding-top:8px; }
 .activity-frame .wcards button { position:relative; min-width:0; min-height:54px; display:grid; grid-template-columns:44px minmax(0,1fr); align-items:center; gap:4px; padding:4px; border:1px solid var(--color-line-control); border-radius:9px; background:var(--color-background-surface); cursor:pointer; }
 .activity-frame .wcards button:hover { background:var(--color-primitive-white-50); }
@@ -481,7 +481,7 @@
 .activity-frame .wcards .status-dot { position:absolute; z-index:1; top:4px; right:4px; width:13px; height:13px; display:grid; place-items:center; border:0; border-radius:50%; background:var(--color-line-normal); color:var(--color-background-surface); font-size:8px; line-height:1; font-weight:700; }
 .activity-frame .wcards button.done .status-dot { background:var(--color-fill-correct); }
 .activity-frame .wcards button.on .status-dot { background:var(--color-background-surface); color:var(--color-fill-primary); }
-.activity-frame .heard-row { border-radius:12px; border:0; background:#f4f6f9; padding:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; color:var(--color-text-sub); }
+.activity-frame .heard-row { border-radius:12px; border:0; background:var(--color-background-base); padding:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; color:var(--color-text-sub); }
 .activity-frame .heard-row b { font-size:20px; font-weight:700; color:var(--color-text-strong); }
 .activity-frame .heard-row.ok { background:var(--color-background-correct); }
 .activity-frame /* 결과 · 리포트 · 브리핑 · 예외 */

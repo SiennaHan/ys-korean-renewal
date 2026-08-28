@@ -1,4 +1,4 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ e0130f0 -->
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 59fcb4c -->
 
 # DESIGN.md — 학생앱 디자인
 
@@ -110,8 +110,28 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 | `#fff` 직접 사용 | 12 | 속성에 따라 갈랐다 — `background` 는 `--color-background-surface`, `color` 는 `--color-text-inverse` |
 | `#f9fafc` 직접 사용 | 5 | **쓸 semantic 이 없어서 만들었다** — `--color-background-subtle`(white-50). 흰 카드 *안*에서 한 겹 눌러 앉힌 면(지문·안내·음절 칸)이고, 기존 `sunken`(blue-gray-100)보다 훨씬 옅다 |
 
-**남은 35개는 토큰 밖 색이다** — `.chip-opt.on` 의 `#e9f2fc` 처럼 팔레트에 아예 없는
-값. 그것을 팔레트로 데려올지는 **다른 물음**이고 아직 안 정했다.
+### 팔레트 밖 색 — 절반을 걷었다 (2026-08-28)
+
+복제를 걷고 나니 팔레트에 **아예 없는** 색이 35곳 남았다. 세어 보니 둘로 갈렸다.
+
+**12곳은 색이 아니었다.** `nav.css` 의 `mask-image` 그라데이션에 든 `#000` 인데,
+마스크에서 그것은 "이 부분을 보여라" 는 **알파 값**이다. 팔레트로 바꿀 대상이 아니다.
+
+남은 23곳을 팔레트와의 거리(ΔE)로 재고, **역할이 맞는 semantic 안에서만** 후보를
+골랐다 — 배경에 `line-*` 을 쓰면 색은 맞아도 뜻이 틀린다.
+
+| 판정 | 곳 | 처리 |
+|---|---|---|
+| **ΔE < 2** (구별 못 함) | 9 | **걷었다** — 8곳은 `background-subtle`·`background-base`, `nav.css` 의 `--nav-surface-sunken` 은 `background-base` 로 |
+| ΔE 2~5 (나란히 놓으면 보임) | 10 | **안 걷었다** — 값 통일이 아니라 인상이 바뀐다. 절반이 `nav.css` 의 tint 계열이라 교재학습 목록이 같이 움직인다 |
+| ΔE 7.6 · 12.2 | 2 | 안 걷었다 — `--nav-text-mute`, 만료 페이월의 주황. 일부러 고른 색으로 보인다 |
+| 역할이 안 맞음 | 2 | 안 걷었다 — `.role-order` 테두리와 `.syl` 글자색은 역할을 맞추면 ΔE 8.8·11.5 가 된다 |
+
+지금 팔레트 밖은 **14곳**(마스크 12 제외). 나머지는 아직 안 정했다.
+
+> **`nav.css` 가 2026-08-26 에 같은 일을 한 번 했다** — "거의 같은 값이 여럿이었다 …
+> 눈에 보이는 차이가 아니라 **같은 뜻을 여러 값으로 적어 둔 것**이었다". 이번 9곳도
+> 같은 성격이다.
 
 <details><summary>다시 재는 법</summary>
 
@@ -341,8 +361,8 @@ Tailwind 기본 팔레트. **이 앱에서 토큰과 가장 먼 컴포넌트다.
 
 **여전히 아무도 안 보는 축.**
 
-- **팔레트에 아예 없는 색**을 쓰는지 — 지금 35곳이다. 토큰 *복제*는 검사가 잡지만,
-  토큰 *밖* 색은 아직 아무도 안 센다
+- **팔레트에 아예 없는 색**을 쓰는지 — 지금 14곳이다(마스크의 `#000` 12곳 제외).
+  토큰 *복제*는 검사가 잡지만, 토큰 *밖* 색은 아직 아무도 안 센다
 - **아직 안 정한 여덟** — 정하지 않은 것은 검사할 수도 없다
 - 어떤 화면이 **실제로 보기 좋은지** — 이것은 끝내 사람이 본다
 

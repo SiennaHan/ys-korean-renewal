@@ -40,7 +40,7 @@
     --nav-tint-line: #e4f1ff;
     --nav-tint-fill: #eef6ff;
     --nav-tint-fill-hover: #e7f3ff;
-    --nav-surface-sunken: #f7f8fa;
+    --nav-surface-sunken: var(--color-background-base);
     --nav-surface-caution: #fff3e0;
 }
 
