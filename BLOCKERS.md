@@ -831,23 +831,34 @@ pill 도 같은 값을 쓴다 — 둘이 같이 사라져야 한 신호로 읽�
 
 ---
 
-## 6. 서버 작업이 시작되지 않았다
+## 6. 서버 작업은 끝났다 — 이 절은 그 기록이다 (2026-08-28 갱신)
 
-`api/` 는 들여왔지만 리뉴얼용 코드는 아직 없다.
+**이 절은 오래 "서버 작업이 시작되지 않았다" 로 서 있었다.** 지금은 아니다. 아래
+표의 "없음" 이 전부 생겼다 — 2026-08-28 에 `api/server.py` 와
+`api/persistence/model.py` 를 열어 하나씩 대 봤다.
 
 | 필요 | 상태 |
 |---|---|
-| `POST /activity/enter` · `PATCH /activity/progress` · `POST /activity/complete` | 없음 |
-| `GET /review-queue` · `DELETE /review-queue/{id}` | 없음 |
-| `POST /learning-record` | 있음 — 응답 확장 필요 |
-| `GET /dashboard` | 있음 — 필드 추가 필요 |
-| `ko_activity_state` · `ko_review_queue` 신설 | 없음 |
+| `POST /activity/enter` · `PATCH /activity/progress` · `POST /activity/complete` | **있다** — `api/accepter/activity_accepter.py` |
+| `GET /review-queue` · `DELETE /review-queue/{id}` | **있다** — `api/accepter/review_queue_accepter.py` |
+| `POST /learning-record` | 있다 |
+| `GET /dashboard` | 있다 |
+| `ko_activity_state` · `ko_review_queue` 신설 | **있다** — `model.py` 440·480행 |
 
-**활동 컴포넌트 전부**이 다 만들어져 있고 **상태만 붙이면 된다.** 다만 문서가 말하는
-`ActivityShell` 은 **아직 없는 이름이다** — 상태를 전담하는 껍데기를 세우는 것이
-남은 일(§6 의 API 가 생긴 뒤)이고, 지금 화면들은 `ActivityFrame` 을 직접 쓰면서
-**구 `saveLearningRecord`** 로 기록한다(20곳). 실제 이름 대조는
-`phase1/shell_spec_v1.html` §14 맨 위에 있다.
+`api/business/` 에 리뉴얼용 모듈이 줄줄이 있다 — `entitlement` · `review_queue` ·
+`activity_state` · `learning_record` · `user_withdraw` · `dashboard`. 라우터는 28개다.
+
+**남은 것은 서버가 아니라 이 둘이다.**
+
+1. **결제** — 코드 0줄. 가격은 월 6달러로 정해졌고(2026-08-28) PG·통화·세금이 남았다
+   (`access_and_pricing_v1` §07).
+2. **교재 콘텐츠 DB 이전** — 게임 콘텐츠 10개 테이블은 갔는데 교재 문항은 아직 앱
+   번들이다 (`dev_spec_v1` §16 의 5번).
+
+**그리고 `ActivityShell` 은 끝내 세우지 않았다.** 문서가 말하던 그 이름은 지금도
+없고, 화면들이 `ActivityFrame` 을 직접 쓴다. 다만 **기록 경로는 옮겨졌다** — 구
+`saveLearningRecord` 를 쓰는 파일이 20곳에서 **7곳**으로 줄었고 새 활동 상태 경로를
+쓰는 곳이 15곳이다. 실제 이름 대조는 `phase1/shell_spec_v1.html` §14 맨 위에 있다.
 
 `dev_spec_v1.html` §16 의 네 물음 중 **둘은 정해졌고 둘은 개발자 판단이다.**
 

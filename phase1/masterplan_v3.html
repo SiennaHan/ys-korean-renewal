@@ -472,26 +472,48 @@
 </div>
 <p class="qa">1·2번이 끝나면 콘텐츠 저작을 시작할 수 있고, 그때부터 화면 설계(G2)로 넘어가면 된다.</p>
 
-<h2 id="s8"><span class="no">8</span>Phase 1 작업 0~8 현재 상태</h2>
+<h2 id="s8"><span class="no">8</span>Phase 1 작업 0~8 — 다 끝났다 (2026-08-28 재확인)</h2>
+<p class="qa"><b>이 표는 2026-08-20 인계 시점의 상태로 오래 서 있었다.</b> 그때는 1·2번이
+"저장소 밖" 이라 막혀 있었고 6·8번이 그것을 기다리고 있었다. <b>지금은 아홉 중 여덟이
+끝났고, 하나만 일부러 남아 있다.</b> 아래는 코드로 하나씩 대 본 결과다.</p>
 <div class="tablewrap"><table>
   <tr><th>#</th><th>작업</th><th>영역</th><th>상태</th></tr>
   <tr><td class="n">0</td><td>디자인 토큰 적용</td><td>FE</td>
-      <td><span class="pill ok">완료</span> <code>8e5e36c</code> · <code>@theme static</code> 필요했음</td></tr>
+      <td><span class="pill ok">완료</span> <code>8e5e36c</code> · <code>@theme static</code> 필요했음.<br>
+      색·타이포는 토큰이고 <b>간격·radius 는 아직 토큰이 없다</b> — <span class="file">DESIGN.md</span> 의 「간격과 radius」 절</td></tr>
   <tr><td class="n">1</td><td>DB 2종 신설</td><td>koreanapi</td>
-      <td><span class="pill stop">막힘</span> 저장소 밖</td></tr>
+      <td><span class="pill ok">완료</span> <code>ko_activity_state</code> · <code>ko_review_queue</code> 둘 다
+      <span class="file">api/persistence/model.py</span> 에 있다. <b>더 이상 저장소 밖이 아니다</b></td></tr>
   <tr><td class="n">2</td><td>API 7종</td><td>koreanapi</td>
-      <td><span class="pill stop">막힘</span> 저장소 밖 · 5번·8번을 막는다</td></tr>
+      <td><span class="pill ok">완료</span> <code>POST /activity/enter</code> · <code>PATCH /activity/progress</code> ·
+      <code>POST /activity/complete</code> · <code>GET /review-queue</code> · <code>DELETE /review-queue/{id}</code> ·
+      <code>POST /learning-record</code> · <code>GET /dashboard</code>. <span class="file">api/server.py</span> 에 라우터가 붙어 있다</td></tr>
   <tr><td class="n">3</td><td>라우트 통일 + 리다이렉트</td><td>FE</td>
       <td><span class="pill ok">일부</span> <code>4069885</code> · 플래시카드·미션대화·자모 모두 통합했다(자모는 2026-08-24, 6개 → <code>/learn/jamo?level&amp;lesson&amp;group&amp;sub</code>).<br>남은 것은 죽은 옛 라우트 <code>routes/book/</code> 19개를 걷어내는 것뿐 — BLOCKERS §3</td></tr>
   <tr><td class="n">4</td><td>Storybook</td><td>FE</td>
-      <td><span class="pill ok">완료</span> 토글 2축 포함 · 스토리는 비었다</td></tr>
+      <td><span class="pill ok">완료</span> 토글 2축 포함. <b>스토리도 생겼다</b> —
+      <code>mockup-parity</code> · <code>activity</code> · <code>state-audit</code> 셋</td></tr>
   <tr><td class="n">5</td><td>셸 컴포넌트 + 스토리</td><td>FE</td>
-      <td><span class="pill stop">되돌림</span> 목업 미확인으로 폐기</td></tr>
-  <tr><td class="n">6</td><td>활동 8종 이식</td><td>FE</td><td>미착수 · 5번 대기</td></tr>
+      <td><span class="pill stop">되돌림 — 그대로다</span> 목업 미확인으로 폐기했고 <b>다시 세우지 않았다.</b>
+      <code>ActivityShell</code> 은 여전히 없는 이름이고 화면들이 <code>ActivityFrame</code> 을 직접 쓴다.<br>
+      <b>다만 기록 경로는 옮겨졌다</b> — 구 <code>saveLearningRecord</code> 는 20곳에서 <b>7곳</b>으로 줄었고
+      새 활동 상태 경로를 쓰는 곳이 15곳이다</td></tr>
+  <tr><td class="n">6</td><td>활동 8종 이식</td><td>FE</td>
+      <td><span class="pill ok">완료</span> 5번을 기다리지 않고 갔다. 목업 대조가 전 화면을 지킨다
+      (<code>pnpm parity:activity</code>)</td></tr>
   <tr><td class="n">7</td><td>i18n 5×55</td><td>FE</td>
-      <td><span class="pill ok">완료</span> <code>d04b1c6</code></td></tr>
-  <tr><td class="n">8</td><td>홈 개편</td><td>양쪽</td><td>미착수 · 2번 대기</td></tr>
+      <td><span class="pill ok">완료</span> <code>d04b1c6</code> · 그 뒤 게임 다섯과 서울 퍼즐 콘텐츠까지 옮겼다(2026-08-27~28)</td></tr>
+  <tr><td class="n">8</td><td>홈 개편</td><td>양쪽</td>
+      <td><span class="pill ok">완료</span> 2번이 풀리면서 같이 됐다. 홈은
+      <span class="file">components/main/home/</span> 로 쪼개져 있다(진행·주간·이어하기)</td></tr>
 </table></div>
+<p class="qa"><b>그래서 지금은 Phase 1 이 아니다.</b> §15 의 정의로 보면 Phase 2(콘텐츠 DB·API·
+어드민 편집)는 <b>게임 콘텐츠 10개 테이블</b>과 어드민 CRUD 까지 갔고 <b>교재 콘텐츠 이전만</b>
+남았다(<span class="file">dev_spec_v1</span> §16 의 5번). Phase 3(복습 큐·결과 화면·리포트)도
+<span class="file">api/business/review_queue.py</span> · <code>result-screen</code> · <code>report-screen</code>
+으로 들어와 있다. Phase 2.5(B2C·페이월)는 화면과 권한 판정까지 됐고 <b>결제 코드가 0줄</b>이다.<br>
+<b><span class="file">phase1/</span> 폴더 이름은 화석이다</b> — 작업 초기에 지어졌고 그 뒤 모든
+문서가 phase 와 무관하게 거기 쌓였다. 이름만 보고 "아직 1단계" 로 읽지 마라.</p>
 
 <div class="card stop">
   <div class="t">서버가 저장소 밖이다 — 이게 실질 병목이다</div>
