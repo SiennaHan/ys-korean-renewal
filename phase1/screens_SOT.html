@@ -258,8 +258,12 @@
   .turn .who { width:34px; height:24px; display:grid; place-items:center; border-radius:6px; background:#f1f3f6; color:var(--blue-gray-800); font-size:11px; line-height:18px; font-weight:700; }
   .turn.me .who { background:var(--blue-50); color:var(--blue-600); }
   .turn .line { color:var(--blue-gray-900); font-size:15px; line-height:24px; }
-  .turn .listen { width:32px; min-height:32px; color:var(--blue-gray-600); display:grid; place-items:center; }
-  .turn .listen button { width:32px; height:32px; padding:0; border:0; border-radius:50%; background:transparent; color:inherit; display:grid; place-items:center; cursor:pointer; }
+  /* 이 칸이 행 높이를 정하고 있었다 — 스피커 버튼이 없는 줄에서도 행을 32 로 벌려서
+     배지·글줄(둘 다 24)이 위로 붙고 아래에만 8px 이 남았다(한 줄 대사: 위 8 · 아래 17).
+     칸을 24 로 낮추고 버튼만 32 를 지킨다 — 그러면 셋이 같은 높이에서 시작하므로
+     여러 줄이 되어도 첫 줄과 배지가 계속 맞는다 (2026-08-28). */
+  .turn .listen { width:32px; min-height:24px; color:var(--blue-gray-600); display:grid; place-items:center; }
+  .turn .listen button { width:32px; height:32px; margin:-4px 0; padding:0; border:0; border-radius:50%; background:transparent; color:inherit; display:grid; place-items:center; cursor:pointer; }
   .turn .listen button:hover { background:var(--blue-gray-50); }
   .turn .listen svg { width:17px; height:17px; }
   .turn.future .who { background:#f7f8f9; color:var(--blue-gray-400); }

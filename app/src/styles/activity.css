@@ -376,8 +376,14 @@
 .activity-frame .turn .who { width:34px; height:24px; display:grid; place-items:center; border-radius:6px; background:var(--color-background-base); color:var(--blue-gray-800); font-size:11px; line-height:18px; font-weight:700; }
 .activity-frame .turn.me .who { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
 .activity-frame .turn .line { color:var(--color-text-strong); font-size:15px; line-height:24px; }
-.activity-frame .turn .listen { width:32px; min-height:32px; color:var(--color-text-sub); display:grid; place-items:center; }
-.activity-frame .turn .listen button { width:32px; height:32px; padding:0; border:0; border-radius:50%; background:transparent; color:inherit; display:grid; place-items:center; cursor:pointer; }
+/* 이 칸이 행 높이를 정하고 있었다. `min-height:32px` 이라 **스피커 버튼이 없는
+   줄에서도** 행을 32 로 벌렸는데, 배지도 글줄도 24 라 위로 붙어 아래에만 8px 이
+   남았다 — 한 줄 대사가 위 8 · 아래 17 로 어긋났다(2026-08-28 실측).
+   칸을 24 로 낮추고 버튼만 32 를 지킨다(위아래 -4px 로 넘겨 뺀다). 그러면 배지·글줄·
+   스피커가 같은 높이에서 시작하므로 **여러 줄이 되어도 첫 줄과 배지가 계속 맞는다.**
+   가운데 정렬로 맞추면 여러 줄일 때 배지가 또 어긋난다 — 그래서 원인 쪽을 고쳤다. */
+.activity-frame .turn .listen { width:32px; min-height:24px; color:var(--color-text-sub); display:grid; place-items:center; }
+.activity-frame .turn .listen button { width:32px; height:32px; margin:-4px 0; padding:0; border:0; border-radius:50%; background:transparent; color:inherit; display:grid; place-items:center; cursor:pointer; }
 .activity-frame .turn .listen button:hover { background:var(--color-background-base); }
 .activity-frame .turn .listen button:disabled { cursor:default; }
 .activity-frame .turn .listen svg { width:17px; height:17px; }
