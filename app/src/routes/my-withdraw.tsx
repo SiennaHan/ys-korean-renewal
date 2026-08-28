@@ -17,8 +17,14 @@ export const Route = createFileRoute("/my-withdraw")({
  * 이었다. 문의로만 받겠다면 그 처리 절차(누가·며칠 안에)를 정해 두어야 하는데
  * 그것도 정해진 것이 없었다.
  *
- * **두 걸음이다.** 무엇이 지워지는지 먼저 보여 주고, 그다음에 비밀번호를 받는다.
+ * **두 걸음이다.** 무엇이 어떻게 되는지 먼저 보여 주고, 그다음에 비밀번호를 받는다.
  * 한 화면에 다 넣으면 읽지 않고 누른다 — 되돌릴 수 없는 일이다.
+ *
+ * **2026-08-29 에 하는 일이 바뀌었다.** 전에는 계정과 학습 기록을 전부 지웠고
+ * 이 화면도 "아래가 모두 지워집니다" 라고 5개 언어로 말했다. 지금은 이름·이메일만
+ * 되돌릴 수 없게 가리고 **학습 기록은 남긴다**(기획 확정 — 서버는
+ * `business/user_withdraw.maskAccount`). 그래서 이 화면의 문구를 같이 바꿨다 —
+ * **동의를 받는 자리라 여기가 낡으면 그것은 거짓말이 된다.**
  */
 function MyWithdrawPage() {
 	const { t } = useTranslation();
@@ -58,19 +64,24 @@ function MyWithdrawPage() {
 			return;
 		}
 		/*
-		 * 계정이 없어졌으므로 토큰을 들고 있어 봐야 모든 요청이 401 이다.
-		 * 세션을 지우고 로그인으로 보낸다.
+		 * 계정을 못 쓰게 됐으므로 토큰을 들고 있어 봐야 소용이 없다 —
+		 * `accepter/auth.JWTBearer` 가 탈퇴한 계정의 토큰을 403 으로 끊는다
+		 * (JWT 가 30일이라 그 구멍을 서버에서 막았다). 세션을 지우고 로그인으로 보낸다.
 		 */
 		signOut();
 		navigate({ to: "/login" });
 	};
 
-	/** 무엇이 지워지는지. 서버의 `withdrawal_scope.py` 가 지우는 것을 말로 옮긴 것이다 */
-	const losses = [
-		t("mypage.withdraw.lossRecords"),
-		t("mypage.withdraw.lossChat"),
-		t("mypage.withdraw.lossVoice"),
-		t("mypage.withdraw.lossInquiry"),
+	/**
+	 * 탈퇴하면 무엇이 어떻게 되는지. 서버의 `shared/withdrawal_scope.py` 를 말로
+	 * 옮긴 것이다 — **지워지는 것 둘과 남는 것 둘**이고 순서가 그 뜻이다.
+	 * 남는다는 말을 빼면 동의를 잘못 받는 것이 된다.
+	 */
+	const outcomes = [
+		t("mypage.withdraw.lossAccount"),
+		t("mypage.withdraw.lossName"),
+		t("mypage.withdraw.keptRecords"),
+		t("mypage.withdraw.keptSchool"),
 	];
 
 	return (
@@ -96,7 +107,7 @@ function MyWithdrawPage() {
 							{t("mypage.withdraw.lead")}
 						</p>
 						<ul className="mt-[12px] flex flex-col gap-[8px]">
-							{losses.map((line) => (
+							{outcomes.map((line) => (
 								<li
 									key={line}
 									className="flex gap-[8px] text-[14px] text-text-sub leading-[20px]"

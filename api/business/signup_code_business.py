@@ -273,19 +273,27 @@ async def listUses(callerUserId, codeId: int):
         uses = await repo_signup_code.findUses(row.id, db)
         out = []
         for u in uses:
-            # **`user_id` 가 NULL 일 수 있다** — 탈퇴하면 행은 남고 사람만 지워진다
-            # (`shared/withdrawal_scope.ANONYMIZE_MODELS`). 그대로 넘겨도 터지지는
-            # 않지만 `id == NULL` 은 SQL 에서 참이 될 수 없는 조건이라, 없는 것을
-            # 확인하려고 질의를 한 번 더 하는 꼴이 된다. 묻기 전에 가른다.
+            # **`user_id` 가 NULL 일 수 있다** — `purgeAccount`(진짜 삭제)가
+            # 그렇게 만든다(`shared/withdrawal_scope.ANONYMIZE_MODELS`). 그대로
+            # 넘겨도 터지지는 않지만 `id == NULL` 은 SQL 에서 참이 될 수 없는
+            # 조건이라, 없는 것을 확인하려고 질의를 한 번 더 하는 꼴이 된다.
             user = await repo_user.findById(u.user_id, db) if u.user_id else None
+
+            # **탈퇴자는 이름을 내지 않는다.** 탈퇴하면 계정이 남으므로
+            # (`maskAccount`, 2026-08-29) 여기서 `user` 가 잡힌다 — 그런데
+            # **이 화면은 학교가 본다.** 가려진 이름이라도 내보내면 「이 코드로
+            # 가입한 누가 탈퇴했다」가 학교에 드러나고, 그것은 「학교는 탈퇴자를
+            # 못 본다」는 확정과 어긋난다. 마스터는 학생 목록에서 본다.
+            withdrawn = bool(u.user_id is None or (user and user.withdrawn_at))
+            visible = user if (user and not user.withdrawn_at) else None
             out.append({
                 "userId": u.user_id,
-                "name": user.name if user else None,
-                "email": user.email if user else None,
+                "name": visible.name if visible else None,
+                "email": visible.email if visible else None,
                 "usedAt": u.used_at,
-                # 자리는 찼는데 사람이 없는 칸이다. 화면이 「탈퇴한 회원」으로
+                # 자리는 찼는데 볼 사람이 없는 칸이다. 화면이 「탈퇴한 회원」으로
                 # 그릴 수 있게 사실을 그대로 준다 — 이름이 빈 것과 다른 일이다
-                "withdrawn": u.user_id is None,
+                "withdrawn": withdrawn,
             })
         return jsonable_encoder(out), None
 

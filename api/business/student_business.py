@@ -179,13 +179,16 @@ async def updateStudent(studentId: int, updates: dict):
 
 
 async def deleteStudent(studentId: int):
-    """학생 하나를 지운다 — **탈퇴와 같은 범위다.**
+    """학생 하나를 탈퇴시킨다 — **탈퇴와 같은 일이다. 지우는 것이 아니다.**
 
-    전에는 `repo_user.deleteUser` 로 **`ko_user` 행만** 지웠다. 어드민 화면의
-    「삭제」 버튼이 이 길을 쓰는데, 그러면 학습 기록·복습 큐·대화·음성이
-    주인 없이 남았다 — 2026-08-28 에 실제로 재현했다(고아 4행).
-    지금은 `user_withdraw.withdrawByAdmin` 을 부른다. 학생이 스스로 탈퇴할 때와
-    같은 범위(`shared/withdrawal_scope.py`)를 지운다.
+    **이름이 `deleteStudent` 지만 2026-08-29 부터 아무것도 안 지운다.**
+    이름·이메일을 가리고 계정을 잠글 뿐 학습 데이터는 남는다
+    (`user_withdraw.maskAccount` · §13). 어드민 화면의 「삭제」 버튼이 이 길을
+    쓰는데, 그 버튼의 문구도 사실에 맞춰야 한다 — 아직 안 고쳤다.
+
+    전에는 `repo_user.deleteUser` 로 **`ko_user` 행만** 지웠다. 그러면 학습
+    기록·복습 큐·대화·음성이 주인 없이 남았다 — 2026-08-28 에 재현했다(고아 4행).
+    **정말 지워야 할 때는 `user_withdraw.purgeAccount` 다**(삭제권 행사).
 
     **누구를 지울 수 있는지는 부르는 쪽이 이미 가렸다** — `checkStudentSchool`.
     """
@@ -219,12 +222,12 @@ async def checkStudentSchool(studentId: int, callerSchoolCode: str):
 
 
 async def withdrawStudents(studentIds: list, callerSchoolCode: str = None):
-    """학생을 탈퇴시킨다 — **되돌릴 수 없다.**
+    """학생을 탈퇴시킨다 — **되돌릴 수 없다. 다만 지우는 것은 아니다.**
 
-    지우는 범위는 학생이 스스로 탈퇴할 때와 똑같다
-    (`user_withdraw.purgeAccount` · `shared/withdrawal_scope.py`) — 학습 기록 12개 표 ·
-    S3 음성 · 문의와 첨부까지다. 전에 어드민의 `DELETE /student/{id}` 는
-    **`ko_user` 행만** 지워서 나머지가 고아로 남았다(2026-08-28 에 이 길을 만들었다).
+    범위는 학생이 스스로 탈퇴할 때와 똑같다
+    (`user_withdraw.maskAccount` · `shared/withdrawal_scope.py`) — 이름과 이메일을
+    되돌릴 수 없게 가리고 계정을 잠근다. **학습 데이터는 남는다**(§13, 2026-08-29
+    기획 확정). 학교 목록에서는 사라지고 마스터 목록에는 남는다.
 
     **기본 동작이 아니다**(기획 2026-08-28) — 학기가 끝나면 `setAccess` 로 접근만
     끊고 데이터는 남긴다. 다음 학기에 재등록하는 학생의 풀이 데이터가 남아 있는

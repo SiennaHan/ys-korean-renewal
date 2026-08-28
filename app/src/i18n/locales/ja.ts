@@ -213,22 +213,22 @@ const ja = {
 		/** 회원 탈퇴 — 처리방침 제6조. 지우는 범위는 api/shared/withdrawal_scope.py 가 정본 */
 		withdraw: {
 			title: "退会",
-			lead: "退会すると以下がすべて削除されます。",
-			lossRecords: "学習記録 — 解いた問題・進度・復習キュー・ゲーム記録",
-			lossChat: "AI会話の内容と添削",
-			lossVoice: "録音した音声ファイル",
-			lossInquiry: "送ったお問い合わせと添付したスクリーンショット",
+			lead: "退会すると次のようになります。",
+			lossAccount: "このアカウントは使えなくなります — ログインできません",
+			lossName: "お名前とメールアドレスは元に戻せない形で消去します",
+			keptRecords:
+				"学習記録はお名前と切り離した状態で残ります — 解いた問題・進度・AI会話・録音した音声",
+			keptSchool: "所属校からは会員様が見えなくなります",
 			irreversible:
-				"元に戻せません。同じメールで再登録はできますが、削除された記録は戻りません。",
+				"元に戻せません。同じメールで再登録はできますが、残った記録が新しいアカウントに引き継がれることはありません。",
 			next: "次へ",
-			confirmLead:
-				"アカウントを削除するにはパスワードをもう一度入力してください。",
+			confirmLead: "退会するにはパスワードをもう一度入力してください。",
 			password: "パスワード",
 			passwordPlaceholder: "パスワードを入力",
 			showPassword: "パスワードを表示",
 			hidePassword: "パスワードを隠す",
 			submit: "退会する",
-			submitting: "削除中…",
+			submitting: "処理中…",
 			wrongPassword: "パスワードが正しくありません。",
 			serverError:
 				"今は処理できません。しばらくしてからもう一度お試しください。",

@@ -208,22 +208,22 @@ const vi = {
 		/** 회원 탈퇴 — 처리방침 제6조. 지우는 범위는 api/shared/withdrawal_scope.py 가 정본 */
 		withdraw: {
 			title: "Xóa tài khoản",
-			lead: "Xóa tài khoản sẽ xóa toàn bộ những mục sau.",
-			lossRecords:
-				"Hồ sơ học tập — câu đã làm, tiến độ, hàng ôn tập, kết quả trò chơi",
-			lossChat: "Nội dung hội thoại với AI và phần nhận xét",
-			lossVoice: "Các tệp ghi âm của bạn",
-			lossInquiry: "Câu hỏi bạn đã gửi và ảnh chụp màn hình đính kèm",
+			lead: "Khi bạn rời đi, những điều sau sẽ xảy ra.",
+			lossAccount: "Bạn không thể dùng lại tài khoản này — đăng nhập sẽ bị chặn",
+			lossName: "Tên và email của bạn bị xóa và không thể khôi phục",
+			keptRecords:
+				"Hồ sơ học tập vẫn được giữ lại nhưng không còn gắn với tên bạn — câu đã làm, tiến độ, hội thoại với AI, tệp ghi âm",
+			keptSchool: "Trường của bạn sẽ không còn nhìn thấy bạn",
 			irreversible:
-				"Không thể hoàn tác. Bạn có thể đăng ký lại bằng email cũ, nhưng dữ liệu đã xóa sẽ không quay lại.",
+				"Không thể hoàn tác. Bạn có thể đăng ký lại bằng email cũ, nhưng dữ liệu được giữ lại sẽ không chuyển sang tài khoản mới.",
 			next: "Tiếp theo",
-			confirmLead: "Nhập lại mật khẩu để xóa tài khoản.",
+			confirmLead: "Nhập lại mật khẩu để rời đi.",
 			password: "Mật khẩu",
 			passwordPlaceholder: "Nhập mật khẩu",
 			showPassword: "Hiện mật khẩu",
 			hidePassword: "Ẩn mật khẩu",
 			submit: "Xóa tài khoản",
-			submitting: "Đang xóa…",
+			submitting: "Đang xử lý…",
 			wrongPassword: "Mật khẩu không đúng.",
 			serverError: "Hiện chưa xử lý được. Vui lòng thử lại sau.",
 		},

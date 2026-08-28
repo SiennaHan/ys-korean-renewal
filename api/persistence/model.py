@@ -251,6 +251,17 @@ class KoUser(Base) :
     # 없어진다(기획 확정 2026-08-28: 무료 범위로 내려가고 안내는 하고 기록은 보인다).
     # 그래서 계정 정지(`is_active`)와 권한 만료를 다른 칸으로 가른다.
     access_ended_at = Column(DateTime,    nullable=True)
+    # **탈퇴한 시각.** NULL 이면 살아 있는 계정이다.
+    #
+    # 탈퇴해도 **행을 지우지 않는다**(기획 확정 2026-08-29). 이름과 이메일을
+    # 되돌릴 수 없게 가리고 계정은 남긴다 — 학습 데이터를 그대로 두어 학생들이
+    # 어떻게 공부하는지 참고하려는 것이다. 학교는 목록에서 못 보고 마스터만 본다.
+    #
+    # **`is_active` 와 뜻이 다르다.** 저쪽은 「계정 정지」라 되돌릴 수 있고,
+    # 이 칸은 되돌릴 수 없다(가린 이름·이메일이 이미 없다). 탈퇴하면 둘 다
+    # 찍히는데, 왜 못 쓰는 계정인지는 이 칸만 말해 준다. `access_ended_at`
+    # (학기 종료)까지 셋이 서로 다른 사실이다 — 한 칸에 겹쳐 담지 않는다.
+    withdrawn_at   = Column(DateTime,     nullable=True)
     created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
     updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 

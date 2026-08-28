@@ -29,9 +29,21 @@ async def findAdminListBySchool(db: Session, school_code: str):
 
 
 async def findStudentsBySchoolCode(schoolCode: str, db: Session, search: str = None):
+    """학교가 보는 목록. **탈퇴한 학생은 빠진다** (기획 확정 2026-08-29).
+
+    탈퇴해도 계정과 학습 데이터는 남지만(`user_withdraw.maskAccount`) 그것은
+    마스터가 보라고 남긴 것이고, 학교에는 나가지 않는다. 이름이 가려져 있어도
+    마찬가지다 — 학교 화면에 ○ 이 뜨는 것 자체가 「이 학생이 탈퇴했다」를
+    말해 준다.
+
+    **그래서 학교의 지난 숫자가 줄어든다.** 학생 수도 활동 합계도 탈퇴한
+    사람만큼 빠진다. 아래 `findAllStudents`(마스터)는 그대로 다 센다 —
+    두 화면의 합계가 다른 것이 맞다.
+    """
     query = db.query(model.KoUser).filter(
         model.KoUser.role == "student",
-        model.KoUser.school_code == schoolCode
+        model.KoUser.school_code == schoolCode,
+        model.KoUser.withdrawn_at.is_(None),
     )
     if search:
         keyword = f"%{search}%"
@@ -45,6 +57,14 @@ async def findStudentsBySchoolCode(schoolCode: str, db: Session, search: str = N
 
 
 async def findAllStudents(db: Session, search: str = None):
+    """마스터가 보는 목록. **탈퇴한 학생도 들어간다** (기획 확정 2026-08-29).
+
+    학생들이 어떻게 공부하는지 참고하려고 남긴 것이라 여기서 빼면 남긴 뜻이
+    없다. 이름·이메일은 가려져 있다(`shared/withdrawal_scope`).
+
+    `search` 는 이름·학번으로 찾는데, **탈퇴자는 이름으로 안 찾힌다** —
+    가린 값이 저장돼 있어서다. 학번으로는 찾힌다(안 가린다).
+    """
     query = db.query(model.KoUser).filter(
         model.KoUser.role == "student"
     )

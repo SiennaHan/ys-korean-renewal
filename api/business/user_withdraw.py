@@ -1,7 +1,19 @@
-"""회원 탈퇴 — 계정과 그 계정이 만든 것을 지운다.
+"""회원 탈퇴 — 계정을 가린다. 그리고 진짜로 지워야 할 때의 길.
 
-**무엇을 지우는지는 여기서 정하지 않는다.** `shared/withdrawal_scope.py` 가
-정본이고 이 파일은 그 목록을 돌 뿐이다. 정책이 바뀌면 그쪽만 고친다.
+**무엇이 남고 무엇이 지워지는지는 여기서 정하지 않는다.**
+`shared/withdrawal_scope.py` 가 정본이고 이 파일은 그 규칙을 돌 뿐이다.
+
+**길이 둘이다 — 부르는 곳을 헷갈리면 되돌릴 수 없다.**
+
+    maskAccount    ← **탈퇴는 이쪽이다** (기획 확정 2026-08-29)
+                     계정과 학습 데이터를 그대로 두고 이름·이메일만 가린다
+    purgeAccount   ← 진짜 삭제. 개인정보 삭제권 행사(제6조)처럼 정말 지워야
+                     할 때만. **탈퇴는 더 이상 이 길로 오지 않는다**
+
+2026-08-29 이전에는 탈퇴가 `purgeAccount` 로 갔다. 기획이 「학습 데이터는 전부
+두고 이름·이메일만 가린다」로 바꿨다 — 학생들이 어떻게 공부하는지 참고하려는
+것이다. `purgeAccount` 를 지우지 않은 이유는 **약속한 삭제권이 아직 그 길을
+필요로 하기 때문**이다(제6조: "삭제를 요구할 수 있습니다").
 
 정본 문서는 `docs/legal_draft_v1.html` §03 제6조 — "열람·정정·삭제·처리정지를
 요구할 수 있고 탈퇴할 수 있습니다". 전에는 그 문장을 적을 수가 없었다.
@@ -10,6 +22,8 @@
 **되돌릴 수 없다.** 그래서 비밀번호를 다시 받는다 — 토큰만 믿으면 남의 기기를
 잠깐 만진 사람이 계정을 지울 수 있다.
 """
+from datetime import datetime, timezone
+
 from business.auth_business import verifyPassword
 from persistence import repo_user
 from persistence.database import sessionScope
@@ -41,12 +55,12 @@ async def withdrawAccount(userId: str, password: str):
         user = await repo_user.findById(int(userId), db)
         if not user:
             return None, "사용자를 찾을 수 없습니다."
+        if user.withdrawn_at:
+            return None, "이미 탈퇴한 계정입니다."
         if not verifyPassword(password, user.password_hash):
             return None, "비밀번호가 올바르지 않습니다."
-        # 세션 밖에서 읽으면 DetachedInstanceError 다 — 필요한 것만 값으로 뽑는다
-        guestId = user.guest_id
 
-    return await purgeAccount(userId, guestId)
+    return await maskAccount(userId)
 
 
 async def withdrawByAdmin(userId: str):
@@ -69,16 +83,67 @@ async def withdrawByAdmin(userId: str):
             return None, "학생을 찾을 수 없습니다."
         if user.role != "student":
             return None, "학생만 탈퇴시킬 수 있습니다."
-        guestId = user.guest_id
+        if user.withdrawn_at:
+            return None, "이미 탈퇴한 학생입니다."
 
-    return await purgeAccount(userId, guestId)
+    return await maskAccount(userId)
+
+
+async def maskAccount(userId: str):
+    """계정을 지우지 않고 가린다 — **탈퇴가 실제로 타는 길이다.**
+
+    이름과 이메일을 되돌릴 수 없게 덮어쓰고, 비밀번호를 못 쓰게 만들고,
+    로그인을 막고, 탈퇴 시각을 찍는다. **학습 데이터는 하나도 건드리지 않는다.**
+
+    **본인 확인은 여기서 하지 않는다** — 부르는 쪽이 이미 했다.
+
+    가리는 규칙은 `shared/withdrawal_scope` 에 있다. 여기서 짜지 않는 이유는
+    규칙이 두 곳에 있으면 반드시 갈라지기 때문이다(그 파일 머리말).
+
+    **한 트랜잭션이다.** 이름만 가려지고 이메일이 남는 중간 상태가 생기면
+    되돌릴 수도 없고 다시 부를 수도 없다(위에서 「이미 탈퇴한 계정」으로 막힌다).
+    """
+    uid = int(userId)
+    with sessionScope() as db:
+        user = await repo_user.findById(uid, db)
+        if not user:
+            return None, "사용자를 찾을 수 없습니다."
+
+        before = {"name": user.name, "email": user.email}
+        user.name = withdrawal_scope.maskName(user.name)
+        # **id 를 넘긴다** — 가린 이메일이 겹치면 UNIQUE 에 걸린다. 그 파일에 까닭이 있다
+        user.email = withdrawal_scope.maskEmail(before["email"], uid)
+        user.password_hash = withdrawal_scope.MASKED_PASSWORD
+        # 로그인 두 길이 다 이 칸을 본다(`user_business.login` · `auth_business.login`).
+        # **왜 못 쓰는 계정인지**는 `withdrawn_at` 만 말해 준다 — 셋을 겹쳐 담지 않는다
+        user.is_active = False
+        user.withdrawn_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        # **세션 안에서 값으로 뽑는다** — 블록을 나온 뒤 user 의 칸을 읽으면
+        # DetachedInstanceError 다. 이 파일 위쪽 `withdrawAccount` 가 같은 이유로
+        # 그렇게 하고 있고, `signUpStudentWithCode` 는 실제로 한 번 당했다
+        masked = {"name": user.name, "email": user.email}
+
+        # **문의의 회신 주소도 이메일이다.** 기획이 「이메일까지 가린다」로 정했고
+        # (2026-08-29) 이 칸은 그 사람의 연락처다. 같은 트랜잭션 안에서 함께
+        # 가린다 — 계정 이메일만 가리고 여기를 두면 가린 것이 아니다.
+        # 문의 본문과 캡처는 지우지 않는다(학습 데이터와 같은 규칙: 다 둔다).
+        Q = withdrawal_scope.INQUIRY_MODEL
+        maskedInquiries = db.query(Q).filter(Q.user_id == str(uid)).update(
+            {"reply_email": masked["email"]}, synchronize_session=False)
+
+    return {"masked": masked,
+            "masked_inquiry_emails": maskedInquiries,
+            "kept": "학습 데이터는 그대로 둔다"}, None
 
 
 async def purgeAccount(userId: str, guestId: str = None):
     """계정과 그 계정이 만든 것을 지운다. 표별로 손댄 행 수를 돌려준다.
 
-    **본인 확인은 여기서 하지 않는다** — 부르는 쪽이 이미 했다
-    (`withdrawAccount` 는 비밀번호로, `withdrawByAdmin` 은 학교 소속으로).
+    **탈퇴는 이 길로 오지 않는다**(2026-08-29부터 — `maskAccount`). 이것은
+    개인정보 삭제권 행사(제6조)처럼 **정말 지워야 할 때**의 길이다.
+    지금 부르는 곳이 코드에 없다 — 삭제 요청은 문의로 받아 사람이 처리한다.
+
+    **본인 확인은 여기서 하지 않는다** — 부르는 쪽이 이미 해야 한다.
 
     **한 갈래는 지우는 것이 아니다.** `ANONYMIZE_MODELS` 의 표는 행을 남기고
     `user_id` 만 비운다 — 돌려주는 `deleted` 에서 「(user_id 비움)」이 붙은
