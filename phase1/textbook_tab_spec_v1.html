@@ -338,8 +338,10 @@
         탭에 자물쇠를 붙이려면 목업(<span class="file">nav__book__resume</span>)도 같이 나가야 한다</td></tr>
     <tr><td>권한 잠금은 <b>누르면 결제 화면</b>으로 보낸다. 게스트면 로그인 먼저.
         기관 학생이면 "학교에 문의" 로 — 결제 화면을 띄우면 안 된다</td>
-      <td><b>됐다.</b> <span class="file">paywall-panel.tsx</span> 가 게스트·개인·만료·기관·<b>학기 종료</b>
-        <b>다섯</b>으로 갈린다(<span class="file">PaywallKind</span>).
+      <td><b>됐다.</b> <span class="file">paywall-panel.tsx</span> 가 게스트·개인·만료·기관·<b>학기 종료</b>로 갈린다
+        (<span class="file">PaywallKind</span>). <b>갈래 수는 여기 적지 않는다</b> —
+        그 수의 주인은 <span class="file">paywall_SOT</span> 이고, 전에 여기 적어 뒀다가
+        상태가 하나 늘었을 때 이 줄만 낡았다.
         기관 학생에게는 가격도 결제 버튼도 안 보인다.<br>
         다섯째는 2026-08-28 에 붙었다 — 학기가 끝난 기관 학생이
         「이용 범위에 포함되지 않아요」를 보고 있었는데 그건 범위가 아니라 기간 문제다.

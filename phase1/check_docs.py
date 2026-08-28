@@ -126,6 +126,13 @@ APP = ROOT / "app"
 HANGUL_NUM = {"하나": 1, "둘": 2, "셋": 3, "넷": 4, "다섯": 5, "여섯": 6,
               "일곱": 7, "여덟": 8, "아홉": 9, "열": 10}
 
+# 숫자 자리에 쓸 조각. **`(\d+)` 만 쓰면 한글 수사를 놓친다** — 비교하는 쪽은
+# 위 표로 「넷」을 4 로 읽을 줄 아는데, 2026-08-29 까지 **어느 패턴도 그것을
+# 캡처하지 않았다.** 이 저장소 문서는 작은 수를 거의 한글로 쓰므로
+# (「상태 넷」·「갈래 다섯」) 사실상 작은 수는 아무도 안 보고 있었다.
+# 페이월 상태 수를 검사에 태우다가 발견했다 — 넷→다섯 을 넣어도 통과했다.
+NUM = r"(\d+|하나|둘|셋|넷|다섯|여섯|일곱|여덟|아홉|열)"
+
 
 def ported_screens() -> int | None:
     """masterplan §15 「화면 — 다 됐다」 표의 수 칸을 더한다.
@@ -209,6 +216,37 @@ def mockup_captures() -> int:
     """
     d = APP / "src" / "screens_ref"
     return len(list(d.glob("*.html"))) if d.is_dir() else 0
+
+
+def paywall_kinds() -> int:
+    """`PaywallKind` 의 갈래 수 — 앱 코드에서 센다.
+
+    2026-08-28 에 `schoolExpired` 가 붙어 넷이 다섯이 됐는데, 그때 **문서 셋이
+    「넷」으로 남았다**(paywall_SOT · textbook_tab_spec · INDEX). 화면에 새 상태를
+    더하는 것은 코드 한 줄인데 그 사실은 세 문서에 손으로 적혀 있었다.
+    그래서 코드에서 세어 견준다.
+    """
+    f = APP / "src" / "components" / "main" / "textbook" / "paywall-panel.tsx"
+    if not f.exists():
+        return 0
+    body = f.read_text(encoding="utf-8", errors="replace")
+    m = re.search(r"export type PaywallKind\s*=(.*?);", body, re.S)
+    if not m:
+        return 0
+    return len(re.findall(r'"([A-Za-z]+)"', m.group(1)))
+
+
+def ko_tables() -> int:
+    """`api/persistence/model.py` 의 `class Ko…` 수.
+
+    README 가 "createAllTables() 가 표를 스스로 만든다(N개)" 라고 적는데,
+    표는 기능이 늘 때마다 는다 — 2026-08-28 에 기관 코드로 셋이 늘어
+    **30 이 33 이 됐다.** 그때 README 만 낡았다.
+    """
+    f = ROOT / "api" / "persistence" / "model.py"
+    if not f.exists():
+        return 0
+    return len(re.findall(r"^class Ko", f.read_text(encoding="utf-8", errors="replace"), re.M))
 
 
 def token_counts() -> dict[str, int]:
@@ -315,6 +353,11 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         "인계 메모 수": "(문) INDEX.md",
         # 아래 셋은 지금 우연히 한 곳뿐이다. 우연을 규칙으로 굳혀 둔다 —
         # 나중에 누가 다른 문서에 또 적으면 그때 걸린다.
+        # 2026-08-29 에 넣었다. 둘 다 **이번 회차에 실제로 낡은 것**이다 —
+        # 페이월 상태는 코드에 하나 더하자 문서 셋이 「넷」으로 남았고,
+        # 표 수는 기관 코드로 셋이 늘자 README 만 30 으로 남았다.
+        "페이월 상태 수": "paywall_SOT",
+        "ko_* 표 수": "(문) README.md",
         "i18n 로케일 수": "(문) BLOCKERS.md",
         "VocaShot 문항 은행": "games_spec_v1",
         "n1_word_quiz 행": "games_spec_v1",
@@ -365,6 +408,18 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             if ported_screens()
             else []
         ),
+        ("페이월 상태 수", paywall_kinds(), [
+            # **페이월 문맥을 반드시 요구한다.** 처음엔 "N 으로 갈린다" 만 봤다가
+            # shell_spec 의 무관한 문장을 잡았다 — 패턴은 좁게, 문맥을 붙여서.
+            rf"게스트[^\n]{{0,60}}?{NUM}의 다음 행동",
+            rf"PaywallKind[^\n]{{0,30}}?{NUM}\s*(?:갈래|개|상태)",
+            rf"paywall-panel[^\n]{{0,80}}?{NUM}\s*으로 갈린다",
+            rf"페이월[^\n]{{0,30}}?{NUM}\s*(?:상태|갈래)로",
+        ]),
+        ("ko_* 표 수", ko_tables(), [
+            r"createAllTables\(\)[^\n]{0,80}?\*\*(\d+)개\*\*",
+            r"표를? 스스로 만든다[^\n]{0,60}?\*\*(\d+)개\*\*",
+        ]),
         ("목업 캡처 수", mockup_captures(), [
             r"캡처\s*(\d+)개(?:는|가|를|만)",
             r"캡처\s*(\d+)개가\s*곧",
@@ -560,6 +615,25 @@ def observation_baselines() -> list[str]:
 # 한계 — allow 는 문서 단위다. 눈감아 준 문서에 같은 거짓말이 새로 생기면
 # 못 잡는다(TWIN_ALLOW 와 같은 성질이다). 그래서 allow 는 아껴 써라.
 STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
+    # ── 2026-08-29 에 넣은 둘. 둘 다 **이번 회차에 실제로 여러 문서에서 낡아 있던 것**이다.
+    (
+        # 「」 안의 인용은 봐준다 — 고친 자리에 "전에 이렇게 적혀 있었다" 를 남기기 때문이다
+        r"(?<!「)(?:늘 )?무료 범위만 낸다(?![^\n]{0,24}(?:적혀|있었다|였다|아니다))"
+        r"|(?<!「)판정은 항상 통과(?![^\n]{0,20}(?:아니다|였다|있었다))",
+        "2026-08-28 부터 기관 학생은 전 급을 받는다 (shared/full_scope.py). "
+        "무료 범위인 것은 게스트와 개인 계정이고, 학기가 끝난 기관 학생도 무료로 내려간다. "
+        "이 문장은 access_and_pricing 두 곳 · user_flow · developer_tasks · dev_spec **다섯 곳**에 "
+        "남아 있었다 — 한 사실이 다섯 문서에 손으로 적혀 있으면 한 번 바뀔 때 다섯이 같이 낡는다",
+        {},
+    ),
+    (
+        r"(?<!「)탈퇴 기능이 없다|앱에 탈퇴(?:가|를)? (?:없|안 만)",
+        "회원 탈퇴는 2026-08-27 에 만들었다 — 앱의 /my-withdraw · POST /auth/withdraw. "
+        "지우는 범위는 api/shared/withdrawal_scope.py 가 정본이다. "
+        "2026-08-28 에 관리자 탈퇴(POST /student/withdraw)도 붙었다. "
+        "legal_draft 가 이것을 「없다(확인함)」로 적은 채 **만든 다음 날 관찰 기준만 올라갔다**",
+        {},
+    ),
     (
         r"남은 것은 가격|가격[^\n]{0,10}(?:하나(?:다|만)|미정|정해지기 전)"
         r"|가격[^\n]{0,6}(?:·|,)[^\n]{0,6}PG[^\n]{0,6}미정",
@@ -599,7 +673,7 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
     ),
     (
         r"앱 JSON[^\n]{0,20}자모[^\n]{0,20}안 (?:받|들어)|자모[^\n]{0,16}검수 대기",
-        "화면 여섯이 원장 n8_jamo 를 읽는다 (2026-08-24). 남은 검수는 받침·겹받침 낱자 목록뿐이고 배관을 막지 않는다",
+        "화면 여섯이 원장 n8_jamo 를 읽는다 (2026-08-24). **검수도 끝났다 (2026-08-28)** — 529행 전부 reviewed 다(원장 v41)",
         {},
     ),
     (
@@ -954,9 +1028,16 @@ def index_covers(live: set[str]) -> list[str]:
         if m:
             renamed.add(m.group(1)[:-5])
 
+    # `_superseded/` 로 **옮겼다고 선언한** 것도 부를 수 있다.
+    # 이 저장소는 그 선언을 `옛이름.html → _superseded/` 줄로 한다(REDIRECT_RE).
+    # 2026-08-29 에 legacy_shell_mockup 을 옮기면서 알았다 — 선언을 해 뒀는데도
+    # 이 검사가 "없는 문서를 가리킨다" 고 잡았다. **한 규약을 두 검사가 알아야 하는데
+    # 한쪽만 알고 있었다.**
+    moved = {m.group(1) for m in REDIRECT_RE.finditer(body)}
+
     # 색인이 없는 파일을 부르는 경우
     for m in re.finditer(r"`([A-Za-z0-9_.가-힣-]+)\.html`", body):
-        if m.group(1) not in live and m.group(1) not in renamed:
+        if m.group(1) not in live and m.group(1) not in renamed and m.group(1) not in moved:
             out.append(f"[색인] INDEX.md 가 없는 문서 {m.group(1)} 을 가리킨다")
 
     # 표의 같은 칸에 같은 문서가 두 줄. 문서를 합치면 두 줄이 남는다 —

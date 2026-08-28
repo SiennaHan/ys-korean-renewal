@@ -528,4 +528,215 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
 <p class="qa">1~3 은 §07 의 물음이 답을 기다리지 않아도 된다 — 무료 경계가 이미 정해졌으니
 지금 시작할 수 있다. <b>4~6 은 구독/급별이 정해져야 시작한다.</b></p>
 
+<h2><span class="n">10</span>권한을 정하는 쪽 — 어드민</h2>
+
+<p class="lead">§04 까지는 <b>권한을 받는 쪽</b>의 이야기였다. 2026-08-28 부터 그 권한을
+<b>학교가 직접 주고 뺏는다</b> — 그래서 도구 쪽 규칙도 여기 같이 둔다.
+<b>이 내용은 잠깐 <span class="file">admin_spec_v1.html</span> 이라는 별도 문서에 있었다</b>
+(2026-08-29). 하루 만에 여기로 합쳤다 — 「누가 무엇까지 보나」와 「그것을 누가 정하나」가
+갈려 있으면 <code>GET /entitlement</code> 가 무엇을 내는지를 두 곳에 적게 되고,
+그러면 한쪽만 고쳐진다. 실제로 그 문장이 이 저장소 다섯 곳에서 낡아 있었다.</p>
+
+<h3>10.1 역할이 셋인데 문이 둘이다</h3>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>역할</th><th>무엇</th><th>학교 경계</th></tr></thead>
+  <tbody>
+    <tr><td><code>master_admin</code></td><td>우리 쪽 운영자. 학교를 만들고 관리자를 승인한다</td>
+      <td><b>없다.</b> 모든 학교를 본다</td></tr>
+    <tr><td><code>school_admin</code></td><td>학교 담당자. 자기 학교의 코드와 학생을 다룬다</td>
+      <td><b>토큰의 학교로 고정</b></td></tr>
+    <tr><td><code>student_admin</code></td><td>학생 관리만 하는 보조 계정</td>
+      <td><b>토큰의 학교로 고정</b></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">문(guard)은 둘뿐이다 — <code>AdminRequired</code>(셋 다 통과)와
+<code>MasterAdminRequired</code>(마스터만). <b>역할이 셋인데 문이 둘이므로,
+「학교 관리자와 학생 관리자를 가르는 일」은 문이 아니라 각 엔드포인트 안에서 해야 한다.</b>
+이 어긋남이 실제로 구멍을 만들었다 — 바로 아래.</p>
+
+<h3>10.2 학교 경계는 검사가 아니라 덮어쓰기다</h3>
+
+<p>학생 관련 엔드포인트는 요청에 담긴 <code>school_code</code> 를 <b>검사하지 않고
+토큰의 학교로 덮는다</b>(<span class="file">student_accepter._mySchool</span>).</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th>왜</th></tr></thead>
+  <tbody>
+    <tr><td><b>검사 방식이면</b></td>
+      <td>"요청의 학교가 내 학교와 같은가" 를 <b>엔드포인트마다</b> 물어야 한다. 필드가 늘면
+      빠뜨린다 — <b>실제로 그렇게 뚫려 있었다.</b> <code>/student/batch</code> 와
+      <code>/student/upload</code> 가 검사를 하지 않아 <b>아무 학교 관리자가 남의 학교 학생을
+      만들고 고치고 지울 수 있었다</b>(2026-08-28 에 막았다)</td></tr>
+    <tr><td><b>덮어쓰기면</b></td>
+      <td>요청이 무엇을 보내든 <b>결과가 하나</b>다. 새 필드가 늘어도 경계는 그대로다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">같은 날 두 번째 구멍도 막았다 — <code>AdminRequired</code> 는
+<code>student_admin</code> 을 통과시키는데 덮어쓰기는 <code>school_admin</code> 만 보고 있었다.
+그래서 <b>학생 관리자는 남의 학교를 볼 수 있었다.</b> 10.1 의 "역할 셋 · 문 둘" 이
+이렇게 샌다 — <b>문을 늘리는 것이 아니라, 문이 통과시키는 역할 전부를 경계 함수가
+알고 있어야 한다.</b></p>
+
+<h3>10.3 화면 — 무엇이 마스터용이고 무엇이 학교용인가</h3>
+
+<p>라우트는 <span class="file">admin/src/routes/</span> 에 있다. 수를 여기 적지 않는다 —
+세려면 <code>ls admin/src/routes/*.tsx</code> 다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>화면</th><th>누가</th><th>무엇</th></tr></thead>
+  <tbody>
+    <tr><td><span class="file">login</span> · <span class="file">signup</span></td><td>공통</td>
+      <td>가입은 <b>승인 대기</b>로 들어간다(<code>is_approved</code>) — 마스터가 켜 줘야 쓸 수 있다</td></tr>
+    <tr><td><span class="file">admin</span> · <span class="file">school</span></td><td><b>마스터</b></td>
+      <td>관리자 승인·역할, 학교와 반 목록</td></tr>
+    <tr><td><span class="file">signup-code</span></td><td>마스터 · 학교</td>
+      <td><b>2026-08-28 신설.</b> §11</td></tr>
+    <tr><td><span class="file">student</span></td><td>마스터 · 학교 · 학생관리</td>
+      <td>목록·엑셀 일괄 등록·활동 현황·<b>학기 종료</b>·탈퇴 — §12</td></tr>
+    <tr><td><span class="file">qr-stats</span> · <span class="file">stt-shadow</span> ·
+        <span class="file">tts-test</span> · <span class="file">game/</span></td><td><b>마스터</b></td>
+      <td>운영 도구. 학교가 볼 것이 아니다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa"><b>어드민에 남은 위험 다섯은 여기 적지 않는다</b> —
+<span class="file">developer_tasks.md</span> 의 <b>DEV-14</b> 가 작업 카드로 들고 있다.
+학교 코드를 고치면 그 학교 학생이 조용히 고아가 되는 것, 탈퇴 뒤 남는 코드 사용 기록,
+그리고 <b>어드민에 게이트가 없는 것</b>(타입 검사가 통과하지 않고 빌드가 유틸리티 CSS 를
+내지 않는다 — 둘 다 리뉴얼 전부터다). <b>같은 것을 두 곳에 적지 않으려고 그렇게 뒀다.</b></p>
+
+<h2><span class="n">11</span>기관 발급 코드 — 학교가 뿌리고 학생이 스스로 들어온다</h2>
+
+<p>학교가 코드 한 장을 만들어 반에 공유하고, 학생은 로그인 화면의
+「학교/기관 코드가 있어요」로 들어가 그 코드로 가입한다. 그러면 <b>그 학교의 학생</b>이 되고
+§04 의 학교 분기를 탄다.</p>
+
+<h3>11.1 Crockford Base32 를 쓴다 — 정규화가 규격에 있어서다</h3>
+
+<p>알파벳에 <b><code>I</code>·<code>L</code>·<code>O</code>·<code>U</code> 가 없다.</b>
+그리고 입력 정규화가 규격에 적혀 있다 — <code>O</code>→<code>0</code>,
+<code>I</code>·<code>L</code>→<code>1</code>, 하이픈 제거
+(<span class="file">api/util/codeutils.py</span>).</p>
+
+<p class="qa">직접 고른 알파벳이 아니라 <b>남이 정한 규격</b>을 쓴 이유가 이것이다. 학교가 코드를
+칠판에 적고 학생이 손으로 옮겨 치는데, <b>사람이 헷갈리는 글자를 어떻게 되돌릴지</b>를
+우리가 즉흥으로 정하면 앱·서버·어드민이 서로 다르게 정한다.
+<b>저장하는 값도 정규화된 꼴이어야 한다</b> — 씨드에 <code>O</code> 가 든 코드를 손으로 넣으면
+조회가 <code>0</code> 으로 바꿔 찾아서 「코드가 없습니다」가 난다.</p>
+
+<h3>11.2 한도는 역할로 갈린다</h3>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th><code>school_admin</code></th><th><code>master_admin</code></th></tr></thead>
+  <tbody>
+    <tr><td>한 장에 몇 명</td><td><b>500명까지</b></td><td>제한 없음</td></tr>
+    <tr><td>기한</td><td><b>92일까지</b> ("3개월" — 7·8·9월이 92일로 가장 길다)</td><td>10년</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">값은 <span class="file">business/signup_code_business.py</span> 의
+<code>SCHOOL_MAX_USES</code>·<code>SCHOOL_MAX_DAYS</code> 가 정본이다.
+<b>왜 한도를 두나</b> — 코드는 반에 공유되는 물건이라 새는 것을 막을 수 없다.
+막을 수 있는 것은 <b>새더라도 몇 명·며칠까지인가</b>다.</p>
+
+<h3>11.3 자리를 세는 것이 어려운 부분이었다</h3>
+
+<p>"남은 자리가 있으면 하나 줄인다" 를 <b>읽고 나서 쓰면</b> 동시에 들어온 사람들이
+같은 자리를 본다. 2자리 코드에 열 명이 들어갈 수 있다 — <b>재현했다.</b></p>
+
+<p>그래서 <b>조건부 UPDATE 한 문장</b>으로 센다 — 자리·상태·기한을 <code>WHERE</code> 에 넣고
+<code>used_count</code> 를 올린 뒤 <b>1행이 바뀌었는지</b>로 성공을 판정한다
+(<span class="file">persistence/repo_signup_code.py</span> 의 <code>consumeSeat</code>).
+InnoDB 가 락 대기 뒤 커밋된 값으로 <code>WHERE</code> 를 다시 재기 때문에 성립한다.</p>
+
+<h3>11.4 코드의 기한은 입장만 막는다</h3>
+
+<p><b>코드가 만료돼도 이미 들어온 학생은 그대로다.</b> 코드 기한을 학생 권한의 기한으로
+쓰면, 학기 코드가 만료되는 날 그 코드로 들어온 학생 <b>전원이 동시에 잠긴다.</b>
+학생의 이용 기간은 <b>다른 칸</b>이 쥔다 — §12.</p>
+
+<h3>11.5 실패는 200 으로 돌려준다</h3>
+
+<p>앱과 어드민 <b>둘 다 401·403 에서 세션을 지운다.</b> 그래서 "코드가 틀렸다" 를 403 으로
+내면 <b>학생이 로그아웃된다.</b> 코드 관련 거절은 전부 HTTP 200 + <code>result:false</code> 다.
+같은 이유로 IP 당 실패 제한(10분 창)도 429 가 아니라 200 으로 낸다 —
+429 를 내면 앱의 응답 처리기가 통째로 던져서 이유가 「가입 실패」로 뭉개진다.</p>
+
+<h2><span class="n">12</span>학기 종료 — 계정 정지와 다른 칸이어야 했다</h2>
+
+<p>학교 어드민이 학생을 골라 <b>접근 권한을 끊는다</b>(<code>PATCH /student/access</code>).
+그러면 <code>ko_user.access_ended_at</code> 이 찍히고 <b>다음 요청부터</b> 그 학생의 범위가
+무료로 내려간다 — §04 의 학교 분기가 그것을 본다.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th>왜 <code>is_active</code> 를 쓰지 않았나</th></tr></thead>
+  <tbody>
+    <tr><td><b>토큰이 30일이다</b></td>
+      <td><code>is_active</code> 를 보는 곳은 <b>로그인뿐</b>이다. 권한 판정은 그 칸을 보지 않는다.
+      그래서 그 칸을 내려도 <b>이미 켜 둔 앱은 최대 30일 동안 전 급 그대로</b>다</td></tr>
+    <tr><td><b>말할 기회가 없어진다</b></td>
+      <td>그 칸을 내리면 <b>로그인 자체가 막힌다.</b> 그러면 「학기가 끝났습니다」라고 설명할 기회도,
+      지난 학기 기록을 보여 줄 기회도 없다 — 기획이 요구한 둘이 바로 그것이었다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>12.1 끊긴 학생이 보는 것</h3>
+
+<ul>
+  <li><b>로그인은 된다.</b> 지난 학기 기록도 그대로 보인다</li>
+  <li>앱에 들어올 때 <b>모달이 한 번</b> 뜬다 — 처음엔 홈의 정보 카드였는데
+    <b>아무도 읽지 않아서</b> 덮는 모달로 바꿨다(2026-08-28)</li>
+  <li>잠긴 것을 누르면 페이월이 같은 말을 다시 한다 —
+    <span class="file">paywall_SOT</span> 의 다섯째 상태다.
+    <b>「범위에 없다」가 아니라 「기간이 끝났다」</b>여야 한다. 어제까지 볼 수 있었던 수업이다</li>
+</ul>
+
+<h3>12.2 삭제는 기본이 아니다</h3>
+
+<p><b>기본은 접근만 끊고 데이터는 남긴다</b>(기획 확정 2026-08-28). 다음 학기에 다시 등록하는
+학생이 자기 풀이 기록을 잇는 편이 낫다. <b>자동 만료도 자동 탈퇴도 없다</b> —
+사람이 어드민에서 끊어야 한다.</p>
+
+<p>진짜 지우는 길은 따로 있다(<code>POST /student/withdraw</code>). 범위는 <b>본인 탈퇴와 같다</b> —
+<span class="file">api/shared/withdrawal_scope.py</span> 가 정본이다.</p>
+
+<p class="qa"><b>전에는 어드민의 「삭제」가 <code>ko_user</code> 행만 지웠다.</b> 탈퇴용으로 만들어 둔
+지우기 범위를 쓰지 않아서 학습 기록이 고아로 남았다 — <b>재현했고 고아 4행이었다.</b>
+2026-08-28 에 같은 경로를 쓰게 고쳤다. 아직 남는 것 하나는 DEV-14 가 들고 있다.</p>
+
+<h3>12.3 학생 현황은 합계와 진도까지다</h3>
+
+<p>학생 목록에 활동 요약이 붙는다 — 활동 일수·총 학습 시간·완료 수·마지막 활동일·
+가장 최근에 끝낸 급·과. <b>문항 단위는 내지 않는다</b>(기획 확정).</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>세는 데 함정이 있던 것</th><th>어떻게 했나</th></tr></thead>
+  <tbody>
+    <tr><td><b>「행이 있다」가 「공부했다」가 아니다</b></td>
+      <td><span class="file">ko_daily_activity</span> 의 행은 학습 세션 핑이 만든다 —
+      <b>활동 화면을 열어만 봐도 하루가 생긴다.</b> 그래서 활동 일수는
+      <code>responded</code> 가 참인 행만 센다</td></tr>
+    <tr><td><b>진도는 "가장 큰 번호" 가 아니다</b></td>
+      <td>학생은 앞 과로 돌아가기도 한다. <b>가장 최근에 끝낸</b> 과를 낸다</td></tr>
+    <tr><td><b>두 수의 기준이 다르다</b></td>
+      <td>활동 일수는 응답한 날, 학습 시간은 열어 둔 시간이다.
+      <b>나란히 놓으면 같은 기준으로 읽히므로</b> 화면과 타입에 그 차이를 적었다</td></tr>
+  </tbody>
+</table>
+</div>
+
 </main>

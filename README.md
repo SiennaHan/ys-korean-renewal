@@ -50,7 +50,7 @@
 |---|---|
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
-| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. **명세는 `phase1/admin_spec_v1.html` 이다**(전에는 어드민 문서가 없었다). **어드민에는 게이트가 없다** — `pnpm typecheck` 가 통과하지 않고(`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. 둘 다 리뉴얼 전부터다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
+| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. 명세는 `phase1/access_and_pricing_v1.html` §10~§12 다 — **전에는 어드민 문서가 없었다.** **어드민에는 게이트가 없다** — `pnpm typecheck` 가 통과하지 않고(`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. 둘 다 리뉴얼 전부터다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
 | `phase1/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `phase1/INDEX.md`.<br>그 밖에 인계 메모(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는

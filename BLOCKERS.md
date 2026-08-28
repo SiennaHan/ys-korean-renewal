@@ -724,7 +724,7 @@ vs `ux-control ps-result-retry`), 게임 캡처의 `<div id="app">` 껍데기를
 |---|---|---|
 | ~~자모 라우트 6→1 통합~~ | **했다 (2026-08-24)** — `routes/learn/jamo.tsx` 하나, 화면 여섯은 `components/learn/jamo/` | §2-c |
 | 표현클립 · MY 목업 이식 | `clip.tsx` 15줄 · `my.tsx` 26줄, 구 `Content4`·`Content5` 껍데기 | `masterplan_v3` §15 "목업 없음" — **목업부터 없다.** 표현클립은 2026-08-27 에 명세를 채웠다(`phase1/clip_spec_v1.html`) — 그릴 상태 일곱은 그 문서 §07, 화면에서 먼저 고칠 것 여덟은 §04. **MY 는 설계만 있고 그림이 없다** |
-| 권한·결제 | **표시는 들어왔다(2026-08-26, 037c07a)** — `GET /entitlement` · `entitlement-store` · 칩·게임 카드의 자물쇠 · 결제 안내.<br>남은 것은 둘이다: `ko_entitlement` 표가 아직 0곳이라 **학교 계약도 개인 결제도 담을 곳이 없고**(지금은 누구에게나 무료 범위만 낸다), 콘텐츠 라우트에 권한이 안 붙어 **주소를 직접 치면 잠긴 과도 열린다** | `access_and_pricing_v1` §09 의 1~3 은 됐다. 4 부터가 남았다 |
+| 권한·결제 | **표시는 들어왔다(2026-08-26, 037c07a)** — `GET /entitlement` · `entitlement-store` · 칩·게임 카드의 자물쇠 · 결제 안내.<br>**2026-08-28 에 학교 쪽이 풀렸다** — 계약 학교는 전 급이라는 확정이 나오면서 `ko_entitlement` 표 없이 `school_code` 만으로 판정할 수 있게 됐다(`shared/full_scope.py`). 여기 「지금은 누구에게나 무료 범위만 낸다」로 적혀 있었다.<br>남은 것은 둘이다: **개인 결제**는 여전히 담을 곳이 없고(`ko_entitlement` 0곳), 콘텐츠 라우트에 권한이 안 붙어 **주소를 직접 치면 잠긴 과도 열린다** | `access_and_pricing_v1` §09 의 1~3 은 됐다. 4 부터가 남았다 |
 | 메일 발송 | `api/` 에 SMTP·SES·SendGrid 어느 것도 없다 | §7 |
 
 ### 서버가 있어야 되는 것 (실측으로 확인)
@@ -1443,7 +1443,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 ### 기기 가정을 여기 적어 둔다 — 어디에도 없었다
 
 "모바일 웹" 이라는 말은 명세 네 곳에 있는데(`dev_spec_v1` · `shell_spec_v1` ·
-`legacy_shell_mockup`) **비율도, 태블릿도 적힌 곳이 없었다.**
+`_superseded/legacy_shell_mockup`) **비율도, 태블릿도 적힌 곳이 없었다.**
 
 | | |
 |---|---|
