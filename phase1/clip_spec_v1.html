@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/components/main/content4.tsx, app/src/shared/data/clip.ts, api/business/report.py, api/persistence/repo_error_report.py @ 9b692b0 -->
+<!-- 관찰: app/src/components/main/content4.tsx, app/src/shared/data/clip.ts, api/business/report.py, api/persistence/repo_error_report.py @ 3ad062c -->
 <!-- 왜: 이 문서의 "지금 이렇게 돈다" 는 전부 저 넷을 읽고 재서 적은 것이다. 원본이 바뀌면 §03·§04 가 낡는다 -->
 <title>표현클립 — 명세도 목업도 없던 유입의 첫 화면</title>
 <style>
@@ -557,8 +557,40 @@
 
 <h2><span class="n">07</span>목업이 없다 — 그려야 할 상태 일곱</h2>
 <p><span class="file">masterplan_v3</span> §15 가 이 화면을 <b>"목업 없음"</b> 으로 적어 둔 그 자리다.
-그래서 <b>목업 대조가 이 화면을 한 번도 보지 않는다</b> — <span class="file">parity:activity</span> 의
-대조 목록에 <span class="file">clip__*</span> 이 없다. 캡처를 만들면 그때부터 지켜진다.</p>
+그래서 <b>목업 대조가 이 화면을 한 번도 보지 않았다</b> — <span class="file">parity:activity</span> 의
+대조 목록에 <span class="file">clip__*</span> 이 없다.</p>
+
+<div class="callout good">
+  <div class="t">넷 중 둘을 했다 <span class="pill done">2026-08-27</span></div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>순서</th><th>무엇</th><th>상태</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><span class="file">content4.tsx</span> 를 <b>View 와 배선으로 가른다</b></td>
+        <td><span class="pill done">했다</span> — <span class="file">ClipView</span>.
+          대조는 제품 컴포넌트에 픽스처를 넣어 그리는데 상태와 훅이 섞이면 그릴 수가 없다.
+          재생기는 <span class="file">playerSlot</span>, 신고 시트는 <span class="file">sheet</span> 로 받는다</td></tr>
+      <tr><td>2</td><td>목업에 <b>표현클립 탭</b>을 만든다</td>
+        <td><span class="pill done">했다</span> — <span class="file">screens_SOT</span> 의
+          <span class="file">#mk-clip</span>. 게임 절과 같이 <b>iframe 안에서 앱 CSS 로</b> 그린다</td></tr>
+      <tr><td>3</td><td>캡처를 뜬다 (<span class="file">clip__*</span>)</td>
+        <td><span class="pill open">남았다</span></td></tr>
+      <tr><td>4</td><td>대조 목록에 등록한다</td>
+        <td><span class="pill open">남았다</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><b>앱 CSS 를 따로 넣었다.</b> 이 화면만 <b>Tailwind 유틸리티</b>로 그려져 있는데
+  (<span class="file">text-text-strong</span> · <span class="file">h-[185px]</span>), 목업의
+  <span class="file">appcss</span> 는 게임 목업을 만들던 시점 판이라 그 규칙이 없다.
+  게임 쪽을 흔들지 않으려고 <b>이 화면이 쓰는 규칙만 추려</b> 따로 넣었다(4.8 KB · 클래스 91).</p>
+  <p class="qa">마크업은 손으로 쓰지 않았다 — <span class="file">ClipView</span> 를
+  <span class="file">renderToStaticMarkup</span> 으로 그려 넣었다. 대조가 쓰는 것과 같은 방식이라
+  3·4번으로 이어질 때 어긋나지 않는다.</p>
+</div>
+
+<p><b>「재생 실패」는 아직 목업에도 없다</b> — 그 화면이 코드에 없기 때문이다(아래 표).
+만들 때 같이 그린다.</p>
 <div class="tablewrap">
 <table>
   <thead><tr><th>상태</th><th>무엇을 보이나</th></tr></thead>

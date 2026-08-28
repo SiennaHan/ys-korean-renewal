@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="uiux-version" content="2.7">
-<title>확정 UI/UX 목업 v2.8 — 활동 · 홈·목록 · VocaShot</title>
+<meta name="uiux-version" content="3.0">
+<title>확정 UI/UX 목업 v3.0 — 활동 · 홈·목록 · VocaShot</title>
 <style>
 /* ───────── 합친 문서의 껍데기 (원본에 없던 것은 이것뿐) ───────── */
   .deckhead { max-width:1180px; margin:0 auto; padding:28px 24px 0; }
@@ -899,23 +899,26 @@ button { font:inherit; }
   
   @media (max-width:960px){#mk-game .doc{ grid-template-columns:1fr; gap:14px; }#mk-game .stage{ grid-template-columns:1fr; gap:22px; }#mk-game .notes{ padding-top:0; }
   }#mk-game .screen iframe{ width:100%; height:100%; border:0; display:block; }
+/* 표현클립도 iframe 안에서 그린다 — 게임 절과 같은 사정 (2026-08-27) */
+#mk-clip .screen iframe{ width:100%; height:100%; border:0; display:block; }
+#mk-clip .screen{ background:#fff; }
 
 </style>
 </head>
 <body>
 
 <header class="deckhead">
-  <div class="kicker">UIUX · v2.6 · 확정 디자인 · 시각 정본</div>
-  <h1>확정 UI/UX 목업 v2.6</h1>
+  <div class="kicker">UIUX · v3.0 · 확정 디자인 · 시각 정본</div>
+  <h1>확정 UI/UX 목업 v3.0</h1>
   <p><b>구현이 이 목업과 다르면 이 목업이 기준이다.</b>
      <b>네 문서를 합친 것이다</b> — <code>_superseded/activity_mockups_uiux</code> ·
      <code>_superseded/nav_mockup_uiux</code> · <code>_superseded/vocashot_play_uiux</code> ·
      <code>_superseded/game_screens_SOT</code>.
      넷이 같은 하네스에 같은 디자인 시스템이다 — <code>:root</code> 공유 변수 39개가
      값이 하나도 다르지 않다. 아래 버튼으로 절을 고르고, 각 절 안의 버튼으로 화면을 고른다.</p>
-  <p><b>v2.6 · 2026-08-26</b> — 롤플레잉의 AI 차례·내 차례·발음 확인 상태를 서로 다른 조작으로 분리했다. 미래 대본 대비, 다시 듣기 터치 영역, 결과 행동 버튼을 모바일 기준으로 보정했다.</p>
+  <p><b>v3.0 · 2026-08-27</b> — 결과 상태 제목, 미션대화·롤플레잉·플래시카드의 실제 구조와 접근성, 어휘 그림 문제를 제품과 함께 승격했다. 세부 이유는 <code>screen_promotions.md</code>에 있다.</p>
   <table><tbody>
-<tr><td><b>활동</b></td><td>활동 20종</td><td>학습 활동 화면 20종. 문항·결과·로딩·실패까지 한 자리에서 본다.<br><b>목업 대조(<code>pnpm parity:activity</code>)에서는 22다</b> — <code>write</code>·<code>write3</code> 이 <b>조합</b>(<code>instrWriteSelect</code>)과 <b>따라쓰기</b>(<code>instrWriteTrace</code>) 두 단계이고, 여기서는 한 버튼 안에서 상태로 넘기지만 캡처는 단계마다 따로 뜬다. <b>20 은 활동 단위, 22 는 화면 상태 단위다.</b></td></tr>
+<tr><td><b>활동</b></td><td>활동 20종</td><td>학습 활동 화면 20종. 문항·결과·로딩·실패까지 한 자리에서 본다.<br><b>목업 대조(<code>pnpm parity:activity</code>)에서는 23화면이다</b> — 쓰기 두 활동의 조합·따라쓰기 단계와 어휘 그림 문제를 별도 상태로 캡처한다.</td></tr>
 <tr><td><b>홈·목록</b></td><td>홈 · 교재학습 · 자모 목록</td><td>탭을 눌러 도는 길. 오늘 할 일 세 갈래를 한 카드로 갈아 낀다.</td></tr>
 <tr><td><b>VocaShot</b></td><td>VocaShot 혼자 하기</td><td>게임 하나의 플레이 전체. 실제로 돌아간다 — 눌러서 해 볼 수 있다.</td></tr>
 <tr><td><b>게임 넷</b></td><td>게임 넷 — 17화면</td><td>배포된 화면을 렌더된 DOM 그대로 뽑은 것. 화면은 iframe 안에서 그린다.</td></tr>
@@ -937,13 +940,14 @@ button { font:inherit; }
   <button class="deck-btn" data-mk="nav" aria-pressed="false"><b>홈·목록</b><span>홈 · 교재학습 · 자모 목록</span></button>
   <button class="deck-btn" data-mk="voca" aria-pressed="false"><b>VocaShot</b><span>VocaShot 혼자 하기</span></button>
   <button class="deck-btn" data-mk="game" aria-pressed="false"><b>게임 넷</b><span>게임 넷 — 17화면</span></button>
+    <button class="deck-btn" data-mk="clip" aria-pressed="false"><b>표현클립</b><span>표현을 검색해 그 순간을 듣는다</span></button>
 </nav>
 
 <!-- ═══════ 활동 20종 — activity_mockups_uiux.html 을 그대로 옮겼다 ═══════ -->
 <section class="workbench mk" id="mk-act" data-mk="act" aria-label="활동 20종">
 
   <header class="doc">
-    <div><div class="kicker">FINAL · v2.6 · 20 SCREENS</div><h1>확정 활동 UI/UX 전체 목업</h1></div>
+    <div><div class="kicker">FINAL · v3.0 · 20 ACTIVITIES</div><h1>확정 활동 UI/UX 전체 목업</h1></div>
     <p>시안 2의 디자인 언어로 기본 활동, 자모, 대화, 결과와 예외 화면까지 한 파일에 통합했습니다. ‘전체보기’에서 전 화면을 한 번에 비교할 수 있습니다.</p>
   </header>
   <nav class="controls" aria-label="목업 화면 제어">
@@ -3851,6 +3855,57 @@ button { font:inherit; }
 .sp-loc-card.active { border-color: rgb(240, 168, 168); border-width: 1.5px; }</script>
 </section>
 
+<!-- ═══════ 표현클립 — 배포된 화면을 렌더한 DOM 그대로 옮겼다 (2026-08-27) ═══════
+     ── 고치는 곳: 아래 CLIP_CSS 와 CLIP_SCREENS.
+        게임 절과 같은 방식이다 — 앱 CSS 가 벤치를 침범하지 않도록 iframe 안에서 그린다.
+     ── 왜 앱 CSS 를 따로 두나: 이 화면만 **Tailwind 유틸리티**로 그려져 있다
+        (text-text-strong · h-[185px]). 위 appcss 는 게임 목업을 만들던 시점 판이라
+        그 규칙이 없다. 게임 쪽을 흔들지 않으려고 필요한 규칙만 추려 따로 넣었다. -->
+<section class="workbench mk" id="mk-clip" data-mk="clip" aria-label="표현클립">
+
+  <header class="doc">
+    <div><div class="kicker">UIUX · 배포 구조 보존</div><h1>표현 클립</h1></div>
+    <p><b>표현을 검색해 그 순간을 듣는 화면</b>입니다. 주는 것은 발음과 억양의 실례이고,
+       영상 감상이 아닙니다 — 구간이 중간 5초라 반복 재생이 뼈대입니다
+       (<code>clip_spec_v1</code> §05 의 1번).</p>
+  </header>
+  <nav class="controls">
+    <div class="control-group" data-set="v">
+      <span class="control-label">화면</span>
+      <button class="option" data-value="empty" aria-pressed="true">검색 전</button>
+      <button class="option" data-value="results" aria-pressed="false">결과 있음</button>
+      <button class="option" data-value="noresult" aria-pressed="false">결과 없음</button>
+      <button class="option" data-value="playing" aria-pressed="false">재생 중</button>
+    </div>
+    <div class="control-group" data-set="width">
+      <span class="control-label">폭</span>
+      <button class="option" data-value="390" aria-pressed="true">390</button>
+      <button class="option" data-value="360" aria-pressed="false">360</button>
+      <button class="option" data-value="320" aria-pressed="false">320</button>
+    </div>
+  </nav>
+  <section class="stage">
+    <div class="device-wrap">
+      <div class="device" id="device-clip"><div class="screen" id="screen-clip"></div></div>
+      <div class="caption" id="caption-clip">390 × 720</div>
+    </div>
+    <aside class="notes">
+      <div class="note-section"><h2>현재 화면</h2><p id="clip-ttl"></p></div>
+      <div class="note-section">
+        <h2>정한 것</h2>
+        <p><b>결과 상한이 없다:</b> 머리글의 개수만큼 끝까지 열린다. 열 장씩 그리고
+           목록 끝에 닿으면 한 판을 더 그린다.</p>
+        <p><b>빈 상태가 둘이다:</b> 검색 전과 결과 0 이 다른 말을 한다.</p>
+        <p><b>하트는 없다:</b> 저장은 이번 범위가 아니다 — 눌러도 안 되는 하트를 두지 않는다.</p>
+        <p><b>재생 실패 화면이 아직 없다:</b> 지금은 검은 플레이어만 남는다
+           (<code>clip_spec_v1</code> §07).</p>
+      </div>
+    </aside>
+  </section>
+
+</section>
+
+
 <script>
 /* 절 고르기. 절을 보인 뒤 그 절이 이미 누르고 있던 버튼을 다시 눌러 준다 —
    숨은 동안 잰 치수가 틀어져 있을 수 있어서, 원본의 render 를 이름으로 부르지 않고
@@ -6076,6 +6131,143 @@ document.addEventListener('click',e=>{
 });
 render();
 
+})();
+</script>
+<script id="clipcss" type="text/plain">:root{--color-background-base:var(--color-primitive-blue-gray-50);--color-background-choice:var(--color-primitive-blue-50);--color-fill-primary:var(--color-primitive-blue-500);--color-icon-normal:var(--color-primitive-blue-gray-600);--color-primitive-blue-50:#dbedff;--color-primitive-blue-500:#0180ff;--color-primitive-blue-900:#24425f;--color-primitive-blue-gray-50:#f6f7f8;--color-primitive-blue-gray-600:#7f848d;--color-primitive-blue-gray-900:#383a3f;--color-text-heading:var(--color-primitive-blue-900);--color-text-primary:var(--color-primitive-blue-500);--color-text-strong:var(--color-primitive-blue-gray-900);--color-text-sub:var(--color-primitive-blue-gray-600);--color-white:#fff;--font-weight-bold:700;--font-weight-medium:500;--font-weight-semibold:600;--tw-border-style:solid;--tw-translate-x:0;--tw-translate-y:0;}
+.-translate-y-1\/2{--tw-translate-y:calc(calc(1/2*100%)*-1);translate:var(--tw-translate-x)var(--tw-translate-y)}
+.absolute{position:absolute}
+.bg-\[\#383a3f\]{background-color:#383a3f}
+.bg-background-base{background-color:var(--color-background-base)}
+.bg-background-choice{background-color:var(--color-background-choice)}
+.bg-fill-primary{background-color:var(--color-fill-primary)}
+.bg-transparent{background-color:#0000}
+.bg-white{background-color:var(--color-white)}
+.border,.border-1{border-style:var(--tw-border-style);border-width:1px}
+.border-\[\#59acff\]{border-color:#59acff}
+.border-transparent{border-color:#0000}
+.break-keep{word-break:keep-all}
+.flex{display:flex}
+.flex-1{flex:1}
+.flex-col{flex-direction:column}
+.focus\:outline-none:focus{--tw-outline-style:none;outline-style:none}
+.font-bold{--tw-font-weight:var(--font-weight-bold);font-weight:var(--font-weight-bold)}
+.font-medium{--tw-font-weight:var(--font-weight-medium);font-weight:var(--font-weight-medium)}
+.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}
+.gap-\[16px\]{gap:16px}
+.gap-\[2px\]{gap:2px}
+.gap-\[6px\]{gap:6px}
+.gap-\[8px\]{gap:8px}
+.h-\[185px\]{height:185px}
+.h-\[1px\]{height:1px}
+.h-\[48px\]{height:48px}
+.h-full{height:100%}
+.hidden{display:none}
+.inset-0{top:0;bottom:0;left:0;right:0}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.justify-center{justify-content:center}
+.leading-\[16px\]{--tw-leading:16px;line-height:16px}
+.leading-\[18px\]{--tw-leading:18px;line-height:18px}
+.leading-\[20px\]{--tw-leading:20px;line-height:20px}
+.leading-\[24px\]{--tw-leading:24px;line-height:24px}
+.leading-\[26px\]{--tw-leading:26px;line-height:26px}
+.leading-\[32px\]{--tw-leading:32px;line-height:32px}
+.left-\[12px\]{left:12px}
+.lucide{color:currentColor!important;stroke:currentColor!important}
+.mt-\[-30px\]{margin-top:-30px}
+.mt-\[20px\]{margin-top:20px}
+.mt-\[4px\]{margin-top:4px}
+.mt-\[8px\]{margin-top:8px}
+.object-cover{object-fit:cover}
+.overflow-hidden{overflow:hidden}
+.overflow-x-auto{overflow-x:auto}
+.overflow-y-auto{overflow-y:auto}
+.pb-\[16px\]{padding-bottom:16px}
+.pl-\[12px\]{padding-left:12px}
+.placeholder\:text-text-sub::placeholder{color:var(--color-text-sub)}
+.pr-\[72px\]{padding-right:72px}
+.px-\[12px\]{padding-inline-start:12px;padding-inline-end:12px}
+.px-\[16px\]{padding-inline-start:16px;padding-inline-end:16px}
+.px-\[24px\]{padding-inline-start:24px;padding-inline-end:24px}
+.px-\[8px\]{padding-inline-start:8px;padding-inline-end:8px}
+.py-\[12px\]{padding-block-start:12px;padding-block-end:12px}
+.py-\[2px\]{padding-block-start:2px;padding-block-end:2px}
+.py-\[6px\]{padding-block-start:6px;padding-block-end:6px}
+.py-\[8px\]{padding-block-start:8px;padding-block-end:8px}
+.relative{position:relative}
+.right-\[12px\]{right:12px}
+.right-\[36px\]{right:36px}
+.rounded-\[10px\]{border-radius:10px}
+.rounded-\[12px\]{border-radius:12px}
+.rounded-\[6px\]{border-radius:6px}
+.rounded-\[8px\]{border-radius:8px}
+.rounded-full{border-radius:3.40282e38px}
+.scrollbar-hide::-webkit-scrollbar{display:none}
+.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+.shrink-0{flex-shrink:0}
+.size-\[24px\]{width:24px;height:24px}
+.size-\[64px\]{width:64px;height:64px}
+.text-\[\#0a6acb\]{color:#0a6acb}
+.text-\[12px\]{font-size:12px}
+.text-\[14px\]{font-size:14px}
+.text-\[16px\]{font-size:16px}
+.text-\[17px\]{font-size:17px}
+.text-\[20px\]{font-size:20px}
+.text-center{text-align:center}
+.text-icon-normal{color:var(--color-icon-normal)}
+.text-text-heading{color:var(--color-text-heading)}
+.text-text-primary{color:var(--color-text-primary)}
+.text-text-strong{color:var(--color-text-strong)}
+.text-text-sub{color:var(--color-text-sub)}
+.text-white{color:var(--color-white)}
+.text-white\/80{color:#fffc}
+.text-white\/80{color:color-mix(in oklab,var(--color-white)80%,transparent)}
+.top-1\/2{top:50%}
+.top-\[12px\]{top:12px}
+.truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.w-\[296px\]{width:296px}
+.w-full{width:100%}
+.whitespace-nowrap{white-space:nowrap}</script>
+<script id="clipscreens" type="application/json">{"clip__empty": "<div class=\"flex h-full w-full flex-col bg-background-base\"><div class=\"mt-[20px] flex h-[48px] items-center px-[16px]\"><span class=\"font-bold text-[20px] text-text-strong leading-[32px]\">표현 클립</span></div><div class=\"px-[16px] py-[8px]\"><div class=\"relative flex h-[48px] w-full items-center overflow-hidden rounded-[10px] bg-white\"><input type=\"text\" class=\"h-full w-full bg-transparent pr-[72px] pl-[12px] font-medium text-[14px] text-text-strong leading-[20px] placeholder:text-text-sub focus:outline-none\" placeholder=\"배우고 싶은 표현을 넣어 보세요\" value=\"\"/><div class=\"-translate-y-1/2 absolute top-1/2 right-[12px] flex size-[24px] items-center justify-center rounded-full bg-fill-primary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search text-white\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><path d=\"m21 21-4.3-4.3\"></path></svg></div></div></div><div class=\"scrollbar-hide flex-1 overflow-y-auto\"><div class=\"mt-[-30px] flex h-full flex-col items-center justify-center px-[24px]\"><img src=\"/images/search_empty_img.svg\" alt=\"\" class=\"size-[64px]\"/><p class=\"mt-[8px] text-center font-semibold text-[16px] text-text-heading leading-[24px]\">배우고 싶은 표현을<br/>검색해 보세요</p></div></div></div><audio class=\"hidden\" playsinline=\"\" preload=\"auto\"></audio>", "clip__noresult": "<div class=\"flex h-full w-full flex-col bg-background-base\"><div class=\"mt-[20px] flex h-[48px] items-center px-[16px]\"><span class=\"font-bold text-[20px] text-text-strong leading-[32px]\">표현 클립</span></div><div class=\"px-[16px] py-[8px]\"><div class=\"relative flex h-[48px] w-full items-center overflow-hidden rounded-[10px] bg-white\"><input type=\"text\" class=\"h-full w-full bg-transparent pr-[72px] pl-[12px] font-medium text-[14px] text-text-strong leading-[20px] placeholder:text-text-sub focus:outline-none\" placeholder=\"배우고 싶은 표현을 넣어 보세요\" value=\"ㅋㅋ쿠퓨\"/><button type=\"button\" class=\"-translate-y-1/2 absolute top-1/2 right-[36px] flex size-[24px] items-center justify-center text-icon-normal\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button><div class=\"-translate-y-1/2 absolute top-1/2 right-[12px] flex size-[24px] items-center justify-center rounded-full bg-fill-primary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search text-white\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><path d=\"m21 21-4.3-4.3\"></path></svg></div></div></div><div class=\"px-[16px]\"><div class=\"scrollbar-hide flex items-center gap-[6px] overflow-x-auto py-[8px]\"><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-[#59acff] bg-background-choice font-bold text-[#0a6acb]\">전체</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">예능</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">영화·드라마</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">뉴스</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">일상</button></div></div><div class=\"scrollbar-hide flex-1 overflow-y-auto\"><div class=\"mt-[-30px] flex h-full flex-col items-center justify-center px-[24px]\"><img src=\"/images/search_empty_img.svg\" alt=\"\" class=\"size-[64px]\"/><p class=\"mt-[8px] break-keep text-center font-semibold text-[16px] text-text-heading leading-[24px]\">&#x27;ㅋㅋ쿠퓨&#x27; 검색 결과가 없어요</p><p class=\"mt-[4px] break-keep text-center font-medium text-[14px] text-text-sub leading-[20px]\">다른 표현으로 찾아보세요</p></div></div></div><audio class=\"hidden\" playsinline=\"\" preload=\"auto\"></audio>", "clip__playing": "<div class=\"flex h-full w-full flex-col bg-background-base\"><div class=\"mt-[20px] flex h-[48px] items-center px-[16px]\"><span class=\"font-bold text-[20px] text-text-strong leading-[32px]\">표현 클립</span></div><div class=\"px-[16px] py-[8px]\"><div class=\"relative flex h-[48px] w-full items-center overflow-hidden rounded-[10px] bg-white\"><input type=\"text\" class=\"h-full w-full bg-transparent pr-[72px] pl-[12px] font-medium text-[14px] text-text-strong leading-[20px] placeholder:text-text-sub focus:outline-none\" placeholder=\"배우고 싶은 표현을 넣어 보세요\" value=\"감사합니다\"/><button type=\"button\" class=\"-translate-y-1/2 absolute top-1/2 right-[36px] flex size-[24px] items-center justify-center text-icon-normal\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button><div class=\"-translate-y-1/2 absolute top-1/2 right-[12px] flex size-[24px] items-center justify-center rounded-full bg-fill-primary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search text-white\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><path d=\"m21 21-4.3-4.3\"></path></svg></div></div></div><div class=\"px-[16px]\"><div class=\"scrollbar-hide flex items-center gap-[6px] overflow-x-auto py-[8px]\"><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-[#59acff] bg-background-choice font-bold text-[#0a6acb]\">전체</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">예능</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">영화·드라마</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">뉴스</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">일상</button></div></div><div class=\"scrollbar-hide flex-1 overflow-y-auto\"><div class=\"flex items-center justify-between px-[16px] py-[12px]\"><span class=\"font-bold text-[17px] text-text-primary leading-[26px]\">&#x27;감사합니다&#x27;</span><span class=\"font-semibold text-[12px] text-text-sub leading-[18px]\">검색 결과 619개</span></div><div class=\"flex flex-col gap-[16px] px-[16px] pb-[16px]\"><div><div class=\"flex flex-col gap-[8px]\"><div class=\"overflow-hidden rounded-[12px] bg-white\"><div style=\"height:185px\"></div></div><div class=\"flex items-center justify-between\"><p class=\"w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]\">[SUB] 전세계 누비는 아이브 LA에서 만남👸 &#x27;XOXZ&#x27;로 컴백한</p><button type=\"button\" class=\"flex size-[24px] shrink-0 items-center justify-center text-text-sub\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis-vertical\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"12\" cy=\"5\" r=\"1\"></circle><circle cx=\"12\" cy=\"19\" r=\"1\"></circle></svg></button></div></div></div><div><div class=\"flex flex-col gap-[8px]\"><button type=\"button\" class=\"relative h-[185px] w-full overflow-hidden rounded-[12px] bg-white\"><img src=\"https://img.youtube.com/vi/dVZh5Bfu8eU/hqdefault.jpg\" alt=\"[리무진서비스] EP.78 세븐틴 준 | SEVENTEEN JUN | LIMBO\" loading=\"lazy\" decoding=\"async\" class=\"absolute inset-0 h-full w-full object-cover\"/><div class=\"absolute top-[12px] left-[12px] rounded-[6px] bg-[#383a3f] px-[8px] py-[2px]\"><span class=\"whitespace-nowrap font-medium text-[12px] text-white leading-[16px]\">6:33</span></div></button><div class=\"flex flex-col gap-[2px]\"><div class=\"font-medium text-[14px] text-text-strong leading-[20px]\"><span><span>아 </span><span class=\"font-bold text-text-strong\">감사합니다</span><span> 잘 먹겠습니다</span></span></div><div class=\"flex items-center justify-between\"><p class=\"w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]\">[리무진서비스] EP.78 세븐틴 준 | SEVENTEEN JUN | LIMBO</p><button type=\"button\" class=\"flex size-[24px] shrink-0 items-center justify-center text-text-sub\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis-vertical\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"12\" cy=\"5\" r=\"1\"></circle><circle cx=\"12\" cy=\"19\" r=\"1\"></circle></svg></button></div></div></div></div><div><div class=\"flex flex-col gap-[8px]\"><button type=\"button\" class=\"relative h-[185px] w-full overflow-hidden rounded-[12px] bg-white\"><img src=\"https://img.youtube.com/vi/qrC3Y-T8Afo/hqdefault.jpg\" alt=\"[클로즈업 북한] “장마당도 위축…이 악물고 삽니다” / KBS\" loading=\"lazy\" decoding=\"async\" class=\"absolute inset-0 h-full w-full object-cover\"/><div class=\"absolute top-[12px] left-[12px] rounded-[6px] bg-[#383a3f] px-[8px] py-[2px]\"><span class=\"whitespace-nowrap font-medium text-[12px] text-white leading-[16px]\">17:47</span></div></button><div class=\"flex flex-col gap-[2px]\"><div class=\"font-medium text-[14px] text-text-strong leading-[20px]\"><span><span>말씀 </span><span class=\"font-bold text-text-strong\">감사합니다</span><span></span></span></div><div class=\"flex items-center justify-between\"><p class=\"w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]\">[클로즈업 북한] “장마당도 위축…이 악물고 삽니다” / KBS</p><button type=\"button\" class=\"flex size-[24px] shrink-0 items-center justify-center text-text-sub\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis-vertical\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"12\" cy=\"5\" r=\"1\"></circle><circle cx=\"12\" cy=\"19\" r=\"1\"></circle></svg></button></div></div></div></div></div></div></div><audio class=\"hidden\" playsinline=\"\" preload=\"auto\"></audio>", "clip__results": "<div class=\"flex h-full w-full flex-col bg-background-base\"><div class=\"mt-[20px] flex h-[48px] items-center px-[16px]\"><span class=\"font-bold text-[20px] text-text-strong leading-[32px]\">표현 클립</span></div><div class=\"px-[16px] py-[8px]\"><div class=\"relative flex h-[48px] w-full items-center overflow-hidden rounded-[10px] bg-white\"><input type=\"text\" class=\"h-full w-full bg-transparent pr-[72px] pl-[12px] font-medium text-[14px] text-text-strong leading-[20px] placeholder:text-text-sub focus:outline-none\" placeholder=\"배우고 싶은 표현을 넣어 보세요\" value=\"감사합니다\"/><button type=\"button\" class=\"-translate-y-1/2 absolute top-1/2 right-[36px] flex size-[24px] items-center justify-center text-icon-normal\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button><div class=\"-translate-y-1/2 absolute top-1/2 right-[12px] flex size-[24px] items-center justify-center rounded-full bg-fill-primary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search text-white\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><path d=\"m21 21-4.3-4.3\"></path></svg></div></div></div><div class=\"px-[16px]\"><div class=\"scrollbar-hide flex items-center gap-[6px] overflow-x-auto py-[8px]\"><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-[#59acff] bg-background-choice font-bold text-[#0a6acb]\">전체</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">예능</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">영화·드라마</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">뉴스</button><button type=\"button\" class=\"shrink-0 whitespace-nowrap rounded-[8px] px-[12px] py-[6px] text-center text-[14px] leading-[20px] border border-transparent bg-white font-semibold text-text-sub\">일상</button></div></div><div class=\"scrollbar-hide flex-1 overflow-y-auto\"><div class=\"flex items-center justify-between px-[16px] py-[12px]\"><span class=\"font-bold text-[17px] text-text-primary leading-[26px]\">&#x27;감사합니다&#x27;</span><span class=\"font-semibold text-[12px] text-text-sub leading-[18px]\">검색 결과 619개</span></div><div class=\"flex flex-col gap-[16px] px-[16px] pb-[16px]\"><div><div class=\"flex flex-col gap-[8px]\"><button type=\"button\" class=\"relative h-[185px] w-full overflow-hidden rounded-[12px] bg-white\"><img src=\"https://img.youtube.com/vi/7CYcM4P9Dt0/hqdefault.jpg\" alt=\"[SUB] 전세계 누비는 아이브 LA에서 만남👸 &#x27;XOXZ&#x27;로 컴백한\" loading=\"lazy\" decoding=\"async\" class=\"absolute inset-0 h-full w-full object-cover\"/><div class=\"absolute top-[12px] left-[12px] rounded-[6px] bg-[#383a3f] px-[8px] py-[2px]\"><span class=\"whitespace-nowrap font-medium text-[12px] text-white leading-[16px]\">23:33</span></div></button><div class=\"flex flex-col gap-[2px]\"><div class=\"font-medium text-[14px] text-text-strong leading-[20px]\"><span><span>네 </span><span class=\"font-bold text-text-strong\">감사합니다</span><span> 정말</span></span></div><div class=\"flex items-center justify-between\"><p class=\"w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]\">[SUB] 전세계 누비는 아이브 LA에서 만남👸 &#x27;XOXZ&#x27;로 컴백한</p><button type=\"button\" class=\"flex size-[24px] shrink-0 items-center justify-center text-text-sub\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis-vertical\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"12\" cy=\"5\" r=\"1\"></circle><circle cx=\"12\" cy=\"19\" r=\"1\"></circle></svg></button></div></div></div></div><div><div class=\"flex flex-col gap-[8px]\"><button type=\"button\" class=\"relative h-[185px] w-full overflow-hidden rounded-[12px] bg-white\"><img src=\"https://img.youtube.com/vi/dVZh5Bfu8eU/hqdefault.jpg\" alt=\"[리무진서비스] EP.78 세븐틴 준 | SEVENTEEN JUN | LIMBO\" loading=\"lazy\" decoding=\"async\" class=\"absolute inset-0 h-full w-full object-cover\"/><div class=\"absolute top-[12px] left-[12px] rounded-[6px] bg-[#383a3f] px-[8px] py-[2px]\"><span class=\"whitespace-nowrap font-medium text-[12px] text-white leading-[16px]\">6:33</span></div></button><div class=\"flex flex-col gap-[2px]\"><div class=\"font-medium text-[14px] text-text-strong leading-[20px]\"><span><span>아 </span><span class=\"font-bold text-text-strong\">감사합니다</span><span> 잘 먹겠습니다</span></span></div><div class=\"flex items-center justify-between\"><p class=\"w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]\">[리무진서비스] EP.78 세븐틴 준 | SEVENTEEN JUN | LIMBO</p><button type=\"button\" class=\"flex size-[24px] shrink-0 items-center justify-center text-text-sub\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis-vertical\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"12\" cy=\"5\" r=\"1\"></circle><circle cx=\"12\" cy=\"19\" r=\"1\"></circle></svg></button></div></div></div></div><div><div class=\"flex flex-col gap-[8px]\"><button type=\"button\" class=\"relative h-[185px] w-full overflow-hidden rounded-[12px] bg-white\"><img src=\"https://img.youtube.com/vi/qrC3Y-T8Afo/hqdefault.jpg\" alt=\"[클로즈업 북한] “장마당도 위축…이 악물고 삽니다” / KBS\" loading=\"lazy\" decoding=\"async\" class=\"absolute inset-0 h-full w-full object-cover\"/><div class=\"absolute top-[12px] left-[12px] rounded-[6px] bg-[#383a3f] px-[8px] py-[2px]\"><span class=\"whitespace-nowrap font-medium text-[12px] text-white leading-[16px]\">17:47</span></div></button><div class=\"flex flex-col gap-[2px]\"><div class=\"font-medium text-[14px] text-text-strong leading-[20px]\"><span><span>말씀 </span><span class=\"font-bold text-text-strong\">감사합니다</span><span></span></span></div><div class=\"flex items-center justify-between\"><p class=\"w-[296px] truncate font-medium text-[14px] text-text-strong leading-[20px]\">[클로즈업 북한] “장마당도 위축…이 악물고 삽니다” / KBS</p><button type=\"button\" class=\"flex size-[24px] shrink-0 items-center justify-center text-text-sub\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis-vertical\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"12\" cy=\"5\" r=\"1\"></circle><circle cx=\"12\" cy=\"19\" r=\"1\"></circle></svg></button></div></div></div></div><div class=\"h-[1px] w-full\"></div></div></div></div><audio class=\"hidden\" playsinline=\"\" preload=\"auto\"></audio>"}</script>
+<script>
+/* 표현클립 — 게임 절과 같은 얼개다. iframe 안에서 앱 CSS 로 그린다 */
+(function () {
+  const CSS = document.getElementById('clipcss').textContent;
+  const SCREENS = JSON.parse(document.getElementById('clipscreens').textContent);
+  const TITLE = { empty:'검색 전 — 무엇을 찾을지 안내만 한다',
+                  results:'결과 있음 — 머리글의 개수만큼 끝까지 열린다',
+                  noresult:'결과 없음 — 검색어를 되짚어 준다',
+                  playing:'재생 중 — 카드 자리가 플레이어로 바뀐다' };
+  const sec = document.getElementById('mk-clip');
+  if (!sec) return;
+  const state = { v:'empty', width:'390' };
+  function render() {
+    const dev = document.getElementById('device-clip');
+    const scr = document.getElementById('screen-clip');
+    dev.style.width = (+state.width + 4) + 'px';
+    const f = document.createElement('iframe');
+    scr.innerHTML = ''; scr.appendChild(f);
+    const d = f.contentDocument;
+    d.open();
+    d.write('<!doctype html><meta charset="utf-8">'
+      + '<style>html,body{margin:0;height:100%}'
+      + '*,*::before,*::after{animation:none!important;transition:none!important}</style>'
+      + '<style>' + CSS + '</style>'
+      + (SCREENS['clip__' + state.v] || ''));
+    d.close();
+    document.getElementById('caption-clip').textContent = state.width + ' × 720';
+    document.getElementById('clip-ttl').textContent = TITLE[state.v] || '';
+  }
+  sec.addEventListener('click', (e) => {
+    const b = e.target.closest('button.option');
+    if (!b) return;
+    const set = b.closest('.control-group').dataset.set;
+    for (const o of b.closest('.control-group').querySelectorAll('button.option'))
+      o.setAttribute('aria-pressed', String(o === b));
+    state[set] = b.dataset.value;
+    render();
+  });
+  render();
 })();
 </script>
 </body>
