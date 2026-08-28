@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ bae9a3f -->
+<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ cf0206c -->
 <!-- 왜: §02 의 착지점과 §05 의 "막힘" 은 전부 이 파일들을 읽고 적은 관찰이다 -->
 <title>유저 플로우 — 진입에서 결제까지 한 장</title>
 <style>
@@ -348,8 +348,26 @@
 <code>is_active</code> 를 내리면 로그인이 막혀서 설명할 기회가 없어지기 때문에 칸을 따로 두었다.
 학생이 보는 것은 <b>앱에 들어올 때 한 번 뜨는 모달</b>과, 잠긴 것을 눌렀을 때의
 「학교에 문의」다(<span class="file">PaywallKind</span> 의 <code>schoolExpired</code>).
-<b>자동 만료는 없다</b> — 사람이 어드민에서 끊어야 한다. 탈퇴는 별개의 길이고
-(<span class="file">POST /student/withdraw</span>) 기본은 데이터를 남기는 쪽이다.</p>
+<b>자동 만료는 없다</b> — 사람이 어드민에서 끊어야 한다.</p>
+<p class="qa"><b>나가는 길이 하나 더 있다 — 탈퇴다</b>(<span class="file">POST /auth/withdraw</span> ·
+학생이 MY 화면에서 스스로, 또는 어드민이 <span class="file">POST /student/withdraw</span> 로).
+학기 종료와 <b>둘 다 데이터를 남기지만 남는 방식이 다르다.</b>
+<b>2026-08-29 에 여기 「기본은 데이터를 남기는 쪽이다」라고만 적혀 있었다</b> —
+그때는 탈퇴가 전부 지웠으므로 그 문장이 학기 종료만 가리켰는데, 지금은 탈퇴도 남긴다.</p>
+<div class="tablewrap"><table>
+  <thead><tr><th></th><th>학기 종료</th><th>탈퇴</th></tr></thead>
+  <tbody>
+    <tr><td>칸</td><td><span class="file">access_ended_at</span></td><td><span class="file">withdrawn_at</span></td></tr>
+    <tr><td>로그인</td><td>된다 — 설명할 기회가 있어야 한다</td><td><b>막힌다.</b> 살아 있던 토큰도 끊긴다</td></tr>
+    <tr><td>이름·이메일</td><td>그대로</td><td><b>되돌릴 수 없게 가린다</b></td></tr>
+    <tr><td>학습 데이터</td><td>남고 <b>본인이 본다</b></td><td>남지만 <b>마스터만 본다</b></td></tr>
+    <tr><td>학교 화면</td><td>「이용 종료」로 보인다</td><td><b>목록에서 사라진다</b></td></tr>
+    <tr><td>되돌리기</td><td>된다 — 다시 등록하면 잇는다</td><td><b>안 된다</b></td></tr>
+  </tbody>
+</table></div>
+<p class="qa">자세한 것은 <code>BLOCKERS.md</code> §13. 정말 지우는 길
+(<span class="file">purgeAccount</span>)은 따로 있고 <b>부르는 화면이 없다</b> —
+삭제 요청은 문의로 받아 사람이 처리한다.</p>
 
 <p class="qa">가격과 PG는 <span class="file">access_and_pricing_v1</span> §09 의 결제 전 단계와 별개다.
 QR은 특정 과가 아니라 홈으로 확정됐으므로 무료 과를 URL에 싣는 설계는 하지 않는다.</p>

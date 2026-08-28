@@ -3380,7 +3380,7 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 81a2b21 -->
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ cf0206c -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.
@@ -3483,7 +3483,8 @@ DB 도 네트워크도 필요 없다. 다음에 표가 늘 때 같은 일이 또
 
 ## 13. 탈퇴가 「지운다」에서 「가리고 남긴다」로 바뀌었다 (2026-08-29)
 
-<!-- 관찰: api/business/user_withdraw.py, api/shared/withdrawal_scope.py, api/accepter/auth.py, api/persistence/repo_user.py -->
+<!-- 관찰: api/business/user_withdraw.py, api/shared/withdrawal_scope.py, api/accepter/auth.py, api/persistence/repo_user.py, app/src/routes/my-withdraw.tsx @ cf0206c -->
+<!-- 왜: 「무엇이 남고 무엇이 가려지나」와 앱이 이용자에게 하는 약속을 그 다섯에서 읽고 적었다 -->
 
 **기획 확정 —** 탈퇴해도 계정과 학습 데이터를 지우지 않는다. 이름과 이메일만
 되돌릴 수 없게 가리고 계정을 못 쓰게 만든다. 학교는 목록에서 못 보고 마스터만
