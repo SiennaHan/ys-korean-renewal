@@ -218,6 +218,18 @@ class StudentBatchRequest(BaseModel):
     school_code: str
     students: List[StudentItem]
 
+class StudentAccessRequest(BaseModel):
+    """학교 이용 권한 끊기·되살리기. `ended=True` 가 학기 종료다.
+
+    **`school_code` 를 받지 않는다** — 학교 관리자는 토큰의 학교로 고정된다.
+    """
+    student_ids: List[int]
+    ended: bool
+
+class StudentWithdrawRequest(BaseModel):
+    """학생 탈퇴 — **되돌릴 수 없다.** 지우는 범위는 스스로 탈퇴할 때와 같다."""
+    student_ids: List[int]
+
 class StudentUpdateRequest(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None

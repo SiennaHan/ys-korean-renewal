@@ -6,13 +6,14 @@ import {
 	removeGuestId,
 } from "@/api/api";
 import type { LoginToken } from "@/api/apiType";
+import { signUpWithCode } from "@/api/join-code";
 import {
 	checkSign,
 	loginAsStudent,
 	migrateGuestData,
 	signUpStudent,
 } from "@/api/sign";
-import { signUpWithCode } from "@/api/join-code";
+import { useEntitlementStore } from "@/shared/store/entitlement-store";
 import type React from "react";
 import {
 	type ReactNode,
@@ -123,6 +124,18 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				removeGuestId();
 			}
 
+			/*
+			 * **권한을 다시 받는다.** 스토어는 한 번 받으면 다시 안 받는다
+			 * (`load()` 가 `asked` 로 조기 반환한다). 로그인은 SPA 이동이라
+			 * 새로고침이 없으므로, 이걸 안 부르면 **게스트로 둘러보다 로그인한
+			 * 사람이 게스트 잠금을 그대로 본다.**
+			 *
+			 * `entitlement-store.ts` 의 주석은 "api.ts 의 세션 정리 이벤트에서
+			 * 부른다" 고 적어 뒀지만 **부르는 곳이 한 곳도 없었다**(2026-08-28 실측).
+			 * 세션이 바뀌는 자리는 여기이므로 여기서 부른다.
+			 */
+			await useEntitlementStore.getState().reload();
+
 			return { success: true };
 		}
 
@@ -162,6 +175,8 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		setUser(result.user);
 		setIsSignedIn(true);
 		removeGuestId();
+		/* 로그인과 같은 이유 — 가입도 권한의 출처를 바꾼다(기관 코드면 school 이 된다) */
+		await useEntitlementStore.getState().reload();
 		return { success: true };
 	};
 
@@ -171,6 +186,8 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		localStorage.removeItem("koreanUser");
 		setUser(null);
 		setIsSignedIn(false);
+		/* 나가는 쪽도 마찬가지다 — 안 버리면 다음 사람이 남의 권한을 본다 */
+		void useEntitlementStore.getState().reload();
 	}, []);
 
 	/*

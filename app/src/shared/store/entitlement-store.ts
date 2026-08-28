@@ -10,7 +10,13 @@ import { create } from "zustand";
  * 왕복이 늘어난다.
  *
  * **로그인·로그아웃하면 다시 받아야 한다** — 권한의 출처가 바뀐다.
- * `reload()` 가 그 자리다(`api.ts` 의 세션 정리 이벤트에서 부른다).
+ * `reload()` 가 그 자리이고, **부르는 곳은 `components/sign/sign-provider.tsx`** 다
+ * (로그인 · 가입 · 로그아웃 세 곳).
+ *
+ * 전에는 이 주석이 "`api.ts` 의 세션 정리 이벤트에서 부른다" 고 적혀 있었는데
+ * **부르는 곳이 한 곳도 없었다**(2026-08-28 실측). 그래서 게스트로 둘러보다
+ * 로그인하면 — SPA 이동이라 새로고침이 없다 — `asked` 가 참인 채로 남아
+ * **게스트 잠금을 그대로 봤다.**
  */
 interface EntitlementState {
 	entitlement: Entitlement | null;

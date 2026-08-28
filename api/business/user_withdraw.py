@@ -36,7 +36,7 @@ async def _deleteObjects(urls):
 
 
 async def withdrawAccount(userId: str, password: str):
-    """계정을 지운다. 지운 행 수를 표별로 돌려준다."""
+    """학생이 스스로 탈퇴한다. 비밀번호로 본인을 확인한다."""
     with sessionScope() as db:
         user = await repo_user.findById(int(userId), db)
         if not user:
@@ -46,6 +46,40 @@ async def withdrawAccount(userId: str, password: str):
         # 세션 밖에서 읽으면 DetachedInstanceError 다 — 필요한 것만 값으로 뽑는다
         guestId = user.guest_id
 
+    return await purgeAccount(userId, guestId)
+
+
+async def withdrawByAdmin(userId: str):
+    """관리자가 학생을 탈퇴시킨다 — **비밀번호를 확인하지 않는다.**
+
+    관리자는 학생의 비밀번호를 모르므로 본인 확인을 할 수가 없다. 대신
+    **누구를 지울 수 있는지를 부르는 쪽이 이미 가려 놓는다** —
+    `student_business.checkStudentSchool` 이 학생 역할과 학교 소속을 본다.
+
+    지우는 범위는 스스로 탈퇴할 때와 **똑같다**(`purgeAccount`). 학교가 지웠다고
+    덜 지우면 개인정보가 남고, 더 지울 것도 없다.
+
+    **기본은 이것이 아니라 접근 끊기다**(기획 2026-08-28) — 다음 학기에 재등록할
+    학생의 풀이 데이터는 남겨 두는 것이 맞다. 이 길은 "너무 오래 안 들어온 학생을
+    정리해야 할 때" 를 위한 것이다.
+    """
+    with sessionScope() as db:
+        user = await repo_user.findById(int(userId), db)
+        if not user:
+            return None, "학생을 찾을 수 없습니다."
+        if user.role != "student":
+            return None, "학생만 탈퇴시킬 수 있습니다."
+        guestId = user.guest_id
+
+    return await purgeAccount(userId, guestId)
+
+
+async def purgeAccount(userId: str, guestId: str = None):
+    """계정과 그 계정이 만든 것을 지운다. 지운 행 수를 표별로 돌려준다.
+
+    **본인 확인은 여기서 하지 않는다** — 부르는 쪽이 이미 했다
+    (`withdrawAccount` 는 비밀번호로, `withdrawByAdmin` 은 학교 소속으로).
+    """
     uid = str(userId)
     # 게스트로 쓰던 시절의 행이 남아 있을 수 있다. 가입할 때 옮기지만
     # **옮기는 목록이 표 아홉뿐**이라 나머지는 게스트 id 로 남는다(BLOCKERS).

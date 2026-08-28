@@ -248,6 +248,17 @@ D7(8월 13일)은 "한글 + 1급 전체 + 게임 전체 + 클립" 을 무료로 
 코드만 보내고 서버가 학교를 정한다.</b> 코드의 표와 규칙은
 <span class="file">BLOCKERS.md</span> §10 에 있다.</p>
 
+<p><b>2026-08-28 — 학기가 끝나면 무료 범위로 내려간다.</b>
+<span class="file">ko_user.access_ended_at</span> 이 그 시각이다(NULL 이면 살아 있다).
+어드민의 학생 목록에서 체크해 끊고 되살린다.
+<b><span class="file">is_active</span> 를 쓰지 않는다</b> — 그 칸을 내리면 로그인 자체가
+막혀서 「학기가 끝났다」고 설명할 기회도, 지난 기록을 보여 줄 기회도 없다.
+그리고 그 칸은 <span class="file">getEntitlement</span> 가 보지 않으므로 JWT 30일 동안
+전 급이 그대로 열린다.<br>
+끊긴 뒤에도 <b><span class="file">source</span> 는 <span class="file">school</span> 이다</b> —
+결제를 권하지 않기 위해서다(§06). 학기 종료는 <span class="file">expires_at</span> 이
+과거라는 것으로 판정한다. 자세한 것은 <span class="file">BLOCKERS.md</span> §11.</p>
+
 <p>권한 출처가 둘이고 앞으로 늘 수도 있다(체험판 · 쿠폰 · 학교 계약 갱신).
 그래서 <b>앱이 권한을 계산하지 않는다.</b> 서버가 "열린 범위" 를 내고 앱은 그것만 믿는다.</p>
 

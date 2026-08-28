@@ -570,6 +570,9 @@ const zh = {
 		weeklyActivities: "本周活动数",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
 		days: ["一", "二", "三", "四", "五", "六", "日"],
+		semesterEndedTitle: "学校使用期限已结束",
+		semesterEndedBody:
+			"免费课程仍可继续使用，您此前的学习记录也都保留着。若想继续学习，请联系学校负责人。",
 	},
 	paywall: {
 		freeTag: "免费",
@@ -598,6 +601,10 @@ const zh = {
 		schoolBody: "如需使用本课程，请联系学校管理员扩大使用范围。",
 		schoolNote: "个人订阅不能应用于学校账号。",
 		schoolBack: "查看可用课程",
+		schoolExpiredKicker: "学期结束",
+		schoolExpiredTitle: "学校使用期限已结束",
+		schoolExpiredBody:
+			"您此前的学习记录都已保存。若想在下学期继续学习，请联系学校负责人。",
 	},
 	nav: {
 		home: "首页",
@@ -839,6 +846,7 @@ const zh = {
 		updatingTitle: "应用正在更新",
 		updatingBody: "发布后文件版本发生了变化，页面未能加载。",
 		reload: "刷新",
+		retry: "重试",
 		errorTitle: "发生错误",
 		errorBody: "请稍后再试。",
 	},

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import case, func
 from sqlalchemy.exc import IntegrityError
 
 from persistence import model
@@ -110,3 +110,41 @@ async def markResponded(userId: str, dateStr: str, db: Session):
         activity.responded = True
         db.flush()
     return activity
+
+
+async def summaryByUsers(userIds: list, db: Session) -> dict:
+    """학생별 활동 합계. `{user_id: {...}}`.
+
+    **`responded` 로 가른다.** 이 표의 행은 학습 세션 핑이 만들어서
+    **활동 화면을 열어만 봐도 하루가 한 줄 생긴다**(이 모델의 docstring).
+    그래서 「활동한 날」을 행 수로 세면 열어만 본 날이 섞인다 —
+    스트릭이 그 실수로 한 번 부풀었던 자리다.
+
+    `study_seconds` 는 responded 와 무관하게 다 더한다 — 열어 두고 들은 시간도
+    학습 시간이다. **두 수의 기준이 다르다는 것을 화면 라벨이 말해야 한다.**
+    """
+    if not userIds:
+        return {}
+    keys = [str(u) for u in userIds]
+    M = model.KoDailyActivity
+    rows = (
+        db.query(
+            M.user_id,
+            func.coalesce(func.sum(case((M.responded == True, 1), else_=0)), 0).label("active_days"),
+            func.coalesce(func.sum(M.study_seconds), 0).label("study_seconds"),
+            func.coalesce(func.sum(M.modules_done), 0).label("modules_done"),
+            func.max(case((M.responded == True, M.activity_date), else_=None)).label("last_active_date"),
+        )
+        .filter(M.user_id.in_(keys))
+        .group_by(M.user_id)
+        .all()
+    )
+    return {
+        r.user_id: {
+            "activeDays": int(r.active_days or 0),
+            "studySeconds": int(r.study_seconds or 0),
+            "modulesDone": int(r.modules_done or 0),
+            "lastActiveDate": r.last_active_date,
+        }
+        for r in rows
+    }

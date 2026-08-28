@@ -590,6 +590,9 @@ const vi = {
 		weeklyActivities: "Trong tuần",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
 		days: ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
+		semesterEndedTitle: "Thời gian sử dụng của trường đã kết thúc",
+		semesterEndedBody:
+			"Các bài học miễn phí vẫn mở và kết quả học tập của bạn vẫn còn. Để tiếp tục, vui lòng liên hệ người phụ trách của trường.",
 	},
 	paywall: {
 		freeTag: "Miễn phí",
@@ -621,6 +624,10 @@ const vi = {
 			"Vui lòng liên hệ quản trị viên của trường để mở rộng quyền học.",
 		schoolNote: "Không thể áp dụng gói cá nhân cho tài khoản của trường.",
 		schoolBack: "Xem các bài có thể học",
+		schoolExpiredKicker: "Kết thúc học kỳ",
+		schoolExpiredTitle: "Thời gian sử dụng của trường đã kết thúc",
+		schoolExpiredBody:
+			"Toàn bộ kết quả học tập của bạn vẫn được lưu. Để tiếp tục học kỳ sau, vui lòng liên hệ người phụ trách của trường.",
 	},
 	nav: {
 		home: "Trang chủ",
@@ -865,6 +872,7 @@ const vi = {
 		updatingBody:
 			"Phiên bản tệp đã thay đổi ngay sau khi phát hành nên không tải được màn hình.",
 		reload: "Tải lại",
+		retry: "Thử lại",
 		errorTitle: "Đã xảy ra lỗi",
 		errorBody: "Vui lòng thử lại sau giây lát.",
 	},

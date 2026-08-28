@@ -587,6 +587,9 @@ const en = {
 		weeklyActivities: "This week",
 		/** 월요일부터. 주간 출석과 주간 활동이 같이 쓴다 */
 		days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+		semesterEndedTitle: "Your school access has ended",
+		semesterEndedBody:
+			"Free lessons are still open and everything you have studied is still here. To continue, please contact your school.",
 	},
 	paywall: {
 		freeTag: "Free",
@@ -618,6 +621,10 @@ const en = {
 			"Please ask your school administrator to expand your learning access.",
 		schoolNote: "Personal subscriptions cannot be applied to a school account.",
 		schoolBack: "View available lessons",
+		schoolExpiredKicker: "Term ended",
+		schoolExpiredTitle: "Your school access has ended",
+		schoolExpiredBody:
+			"Everything you have studied is still saved. To continue next term, please contact your school.",
 	},
 	nav: {
 		home: "Home",
@@ -866,6 +873,7 @@ const en = {
 		updatingBody:
 			"The file version changed right after a release, so the screen could not load.",
 		reload: "Reload",
+		retry: "Try again",
 		errorTitle: "Something went wrong",
 		errorBody: "Please try again in a moment.",
 	},

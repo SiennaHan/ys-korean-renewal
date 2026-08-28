@@ -244,6 +244,13 @@ class KoUser(Base) :
     guest_id       = Column(String(50),   nullable=True, index=True)
     is_approved    = Column(Boolean,      nullable=False, default=False)
     is_active      = Column(Boolean,      nullable=False, default=True)
+    # **학기가 끝나 학교 이용 권한이 만료된 시각.** NULL 이면 권한이 살아 있다.
+    #
+    # `is_active` 로는 이 일을 못 한다 — 그 칸을 내리면 **로그인 자체가 막혀서**
+    # 「학기가 끝났습니다」라고 설명할 기회도, 지난 학기 기록을 보여 줄 기회도
+    # 없어진다(기획 확정 2026-08-28: 무료 범위로 내려가고 안내는 하고 기록은 보인다).
+    # 그래서 계정 정지(`is_active`)와 권한 만료를 다른 칸으로 가른다.
+    access_ended_at = Column(DateTime,    nullable=True)
     created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
     updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 

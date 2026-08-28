@@ -1,5 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "@/api/api";
 import type {
 	BatchResult,
@@ -9,12 +7,23 @@ import type {
 	Student,
 } from "@/api/apiType";
 import StudentExcelUpload from "@/components/student/student-excel-upload";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Search, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export const Route = createFileRoute("/student")({
 	component: StudentPage,
 });
+
+/** 초 → 사람이 읽는 시간. 학기 단위라 분까지면 충분하다 */
+function fmtStudyTime(sec: number): string {
+	if (!sec) return "-";
+	const m = Math.round(sec / 60);
+	if (m < 60) return `${m}분`;
+	return `${Math.floor(m / 60)}시간 ${m % 60}분`;
+}
 
 function StudentPage() {
 	const [students, setStudents] = useState<Student[]>([]);
@@ -22,6 +31,10 @@ function StudentPage() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [resultMessage, setResultMessage] = useState<string | null>(null);
+
+	/* 학기 종료용 다중 선택. 목록을 다시 불러오면 비운다 — 사라진 학생이 남으면 안 된다 */
+	const [selected, setSelected] = useState<Set<number>>(new Set());
+	const [isBulkBusy, setIsBulkBusy] = useState(false);
 
 	const [selectedSchoolCode, setSelectedSchoolCode] = useState("");
 	const [searchText, setSearchText] = useState("");
@@ -93,9 +106,7 @@ function StudentPage() {
 				setClassLevelsForSchool([]);
 				return;
 			}
-			const school = schools.find(
-				(s) => s.school_code === effectiveSchoolCode,
-			);
+			const school = schools.find((s) => s.school_code === effectiveSchoolCode);
 			if (!school) {
 				setClassLevelsForSchool([]);
 				return;
@@ -145,6 +156,7 @@ function StudentPage() {
 				if (schoolCode) params.set("school_code", schoolCode);
 				if (search) params.set("search", search);
 				const query = params.toString();
+				setSelected(new Set());
 				const res = await api.get<Student[]>(
 					`/student/list${query ? `?${query}` : ""}`,
 				);
@@ -237,10 +249,7 @@ function StudentPage() {
 			const formData = new FormData();
 			formData.append("file", file);
 			formData.append("school_code", effectiveSchoolCode);
-			const res = await api.upload<BatchResult>(
-				"/student/upload",
-				formData,
-			);
+			const res = await api.upload<BatchResult>("/student/upload", formData);
 			if (res.result && res.data) {
 				const { created, errors } = res.data;
 				setResultMessage(
@@ -255,8 +264,105 @@ function StudentPage() {
 		}
 	};
 
+	const toggleOne = (id: number) => {
+		setSelected((prev) => {
+			const next = new Set(prev);
+			next.has(id) ? next.delete(id) : next.add(id);
+			return next;
+		});
+	};
+
+	const allSelected = students.length > 0 && selected.size === students.length;
+	const toggleAll = () => {
+		setSelected(allSelected ? new Set() : new Set(students.map((s) => s.id)));
+	};
+
+	/**
+	 * 학교 이용 권한을 끊거나 되살린다 — **학기 종료의 기본 동작이다.**
+	 *
+	 * 계정은 살아 있고 무료 범위로 내려간다. 다음 학기에 다시 등록하면
+	 * 이 자리에서 되살리기만 하면 풀이 데이터를 그대로 안고 돌아온다.
+	 */
+	const bulkAccess = async (ended: boolean) => {
+		if (selected.size === 0) return;
+		setIsBulkBusy(true);
+		setResultMessage(null);
+		try {
+			const res = await api.patch<{ changed: number[]; skipped: number[] }>(
+				"/student/access",
+				{ student_ids: [...selected], ended },
+			);
+			if (!res.result) {
+				setResultMessage(res.message || "바꾸지 못했습니다.");
+				return;
+			}
+			const n = res.data?.changed.length ?? 0;
+			setResultMessage(
+				ended
+					? `${n}명의 이용 권한을 끊었습니다. 계정과 학습 기록은 그대로 있습니다.`
+					: `${n}명의 이용 권한을 되살렸습니다.`,
+			);
+			setSelected(new Set());
+			loadStudents(effectiveSchoolCode, searchText);
+		} catch {
+			setResultMessage("바꾸지 못했습니다.");
+		} finally {
+			setIsBulkBusy(false);
+		}
+	};
+
+	/**
+	 * 탈퇴 — **되돌릴 수 없다.** 학생이 스스로 탈퇴할 때와 같은 범위를 지운다
+	 * (학습 기록 12개 표 · 음성 · 문의).
+	 *
+	 * 기본 동작이 아니다. 학기가 끝나면 접근만 끊고 데이터는 남기는 것이 맞다 —
+	 * 다음 학기에 재등록하는 학생의 풀이 데이터가 남아 있는 편이 낫다.
+	 */
+	const bulkWithdraw = async () => {
+		if (selected.size === 0) return;
+		const names = students
+			.filter((s) => selected.has(s.id))
+			.map((s) => s.name)
+			.join(", ");
+		if (
+			!confirm(
+				`${selected.size}명을 탈퇴시킵니다 — ${names}\n\n학습 기록 · 녹음 · 문의까지 함께 지워지고 되돌릴 수 없습니다.\n학기 종료만이라면 「이용 권한 끊기」를 쓰세요 — 그쪽은 데이터를 남깁니다.`,
+			)
+		)
+			return;
+		setIsBulkBusy(true);
+		setResultMessage(null);
+		try {
+			const res = await api.post<{ withdrawn: unknown[]; failed: unknown[] }>(
+				"/student/withdraw",
+				{ student_ids: [...selected] },
+			);
+			if (!res.result) {
+				setResultMessage(res.message || "탈퇴시키지 못했습니다.");
+				return;
+			}
+			const done = res.data?.withdrawn.length ?? 0;
+			const failed = res.data?.failed.length ?? 0;
+			setResultMessage(
+				`${done}명을 탈퇴시켰습니다.${failed ? ` ${failed}명은 실패했습니다.` : ""}`,
+			);
+			setSelected(new Set());
+			loadStudents(effectiveSchoolCode, searchText);
+		} catch {
+			setResultMessage("탈퇴시키지 못했습니다.");
+		} finally {
+			setIsBulkBusy(false);
+		}
+	};
+
 	const handleDelete = async (id: number) => {
-		if (!confirm("이 학생을 삭제하시겠습니까?")) return;
+		/* 이제 학습 기록까지 지운다 — 전에는 ko_user 행만 지워 고아가 남았다 */
+		if (
+			!confirm(
+				"이 학생을 탈퇴시킵니다. 학습 기록 · 녹음 · 문의까지 함께 지워지고 되돌릴 수 없습니다.\n\n학기 종료만이라면 「이용 권한 끊기」를 쓰세요.",
+			)
+		)
+			return;
 		try {
 			await api.delete(`/student/${id}`);
 			loadStudents(effectiveSchoolCode, searchText);
@@ -354,6 +460,46 @@ function StudentPage() {
 				</div>
 			)}
 
+			{/*
+			 * 학기 종료 — 체크한 학생을 한 번에 처리한다.
+			 * **「이용 권한 끊기」가 기본이다.** 계정과 학습 기록은 그대로 두고
+			 * 무료 범위로 내려간다. 탈퇴는 되돌릴 수 없으므로 색으로 갈라 둔다.
+			 */}
+			{selected.size > 0 && (
+				<div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-5 py-3">
+					<span className="font-medium text-gray-700 text-sm">
+						{selected.size}명 선택
+					</span>
+					<button
+						type="button"
+						onClick={() => void bulkAccess(true)}
+						disabled={isBulkBusy}
+						className="rounded-full border border-gray-300 bg-white px-4 py-1.5 font-medium text-gray-700 text-xs transition hover:bg-gray-100 disabled:opacity-50"
+					>
+						이용 권한 끊기
+					</button>
+					<button
+						type="button"
+						onClick={() => void bulkAccess(false)}
+						disabled={isBulkBusy}
+						className="rounded-full border border-gray-300 bg-white px-4 py-1.5 font-medium text-gray-700 text-xs transition hover:bg-gray-100 disabled:opacity-50"
+					>
+						되살리기
+					</button>
+					<button
+						type="button"
+						onClick={() => void bulkWithdraw()}
+						disabled={isBulkBusy}
+						className="rounded-full border border-red-200 bg-white px-4 py-1.5 font-medium text-red-500 text-xs transition hover:bg-red-50 disabled:opacity-50"
+					>
+						탈퇴시키기
+					</button>
+					<span className="text-gray-400 text-xs">
+						끊기는 되돌릴 수 있고 데이터를 남깁니다. 탈퇴는 되돌릴 수 없습니다.
+					</span>
+				</div>
+			)}
+
 			{/* 학생 목록 테이블 */}
 			{!isLoading && students.length === 0 ? (
 				<div className="rounded-xl border border-gray-200 py-20 text-center">
@@ -364,6 +510,15 @@ function StudentPage() {
 					<table className="w-full text-sm">
 						<thead>
 							<tr className="border-gray-100 border-b bg-gray-50/80">
+								<th className="w-10 px-5 py-4 text-left">
+									<input
+										type="checkbox"
+										checked={allSelected}
+										onChange={toggleAll}
+										aria-label="전체 선택"
+										className="h-4 w-4 rounded border-gray-300"
+									/>
+								</th>
 								<th className="px-5 py-4 text-left font-normal text-gray-500">
 									이름
 								</th>
@@ -387,6 +542,18 @@ function StudentPage() {
 								<th className="px-5 py-4 text-left font-normal text-gray-500">
 									담당 교수자
 								</th>
+								<th className="px-5 py-4 text-left font-normal text-gray-500">
+									가입일
+								</th>
+								<th className="px-5 py-4 text-left font-normal text-gray-500">
+									활동
+								</th>
+								<th className="px-5 py-4 text-left font-normal text-gray-500">
+									진도
+								</th>
+								<th className="px-5 py-4 text-left font-normal text-gray-500">
+									상태
+								</th>
 								<th className="w-36 px-5 py-4" />
 							</tr>
 						</thead>
@@ -396,6 +563,15 @@ function StudentPage() {
 									key={s.id}
 									className="border-gray-100 border-b transition last:border-b-0 hover:bg-gray-50/50"
 								>
+									<td className="px-5 py-4">
+										<input
+											type="checkbox"
+											checked={selected.has(s.id)}
+											onChange={() => toggleOne(s.id)}
+											aria-label={`${s.name} 선택`}
+											className="h-4 w-4 rounded border-gray-300"
+										/>
+									</td>
 									<td className="px-5 py-4 font-medium text-gray-900">
 										{s.name}
 									</td>
@@ -405,22 +581,50 @@ function StudentPage() {
 									<td className="px-5 py-4 text-gray-600">
 										{s.student_number || "-"}
 									</td>
-									<td className="px-5 py-4 text-gray-600">
-										{s.email}
-									</td>
-									<td className="px-5 py-4 text-gray-600">
-										{s.phone || "-"}
-									</td>
+									<td className="px-5 py-4 text-gray-600">{s.email}</td>
+									<td className="px-5 py-4 text-gray-600">{s.phone || "-"}</td>
 									{isMasterAdmin && (
 										<td className="px-5 py-4 text-gray-600">
 											{s.school_code
-												? schoolNameMap[s.school_code] ||
-													s.school_code
+												? schoolNameMap[s.school_code] || s.school_code
 												: "-"}
 										</td>
 									)}
 									<td className="px-5 py-4 text-gray-600">
 										{s.instructor || "-"}
+									</td>
+									<td className="px-5 py-4 text-gray-600">
+										{s.created_at?.slice(0, 10) || "-"}
+									</td>
+									{/*
+									 * **두 수의 기준이 다르다.** 「N일」은 응답까지 한 날이고
+									 * 시간은 열어 두고 들은 것까지 더한다. 라벨이 그것을 말한다.
+									 */}
+									<td className="px-5 py-4 text-gray-900">
+										{s.activeDays}일 · {fmtStudyTime(s.studySeconds)}
+										<span className="block text-gray-400 text-xs">
+											{s.lastActiveDate
+												? `마지막 ${s.lastActiveDate}`
+												: "활동 없음"}
+										</span>
+									</td>
+									<td className="px-5 py-4 text-gray-600">
+										{s.lastBook ? `${s.lastBook}급 ${s.lastChapter}과` : "-"}
+										<span className="block text-gray-400 text-xs">
+											완료 {s.completedActivities}
+										</span>
+									</td>
+									<td className="px-5 py-4">
+										{s.access_ended_at ? (
+											<Badge variant="secondary">이용 종료</Badge>
+										) : (
+											<Badge variant="success">이용 중</Badge>
+										)}
+										{s.access_ended_at && (
+											<span className="block text-gray-400 text-xs">
+												{s.access_ended_at.slice(0, 10)}
+											</span>
+										)}
 									</td>
 									<td className="px-5 py-4">
 										<div className="flex items-center justify-end gap-2">
@@ -458,9 +662,7 @@ function StudentPage() {
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
 					<div className="relative w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-2xl">
 						<div className="mb-6 flex items-center justify-between">
-							<h2 className="font-semibold text-gray-900 text-lg">
-								학생 추가
-							</h2>
+							<h2 className="font-semibold text-gray-900 text-lg">학생 추가</h2>
 							<button
 								type="button"
 								onClick={() => setShowAddDialog(false)}
@@ -475,8 +677,7 @@ function StudentPage() {
 									htmlFor="add-email"
 									className="mb-1.5 block font-medium text-gray-700 text-sm"
 								>
-									로그인 메일{" "}
-									<span className="text-red-500">*</span>
+									로그인 메일 <span className="text-red-500">*</span>
 								</label>
 								<Input
 									id="add-email"
@@ -497,8 +698,7 @@ function StudentPage() {
 									htmlFor="add-password"
 									className="mb-1.5 block font-medium text-gray-700 text-sm"
 								>
-									초기 비밀번호{" "}
-									<span className="text-red-500">*</span>
+									초기 비밀번호 <span className="text-red-500">*</span>
 								</label>
 								<Input
 									id="add-password"

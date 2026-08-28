@@ -4,6 +4,7 @@ import type {
 	DashboardLearningStatus,
 	DashboardWeeklyChart,
 } from "@/api/dashboard";
+import { IconBook } from "@/components/main/nav/icons";
 import { useTranslation } from "react-i18next";
 import TaskCard from "./continue-learning";
 import LearningStatus from "./learning-status";
@@ -42,6 +43,15 @@ export interface HomeViewProps {
 	onContinue: () => void;
 	onStartLearning: () => void;
 	onReview?: () => void;
+	/**
+	 * **학교 이용 기간이 끝났나.** 판정은 서버가 한다 —
+	 * `GET /entitlement` 가 `source:"school"` 이고 `expires_at` 이 과거면 끝난 것이다.
+	 * `index.tsx` 가 구해서 넘긴다(이 파일은 표시만 한다).
+	 *
+	 * **닫기를 두지 않는다.** 왜 잠겼는지 잊은 학생이 다시 볼 수 있어야 하고,
+	 * 만료가 풀리면 카드가 저절로 사라진다.
+	 */
+	accessEnded?: boolean;
 }
 
 export default function HomeView({
@@ -55,6 +65,7 @@ export default function HomeView({
 	onContinue,
 	onStartLearning,
 	onReview,
+	accessEnded = false,
 }: HomeViewProps) {
 	const { t } = useTranslation();
 
@@ -81,6 +92,28 @@ export default function HomeView({
 			/>
 
 			<div className="pad">
+				{/*
+				 * 학기가 끝났으면 **맨 위에서 이유를 말한다.** 카드 위치가 이유가 있다 —
+				 * 아래 자리는 "지금 무엇을 하면 되나" 이고, 그 답이 달라진 까닭을
+				 * 먼저 알려야 한다.
+				 *
+				 * `.task.waiting` 을 그대로 쓴다 — **누를 수 없는 정보 카드**의 꼴이
+				 * 이미 그것이다(회색 아이콘 · 화살표 없음 · 문구 줄바꿈 허용).
+				 * `TaskCard` 를 고치지 않는 이유는 그 컴포넌트를 다른 자리도 쓰기
+				 * 때문이다 — 갈래를 하나 더 넣으면 아이콘 맵과 타입이 같이 늘어난다.
+				 */}
+				{accessEnded && (
+					<div className="task waiting">
+						<span className="ic">
+							<IconBook />
+						</span>
+						<span className="tx">
+							<span className="t1">{t("home.semesterEndedTitle")}</span>
+							<span className="t2">{t("home.semesterEndedBody")}</span>
+						</span>
+					</div>
+				)}
+
 				{/*
 				 * 맨 위 자리는 **최근 학습 바로가기**다 (기획 확정 2026-08-26).
 				 *

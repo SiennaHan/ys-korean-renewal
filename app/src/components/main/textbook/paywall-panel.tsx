@@ -10,9 +10,19 @@ import { useTranslation } from "react-i18next";
  * 들어온다. 선택한 과 제목은 위에 남기고, 본문은 구독 가치와 다음 행동만 말한다.
  *
  * **기관 학생에게는 결제 버튼을 두지 않는다.** 학교가 이미 낸 돈이고 학생이
- * 결정할 일이 아니다(§06). 그래서 갈래를 넷으로 가른다.
+ * 결정할 일이 아니다(§06). 그래서 갈래를 다섯으로 가른다.
  */
-export type PaywallKind = "guest" | "member" | "expired" | "school";
+/**
+ * `schoolExpired` 가 2026-08-28 에 붙었다. 그 전에는 학기가 끝난 기관 학생도
+ * `school` 로 떨어져 **「학교 담당자에게 이용 범위 확대를 문의해 주세요」**를
+ * 봤다 — 범위 문제가 아니라 학기가 끝난 것이니 사실과 다른 안내였다.
+ */
+export type PaywallKind =
+	| "guest"
+	| "member"
+	| "expired"
+	| "school"
+	| "schoolExpired";
 
 /**
  * 어느 안내를 보일지 정한다.
@@ -33,7 +43,15 @@ export function paywallKind(
 	 */
 	hasAccount: boolean,
 ): PaywallKind {
-	if (ent?.source === "school") return "school";
+	/*
+	 * **만료를 school 보다 먼저 본다.** 순서를 바꾸면 학기가 끝난 학생이
+	 * 「이용 범위에 포함되지 않아요」를 보는데, 그건 범위 문제가 아니다.
+	 * 서버는 학기 종료를 `source:"school"` + 과거 `expires_at` 으로 낸다
+	 * (`api/business/entitlement.py` 의 학교 분기).
+	 */
+	const expiredAt = ent?.expires_at ? new Date(ent.expires_at).getTime() : null;
+	const isExpired = expiredAt !== null && expiredAt < Date.now();
+	if (ent?.source === "school") return isExpired ? "schoolExpired" : "school";
 	if (!hasAccount) return "guest";
 	// 산 적이 있고 기간이 지났다 — 기록이 남아 있다는 말을 먼저 해야 한다
 	if (ent?.expires_at && new Date(ent.expires_at).getTime() < Date.now())
@@ -61,11 +79,12 @@ export default function PaywallPanel({
 	const kind = paywallKind(entitlement, isLoggedInUser);
 	const title = t(`paywall.${kind}Title`);
 	const body = t(`paywall.${kind}Body`);
+	/* 기관 학생에게는 결제를 권하지 않는다 — 학기가 끝났어도 학교가 낼 일이다 */
 	const purchasable = kind === "member" || kind === "expired";
 	const MarkIcon =
 		kind === "expired"
 			? RefreshCw
-			: kind === "school"
+			: kind === "school" || kind === "schoolExpired"
 				? School
 				: kind === "guest"
 					? LogIn
@@ -73,7 +92,7 @@ export default function PaywallPanel({
 	const backKey =
 		kind === "guest"
 			? "guestBack"
-			: kind === "school"
+			: kind === "school" || kind === "schoolExpired"
 				? "schoolBack"
 				: "memberBack";
 	const benefitKeys = [

@@ -187,3 +187,44 @@ async def markCompletedIfAllAnswered(userId: str, bookId: int, chapterSeq: int,
         # 세 수는 덮지 않는다 — 원래 세션이 보낸 성적이 정본이다
         db.flush()
     return row
+
+
+async def progressByUsers(userIds: list, db: Session) -> dict:
+    """학생별 진도. `{user_id: {"completed": n, "lastBook": b, "lastChapter": c}}`.
+
+    **완료만 센다**(`state == "completed"`). 이 표는 미학습을 행이 없는 것으로
+    표현하므로(모델 docstring) 행 수를 세면 "시작만 한 것" 이 섞인다.
+
+    「마지막 진도」는 **가장 최근에 끝낸 과**다 — 급·과 번호가 가장 큰 과가 아니다.
+    학생이 5급을 하다 1급으로 돌아가 복습하는 일이 있고, 그때 번호로 고르면
+    화면이 "5급까지 했다" 고 말해 실제와 어긋난다.
+    """
+    if not userIds:
+        return {}
+    keys = [str(u) for u in userIds]
+    M = model.KoActivityState
+    counts = dict(
+        db.query(M.user_id, func.count(M.id))
+          .filter(M.user_id.in_(keys), M.state == "completed")
+          .group_by(M.user_id)
+          .all()
+    )
+    # 가장 최근에 끝낸 한 과. 학생 수만큼 행이므로 한 번에 가져와 파이썬에서 고른다
+    latest = {}
+    rows = (
+        db.query(M.user_id, M.book_id, M.chapter_seq, M.completed_at)
+          .filter(M.user_id.in_(keys), M.state == "completed", M.completed_at.isnot(None))
+          .order_by(M.completed_at.desc())
+          .all()
+    )
+    for r in rows:
+        if r.user_id not in latest:
+            latest[r.user_id] = (r.book_id, r.chapter_seq)
+    return {
+        u: {
+            "completed": int(counts.get(u, 0)),
+            "lastBook": latest.get(u, (None, None))[0],
+            "lastChapter": latest.get(u, (None, None))[1],
+        }
+        for u in set(list(counts.keys()) + list(latest.keys()))
+    }

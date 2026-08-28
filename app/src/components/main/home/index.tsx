@@ -2,6 +2,7 @@ import { type DashboardData, getDashboard } from "@/api/dashboard";
 import { getHomeReviewQueue } from "@/api/review-queue";
 import { useAuth } from "@/components/sign/sign-provider";
 import { LEARN_ROUTE, type LessonActivityId } from "@/shared/lesson-flow";
+import { useEntitlement } from "@/shared/store/entitlement-store";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -25,6 +26,8 @@ function fallbackAttendance() {
 export default function HomeContent() {
 	const { user } = useAuth();
 	const { t } = useTranslation();
+	/* 홈이 권한을 읽는 첫 화면이다 — 학기 종료를 알려야 하기 때문이다 */
+	const { entitlement, ready } = useEntitlement();
 	const navigate = useNavigate();
 	const [data, setData] = useState<DashboardData | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -115,6 +118,20 @@ export default function HomeContent() {
 		});
 	};
 
+	/*
+	 * **학기가 끝났나.** 앱이 계산하지 않는다 — 서버가 낸 값을 읽을 뿐이다.
+	 * 학기 종료는 `source:"school"` + 과거 `expires_at` 으로 온다
+	 * (`api/business/entitlement.py` 의 학교 분기).
+	 *
+	 * `ready` 가 참이 될 때까지는 아무것도 말하지 않는다 — 답이 오기 전에
+	 * 「끝났다」고 하면 잠깐 잘못된 말을 하게 된다.
+	 */
+	const accessEnded =
+		ready &&
+		entitlement?.source === "school" &&
+		!!entitlement.expires_at &&
+		new Date(entitlement.expires_at).getTime() < Date.now();
+
 	return (
 		<HomeView
 			/*
@@ -146,6 +163,7 @@ export default function HomeContent() {
 			weeklyChart={data?.weeklyChart ?? { data: [0, 0, 0, 0, 0, 0, 0] }}
 			onContinue={handleContinue}
 			onStartLearning={() => navigate({ to: "/main/textbook" })}
+			accessEnded={accessEnded}
 		/>
 	);
 }

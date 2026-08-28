@@ -21,6 +21,7 @@
 있어야 한다(`xternal/tutorus.py` 의 `PRONUNCIATION_ENABLED` 와 같은 방식).
 """
 import os
+from datetime import datetime, timezone
 
 from fastapi.encoders import jsonable_encoder
 
@@ -30,6 +31,12 @@ from shared import free_scope, full_scope
 
 # 기본은 켜짐. 사고가 나면 `.env` 한 줄과 재시작으로 끈다
 SCHOOL_FULL_SCOPE = os.environ.get("SCHOOL_FULL_SCOPE", "true").lower() in {"1", "true", "yes"}
+
+
+def _utcNow():
+    """**`util/timeutils.now()` 를 쓰지 마라** — 그쪽은 KST 라 9시간 어긋난다.
+    DB 의 시각 칸은 전부 `UTC_TIMESTAMP()` 기본값이다."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def _scope(source: str, *, books, chapters, jamoChapters, games, clips, expiresAt=None):
@@ -105,6 +112,7 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
         user = await repo_user.findById(int(userId), db)
         role = user.role if user else None
         schoolCode = user.school_code if user else None
+        accessEndedAt = user.access_ended_at if user else None
 
     if role is None:
         # 토큰은 멀쩡한데 계정이 없다(지워졌거나 다른 DB 다). 무료만 내준다
@@ -117,6 +125,16 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
         #
         # 전에는 여기서도 `_freeScope("school")` 을 냈다. 범위는 무료와 같고
         # source 만 달라 앱이 「학교에 문의」를 띄우게 하는 용도였다.
+        #
+        # **학기가 끝났으면 무료 범위로 내려간다**(기획 2026-08-28). 어드민이
+        # `access_ended_at` 을 찍으면 **다음 요청부터 즉시** 걸린다 —
+        # `is_active` 를 쓰면 로그인만 막히고 이미 발급된 토큰은 30일을 더 산다.
+        #
+        # **`source` 는 여전히 `school` 이다.** 앱이 결제를 권하지 않고
+        # 「학교에 문의」를 띄우게 하려는 것이고(§06), `expires_at` 이 과거라는 것으로
+        # 「학기가 끝났다」를 판정한다. 지난 학기 기록은 계정에 그대로 남아 보인다.
+        if accessEndedAt and accessEndedAt <= _utcNow():
+            return _freeScope("school", expiresAt=jsonable_encoder(accessEndedAt))
         return _schoolScope() if SCHOOL_FULL_SCOPE else _freeScope("school")
 
     # 개인 계정. 결제가 없으므로 아직 무료 범위다 — 잠긴 것을 누르면 결제로 간다
