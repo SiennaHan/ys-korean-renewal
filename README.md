@@ -117,6 +117,21 @@ cd app && pnpm parity:activity                        # 화면
 cd app && python3 scripts/build-content.py --check    # 콘텐츠
 ```
 
+**2026-08-29 부터 CI 가 이 검사들을 대신 돌린다** — `.github/workflows/gates.yml`.
+푸시와 PR 마다 여섯이 돈다(문서 · typecheck · 목업 대조 · build · check:css · biome).
+
+**딱 하나는 CI 가 못 돈다 — 위 셋째, 콘텐츠다.** 그 검사는 원장 xlsx 를 읽는데
+**원장은 저장소에 없다**(`.gitignore` 의 `*.xlsx`). **콘텐츠를 건드렸으면 손으로 돌려라.**
+
+CI 에 대해 알아 둘 것 둘 —
+
+- **`check:css` 는 `build` 뒤에 돌아야 한다.** `css-class-check.py` 가 빌드 산출 CSS 를
+  보는데, `dist` 가 비면 **「건너뜀」을 찍고 그냥 통과한다**(실측). 워크플로가 순서를
+  지키고, 그래도 건너뛰면 실패시킨다
+- **`biome` 은 0 을 요구하지 않는다.** `biome check src` 는 아직 통과하지 않으므로
+  **늘어나지만 않으면** 통과시킨다(기준 60, 2026-08-29). 줄이면 워크플로의 `BASELINE` 도
+  같이 내려라
+
 ### 목업 대조 — 시각 정본은 목업이다
 
 **구현이 목업과 다르면 목업이 기준이다.**
