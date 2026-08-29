@@ -206,7 +206,7 @@
 </table></div>
 <p class="meta">확인처 — <span class="file">api/business/entitlement.py</span> ·
 <span class="file">api/shared/free_scope.py</span> ·
-<span class="file">app/src/i18n/locales/ko.ts</span> 의 <code>paywall</code> 여섯 갈래.
+<span class="file">app/src/i18n/locales/ko.ts</span> 의 <code>paywall</code> 블록. <b>갈래 수는 여기 적지 않는다</b> — 그 수의 주인은 <span class="file">paywall_SOT</span> 이고, 전에 여기 「여섯 갈래」로 적혀 있었는데 <code>PaywallKind</code> 와도 그 블록의 키 구성과도 맞지 않았다.
 기획 정본은 <span class="file">access_and_pricing_v1.html</span>.</p>
 
 <h3>무엇으로 배우나 — 교재의 모양</h3>
@@ -215,7 +215,7 @@
   <tr><td><b>한글</b></td><td>자모 낱자</td>
       <td>교재 이전 단계. 자음·모음·받침·겹받침을 소리와 획순으로 익힌다</td></tr>
   <tr><td><b>1급 ~ 8급</b></td><td>교재 8권</td>
-      <td>1급만 12과, 2~8급은 각 15과다 — <b>1급의 1~3과가 한글 파트</b>라 일반 활동이 없다</td></tr>
+      <td><b>여덟 권 모두 15과</b>다. 다만 <b>1급의 1~3과가 한글 파트</b>라 일반 활동이 없어서, 활동이 붙는 과는 1급만 12개(4~15과)다 — <b>「1급은 12과」가 아니다.</b> 여기 그렇게 적혀 있었는데 짧은 책으로 읽힌다</td></tr>
   <tr><td>과(課)</td><td>학습의 최소 단위</td>
       <td>한 과가 「기초학습」 다섯 + 「심화학습」 둘로 펼쳐진다</td></tr>
 </table></div>
@@ -237,8 +237,12 @@
       <td>AI 미션 대화</td><td>상황과 미션을 받아 AI 와 자유롭게 대화하고 첨삭을 받는다</td></tr>
   <tr><td>단어 플래시카드</td><td>「알아요 / 몰라요」로 넘기며 어휘를 다진다</td></tr>
 </table></div>
-<p>한글 파트는 활동이 따로 다섯이다 — <b>발음 듣고 따라하기 · 자음-모음 조합하기 ·
+<p>한글 파트는 활동이 따로 <b>여섯</b>이다 — <b>발음 듣고 따라하기 · 자음-모음 조합하기(두 단계) ·
 단어 듣고 따라하기 · 단어 쓰기 · 듣고 맞는 것 고르기</b>. 쓰기는 손가락으로 획을 그린다.</p>
+<p class="qa"><b>여기 「다섯」으로 적혀 있었다.</b> <code>catalog.jamoAct</code> 는 여섯이고
+저장소의 다른 곳도 전부 「자모 여섯」이다(§15 표 · CLAUDE.md). 자음-모음 조합하기가
+<code>write</code>·<code>write3</code> <b>두 단계</b>인데 이름이 같아서 하나로 세어졌다 —
+목업이 그 둘을 한 버튼 안에서 상태로 넘기기 때문에 헷갈리기 쉬운 자리다.</p>
 <p class="meta">확인처 — <span class="file">app/src/i18n/locales/ko.ts</span> 의
 <code>catalog.act</code> · <code>catalog.jamoAct</code>, 라우트는
 <span class="file">app/src/routes/learn/*</span>.</p>

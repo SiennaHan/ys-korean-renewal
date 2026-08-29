@@ -218,6 +218,23 @@ def mockup_captures() -> int:
     return len(list(d.glob("*.html"))) if d.is_dir() else 0
 
 
+def jamo_activities() -> int:
+    """`catalog.jamoAct` 의 항목 수 — 한글 파트 활동이 몇인가.
+
+    2026-08-29 에 masterplan §0 이 「다섯」으로 적고 있는 것을 찾았다. 실제는 여섯이고
+    저장소의 다른 곳은 전부 여섯이다(§15 표 · CLAUDE.md). **자음-모음 조합하기가
+    `write`·`write3` 두 단계인데 이름이 같아서** 사람이 세면 하나로 뭉친다 —
+    목업도 그 둘을 한 버튼 안에서 상태로 넘긴다. 그러니 사람 말고 기계가 센다.
+    """
+    f = APP / "src" / "i18n" / "locales" / "ko.ts"
+    if not f.exists():
+        return 0
+    m = re.search(r"jamoAct: \{(.*?)\n\t\t\}", f.read_text(encoding="utf-8", errors="replace"), re.S)
+    if not m:
+        return 0
+    return len(re.findall(r'^\t\t\t(?:"[^"]+"|[A-Za-z0-9_-]+):', m.group(1), re.M))
+
+
 def paywall_kinds() -> int:
     """`PaywallKind` 의 갈래 수 — 앱 코드에서 센다.
 
@@ -408,6 +425,17 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             if ported_screens()
             else []
         ),
+        ("자모 활동 수", jamo_activities(), [
+            # **주인을 두지 않는다.** masterplan §0(제품 설명)과 jamo_authoring_spec
+            # (저작 명세)이 각각 제 몫으로 이 수를 말한다 — 한쪽을 지우면 그 문서가
+            # 하려던 말이 깨진다. 대신 **둘 다 검사받게** 한다.
+            #
+            # 패턴은 좁게 쓴다. 처음엔 `자모…활동…N종` 으로 넓게 잡았다가
+            # 인계 메모의 "자모 목록 인계] 앞서 활동 화면 19종" 을 **문장을 가로질러**
+            # 잡았다 — 시점 기록이라 고치면 안 되는 문서다.
+            rf"한글 파트는 활동이 따로 {NUM}",
+            rf"자모는 활동이 {NUM}\s*(?:종|개)",
+        ]),
         ("페이월 상태 수", paywall_kinds(), [
             # **페이월 문맥을 반드시 요구한다.** 처음엔 "N 으로 갈린다" 만 봤다가
             # shell_spec 의 무관한 문장을 잡았다 — 패턴은 좁게, 문맥을 붙여서.
