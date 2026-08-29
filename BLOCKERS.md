@@ -3688,7 +3688,18 @@ cd app
 pnpm typecheck        # 통과
 pnpm parity:activity  # "모두 같다"
 pnpm build            # 통과 — §1 에서 고쳤다
+
+cd ../admin
+pnpm typecheck        # 통과 — **2026-08-29 에 게이트로 들어왔다**
+pnpm build            # 통과
 ```
+
+**어드민이 여기 없었다.** 그래서 `pnpm typecheck` 가 13건으로 실패하는 것을 다섯 달
+동안 아무도 몰랐다(§14). 지금은 0이고, 목록에 있으니 다시 깨지면 보인다.
+`CLAUDE.md` 의 「끝냈으면 돌려라」와 `phase1/developer_tasks.md` 의 「CI 필수 단계」에도
+같이 넣었다 — **셋 중 하나만 알면 나머지 둘을 안 돌린다.**
+
+**처음 한 번은 `pnpm install` 이 필요하다** — 워크트리에는 `node_modules` 가 없다.
 
 **`npx biome check src` 는 아직 통과하지 않는다 — 505 → 220 건까지 줄였고(2026-08-24),
 그 뒤 화면들을 다시 쓰면서 저절로 더 줄었다. 2026-08-27 에 재니 49건이다.**

@@ -347,9 +347,16 @@ PD-03이 ‘UX 잠금’이면 이 작업은 하지 않고, 그 제한을 출시
 **CI 필수 단계**
 
 1. `cd app && pnpm typecheck && pnpm check && pnpm check:css && pnpm parity:activity && pnpm build`
-2. `python3 docs/check_docs.py`
-3. API 단위/통합 테스트와 `api/smoke_test.py`
-4. DB 마이그레이션 사전 검사
+2. `cd admin && pnpm typecheck && pnpm build`
+3. `python3 docs/check_docs.py`
+4. API 단위/통합 테스트와 `api/smoke_test.py`
+5. DB 마이그레이션 사전 검사
+
+**2번이 2026-08-29 에 들어왔다.** 그전까지 어드민은 어느 목록에도 없었고,
+`pnpm typecheck` 가 13건으로 실패하는 것을 다섯 달 동안 아무도 몰랐다
+(`BLOCKERS.md` §14). 어드민에는 목업 대조도 콘텐츠 검사도 없어서 **이 검사 하나가
+어드민의 전부다.** `check` · `check:css` 를 안 넣은 것은 app 쪽도 아직 통과하지
+않기 때문이다(같은 문서의 biome 항목) — 어드민에 먼저 걸면 기준이 두 개가 된다.
 
 **운영 관측**
 
