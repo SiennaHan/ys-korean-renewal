@@ -20,11 +20,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GameIndexRouteImport } from './routes/game/index'
-import { Route as GameVocashotIndexRouteImport } from './routes/game/vocashot/index'
 import { Route as GameContentIndexRouteImport } from './routes/game/content/index'
-import { Route as GameVocashotCreateRouteImport } from './routes/game/vocashot/create'
 import { Route as GameContentGameRouteImport } from './routes/game/content/$game'
-import { Route as GameVocashotHostPinRouteImport } from './routes/game/vocashot/host.$pin'
 
 const TtsTestRoute = TtsTestRouteImport.update({
   id: '/tts-test',
@@ -81,29 +78,14 @@ const GameIndexRoute = GameIndexRouteImport.update({
   path: '/game/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GameVocashotIndexRoute = GameVocashotIndexRouteImport.update({
-  id: '/game/vocashot/',
-  path: '/game/vocashot/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GameContentIndexRoute = GameContentIndexRouteImport.update({
   id: '/game/content/',
   path: '/game/content/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GameVocashotCreateRoute = GameVocashotCreateRouteImport.update({
-  id: '/game/vocashot/create',
-  path: '/game/vocashot/create',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GameContentGameRoute = GameContentGameRouteImport.update({
   id: '/game/content/$game',
   path: '/game/content/$game',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GameVocashotHostPinRoute = GameVocashotHostPinRouteImport.update({
-  id: '/game/vocashot/host/$pin',
-  path: '/game/vocashot/host/$pin',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -120,10 +102,7 @@ export interface FileRoutesByFullPath {
   '/tts-test': typeof TtsTestRoute
   '/game/': typeof GameIndexRoute
   '/game/content/$game': typeof GameContentGameRoute
-  '/game/vocashot/create': typeof GameVocashotCreateRoute
   '/game/content/': typeof GameContentIndexRoute
-  '/game/vocashot/': typeof GameVocashotIndexRoute
-  '/game/vocashot/host/$pin': typeof GameVocashotHostPinRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -138,10 +117,7 @@ export interface FileRoutesByTo {
   '/tts-test': typeof TtsTestRoute
   '/game': typeof GameIndexRoute
   '/game/content/$game': typeof GameContentGameRoute
-  '/game/vocashot/create': typeof GameVocashotCreateRoute
   '/game/content': typeof GameContentIndexRoute
-  '/game/vocashot': typeof GameVocashotIndexRoute
-  '/game/vocashot/host/$pin': typeof GameVocashotHostPinRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -157,10 +133,7 @@ export interface FileRoutesById {
   '/tts-test': typeof TtsTestRoute
   '/game/': typeof GameIndexRoute
   '/game/content/$game': typeof GameContentGameRoute
-  '/game/vocashot/create': typeof GameVocashotCreateRoute
   '/game/content/': typeof GameContentIndexRoute
-  '/game/vocashot/': typeof GameVocashotIndexRoute
-  '/game/vocashot/host/$pin': typeof GameVocashotHostPinRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -177,10 +150,7 @@ export interface FileRouteTypes {
     | '/tts-test'
     | '/game/'
     | '/game/content/$game'
-    | '/game/vocashot/create'
     | '/game/content/'
-    | '/game/vocashot/'
-    | '/game/vocashot/host/$pin'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -195,10 +165,7 @@ export interface FileRouteTypes {
     | '/tts-test'
     | '/game'
     | '/game/content/$game'
-    | '/game/vocashot/create'
     | '/game/content'
-    | '/game/vocashot'
-    | '/game/vocashot/host/$pin'
   id:
     | '__root__'
     | '/'
@@ -213,10 +180,7 @@ export interface FileRouteTypes {
     | '/tts-test'
     | '/game/'
     | '/game/content/$game'
-    | '/game/vocashot/create'
     | '/game/content/'
-    | '/game/vocashot/'
-    | '/game/vocashot/host/$pin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -232,10 +196,7 @@ export interface RootRouteChildren {
   TtsTestRoute: typeof TtsTestRoute
   GameIndexRoute: typeof GameIndexRoute
   GameContentGameRoute: typeof GameContentGameRoute
-  GameVocashotCreateRoute: typeof GameVocashotCreateRoute
   GameContentIndexRoute: typeof GameContentIndexRoute
-  GameVocashotIndexRoute: typeof GameVocashotIndexRoute
-  GameVocashotHostPinRoute: typeof GameVocashotHostPinRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -317,13 +278,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/game/vocashot/': {
-      id: '/game/vocashot/'
-      path: '/game/vocashot'
-      fullPath: '/game/vocashot/'
-      preLoaderRoute: typeof GameVocashotIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/game/content/': {
       id: '/game/content/'
       path: '/game/content'
@@ -331,25 +285,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameContentIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/game/vocashot/create': {
-      id: '/game/vocashot/create'
-      path: '/game/vocashot/create'
-      fullPath: '/game/vocashot/create'
-      preLoaderRoute: typeof GameVocashotCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/game/content/$game': {
       id: '/game/content/$game'
       path: '/game/content/$game'
       fullPath: '/game/content/$game'
       preLoaderRoute: typeof GameContentGameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/game/vocashot/host/$pin': {
-      id: '/game/vocashot/host/$pin'
-      path: '/game/vocashot/host/$pin'
-      fullPath: '/game/vocashot/host/$pin'
-      preLoaderRoute: typeof GameVocashotHostPinRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -368,10 +308,7 @@ const rootRouteChildren: RootRouteChildren = {
   TtsTestRoute: TtsTestRoute,
   GameIndexRoute: GameIndexRoute,
   GameContentGameRoute: GameContentGameRoute,
-  GameVocashotCreateRoute: GameVocashotCreateRoute,
   GameContentIndexRoute: GameContentIndexRoute,
-  GameVocashotIndexRoute: GameVocashotIndexRoute,
-  GameVocashotHostPinRoute: GameVocashotHostPinRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

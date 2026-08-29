@@ -3380,7 +3380,7 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ cf0206c -->
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 387caaa -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.
@@ -3483,7 +3483,7 @@ DB 도 네트워크도 필요 없다. 다음에 표가 늘 때 같은 일이 또
 
 ## 13. 탈퇴가 「지운다」에서 「가리고 남긴다」로 바뀌었다 (2026-08-29)
 
-<!-- 관찰: api/business/user_withdraw.py, api/shared/withdrawal_scope.py, api/accepter/auth.py, api/persistence/repo_user.py, app/src/routes/my-withdraw.tsx @ cf0206c -->
+<!-- 관찰: api/business/user_withdraw.py, api/shared/withdrawal_scope.py, api/accepter/auth.py, api/persistence/repo_user.py, app/src/routes/my-withdraw.tsx @ 387caaa -->
 <!-- 왜: 「무엇이 남고 무엇이 가려지나」와 앱이 이용자에게 하는 약속을 그 다섯에서 읽고 적었다 -->
 
 **기획 확정 —** 탈퇴해도 계정과 학습 데이터를 지우지 않는다. 이름과 이메일만
@@ -3609,6 +3609,68 @@ DB 가 흔들릴 때 로그인한 사람 전부가 튕긴다).
   쓰기 시작하면 이름보다 강한 식별자이므로 그때 `MASK_*` 에 넣어야 한다
 - **삭제권 요청을 받을 화면이 없다.** `purgeAccount` 는 있는데 부르는 곳이 없어서
   사람이 손으로 돌려야 한다. 제6조가 「지체 없이」를 약속하므로 절차를 정해야 한다
+
+---
+
+## 14. 어드민에 교실용 VocaShot 이 통째로 남아 있었다 — 걷었다 (2026-08-29)
+
+**방은 열리는데 들어올 학생이 없었다.** `games_spec_v1` §19 ⑥ 이 2026-08-24 에
+학생 쪽 교실용 VocaShot 1,684줄을 지웠는데 **어드민 쪽 2,946줄은 그대로 남았다.**
+§18 이 처음부터 「방과 `appsync.ts` 전체를 버린다」로 정해 둔 것이라 마저 했다.
+
+    admin/src/routes/game/vocashot/create.tsx      1,094   방 만들기
+    admin/src/routes/game/vocashot/host.$pin.tsx   1,116   전광판·진행
+    admin/src/routes/game/vocashot/index.tsx         194   방 목록
+    admin/src/lib/vocashot/                          746   appsync·types·presets·vocabData
+
+**어드민 게임 페이지의 카드도 걷었다** — 눌러 갈 곳이 없어졌다.
+
+### 타입 오류가 신호였다 — 죽은 분기가 아니라 타입이 거짓말이었다
+
+어드민 `pnpm typecheck` 가 **13건으로 실패**하고 있었고 전부 `host.$pin.tsx` 하나였다.
+처음엔 「`TS2367` 이니 죽은 분기일 것」으로 봤는데 **틀렸다.**
+
+`admin` 사본의 `types.ts` 가 `RoomPhase` 를 **소문자로** 선언해 두었다
+(`"lobby" | "playing" | …`). 코드는 `"PLAYING"` 을 쓰므로 겹치지 않는다는 오류다.
+**어느 쪽이 맞나** — 지워진 학생 쪽 `types.ts`(`e5374ea^` 에서 꺼냈다)는 **대문자**였고,
+그 클라이언트 코드도 대문자만 썼다. 어드민 자신도 `endGame(pin, "SUCCESS")` 로
+**써 넣고** 대문자로 **읽는다**(GraphQL 이 `String!` 이라 준 대로 저장된다).
+**소문자가 나오는 곳은 그 두 줄뿐이었다** — 타입이 틀린 것이다.
+
+**아무도 안 쓰는 화면이라 다섯 달 동안 안 드러났다.** 어드민 타입 검사가 아래
+「확인된 상태」의 게이트 목록에 없는 것도 한몫했다.
+
+### 덤으로 나온 것 둘
+
+- **템플릿 리터럴 6곳이 큰따옴표로 깨져 있었다** — `"calc(${leftPercent}% + 30px)"` 가
+  글자 그대로 들어가 CSS 가 무효였다(파괴된 운석 이펙트가 자리를 못 잡는다).
+  716행은 화면에 `커스텀 ${custom}문제` 가 그대로 떴다. 13번째 오류(`topPercent`
+  미사용)가 그 증상이었다 — **오류 하나가 다른 버그를 가리키고 있었다**
+- **`aws-amplify`(6.16.3)를 쓰는 곳이 없어졌다.** 앱 쪽은 2026-08-24 부터 잔재였다.
+  둘 다 `package.json` 에서 걷었다 — 락파일에서 약 3,000줄이 빠졌다
+
+### 남긴 것
+
+**어휘 프리셋은 살아 있다.** 어드민 컨텐츠 편집의 「프리셋」 탭이 쓰고 서버 API
+(`/game-content/vocashot/presets`)도 그대로다. 그쪽은 `lib/vocashot/` 를 import 하지
+않는다 — `api/game-content.ts` 만 쓴다. **`create.tsx` 안의 `presetOptions`·`presetData`
+는 같은 이름의 지역 변수였지 `presets.ts` 를 쓰던 것이 아니다.**
+
+### 확인
+
+```
+어드민  typecheck 13건 → 0 · build 0 (routeTree.gen.ts 재생성으로 세 라우트가 사라졌다)
+앱      typecheck 0 · parity:activity 0 · build 0
+```
+
+**넷 다 `node_modules` 를 지우고 다시 깐 뒤 쟀다.** 중간에 `parity` 가 한 번 실패해서
+`aws-amplify` 를 되돌려 놓고 다시 재 봤는데 **되돌려도 실패**했다 — 반복 설치로
+지저분해진 `node_modules` 였고 깨끗이 깔면 통과한다. 내 변경 때문이 아니었다.
+
+### 여전히 안 잡히는 것
+
+**어드민 타입 검사가 게이트 목록에 없다.** 지금은 0이지만 다시 깨져도 아무도 모른다.
+넣을지는 판단이 필요하다 — 넣으면 어드민을 건드리는 모든 작업이 그 검사를 지나야 한다.
 
 ---
 

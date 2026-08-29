@@ -1796,6 +1796,39 @@ POST /game-progress   { gameName:"vocashot", stageId:<b>"_meta"</b>,
      애초에 없고 학생이 스스로 들어간다(2026-08-24 기획자 확인).
      서버의 <code>api/seed_vocashot.py</code> 도 어휘 은행을 심는 것이라 방과 무관하다.</p>
 </div>
+<div class="callout good">
+  <div class="t">⑥ 의 <b>나머지 절반을 2026-08-29 에 했다</b> — 어드민 쪽이 남아 있었다</div>
+  <p>⑥ 은 <b>학생 쪽만</b> 지웠다. 선생님이 방을 여는 <b>어드민 쪽 2,946줄이 그대로 남아</b>
+     있었다 — 즉 <b>방은 열리는데 들어올 학생이 없는</b> 상태로 다섯 달을 지났다.
+     §18 이 처음부터 "방(<code>Room</code>·<code>RoomConfig</code>·<code>RoomRuntime</code>)과
+     <code>appsync.ts</code> 전체를 버린다" 로 정해 둔 것이라 마저 했다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>지운 것</th><th>줄</th></tr>
+    <tr><td><code>admin/src/routes/game/vocashot/create.tsx</code> (방 만들기)</td><td class="n">1,094</td></tr>
+    <tr><td><code>admin/src/routes/game/vocashot/host.$pin.tsx</code> (전광판·진행)</td><td class="n">1,116</td></tr>
+    <tr><td><code>admin/src/routes/game/vocashot/index.tsx</code> (방 목록)</td><td class="n">194</td></tr>
+    <tr><td><code>admin/src/lib/vocashot/appsync.ts</code></td><td class="n">452</td></tr>
+    <tr><td><code>admin/src/lib/vocashot/types.ts</code> · <code>presets.ts</code> · <code>vocabData.json</code></td><td class="n">194 + 데이터</td></tr>
+  </table></div>
+  <p><b>어떻게 찾았나 — 타입 오류가 신호였다.</b> 어드민 <code>pnpm typecheck</code> 가
+     13건으로 실패하고 있었고 전부 <code>host.$pin.tsx</code> 하나였다. 파 보니
+     <code>admin</code> 사본의 <code>types.ts</code> 가 <code>RoomPhase</code> 를
+     <b>소문자로</b> 선언해 두어(<code>"playing"</code>) 코드의 <code>"PLAYING"</code> 과
+     겹치지 않는다는 오류였다. <b>지워진 학생 쪽 <code>types.ts</code> 는 대문자였다</b> —
+     어드민 사본만 틀렸던 것이고, <b>아무도 안 쓰는 화면이라 다섯 달 동안 안 드러났다.</b></p>
+  <p class="qa"><b>덤으로 나온 것 둘.</b> ① <code>host.$pin.tsx</code> 의 스타일 6곳이
+     백틱이 아니라 큰따옴표라 <code>"calc(${leftPercent}% + 30px)"</code> 가 글자 그대로
+     들어가고 있었다 — CSS 가 무효라 파괴된 운석 이펙트가 자리를 못 잡았다.
+     ② <code>aws-amplify</code>(6.16.3)를 쓰는 곳이 <b>어드민에도 앱에도 없어졌다</b> —
+     앱 쪽은 2026-08-24 부터 잔재였다. 둘 다 <code>package.json</code> 에서 걷었다.</p>
+  <p><b>남긴 것</b> — 어휘 프리셋은 <b>어드민 컨텐츠 편집의 「프리셋」 탭</b>이 쓰고
+     서버 API(<code>/game-content/vocashot/presets</code>)도 살아 있다.
+     그쪽은 <code>lib/vocashot/</code> 를 import 하지 않는다(<code>api/game-content.ts</code> 만 쓴다).</p>
+  <p><b>확인</b> — 어드민 <code>typecheck</code> <b>13건 → 0</b> ·
+     <code>build</code> 통과(<code>routeTree.gen.ts</code> 재생성으로 세 라우트가 사라졌다) ·
+     앱 <code>typecheck</code> · <code>parity:activity</code> · <code>build</code> 통과.
+     넷 다 <code>node_modules</code> 를 지우고 다시 깐 뒤 쟀다.</p>
+</div>
 <div class="callout">
   <div class="t">봇은 <b>여기 없다</b></div>
   <p>①②③ 위에 <b>가짜 정답을 스폰 루프에 끼워넣는</b> 일이라 나중에 얹힌다.

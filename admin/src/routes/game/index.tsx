@@ -1,19 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FileEdit, Gamepad2 } from "lucide-react";
+import { FileEdit } from "lucide-react";
 
 export const Route = createFileRoute("/game/")({
 	component: GameHubPage,
 });
 
+/*
+ * **교실용 VocaShot 카드가 여기 있었다 — 2026-08-29 에 걷었다.**
+ * 선생님이 방을 열면 학생이 PIN 을 치고 들어오는 방식이었는데, 그 학생
+ * 클라이언트를 2026-08-24 에 지웠다(`games_spec_v1` §19 ⑥). 즉 방을 열 수는
+ * 있는데 들어올 학생이 없는 상태로 남아 있었다. 명세 §18 이 처음부터
+ * 「방·appsync·구독 4종을 버린다」로 정해 둔 것을 마저 한 것이다.
+ */
 const cards = [
-	{
-		id: "vocashot",
-		title: "낱말맞추기",
-		desc: "VocaShot 멀티플레이어 방을 만들고 관리합니다.",
-		icon: Gamepad2,
-		color: "bg-violet-100 text-violet-600",
-		to: "/game/vocashot" as const,
-	},
 	{
 		id: "content",
 		title: "컨텐츠 편집",
@@ -31,7 +30,7 @@ function GameHubPage() {
 			<div className="mb-6">
 				<h1 className="font-bold text-2xl text-gray-900">게임관리</h1>
 				<p className="mt-1 text-gray-500 text-sm">
-					게임 방 운영과 컨텐츠 편집을 한 곳에서 관리합니다.
+					게임에 나가는 학습 컨텐츠를 편집합니다.
 				</p>
 			</div>
 

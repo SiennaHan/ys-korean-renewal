@@ -42,7 +42,6 @@
 		"@tailwindcss/postcss": "^4.0.12",
 		"@tanstack/react-router": "1.136.8",
 		"@tanstack/router-devtools": "^1.114.13",
-		"aws-amplify": "^6.16.3",
 		"canvas-confetti": "^1.9.4",
 		"chart.js": "^4.5.1",
 		"class-variance-authority": "^0.7.1",
