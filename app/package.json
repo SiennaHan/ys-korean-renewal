@@ -32,6 +32,7 @@
 		"@types/react-youtube": "^7.10.0",
 		"storybook": "^10.5.9",
 		"storybook-react-rsbuild": "^3.4.2",
+		"tsx": "^4.23.12",
 		"typescript": "^5.9.2"
 	},
 	"dependencies": {
