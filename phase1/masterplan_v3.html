@@ -213,14 +213,13 @@
 <div class="tablewrap"><table>
   <tr><th>층</th><th>단위</th><th>안에 무엇이</th></tr>
   <tr><td><b>한글</b></td><td>자모 낱자</td>
-      <td>교재 이전 단계. 자음·모음·받침·겹받침을 소리와 획순으로 익힌다</td></tr>
+      <td>자음·모음·받침·겹받침을 소리와 획순으로 익힌다. <b>데이터로는 1급 1~3과</b>인데 <b>교재학습 탭에서는 「한글」로 따로 뽑아 낸다</b>(<code>chapter.type === "jamo"</code>) — 그래서 화면에서는 1급 앞에 선다</td></tr>
   <tr><td><b>1급 ~ 8급</b></td><td>교재 8권</td>
       <td><b>여덟 권 모두 15과</b>다. 다만 <b>1급의 1~3과가 한글 파트</b>라 일반 활동이 없어서, 활동이 붙는 과는 1급만 12개(4~15과)다 — <b>「1급은 12과」가 아니다.</b> 여기 그렇게 적혀 있었는데 짧은 책으로 읽힌다</td></tr>
   <tr><td>과(課)</td><td>학습의 최소 단위</td>
       <td>한 과가 「기초학습」 다섯 + 「심화학습」 둘로 펼쳐진다</td></tr>
 </table></div>
-<p class="meta">확인처 — <span class="file">app/src/shared/data/n*.json</span> 의
-<code>book_id</code> · <code>chapter</code>. <b>문항 수는 여기 적지 않는다</b> —
+<p class="meta">확인처 — <b>과 구조는 <span class="file">app/src/shared/data/chapter.ts</span> 가 정본이다</b>(120개). 탭 구성은 <span class="file">app/src/components/main/textbook/labels.ts</span> 의 <code>buildBookTabs</code>.<br><b>문항 데이터(<span class="file">n*.json</span>)에서 과 수를 세지 마라</b> — 어휘가 없는 과는 안 잡혀서 1급이 12과로 보인다. 실제로 그렇게 세어 틀린 적이 있다(2026-08-28).<br><b>문항 수는 여기 적지 않는다</b> —
 시트마다 계속 늘어나므로 세려면
 <code>python3 app/scripts/build-content.py --check</code> 가 찍는다(§1 과 같은 이유다).</p>
 
@@ -277,8 +276,12 @@
 
 <h3>학습이 도는 법 — 복습 큐</h3>
 <p>문항을 틀리거나 건너뛰면 <b>복습 큐</b>에 들어간다. 다만 <b>그날 안에는 다시 안 준다</b> —
-<code>available_at</code> 이 다음 날 0시라 홈에 「오늘 틀리거나 건너뛴 문항은 내일 만나요」로 뜬다.
+<code>available_at</code> 이 <b>오답 다음 날 KST 00:00</b> 이라 홈에
+「오늘 틀리거나 건너뛴 문항은 내일 만나요」로 뜬다.
 방금 틀린 것을 곧바로 다시 주면 답을 외워서 맞히기 때문이다.</p>
+<p class="meta">확인처 — <span class="file">api/persistence/model.py</span> 의 <code>ko_review_queue</code>
+(그 표의 주석이 규칙을 적어 두었다) · <span class="file">api/business/review_queue.py</span> —
+<code>scope=home</code> 은 <code>available_at</code> 이 지난 것만 낸다.</p>
 
 <h3>무엇이 무료인가 — 경계는 한 파일에만 있다</h3>
 <div class="tablewrap"><table>
@@ -308,7 +311,7 @@
 <div class="tablewrap"><table>
   <tr><th>층</th><th>무엇</th><th>알아 둘 것</th></tr>
   <tr><td>앱</td><td>React 18 · TanStack Router · Tailwind v4 · rsbuild</td>
-      <td>라우터는 <b>캐럿 없이 정확히 1.136.8</b> 이다 — 올리면 React 19 의 <code>use</code> 를 써서 죽는다</td></tr>
+      <td><b>라우터를 올리지 마라</b> — 1.136.8 위쪽은 React 19 의 <code>use</code> 를 써서 죽는다(이 앱은 React 18).<br><code>react-router</code> 와 <code>router-plugin</code> 은 캐럿 없이 <b>1.136.8</b> 로 박아 뒀는데 <code>router-devtools</code> 만 <code>^1.114.13</code> 이 남아 있다 — <b>지금 막고 있는 것은 락파일이다.</b> 자세한 것은 <span class="file">BLOCKERS.md</span> §1</td></tr>
   <tr><td>서버</td><td>FastAPI (<span class="file">api/</span>)</td>
       <td>활동 상태 · 복습 큐 · 권한 판정 · 문의 · 탈퇴</td></tr>
   <tr><td>콘텐츠</td><td>원장 xlsx → <span class="file">app/src/shared/data/n*.json</span></td>
