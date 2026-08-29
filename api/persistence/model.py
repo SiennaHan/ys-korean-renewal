@@ -319,7 +319,7 @@ class KoSignupCodeUse(Base) :
     id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
     code_id        = Column(Integer,      nullable=False)   # 인덱스는 아래에서 이름을 직접 준다
     # ko_user.id. **탈퇴하면 NULL 이 된다** — 행은 좌석 회계로 남고 사람만 지워진다.
-    # `user_id` 를 가진 표 열여섯 중 **여기만 Integer 다**(나머지는 String(45~50)).
+    # `user_id` 를 가진 표 **열다섯 중 여기만 Integer 다**(나머지 열넷은 String(45~50)).
     # 그래서 탈퇴 판정이 게스트 id 를 섞어 `in_()` 하는 목록을 여기에는 쓰지 않는다 —
     # 게스트는 코드로 가입할 수 없으므로 애초에 이 표에 행이 없다.
     user_id        = Column(Integer,      nullable=True)

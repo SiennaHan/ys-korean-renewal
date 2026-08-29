@@ -217,7 +217,7 @@ async def purgeAccount(userId: str, guestId: str = None):
     # 어긋난다. 까닭 전부는 `withdrawal_scope.ANONYMIZE_MODELS` 위에 있다.
     #
     # **여기는 `ids` 를 쓰지 않는다.** 저 목록은 게스트 id 문자열이 섞여 있는데
-    # 이 표의 `user_id` 만 Integer 다(나머지 열다섯은 String). 문자열을 섞어
+    # 이 표의 `user_id` 만 Integer 다(나머지 열넷은 String). 문자열을 섞어
     # `in_()` 하면 MySQL 이 조용히 0 으로 바꿔 **엉뚱한 행을 건드린다.**
     # 게스트는 코드로 가입할 수 없으니 애초에 게스트 id 로 된 행이 없다.
     with sessionScope() as db:
