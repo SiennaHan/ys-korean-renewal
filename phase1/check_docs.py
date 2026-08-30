@@ -44,6 +44,7 @@ h3 을 두어서 §N.M 인용 59곳이 닿지 않았다. 둘 다 "통과" 뒤에
 """
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 import sys
@@ -233,6 +234,32 @@ def jamo_activities() -> int:
     if not m:
         return 0
     return len(re.findall(r'^\t\t\t(?:"[^"]+"|[A-Za-z0-9_-]+):', m.group(1), re.M))
+
+
+def chapters_per_book() -> tuple[int, int]:
+    """`chapter.ts` 에서 (급별 과 수, 전체 과 수)를 센다. 급마다 다르면 급별은 0 을 낸다.
+
+    **여기가 과 구조의 유일한 정본이다.** 2026-08-29 에 masterplan §0 이
+    「1급만 12과」로 적었다 — `n1_word_list.json` 에서 `book_id` 별로 `chapter` 를
+    세었기 때문이다. **1급 1~3과는 한글 파트라 어휘 데이터가 없어서** 12로 나온다.
+    문항 JSON 12개 중 11개가 1급을 12과로 보이게 한다.
+
+    이 함정 자체는 `app/scripts/chapter-source-check.py` 가 매번 소리 내어 말한다.
+    여기서는 **문서가 그 수를 적었을 때** 견준다.
+    """
+    f = APP / "src" / "shared" / "data" / "chapter.ts"
+    if not f.exists():
+        return (0, 0)
+    t = f.read_text(encoding="utf-8", errors="replace")
+    try:
+        rows = json.loads(t[t.index("[") : t.rindex("]") + 1])
+    except Exception:
+        return (0, 0)
+    per: dict[int, int] = {}
+    for r in rows:
+        per[r["book_id"]] = per.get(r["book_id"], 0) + 1
+    uniform = len(set(per.values())) == 1
+    return (next(iter(per.values())) if uniform else 0, len(rows))
 
 
 def paywall_kinds() -> int:
@@ -435,6 +462,21 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             # 잡았다 — 시점 기록이라 고치면 안 되는 문서다.
             rf"한글 파트는 활동이 따로 {NUM}",
             rf"자모는 활동이 {NUM}\s*(?:종|개)",
+        ]),
+        # 과 구조 — 정본은 chapter.ts 다. 주인을 따로 두지 않는다:
+        # masterplan §0(제품 설명)과 data/README(함정 경고)가 각각 제 몫으로 말한다.
+        *(
+            [("급별 과 수", chapters_per_book()[0], [
+                rf"여덟\s*권\s*모두\s*{NUM}과",
+                rf"급마다\s*{NUM}과",
+            ])]
+            if chapters_per_book()[0]
+            else []
+        ),
+        ("전체 과 수", chapters_per_book()[1], [
+            rf"chapter\.ts[^\n]{{0,40}}?{NUM}\s*개",
+            rf"과\s*목록\s*{NUM}\s*개",
+            rf"과\s*{NUM}개\s*—\s*한글",
         ]),
         ("페이월 상태 수", paywall_kinds(), [
             # **페이월 문맥을 반드시 요구한다.** 처음엔 "N 으로 갈린다" 만 봤다가

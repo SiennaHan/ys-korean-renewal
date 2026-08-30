@@ -228,9 +228,17 @@ git show <커밋> --unified=0 -- 'app/src/**/*.tsx' | grep -E '^[-+].*\}, \['
 
 - **`npm install` 을 하지 마라.** 이 프로젝트는 `pnpm` 이다. `package-lock.json` 이
   다시 생기면 프로덕션 빌드가 깨진다 — `BLOCKERS.md` §1
-- `@tanstack/react-router` 셋은 캐럿 없이 **정확히 `1.136.8`** 이다. 올리면 React 19 의
-  `use` 를 써서 죽는다 (이 앱은 React 18.3.1)
-- `app/src/shared/data/n*.json` — 산출물이다. 위 표를 봐라
+- **라우터를 올리지 마라.** 1.136.8 위쪽은 React 19 의 `use` 를 써서 죽는다
+  (이 앱은 React 18.3.1). **셋 중 둘만 캐럿이 없다** — `router-devtools` 는
+  `^1.114.13` 이 남아 있고 **지금 막고 있는 것은 락파일이다.**
+  전에 여기 "셋은 캐럿 없이 정확히 1.136.8" 로 적혀 있었는데, `BLOCKERS.md` §1 이
+  그게 사실이 아니라고 적어 둔 뒤에도 **이 줄만 안 따라왔다.**
+  그래서 기획서 §0 이 그대로 옮겨 적어 틀렸다 (2026-08-29)
+- `app/src/shared/data/n*.json` — 산출물이다. 위 표를 봐라.
+  그리고 **여기서 과(課) 수를 세지 마라.** 1급 1~3과는 한글 파트라 어휘·듣기·역할극
+  데이터가 없어서 **파일 12개 중 11개가 1급을 12과로 보이게 한다**(참값 15).
+  과 구조의 정본은 `app/src/shared/data/chapter.ts` 다 —
+  `python3 app/scripts/chapter-source-check.py` 가 매번 그 표를 찍는다
 - 자모는 **검수도 배관도 끝났다.** 배관은 2026-08-24, **검수는 2026-08-28 에 확정**됐다 —
   받침·겹받침 포함 529행 전부다. 원장 **v41** 에서 `review_status` 가 `reviewed` 다.
   라우트도 하나로 합쳤다(`/learn/jamo?level&lesson&group&sub`).

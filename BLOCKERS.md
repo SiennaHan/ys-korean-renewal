@@ -52,15 +52,20 @@ package-lock.json 1.170.29    ← 섞여 들어온 것. node_modules 는 이쪽�
 |---|---|
 | `package.json` | 라우터 셋을 <b>정확히 `1.136.8`</b> 로 고정(캐럿 제거) |
 
-> **2026-08-28 실측 — 셋 중 둘만 고정돼 있다.** `@tanstack/react-router` 와
-> `@tanstack/router-plugin` 은 `1.136.8` 인데 **`@tanstack/router-devtools` 는
-> `^1.114.13` 로 캐럿이 남아 있다.** 그래서 락파일은 1.136.8 인데 `node_modules` 에는
-> **1.167.1 이 깔려 있다** — 고정이 막으려던 바로 그 흘러감이다.
+> **셋 중 둘만 고정돼 있다.** `@tanstack/react-router` 와 `@tanstack/router-plugin`
+> 은 `1.136.8` 인데 **`@tanstack/router-devtools` 는 `^1.114.13` 로 캐럿이 남아 있다.**
+> 그래서 **위 표의 "셋" 은 사실이 아니다.**
 >
-> **지금은 안 깨진다.** devtools 의 import 는 `app/src/routes/__root.tsx` 에서
-> 주석 처리돼 있어 번들에 안 들어가고, 1.167.1 의 peer 는 `>=18 || >=19` 라
-> React 18 도 받는다. 그래도 **위 표의 "셋" 은 사실이 아니다** —
-> 고치든지 이 문장을 남기든지 해야 다음 사람이 안 속는다.
+> **지금 막고 있는 것은 캐럿이 아니라 락파일이다.** `pnpm-lock.yaml` 이 그 캐럿을
+> `1.136.8` 로 잡아 두고 있어서 `--frozen-lockfile` 로 까는 한 흘러가지 않는다.
+> `node_modules/.pnpm` 에도 1.136.8 사본만 있다(2026-08-29 실측).
+>
+> **2026-08-28 에는 여기 "`node_modules` 에 1.167.1 이 깔려 있다" 고 적혀 있었다.**
+> 그 뒤 다시 깔면서 락파일 값으로 잡혔다 — 그때는 참이었고 지금은 아니다.
+> 락파일을 새로 풀면(`pnpm update`·캐럿 재해석) 다시 흘러갈 수 있는 자리다.
+>
+> **그래도 지금 안 깨지는 이유가 하나 더 있다** — devtools 의 import 는
+> `app/src/routes/__root.tsx` 에서 주석 처리돼 있어 번들에 안 들어간다.
 | `package-lock.json` | 지웠다. 루트 `.claude/launch.json` 이 `npm --prefix app run dev` 였던 것도 pnpm 으로 바꿨다 — 설치 명령이 아니라 빌드가 깨지진 않았지만, 남겨 두면 누군가 `npm install` 을 치게 만든다 |
 | `pnpm-lock.yaml` | specifier 를 새 값으로 갱신 |
 
@@ -1523,7 +1528,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 2219fe4 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 953361d -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
