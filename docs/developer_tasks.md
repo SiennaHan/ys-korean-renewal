@@ -1,6 +1,8 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 3ed732b -->
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 615722f
+     — 확인: CI 에 「훅이 실제로 도는지」 스텝이 붙었다. 이 문서가 적어 둔
+       「새로 만든 검사는 없다」가 거짓이 돼서 고쳤고, 「일곱째」라는 순번도 걷었다 -->
 <!-- 왜: 카드의 「현재」는 전부 이 코드를 읽고 적은 관찰이다. 원본이 바뀌면 카드가 낡는다.
      경로를 넷으로 좁혔다 — 표(DEV-04·09·14) · 외부 호출 타임아웃(DEV-12) ·
      기능 게이트(DEV-03·09) · CI(DEV-10). 자주 우는 검사는 안 보고 넘기게 된다 -->
@@ -319,8 +321,9 @@ PD-03이 ‘UX 잠금’이면 이 작업은 하지 않고, 그 제한을 출시
 
 - ~~CI 가 없다.~~ **2026-08-29 에 만들었다** — `.github/workflows/gates.yml`.
   **무엇이 도는지는 `docs/status.generated.md` 가 쥔다**(job·스텝을 코드에서 뽑는다).
-  새로 만든 검사는 없다. 있던 것을 묶었을 뿐이다.
-- **일곱째(`build-content.py --check`)는 CI 에서 못 돈다** — 원장 xlsx 를 읽는데
+  처음에는 있던 것을 묶기만 했는데, 그 뒤로 CI 에서 새로 만든 것도 생겼다 —
+  검사기를 검사하는 하네스(2026-08-30)와 **훅이 실제로 도는지**(2026-08-31).
+- **`build-content.py --check` 는 CI 에서 못 돈다** — 원장 xlsx 를 읽는데
   **원장이 저장소에 없다**(`.gitignore` 의 `*.xlsx`, 교재 파생이라 일부러 뺐다).
   스크립트가 "원장을 찾지 못했다" 로 죽는다. **콘텐츠를 건드리면 사람이 돌려야 한다** —
   이것을 CI 에 넣으려면 원장을 시크릿 저장소에서 받아 오는 단계가 필요하고,
