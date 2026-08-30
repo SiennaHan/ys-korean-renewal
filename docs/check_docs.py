@@ -28,6 +28,7 @@
   [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
   [문구 지뢰]    한 번 거짓이라 밝혀진 표현이 남아 있거나 되살아난 경우 — STALE_PHRASES
   [잴 수 없었다]  세는 함수가 0 을 낸 경우 — 원본이 깨지면 그 검사가 조용히 사라진다
+  [분량]         CLAUDE.md 가 상한을 넘은 경우 — 세션마다 읽히는 유일한 문서다
   [관찰 기준]    문서가 선언한 관찰 경로가 기준 커밋 이후 바뀐 경우 — <!-- 관찰: … @ 커밋 -->
   [화면 승격]    _snapshots/ 와 screens_ref/ 가 갈라졌는데 이력 문서에 없는 경우
 
@@ -135,6 +136,10 @@ def sections(body: str) -> set[str]:
 # ─────────────────────────────────────────────────────────────────────
 
 APP = ROOT / "app"
+# `CLAUDE.md` 분량 상한 — 기획 확정 2026-08-30. 왜 이 파일만인지는 claude_md_size()
+CLAUDE_MAX_LINES = 300
+CLAUDE_MAX_CHARS = 22_000
+
 HANGUL_NUM = {"하나": 1, "둘": 2, "셋": 3, "넷": 4, "다섯": 5, "여섯": 6,
               "일곱": 7, "여덟": 8, "아홉": 9, "열": 10}
 
@@ -1138,6 +1143,34 @@ def data_source_claims() -> list[str]:
     ]
 
 
+def claude_md_size() -> list[str]:
+    """`CLAUDE.md` 의 분량 상한.
+
+    **이 파일만 세션마다 자동으로 읽힌다.** 그래서 길이가 곧 매 세션의 비용이고,
+    낡은 한 줄은 모든 새 작업의 출발점이 된다. 다른 문서는 필요할 때만 열지만
+    이건 안 열 수가 없다 — 그래서 여기만 상한을 둔다(기획 확정 2026-08-30).
+
+    **줄 수와 글자 수를 같이 본다.** 줄만 세면 한 줄을 길게 써서 피할 수 있다.
+
+    넘었을 때 할 일은 「줄이기」가 아니라 **「무엇을 뺄지 고르기」**다 —
+    기계가 뽑을 수 있는 사실은 `docs/status.generated.md` 로, 전말은 원래 문서로,
+    한 번 거짓이라 밝혀진 문장은 `STALE_PHRASES` 지뢰로 보낸다.
+    """
+    f = ROOT / "CLAUDE.md"
+    if not f.exists():
+        return []
+    body = f.read_text(encoding="utf-8")
+    lines, chars = len(body.split("\n")), len(body)
+    out = []
+    if lines > CLAUDE_MAX_LINES:
+        out.append(f"[분량] CLAUDE.md 가 {lines}줄이다 (상한 {CLAUDE_MAX_LINES})\n"
+                   f"           **넣으려면 빼라.** 무엇을 뺄지는 이 함수의 주석에 있다")
+    if chars > CLAUDE_MAX_CHARS:
+        out.append(f"[분량] CLAUDE.md 가 {chars:,}자다 (상한 {CLAUDE_MAX_CHARS:,})\n"
+                   f"           줄 수로 피하지 못하게 글자도 같이 본다")
+    return out
+
+
 def index_covers(live: set[str]) -> list[str]:
     """색인이 정본 전부를 담고 있는지 본다.
 
@@ -1384,6 +1417,7 @@ def main() -> int:
 
     # ── 7. 색인 정합성
     problems += index_covers(live)
+    problems += claude_md_size()
 
     # ── 파일 간 앵커
     problems += cross_anchors()

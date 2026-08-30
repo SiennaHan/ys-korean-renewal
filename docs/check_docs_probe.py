@@ -183,6 +183,12 @@ CASES: list[tuple[str, str, object]] = [
     ("잴 수 없었다 — 원본이 깨져 세는 함수가 0 을 낸다", "잴 수 없었다",
      replace("app/src/shared/data/chapter.ts", "[", "{")),
 
+    # ── 분량. **줄과 글자를 각각 본다** — 한 줄을 길게 써서 피하는 길을 막았는지
+    ("분량 — CLAUDE.md 가 줄 상한을 넘는다", "분량",
+     append("CLAUDE.md", "\n" + "\n".join(f"채우는 줄 {i}" for i in range(120)) + "\n")),
+    ("분량 — CLAUDE.md 가 글자 상한을 넘는다 (줄은 안 넘게)", "분량",
+     append("CLAUDE.md", "\n" + "가" * 4000 + "\n")),
+
     # ── 관찰 기준
     ("관찰 기준 — 기준 커밋이 낡았다", "관찰 기준",
      stale_baseline("docs/legal_draft_v1.html")),
