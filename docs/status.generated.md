@@ -15,6 +15,7 @@
 - **docs** — 문서
   - check_docs.py
   - check_docs 가 제 몫을 하는지
+  - 지금 상태가 코드와 같은지
 - **app** — 앱
   - pnpm 준비
   - 의존성 설치
