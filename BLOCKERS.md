@@ -3155,7 +3155,7 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 ```
 
 **여기 「`.github/workflows` 없음」으로 적혀 있었다.** `gates.yml` 이 푸시·PR 마다
-게이트 여섯을 돌린다(문서 · typecheck · 목업 대조 · build · check:css · biome).
+게이트를 돌린다(job·스텝 목록은 `docs/status.generated.md`).
 **새로 만든 검사는 없다 — 있던 것을 묶었을 뿐이다.** 그래서 이 줄이 채워진 것을
 "테스트가 생겼다" 로 읽으면 안 된다. 위 세 칸(테스트 파일 · E2E · 러너)은 그대로 0 이다.
 

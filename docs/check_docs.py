@@ -421,6 +421,8 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         # 페이월 상태는 코드에 하나 더하자 문서 셋이 「넷」으로 남았고,
         # 표 수는 기관 코드로 셋이 늘자 README 만 30 으로 남았다.
         "페이월 상태 수": "paywall_SOT",
+        # 문서는 이 수를 적지 않는다 — 생성물이 job·스텝 목록을 쥔다
+        "CI 검사 스텝 수": "docs/status.generated.md",
         "ko_* 표 수": "(문) README.md",
         "i18n 로케일 수": "(문) BLOCKERS.md",
         "VocaShot 문항 은행": "games_spec_v1",
@@ -477,6 +479,10 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             if ported_screens()
             else []
         ),
+        ("CI 검사 스텝 수", ci_steps(), [
+            rf"게이트\s*{NUM}\s*(?:개)?\s*(?:을|를)?\s*(?:돈다|돌린다)",
+            rf"(?:푸시|PR)[^\n]{{0,20}}?{NUM}\s*이\s*돈다",
+        ]),
         ("자모 활동 수", jamo_activities(), [
             # **주인을 두지 않는다.** masterplan §0(제품 설명)과 jamo_authoring_spec
             # (저작 명세)이 각각 제 몫으로 이 수를 말한다 — 한쪽을 지우면 그 문서가
@@ -1145,6 +1151,23 @@ def data_source_claims() -> list[str]:
         f"{', '.join(sorted(old))}\n"
         "           문서는 원장(n8_jamo)이 정본이라고 말한다. 둘 중 하나가 틀렸다"
     ]
+
+
+def ci_steps() -> int:
+    """CI 가 도는 검사 스텝 수. 워크플로에서 센다(설치·준비 스텝은 뺀다).
+
+    **문서가 이 수를 손으로 적으면 안 된다.** 2026-08-30 에 스텝 둘을 더했더니
+    「게이트 여섯」이 **네 문서에서 동시에** 낡았다(README · BLOCKERS ·
+    developer_tasks · doc_review). 지금은 넷 다 `status.generated.md` 를 가리킨다 —
+    그 규칙이 지켜지는지 이 검사가 본다.
+    """
+    f = ROOT / ".github" / "workflows" / "gates.yml"
+    if not f.exists():
+        return 0
+    skip = {"pnpm 준비", "의존성 설치"}
+    return sum(1 for m in re.finditer(r"^      - name:\s*(.+)$",
+                                      f.read_text(encoding="utf-8"), re.M)
+               if m.group(1).strip() not in skip)
 
 
 def claude_md_size() -> list[str]:
