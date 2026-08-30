@@ -29,6 +29,8 @@ from __future__ import annotations
 import io
 import re
 import sys
+
+from check_docs import OBSERVE_RE   # 패턴을 베끼지 않고 빌린다
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -112,10 +114,26 @@ def build() -> str:
     # **자기 자신은 세지 않는다.** 이 파일이 그 표시를 설명하느라 본문에 담고 있어서,
     # 처음엔 두 번째 실행부터 자기를 목록에 넣었다(9개 → 10개). 그러면 `--check` 가
     # 매번 울어 CI 가 헛으로 빨개진다 — 결정적이어야 한다는 규칙을 스스로 어긴 자리다.
-    watched = sorted(
-        p.name for p in sorted(HERE.glob("*.html")) + sorted(HERE.glob("*.md"))
-        if p.name != OUT.name
-        and "<!-- 관찰:" in p.read_text(encoding="utf-8", errors="replace"))
+    # **`check_docs.py` 가 도는 범위와 같아야 한다.** 처음엔 `docs/` 만 훑어서
+    # 「9개」를 냈는데 실제로는 11개였다 — 루트의 `BLOCKERS.md`(선언 2개) ·
+    # `DESIGN.md` · `CLAUDE.md` 를 못 봤다. **「적다」 쪽으로 틀린 수라 더 나쁘다**:
+    # 「절반이 넘는 문서가 아직 선언하지 않았다」의 근거로 쓰이고 있었고,
+    # 생성물이라 아무도 다시 세어 보지 않는다(2026-08-31 에 고쳤다).
+    cand = sorted(HERE.glob("*.html")) + sorted(HERE.glob("*.md")) + [
+        ROOT / "README.md", ROOT / "BLOCKERS.md", ROOT / "CLAUDE.md", ROOT / "DESIGN.md"]
+    # **문자열이 아니라 `check_docs` 와 같은 정규식으로 센다.** 문자열로 세면
+    # `CLAUDE.md` 가 걸린다 — 거기 있는 `<!-- 관찰: … @ 커밋 -->` 는 검사 표를
+    # 설명하는 **산문 속 예시**지 선언이 아니다(커밋 해시가 없다). 하필 그 줄이
+    # 「인용과 주장을 못 가른다」고 적은 자리다. 패턴을 베끼지 않고 빌려 쓰는 이유가
+    # 이것이다 — 두 벌이면 한쪽만 고쳐진다.
+    watched: list[tuple[str, int]] = []
+    for p in cand:
+        if not p.exists() or p.name == OUT.name:
+            continue
+        n = len(OBSERVE_RE.findall(p.read_text(encoding="utf-8", errors="replace")))
+        if n:
+            watched.append((str(p.relative_to(ROOT)), n))
+    watched.sort()
 
     L: list[str] = []
     a = L.append
@@ -152,10 +170,12 @@ def build() -> str:
     a("")
     a("## 문서")
     a("")
-    a(f"관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 {len(watched)}개 —")
+    decls = sum(n for _, n in watched)
+    a(f"관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 {len(watched)}개"
+      f" · 선언 {decls}개 —")
     a("")
-    for n in watched:
-        a(f"- `{n}`")
+    for n, k in watched:
+        a(f"- `{n}`" + (f" ({k}개)" if k > 1 else ""))
     a("")
     a("선언하지 않은 문서는 **코드가 바뀌어도 「다시 읽어라」를 못 받는다.**")
     a("")

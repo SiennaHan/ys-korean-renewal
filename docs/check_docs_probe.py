@@ -335,7 +335,41 @@ def main() -> int:
         finally:
             if orig is not None:
                 write("docs/status.generated.md", orig)
-        total_extra = 1
+        # **생성기가 세는 범위와 방법도 대조군을 받는다.** 2026-08-31 에 둘 다 틀려
+        # 있었다 — `docs/` 만 훑어 루트의 문 셋을 놓쳤고(「9개」, 실제 11),
+        # 문자열로 세어 `CLAUDE.md` 의 **산문 속 예시**를 선언으로 세었다.
+        # 「적다/많다」 어느 쪽이든 생성물이라 아무도 다시 안 센다. 그래서 둘 다 본다.
+        #
+        #   ① 루트 문서에 **진짜 선언**을 심으면 → 목록이 달라져 `--check` 가 울어야 한다
+        #   ② 해시 없는 **산문 속 예시**를 심으면 → 선언이 아니므로 **조용해야** 한다
+        def gen_check() -> bool:
+            r = subprocess.run([sys.executable, str(HERE / "gen_status.py"), "--check"],
+                               cwd=ROOT, capture_output=True, text=True)
+            return r.returncode != 0
+
+        for label, inject, want_fire in [
+            ("생성물 — 루트 문서의 새 선언을 센다", 
+             "\n<!-- 관찰: app/src/shared/data/chapter.ts @ 0000000 -->\n", True),
+            ("생성물 — 산문 속 예시는 안 센다 (조용해야 정상)",
+             "\n예시로 적는다: `<!-- 관찰: 경로 @ 커밋 -->` 꼴이다.\n", False),
+        ]:
+            before = read("README.md")
+            try:
+                write("README.md", before + inject)
+                got = gen_check()
+            finally:
+                write("README.md", before)
+                if read("README.md") != before:
+                    print("!! 되돌리기 실패: README.md — 여기서 멈춘다")
+                    return 2
+            if got == want_fire:
+                ok += 1
+                print(f"  {'운다' if want_fire else '조용'}   {label}")
+            else:
+                bad.append(label)
+                print(f"  ⚠ {'안 운다' if want_fire else '울었다'}  {label}")
+
+        total_extra = 3
         if fired:
             ok += 1
             print("  운다   생성물 — status.generated.md 가 낡으면 --check 가 잡는다")

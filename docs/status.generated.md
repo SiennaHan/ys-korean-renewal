@@ -48,16 +48,18 @@
 
 ## 문서
 
-관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 9개 —
+관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 11개 · 선언 12개 —
 
-- `access_and_pricing_v1.html`
-- `clip_spec_v1.html`
-- `developer_tasks.md`
-- `doc_review_v1.md`
-- `legal_draft_v1.html`
-- `masterplan_v3.html`
-- `shell_spec_v1.html`
-- `textbook_tab_spec_v1.html`
-- `user_flow_v1.html`
+- `BLOCKERS.md` (2개)
+- `DESIGN.md`
+- `docs/access_and_pricing_v1.html`
+- `docs/clip_spec_v1.html`
+- `docs/developer_tasks.md`
+- `docs/doc_review_v1.md`
+- `docs/legal_draft_v1.html`
+- `docs/masterplan_v3.html`
+- `docs/shell_spec_v1.html`
+- `docs/textbook_tab_spec_v1.html`
+- `docs/user_flow_v1.html`
 
 선언하지 않은 문서는 **코드가 바뀌어도 「다시 읽어라」를 못 받는다.**

@@ -240,6 +240,30 @@ def mockup_captures() -> int:
     return len(list(d.glob("*.html"))) if d.is_dir() else 0
 
 
+def lesson_activities() -> int:
+    """`catalog.act` 의 항목 수 — **한 과를 열면** 나오는 활동이 몇인가.
+
+    **이 축은 2026-08-31 까지 검사되지 않았다.** 그래서 `README` 는 「활동 일곱 종」,
+    `INDEX` 는 「활동 8종」이라 적고 있었고, 어느 쪽이 틀렸는지 아무도 몰랐다.
+    세어 보니 **둘 다 참이고 세는 단위가 달랐다** — 화면 수 20/23/26 과 같은 함정이다.
+
+      일곱 = 한 과를 열면 나오는 활동 (`catalog.act`)
+      여덟 = 저작 **라인업** — 위 일곱 + 자모(JM). 자모는 1급 1~3과 한정이라
+             「한 과를 열면」에는 안 들어간다. `G1_content_gate_v1` §354 가 정의처다
+
+    그래서 **일곱만 센다.** 여덟은 일곱에서 파생된 값이라 따로 세면 두 축이 서로를
+    베낀다. 대신 문서가 여덟을 말할 때 「라인업」이라는 말을 붙이게 했다 —
+    아래 패턴이 그 말을 단서로 둘을 가른다.
+    """
+    f = APP / "src" / "i18n" / "locales" / "ko.ts"
+    if not f.exists():
+        return 0
+    m = re.search(r"\n\t\tact: \{(.*?)\n\t\t\}", f.read_text(encoding="utf-8", errors="replace"), re.S)
+    if not m:
+        return 0
+    return len(re.findall(r'^\t\t\t"?[\w-]+"?:', m.group(1), re.M))
+
+
 def jamo_rows() -> int:
     """`n8_jamo.json` 의 행 수 — 자모 문항이 몇인가.
 
@@ -509,6 +533,16 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         ("CI 검사 스텝 수", ci_steps(), [
             rf"게이트\s*{NUM}\s*(?:개)?\s*(?:을|를)?\s*(?:돈다|돌린다)",
             rf"(?:푸시|PR)[^\n]{{0,20}}?{NUM}\s*이\s*돈다",
+        ]),
+        # 과 활동 종 수 — **「라인업 8종」과 갈라야 한다.** 둘 다 참인 다른 단위라
+        # `활동 N종` 으로 넓히면 라인업을 말하는 열 곳을 잘못 잡는다. 그래서 일곱 쪽이
+        # 실제로 쓰는 네 꼴만 본다. `종\s*으로` 의 공백은 태그를 벗기면 생긴다
+        # (`<b>…종</b>으로` → `… 종 으로`) — 원문만 보고 패턴을 짜면 안 걸린다.
+        ("과 활동 종 수", lesson_activities(), [
+            rf"활동 {NUM} 종\s*으로",
+            rf"그 과의 활동 {NUM}",
+            rf"활동 {NUM} · 화면",
+            rf"무엇을 하나 — 활동 {NUM}",
         ]),
         # 자모 문항 수 — 주인을 두지 않는다(위 함수의 주석). **패턴을 아주 좁게 쓴다.**
         # `자모…N행` 으로 넓히면 §2-b 의 "자모가 1행(예시)뿐이라 529행이 사라졌다"
