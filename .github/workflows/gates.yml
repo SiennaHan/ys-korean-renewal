@@ -16,6 +16,9 @@
 # 유틸리티 CSS 를 내지 않는다. **둘 다 리뉴얼 전부터다**(DEV-14).
 # 그 카드가 끝나면 여기 넣는다.
 
+# 액션 버전은 2026-08-30 에 올렸다 — v4/v5 는 Node 20 을 노려서
+# 러너가 "Node 20 은 지원이 끝났다" 고 경고했다. 초록불이어도 경고는 빚이다.
+
 name: gates
 
 on:
@@ -33,13 +36,13 @@ jobs:
     name: 문서
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # **얕은 클론이면 안 된다.** check_docs 의 [관찰 기준] 이
           # `git diff <기준커밋>..HEAD` 를 돌린다 — 그 커밋이 없으면 못 센다
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -54,13 +57,13 @@ jobs:
       run:
         working-directory: app
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
 
