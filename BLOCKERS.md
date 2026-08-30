@@ -82,7 +82,11 @@ pnpm parity:activity  # "모두 같다"
 React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.example` ·
 `/jamolist` 를 자모 화면이라 적은 것(빈 스텁이다).
 
-## 2. 자모 라우트 — 명세가 옳았고 전제가 늦게 왔다 · 진행 중
+## 2. 자모 라우트 — 명세가 옳았고 전제가 늦게 왔다 · **끝났다 (2026-08-24, §2-c)**
+
+> **아래는 2026-08-21 의 기록이다.** 라우트는 2026-08-24 에 하나로 합쳤다 —
+> `/learn/jamo?level&lesson&group&sub`(`routes/learn/jamo.tsx` 하나, 화면 여섯은
+> `components/learn/jamo/`). 어떻게 했는지는 §2-c 다. **제목이 오래 「진행 중」이었다.**
 
 `dev_spec_v1.html` §4 는 이렇게 못박는다.
 
@@ -732,13 +736,21 @@ vs `ux-control ps-result-retry`), 게임 캡처의 `<div id="app">` 껍데기를
 | 권한·결제 | **표시는 들어왔다(2026-08-26, 037c07a)** — `GET /entitlement` · `entitlement-store` · 칩·게임 카드의 자물쇠 · 결제 안내.<br>**2026-08-28 에 학교 쪽이 풀렸다** — 계약 학교는 전 급이라는 확정이 나오면서 `ko_entitlement` 표 없이 `school_code` 만으로 판정할 수 있게 됐다(`shared/full_scope.py`). 여기 「지금은 누구에게나 무료 범위만 낸다」로 적혀 있었다.<br>남은 것은 둘이다: **개인 결제**는 여전히 담을 곳이 없고(`ko_entitlement` 0곳), 콘텐츠 라우트에 권한이 안 붙어 **주소를 직접 치면 잠긴 과도 열린다** | `access_and_pricing_v1` §09 의 1~3 은 됐다. 4 부터가 남았다 |
 | 메일 발송 | `api/` 에 SMTP·SES·SendGrid 어느 것도 없다 | §7 |
 
-### 서버가 있어야 되는 것 (실측으로 확인)
+### 서버가 있어야 되는 것 — **다 됐다 (2026-08-26)**
 
-`ko_activity_state` · `ko_review_queue` **0곳**(api·app 양쪽). 신설 API 다섯
+> **아래 문단은 2026-08-21 의 실측이고 지금은 전부 뒤집혔다.** 시점 기록으로 남긴다 —
+> 2026-08-30 에 다시 재 보니 `ko_activity_state` · `ko_review_queue` 두 표가 다 있고,
+> 아래가 "0곳" 이라던 API 다섯도 `api/accepter` 와 `app/src/api` 양쪽에 있다.
+> 지금 상태는 §0 스냅샷이 쥔다.
+>
+> **이 절의 제목이 「실측으로 확인」이라 더 오래 살아남았다** — 재 봤다는 말이
+> 붙어 있으면 다음 사람이 다시 재지 않는다. 잰 날짜를 같이 적어야 한다.
+
+~~`ko_activity_state` · `ko_review_queue` **0곳**(api·app 양쪽). 신설 API 다섯
 (`/activity/enter` · `/activity/progress` · `/activity/complete` · `GET /review-queue` ·
 `DELETE /review-queue/{id}`) 도 **api/ 에 0곳**. 앱의 API 클라이언트가 실제로 부르는 것은
-`/dashboard` 와 `/learning-record` **둘뿐**이다. `reviewCount` 는 `HomeView` 와
-`module-list` 가 받을 준비를 해 두었지만 **넘기는 쪽이 없다** — §6 그대로다.
+`/dashboard` 와 `/learning-record` **둘뿐**이다.~~ `reviewCount` 는 `HomeView` 와
+`module-list` 가 받을 준비를 해 두었고 **지금은 실제로 넘어온다**(§0).
 
 **고치는 법 둘.** 지우는 것이 낫다 — 아무것도 가리키지 않는다.
 
@@ -1464,7 +1476,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ---
 
-## 8. 콘텐츠에 비어 있는 두 시트
+## 8. 비어 있던 두 시트 — **둘 다 채워졌다 (2026-08-24)**
 
 **둘 다 채워졌다 (2026-08-24).** 아래는 v23 시절 기록이고 지금 상태는 표에 적었다.
 
@@ -3306,7 +3318,12 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ---
 
-## 확인된 상태
+## 12. 디자인 토큰·CSS·biome 정리 — 확인된 상태
+
+> **이 절에는 오래 번호가 없었다.** 989줄인데 인용할 이름이 없으니,
+> 필요한 사람이 가까운 번호를 찍어 가리켰다 — `CLAUDE.md` 가 여기를 두 번
+> **`§3-b`**(그 절은 「빈 스텁 라우트 넷」이다)로 가리키고 있었다.
+> 번호를 붙였다(2026-08-30).
 
 인계 시점에 아래는 통과한다.
 

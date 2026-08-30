@@ -116,6 +116,16 @@ def sections(body: str) -> set[str]:
         m = re.match(r"(\d+)", t)
         if m:
             out.add(str(int(m.group(1))))
+    # 마크다운 `## N. 제목` · `## N-b. 제목`.
+    # **2026-08-30 까지 이걸 안 읽었다.** docstring 은 "N. 제목 도 받는다" 고
+    # 적어 두었는데 코드는 h2 태그만 봤다 — 그래서 `.md` 문서로 가는 §N 인용이
+    # **한 번도 검사되지 않았다.** BLOCKERS.md 는 가장 많이 인용되는 .md 다.
+    # 실제로 CLAUDE.md 가 두 곳에서 BLOCKERS §3-b 를 가리키고 있었는데
+    # 그 절은 전혀 다른 이야기였고, 이 검사는 조용히 지나갔다.
+    for t in re.findall(r"^#{2}\s+(.+)$", body, re.M):
+        m = re.match(r"(\d+)", t.strip())
+        if m:
+            out.add(str(int(m.group(1))))
     return out
 
 
@@ -1172,13 +1182,21 @@ def index_covers(live: set[str]) -> list[str]:
 
 def main() -> int:
     text, raw, paths = load()
-    # 정본은 phase1/*.html 뿐이다 — 문과 메모는 인용의 대상이 아니다
+    # 정본은 phase1/*.html 뿐이다 — 인용의 "출처" 로는 문과 메모를 안 센다
     live = {
         n for n in text
         if not n.startswith("(문) ") and not n.startswith("(메모) ")
     }
     dead = {p.stem for p in (HERE / "_superseded").glob("*.html")}
     secs = {n: sections(raw[n]) for n in live}
+    # **문서도 인용의 대상이다.** 여기 "문과 메모는 인용의 대상이 아니다" 라고
+    # 적혀 있었는데, 정작 `CLAUDE.md` 는 `BLOCKERS.md §N` 을 수시로 부른다.
+    # 그래서 .md 로 가는 §N 인용은 **한 번도 검사되지 않았다**(2026-08-30 에 찾았다) —
+    # CLAUDE.md 가 두 곳에서 `BLOCKERS.md §3-b` 를 가리켰는데 그 절은 전혀 다른
+    # 이야기였고 이 검사는 조용히 지나갔다. 문서 이름(`BLOCKERS.md`)을 키로 넣는다.
+    for k in text:
+        if k.startswith("(문) "):
+            secs[k[len("(문) "):]] = sections(raw[k])
 
     problems: list[str] = []
 
@@ -1210,7 +1228,7 @@ def main() -> int:
             sec = str(int(m.group(1)))
             lead = body[max(0, m.start() - 60):m.start()]
             nearest, at = None, -1
-            for tgt in live:
+            for tgt in secs:
                 i = lead.rfind(tgt)
                 if i > at:
                     nearest, at = tgt, i
@@ -1218,7 +1236,7 @@ def main() -> int:
                 continue
             # 이름과 § 사이에 다른 문서 이름이 끼면 귀속이 불확실하니 건너뛴다
             between = lead[at + len(nearest):]
-            if any(o in between for o in live if o != nearest):
+            if any(o in between for o in secs if o != nearest):
                 continue
             if sec not in secs[nearest]:
                 have = ",".join(sorted(secs[nearest], key=int)) or "(없음)"

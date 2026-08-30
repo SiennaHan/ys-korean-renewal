@@ -184,7 +184,7 @@ cd admin && pnpm typecheck                            # 어드민 — 통과하�
 `biome check` 진단처럼 **숫자가 붙는 정리 작업**이 많다. 숫자를 목표로 잡으면
 **판단이 숫자에 끌려간다.** 시작 전에 규칙마다 "고친다 / 이유를 적어 재운다 /
 안 건드린다" 를 정해 두고 들어가라 — 만나서 정하면 헐거워진다.
-남은 것에 대한 표는 `BLOCKERS.md` 의 「남은 N건 — 사람이 판단할 것」이다.
+남은 것에 대한 표는 `BLOCKERS.md` §12 다.
 
 ## 검사기가 못 잡는 것을 알고 있어라
 
@@ -237,7 +237,7 @@ git log --format='%h %ci %s' -S'<그 값>' -- app/src
 git show <커밋> --unified=0 -- 'app/src/**/*.tsx' | grep -E '^[-+].*\}, \['
 ```
 
-사례와 실제 목록은 `BLOCKERS.md` 의 「남은 N건」 표, 어긴 기록은 `masterplan_v3.html` §16-b.
+사례와 실제 목록은 `BLOCKERS.md` §12, 어긴 기록은 `masterplan_v3.html` §16-b.
 
 ## 손대면 깨지는 것
 
