@@ -27,6 +27,7 @@
   [데이터 정본]  문서가 말하는 데이터 출처와 코드의 import 가 다른 경우
   [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
   [문구 지뢰]    한 번 거짓이라 밝혀진 표현이 남아 있거나 되살아난 경우 — STALE_PHRASES
+  [잴 수 없었다]  세는 함수가 0 을 낸 경우 — 원본이 깨지면 그 검사가 조용히 사라진다
   [관찰 기준]    문서가 선언한 관찰 경로가 기준 커밋 이후 바뀐 경우 — <!-- 관찰: … @ 커밋 -->
   [화면 승격]    _snapshots/ 와 screens_ref/ 가 갈라졌는데 이력 문서에 없는 경우
 
@@ -595,8 +596,21 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
                     f"           숫자를 빼고 질적으로 쓰거나 주인을 가리켜라 …{hit}…"
                 )
 
+    # **0 은 "볼 것이 없다" 가 아니라 "못 쟀다" 다.**
+    # 세는 함수 몇은 원본이 깨지면 조용히 0 을 낸다(`chapter.ts` 파싱 실패 →
+    # `(0, 0)`, JSON 파싱 실패 → 그 키가 빠짐). 그러면 그 검사가 **말없이 사라졌다.**
+    # 실제로 `chapter.ts` 를 깨뜨려 보니 check_docs 가 지적 0 으로 통과했다(2026-08-30).
+    # `check:css` 가 `dist` 없이 「건너뜀」을 찍고 통과하던 것과 같은 병이라 같은 처방을 쓴다.
+    #
+    # 진짜로 0 이 정상인 항목이 생기면 여기 이름을 적어 예외로 둔다 — 지금은 없다.
+    ZERO_OK: set[str] = set()
     for label, real, pats in specs:
         if real == 0:
+            if label not in ZERO_OK:
+                out.append(
+                    f"[잴 수 없었다] {label} — 세는 함수가 0 을 냈다\n"
+                    f"           원본이 깨졌거나 자리가 바뀌었다. **그동안 이 검사는 없는 것과 같다**"
+                )
             continue
         for src, body in text.items():
             flat = re.sub(r"\s+", " ", body)

@@ -179,6 +179,10 @@ CASES: list[tuple[str, str, object]] = [
               'import { x } from "@/shared/data/problem";\n'
               + read("app/src/components/learn/jamo/choose.tsx")}),
 
+    # ── 못 재는 상태. **0 을 「볼 것 없음」으로 넘기면 검사가 조용히 사라진다**
+    ("잴 수 없었다 — 원본이 깨져 세는 함수가 0 을 낸다", "잴 수 없었다",
+     replace("app/src/shared/data/chapter.ts", "[", "{")),
+
     # ── 관찰 기준
     ("관찰 기준 — 기준 커밋이 낡았다", "관찰 기준",
      stale_baseline("docs/legal_draft_v1.html")),
