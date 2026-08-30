@@ -240,6 +240,32 @@ def mockup_captures() -> int:
     return len(list(d.glob("*.html"))) if d.is_dir() else 0
 
 
+def jamo_rows() -> int:
+    """`n8_jamo.json` 의 행 수 — 자모 문항이 몇인가.
+
+    **왜 세나.** 이 수가 2026-08-31 기준 **문서 여섯 곳**에 손으로 적혀 있었다
+    (`CLAUDE.md` · `README.md` · `BLOCKERS.md` 셋 · `developer_tasks.md` ·
+    `jamo_authoring_spec_v1.html`). 한 사건이 여섯 자리에 복사된 것이고,
+    복사본은 저마다 따로 낡는다. 그날 넷을 걷고 이 검사를 붙였다.
+
+    **주인을 두지 않는다.** `BLOCKERS.md` §2 는 검수 이력의 주인이고
+    `jamo_authoring_spec_v1.html` 은 저작자가 그것만 보고 일하는 명세라,
+    둘 다 제 몫으로 이 수를 말한다. 대신 **둘 다 검사받게** 한다 —
+    「자모 활동 수」와 같은 처분이다.
+
+    이 파일은 산출물이지만 **추적되므로 CI 에서도 셀 수 있다.**
+    정작 「전부 `reviewed` 냐」는 원장 안에 있어 기계가 못 본다 — `BLOCKERS.md` §2-c.
+    """
+    f = APP / "src" / "shared" / "data" / "n8_jamo.json"
+    if not f.exists():
+        return 0
+    try:
+        d = json.loads(f.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return 0
+    return len(d) if isinstance(d, list) else 0
+
+
 def jamo_activities() -> int:
     """`catalog.jamoAct` 의 항목 수 — 한글 파트 활동이 몇인가.
 
@@ -483,6 +509,14 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         ("CI 검사 스텝 수", ci_steps(), [
             rf"게이트\s*{NUM}\s*(?:개)?\s*(?:을|를)?\s*(?:돈다|돌린다)",
             rf"(?:푸시|PR)[^\n]{{0,20}}?{NUM}\s*이\s*돈다",
+        ]),
+        # 자모 문항 수 — 주인을 두지 않는다(위 함수의 주석). **패턴을 아주 좁게 쓴다.**
+        # `자모…N행` 으로 넓히면 §2-b 의 "자모가 1행(예시)뿐이라 529행이 사라졌다"
+        # 같은 **고치면 안 되는 시점 기록**을 가로질러 잡는다. `N행 전부 …` 꼴은
+        # 자모 검수 주장에만 쓰이고, 836행·70행·62행 짜리 다른 주장과도 안 겹친다.
+        ("자모 문항 수", jamo_rows(), [
+            rf"{NUM}행 전부 `?reviewed",
+            rf"{NUM}행 전부 검수",
         ]),
         ("자모 활동 수", jamo_activities(), [
             # **주인을 두지 않는다.** masterplan §0(제품 설명)과 jamo_authoring_spec

@@ -25,7 +25,7 @@
 |---|---|---|
 | 활동 상태 | `ko_activity_state`와 `/activity/enter·progress·complete·chapter`가 있고 활동 라우트가 `useActivityState`로 연결됐다 | 완료 기준·정확도처럼 정책이 바뀌면 서버와 화면을 함께 회귀 검증한다 |
 | 복습 큐 | `ko_review_queue`와 학습 기록의 자동 예약·해제가 구현됐고 홈이 `reviewCount`·`reviewReady`를 표시한다 | 날짜 경계와 재도전 제거 규칙 E2E가 없다 |
-| 자모 | 여섯 활동이 하나의 `/learn/jamo` 라우트와 `n8_jamo` 파생 데이터로 통합됐다 | **529행 전부 검수 완료**(2026-08-28 확정 · 받침·겹받침 포함). 원장 v41 에서 `reviewed` 다 — 전에 이 칸이 "전부 draft · 받침·겹받침 67행 남음" 이었다 |
+| 자모 | 여섯 활동이 하나의 `/learn/jamo` 라우트와 `n8_jamo` 파생 데이터로 통합됐다 | **529행 전부 검수 완료**(2026-08-28 확정 · 받침·겹받침 포함). **그 뒤로 시트가 안 바뀌었다** — §2-c. 전에 이 칸이 "전부 draft · 받침·겹받침 67행 남음" 이었다 |
 | 게임 | 다섯 게임이 `saveGameProgress`를 호출하고 i18n을 사용한다 | 번역 계층 밖 하드코딩은 `docs/i18n_검수_20260828.md`에 별도 기록했다 |
 | 가입·권한 | 자체 회원가입과 게스트/학교/개인 권한 판정, 페이월 분기가 구현됐다. **기관 발급 코드 가입과 학기 종료도 들어왔다(2026-08-28)** — 계약 학교는 전 급이고, 학기가 끝나면 무료 범위로 내려가며 모달로 알린다 | 실제 개인 결제·메일 발송·최종 약관 연결은 없다 |
 | 음성 표본 | 신규 STT 표본은 비공개 S3 업로드, 기본 표본율 10%다 | 보관기간 기본값이 0이라 자동 삭제가 없고 기존 공개 객체 이관 여부도 미확인이다 |
@@ -159,6 +159,32 @@ React 19(실제 18.3.1) · koreanapi 포트 8000(실제 8799) · 없는 `.env.ex
 > **이 아래는 2026-08-24 의 기록이다.** 여기서 "남았다" 고 한 받침·겹받침 두 묶음은
 > **2026-08-28 에 검수가 끝났다**(원장 v41 · 529행 전부 `reviewed`). 어떻게 좁혔는지의
 > 근거로 남긴다.
+
+**「원장 v41」은 시점 기록이지 낡은 값이 아니다.** 원장이 v50 까지 갔는데 여기만 v41 이라
+적혀 있어 매번 "그 사이 바뀌었나" 를 다시 묻게 된다 — 2026-08-31 에 기획자가 실제로 물었다.
+**재 봤다: v41~v50 열 판본의 `n8_jamo` 시트가 529행 27열로 전부 같다**(시트 전체 해시
+`77fadd4f…` 동일 · `review_status` 는 열 판본 모두 `reviewed` 529). 즉 검수가 끝난 뒤
+자모 시트는 **한 칸도 안 건드려졌다.**
+
+다시 재려면 이렇게 한다 — 원장은 저장소에 없으니 **로컬에 원장이 있는 사람만** 돌릴 수 있다.
+
+```bash
+python3 - <<'EOF'
+import openpyxl, hashlib
+for v in range(41, 51):
+    ws = openpyxl.load_workbook(f"글로벌_교재기반_콘텐츠_v{v}.xlsx",
+                                read_only=True, data_only=True)["n8_jamo"]
+    rows = [tuple("" if c is None else str(c) for c in r) for r in ws.iter_rows(values_only=True)]
+    rows = [r for r in rows if any(x.strip() for x in r)]
+    h = hashlib.sha256("\x1f".join("\x1e".join(r) for r in rows).encode()).hexdigest()[:12]
+    print(v, len(rows) - 1, h)
+EOF
+```
+
+**이 주장은 이 저장소에서 기계가 못 지킨다** — 원장이 `.gitignore` 밖이라 CI 가 열 수 없다.
+그래서 행 수(529)만 `check_docs.py` 가 `n8_jamo.json` 에서 세어 지키고, **판본과 검수 상태는
+사람이 위 방법으로 다시 재야 한다.** 그것이 이 절이 주인인 이유다 —
+`CLAUDE.md` · `README.md` · `developer_tasks.md` 는 2026-08-31 에 사본을 걷고 여기를 가리킨다.
 
 **검수로 실제로 남은 것은 하나뿐이다.** `unit.ts` 의 받침·겹받침 묶음은 제목이
 그냥 "받침"·"겹받침" 이라 **낱자 목록이 없다.** 그래서 그 두 묶음(67행)만
@@ -1570,7 +1596,9 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 36c7830 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 2a9a3e2
+     — 확인: package.json 변경은 parity:activity 에 question-leak-check 를 이은 것뿐이다.
+       이 문서가 지키는 라우터 고정(1.136.8 둘 · devtools 캐럿)은 그대로다 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**

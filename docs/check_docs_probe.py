@@ -188,6 +188,14 @@ CASES: list[tuple] = [
      append("README.md", "\n이식 화면 25 개다.\n")),
     ("숫자 주장 — 페이월 상태 수 (한글 수사 「넷」)", "숫자 주장",
      replace("docs/paywall_SOT.html", "다섯의 다음 행동", "넷의 다음 행동")),
+    # **한 사건이 여섯 문서에 복사돼 있던 수다**(2026-08-31). 넷을 걷고 검사를 붙였다.
+    # 두 번째 항목이 더 중요하다 — 이 패턴은 §2-b 의 "자모가 1행뿐이라 529행이
+    # 사라졌다" 같은 **고치면 안 되는 시점 기록** 옆을 지나간다.
+    ("숫자 주장 — 자모 문항 수", "숫자 주장",
+     replace("BLOCKERS.md", "529행 전부 `reviewed`", "528행 전부 `reviewed`")),
+    ("자모 문항 수 — 시점 기록은 안 건드린다 (안 울어야 정상)", "",
+     append("README.md", "\n앞서 자모가 1행뿐이라 529행이 사라졌고 836행 전부 바이트까지 대조했다.\n")),
+
     ("숫자 주장 — 자모 활동 수 (masterplan)", "숫자 주장",
      replace("docs/masterplan_v3.html", "한글 파트는 활동이 따로 <b>여섯</b>",
              "한글 파트는 활동이 따로 다섯")),
@@ -289,7 +297,10 @@ def main() -> int:
             for rel, body in changes.items():
                 write(rel, body)
             code, out = run_check()
-            fired = f"[{tag}]" in out
+            # **태그가 비면 「울면 안 된다」는 뜻이다.** 넓은 패턴이 시점 기록을
+            # 가로질러 잡는 사고가 이 저장소에서 반복됐는데, 여태 하네스는
+            # 「우는가」만 물었다. 안 우는 것도 확인해야 패턴의 폭이 지켜진다.
+            fired = (code == 0) if not tag else f"[{tag}]" in out
         finally:
             for rel, body in originals.items():
                 if body is None:
@@ -304,10 +315,11 @@ def main() -> int:
 
         if fired:
             ok += 1
-            print(f"  운다   {name}")
+            print(f"  {'조용' if not tag else '운다'}   {name}")
         else:
             bad.append(name)
-            print(f"  ⚠ 안 운다  {name}  (주입 뒤 exit={code})")
+            print(f"  ⚠ {'울었다' if not tag else '안 운다'}  {name}"
+                  f"  (주입 뒤 exit={code})")
 
     # ── 생성물도 같은 규칙을 받는다 ────────────────────────────
     # `gen_status.py --check` 가 「낡았다」를 정말 잡는지. 검사 태그를 내는 것이

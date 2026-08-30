@@ -252,8 +252,8 @@ git show <커밋> --unified=0 -- 'app/src/**/*.tsx' | grep -E '^[-+].*\}, \['
 - `app/src/shared/data/n*.json` — 산출물이다. 위 표를 봐라.
   그리고 **여기서 과(課) 수를 세지 마라** — 과 구조의 정본은 `chapter.ts` 다.
   왜 틀리는지와 검사는 그 폴더의 `README.md` 가 쥔다
-- 자모는 **검수도 배관도 끝났다** — 529행 전부 `reviewed`(원장 v41, 2026-08-28),
-  라우트도 하나다(`/learn/jamo?level&lesson&group&sub`). `BLOCKERS.md` §2 · §2-c
+- 자모는 **검수도 배관도 끝났다** — 라우트도 하나다(`/learn/jamo?level&lesson&group&sub`).
+  **행 수와 원장 판본은 여기 적지 마라** — `BLOCKERS.md` §2 · §2-c 가 쥔다
 
 ## 공개 금지
 
