@@ -50,6 +50,12 @@ jobs:
       - name: check_docs.py
         run: python3 docs/check_docs.py
 
+      # **검사기를 검사한다.** 검사마다 일부러 어기고 그 검사가 우는지 본다 —
+      # 패턴을 넣는 것과 그 패턴이 무언가를 잡는 것은 다르다.
+      # 원본을 건드렸다 되돌리므로 **깨끗한 트리**를 요구한다(체크아웃 직후라 만족한다).
+      - name: check_docs 가 제 몫을 하는지
+        run: python3 docs/check_docs_probe.py
+
   app:
     name: 앱
     runs-on: ubuntu-latest
