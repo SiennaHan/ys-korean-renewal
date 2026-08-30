@@ -1,6 +1,6 @@
 # 문서 검수 절차 — 기계는 톱니고, 읽는 것은 사람(또는 LLM)이다
 
-<!-- 관찰: docs/check_docs.py, .github/workflows @ af5f2fb -->
+<!-- 관찰: docs/check_docs.py, .github/workflows @ b9526dc -->
 <!-- 왜: 이 문서가 말하는 "기계가 잡는 것" 은 그 두 곳이 정한다. 바뀌면 이 절차도 낡는다 -->
 
 **기준일:** 2026-08-30
