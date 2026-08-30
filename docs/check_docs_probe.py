@@ -121,7 +121,19 @@ def prepend_in_main(rel: str, text: str):
 #
 # **「없다」를 뽑는 항목이 가장 위험하다** — 패턴이 낡아도 결과는 그럴듯하다.
 # 그래서 전부 "있는 것을 심어 놓고 뒤집히는지" 로 짠다.
-CASES: list[tuple[str, str, object]] = [
+def has_ledger() -> bool:
+    """원장 xlsx 가 저장소 루트에 있나.
+
+    **없는 것이 정상이다** — 교재 파생이라 `.gitignore` 가 막는다. 그래서 CI 에서는
+    「원장 버전」 검사가 돌 수가 없고, 그 항목을 그냥 두면 **CI 가 「안 운다」로 빨개진다**
+    (실제로 그랬다 — 로컬에는 원장이 있어서 여기서는 안 보였다).
+    조용히 건너뛰지 않고 **이유를 찍고** 건너뛴다. 확인한 수에서도 뺀다.
+    """
+    return any(ROOT.glob("글로벌_교재기반_콘텐츠_v*.xlsx"))
+
+
+# (이름, 태그, 주입) 또는 (이름, 태그, 주입, 조건)
+CASES: list[tuple] = [
     # ── 참조 계열
     ("색인 — 없는 문서를 부른다", "색인",
      append("docs/INDEX.md", "\n`totally_missing_doc.html` 을 부른다.\n")),
@@ -159,7 +171,7 @@ CASES: list[tuple[str, str, object]] = [
     ("숫자 주장 — 자모 활동 수 (jamo_authoring_spec)", "숫자 주장",
      replace("docs/jamo_authoring_spec_v1.html", "자모는 활동이 6종", "자모는 활동이 5종")),
     ("숫자 주장 — 원장 버전", "원장 버전",
-     append("README.md", "\n원장 정본은 v3 이다.\n")),
+     append("README.md", "\n원장 정본은 v3 이다.\n"), has_ledger),
     ("사실 중복 — 주인이 아닌 문서가 그 수를 적는다", "사실 중복",
      append("docs/user_flow_v1.html", "<p>이식 화면 26 개다.</p>\n")),
 
@@ -223,9 +235,15 @@ def main() -> int:
         print(f"시작부터 check_docs 가 {base_code} 를 낸다 — 먼저 그것을 고쳐라.")
         return 2
 
-    ok, bad = 0, []
-    for name, tag, mutate in CASES:
+    ok, bad, skipped = 0, [], []
+    for case in CASES:
+        name, tag, mutate = case[0], case[1], case[2]
+        need = case[3] if len(case) > 3 else None
         if only and only not in name:
+            continue
+        if need is not None and not need():
+            skipped.append(name)
+            print(f"  건너뜀 {name}  — 돌릴 조건이 없다(원장이 저장소에 없는 것은 정상이다)")
             continue
         originals: dict[str, str | None] = {}
         try:
@@ -286,7 +304,8 @@ def main() -> int:
         return 2
 
     total = ok + len(bad)
-    print(f"\n{total}개 중 {ok}개가 제 몫을 한다.")
+    print(f"\n{total}개 중 {ok}개가 제 몫을 한다."
+          + (f" (조건이 없어 건너뛴 것 {len(skipped)}개)" if skipped else ""))
     if bad:
         print("**안 우는 것 — 검사가 있으나 마나다:**")
         for b in bad:
