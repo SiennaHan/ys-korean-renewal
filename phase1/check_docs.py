@@ -448,7 +448,12 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         # masterplan §15 표를 더한 수. CLAUDE.md 가 "그 표의 합계" 라고 말하므로
         # 둘이 갈리면 CLAUDE.md 가 거짓말을 한다
         *(
-            [("이식한 화면 수", ported_screens(), [r"\|\s*\*\*(\d+)\*\*\s*\|\s*\*\*이식한 화면\*\*"])]
+            [("이식한 화면 수", ported_screens(), [
+                r"\|\s*\*\*(\d+)\*\*\s*\|\s*\*\*이식한 화면\*\*",
+                # 2026-08-30 — README 가 산문으로 "이식 화면 25" 라고 적어 두었는데
+                # 표 꼴만 보던 패턴이 **조용히 지나갔다**(참값 26). 산문 꼴도 본다
+                r"이식(?:한)?\s*화면\s*(\d+)",
+            ])]
             if ported_screens()
             else []
         ),
