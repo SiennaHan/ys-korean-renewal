@@ -238,8 +238,7 @@
 </table></div>
 <p>한글 파트는 활동이 따로 <b>여섯</b>이다 — <b>발음 듣고 따라하기 · 자음-모음 조합하기(두 단계) ·
 단어 듣고 따라하기 · 단어 쓰기 · 듣고 맞는 것 고르기</b>. 쓰기는 손가락으로 획을 그린다.</p>
-<p class="qa"><b>여기 「다섯」으로 적혀 있었다.</b> <code>catalog.jamoAct</code> 는 여섯이고
-저장소의 다른 곳도 전부 「자모 여섯」이다(§15 표 · CLAUDE.md). 자음-모음 조합하기가
+<p class="qa"><b>사람이 세면 다섯으로 뭉치기 쉽다.</b> 자음-모음 조합하기가
 <code>write</code>·<code>write3</code> <b>두 단계</b>인데 이름이 같아서 하나로 세어졌다 —
 목업이 그 둘을 한 버튼 안에서 상태로 넘기기 때문에 헷갈리기 쉬운 자리다.</p>
 <p class="meta">확인처 — <span class="file">app/src/i18n/locales/ko.ts</span> 의
@@ -337,7 +336,7 @@
   <tr><td>현행 파악</td><td><span class="pill done">완료</span></td><td>역기획서 v1.2 (소스 4종 전수 조사) · 현행 인터랙티브 목업</td></tr>
   <tr><td>방향 설정</td><td><span class="pill done">완료</span></td><td>코어 루프 목업 v1 · 리뉴얼 기획서 v0.2.1 (결정 D1~D7 권고안)</td></tr>
   <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). <b>구독·월 단위로 정해졌다 (2026-08-26)</b> · <b>가격도 정해졌다 — 월 6달러 (2026-08-28)</b></td></tr>
-  <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>루트의 <code>글로벌_교재기반_콘텐츠_v*.xlsx</code> 중 가장 높은 번호</b>다 — 번호를 여기 적지 않는다(적었다가 이 문서만 낡았다). 앱에 반영된 문항 수는 <b>여기 적지 않는다</b> — 시트마다 계속 늘어난다. 세려면 <code>python3 app/scripts/build-content.py --check</code> 가 시트별 행 수를 찍는다.<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비)이고 <b>브리핑 화면까지 배선됐다</b> — 실제 AI 대화만 아직 구 데이터(<code>ko_chat_dialog</code>)를 쓴다(BLOCKERS §8). 자모 529 는 <span class="pill done">배선 완료</span>(2026-08-24) — 화면 여섯이 <code>n8_jamo</code> 를 읽는다. <b>검수도 끝났다(2026-08-28)</b> — 받침·겹받침 포함 529행 전부이고 원장 v41 에서 <code>review_status</code> 가 <code>reviewed</code> 다. <b>여기 「남은 검수는 받침·겹받침뿐」으로 적혀 있었다 — 같은 문서 §18 은 이미 끝났다고 적고 있었다.</b> 한 문서 안에서 두 절이 갈렸다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b · §2-c)</td></tr>
+  <tr><td>콘텐츠 저작</td><td><span class="pill done">완료</span></td><td>원장 정본은 <b>루트의 <code>글로벌_교재기반_콘텐츠_v*.xlsx</code> 중 가장 높은 번호</b>다 — 번호를 여기 적지 않는다(적었다가 이 문서만 낡았다). 앱에 반영된 문항 수는 <b>여기 적지 않는다</b> — 시트마다 계속 늘어난다. 세려면 <code>python3 app/scripts/build-content.py --check</code> 가 시트별 행 수를 찍는다.<br>미션대화 117 은 <b>검수 완료</b>(5개 언어 완비)이고 <b>브리핑 화면까지 배선됐다</b> — 실제 AI 대화만 아직 구 데이터(<code>ko_chat_dialog</code>)를 쓴다(BLOCKERS §8). 자모 529 는 <span class="pill done">배선 완료</span>(2026-08-24) — 화면 여섯이 <code>n8_jamo</code> 를 읽는다. <b>검수도 끝났다(2026-08-28)</b> — 받침·겹받침 포함 529행 전부이고 원장 v41 에서 <code>review_status</code> 가 <code>reviewed</code> 다. 자모는 한 번 잃고 다시 만들었다(<code>BLOCKERS.md</code> §2-b · §2-c)</td></tr>
   <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업. <b>목업이 시각 정본</b>이고 Figma 를 대체했다<br><span class="note">CSS 규칙 수는 §9 가 쥔다 — 손으로 센 시점 기록이라 여기 또 적으면 갈린다(실제로 1,229 로 남아 있었다).</span></td></tr>
   <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 이식 <b>완료</b> — 수는 <code>CLAUDE.md</code> 표가 쥔다(§15 의 합계다) · 활동 컴포넌트 전부로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
   <tr><td>개발 — 서버</td><td><span class="pill done">핵심 학습 상태 완료</span></td><td><b>DB 2종 · 활동 상태 API · 복습 큐를 만들고 활동과 홈에 연결했다</b> — <code>ko_activity_state</code> · <code>ko_review_queue</code>, <code>/activity/enter·progress·complete·chapter</code> · <code>/review-queue</code>. 홈은 <code>reviewCount</code>와 <code>reviewReady</code>를 실제 응답에서 받는다.<br><span class="note">남은 서버 작업은 결제, 메일 발송, 표현클립 신고, MY 누적 요약과 운영 안전장치다. 아래의 “DB·API 미착수” 문단은 과거 계획 기록이다.</span></td></tr>
@@ -1013,16 +1012,11 @@ footer / dock   primary "다음" | "결과 보기"</pre>
   화면 작업을 마친 뒤의 상태다. 화면은 목업대로 들어갔다(§15 의 표 — 수는
   <span class="file">README.md</span> 가 쥔다).</p>
   <div class="callout warn">
-    <b>여기 "서버 작업은 시작되지 않았다" 고 적혀 있었다 — 지금은 거짓이다</b>(2026-08-28 정정).
-    활동 상태 · 복습 큐 · 권한 판정 · 문의 · 탈퇴가 <span class="file">api/</span> 에 들어와 있다.
-    <b>이 문장 하나 때문에 새로 오는 사람이 "서버는 아직" 으로 시작했다</b> —
-    <span class="file">CLAUDE.md</span> 에도 같은 문장이 있었고 거기는 먼저 고쳤는데
-    이 문서만 안 따라왔다.<br>
     아래 §14~§20 은 <b>2026-08-20~21 시점 기록</b>이다. 지금 상태는 §0~§13 과
     <span class="file">BLOCKERS.md</span> §0 을 본다.
   </div>
-  <p class="lead">막힌 것은 저장소 루트의 <span class="file">BLOCKERS.md</span> 에 있다 —
-  <b>거기부터 읽어라.</b></p>
+  <p class="lead">막힌 것은 저장소 루트의 <span class="file">BLOCKERS.md</span> <b>§0 현재 스냅샷</b>에 있다 —
+  <b>통째로 읽지 마라, 4천 줄이 넘는다.</b></p>
 </header>
 
 <h2 id="s14"><span class="n">14</span>문서 지도 — 어느 것이 무엇에 답하나</h2>
@@ -1358,7 +1352,6 @@ footer / dock   primary "다음" | "결과 보기"</pre>
       읽고 라우트는 <code>/learn/jamo?level&amp;lesson&amp;group&amp;sub</code> 하나다.
       <b>검수도 끝났다 (2026-08-28)</b> — 받침·겹받침 포함 529행 전부다.
       원장 <b>v41</b> 에서 <code>review_status</code> 가 <code>reviewed</code> 다.
-      <span class="note">여기 "남은 것은 받침·겹받침 두 묶음(67행)" 으로 적혀 있었다</span>
       — BLOCKERS §2 · §2-c</div></div>
   <div class="card"><div class="k">2</div><div class="nm">출시 서버 — 결제·메일·신고·MY 요약</div>
     <div class="d">활동 상태와 복습 큐는 끝났다. <b>기관 쪽도 2026-08-28 에 끝났다</b> —
