@@ -98,6 +98,29 @@ def stale_baseline(rel: str):
     return go
 
 
+def bump_baseline(rel: str, keep_note: bool):
+    """기준을 **지금 HEAD 로** 옮긴다 — 확인 줄은 그대로 두거나 지운다.
+
+    **왜 옛 커밋이 아니라 HEAD 인가.** 옛 커밋으로 되돌리면 「기준 뒤로 N개가
+    바뀌었다」가 먼저 울어서, **확인 줄 검사가 없어도 `[관찰 기준]` 이 뜬다** —
+    그러면 이 항목은 아무것도 확인하지 못한다. 기준을 HEAD 로 옮기면 바뀐 파일이
+    0개라 그 지적이 안 뜨고, **`[관찰 확인]` 만 뜰 수 있다.**
+    """
+    def go():
+        s = read(rel)
+        m = re.search(r"<!--\s*관찰:\s*([^@]+?)\s*@\s*([0-9a-f]{7,40})"
+                      r"(\s*[—–-]\s*확인:\s*[^>]*?)?\s*-->", s, re.S)
+        if not m:
+            raise SystemExit(f"{rel} 에 관찰 기준이 없다")
+        if keep_note and not m.group(3):
+            raise SystemExit(f"{rel} 에 확인 줄이 없어 「그대로 둔다」를 시험할 수 없다")
+        head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT,
+                              capture_output=True, text=True).stdout.strip()
+        new = f"<!-- 관찰: {m.group(1)} @ {head}{m.group(3) if keep_note else ''} -->"
+        return {rel: s.replace(m.group(0), new, 1)}
+    return go
+
+
 def new_file(rel: str, body: str):
     """없던 파일을 만든다 — 되돌릴 때 지운다."""
     return lambda: {rel: body}
@@ -209,6 +232,11 @@ CASES: list[tuple] = [
      append("CLAUDE.md", "\n" + "가" * 4000 + "\n")),
 
     # ── 관찰 기준
+    ("관찰 확인 — 기준만 옮기고 확인 줄을 안 썼다", "관찰 확인",
+     bump_baseline("docs/doc_review_v1.md", keep_note=False)),
+    ("관찰 확인 — 기준을 옮겼는데 확인 줄이 그대로다", "관찰 확인",
+     bump_baseline("docs/doc_review_v1.md", keep_note=True)),
+
     ("관찰 기준 — 기준 커밋이 낡았다", "관찰 기준",
      stale_baseline("docs/legal_draft_v1.html")),
 

@@ -30,6 +30,7 @@
   [잴 수 없었다]  세는 함수가 0 을 낸 경우 — 원본이 깨지면 그 검사가 조용히 사라진다
   [분량]         CLAUDE.md 가 상한을 넘은 경우 — 세션마다 읽히는 유일한 문서다
   [관찰 기준]    문서가 선언한 관찰 경로가 기준 커밋 이후 바뀐 경우 — <!-- 관찰: … @ 커밋 -->
+  [관찰 확인]    기준 커밋만 옮기고 「확인」 줄은 안 쓰거나 그대로 둔 경우
   [화면 승격]    _snapshots/ 와 screens_ref/ 가 갈라졌는데 이력 문서에 없는 경우
 
 [옛 경로] 는 인계 메모(*.txt)까지 본다.
@@ -160,7 +161,7 @@ def ported_screens() -> int | None:
 
     CLAUDE.md 가 "이식한 화면 25" 라고 적으면서 **그 표의 합계**라고 말한다.
     그런데 둘은 서로 다른 문서라 한쪽만 고쳐지면 조용히 갈린다 — 실제로 갈렸다
-    (masterplan 이 `/learn/*` 를 7 로 올렸는데 CLAUDE.md 는 6·24 로 남았다,
+    (masterplan 이 `/learn/*` 를 7 로 옮겼는데 CLAUDE.md 는 6·24 로 남았다,
     2026-08-26). 그래서 표를 세어 CLAUDE.md 의 수와 견준다.
 
     수 칸이 아닌 행(— 을 넣어 주인을 가리킨 행)은 건너뛴다.
@@ -667,9 +668,78 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
 #   데이터 JSON 1~2회 · jamo.ts 4 · main/textbook 7 · learn/jamo 10
 #   routes/learn 19 · main/activity 23 · components/ 97  ← 이 정도면 쓸 수 없다
 # 자주 우는 검사는 사람이 보지 않고 기준만 올리게 만든다. 없는 것보다 나쁘다.
+#
+# **기준을 올릴 때는 「확인」 한 줄을 같이 적는다** — 형식은 이렇다.
+#
+#     <!-- 관찰: docs/check_docs.py @ ac36936
+#          — 확인: ci_steps 가 늘었을 뿐 이 문서의 주장과 무관 -->
+#
+# 왜 한 줄을 요구하나. 2026-08-30 에 이 검사가 울었을 때 **가장 싼 통과가
+# `sed` 로 해시만 바꾸는 것**이었고, 실제로 그럴 뻔했다. 읽었는지는 관측할 수
+# 없으니 「읽었다고 증명해라」는 못 시킨다. 대신 **안 읽고는 쓸 수 없는 한 줄**을
+# 요구하고, 그 줄이 커밋 diff 에 남아 사람이 훑을 수 있게 한다.
+# 그리고 아래에서 **그 줄이 실제로 바뀌었는지까지 본다** — 안 그러면 빈말이 된다.
 OBSERVE_RE = re.compile(
-    r"<!--\s*관찰:\s*(?P<paths>[^@]+?)\s*@\s*(?P<base>[0-9a-f]{7,40})\s*-->"
+    r"<!--\s*관찰:\s*(?P<paths>[^@]+?)\s*@\s*(?P<base>[0-9a-f]{7,40})"
+    r"(?:\s*[—–-]\s*확인:\s*(?P<note>[^>]*?))?\s*-->",
+    re.S,
 )
+
+PAD = " " * 11        # 지적의 부연 줄. 이 파일의 다른 지적들과 같은 관례다
+
+
+def _git(*args: str) -> tuple[int, str]:
+    try:
+        r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True,
+                           text=True, timeout=20)
+        return r.returncode, (r.stdout if r.returncode == 0 else r.stderr)
+    except (OSError, subprocess.SubprocessError) as e:
+        return -1, str(e)
+
+
+def _key(paths: str) -> str:
+    return ",".join(sorted(x.strip() for x in paths.split(",") if x.strip()))
+
+
+def _evidence(base: str, paths: list[str], body: str) -> list[str]:
+    """**「다시 읽어라」 대신 읽을 것을 갖다 놓는다.**
+
+    이 저장소의 커밋 제목은 한 줄짜리 논증이라 정보 밀도가 가장 높다.
+    그래서 제목을 먼저 주고, 규모(`--stat`)를 주고, 마지막에 **그 문서에서
+    그 경로를 말하는 줄**을 준다 — 무슨 주장이 위험한지가 바로 보이게.
+    """
+    ev: list[str] = []
+
+    rc, log = _git("log", "--format=%h %s", f"{base}..HEAD", "--", *paths)
+    subs = [x for x in log.split("\n") if x.strip()] if rc == 0 else []
+    if subs:
+        ev.append("그 사이 무슨 일이 있었나 —")
+        ev += [f"  {s}" for s in subs[:6]]
+        if len(subs) > 6:
+            ev.append(f"  … 외 {len(subs) - 6}개")
+
+    rc, stat = _git("diff", "--stat", f"{base}..HEAD", "--", *paths)
+    rows = [x for x in stat.split("\n") if x.strip()] if rc == 0 else []
+    if rows:
+        ev.append("얼마나 —")
+        ev += [f"  {x.strip()}" for x in rows[:5]]
+        if len(rows) > 6:
+            ev.append(f"  … 외 {len(rows) - 6}개 파일")
+
+    # 그 문서 안에서 그 경로를 말하는 줄. 선언 줄 자체는 뺀다
+    names = {Path(p).name for p in paths} | {p.strip("/").split("/")[-1] for p in paths}
+    hits: list[str] = []
+    for i, line in enumerate(body.split("\n"), 1):
+        if "관찰:" in line:
+            continue
+        if any(n and n in line for n in names):
+            hits.append(f"  {i}: {line.strip()[:96]}")
+    if hits:
+        ev.append("이 문서에서 그 경로를 말하는 줄 — 여기가 낡았을 자리다")
+        ev += hits[:5]
+        if len(hits) > 5:
+            ev.append(f"  … 외 {len(hits) - 5}줄")
+    return ev
 
 
 def observation_baselines() -> list[str]:
@@ -683,33 +753,68 @@ def observation_baselines() -> list[str]:
     ]:
         if not f.exists():
             continue
-        for m in OBSERVE_RE.finditer(f.read_text(encoding="utf-8")):
+        body = f.read_text(encoding="utf-8")
+        rel = str(f.relative_to(ROOT))
+
+        # 견줄 상대를 고른다. **더러우면 HEAD, 깨끗하면 HEAD~1.**
+        # 깨끗할 때(=CI) HEAD 와 견주면 늘 같아서 검사가 사라지고,
+        # 더러울 때 HEAD~1 과 견주면 방금 올린 것을 못 잡는다.
+        rc, st = _git("status", "--porcelain", "--", rel)
+        against = "HEAD" if (rc == 0 and st.strip()) else "HEAD~1"
+        rc, old_body = _git("show", f"{against}:{rel}")
+        prev = ({_key(m.group("paths")):
+                 (m.group("base"), (m.group("note") or "").strip())
+                 for m in OBSERVE_RE.finditer(old_body)} if rc == 0 else None)
+
+        for m in OBSERVE_RE.finditer(body):
             paths = [x.strip() for x in m.group("paths").split(",") if x.strip()]
             base = m.group("base")
-            try:
-                r = subprocess.run(
-                    ["git", "diff", "--name-only", f"{base}..HEAD", "--", *paths],
-                    cwd=ROOT, capture_output=True, text=True, timeout=20,
-                )
-            except (OSError, subprocess.SubprocessError) as e:
-                out.append(f"[관찰 기준] {f.name} — git 을 못 돌렸다: {e}")
+            note = (m.group("note") or "").strip()
+
+            # ── 기준을 올렸으면 확인 줄도 새로 써야 한다
+            if prev is not None:
+                was = prev.get(_key(m.group("paths")))
+                if was and was[0] != base:
+                    if not note:
+                        out.append(
+                            f"[관찰 확인] {f.name} 가 기준을 {was[0]} → {base} 로 옮겼는데"
+                            " 「확인」 줄이 없다\n"
+                            f"{PAD}무엇을 보고 올렸는지 한 줄 적어라 —"
+                            " 고칠 것이 없었다면 그렇게 적으면 된다\n"
+                            f"{PAD}<!-- 관찰: … @ {base} — 확인: … -->"
+                        )
+                    elif note == was[1]:
+                        out.append(
+                            f"[관찰 확인] {f.name} 가 기준을 {was[0]} → {base} 로 옮겼는데"
+                            " 「확인」 줄이 그대로다\n"
+                            f"{PAD}그대로면 이 검사는 없는 것과 같다 —"
+                            " 이번에 본 것을 적어라\n"
+                            f"{PAD}지금: {note[:70]}"
+                        )
+
+            rc, r = _git("diff", "--name-only", f"{base}..HEAD", "--", *paths)
+            if rc == -1:
+                out.append(f"[관찰 기준] {f.name} — git 을 못 돌렸다: {r}")
                 continue
-            if r.returncode != 0:
-                err = (r.stderr or "").strip().split("\n")[0][:80]
+            if rc != 0:
                 out.append(
-                    f"[관찰 기준] {f.name} 의 기준 {base} 를 git 이 모른다 — {err}"
+                    f"[관찰 기준] {f.name} 의 기준 {base} 를 git 이 모른다 —"
+                    f" {r.strip().split(chr(10))[0][:80]}"
                 )
                 continue
-            changed = [x for x in r.stdout.split("\n") if x.strip()]
+            changed = [x for x in r.split("\n") if x.strip()]
             if changed:
                 shown = ", ".join(changed[:4])
                 more = f" 외 {len(changed) - 4}개" if len(changed) > 4 else ""
-                out.append(
+                msg = [
                     f"[관찰 기준] {f.name} 가 {base} 기준으로 봤다고 적었는데"
-                    f" 그 뒤 {len(changed)}개가 바뀌었다\n"
-                    f"           {shown}{more}\n"
-                    f"           문서를 다시 보고, 고칠 것이 없으면 기준 커밋만 지금으로 올려라"
-                )
+                    f" 그 뒤 {len(changed)}개가 바뀌었다",
+                    f"{shown}{more}",
+                    *_evidence(base, paths, body),
+                    "위를 읽고 문서를 고쳐라. 고칠 것이 없으면 기준 커밋을 올리되"
+                    " **「확인」 줄을 같이 새로 써라**",
+                ]
+                out.append(("\n" + PAD).join(msg))
     return out
 
 
