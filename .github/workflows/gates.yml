@@ -61,6 +61,13 @@ jobs:
       - name: 지금 상태가 코드와 같은지
         run: python3 docs/gen_status.py --check
 
+      # **훅이 실제로 도는지.** 2026-08-31 에 셋이 전부 죽어 있었다 — settings.json 에
+      # 명령을 상대 경로로 적어 둬서 `cd app` 한 순간 기준점이 옮겨 갔다.
+      # 그 실패는 조용하다: 위험한 명령이 그냥 통과한다. 그래서 훅 파일이 아니라
+      # **등록된 명령 문자열을** 하위 디렉터리에서도 돌려 본다.
+      - name: 훅이 실제로 도는지
+        run: python3 .claude/hooks/hooks_probe.py
+
   app:
     name: 앱
     runs-on: ubuntu-latest
