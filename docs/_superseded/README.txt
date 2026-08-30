@@ -67,7 +67,7 @@ renewal_plan_v1 · mockup_read_v1)을 고친 뒤에 옮겼다.
 
 ── 루트 정리 (2026-08-21)
 
-저장소 루트에 흩어져 있던 문서 여덟을 phase1/ 로 모았다.
+저장소 루트에 흩어져 있던 문서 여덟을 docs/ 로 모았다.
   G1_activity_lineup_v2 · G1_item_schema_proposal_v1 · G2_shell_and_state_spec_v1
   app_asis_mockup_v1 · core_loop_mockup_v1 · jamo_authoring_spec_v1
   renewal_masterplan_v1 · renewal_plan_v0.2
@@ -220,7 +220,7 @@ VocaShot 3) 전부 같다. 한눈에 보기 모드(45KB)와 VocaShot 실제 플�
 주의 — 대조는 탭이 앞에 있어야 맞는다. bindScrollCues 가 requestAnimationFrame
 안에서 돌고 배경 탭에서는 rAF 가 늦어서, 스트립의 data-more-* 속성이 빠진 채로
 찍힌다. 배경 탭에서 재면 있지도 않은 차이가 보인다.
-vocashot_bank.js(문항 1149개)는 그대로 phase1/ 에 있다. screens_uiux 가 부른다.
+vocashot_bank.js(문항 1149개)는 그대로 docs/ 에 있다. screens_uiux 가 부른다.
 
 ── 같은 날 하나 더 · game_screens_uiux.html → ../screens_uiux.html 의 게임 절 (#game)
 

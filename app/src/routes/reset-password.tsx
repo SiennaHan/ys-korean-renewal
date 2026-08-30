@@ -37,7 +37,7 @@ function ResetPasswordPage() {
 
 					{/*
 					 * **못 하는 것을 할 수 있는 것처럼 말하지 않는다** —
-					 * phase1/draft_auth.html 의 규칙 01, 그 문서의 `resetBlocked` 판이다.
+					 * docs/draft_auth.html 의 규칙 01, 그 문서의 `resetBlocked` 판이다.
 					 *
 					 * 전에는 아무것도 안 보내고 /check-email 로 보냈고 그 화면이
 					 * "이메일로 보내드렸습니다" 라고 말했다. 메일 발송 수단이 아직

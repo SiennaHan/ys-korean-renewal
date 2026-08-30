@@ -826,7 +826,7 @@ export function PcResultView({
 									 * 같이 빠졌다. div 에 onClick 만 얹어 되살려 봤지만 그러면 키보드로
 									 * 닿지 않는다 — 그래서 **목업 쪽을 고쳤다**(2026-08-24 결정).
 									 * app/src/screens_ref/game__pc_result.html 이 정본이고 거기에 버튼을 넣었다.
-									 * phase1/_snapshots/ 의 날것 캡처와는 갈라지므로 check_docs.py 의
+									 * docs/_snapshots/ 의 날것 캡처와는 갈라지므로 check_docs.py 의
 									 * TWIN_ALLOW 에 이유를 적어 두었다 — 홈 셋이 이미 같은 길을 갔다.
 									 * 라벨은 목업에 적힌 글자 그대로 둔다. 이 게임은 t() 를 한 번도
 									 * 쓰지 않고 모든 한글이 목업대로 박혀 있어서(컨테이너가

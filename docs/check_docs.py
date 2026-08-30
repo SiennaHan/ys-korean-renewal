@@ -5,7 +5,7 @@
 이것을 돌려서 확인한다 — 이 저장소는 문서를 이름과 절 번호로 인용하기 때문에
 한 곳을 옮기면 조용히 끊어지는 곳이 생긴다.
 
-  python3 phase1/check_docs.py
+  python3 docs/check_docs.py
 
 검사하는 것 — 라벨로 보면 이렇다. 개수를 여기 적지 않는다.
 검사를 늘릴 때 이 목록만 고치고 숫자는 실행할 때 세어 찍는다
@@ -22,7 +22,7 @@
   [id 라벨]      h2 의 id 와 보이는 절 번호가 다른 경우
   [고아]         아무 문서도, 문(README·BLOCKERS·CLAUDE)도 가리키지 않는 문서
   [숫자 주장]    문서가 적어 놓은 수를 실제로 세어 보고 다른 경우
-  [색인]         정본이 phase1/INDEX.md 에 빠졌거나 한 문서가 두 줄인 경우
+  [색인]         정본이 docs/INDEX.md 에 빠졌거나 한 문서가 두 줄인 경우
   [원장 버전]    문서가 원장 정본 버전을 못박았는데 지금 것과 다른 경우
   [데이터 정본]  문서가 말하는 데이터 출처와 코드의 import 가 다른 경우
   [사실 중복]    기계가 세는 수를 주인 문서 밖에서 또 적은 경우 — claims() 의 OWNER
@@ -72,9 +72,9 @@ def load() -> tuple[dict[str, str], dict[str, str], dict[str, Path]]:
 
     코퍼스에 세 종류가 들어간다. 이름의 접두로 갈라 놓아야 검사마다
     대상을 골라 쓸 수 있다.
-      (접두 없음)  phase1/*.html — 정본. 인용의 대상이 되는 것
+      (접두 없음)  docs/*.html — 정본. 인용의 대상이 되는 것
       "(문) "      README.md · BLOCKERS.md — 저장소의 문
-      "(메모) "    phase1/*.txt — 인계 메모. 인용 대상은 아니지만
+      "(메모) "    docs/*.txt — 인계 메모. 인용 대상은 아니지만
                    폐기본을 부르고 있으면 사람을 잘못 보낸다
     """
     live = {p.stem: p for p in sorted(HERE.glob("*.html"))}
@@ -402,7 +402,7 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         # 그 표가 이 숫자로 무엇을 판단할지 가르쳐 준다
         "활동 컴포넌트 수": "(문) CLAUDE.md",
         "이식한 화면 수": "(문) CLAUDE.md",
-        "phase1 정본 문서 수": "(문) INDEX.md",
+        "정본 문서 수": "(문) INDEX.md",
         "_superseded 문서 수": "(문) INDEX.md",
         "인계 메모 수": "(문) INDEX.md",
         # 아래 셋은 지금 우연히 한 곳뿐이다. 우연을 규칙으로 굳혀 둔다 —
@@ -510,7 +510,7 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             r"캡처\s*(\d+)개가\s*곧",
             r"목업\s*캡처\s*(\d+)",
         ]),
-        ("phase1 정본 문서 수", len(live), [
+        ("정본 문서 수", len(live), [
             r"문서가\s*(\d+)개",
             r"목업\s*HTML\s*(\d+)개",
             r"정본\s*(\d+)개가\s*모두",
@@ -863,7 +863,7 @@ def stale_phrases(text: dict[str, str]) -> list[str]:
 
 # ── 화면 승격 이력 ──────────────────────────────────────────────────
 # `_snapshots/`(시점 기록)와 `screens_ref/`(대조 기준)가 갈라진 곳은
-# **파이썬 사전이 아니라 문서**에 적는다 — phase1/screen_promotions.md.
+# **파이썬 사전이 아니라 문서**에 적는다 — docs/screen_promotions.md.
 #
 # 전에는 여기 TWIN_ALLOW 라는 사전이 있었고 검사 이름도 [목업 쌍둥이] 였다.
 # "둘이 같아야 한다" 는 뜻이었는데, 정본이 앞으로 나갈 때마다 항목이 하나씩
@@ -887,14 +887,14 @@ def promoted_screens() -> dict[str, str]:
 
 
 def mockup_twins() -> tuple[list[str], list[str]]:
-    """`phase1/_snapshots/` 와 `app/src/screens_ref/` 가 갈라진 곳을 본다.
+    """`docs/_snapshots/` 와 `app/src/screens_ref/` 가 갈라진 곳을 본다.
 
     `_snapshots/` 는 처음 목업을 떴을 때의 날것이고 **덮어쓰지 않는다.**
     `screens_ref/` 는 대조의 기준이라 정본이 앞으로 나가면 다시 뜬다.
     그래서 둘은 앞으로 영원히 갈라진다 — 갈라지는 것이 잘못이 아니라
     **왜 갈라졌는지 적히지 않은 것**이 잘못이다.
 
-    적는 곳은 `phase1/screen_promotions.md` 다.
+    적는 곳은 `docs/screen_promotions.md` 다.
     돌려주는 것은 (표에 없는 것, 표가 설명한 것) 둘이다.
     """
     a, b = HERE / "_snapshots", APP / "src" / "screens_ref"
@@ -1129,11 +1129,11 @@ def index_covers(live: set[str]) -> list[str]:
 
     이 저장소가 문서를 못 따라잡은 이유는 목록이 두 곳(README 표 ·
     handoff §01)에 있었던 것이다. 한쪽만 고쳐지니 25 와 26 으로 갈렸다.
-    목록을 phase1/INDEX.md 하나로 줄이고, 그 하나가 비면 검사기가 잡는다.
+    목록을 docs/INDEX.md 하나로 줄이고, 그 하나가 비면 검사기가 잡는다.
     """
     idx = HERE / "INDEX.md"
     if not idx.exists():
-        return ["[색인] phase1/INDEX.md 가 없다 — 문서 목록이 살 곳이 하나 있어야 한다"]
+        return ["[색인] docs/INDEX.md 가 없다 — 문서 목록이 살 곳이 하나 있어야 한다"]
     body = idx.read_text(encoding="utf-8", errors="replace")
     out: list[str] = []
     for n in sorted(live):
@@ -1182,7 +1182,7 @@ def index_covers(live: set[str]) -> list[str]:
 
 def main() -> int:
     text, raw, paths = load()
-    # 정본은 phase1/*.html 뿐이다 — 인용의 "출처" 로는 문과 메모를 안 센다
+    # 정본은 docs/*.html 뿐이다 — 인용의 "출처" 로는 문과 메모를 안 센다
     live = {
         n for n in text
         if not n.startswith("(문) ") and not n.startswith("(메모) ")

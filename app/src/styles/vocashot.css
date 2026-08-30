@@ -165,7 +165,7 @@
     height:9px; transform:translateX(-50%); border-radius:4px 4px 1px 1px;
     background:#94a3b8; box-shadow:0 -2px 8px rgba(103,232,249,.7); }
 .vocashot-frame .meteor-shell.destroying { animation:meteorDestroy .5s ease-out forwards; }
-/* 요격 연출 — 정본(phase1/screens_SOT.html)에서 그대로. 쓰는 keyframes
+/* 요격 연출 — 정본(docs/screens_SOT.html)에서 그대로. 쓰는 keyframes
    (laserShot · impactRing)는 이미 아래에 있는데 **이 선택자들만 이관이 빠져 있었다.**
    그래서 .meteor-shell.destroying 도 붙일 데가 없어 규칙만 남아 있었다. */
 .vocashot-frame .laser-beam { --laser-angle:0rad; position:absolute; z-index:5; height:3px;

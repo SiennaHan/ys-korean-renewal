@@ -346,7 +346,7 @@ PD-03이 ‘UX 잠금’이면 이 작업은 하지 않고, 그 제한을 출시
 **CI 필수 단계**
 
 1. `cd app && pnpm typecheck && pnpm check && pnpm check:css && pnpm parity:activity && pnpm build`
-2. `python3 phase1/check_docs.py`
+2. `python3 docs/check_docs.py`
 3. API 단위/통합 테스트와 `api/smoke_test.py`
 4. DB 마이그레이션 사전 검사
 

@@ -28,7 +28,7 @@ export async function checkSign() {
 }
 
 /**
- * 화면과 서버가 같이 보는 비밀번호 규칙 — 목업 `phase1/draft_auth.html` 의 셋.
+ * 화면과 서버가 같이 보는 비밀번호 규칙 — 목업 `docs/draft_auth.html` 의 셋.
  *
  * 서버도 `user_business.checkPassword` 로 같은 것을 본다. **두 곳에 있는 것이
  * 맞다** — 화면은 타이핑하는 동안 알려 주려고, 서버는 앱을 안 거치고 부를 수

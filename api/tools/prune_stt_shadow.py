@@ -8,7 +8,7 @@
 
 기간은 `STT_SHADOW_RETENTION_DAYS` 로 준다. **0(기본)이면 아무것도 안 지운다** —
 개인정보 처리방침에 적을 값이라 기획이 정하기 전에는 마음대로 지우지 않는다
-(phase1/legal_draft_v1.html §03 제4조).
+(docs/legal_draft_v1.html §03 제4조).
 """
 import argparse
 import asyncio

@@ -61,7 +61,7 @@ _EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 def checkPassword(password: str) -> list[str]:
     """못 지킨 규칙의 이름을 낸다. 다 지켰으면 빈 목록.
 
-    규칙은 목업(`phase1/draft_auth.html` 의 가입 화면)이 화면에 적어 둔 셋과
+    규칙은 목업(`docs/draft_auth.html` 의 가입 화면)이 화면에 적어 둔 셋과
     같다 — 8자 이상 · 대문자 1개 · 숫자 1개. **앱이 같은 규칙을 화면에서도
     보여 주지만 판정은 여기서 한 번 더 한다** — 앱을 거치지 않고 부를 수 있다.
     """

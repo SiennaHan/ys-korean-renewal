@@ -65,7 +65,7 @@ def shoot_tall(story_id: str, w: int, h: int, out: pathlib.Path,
             args["globals"] = f"locale:{lang}"
         q = urllib.parse.urlencode(args)
         part = out.with_suffix(f".part{off}.png")
-        shoot(f"http://127.0.0.1:8741/phase1/state_audit/harness.html?{q}", part, budget)
+        shoot(f"http://127.0.0.1:8741/docs/state_audit/harness.html?{q}", part, budget)
         im = Image.open(part).convert("RGB")
         take = min(SHOT_H, h - off, im.height)
         canvas.paste(im.crop((0, 0, min(w, im.width), take)), (0, off))

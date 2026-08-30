@@ -15,7 +15,7 @@
 새로 그리는 게 아니라 **이미 배포돼 있는 화면의 퀄리티를 올리는** 일이다.
 
 
-■ 목업 — phase1/game_screens_v1.html
+■ 목업 — docs/game_screens_v1.html
 
 **배포된 화면 14개를 렌더된 DOM 그대로** 뽑아 넣었다.
 앱을 로컬에서 띄우고, 각 화면에서 outerHTML 과 스타일시트를 통째로 캡처했다.
@@ -95,7 +95,7 @@ rsbuild 가 라우트별로 CSS 를 쪼개서, 화면마다 실린 스타일시�
      PUBLIC_APPSYNC_API_KEY=mock
      PUBLIC_QR_WEB_REDIRECT_URL=/
      하나라도 빠지면 "process is not defined" 로 **흰 화면**이 된다.
-  3) python3 phase1/game_mockapi.py   (가짜 콘텐츠 API, 8799)
+  3) python3 docs/game_mockapi.py   (가짜 콘텐츠 API, 8799)
   4) npm run dev → localhost:3000
   5) 로그인 화면이 뜨면 **로그인하지 말고** 콘솔에서
      localStorage.setItem('koreanAccessToken','local-dev-mock')
@@ -165,7 +165,7 @@ rsbuild 가 라우트별로 CSS 를 쪼개서, 화면마다 실린 스타일시�
   카드 마스터  3급 5과 최고 2,140점
   조사 스나이퍼 (아직 안 해봄 → 설명이 남는다)
 
-phase1/gamelist_mockup_v1.html 에 그려 뒀다(이건 단순 정적 화면이라 신뢰해도 된다).
+docs/gamelist_mockup_v1.html 에 그려 뒀다(이건 단순 정적 화면이라 신뢰해도 된다).
 활동 목록·홈 카드와 같은 "한 자리, 내용만 교체"다.
 진행 단위가 게임마다 달라서(급 · 장소 · 친구×단계 · 레슨) 공통 숫자를 못 만든다.
 
@@ -176,7 +176,7 @@ phase1/gamelist_mockup_v1.html 에 그려 뒀다(이건 단순 정적 화면이�
 목록은 번역되는데 들어가면 한국어가 된다 — 베트남 학습자가 "Đoán từ" 를 눌러
 들어가면 "급수를 선택하세요"를 만난다.
 
-phase1/game_ui_i18n_v1.ts 에 다섯 로케일 78키 초안을 넣어 뒀다.
+docs/game_ui_i18n_v1.ts 에 다섯 로케일 78키 초안을 넣어 뒀다.
 빼면서 **글자 길이가 언어마다 달라진다** —
 
   "다시 도전"        → "Play again" / "もう一度" / "再玩一次" / "Chơi lại"
@@ -198,7 +198,7 @@ MISS · XP · COMBO 는 이미 영문이라 그대로 둔다.
 - 서울 퍼즐은 오답에 정답을 통째로 보여주던 것을 고친다.
   → 오답 피드백 영역의 내용이 바뀐다.
 
-자세한 이유는 phase1/games_polish_v1.html 에 게임별로 적혀 있다.
+자세한 이유는 docs/games_polish_v1.html 에 게임별로 적혀 있다.
 
 
 ■ 미리 알아 둘 버그 하나

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CSS 와 코드가 서로를 안 부르는 자리를 찾는다.
 
-**왜 필요한가** — 이 앱의 CSS 는 정본 프로토타입(`phase1/screens_SOT.html`)과
+**왜 필요한가** — 이 앱의 CSS 는 정본 프로토타입(`docs/screens_SOT.html`)과
 목업에서 **통째로 이관해 왔고**, 컴포넌트는 그것을 보고 **손으로 다시 적었다.**
 그러다 보니 이름이 어긋난 자리가 생긴다. 그러면 규칙은 있는데 아무것도 안 입고,
 화면만 깨진다. 실제로 두 번 겪었다.
@@ -37,7 +37,7 @@ APP = Path(__file__).resolve().parents[1]
 STYLES = APP / "src" / "styles"
 DIST = APP / "dist" / "static" / "css"
 MOCKUPS = APP / "src" / "screens_ref"
-SNAPSHOTS = APP.parent / "phase1" / "_snapshots"
+SNAPSHOTS = APP.parent / "docs" / "_snapshots"
 
 # ─── 봐 주는 자리 ─────────────────────────────────────────────────────
 #

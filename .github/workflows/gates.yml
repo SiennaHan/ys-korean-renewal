@@ -45,7 +45,7 @@ jobs:
 
       # 외부 패키지가 필요 없다 — 전부 표준 라이브러리다(확인함 2026-08-29)
       - name: check_docs.py
-        run: python3 phase1/check_docs.py
+        run: python3 docs/check_docs.py
 
   app:
     name: 앱

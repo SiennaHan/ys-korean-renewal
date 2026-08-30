@@ -272,7 +272,7 @@ function MyProfilePage() {
 			{/*
 			 * 문의하기 — 앱 안에서 도움을 청할 수 있는 유일한 자리다.
 			 * 전화를 두지 않기로 했다(이용자 상당수가 국외다 · 2026-08-27 확정).
-			 * 개인정보 열람·삭제 요청도 여기로 온다(phase1/legal_draft_v1.html §03 제6조).
+			 * 개인정보 열람·삭제 요청도 여기로 온다(docs/legal_draft_v1.html §03 제6조).
 			 */}
 			<button
 				type="button"

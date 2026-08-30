@@ -164,7 +164,7 @@
 <p class="qa"><b>합치기가 인용을 깨는지는 문서마다 다르다.</b> 목업은 § 인용이 0~2 라
 안전하고, 명세는 130개를 지고 있어 위험하다. 한 덩이로 "합칠 수 있다/없다" 를 말하면 틀린다.</p>
 
-<p class="qa">옛 판은 <span class="file">phase1/_superseded/</span> 로 옮겼다(일곱 개).
+<p class="qa">옛 판은 <span class="file">docs/_superseded/</span> 로 옮겼다(일곱 개).
 그 폴더의 <span class="file">README.txt</span> 가 무엇이 무엇을 대체했는지 적는다.
 이 저장소는 <span class="file">_v1</span> → <span class="file">_uiux</span> 로 판을 올린다.</p>
 
@@ -180,7 +180,7 @@
 
 <h3>나머지 문서는 색인에서 찾는다</h3>
 
-<p>여기 목록을 두지 않는다. <b>문서 목록은 <span class="file">phase1/INDEX.md</span>
+<p>여기 목록을 두지 않는다. <b>문서 목록은 <span class="file">docs/INDEX.md</span>
 하나에만 있다</b> — 전에는 이 절과 <span class="file">README</span> 두 곳에 같은 목록이
 있었고, 한쪽만 고쳐져서 <b>문서 수가 25 와 26 으로, 목업 대조 화면 수가 22·24·27 로
 갈렸다.</b> 이 절이 스스로 "이 문서가 지도를 들고 있으면 인계가 끝난 뒤에 지도도 같이
@@ -189,7 +189,7 @@
 <p>색인이 답하는 것 — "기획서" 라 부를 셋이 어떻게 다른가 · 시각 정본 목업 둘 ·
 <b>셸 명세 넷이 어느 층인가</b>(행동 · 구조 · 값 · 순서) · 화면별 명세 여덟 ·
 실측과 근거 여섯 · <b>개발자에게 넘길 묶음 셋</b>.
-<span class="file">python3 phase1/check_docs.py</span> 가 정본 26개가 모두 색인에
+<span class="file">python3 docs/check_docs.py</span> 가 정본 26개가 모두 색인에
 있는지 검사하므로, 문서를 만들고 색인에 안 넣으면 통과하지 않는다.</p>
 
 
@@ -275,7 +275,7 @@
         <span class="file">jamo_authoring_spec_v1</span> §4 스키마로는 담기지 않아 실측으로 넓혔다</td></tr>
     <tr><td><b>문서 정리 — 문을 하나로</b></td>
       <td>루트에 문서 여덟이 흩어져 있어서 저장소를 열면 읽을 것이 열 개로 보였다.
-        <span class="file">phase1/</span> 로 모아 <b>루트에 README.md 와 BLOCKERS.md 만</b> 남겼다.
+        <span class="file">docs/</span> 로 모아 <b>루트에 README.md 와 BLOCKERS.md 만</b> 남겼다.
         README 를 <b>"처음 30분에 볼 셋"</b> 과 <b>"무엇을 알고 싶으면 어느 문서"</b> 로 다시 썼다 —
         31개를 나열하는 대신 물음으로 찾게 했다.
         <span class="file">handoff_v1</span> 은 네 곳이 §03 을 인용해서 옮길 수 없었다.

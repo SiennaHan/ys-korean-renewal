@@ -510,7 +510,7 @@ export function VocashotPlayView({
 					) : (
 						<form
 							/*
-							 * 정본(`phase1/screens_SOT.html`)의 이름은 `typerow` 다.
+							 * 정본(`docs/screens_SOT.html`)의 이름은 `typerow` 다.
 							 * 전에 `typed` 라고 적어 두었는데 **그 이름의 규칙은 어디에도
 							 * 없어서** 직접 입력 칸이 아무것도 안 입고 나왔다.
 							 * `.r-row` 와 같은 부류다 — `css-class-check.py` 가 잡았다.
@@ -649,7 +649,7 @@ export function VocashotResultView({
 						<div className="r-k">{t("game.vocashot.myScore")}</div>
 						<p className="big">{score.toLocaleString(i18n.language)}</p>
 						{/*
-						 * 정본(`phase1/screens_SOT.html`)은 신기록이면 이전 최고 점수
+						 * 정본(`docs/screens_SOT.html`)은 신기록이면 이전 최고 점수
 						 * 대신 배지를 띄운다. 이 자리가 비어 있어서 `.r-new` 규칙이
 						 * 아무도 안 쓰는 채로 남아 있었다(`pnpm check:css` 가 잡았다).
 						 */}
@@ -680,7 +680,7 @@ export function VocashotResultView({
 
 					{missed.length > 0 ? (
 						/*
-						 * 정본은 `phase1/screens_SOT.html` 이다. 전에는 여기를
+						 * 정본은 `docs/screens_SOT.html` 이다. 전에는 여기를
 						 * `r-missed` · `r-miss` · `<b>` 로 적어 두었는데, **그 이름에는
 						 * 규칙이 하나도 없어서** 단어와 뜻이 붙어 나왔다
 						 * (`녹차green tea다시 맞힘`). 쓸 CSS 는 `.r-wrong` · `.r-row` ·

@@ -23,7 +23,7 @@ import { AudioPair, ComboTarget, Passage, QuestionText } from "./stimulus";
 /**
  * **상태 감사 전용 스토리다. 디자인 정본이 아니다.**
  *
- * `phase1/state_audit/` 작업에서, 확정 목업 캡처에도 기존 스토리에도 없는
+ * `docs/state_audit/` 작업에서, 확정 목업 캡처에도 기존 스토리에도 없는
  * 상호작용 상태를 눈으로 확인하려고 만들었다. 그래서 —
  *
  *   · **제품 컴포넌트에 props 를 새로 만들지 않았다.** 여기 쓰는 것은 전부
@@ -32,7 +32,7 @@ import { AudioPair, ComboTarget, Passage, QuestionText } from "./stimulus";
  *   · 값은 기존 `activity.stories.tsx` 의 같은 화면에서 그대로 가져왔다.
  *     상태만 바꿨으니 무엇이 달라지는지가 곧 그 상태의 디자인이다.
  *   · **여기서 나온 그림을 목업 정본으로 승격하지 마라.** 승격은 디자인 검토
- *     뒤에 하는 일이고, 감사 자료는 `phase1/state_audit/activity/` 에 있다.
+ *     뒤에 하는 일이고, 감사 자료는 `docs/state_audit/activity/` 에 있다.
  */
 const meta = {
 	title: "상태 감사(정본 아님)",

@@ -61,7 +61,7 @@ pnpm dev            # http://localhost:3000
 
 ### `parity:activity` — 목업이 기준이다
 
-구현이 목업과 다르면 **목업이 맞다**(`../phase1/handoff_v2.html` §03).
+구현이 목업과 다르면 **목업이 맞다**(`../docs/handoff_v2.html` §03).
 사람 눈으로 보던 것을 스크립트로 옮겼다.
 
 ```

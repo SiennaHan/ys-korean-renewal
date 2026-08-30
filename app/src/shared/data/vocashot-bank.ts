@@ -1,5 +1,5 @@
 /**
- * VocaShot 어휘 은행 — phase1/vocashot_bank.js 에서 그대로 옮긴 것.
+ * VocaShot 어휘 은행 — docs/vocashot_bank.js 에서 그대로 옮긴 것.
  *
  * 교재에서 뽑은 파생 자산이라 이 저장소 밖으로 나가면 안 된다.
  * l=급, a=정답, w=오답 후보, m=뜻(언어별), i=그림 파일명(있을 때만).

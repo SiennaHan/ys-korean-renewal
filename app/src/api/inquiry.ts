@@ -1,7 +1,7 @@
 import { api } from "./api";
 
 /**
- * 문의 — `POST /inquiry` (phase1/legal_draft_v1.html §02 의 「문의처」)
+ * 문의 — `POST /inquiry` (docs/legal_draft_v1.html §02 의 「문의처」)
  *
  * **전화를 두지 않는다.** 이용자 상당수가 국외라 통화가 현실적이지 않다
  * (기획 확정 2026-08-27). 글로 받아 슬랙으로 꽂는다.

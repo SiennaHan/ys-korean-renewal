@@ -5,13 +5,13 @@
 펼쳐지고, 교재 밖에는 게임 다섯과 표현클립이 있다. 화면 언어는 다섯이고
 학습 대상(문항·지문·대화문)은 한국어로 고정한다. 그 학생용 앱을 리뉴얼하는 작업 저장소다.
 
-> **제품을 처음 접한다면 `phase1/masterplan_v3.html` 의 §0 부터 읽어라.**
+> **제품을 처음 접한다면 `docs/masterplan_v3.html` 의 §0 부터 읽어라.**
 > 누가 쓰나 · 교재가 어떤 모양인가 · 화면 다섯이 무엇인가 · 무엇이 무료인가가
 > 한 절에 있다. 아래 셋은 그다음이다.
 
 문서가 여럿인데 **처음에 볼 것은 셋뿐이다.**
 
-무엇이 갖춰졌고 **무엇이 빠졌는지**는 정본 기획서 `phase1/masterplan_v3.html`
+무엇이 갖춰졌고 **무엇이 빠졌는지**는 정본 기획서 `docs/masterplan_v3.html`
 **§2 덮개 지도**에 있다 — 영역 × 산출물 표이고 **빈 칸이 곧 빠진 기획이다.**
 
 ## 처음 30분 — 이 셋만 순서대로
@@ -19,17 +19,17 @@
 | | 무엇 | 왜 먼저 |
 |---|---|---|
 | 1 | **[BLOCKERS.md](BLOCKERS.md) §0 현재 스냅샷** | 지금 막혀 있는 것과 **정해지지 않은 것**. 여기 없는 것은 대체로 정해져 있다는 뜻이다.<br>**통째로 읽지 마라 — 4천 줄이 넘는다.** §0 이 표 한 장으로 요약하고, 필요한 절만 이름으로 찾아 들어간다 |
-| 2 | **`phase1/masterplan_v3.html`** | 정본 기획서. **이 앱이 무엇인가**(§0) · **무엇이 비었나**(§2 덮개 지도) ·<br>**지금 무엇이 앞을 막나**(§3 전체 지도) · 게이트(§5) · Phase 1 상태(§8) ·<br>**지금 계획**(§12) · **리스크**(§13) · 문서 지도(§14) · **목업을 일부러 벗어난 여섯 곳**(§16) |
-| 3 | **`phase1/dev_spec_v1.html`** | 최초 개발 계약 + 현재 필드·회귀 기준. 핵심 활동 DB·API·라우트·셸은 구현 완료 |
+| 2 | **`docs/masterplan_v3.html`** | 정본 기획서. **이 앱이 무엇인가**(§0) · **무엇이 비었나**(§2 덮개 지도) ·<br>**지금 무엇이 앞을 막나**(§3 전체 지도) · 게이트(§5) · Phase 1 상태(§8) ·<br>**지금 계획**(§12) · **리스크**(§13) · 문서 지도(§14) · **목업을 일부러 벗어난 여섯 곳**(§16) |
+| 3 | **`docs/dev_spec_v1.html`** | 최초 개발 계약 + 현재 필드·회귀 기준. 핵심 활동 DB·API·라우트·셸은 구현 완료 |
 
-나머지는 **필요할 때 `phase1/INDEX.md`에서 찾아 보는 참고서다.** 개수를 여기 중복해 적지 않는다.
+나머지는 **필요할 때 `docs/INDEX.md`에서 찾아 보는 참고서다.** 개수를 여기 중복해 적지 않는다.
 
 > **개발자는** 기획 문서를 처음부터 훑어 과업을 추측하지 말고
-> **[`phase1/developer_tasks.md`](phase1/developer_tasks.md)**부터 읽는다.
+> **[`docs/developer_tasks.md`](docs/developer_tasks.md)**부터 읽는다.
 > `PD-01~10`은 기획이 먼저 답할 것, `DEV-01~14`는 구현 카드이며 각 카드에 완료 판정과
 > 반환 산출물이 적혀 있다.
 
-## 어느 문서가 무엇에 답하나 → **[phase1/INDEX.md](phase1/INDEX.md)**
+## 어느 문서가 무엇에 답하나 → **[docs/INDEX.md](docs/INDEX.md)**
 
 **문서 목록은 그 파일 하나에만 있다.** 여기에 표를 다시 두지 마라 —
 전에는 README 와 `masterplan_v3` §14 두 곳에 같은 목록이 있었고, 한쪽만 고쳐져서
@@ -50,8 +50,8 @@
 |---|---|
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
-| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. 명세는 `phase1/access_and_pricing_v1.html` §10~§12 다 — **전에는 어드민 문서가 없었다.** **어드민에는 게이트가 없다** — `pnpm typecheck` 가 통과하지 않고(`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. 둘 다 리뉴얼 전부터다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
-| `phase1/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `phase1/INDEX.md`.<br>그 밖에 인계 메모(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
+| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. 명세는 `docs/access_and_pricing_v1.html` §10~§12 다 — **전에는 어드민 문서가 없었다.** **어드민에는 게이트가 없다** — `pnpm typecheck` 가 통과하지 않고(`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. 둘 다 리뉴얼 전부터다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
+| `docs/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `docs/INDEX.md`.<br>그 밖에 인계 메모(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
 **지금 배포돼 있는 버전의 참고본**이다. 저장소에 없고(`.gitignore`) 대조용으로만 쓴다.
@@ -112,7 +112,7 @@ cd app && pnpm install && pnpm dev
 문서가 작업을 저절로 따라오지 않기 때문이다. **지금은 CI 가 대신 돌린다**(아래).
 
 ```bash
-python3 phase1/check_docs.py                          # 문서
+python3 docs/check_docs.py                          # 문서
 cd app && pnpm parity:activity                        # 화면
 cd app && python3 scripts/build-content.py --check    # 콘텐츠
 ```
@@ -150,7 +150,7 @@ VocaShot 5(시작 · 플레이 둘 · 결과 둘) + 게임 17(목록 하나 + �
 
 **수는 여기 적지 않는다.** 대조 항목과 캡처 수가 따로 움직인다 — 컴포넌트를 대조
 목록에 먼저 올리고 목업을 나중에 뜨는 일이 있어서, 그동안 둘이 하나 차이가 난다.
-지금 수는 `python3 phase1/check_docs.py` 가 첫 줄에 찍는다(`[숫자 주장]` 도 그것으로
+지금 수는 `python3 docs/check_docs.py` 가 첫 줄에 찍는다(`[숫자 주장]` 도 그것으로
 비교한다). 대조 목록에 목업이 없으면 `parity:activity` 가 `목업 캡처가 없다` 로 잡는다.
 
 **VocaShot 이 다섯인 것은 상태를 갈라 떴기 때문이다.** 한 화면에 상태가 여럿이면
@@ -189,7 +189,7 @@ v24 가 자모 400행을 날렸을 때 v23 이 있어서 복구했다 — `BLOCK
 ### 문서 참조 검사
 
 ```bash
-python3 phase1/check_docs.py
+python3 docs/check_docs.py
 ```
 
 문서를 옮기거나 합치거나 절 번호를 바꿨을 때, **그리고 무엇이든 작업을 끝냈을 때**
@@ -240,7 +240,7 @@ h3 33개를 부모 h2 에 맞춰 다시 매겨 풀었다.
 "남은 일" 로 앉아 있었다. **세는 항목은 늘어난다** — 수를 여기 적지 않는다. `check_docs.py` 의 `OWNER` 가 목록이자 주인 표다.
 
     목업 대조 화면 수 (활동 + 내비)   활동 컴포넌트 수와 다른 지표다
-    phase1 정본 문서 수 · _superseded 문서 수
+    정본 문서 수 · _superseded 문서 수
     인계 메모 수
 
 **정확히 맞추게 하는 것과 하한만 보는 것을 가른다.** 문서를 한 줄 고칠 때마다
@@ -256,7 +256,7 @@ h3 33개를 부모 h2 에 맞춰 다시 매겨 풀었다.
 맞는 숫자를 틀렸다고 잡지 않는다. 문구를 새로 쓸 때는 `claims()` 의 정규식에 맞춰 쓰거나 거기에 추가한다.
 
 **일부러 어긋나게 둔 곳은 이유를 적어야 통과한다.** 화면 승격은
-`phase1/screen_promotions.md` 표에, 옛 이름을 부르는 시점 기록은 문서 안에
+`docs/screen_promotions.md` 표에, 옛 이름을 부르는 시점 기록은 문서 안에
 `옛이름.html → _superseded/` 줄을 두면 봐준다.
 눈감아 준 것은 **실행할 때마다 같이 찍힌다** — 목업 대조와 같은 규칙이다.
 
@@ -269,7 +269,7 @@ h3 33개를 부모 h2 에 맞춰 다시 매겨 풀었다.
 git log --format='%h %s%n%b' -- app/src/components/main/activity
 ```
 
-목업을 일부러 벗어난 여섯 곳은 `phase1/masterplan_v3.html` §16 에 이유까지 적혀 있다.
+목업을 일부러 벗어난 여섯 곳은 `docs/masterplan_v3.html` §16 에 이유까지 적혀 있다.
 
 ## 라이선스 — 공개 금지
 

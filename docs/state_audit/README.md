@@ -2,11 +2,11 @@
 
 **이 폴더는 감사 자료다. 디자인 정본이 아니다.**
 아래 표와 분류는 **감사 캡처 당시의 스냅숏**이다. 감사 당시에는
-`phase1/captured/` 와 `app/src/mockups/` 를 건드리지 않았고, 이후 확정된 공통 아이콘과
+`docs/captured/` 와 `app/src/mockups/` 를 건드리지 않았고, 이후 확정된 공통 아이콘과
 제품 반영분은 두 정본 폴더에 함께 갱신했다.
 
 > **v2.5 이후 롤플레잉 주의 (2026-08-25).** 이 폴더의 기존 녹음 완료 캡처는
-> 과거 상태를 보존한 감사 증거다. 현재 정본은 `phase1/screens_uiux.html`이며,
+> 과거 상태를 보존한 감사 증거다. 현재 정본은 `docs/screens_uiux.html`이며,
 > `preparing(2초) → recording → finishing(1초) → sending → 결과 카드`와
 > 결과 카드 안의 `내 녹음 듣기 · 다시 녹음 · 다음 대사`를 따른다.
 
@@ -317,7 +317,7 @@ Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'm
 
 | | 무엇 |
 |---|---|
-| 목 (`phase1/game_mockapi.py`) | `/chat/<id>/msgs` 를 계약대로 `{msgs: [], feedbacks: []}` 로 낸다 |
+| 목 (`docs/game_mockapi.py`) | `/chat/<id>/msgs` 를 계약대로 `{msgs: [], feedbacks: []}` 로 낸다 |
 | 제품 (`mission-dialog.tsx`) | `const { msgs: serverChats = [], feedbacks = [] } = msgResponse` |
 
 고친 뒤 크래시가 사라졌다(콘솔 오류 0). 다만 그것만으로는 화면이 **비어 있어서**,
@@ -553,7 +553,7 @@ TTS 재생이 끝나거나 연습 턴 녹음이 끝나야 하는데, 로컬에 T
 | | |
 |---|---|
 | `pnpm parity:activity` | **`briefing` · `report` 2건 실패.** 구현이 접근성·구조를 고쳤는데 목업이 안 따라왔다. 두 목업은 최초 일괄 캡처(`d1a7cfb`) 이후 **한 번도 안 고쳐졌다** |
-| `python3 phase1/check_docs.py` | **`nav__book__resume` 쌍둥이 갈림 1건.** 「빈칸 채워 말하기」→「빈칸 채우기」로 목업만 고치고 `TWIN_ALLOW` 에 이유를 안 적었다 |
+| `python3 docs/check_docs.py` | **`nav__book__resume` 쌍둥이 갈림 1건.** 「빈칸 채워 말하기」→「빈칸 채우기」로 목업만 고치고 `TWIN_ALLOW` 에 이유를 안 적었다 |
 
 `typecheck` · `build` · `check:css` 는 통과다.
 

@@ -229,7 +229,7 @@ async def listShadow(limit: int, offset: int, kind: str):
 
 # ── 보관 기간 ─────────────────────────────────────────────────────────
 # 며칠 지나면 지울지. **기간은 개인정보 처리방침에 적을 값이라 기획이 정한다** —
-# 여기서는 기계만 만들고 값은 환경에서 받는다(phase1/legal_draft_v1.html §03 제4조).
+# 여기서는 기계만 만들고 값은 환경에서 받는다(docs/legal_draft_v1.html §03 제4조).
 # 0 이면 지우지 않는다 — 정해지지 않았을 때 마음대로 지워 버리지 않기 위해서다.
 SHADOW_RETENTION_DAYS = int(os.getenv("STT_SHADOW_RETENTION_DAYS", "0"))
 

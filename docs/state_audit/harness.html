@@ -43,7 +43,7 @@
   const snap = p.get("snap");
   const app = p.get("app");
   f.src = snap
-    ? "http://127.0.0.1:8741/phase1/state_audit/activity/" + snap
+    ? "http://127.0.0.1:8741/docs/state_audit/activity/" + snap
     : app
     ? "http://127.0.0.1:3000" + app
     : "http://127.0.0.1:6006/iframe.html?id=" +

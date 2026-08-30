@@ -849,7 +849,7 @@ SCREENS.nav__home__resume = (
  * 기다리는 갈래("내일부터 풀 수 있어요")가 그려져 목업과 어긋난다.
  *
  * 기다리는 갈래는 목업 캡처가 없다 — 같은 카드의 문구와 화살표만 다른 변형이라
- * 화면을 하나 늘리지 않았다(`phase1/screen_promotions.md` 에 적어 뒀다).
+ * 화면을 하나 늘리지 않았다(`docs/screen_promotions.md` 에 적어 뒀다).
  */
 SCREENS.nav__home__review = (
 	<HomeView

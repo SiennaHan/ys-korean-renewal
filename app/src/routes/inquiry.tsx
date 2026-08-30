@@ -34,7 +34,7 @@ export const Route = createFileRoute("/inquiry")({
 });
 
 /**
- * 문의하기 — phase1/legal_draft_v1.html §02 의 「문의처」
+ * 문의하기 — docs/legal_draft_v1.html §02 의 「문의처」
  *
  * **전화가 없다.** 이용자 상당수가 국외라 통화가 현실적이지 않아 글로 받는다
  * (기획 확정 2026-08-27). 보낸 글은 슬랙으로 꽂힌다.

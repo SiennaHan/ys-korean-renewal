@@ -18,16 +18,16 @@
 
 ■ 파일 셋
 
-- phase1/home_asis_v1.html
+- docs/home_asis_v1.html
   구 앱 홈·교재학습을 코드에서 읽어 옮긴 as-is. 규격은 전부 components/main/ 실측이다.
   §4에 결정 3건, §5에 따라오는 것, §6에 원래 어긋났던 여섯 지점이 있다.
 
-- phase1/nav_mockup_v1.html
+- docs/nav_mockup_v1.html
   내가 그린 구조 목업. 홈 / 교재학습 / 자모 목록 3화면.
   activity_mockups_uiux.html 의 :root 토큰과 벤치 CSS를 그대로 가져다 썼으니
   색·타이포는 이미 맞아 있다. 여백 리듬과 마감만 손대면 된다.
 
-- phase1/activity_mockups_uiux.html
+- docs/activity_mockups_uiux.html
   네가 확정한 활동 19화면. 디자인 언어의 기준이다.
 
 

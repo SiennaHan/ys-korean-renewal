@@ -17,7 +17,7 @@ export const Route = createFileRoute("/new-password")({
  *
  * 그런 사람에게 폼을 보여 주면 비밀번호를 바꾼 줄 알고 나간다 —
  * 실제로는 아무 일도 일어나지 않았다(`NewPasswordForm` 의 TODO).
- * `phase1/draft_auth.html` 규칙 01: 못 하는 것을 할 수 있는 것처럼 말하지 않는다.
+ * `docs/draft_auth.html` 규칙 01: 못 하는 것을 할 수 있는 것처럼 말하지 않는다.
  *
  * **깃발은 `shared/feature-gates.ts` 에 있다** — `/check-email` 도 같은 것을
  * 본다(2026-08-27). 여기 따로 두면 메일이 붙었을 때 한쪽만 살아난다.

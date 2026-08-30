@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
  *
  * 재설정 메일을 보낼 수단이 아직 없고(BLOCKERS §7), 그래서 앱 안에 여기로
  * 오는 길도 하나도 없다(참조 0곳 · 2026-08-27 확인). 남은 것은 문장뿐인데
- * 그 문장이 거짓이었다 — `phase1/draft_auth.html` 규칙 01.
+ * 그 문장이 거짓이었다 — `docs/draft_auth.html` 규칙 01.
  *
  * 지우지 않고 **사실을 말하는 화면으로 보낸다.** `/reset-password` 가 이미
  * "아직 메일을 보낼 수 없습니다 → 문의하기" 라고 말한다. 지우면 낡은 링크나

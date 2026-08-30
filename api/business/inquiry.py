@@ -1,4 +1,4 @@
-"""문의 접수 — phase1/legal_draft_v1.html §02 의 「문의처」
+"""문의 접수 — docs/legal_draft_v1.html §02 의 「문의처」
 
 **저장이 먼저, 슬랙은 그다음이다.** 웹훅이 죽어 있어도 문의를 잃으면 안 된다.
 슬랙 전송이 실패하면 `notified=False` 로 남고, `tools/resend_inquiries.py` 로
