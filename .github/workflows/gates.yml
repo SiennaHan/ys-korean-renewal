@@ -56,6 +56,11 @@ jobs:
       - name: check_docs 가 제 몫을 하는지
         run: python3 docs/check_docs_probe.py
 
+      # `status.generated.md` 는 코드에서 뽑는다. 손으로 고치거나 코드가 바뀐 뒤
+      # 다시 안 뽑으면 여기서 걸린다 — **문서가 「현재 상태」를 손으로 적지 않게 하려는 것**이다.
+      - name: 지금 상태가 코드와 같은지
+        run: python3 docs/gen_status.py --check
+
   app:
     name: 앱
     runs-on: ubuntu-latest

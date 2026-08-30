@@ -250,6 +250,30 @@ def main() -> int:
             bad.append(name)
             print(f"  ⚠ 안 운다  {name}  (주입 뒤 exit={code})")
 
+    # ── 생성물도 같은 규칙을 받는다 ────────────────────────────
+    # `gen_status.py --check` 가 「낡았다」를 정말 잡는지. 검사 태그를 내는 것이
+    # 아니라 종료코드로 말하므로 위 항목과 따로 본다.
+    if not only or "생성물" in only:
+        gen = HERE / "status.generated.md"
+        orig = gen.read_text(encoding="utf-8") if gen.exists() else None
+        try:
+            write("docs/status.generated.md", (orig or "") + "\n손으로 고친 자국\n")
+            r = subprocess.run([sys.executable, str(HERE / "gen_status.py"), "--check"],
+                               cwd=ROOT, capture_output=True, text=True)
+            fired = r.returncode != 0
+        finally:
+            if orig is not None:
+                write("docs/status.generated.md", orig)
+        total_extra = 1
+        if fired:
+            ok += 1
+            print("  운다   생성물 — status.generated.md 가 낡으면 --check 가 잡는다")
+        else:
+            bad.append("생성물 — status.generated.md 낡음")
+            print("  ⚠ 안 운다  생성물 — status.generated.md 가 낡아도 통과한다")
+    else:
+        total_extra = 0
+
     end_code, _ = run_check()
     if end_code != 0:
         print("\n!! 다 돌린 뒤 check_docs 가 깨끗하지 않다 — 잔재가 남았다")

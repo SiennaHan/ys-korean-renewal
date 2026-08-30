@@ -15,10 +15,9 @@
 - **서버도 됐다 (2026-08-29 갱신).** `api/business/` 에 리뉴얼 모듈이 줄줄이 있고
   (`entitlement` · `review_queue` · `activity_state` · `learning_record` ·
   `user_withdraw` · `dashboard` · `signup_code_business` · `student_business`).
-  **수를 여기 적지 않는다** — 전에 "라우터가 28개" 로 박아 뒀다가 내가 하나 늘리면서
-  낡았다. 세려면 `grep -c include_router api/server.py` 다.
-  `ko_activity_state` · `ko_review_queue` · `ko_signup_code*` 셋도 신설됐다 —
-  `BLOCKERS.md` §6 · §10.
+  **수와 「있다/없다」는 여기 적지 않는다** — `docs/status.generated.md` 가 코드에서 뽑는다.
+  전에 "라우터가 28개" 로 박아 뒀다가 하나 늘면서 낡았다.
+  `ko_activity_state` · `ko_review_queue` · `ko_signup_code*` 셋도 신설됐다 — `BLOCKERS.md` §6 · §10.
   **이 파일은 세션마다 자동으로 읽힌다** — 여기 낡은 한 줄이 있으면 모든 새 세션이
   거기서 시작한다. 실제로 "서버는 아직 없다" 가 오래 그랬다
 - **기관 코드와 학기 종료는 끝났다 (2026-08-28).** 학교가 어드민에서 코드를 발급하고
@@ -111,9 +110,9 @@
 문서가 작업을 저절로 따라오지 않는다 — **이 저장소의 가장 큰 문제였다.**
 기계가 세는 숫자는 **주인 문서 하나에만** 적는다(`[사실 중복]` 이 잡는다).
 
-**2026-08-29 부터 게이트 여섯을 CI 가 돌린다** — `.github/workflows/gates.yml`.
-푸시·PR 마다 문서 · typecheck · 목업 대조 · build · check:css · biome 이 돈다.
-그러니 평소에 손으로 다 돌릴 필요는 없다. **다만 둘은 여전히 사람 몫이다:**
+**2026-08-29 부터 CI 가 게이트를 돌린다** — `.github/workflows/gates.yml`.
+**무엇이 도는지는 `docs/status.generated.md` 가 쥔다**(job·스텝을 코드에서 뽑는다).
+평소에 손으로 다 돌릴 필요는 없다. **다만 둘은 여전히 사람 몫이다:**
 
 ```bash
 cd app && python3 scripts/build-content.py --check   # 콘텐츠 — CI 가 못 돈다(원장이 저장소에 없다)
