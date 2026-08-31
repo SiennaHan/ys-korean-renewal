@@ -89,7 +89,10 @@ def stale_baseline(rel: str):
     """
     def go():
         s = read(rel)
-        m = re.search(r"@ ([0-9a-f]{7,}) -->", s)
+        # **「확인」 줄이 붙으면서 `@ sha -->` 가 더는 붙어 있지 않다**(2026-08-30).
+        # 처음 쓴 패턴은 그 형식을 모르고, 그래서 이 항목이 「관찰 기준이 없다」로
+        # 멈췄다 — 조용히 통과하지 않은 것이 다행이다. 뒤에 무엇이 오든 sha 만 잡는다.
+        m = re.search(r"@ ([0-9a-f]{7,})(?=[\s\n]|-->)", s)
         if not m:
             raise SystemExit(f"{rel} 에 관찰 기준이 없다")
         first = subprocess.run(["git", "rev-list", "--max-parents=0", "HEAD"],
