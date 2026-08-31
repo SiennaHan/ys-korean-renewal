@@ -608,3 +608,409 @@ class KoReviewQueue(Base) :
         ),
         Index("ix_user_avail", "user_id", "available_at"),
     )
+
+
+# ── 교재 콘텐츠 13개 표 ────────────────────────────────────────────
+#
+# 원장 시트 여덟을 서버로 옮긴 것이다(DEV-05 · PD-03 확정 2026-08-31).
+# **열쇠는 `item_id`** — 13개 파일을 통틀어 전역 고유다(실측 · 충돌 0). 숫자 `id` 는
+# n1_word_list 에서 124행이 0 이라 열쇠가 못 되고, `ledger_id` 로 따로 보관한다
+# (`ko_learning_record.question_id` 가 그 값이다).
+#
+# **`review_status` 는 앱에 내보내지 않는다.** 서버가 노출을 거르는 데 쓴다
+# (DEV-07/PD-05). 갈래가 16종이고 지금 `reviewed` 는 8.3% 뿐이다.
+#
+# 표를 만드는 것은 `api/migration_textbook_content.sql`,
+# 채우는 것은 `api/seed_textbook_content.py` 다.
+
+
+class KoWord(Base) :
+    """어휘 — 원장 n1_word_list.json · 2846행"""
+    __tablename__  = "ko_word"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    ledger_id      = Column(Integer,           nullable=True)
+    word           = Column(String(50),        nullable=True)
+    en             = Column(String(200),       nullable=True)
+    jp             = Column(String(100),       nullable=True)
+    cn             = Column(String(50),        nullable=True)
+    vi             = Column(String(200),       nullable=True)
+    sound          = Column(String(50),        nullable=True)
+    image          = Column(String(50),        nullable=True)
+    category       = Column(String(20),        nullable=True)
+    theme          = Column(String(20),        nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(20),        nullable=True)
+    change_note    = Column(String(500),       nullable=True)
+    hold_reason    = Column(String(200),       nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_word_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoWordQuiz(Base) :
+    """어휘 퀴즈 — 원장 n1_word_quiz.json · 1138행"""
+    __tablename__  = "ko_word_quiz"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    ledger_id      = Column(Integer,           nullable=True)
+    type           = Column(String(50),        nullable=True)
+    prompt         = Column(String(100),       nullable=True)
+    prompt_en      = Column(String(200),       nullable=True)
+    prompt_jp      = Column(String(100),       nullable=True)
+    prompt_cn      = Column(String(50),        nullable=True)
+    prompt_vi      = Column(String(200),       nullable=True)
+    meaning_en     = Column(String(200),       nullable=True)
+    meaning_jp     = Column(String(100),       nullable=True)
+    meaning_cn     = Column(String(50),        nullable=True)
+    meaning_vi     = Column(String(200),       nullable=True)
+    image          = Column(String(50),        nullable=True)
+    selection1     = Column(String(50),        nullable=True)
+    selection2     = Column(String(50),        nullable=True)
+    selection3     = Column(String(50),        nullable=True)
+    selection4     = Column(String(20),        nullable=True)
+    answer_index   = Column(Integer,           nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(300),       nullable=True)
+    hold_reason    = Column(String(100),       nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_word_quiz_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoRoleplayTurn(Base) :
+    """롤플레잉 대사 — 원장 n2_ai_role_play.json · 992행"""
+    __tablename__  = "ko_roleplay_turn"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    ledger_id      = Column(Integer,           nullable=True)
+    scenario_id    = Column(String(20),        nullable=True)
+    title          = Column(String(100),       nullable=True)
+    mode           = Column(String(20),        nullable=True)
+    turn_seq       = Column(Integer,           nullable=True)
+    speaker        = Column(String(20),        nullable=True)
+    gender         = Column(String(20),        nullable=True)
+    ko             = Column(String(500),       nullable=True)
+    en             = Column(Text,              nullable=True)
+    jp             = Column(String(500),       nullable=True)
+    cn             = Column(String(200),       nullable=True)
+    vi             = Column(Text,              nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(200),       nullable=True)
+    hold_reason    = Column(String(50),        nullable=True)
+    instruction_ko = Column(String(50),        nullable=True)
+    instruction_en = Column(String(100),       nullable=True)
+    instruction_jp = Column(String(50),        nullable=True)
+    instruction_cn = Column(String(50),        nullable=True)
+    instruction_vi = Column(String(100),       nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_roleplay_turn_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoListenScript(Base) :
+    """듣기 지문 — 원장 n3_listen_script.json · 377행"""
+    __tablename__  = "ko_listen_script"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    ledger_id      = Column(Integer,           nullable=True)
+    seq            = Column(Integer,           nullable=True)
+    cd_track       = Column(String(20),        nullable=True)
+    error_note     = Column(String(100),       nullable=True)
+    audio_text     = Column(Text,              nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(50),        nullable=True)
+    hold_reason    = Column(String(300),       nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_listen_script_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoListenScriptLine(Base) :
+    """지문의 줄 — 원장 n3_listen_script_line.json · 1810행 · 부모 ko_listen_script"""
+    __tablename__  = "ko_listen_script_line"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    script_item_id = Column(String(24),        nullable=True)
+    ledger_id      = Column(Integer,           nullable=True)
+    script_id      = Column(Integer,           nullable=True)
+    seq            = Column(Integer,           nullable=True)
+    speaker        = Column(String(20),        nullable=True)
+    gender         = Column(String(20),        nullable=True)
+    text           = Column(Text,              nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(200),       nullable=True)
+    hold_reason    = Column(String(50),        nullable=True)
+    voice          = Column(String(20),        nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_listen_script_line_ch", "book_id", "chapter_seq"),
+        Index("ix_ko_listen_script_line_parent", "script_item_id"),
+    )
+
+
+class KoListenQuestion(Base) :
+    """듣기 문항 — 원장 n3_listen_repeat.json · 678행 · 부모 ko_listen_script"""
+    __tablename__  = "ko_listen_question"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    script_item_id = Column(String(24),        nullable=True)
+    ledger_id      = Column(Integer,           nullable=True)
+    script_id      = Column(Integer,           nullable=True)
+    seq            = Column(Integer,           nullable=True)
+    instruction    = Column(String(50),        nullable=True)
+    question       = Column(String(200),       nullable=True)
+    type           = Column(String(20),        nullable=True)
+    selection1     = Column(String(100),       nullable=True)
+    selection2     = Column(String(100),       nullable=True)
+    selection3     = Column(String(100),       nullable=True)
+    selection4     = Column(String(100),       nullable=True)
+    selection1_image = Column(String(50),        nullable=True)
+    selection2_image = Column(String(50),        nullable=True)
+    selection3_image = Column(String(50),        nullable=True)
+    selection4_image = Column(String(50),        nullable=True)
+    answer_index   = Column(Integer,           nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(500),       nullable=True)
+    hold_reason    = Column(String(300),       nullable=True)
+    instruction_ko = Column(String(50),        nullable=True)
+    instruction_en = Column(String(100),       nullable=True)
+    instruction_jp = Column(String(50),        nullable=True)
+    instruction_cn = Column(String(50),        nullable=True)
+    instruction_vi = Column(String(200),       nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_listen_question_ch", "book_id", "chapter_seq"),
+        Index("ix_ko_listen_question_parent", "script_item_id"),
+    )
+
+
+class KoBlankQuestion(Base) :
+    """빈칸 채우기 — 원장 n4_blank_question.json · 836행"""
+    __tablename__  = "ko_blank_question"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    ledger_id      = Column(Integer,           nullable=True)
+    question       = Column(String(200),       nullable=True)
+    selections     = Column(String(50),        nullable=True)
+    answer         = Column(String(50),        nullable=True)
+    completion     = Column(String(200),       nullable=True)
+    grammar_focus  = Column(String(300),       nullable=True)
+    grammar_focus_revised = Column(String(200),       nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(500),       nullable=True)
+    hold_reason    = Column(String(50),        nullable=True)
+    instruction_ko = Column(String(50),        nullable=True)
+    instruction_en = Column(String(50),        nullable=True)
+    instruction_jp = Column(String(50),        nullable=True)
+    instruction_cn = Column(String(50),        nullable=True)
+    instruction_vi = Column(String(100),       nullable=True)
+    grammar_tag    = Column(String(50),        nullable=True)
+    distractor_type = Column(String(20),        nullable=True)
+    selection1     = Column(String(50),        nullable=True)
+    selection2     = Column(String(50),        nullable=True)
+    selection3     = Column(String(20),        nullable=True)
+    selection4     = Column(String(50),        nullable=True)
+    answer_index   = Column(Integer,           nullable=True)
+    answer_text    = Column(String(50),        nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_blank_question_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoReadText(Base) :
+    """읽기 지문 — 원장 n5_read_answer_text.json · 117행"""
+    __tablename__  = "ko_read_text"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    ledger_id      = Column(Integer,           nullable=True)
+    type           = Column(String(20),        nullable=True)
+    text           = Column(Text,              nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(Integer,           nullable=True)
+    change_note    = Column(Text,              nullable=True)
+    hold_reason    = Column(String(50),        nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_read_text_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoReadQuestion(Base) :
+    """읽기 문항 — 원장 n5_read_answer_questions.json · 383행 · 부모 ko_read_text"""
+    __tablename__  = "ko_read_question"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    text_item_id   = Column(String(24),        nullable=True)
+    ledger_id      = Column(Integer,           nullable=True)
+    text_id        = Column(Integer,           nullable=True)
+    seq            = Column(Integer,           nullable=True)
+    question       = Column(String(200),       nullable=True)
+    type           = Column(String(20),        nullable=True)
+    selection1     = Column(String(100),       nullable=True)
+    selection2     = Column(String(100),       nullable=True)
+    selection3     = Column(String(100),       nullable=True)
+    selection4     = Column(String(100),       nullable=True)
+    answer_index   = Column(Integer,           nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(300),       nullable=True)
+    hold_reason    = Column(String(50),        nullable=True)
+    instruction_ko = Column(String(50),        nullable=True)
+    instruction_en = Column(String(100),       nullable=True)
+    instruction_jp = Column(String(50),        nullable=True)
+    instruction_cn = Column(String(50),        nullable=True)
+    instruction_vi = Column(String(200),       nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_read_question_ch", "book_id", "chapter_seq"),
+        Index("ix_ko_read_question_parent", "text_item_id"),
+    )
+
+
+class KoFlashcardSet(Base) :
+    """플래시카드 세트 — 원장 n6_flashcard.json · 117행"""
+    __tablename__  = "ko_flashcard_set"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    set_title      = Column(String(50),        nullable=True)
+    card_count     = Column(Integer,           nullable=True)
+    source         = Column(String(50),        nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(300),       nullable=True)
+    hold_reason    = Column(String(100),       nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_flashcard_set_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoFlashcardCard(Base) :
+    """카드 — 원장 n6_flashcard_card.json · 2329행 · 부모 ko_flashcard_set"""
+    __tablename__  = "ko_flashcard_card"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    set_item_id    = Column(String(50),        nullable=True)
+    seq            = Column(Integer,           nullable=True)
+    word           = Column(String(50),        nullable=True)
+    meaning_en     = Column(String(100),       nullable=True)
+    meaning_jp     = Column(String(50),        nullable=True)
+    meaning_cn     = Column(String(50),        nullable=True)
+    meaning_vi     = Column(String(100),       nullable=True)
+    image          = Column(String(100),       nullable=True)
+    image_note     = Column(String(100),       nullable=True)
+    legacy_id      = Column(String(20),        nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    change_note    = Column(String(20),        nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_flashcard_card_ch", "book_id", "chapter_seq"),
+        Index("ix_ko_flashcard_card_parent", "set_item_id"),
+    )
+
+
+class KoMissionChat(Base) :
+    """미션 대화 — 원장 n7_mission_chat.json · 117행"""
+    __tablename__  = "ko_mission_chat"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    scenario_title = Column(String(100),       nullable=True)
+    situation_ko   = Column(String(100),       nullable=True)
+    situation_en   = Column(String(200),       nullable=True)
+    situation_jp   = Column(String(100),       nullable=True)
+    situation_cn   = Column(String(50),        nullable=True)
+    situation_vi   = Column(String(200),       nullable=True)
+    mission_detail = Column(String(500),       nullable=True)
+    mission_prime_ko = Column(Text,              nullable=True)
+    ai_persona_prompt = Column(Text,              nullable=True)
+    ai_first_line  = Column(String(200),       nullable=True)
+    target_grammar = Column(String(500),       nullable=True)
+    level          = Column(String(20),        nullable=True)
+    content_img    = Column(String(100),       nullable=True)
+    video_refs     = Column(String(100),       nullable=True)
+    legacy_id      = Column(String(20),        nullable=True)
+    module_code    = Column(String(20),        nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(Text,              nullable=True)
+    hold_reason    = Column(String(50),        nullable=True)
+    ai_gender      = Column(String(20),        nullable=True)
+    ai_role        = Column(String(50),        nullable=True)
+    user_role      = Column(String(50),        nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_mission_chat_ch", "book_id", "chapter_seq"),
+    )
+
+
+class KoJamo(Base) :
+    """자모 — 원장 n8_jamo.json · 529행"""
+    __tablename__  = "ko_jamo"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    jamo_group     = Column(String(100),       nullable=True)
+    activity_sub   = Column(String(50),        nullable=True)
+    target_jamo    = Column(String(20),        nullable=True)
+    target_word    = Column(String(20),        nullable=True)
+    word_refs      = Column(String(20),        nullable=True)
+    instruction    = Column(String(50),        nullable=True)
+    problem_type   = Column(String(20),        nullable=True)
+    choice_1       = Column(String(50),        nullable=True)
+    answer_1       = Column(String(20),        nullable=True)
+    choice_2       = Column(String(50),        nullable=True)
+    answer_2       = Column(String(20),        nullable=True)
+    choice_3       = Column(String(50),        nullable=True)
+    answer_3       = Column(String(20),        nullable=True)
+    pronunciation  = Column(String(20),        nullable=True)
+    content_img    = Column(String(100),       nullable=True)
+    content_vid    = Column(String(100),       nullable=True)
+    content_sound  = Column(String(100),       nullable=True)
+    legacy_id      = Column(String(20),        nullable=True)
+    module_code    = Column(String(20),        nullable=True)
+    scene_num      = Column(String(20),        nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    source_page    = Column(String(50),        nullable=True)
+    change_note    = Column(String(200),       nullable=True)
+    hold_reason    = Column(String(50),        nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_jamo_ch", "book_id", "chapter_seq"),
+    )
