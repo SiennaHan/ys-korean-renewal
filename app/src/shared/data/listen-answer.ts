@@ -1,7 +1,4 @@
 import type { InstructedItem } from "./instruction";
-import listenData from "./n3_listen_repeat.json";
-import scriptData from "./n3_listen_script.json";
-import lineData from "./n3_listen_script_line.json";
 
 export interface ListenScript {
 	id: number;
@@ -44,25 +41,30 @@ export interface ListenQuestion extends InstructedItem {
 	answer_index: number;
 }
 
-export const listenScriptList: ListenScript[] = scriptData as ListenScript[];
-export const listenScriptLineList: ListenScriptLine[] =
-	lineData as ListenScriptLine[];
-export const listenQuestionList: ListenQuestion[] =
-	listenData as ListenQuestion[];
+/*
+ * **번들의 배열 셋을 걷었다**(2026-08-31 · DEV-05). 듣기는 지문·줄·문항 **표 셋**을
+ * 쓰는 가장 복잡한 활동인데, 서버가 그 셋을 한 묶음으로 준다
+ * (`useChapterContent(bookId, chapterSeq, "listen-answer")` → `scripts`·`lines`·`questions`).
+ *
+ * 아래 함수들은 **거르고 정렬하는 일만** 한다 — 그 과의 것만 오므로 급·과로 거를
+ * 것이 없다. 순수 함수가 되어 시험하기도 쉬워졌다.
+ */
 
-/** 특정 book/chapter에 해당하는 듣기 문제 목록 (script_id, seq 순) */
+/** 듣기 문제를 지문·순서대로 세운다 */
 export function getListenQuestions(
-	bookId: number,
-	chapter: number,
+	questions: ListenQuestion[],
 ): ListenQuestion[] {
-	return listenQuestionList
-		.filter((q) => q.book_id === bookId && q.chapter === chapter)
-		.sort((a, b) => a.script_id - b.script_id || a.seq - b.seq);
+	return [...questions].sort(
+		(a, b) => a.script_id - b.script_id || a.seq - b.seq,
+	);
 }
 
-/** 특정 지문의 발화 라인 목록 (seq 순) */
-export function getScriptLines(scriptId: number): ListenScriptLine[] {
-	return listenScriptLineList
+/** 그 지문의 발화 줄 (seq 순) */
+export function getScriptLines(
+	lines: ListenScriptLine[],
+	scriptId: number,
+): ListenScriptLine[] {
+	return lines
 		.filter((l) => l.script_id === scriptId)
 		.sort((a, b) => a.seq - b.seq);
 }

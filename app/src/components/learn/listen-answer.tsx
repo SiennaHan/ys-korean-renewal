@@ -23,16 +23,21 @@ import {
 	ResultScreen,
 } from "@/components/main/activity";
 import { useActivityState } from "@/hooks/use-activity-state";
+import {
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
 import { useInstruction } from "@/shared/data/instruction";
 import {
 	type ListenQuestion,
+	type ListenScriptLine,
 	getListenQuestions,
 	getQuestionImagePath,
 	getScriptLines,
 } from "@/shared/data/listen-answer";
 import { nextLessonActivity } from "@/shared/lesson-flow";
 import { useManifest } from "@/shared/store/manifest-store";
-import { useNavigate, useRouter } from "@tanstack/react-router";
+import { Navigate, useNavigate, useRouter } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -209,12 +214,24 @@ export default function ListenAnswer({
 	/** 헤더 → 로 넘긴 문항 — shell_spec §23·§28 */
 	const [skipped, setSkipped] = useState<number[]>([]);
 
+	/**
+	 * **지문·줄·문항 표 셋이 한 묶음으로 온다**(2026-08-31 · DEV-05).
+	 * 활동 중 표를 가장 많이 쓰는 자리다.
+	 */
+	const { bundle, state: contentState } = useChapterContent(
+		bookId,
+		chapterSeq,
+		"listen-answer",
+	);
+	const scriptLines = useMemo(
+		() => rowsOf<ListenScriptLine>(bundle, "lines"),
+		[bundle],
+	);
 	const questions = useMemo(() => {
-		const all =
-			bookId && chapterSeq ? getListenQuestions(bookId, chapterSeq) : [];
+		const all = getListenQuestions(rowsOf<ListenQuestion>(bundle, "questions"));
 		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
 		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
-	}, [bookId, chapterSeq, retryOnly]);
+	}, [bundle, retryOnly]);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -413,11 +430,13 @@ export default function ListenAnswer({
 		try {
 			let urls = audioUrls[question.id];
 			if (!urls) {
-				const lines = getScriptLines(question.script_id).map((line) => ({
-					text: line.text,
-					speaker: line.speaker,
-					voice: line.voice,
-				}));
+				const lines = getScriptLines(scriptLines, question.script_id).map(
+					(line) => ({
+						text: line.text,
+						speaker: line.speaker,
+						voice: line.voice,
+					}),
+				);
 				const fetched = await getListenAudio(lines);
 				if (!fetched) return;
 				urls = fetched;
@@ -428,7 +447,9 @@ export default function ListenAnswer({
 			// 새 재생이 시작됐다면(더 큰 myId) 스피너 상태를 건드리지 않음
 			if (playSeqRef.current === myId) setIsPlaying(false);
 		}
-	}, [question, sharedAudio, audioUrls]);
+		// **`scriptLines` 는 서버에서 늦게 온다.** 빼면 이 콜백이 빈 줄 목록으로
+		// 굳어 음원 URL 을 못 만든다 — biome 이 짚어 줬다(2026-08-31)
+	}, [question, sharedAudio, audioUrls, scriptLines]);
 
 	/** 페이지 전환 시 재생 중단 + 자동 재생 */
 	// biome-ignore lint/correctness/useExhaustiveDependencies: auto-play on question change
@@ -565,6 +586,13 @@ export default function ListenAnswer({
 		);
 	}
 
+	if (contentState === "loading") {
+		return <div className="h-full bg-white" />;
+	}
+	/* 잠긴 과는 자물쇠가 사는 교재 목록으로 — 형제 활동들과 같다 */
+	if (contentState === "locked") {
+		return <Navigate to="/main/textbook" replace />;
+	}
 	if (!question) {
 		return (
 			<FailedScreen
