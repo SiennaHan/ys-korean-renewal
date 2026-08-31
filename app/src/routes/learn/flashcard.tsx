@@ -9,11 +9,16 @@ import FlashcardResult from "@/components/learn/flashcard-result";
 import { FlashcardScreen, LoadingScreen } from "@/components/main/activity";
 import { env } from "@/config/env";
 import { useActivityState } from "@/hooks/use-activity-state";
-import { flashcards } from "@/shared/data/flashcard";
+import {
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
+import { type FlashcardSet, setNumericId } from "@/shared/data/flashcard";
 import {
 	type FlashcardWord,
-	flashcard_words,
+	type RawCard,
 	meaningFor,
+	toFlashcardWords,
 } from "@/shared/data/flashcard_word";
 import {
 	useFlashcardBookIdStore,
@@ -21,6 +26,7 @@ import {
 } from "@/shared/store/menu-store";
 import { getWordTTSAudio } from "@/shared/tts-cache";
 import {
+	Navigate,
 	createFileRoute,
 	useNavigate,
 	useRouter,
@@ -33,7 +39,7 @@ import {
 	useTransform,
 } from "framer-motion";
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type LearnSearch, parseLearnSearch } from "./-search";
 
@@ -59,10 +65,23 @@ const FLY_OUT_DISTANCE = 500;
 function RouteComponent() {
 	const { t, i18n } = useTranslation();
 	const { level, lesson } = Route.useSearch();
-	const flashcardId = Number(
-		flashcards.find((f) => f.book_id === level && f.chapter === lesson)?.id ??
-			0,
+	/**
+	 * **세트와 카드가 서버에서 온다**(2026-08-31 · DEV-05).
+	 *
+	 * 세트 번호는 급·과에서 계산한다 — 서버 표에 그런 열이 없고, 학습자 기록
+	 * (`ko_user_flashcard*`)이 이미 그 값을 쓰고 있다.
+	 */
+	const { bundle, state: contentState } = useChapterContent(
+		level,
+		lesson,
+		"flashcard",
 	);
+	const flashcardId = level && lesson ? setNumericId(level, lesson) : 0;
+	const allCards = useMemo(
+		() => toFlashcardWords(rowsOf<RawCard>(bundle, "cards")),
+		[bundle],
+	);
+	const flashcardModule = rowsOf<FlashcardSet>(bundle, "sets")[0];
 
 	const navigate = useNavigate();
 	const [phase, setPhase] = useState<"cards" | "result">("cards");
@@ -83,8 +102,6 @@ function RouteComponent() {
 		"new" | "repeat" | "complete"
 	>("new");
 	const [cardData, setCardData] = useState<FlashcardWord[]>([]);
-
-	const flashcardModule = flashcards.find((item) => item.id === flashcardId);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [knownWords, setKnownWords] = useState<string[]>([]);
@@ -252,12 +269,17 @@ function RouteComponent() {
 		return () => sharedAudio.stop();
 	}, [sharedAudio]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: 처음 한 번과 runKey 가 바뀔 때만 읽는다 — 나머지가 바뀌는 경우는 라우트 재마운트라 넣으면 같은 요청을 두 번 낸다
+	// biome-ignore lint/correctness/useExhaustiveDependencies: runKey 와 카드 도착만 방아쇠다 — 나머지가 바뀌는 경우는 라우트 재마운트라 넣으면 같은 요청을 두 번 낸다
 	useEffect(() => {
+		/*
+		 * **카드가 서버에서 오므로 도착을 기다린다**(2026-08-31 · DEV-05).
+		 * 전에는 번들이라 첫 실행에 이미 있었다. 그대로 두었더니 카드 0장으로
+		 * 결과 화면이 곧장 떴다 — 눌러 보고 찾았다.
+		 */
+		if (allCards.length === 0) return;
 		const fetchData = async () => {
-			const _cardData =
-				flashcard_words.filter((item) => item.flashcard_id === flashcardId) ??
-				[];
+			// 서버가 그 과의 카드만 준다 — 세트로 거를 것이 없다(DEV-05)
+			const _cardData = allCards;
 			setCardData(_cardData);
 			setDeckSize(_cardData.length || null);
 
@@ -304,7 +326,7 @@ function RouteComponent() {
 		};
 		fetchData();
 		// runKey 가 바뀌면 다시 읽는다 — 결과에서 "다시" 로 돌아온 경우다
-	}, [runKey]);
+	}, [runKey, allCards]);
 
 	/*
 	 * 결과로 넘어갈 때 한 번 완료를 알린다.
@@ -322,10 +344,23 @@ function RouteComponent() {
 		});
 	}, [phase, knownWords.length, unknownWords.length, complete]);
 
+	/*
+	 * 콘텐츠가 서버에서 오면서 생긴 갈래(2026-08-31 · DEV-05).
+	 * 잠긴 과는 자물쇠가 사는 교재 목록으로 — 형제 활동들과 같다.
+	 */
+	if (contentState === "loading") {
+		return <div className="h-full bg-white" />;
+	}
+	if (contentState === "locked") {
+		return <Navigate to="/main/textbook" replace />;
+	}
+
 	if (phase === "result") {
 		return (
 			<FlashcardResult
 				flashcardId={flashcardId}
+				set={flashcardModule}
+				cards={allCards}
 				knownIds={knownWords}
 				unknownIds={unknownWords}
 				onClose={() => navigate({ to: "/main/textbook" })}

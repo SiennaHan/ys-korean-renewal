@@ -13,7 +13,6 @@
  * 그대로 쓰고, 새 카드는 원장 item_id(FCW-3-1-001)를 쓴다.
  */
 import { setNumericId } from "./flashcard";
-import raw from "./n6_flashcard_card.json";
 
 export interface FlashcardWord {
 	flashcard_id: number;
@@ -30,7 +29,7 @@ export interface FlashcardWord {
 	sound_eng: string;
 }
 
-interface RawCard {
+export interface RawCard {
 	item_id: string;
 	book_id: number;
 	chapter: number;
@@ -43,7 +42,15 @@ interface RawCard {
 	legacy_id: string;
 }
 
-export const flashcard_words: FlashcardWord[] = (raw as RawCard[]).map((c) => ({
+/**
+ * 서버가 준 카드를 화면이 쓰는 모양으로 옮긴다.
+ *
+ * **전에는 번들 전체를 이 모양으로 미리 만들어 두었다**(2026-08-31 · DEV-05).
+ * `id` 가 `legacy_id || item_id` 인 것은 그대로다 — 학습자의 「알아요/몰라요」가
+ * 그 값으로 저장되어 있다(`ko_user_flashcard_word.card_id`).
+ */
+export function toFlashcardWords(cards: RawCard[]): FlashcardWord[] {
+	return cards.map((c) => ({
 	flashcard_id: setNumericId(c.book_id, c.chapter),
 	module_code: "",
 	id: c.legacy_id || c.item_id,
@@ -56,6 +63,7 @@ export const flashcard_words: FlashcardWord[] = (raw as RawCard[]).map((c) => ({
 	sound_kor: "",
 	sound_eng: "",
 }));
+}
 
 /**
  * i18n 언어 코드로 뜻을 고른다.

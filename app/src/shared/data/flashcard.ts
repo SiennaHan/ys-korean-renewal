@@ -10,7 +10,6 @@
  * 다른 세트를 가리키면 안 된다. 새 세트는 `급*100 + 과` 로 준다(201~815).
  * 둘은 겹치지 않는다.
  */
-import raw from "./n6_flashcard.json";
 
 export interface FlashcardSet {
 	id: number;
@@ -39,10 +38,9 @@ export function setNumericId(bookId: number, chapter: number): number {
 	return bookId * 100 + chapter;
 }
 
-export const flashcards: FlashcardSet[] = (raw as RawSet[]).map((s) => ({
-	id: setNumericId(s.book_id, s.chapter),
-	book_id: s.book_id,
-	chapter: s.chapter,
-	title: s.set_title,
-	card_count: s.card_count,
-}));
+/*
+ * **번들의 배열을 걷었다**(2026-08-31 · DEV-05). 세트는 서버에서 온다 —
+ * `useChapterContent(bookId, chapterSeq, "flashcard")` 가 `sets`·`cards` 를 같이 준다.
+ * `setNumericId` 는 남는다 — **세트 번호는 급·과에서 계산하는 값**이고
+ * 학습자 기록(`ko_user_flashcard*`)이 그 값을 쓴다.
+ */

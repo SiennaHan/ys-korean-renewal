@@ -10,12 +10,8 @@ import {
 	Dock,
 	PrimaryButton,
 } from "@/components/main/activity";
-import { flashcards } from "@/shared/data/flashcard";
-import {
-	type FlashcardWord,
-	flashcard_words,
-	meaningFor,
-} from "@/shared/data/flashcard_word";
+import type { FlashcardSet } from "@/shared/data/flashcard";
+import { type FlashcardWord, meaningFor } from "@/shared/data/flashcard_word";
 import { useSelectedCardTypeStore } from "@/shared/store/menu-store";
 import { type CSSProperties, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,12 +25,18 @@ import { useTranslation } from "react-i18next";
  */
 export default function FlashcardResult({
 	flashcardId,
+	set,
+	cards,
 	knownIds,
 	unknownIds,
 	onClose,
 	onRetry,
 }: {
 	flashcardId: number;
+	/** 그 과의 세트. 서버에서 온 것을 부모가 넘긴다 */
+	set?: FlashcardSet;
+	/** 그 과의 카드 전부 */
+	cards: FlashcardWord[];
 	/** 방금 끝낸 세션의 판정. 서버 반영을 기다리지 않고 결과에 즉시 쓴다. */
 	knownIds?: string[];
 	unknownIds?: string[];
@@ -55,9 +57,12 @@ export default function FlashcardResult({
 	const [knownWords, setKnownWords] = useState<FlashcardWord[]>([]);
 	const [unknownWords, setUnknownWords] = useState<FlashcardWord[]>([]);
 
-	const currentCard = flashcards.find((item) => item.id === flashcardId);
-	const cardData =
-		flashcard_words.filter((item) => item.flashcard_id === flashcardId) ?? [];
+	/**
+	 * **세트와 카드를 부모가 넘긴다**(2026-08-31 · DEV-05).
+	 * 전에는 번들 전체에서 `flashcardId` 로 찾았다 — 지금은 그 과의 것만 온다.
+	 */
+	const currentCard = set;
+	const cardData = cards;
 
 	const onCloseSheet = () => {
 		setIsOpenSheet(false);
