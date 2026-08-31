@@ -129,12 +129,82 @@ def table_columns(conn) -> dict[str, set[str]]:
     return cols
 
 
+
+# 그 행이 무엇인지 말해 주는 열. **번호가 밀렸는지 보려면 내용을 봐야 한다**
+IDENTITY = {
+    "ko_word": "word", "ko_word_quiz": "prompt", "ko_roleplay_turn": "ko",
+    "ko_listen_script": "audio_text", "ko_listen_script_line": "text",
+    "ko_listen_question": "question", "ko_blank_question": "question",
+    "ko_read_text": "text", "ko_read_question": "question",
+    "ko_flashcard_set": "set_title", "ko_flashcard_card": "word",
+    "ko_mission_chat": "scenario_title", "ko_jamo": "target_word",
+}
+
+
+def check_renumber(data: dict[str, list[dict]], eng) -> int:
+    """**같은 `item_id` 가 딴 것을 가리키게 됐는지** 본다.
+
+    원장의 `item_id` 는 `FCW-3-12-004` 처럼 **과 안의 자리 번호**다. 그래서
+    가운데 행을 지우면 **그 뒤가 전부 한 칸씩 밀린다** — 2026-08-31 에 실제로 났다:
+    3급 12과에서 「면허증」을 지우자 `FCW-3-12-004` 가 「자가용」에서 「중고차」가 됐다.
+
+    `item_id` 로 upsert 하면 이것이 **조용히 덮어써진다.** 플래시카드는 채점을
+    안 해서 손해가 없었지만, 채점하는 시트에서 같은 일이 나면
+    `ko_learning_record.question_id` 와 `ko_review_queue` 가 **딴 문항을 가리킨다** —
+    맞힌 기록이 다른 문항에 붙는다.
+
+    **그렇다고 자동으로 막지는 않는다.** 문항을 다시 쓰는 것도 내용이 바뀌는 일이고
+    (v48 의 「읽기 오답 다시 쓰기」가 그랬다), 그건 정상이다. 둘을 기계가 못 가른다.
+    그래서 **세어서 보여 주고 사람이 정한다** — 과의 행 수가 줄었으면 밀림일 가능성이
+    높으므로 그것도 같이 찍는다.
+    """
+    from sqlalchemy import text
+    total = 0
+    for table, rows in data.items():
+        col = IDENTITY.get(table)
+        if not col:
+            continue
+        with eng.connect() as c:
+            try:
+                have = {r[0]: r[1] for r in c.execute(
+                    text(f"SELECT item_id, {col} FROM {table}"))}
+                counts = {(r[0], r[1]): r[2] for r in c.execute(text(
+                    f"SELECT book_id, chapter_seq, COUNT(*) FROM {table} "
+                    f"GROUP BY book_id, chapter_seq"))}
+            except Exception:
+                return 0                      # 표가 아직 없다 — 첫 씨딩이다
+        if not have:
+            continue
+        now_counts: dict[tuple, int] = {}
+        for r in rows:
+            k = (r.get("book_id"), r.get("chapter_seq"))
+            now_counts[k] = now_counts.get(k, 0) + 1
+        moved = [r for r in rows
+                 if r["item_id"] in have
+                 and str(r.get(col) or "") != str(have[r["item_id"]] or "")]
+        if not moved:
+            continue
+        shrunk = {k for k, n in counts.items() if now_counts.get(k, 0) < n}
+        hot = [r for r in moved if (r.get("book_id"), r.get("chapter_seq")) in shrunk]
+        total += len(moved)
+        print(f"\n!! {table}: 같은 item_id 가 딴 것을 가리킨다 — {len(moved)}개"
+              + (f" (그중 {len(hot)}개는 **행이 줄어든 과**라 번호 밀림일 수 있다)" if hot else ""))
+        for r in (hot or moved)[:6]:
+            print(f"     {r['item_id']}  {str(have[r['item_id']])[:20]!r}"
+                  f"  →  {str(r.get(col))[:20]!r}")
+        if len(hot or moved) > 6:
+            print(f"     … 외 {len(hot or moved) - 6}개")
+    return total
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="넣지 않고 다른 곳만 센다")
+    ap.add_argument("--force", action="store_true",
+                    help="번호가 밀린 것 같아도 그대로 넣는다 — 살펴본 뒤에만")
     args = ap.parse_args()
 
-    from sqlalchemy import text
+    from sqlalchemy import bindparam, text
     eng = engine()
     with eng.connect() as c:
         cols = table_columns(c)
@@ -153,6 +223,12 @@ def main() -> int:
                 return 2
             seen[k] = table
 
+    if not args.check:
+        moved = check_renumber(data, eng)
+        if moved and not args.force:
+            print("\n넣지 않았다. 살펴본 뒤 정말 맞으면 --force 로 다시 돌려라.")
+            return 2
+
     bad = 0
     for table, rows in data.items():
         keys = sorted(cols[table] - {"created_at", "updated_at"})
@@ -161,7 +237,14 @@ def main() -> int:
                 have = {r[0]: r for r in c.execute(
                     text(f"SELECT item_id, {', '.join(keys)} FROM {table}"))}
             miss = [r["item_id"] for r in rows if r["item_id"] not in have]
-            extra = set(have) - {r["item_id"] for r in rows}
+            # **원장에서 사라진 행은 남는 것이 정상이다** — 지우지 않고
+            # `review_status='deleted'` 로 표시한다(위 머리말). 그래서 남은 행 중
+            # 그 표시가 있는 것은 어긋남이 아니다. 처음엔 그것까지 세어 대조기가
+            # 자기 설계를 모르고 울었다(2026-08-31).
+            with eng.connect() as c:
+                dead = {r[0] for r in c.execute(text(
+                    f"SELECT item_id FROM {table} WHERE review_status='deleted'"))}
+            extra = (set(have) - {r["item_id"] for r in rows}) - dead
             diff = 0
             for r in rows:
                 got = have.get(r["item_id"])
@@ -190,8 +273,13 @@ def main() -> int:
             ids = {r["item_id"] for r in rows}
             gone = [x[0] for x in c.execute(text(f"SELECT item_id FROM {table}")) if x[0] not in ids]
             if gone:
-                c.execute(text(f"UPDATE {table} SET review_status='deleted' "
-                               f"WHERE item_id IN :ids"), {"ids": tuple(gone)})
+                # **`IN :ids` 에 튜플을 넘기면 안 된다** — SQLAlchemy 2.x 는
+                # `Python type tuple cannot be converted` 로 죽는다(2026-08-31 실측).
+                # 목록을 펼치는 바인드를 따로 만들어야 한다.
+                stmt_del = (text(f"UPDATE {table} SET review_status='deleted' "
+                                 f"WHERE item_id IN :ids")
+                            .bindparams(bindparam("ids", expanding=True)))
+                c.execute(stmt_del, {"ids": gone})
         print(f"  {table:<24} {len(rows):>5}행 넣음" + (f" · 사라진 {len(gone)}행 표시" if gone else ""))
 
     if args.check:

@@ -960,10 +960,9 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 245cc06
-     — 확인: model.py 에 교재 콘텐츠 표 13개가 끝에 붙었다(406줄). 이 절이 말하는 서버 표·
-       마이그레이션 목록은 그대로고, 대신 「model.py 440·480행」이 이미 딴 줄을
-       가리켜 줄 번호를 걷었다 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 58c2af1
+     — 확인: 교재 콘텐츠 표 13개와 그것을 읽는 repo·API 가 들어왔다(DEV-05). 이 절이 쥔
+       서버 표 목록과 마이그레이션 얘기는 그대로다 — 새 표는 DEV-05 카드가 쥔다 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1599,9 +1598,9 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 8031e54
-     — 확인: app/package.json 에서 aws-amplify 가 빠졌다(§14). 이 문서가 지키는 라우터
-       고정(1.136.8 둘 · devtools 캐럿)은 락파일을 다시 뽑고 세 개 다 그대로임을 확인했다 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 58c2af1
+     — 확인: app/src/api 에 content.ts 가 생겼다(교재 콘텐츠를 서버에서 받는다). 이 문서가
+       지키는 라우터 고정과 n8_jamo 는 손대지 않았다 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -3383,9 +3382,9 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 245cc06
-     — 확인: model.py 변경은 교재 콘텐츠 표 13개를 끝에 더한 것뿐이다. 이 절이 지키는
-       KoSignupCodeUse 의 user_id nullable 과 익명화 규칙은 손대지 않았다 -->
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 58c2af1
+     — 확인: model.py 변경은 교재 콘텐츠 표와 review_status 주석 정정뿐이다. 이 절이 지키는
+       탈퇴 익명화 규칙은 손대지 않았다 -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.
