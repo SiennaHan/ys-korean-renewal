@@ -12,9 +12,13 @@ import {
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { useActivityState } from "@/hooks/use-activity-state";
+import {
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
 import { type RoleplayTurn, getScenarios } from "@/shared/data/roleplay";
 import { getTTSAudio, prefetchTTSAudio } from "@/shared/tts-cache";
-import { useRouter } from "@tanstack/react-router";
+import { Navigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import {
 	Check,
@@ -68,9 +72,15 @@ export default function AiRoleplay({
 		return () => sharedAudio.stop();
 	}, [sharedAudio]);
 
+	/** 대사는 서버에서 온다(DEV-05) — 여기서는 시나리오로 묶기만 한다 */
+	const { bundle, state: contentState } = useChapterContent(
+		bookId,
+		chapterSeq,
+		"roleplay",
+	);
 	const scenarios = useMemo(
-		() => (bookId && chapterSeq ? getScenarios(bookId, chapterSeq) : []),
-		[bookId, chapterSeq],
+		() => getScenarios(rowsOf<RoleplayTurn>(bundle, "turns")),
+		[bundle],
 	);
 
 	const [scenarioIdx, setScenarioIdx] = useState(0);
@@ -516,6 +526,17 @@ export default function AiRoleplay({
 		});
 	}, [playState, hasNext, scenarios, spans, completedScenarios, complete]);
 
+	/*
+	 * 콘텐츠가 서버에서 오면서 생긴 갈래(2026-08-31 · DEV-05).
+	 * **잠긴 것과 아직 안 온 것과 정말 없는 것을 가른다** — 셋을 「데이터 없음」으로
+	 * 뭉뚱그리면 기다리는 중에도 없다고 말하게 된다.
+	 */
+	if (contentState === "loading") {
+		return <div className="h-full bg-white" />;
+	}
+	if (contentState === "locked") {
+		return <Navigate to="/main/textbook" replace />;
+	}
 	if (!scenario) {
 		return (
 			<div className="flex h-full flex-col items-center justify-center bg-white">

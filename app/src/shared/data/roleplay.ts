@@ -1,4 +1,3 @@
-import roleplayData from "./n2_ai_role_play.json";
 
 export interface RoleplayTurn {
 	id: number;
@@ -17,16 +16,17 @@ export interface RoleplayTurn {
 	vi: string;
 }
 
-export const roleplayList: RoleplayTurn[] = roleplayData as RoleplayTurn[];
-
-/** 특정 book/chapter에 해당하는 시나리오 목록 (scenario_id 기준 그룹핑) */
+/**
+ * 대사를 시나리오로 묶는다 (scenario_id 기준).
+ *
+ * **대사는 서버에서 온다**(2026-08-31 · DEV-05). 전에는 이 파일이 번들의
+ * `n2_ai_role_play.json` 을 통째로 들고 걸렀다. 지금은 **묶고 정렬하는 일만**
+ * 한다 — 그 과의 대사만 오므로 거를 것이 없다.
+ */
 export function getScenarios(
-	bookId: number,
-	chapter: number,
+	turns: RoleplayTurn[],
 ): { scenarioId: string; title: string; turns: RoleplayTurn[] }[] {
-	const filtered = roleplayList.filter(
-		(r) => r.book_id === bookId && r.chapter === chapter,
-	);
+	const filtered = turns;
 
 	const map = new Map<string, { title: string; turns: RoleplayTurn[] }>();
 	for (const turn of filtered) {
