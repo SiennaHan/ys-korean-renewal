@@ -960,7 +960,9 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 36c7830 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 8031e54
+     — 확인: 탈퇴가 「가리기」로 바뀌면서 model.py · repo_user.py 가 바뀌었다. §12·§13 이
+       그 판을 적은 절이고, 이 절(§6-b)의 마이그레이션 목록도 같이 늘렸다 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1596,9 +1598,9 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 2a9a3e2
-     — 확인: package.json 변경은 parity:activity 에 question-leak-check 를 이은 것뿐이다.
-       이 문서가 지키는 라우터 고정(1.136.8 둘 · devtools 캐럿)은 그대로다 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 8031e54
+     — 확인: app/package.json 에서 aws-amplify 가 빠졌다(§14). 이 문서가 지키는 라우터
+       고정(1.136.8 둘 · devtools 캐럿)은 락파일을 다시 뽑고 세 개 다 그대로임을 확인했다 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -3380,7 +3382,8 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 387caaa -->
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 8031e54
+     — 확인: 리베이스로 sha 만 바뀌었다 — 내용은 같은 커밋이다 -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.
@@ -3483,7 +3486,8 @@ DB 도 네트워크도 필요 없다. 다음에 표가 늘 때 같은 일이 또
 
 ## 13. 탈퇴가 「지운다」에서 「가리고 남긴다」로 바뀌었다 (2026-08-29)
 
-<!-- 관찰: api/business/user_withdraw.py, api/shared/withdrawal_scope.py, api/accepter/auth.py, api/persistence/repo_user.py, app/src/routes/my-withdraw.tsx @ 387caaa -->
+<!-- 관찰: api/business/user_withdraw.py, api/shared/withdrawal_scope.py, api/accepter/auth.py, api/persistence/repo_user.py, app/src/routes/my-withdraw.tsx @ 8031e54
+     — 확인: 리베이스로 sha 만 바뀌었다 — 내용은 같은 커밋이다 -->
 <!-- 왜: 「무엇이 남고 무엇이 가려지나」와 앱이 이용자에게 하는 약속을 그 다섯에서 읽고 적었다 -->
 
 **기획 확정 —** 탈퇴해도 계정과 학습 데이터를 지우지 않는다. 이름과 이메일만
@@ -3674,7 +3678,7 @@ DB 가 흔들릴 때 로그인한 사람 전부가 튕긴다).
 
 ---
 
-## 12. 디자인 토큰·CSS·biome 정리 — 확인된 상태
+## 15. 디자인 토큰·CSS·biome 정리 — 확인된 상태
 
 > **이 절에는 오래 번호가 없었다.** 989줄인데 인용할 이름이 없으니,
 > 필요한 사람이 가까운 번호를 찍어 가리켰다 — `CLAUDE.md` 가 여기를 두 번

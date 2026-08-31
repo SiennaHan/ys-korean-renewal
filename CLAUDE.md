@@ -29,10 +29,11 @@
 - **남은 것은 결제와 교재 콘텐츠 DB 이전 둘이다.** 결제는 코드 0줄이고 가격만
   정해졌다(월 6달러, 2026-08-28) — PG·통화·세금은 아직. 교재 문항은 여전히 앱
   번들이다(`dev_spec_v1` §16 의 5번)
-- **어드민에는 게이트가 없다.** `cd admin && pnpm typecheck` 가 통과하지 않고
-  (`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. **둘 다
-  리뉴얼 전부터다.** 그래서 어드민을 고칠 때는 앱과 달리 **검사가 아무것도 말해 주지
-  않는다** — 눌러서 확인해라. 남은 위험은 `developer_tasks.md` DEV-14
+- **어드민 게이트는 절반만 있다.** `cd admin && pnpm typecheck` 는 **이제 통과한다**
+  (2026-08-29 · 오류 열셋이 전부 아무도 안 쓰는 교실용 VocaShot 화면이었다 — `BLOCKERS.md` §14).
+  **`pnpm build` 는 여전히 유틸리티 CSS 를 안 낸다** — 소스가 `items-center` 를 쓰는데
+  산출물에 그 규칙이 없다(실측). 그래서 어드민 **모양**은 검사가 말해 주지 않는다 —
+  눌러서 확인해라. 남은 위험은 `developer_tasks.md` DEV-14
 - 개발자에게 넘길 묶음은 `docs/INDEX.md` §6 이 정한다
 
 ## 지금은 Phase 3 이다
@@ -108,7 +109,7 @@
 
 ```bash
 cd app && python3 scripts/build-content.py --check   # 콘텐츠 — CI 가 못 돈다(원장이 저장소에 없다)
-cd admin && pnpm typecheck                            # 어드민 — 통과하지 않아 CI 에 못 넣었다(DEV-14)
+cd admin && pnpm typecheck                            # 어드민 — 통과한다. CI 에는 아직 안 넣었다
 ```
 
 빠른 되먹임이 필요하면 손으로도 돌린다 —
@@ -187,7 +188,7 @@ cd admin && pnpm typecheck                            # 어드민 — 통과하�
 `biome check` 진단처럼 **숫자가 붙는 정리 작업**이 많다. 숫자를 목표로 잡으면
 **판단이 숫자에 끌려간다.** 시작 전에 규칙마다 "고친다 / 이유를 적어 재운다 /
 안 건드린다" 를 정해 두고 들어가라 — 만나서 정하면 헐거워진다.
-남은 것에 대한 표는 `BLOCKERS.md` §12 다.
+남은 것에 대한 표는 `BLOCKERS.md` §15 다.
 
 ## 검사기가 못 잡는 것을 알고 있어라
 
@@ -241,7 +242,7 @@ git log --format='%h %ci %s' -S'<그 값>' -- app/src
 git show <커밋> --unified=0 -- 'app/src/**/*.tsx' | grep -E '^[-+].*\}, \['
 ```
 
-사례와 실제 목록은 `BLOCKERS.md` §12, 어긴 기록은 `masterplan_v3.html` §16-b.
+사례와 실제 목록은 `BLOCKERS.md` §15, 어긴 기록은 `masterplan_v3.html` §16-b.
 
 ## 손대면 깨지는 것
 
