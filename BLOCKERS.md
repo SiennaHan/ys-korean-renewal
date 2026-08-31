@@ -960,9 +960,9 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 8793060
-     — 확인: repo_content 가 매니페스트를 화면 셈법에 맞추고, review_status='deleted' 인 행을
-       내보내지 않게 됐다. 이 절이 쥔 서버 표 목록과 마이그레이션 얘기는 그대로다 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 2f9e211
+     — 확인: repo_content 에 contentVersion 이 생겨 매니페스트가 판본을 같이 낸다(캐시를
+       언제 버릴지 정하는 값). 이 절이 쥔 서버 표 목록과 마이그레이션 얘기는 그대로다 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -1598,9 +1598,9 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 58c2af1
-     — 확인: app/src/api 에 content.ts 가 생겼다(교재 콘텐츠를 서버에서 받는다). 이 문서가
-       지키는 라우터 고정과 n8_jamo 는 손대지 않았다 -->
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 2f9e211
+     — 확인: 「유료 API 접근 제한: 아직 0곳」이 거짓이 됐다 — content 라우트가 requireChapter 를
+       지나 402 를 낸다. 그 줄을 고쳤다. 라우터 고정과 n8_jamo 는 손대지 않았다 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -1624,7 +1624,7 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 | 재시도 세션의 헛 전송 | 「다시 풀기」는 `activity/progress`·`complete` 를 안 보낸다(확인함). 그런데 `learning-record` 는 계속 보낸다 —<br>6문항 재시도에 12번. 서버가 첫 행을 안 덮으니(§6-c) 해롭진 않지만 **보낼 필요가 없는 것**이다. 화면이 `retry` 를 알므로 막을 수 있다 |
 | 로컬 보관 후 재전송 | `navigator.onLine` · 재전송 큐 0곳 |
 | 페이월 · 구매 복원 · 환불 · 만료 | 결제 안내 표시는 됐고 실제 결제·복원·환불은 0곳이다. **2026-08-26 에 정책이 확정됐다** — 구독 · 기간 단위 · 무료는 1급 1과(한글)+1급 4과+2급 1과+3급 1과 · 게임 둘 · 클립 전부(§07 의 1번·6번).<br>이제 막는 것은 결정이 아니라 **결제 계약과 코드**다. 승인된 결제 안내는 `docs/paywall_SOT.html` v1.1로 승격했다(2026-08-27). 개인 구독 CTA는 연결할 결제 화면이 없어 비활성이다 |
-| 유료 API 접근 제한 | **아직 0곳이다.** 앱에는 잠금이 생겼지만(2026-08-26) 그것은 **표시일 뿐**이다 — 콘텐츠를 내주는 라우트가 권한을 안 보므로 `/learn/word?level=5&lesson=3` 처럼 주소를 직접 치면 잠긴 과가 그대로 열린다. `api/entitlement.ts` 주석에도 적혀 있다. 막는 것은 서버의 일이고 결제와 같이 온다 |
+| 유료 API 접근 제한 | **2026-08-31 에 막혔다 — 결제보다 먼저 왔다.** 교재 문항이 서버로 갔고(`GET /content/{book}/{chapter}/{menuType}`) 그 라우트가 `requireChapter` 를 지난다. 주소를 직접 쳐도(`/learn/grammar?level=1&lesson=5`) **402 가 나고 목록으로 돌아간다**(눌러서 확인). 쓰기 넷은 그 전부터 막혀 있었다.<br>**다만 `dialog.ts`(미션대화 시나리오 117개 · 1.96MB)는 아직 번들에 있다** — `developer_tasks.md` DEV-05 의 경고 상자 |
 | ~~학생 자체 회원가입~~ | **됐다 (2026-08-27 · 9-a-4).** `routes/signup.tsx` · `POST /user/sign/up`. `qr.tsx` 는 유입 추적 그대로다 |
 | 비밀번호 재설정 메일 | 화면만 — §7 |
 
