@@ -7,6 +7,7 @@ import { LottieEffectProvider } from "@/components/effect/lottie-effect-provider
 import { SignProvider } from "@/components/sign/sign-provider";
 import ToastContainer from "@/components/toast/toast-container";
 import { ToastProvider } from "@/components/toast/toast-context";
+import { useFreeContentPrefetch } from "@/shared/content/prefetch-free";
 import {
 	type ErrorComponentProps,
 	Outlet,
@@ -26,6 +27,12 @@ function RootComponent() {
 	useEffect(() => {
 		sessionStorage.removeItem(CHUNK_RELOAD_KEY);
 	}, []);
+
+	/*
+	 * 무료 범위를 유휴 시간에 미리 받아 둔다 — 콘텐츠가 서버로 가면서 깨진
+	 * 오프라인을 메운다(DEV-05). 그리는 것이 없어 컴포넌트가 아니라 훅이다.
+	 */
+	useFreeContentPrefetch();
 
 	return (
 		<>

@@ -5,7 +5,7 @@
 
 ## 길이 둘이다 — 섞으면 안 된다
 
-  `manifest`   과별로 **몇 개인지만.** 본문 없음. 권한을 안 본다
+  `manifest`   과별로 **몇 개인지만** + 판본. 본문 없음. 권한을 안 본다
   `chapter`    본문. **`requireChapter` 를 지나야 온다**(accepter 가 건다)
 
 `manifest` 가 권한을 안 보는 것은 일부러다. 목록 화면이 **잠긴 과에도 자물쇠와
@@ -22,9 +22,17 @@ from persistence.database import sessionScope
 
 
 async def manifest():
-    """과별 활동 개수. 본문 없음 · 권한 없음."""
+    """과별 활동 개수 + **콘텐츠 판본.** 본문 없음 · 권한 없음.
+
+    판본을 여기 얹는 것은 **왕복을 늘리지 않으려고**다. 앱은 어차피 앱을 열 때
+    이것을 한 번 부르고, 판본이 달라졌으면 기기에 남은 본문 캐시를 버린다.
+    판본 전용 경로를 따로 두면 부르는 곳이 하나 더 늘 뿐 얻는 것이 없다.
+    """
     with sessionScope() as db:
-        return await repo_content.countAll(db), None
+        return {
+            "version": await repo_content.contentVersion(db),
+            "chapters": await repo_content.countAll(db),
+        }, None
 
 
 async def chapter(bookId: int, chapterSeq: int, menuType: str):

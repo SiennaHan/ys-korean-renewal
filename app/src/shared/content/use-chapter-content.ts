@@ -17,6 +17,9 @@
  * 권한이 바뀌면 기기에 남은 유료 과를 버려야 한다(PD-03). 도장은
  * `entitlement` 를 그대로 직렬화한 것이다 — 무엇이 어떻게 바뀌었는지 앱이
  * 따지지 않는다. 따지려면 판정을 한 벌 더 갖게 되고, 두 벌은 반드시 갈라진다.
+ *
+ * **그래서 권한이 오기 전에는 캐시를 읽지 않는다.** 도장을 맞출 수 없는 동안
+ * 읽으면 도장이 아무 일도 하지 않는 것과 같다 — 아래 효과의 주석을 봐라.
  */
 import {
 	type ContentBundle,
@@ -25,6 +28,7 @@ import {
 	getChapterContent,
 } from "@/api/content";
 import { useEntitlementStore } from "@/shared/store/entitlement-store";
+import { useManifestStore } from "@/shared/store/manifest-store";
 import { useEffect, useState } from "react";
 import { read, syncStamp, write } from "./cache";
 
@@ -41,7 +45,7 @@ export type ContentState = "loading" | "ready" | "locked" | "failed";
  */
 const inFlight = new Map<string, Promise<ContentBundle>>();
 
-function fetchOnce(
+export function fetchOnce(
 	bookId: number,
 	chapterSeq: number,
 	menuType: MenuType,
@@ -67,15 +71,48 @@ export function useChapterContent(
 	menuType: MenuType,
 ): ChapterContent {
 	const entitlement = useEntitlementStore((s) => s.entitlement);
+	const asked = useEntitlementStore((s) => s.asked);
+	const version = useManifestStore((s) => s.version);
 	const [bundle, setBundle] = useState<ContentBundle | null>(null);
 	const [state, setState] = useState<ContentState>("loading");
 
 	useEffect(() => {
 		if (bookId == null || chapterSeq == null) return;
 
-		// **도장을 먼저 맞춘다.** 권한이 바뀌었으면 옛 캐시를 여기서 버린다 —
-		// 캐시를 읽고 나서 버리면 이미 잠긴 과를 한 번 그려 버린다.
-		if (entitlement) syncStamp(JSON.stringify(entitlement));
+		// **권한이 오기 전에는 캐시를 읽지 않는다.**
+		//
+		// 전에는 `if (entitlement) syncStamp(…)` 로 도장만 맞추고 읽기는 조건 없이
+		// 했다. 그런데 `entitlement` 는 화면이 뜬 **뒤에** 오므로 첫 렌더에는 늘
+		// null 이었다 — 즉 **도장을 한 번도 안 맞춘 채 옛 캐시를 그렸다.** 학기가
+		// 끝난 학생이 새로고침 직후 유료 과를 한 번 볼 수 있었다(2026-08-31).
+		//
+		// 답이 온 뒤에 읽으면 그 구멍이 닫힌다. 효과는 entitlement 가 바뀔 때
+		// 다시 도니 여기서 기다려도 화면이 멈추지 않는다.
+		if (!asked) {
+			// **여기서 직접 부른다.** 이 훅은 스토어 값만 읽지 스스로 받아 오지
+			// 않았다 — 활동 화면에 `useEntitlement()` 를 쓰는 컴포넌트가 하나도
+			// 없으면 asked 가 영영 거짓이라 화면이 로딩에 갇힌다. `load()` 는
+			// asked·inFlight 를 스스로 보므로 여러 번 불러도 왕복은 한 번이다.
+			void useEntitlementStore.getState().load();
+			setState("loading");
+			return;
+		}
+		// **아는 갈래만 도장에 넘긴다.**
+		//
+		// 물어봤는데 entitlement 가 null 이면 **서버에 못 간 것**이다
+		// (`entitlement.ts` 는 실패를 null 로 낸다). 판본도 매니페스트가 실패하면
+		// 빈 문자열이다. 모르는 값을 「달라졌다」로 넘기면 서버가 잠깐 죽은 사이
+		// 오프라인 학습이 통째로 날아간다 — 오프라인에서 권한을 뺏을 수는 없다.
+		const parts: Record<string, string> = {};
+		if (entitlement) parts.ent = JSON.stringify(entitlement);
+		if (version) parts.ver = version;
+		syncStamp(parts);
+
+		// 판본은 매니페스트에서 온다. 목록을 거치지 않고 활동으로 바로 들어오면
+		// (옛 링크·새로고침) 아직 안 받았을 수 있어 여기서도 부른다 — `load()` 는
+		// 스스로 한 번만 나간다. **기다리지는 않는다**: 받으면 위 효과가 다시 돌아
+		// 그때 도장을 맞춘다. 여기서 기다리면 서버가 죽었을 때 오프라인이 막힌다.
+		void useManifestStore.getState().load();
 
 		const cached = read(bookId, chapterSeq, menuType);
 		if (cached) {
@@ -102,7 +139,7 @@ export function useChapterContent(
 			// 과를 빠르게 옮기면 늦게 온 응답이 새 화면을 덮어쓴다
 			alive = false;
 		};
-	}, [bookId, chapterSeq, menuType, entitlement]);
+	}, [bookId, chapterSeq, menuType, entitlement, asked, version]);
 
 	return { bundle, state };
 }

@@ -6,7 +6,7 @@
  *
  * ## 길이 둘이다
  *
- *   `getContentManifest()`  과별 **개수만.** 본문 없음 · 토큰 없이도 된다
+ *   `getContentManifest()`  과별 **개수만** + 콘텐츠 판본. 본문 없음 · 토큰 없이도 된다
  *   `getChapterContent()`   본문. 잠긴 과면 서버가 402 를 낸다
  *
  * 목록 화면은 잠긴 과에도 자물쇠와 「몇 문항」을 그려야 해서 개수가 필요하다.
@@ -40,6 +40,19 @@ export interface ChapterCounts {
 }
 
 /**
+ * 매니페스트 응답.
+ *
+ * `version` 은 서버 표 열셋의 `max(updated_at)` 이다 — **원장이 개정되면 달라지는
+ * 값**이고, 그것 말고는 앱이 아무 뜻도 부여하지 않는다(캐시를 버릴지만 정한다).
+ * 못 받았으면 빈 문자열이고, 그때는 캐시를 **건드리지 않는다** — 판본을 모르는
+ * 상태에서 버리면 서버가 잠깐 죽은 사이 오프라인 학습까지 날아간다.
+ */
+export interface ContentManifest {
+	version: string;
+	chapters: ChapterCounts[];
+}
+
+/**
  * 서버가 잠긴 과에 내는 답. 화면이 402 를 **다른 실패와 구별해야** 한다 —
  * 네트워크가 끊긴 것과 권한이 없는 것은 사용자에게 할 말이 다르다.
  */
@@ -50,10 +63,13 @@ export class ContentLockedError extends Error {
 	}
 }
 
-export async function getContentManifest(): Promise<ChapterCounts[]> {
-	const res = await api.get<ChapterCounts[]>("/content/manifest");
-	if (!res.result) return [];
-	return Array.isArray(res.data) ? res.data : [];
+export async function getContentManifest(): Promise<ContentManifest> {
+	const res = await api.get<ContentManifest>("/content/manifest");
+	const data = res.result ? res.data : undefined;
+	return {
+		version: typeof data?.version === "string" ? data.version : "",
+		chapters: Array.isArray(data?.chapters) ? data.chapters : [],
+	};
 }
 
 /**

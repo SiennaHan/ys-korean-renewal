@@ -15,7 +15,7 @@
  * 것은 곧 드러나지만, 수가 틀린 것은 아무도 모른다.
  */
 import {
-	type ChapterCounts,
+	type ContentManifest,
 	type MenuType,
 	getContentManifest,
 } from "@/api/content";
@@ -27,6 +27,11 @@ export type CountMap = Map<string, Partial<Record<MenuType, number>>>;
 
 interface ManifestState {
 	counts: CountMap;
+	/**
+	 * 콘텐츠 판본 — 서버 표의 `max(updated_at)`. **못 받았으면 빈 문자열**이고,
+	 * 그때 캐시를 버려선 안 된다(`content/cache.ts` 의 `syncStamp`).
+	 */
+	version: string;
 	/** 한 번 물어봤나. 실패해도 참이 된다 — 무한 재시도를 막는다 */
 	asked: boolean;
 	loading: boolean;
@@ -37,23 +42,24 @@ let inFlight: Promise<void> | null = null;
 
 export const useManifestStore = create<ManifestState>()((set) => ({
 	counts: new Map(),
+	version: "",
 	asked: false,
 	loading: false,
 	load: async () => {
 		if (inFlight) return inFlight;
 		inFlight = (async () => {
 			set({ loading: true });
-			let rows: ChapterCounts[] = [];
+			let got: ContentManifest = { version: "", chapters: [] };
 			try {
-				rows = await getContentManifest();
+				got = await getContentManifest();
 			} catch {
-				rows = [];
+				got = { version: "", chapters: [] };
 			}
 			const counts: CountMap = new Map();
-			for (const r of rows) {
+			for (const r of got.chapters) {
 				counts.set(`${r.bookId}:${r.chapterSeq}`, r.counts);
 			}
-			set({ counts, asked: true, loading: false });
+			set({ counts, version: got.version, asked: true, loading: false });
 			inFlight = null;
 		})();
 		return inFlight;

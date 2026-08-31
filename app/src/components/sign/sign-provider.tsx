@@ -13,6 +13,7 @@ import {
 	migrateGuestData,
 	signUpStudent,
 } from "@/api/sign";
+import { clearAll as clearContentCache } from "@/shared/content/cache";
 import { useEntitlementStore } from "@/shared/store/entitlement-store";
 import type React from "react";
 import {
@@ -103,6 +104,18 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		setIsLoading(true);
 		const response = await checkSign();
 		setIsSignedIn(response ?? false);
+		/*
+		 * **권한을 다시 받는다 — 로그인·가입과 같은 이유다.**
+		 *
+		 * 게스트 토큰은 방금 여기서 생겼다. 그 전에 `/entitlement` 를 부른 적이
+		 * 있으면(앱 셸의 미리받기가 앱을 열자마자 한 번 부른다) 토큰이 없어 401 이
+		 * 나고, 스토어는 `asked=true · entitlement=null` 로 굳는다. `load()` 는
+		 * `asked` 로 조기 반환하므로 **그 뒤로 게스트는 권한을 영영 못 받는다** —
+		 * 잠금이 아예 안 그려지고 무료 범위 미리받기도 안 돈다(2026-08-31 실측).
+		 *
+		 * 세 자리(로그인 · 가입 · 로그아웃)에만 있던 것이 빠져 있던 자리다.
+		 */
+		await useEntitlementStore.getState().reload();
 		setIsLoading(false);
 		return response ?? false;
 	}, []);
@@ -184,6 +197,15 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		removeAccessToken();
 		removeGuestId();
 		localStorage.removeItem("koreanUser");
+		/*
+		 * 받아 둔 교재 본문도 같이 버린다(PD-03).
+		 *
+		 * 권한 도장(`cache.ts` 의 syncStamp)만으로는 부족하다. 도장은 **다음에
+		 * 콘텐츠를 읽을 때** 맞춰 보는 것이라, 나간 뒤 서버에 못 닿으면 옛 도장이
+		 * 그대로 남아 유료 과가 이 기기에 계속 산다. 나가는 것은 기기 안에서
+		 * 끝나는 일이니 여기서 확실히 지운다.
+		 */
+		clearContentCache();
 		setUser(null);
 		setIsSignedIn(false);
 		/* 나가는 쪽도 마찬가지다 — 안 버리면 다음 사람이 남의 권한을 본다 */
@@ -198,6 +220,10 @@ export const SignProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	 * signOut 을 그대로 쓰지 않는 이유는 guestId 다. signOut 은 그것까지 지우는데,
 	 * 게스트 토큰이 만료돼 여기 온 경우 guestId 를 지우면 서버에 쌓인 그 사람의
 	 * 기록을 나중에 계정으로 옮길 길이 끊긴다.
+	 *
+	 * 같은 이유로 **콘텐츠 캐시도 여기서는 안 지운다.** 나간 것이 아니라 토큰만
+	 * 잃은 것이라 그 캐시는 여전히 같은 사람 것이다. 권한이 실제로 줄었으면
+	 * 도장(`cache.ts` 의 syncStamp)이 다음 읽기에서 버린다.
 	 */
 	useEffect(() => {
 		const onCleared = () => {

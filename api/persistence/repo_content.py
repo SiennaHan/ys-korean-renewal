@@ -83,6 +83,31 @@ async def findChapter(bookId: int, chapterSeq: int, menuType: str, db: Session) 
     return out
 
 
+async def contentVersion(db: Session) -> str:
+    """콘텐츠 판본 — **표 열셋의 `max(updated_at)`** 중 가장 나중 것.
+
+    기기에 남긴 캐시를 언제 버릴지 정하는 값이다. 앱은 이 문자열이 **달라졌다**
+    는 것만 보고 통째로 버린다 — 무엇이 바뀌었는지 따지지 않는다(도장과 같은 규칙).
+
+    **시각을 쓰는 이유.** 열셋 다 `ON UPDATE CURRENT_TIMESTAMP` 를 달고 있고
+    (`migration_textbook_content.sql`), 씨드는 `ON DUPLICATE KEY UPDATE` 라
+    **값이 실제로 달라진 행만** 시각이 움직인다. 그래서 씨드를 몇 번을 돌려도
+    원장이 그대로면 판본도 그대로다 — 판본이 흔들리면 캐시가 매번 날아간다.
+
+    지운 행(`review_status='deleted'`)도 **센다.** 그것도 학습자가 보는 것이
+    달라진 사건이라, 오히려 반드시 캐시를 버려야 하는 쪽이다.
+
+    표 목록을 따로 적지 않고 `BUNDLES` 에서 캔다 — 표가 늘면 여기도 저절로 는다.
+    """
+    models = {mdl for bundle in BUNDLES.values() for _, mdl, _ in bundle}
+    latest = None
+    for mdl in models:
+        got = db.query(func.max(mdl.updated_at)).scalar()
+        if got is not None and (latest is None or got > latest):
+            latest = got
+    return latest.isoformat() if latest is not None else ""
+
+
 async def countAll(db: Session) -> list[dict]:
     """과별로 **목록 화면이 그리는 수**를 낸다 — 본문은 주지 않는다.
 

@@ -1,6 +1,6 @@
 """교재 콘텐츠 — DEV-05
 
-  GET /content/manifest                          과별 활동 개수. **본문 없음 · 무인증**
+  GET /content/manifest                          과별 활동 개수 + 판본. **본문 없음 · 무인증**
   GET /content/{bookId}/{chapterSeq}/{menuType}  본문. 잠긴 과면 402
 
 **`manifest` 가 무인증인 것은 일부러다.** 목록 화면이 잠긴 과에도 자물쇠와
