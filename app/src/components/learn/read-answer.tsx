@@ -12,6 +12,7 @@ import {
 	Dock,
 	FailedScreen,
 	FeedbackMessage,
+	LoadingScreen,
 	Passage,
 	PrimaryButton,
 	ProblemCard,
@@ -19,12 +20,14 @@ import {
 	ResultScreen,
 } from "@/components/main/activity";
 import { useActivityState } from "@/hooks/use-activity-state";
+import {
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
-import readQuestions from "@/shared/data/n5_read_answer_questions.json";
-import readTexts from "@/shared/data/n5_read_answer_text.json";
 import { nextLessonActivity } from "@/shared/lesson-flow";
 import { useManifest } from "@/shared/store/manifest-store";
-import { useNavigate, useRouter } from "@tanstack/react-router";
+import { Navigate, useNavigate, useRouter } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -185,16 +188,19 @@ export default function ReadAnswer({
 	const { t } = useTranslation();
 	const sound = useSoundEffects();
 
-	/** 해당 book/chapter의 지문 */
-	const texts = useMemo(() => {
-		return (readTexts as ReadText[]).filter(
-			(t) =>
-				(bookId == null || t.book_id === bookId) &&
-				(chapterSeq == null || t.chapter === chapterSeq),
-		);
-	}, [bookId, chapterSeq]);
-
-	const textIds = useMemo(() => texts.map((t) => t.id), [texts]);
+	/**
+	 * **지문과 문항이 서버에서 온다**(2026-08-31 · DEV-05).
+	 *
+	 * 활동 하나가 표 둘을 쓰는 첫 사례다. **서버가 이미 부모로 묶어 준다** —
+	 * 그 과의 지문을 찾고 그 지문에 달린 문항만 낸다(`repo_content.BUNDLES`).
+	 * 그래서 여기서 `text_id` 로 조인하던 것이 없어졌다.
+	 */
+	const { bundle, state: contentState } = useChapterContent(
+		bookId,
+		chapterSeq,
+		"read-answer",
+	);
+	const texts = useMemo(() => rowsOf<ReadText>(bundle, "texts"), [bundle]);
 
 	/** 마지막 문항을 넘기면 결과 화면 */
 	const [phase, setPhase] = useState<"solving" | "result">("solving");
@@ -218,12 +224,13 @@ export default function ReadAnswer({
 
 	/** 해당 지문의 질문들 */
 	const questions = useMemo(() => {
-		const all = (readQuestions as ReadItem[])
-			.filter((q) => textIds.includes(q.text_id))
-			.sort((a, b) => a.seq - b.seq);
+		// 서버가 이미 그 과의 지문에 달린 것만 준다 — 순서만 맞춘다
+		const all = [...rowsOf<ReadItem>(bundle, "questions")].sort(
+			(a, b) => a.seq - b.seq,
+		);
 		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
 		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
-	}, [textIds, retryOnly]);
+	}, [bundle, retryOnly]);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -528,6 +535,20 @@ export default function ReadAnswer({
 		);
 	}
 
+	if (contentState === "loading") {
+		return (
+			<LoadingScreen
+				lesson={chapterLabel}
+				current={0}
+				total={0}
+				onExit={() => router.history.back()}
+			/>
+		);
+	}
+	/* 잠긴 과는 자물쇠가 사는 교재 목록으로 — fill-blank 와 같은 사정이다 */
+	if (contentState === "locked") {
+		return <Navigate to="/main/textbook" replace />;
+	}
 	if (!question || !passage) {
 		return (
 			<FailedScreen
