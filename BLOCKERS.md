@@ -901,7 +901,7 @@ pill 도 같은 값을 쓴다 — 둘이 같이 사라져야 한 신호로 읽�
 | `GET /review-queue` · `DELETE /review-queue/{id}` | **있다** — `api/accepter/review_queue_accepter.py` |
 | `POST /learning-record` | 있다 |
 | `GET /dashboard` | 있다 |
-| `ko_activity_state` · `ko_review_queue` 신설 | **있다** — `model.py` 440·480행 |
+| `ko_activity_state` · `ko_review_queue` 신설 | **있다** — `model.py` 의 `KoActivityState` · `KoReviewQueue`. **줄 번호는 적지 마라** — 전에 적어 둔 440·480행이 2026-08-31 에 이미 딴 줄이었다 |
 
 `api/business/` 에 리뉴얼용 모듈이 줄줄이 있다 — `entitlement` · `review_queue` ·
 `activity_state` · `learning_record` · `user_withdraw` · `dashboard`. 라우터는 28개다.
@@ -960,9 +960,10 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 8031e54
-     — 확인: 탈퇴가 「가리기」로 바뀌면서 model.py · repo_user.py 가 바뀌었다. §12·§13 이
-       그 판을 적은 절이고, 이 절(§6-b)의 마이그레이션 목록도 같이 늘렸다 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 245cc06
+     — 확인: model.py 에 교재 콘텐츠 표 13개가 끝에 붙었다(406줄). 이 절이 말하는 서버 표·
+       마이그레이션 목록은 그대로고, 대신 「model.py 440·480행」이 이미 딴 줄을
+       가리켜 줄 번호를 걷었다 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -3382,8 +3383,9 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 8031e54
-     — 확인: 리베이스로 sha 만 바뀌었다 — 내용은 같은 커밋이다 -->
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 245cc06
+     — 확인: model.py 변경은 교재 콘텐츠 표 13개를 끝에 더한 것뿐이다. 이 절이 지키는
+       KoSignupCodeUse 의 user_id nullable 과 익명화 규칙은 손대지 않았다 -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.

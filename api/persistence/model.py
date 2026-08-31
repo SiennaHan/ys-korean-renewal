@@ -617,8 +617,11 @@ class KoReviewQueue(Base) :
 # n1_word_list 에서 124행이 0 이라 열쇠가 못 되고, `ledger_id` 로 따로 보관한다
 # (`ko_learning_record.question_id` 가 그 값이다).
 #
-# **`review_status` 는 앱에 내보내지 않는다.** 서버가 노출을 거르는 데 쓴다
-# (DEV-07/PD-05). 갈래가 16종이고 지금 `reviewed` 는 8.3% 뿐이다.
+# **`review_status` 는 앱에 내보내지 않는다.** 다만 **이 열로 게이트를 걸면 안 된다** —
+# 실제 검수 상태가 아니다. 2026-08-31 에 확인했다: 어제 다시 쓴 n4 문항 셋
+# (id 324·327·329)이 아직 `tagged_v20` 이고 `change_note` 도 v20 때 내용이다.
+# 사람이 검수한 것은 맞는데 그 사실이 이 열에 안 적힌다. DEV-07/PD-05 는 이 열의
+# 어휘와 갱신 흐름을 먼저 고쳐야 한다.
 #
 # 표를 만드는 것은 `api/migration_textbook_content.sql`,
 # 채우는 것은 `api/seed_textbook_content.py` 다.

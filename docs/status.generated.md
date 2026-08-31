@@ -45,7 +45,7 @@
 | 메일 발송 수단 (SMTP·SES·SendGrid) | 없다 |
 | 비밀번호 재설정 라우트 | 없다 |
 | `/health` 를 가진 파일 | tutorus_accepter.py |
-| `include_router` | 29 |
+| `include_router` | 30 |
 
 ## 문서
 
