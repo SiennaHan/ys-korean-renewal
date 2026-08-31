@@ -1,4 +1,3 @@
-import wordListData from "./n1_word_list.json";
 
 export interface WordItem {
 	id: number;
@@ -15,4 +14,8 @@ export interface WordItem {
 	theme: string;
 }
 
-export const wordList: WordItem[] = wordListData as WordItem[];
+/*
+ * **번들의 배열을 걷었다**(2026-08-31 · DEV-05). 어휘는 서버에서 온다 —
+ * `useChapterContent(bookId, chapterSeq, "word")` 가 `words`·`quiz` 를 같이 준다.
+ * 여기 남은 것은 **모양(타입)뿐**이다.
+ */

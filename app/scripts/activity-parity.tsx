@@ -377,7 +377,7 @@ const SCREENS: Record<string, ReactElement> = {
 			current={0}
 			total={4}
 			onJump={() => {}}
-			card={<WordQuizCard quiz={WORD_QUIZ_MEANING} />}
+			card={<WordQuizCard quiz={WORD_QUIZ_MEANING} words={[]} />}
 			primary={{ label: T("player.next"), on: false }}
 		/>
 	),
@@ -390,7 +390,7 @@ const SCREENS: Record<string, ReactElement> = {
 			current={1}
 			total={4}
 			onJump={() => {}}
-			card={<WordQuizCard quiz={WORD_QUIZ_IMAGE} />}
+			card={<WordQuizCard quiz={WORD_QUIZ_IMAGE} words={[]} />}
 			primary={{ label: T("player.next"), on: false }}
 		/>
 	),

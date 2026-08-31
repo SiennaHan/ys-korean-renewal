@@ -18,12 +18,16 @@ import {
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { useActivityState } from "@/hooks/use-activity-state";
-import { type WordItem, wordList } from "@/shared/data/word-list";
-import { wordQuizList } from "@/shared/data/word-quiz";
+import {
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
+import type { WordItem } from "@/shared/data/word-list";
+import type { WordQuizItem } from "@/shared/data/word-quiz";
 import { nextLessonActivity } from "@/shared/lesson-flow";
 import { useManifest } from "@/shared/store/manifest-store";
 import { getWordTTSAudio } from "@/shared/tts-cache";
-import { useNavigate, useRouter } from "@tanstack/react-router";
+import { Navigate, useNavigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import {
 	Check,
@@ -287,13 +291,13 @@ export default function WordLearning({
 		}
 	}, [currentPage]);
 
-	const words = useMemo(() => {
-		return wordList.filter(
-			(w) =>
-				(bookId == null || w.book_id === bookId) &&
-				(chapterSeq == null || w.chapter === chapterSeq),
-		);
-	}, [bookId, chapterSeq]);
+	/** **어휘와 퀴즈가 서버에서 온다**(2026-08-31 · DEV-05). 묶음 하나에 둘이 같이 온다 */
+	const { bundle, state: contentState } = useChapterContent(
+		bookId,
+		chapterSeq,
+		"word",
+	);
+	const words = useMemo(() => rowsOf<WordItem>(bundle, "words"), [bundle]);
 
 	/** 마지막 퀴즈를 넘기면 결과 화면 */
 	const [phase, setPhase] = useState<"solving" | "result">("solving");
@@ -319,14 +323,10 @@ export default function WordLearning({
 	const tried = useRef<Set<number>>(new Set());
 
 	const quizzes = useMemo(() => {
-		const all = wordQuizList.filter(
-			(q) =>
-				(bookId == null || q.book_id === bookId) &&
-				(chapterSeq == null || q.chapter === chapterSeq),
-		);
+		const all = rowsOf<WordQuizItem>(bundle, "quiz");
 		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
 		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
-	}, [bookId, chapterSeq, retryOnly]);
+	}, [bundle, retryOnly]);
 
 	/** Fetch existing records on mount — 정답만 복원 + 첫 미풀이 문제로 이동 */
 	useEffect(() => {
@@ -657,6 +657,7 @@ export default function WordLearning({
 						<WordQuizCard
 							key={quiz.id}
 							quiz={quiz}
+							words={words}
 							savedSelectedIndex={savedAnswers[quiz.id] ?? null}
 							onAnswered={(questionId, selectedAnswer, isCorrect) => {
 								if (!tried.current.has(questionId)) {
@@ -713,6 +714,17 @@ export default function WordLearning({
 				}}
 			/>
 		);
+	}
+
+	/*
+	 * 콘텐츠가 서버에서 오면서 생긴 갈래(2026-08-31 · DEV-05).
+	 * 잠긴 과는 자물쇠가 사는 교재 목록으로 — fill-blank·read-answer 와 같다.
+	 */
+	if (contentState === "loading") {
+		return <div className="h-full bg-white" />;
+	}
+	if (contentState === "locked") {
+		return <Navigate to="/main/textbook" replace />;
 	}
 
 	// Word list page (page 0)

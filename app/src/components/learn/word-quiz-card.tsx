@@ -5,22 +5,25 @@ import {
 	MeaningFocus,
 	ProblemCard,
 } from "@/components/main/activity";
-import { wordList } from "@/shared/data/word-list";
+import type { WordItem } from "@/shared/data/word-list";
 import type { WordQuizItem } from "@/shared/data/word-quiz";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 /** 현재 i18n 언어에 맞는 뜻 반환 */
+/**
+ * 퀴즈에 다국어 뜻이 없을 때 **같은 과의 어휘에서 찾아 채운다.**
+ *
+ * 전에는 번들의 어휘 전체에서 급·과로 좁혀 찾았다. 지금은 **그 과의 어휘만**
+ * 넘어오므로(서버가 `word` 묶음에 `words` 를 같이 준다) 낱말만 맞추면 된다.
+ */
 function getLocalizedMeaning(
+	words: WordItem[],
 	word: string,
-	bookId: number,
-	chapter: number,
 	lang: string,
 	fallback: string,
 ): string {
-	const item = wordList.find(
-		(w) => w.word === word && w.book_id === bookId && w.chapter === chapter,
-	);
+	const item = words.find((w) => w.word === word);
 	if (!item) return fallback || word;
 	if (lang === "ja") return item.jp || item.en || fallback;
 	if (lang === "zh") return item.cn || item.en || fallback;
@@ -31,6 +34,11 @@ function getLocalizedMeaning(
 
 interface WordQuizCardProps {
 	quiz: WordQuizItem;
+	/**
+	 * 같은 과의 어휘. 퀴즈에 다국어 뜻이 없을 때 여기서 찾아 채운다.
+	 * **번들이 아니라 서버에서 온 것을 부모가 넘긴다**(2026-08-31 · DEV-05).
+	 */
+	words: WordItem[];
 	/** null = 아직 정답 못 맞춤, number = 정답 맞힌 인덱스 */
 	savedSelectedIndex?: number | null;
 	onAnswered?: (
@@ -59,6 +67,7 @@ function getQuizMeaning(quiz: WordQuizItem, lang: string): string {
 
 export default function WordQuizCard({
 	quiz,
+	words,
 	onAnswered,
 	savedSelectedIndex,
 }: WordQuizCardProps) {
@@ -100,13 +109,12 @@ export default function WordQuizCard({
 			quiz.selection4,
 		][quiz.answer_index];
 		return getLocalizedMeaning(
+			words,
 			answerWord,
-			quiz.book_id,
-			quiz.chapter,
 			i18n.language,
 			quiz.meaning_en,
 		);
-	}, [quiz, i18n.language]);
+	}, [quiz, words, i18n.language]);
 
 	const handleSelect = useCallback(
 		(idx: number) => {
