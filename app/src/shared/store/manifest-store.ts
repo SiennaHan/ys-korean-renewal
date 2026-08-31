@@ -46,6 +46,14 @@ export const useManifestStore = create<ManifestState>()((set) => ({
 	asked: false,
 	loading: false,
 	load: async () => {
+		/*
+		 * **`asked` 를 먼저 본다.** 바로 위 주석이 "한 번 물어봤나" 라고 적어
+		 * 놓고 실제로는 `inFlight` 만 봤다 — 그래서 부르는 쪽이 늘 때마다
+		 * 매니페스트를 다시 받았다(2026-08-31 · 한 화면에서 8번). 게다가
+		 * 받을 때마다 `counts` 가 새 Map 이라 구독하는 화면이 전부 다시 그린다.
+		 * `entitlement-store` 는 처음부터 이렇게 하고 있다 — 어휘를 맞춘다.
+		 */
+		if (useManifestStore.getState().asked) return;
 		if (inFlight) return inFlight;
 		inFlight = (async () => {
 			set({ loading: true });
