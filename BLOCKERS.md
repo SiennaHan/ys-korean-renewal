@@ -960,9 +960,10 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 58c2af1
-     — 확인: 교재 콘텐츠 표 13개와 그것을 읽는 repo·API 가 들어왔다(DEV-05). 이 절이 쥔
-       서버 표 목록과 마이그레이션 얘기는 그대로다 — 새 표는 DEV-05 카드가 쥔다 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 1163e36
+     — 확인: ko_user_flashcard_word.card_id 를 VARCHAR(10)→(12) 로 넓혔다(migration_flashcard_card_id.sql).
+       이 절의 마이그레이션 목록에 그것을 더했고, 「지금 11개」라고 적힌 수가 이미 13개라
+       틀려 있어서 수를 걷었다 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.
@@ -972,7 +973,7 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 | 리뷰가 요구한 것 | 실제 |
 |---|---|
 | 스키마·초기 데이터 주입 명령 | ✅ **필요 없다.** `persistence/database.py` 의 `createAllTables()` 가 서버 시작 때 없는 테이블을 만든다.<br>`model.py` 가 정의하는 표와 코드가 부르는 표가 **같다** — 빠진 것 0 이다.<br>**수를 여기 적지 않는다** — 표가 늘 때마다 낡는다(2026-08-27 에 문의 표 둘이 늘어 28 → 30 이 됐다). 수의 주인은 `README.md` 다 |
-| **기존 표에 칸을 더하는 것** | ❌ **`createAllTables()` 로는 안 된다.** 그 함수는 **없는 표만** 만들고 기존 표는 건드리지 않는다(docstring 이 그렇게 적혀 있다).<br>2026-08-28 에 이걸로 한 번 막혔다 — `ko_user.access_ended_at` 을 `model.py` 에 넣고 서버를 올렸는데 `Unknown column 'access_ended_at'` 이 났다. `ko_user` 는 이미 있는 표라 자동 생성이 지나간다.<br>그래서 `api/migration_*.sql` 은 **손으로 돌려야 한다** — 지금 11개다(수는 세라: `ls api/migration_*.sql`). 표를 새로 만드는 마이그레이션(`migration_signup_code.sql`)은 안 돌려도 서버가 알아서 만들지만, **칸을 더하거나 고치는 것**(`migration_access_ended.sql` · `migration_daily_responded.sql` · `migration_signup_code_use_anonymize.sql` · `migration_user_withdrawn.sql`)은 반드시 돌려야 한다.<br>**돌린 것을 기록하는 장치가 없다**(alembic 이 아니다) — 어느 환경에 무엇이 적용됐는지는 아무도 모른다. 운영 배포 전에 이 목록을 손으로 훑어야 한다 |
+| **기존 표에 칸을 더하는 것** | ❌ **`createAllTables()` 로는 안 된다.** 그 함수는 **없는 표만** 만들고 기존 표는 건드리지 않는다(docstring 이 그렇게 적혀 있다).<br>2026-08-28 에 이걸로 한 번 막혔다 — `ko_user.access_ended_at` 을 `model.py` 에 넣고 서버를 올렸는데 `Unknown column 'access_ended_at'` 이 났다. `ko_user` 는 이미 있는 표라 자동 생성이 지나간다.<br>그래서 `api/migration_*.sql` 은 **손으로 돌려야 한다** — **수를 여기 적지 마라**(`ls api/migration_*.sql` 로 세라. 전에 「11개」라 적혀 있었는데 셋이 13개였다). 표를 새로 만드는 마이그레이션(`migration_signup_code.sql`)은 안 돌려도 서버가 알아서 만들지만, **칸을 더하거나 고치는 것**(`migration_access_ended.sql` · `migration_daily_responded.sql` · `migration_signup_code_use_anonymize.sql` · `migration_user_withdrawn.sql` · **`migration_flashcard_card_id.sql`**)은 반드시 돌려야 한다. 표를 새로 만드는 것에는 `migration_textbook_content.sql`(교재 콘텐츠 13개 표)도 있다.<br>**돌린 것을 기록하는 장치가 없다**(alembic 이 아니다) — 어느 환경에 무엇이 적용됐는지는 아무도 모른다. 운영 배포 전에 이 목록을 손으로 훑어야 한다 |
 | 게스트 로그인 또는 테스트 계정 | ✅ **이미 있다.** `POST /user/sign/guest` 가 **자격증명 없이** JWT 를 준다(`generate_tts_samples.py` 가 그렇게 쓴다) |
 | 외부 STT·TTS·AI 없이 켜지는 개발 모드 | ❌ **아니다. 둘이 막는다** — 아래 6-b-1 을 봐라.<br>처음에 `os.getenv()` 만 보고 "없어도 뜬다" 고 적었는데 **틀렸다.** 클라이언트를 모듈 로드 때 만드는 곳이 둘 있다 |
 | 서버 상태 확인 주소 | ⚠️ 절반 — `/health` 가 `accepter/tutorus_accepter.py` 에만 있다. 앱 전체용은 없다 |
@@ -3382,9 +3383,8 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 58c2af1
-     — 확인: model.py 변경은 교재 콘텐츠 표와 review_status 주석 정정뿐이다. 이 절이 지키는
-       탈퇴 익명화 규칙은 손대지 않았다 -->
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 1163e36
+     — 확인: model.py 변경은 card_id 폭 하나다. 이 절이 지키는 탈퇴 익명화 규칙과 무관하다 -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.

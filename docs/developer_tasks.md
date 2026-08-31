@@ -1,8 +1,7 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 58c2af1
-     — 확인: model.py 변경은 review_status 주석 정정뿐이다. 대신 원장 v50 이 바뀌면서
-       item_id 가 밀리는 것을 찾아 DEV-05 에 위험으로 적었다 -->
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 1163e36
+     — 확인: model.py 의 card_id 폭을 12자로 넓혔다 — DEV-05 카드에 그 까닭과 검사를 적었다 -->
 <!-- 왜: 카드의 「현재」는 전부 이 코드를 읽고 적은 관찰이다. 원본이 바뀌면 카드가 낡는다.
      경로를 넷으로 좁혔다 — 표(DEV-04·09·14) · 외부 호출 타임아웃(DEV-12) ·
      기능 게이트(DEV-03·09) · CI(DEV-10). 자주 우는 검사는 안 보고 넘기게 된다 -->
