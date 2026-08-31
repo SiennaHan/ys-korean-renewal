@@ -21,6 +21,7 @@ import { useActivityState } from "@/hooks/use-activity-state";
 import { type WordItem, wordList } from "@/shared/data/word-list";
 import { wordQuizList } from "@/shared/data/word-quiz";
 import { nextLessonActivity } from "@/shared/lesson-flow";
+import { useManifest } from "@/shared/store/manifest-store";
 import { getWordTTSAudio } from "@/shared/tts-cache";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
@@ -240,6 +241,8 @@ export default function WordLearning({
 }: WordLearningProps) {
 	const router = useRouter();
 	const navigate = useNavigate();
+	/** 다음 활동이 있는지 — 서버 매니페스트가 답한다(DEV-05) */
+	const { counts: manifestCounts } = useManifest();
 	const { t, i18n } = useTranslation();
 	const [selectedWordId, setSelectedWordId] = useState<number | null>(null);
 	const [recordings, setRecordings] = useState<Record<number, RecordingResult>>(
@@ -594,7 +597,7 @@ export default function WordLearning({
 				onNext={() => {
 					const next =
 						bookId && chapterSeq
-							? nextLessonActivity("word", bookId, chapterSeq)
+							? nextLessonActivity(manifestCounts, "word", bookId, chapterSeq)
 							: null;
 					navigate(
 						next

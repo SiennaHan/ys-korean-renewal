@@ -1,14 +1,13 @@
-import { chapters } from "@/shared/data/chapter";
-import { flashcards } from "@/shared/data/flashcard";
 import {
 	hasBlankData,
+	hasFlashcardData,
 	hasListenData,
+	hasMissionChatData,
 	hasReadData,
 	hasRoleplayData,
 	hasWordData,
 } from "@/shared/data/learn-data-check";
-import { modules } from "@/shared/data/module";
-import { units } from "@/shared/data/unit";
+import type { CountMap } from "@/shared/store/manifest-store";
 
 /**
  * 한 과 안에서 활동이 놓이는 순서와 그 활동으로 가는 길.
@@ -53,46 +52,34 @@ export const LEARN_ROUTE: Record<LessonActivityId, string> = {
 	flashcard: "/learn/flashcard",
 };
 
-function hasMissionChat(bookId: number, chapterSeq: number): boolean {
-	const chapter = chapters.find(
-		(c) => c.book_id === bookId && c.seq === chapterSeq,
-	);
-	if (!chapter) return false;
-	const unitIds = units
-		.filter((u) => u.chapter_id === chapter.id)
-		.map((u) => u.id);
-	return modules.some(
-		(m) => unitIds.includes(m.unit_id) && m.scene_type === "mission_chat",
-	);
-}
-
-function hasFlashcard(bookId: number, chapterSeq: number): boolean {
-	return flashcards.some(
-		(fc) => fc.book_id === bookId && fc.chapter === chapterSeq,
-	);
-}
-
-/** 이 과에서 그 활동을 열 수 있나 */
+/**
+ * 이 과에서 그 활동을 열 수 있나.
+ *
+ * **답이 서버 매니페스트에서 온다**(DEV-05) — 부르는 쪽이 `useManifest()` 로 받아
+ * 넘긴다. 전에는 미션대화만 `chapter`·`unit`·`module` 을 뒤져서 답했는데,
+ * 그것도 매니페스트가 답하므로 갈래가 하나로 모였다.
+ */
 export function hasActivityData(
+	counts: CountMap,
 	id: LessonActivityId,
 	bookId: number,
 	chapterSeq: number,
 ): boolean {
 	switch (id) {
 		case "word":
-			return hasWordData(bookId, chapterSeq);
+			return hasWordData(counts, bookId, chapterSeq);
 		case "roleplay":
-			return hasRoleplayData(bookId, chapterSeq);
+			return hasRoleplayData(counts, bookId, chapterSeq);
 		case "listen-answer":
-			return hasListenData(bookId, chapterSeq);
+			return hasListenData(counts, bookId, chapterSeq);
 		case "fill-blank":
-			return hasBlankData(bookId, chapterSeq);
+			return hasBlankData(counts, bookId, chapterSeq);
 		case "read-answer":
-			return hasReadData(bookId, chapterSeq);
+			return hasReadData(counts, bookId, chapterSeq);
 		case "mission-chat":
-			return hasMissionChat(bookId, chapterSeq);
+			return hasMissionChatData(counts, bookId, chapterSeq);
 		case "flashcard":
-			return hasFlashcard(bookId, chapterSeq);
+			return hasFlashcardData(counts, bookId, chapterSeq);
 	}
 }
 
@@ -101,6 +88,7 @@ export function hasActivityData(
  * 그 과의 마지막 활동을 끝냈다는 뜻이라 부르는 쪽이 과 목록으로 보낸다.
  */
 export function nextLessonActivity(
+	counts: CountMap,
 	current: LessonActivityId,
 	bookId: number,
 	chapterSeq: number,
@@ -108,7 +96,7 @@ export function nextLessonActivity(
 	const from = LESSON_ACTIVITY_ORDER.indexOf(current);
 	if (from < 0) return null;
 	for (const id of LESSON_ACTIVITY_ORDER.slice(from + 1)) {
-		if (hasActivityData(id, bookId, chapterSeq)) {
+		if (hasActivityData(counts, id, bookId, chapterSeq)) {
 			return { id, route: LEARN_ROUTE[id] };
 		}
 	}

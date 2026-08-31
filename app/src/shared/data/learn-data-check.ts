@@ -1,95 +1,85 @@
-import roleplayData from "./n2_ai_role_play.json";
-import listenData from "./n3_listen_repeat.json";
 /**
- * 기초학습 데이터 존재 여부를 book_id + chapter(seq) 기준으로 확인
+ * 이 과에서 그 활동을 열 수 있나 · 몇 개인가 — **서버 매니페스트가 답한다** (DEV-05)
+ *
+ * 2026-08-31 까지는 이 파일이 **번들의 원장 JSON 다섯을 직접 읽어** 답했다
+ * (`n2` · `n3` · `n4` · `n5` 둘 + 어휘 둘). 그 다섯이 콘텐츠 8.9MB 의 큰 몫이라,
+ * 그것을 번들에서 걷어내려면 이 물음부터 서버로 옮겨야 했다.
+ *
+ * **셈법은 그대로 옮겼다.** 활동마다 화면이 세는 것이 다르다 —
+ *
+ *   word           어휘가 아니라 **퀴즈** 수
+ *   roleplay       대사가 아니라 **시나리오** 수
+ *   listen-answer  지문이 아니라 **문항** 수
+ *   read-answer    지문이 아니라 **문항** 수
+ *   flashcard      세트가 아니라 **카드** 수
+ *
+ * 서버(`repo_content.countAll`)가 그 셈법대로 낸다. 옮기고 나서 **120과 전부를
+ * 옛 셈법과 대 봤고 어긋난 과가 0개**였다.
+ *
+ * ## 인자가 하나 늘었다
+ *
+ * 답이 서버에서 오므로 더는 순수 함수가 아니다. 그렇다고 여기서 통신하면 화면마다
+ * 다른 답을 들 수 있어서, **받아 온 것을 인자로 받는다** — 부르는 쪽이
+ * `useManifest()` 로 한 번 받아 넘긴다.
  */
-import blankQuestions from "./n4_blank_question.json";
-import readQuestions from "./n5_read_answer_questions.json";
-import readTexts from "./n5_read_answer_text.json";
-import { wordList } from "./word-list";
-import { wordQuizList } from "./word-quiz";
+import type { MenuType } from "@/api/content";
+import {
+	type CountMap,
+	activityCount,
+	hasActivity,
+} from "@/shared/store/manifest-store";
 
-export function hasWordData(bookId: number, chapterSeq: number): boolean {
-	return wordList.some((w) => w.book_id === bookId && w.chapter === chapterSeq);
+export function hasWordData(m: CountMap, bookId: number, seq: number): boolean {
+	return hasActivity(m, bookId, seq, "word");
 }
 
-export function hasRoleplayData(bookId: number, chapterSeq: number): boolean {
-	return (roleplayData as { book_id: number; chapter: number }[]).some(
-		(r) => r.book_id === bookId && r.chapter === chapterSeq,
-	);
+export function hasRoleplayData(m: CountMap, bookId: number, seq: number): boolean {
+	return hasActivity(m, bookId, seq, "roleplay");
 }
 
-export function hasListenData(bookId: number, chapterSeq: number): boolean {
-	return (listenData as { book_id: number; chapter: number }[]).some(
-		(l) => l.book_id === bookId && l.chapter === chapterSeq,
-	);
+export function hasListenData(m: CountMap, bookId: number, seq: number): boolean {
+	return hasActivity(m, bookId, seq, "listen-answer");
 }
 
-export function hasBlankData(bookId: number, chapterSeq: number): boolean {
-	return (blankQuestions as { book_id: number; chapter: number }[]).some(
-		(q) => q.book_id === bookId && q.chapter === chapterSeq,
-	);
+export function hasBlankData(m: CountMap, bookId: number, seq: number): boolean {
+	return hasActivity(m, bookId, seq, "fill-blank");
 }
 
-export function hasReadData(bookId: number, chapterSeq: number): boolean {
-	return (readTexts as { book_id: number; chapter: number }[]).some(
-		(t) => t.book_id === bookId && t.chapter === chapterSeq,
-	);
+export function hasReadData(m: CountMap, bookId: number, seq: number): boolean {
+	return hasActivity(m, bookId, seq, "read-answer");
 }
 
-/** 각 메뉴별 총 문제 수 반환 */
-
-export function getWordQuizCount(bookId: number, chapterSeq: number): number {
-	return wordQuizList.filter(
-		(q) => q.book_id === bookId && q.chapter === chapterSeq,
-	).length;
+export function hasFlashcardData(m: CountMap, bookId: number, seq: number): boolean {
+	return hasActivity(m, bookId, seq, "flashcard");
 }
 
-export function getRoleplayScenarioCount(
-	bookId: number,
-	chapterSeq: number,
-): number {
-	const scenarioIds = new Set<string>();
-	for (const r of roleplayData as {
-		book_id: number;
-		chapter: number;
-		scenario_id: string;
-	}[]) {
-		if (r.book_id === bookId && r.chapter === chapterSeq) {
-			scenarioIds.add(r.scenario_id);
-		}
-	}
-	return scenarioIds.size;
+export function hasMissionChatData(m: CountMap, bookId: number, seq: number): boolean {
+	return hasActivity(m, bookId, seq, "mission-chat");
 }
 
-export function getListenQuestionCount(
-	bookId: number,
-	chapterSeq: number,
-): number {
-	return (listenData as { book_id: number; chapter: number }[]).filter(
-		(l) => l.book_id === bookId && l.chapter === chapterSeq,
-	).length;
+export function getWordQuizCount(m: CountMap, bookId: number, seq: number): number {
+	return activityCount(m, bookId, seq, "word");
 }
 
-export function getBlankQuestionCount(
-	bookId: number,
-	chapterSeq: number,
-): number {
-	return (blankQuestions as { book_id: number; chapter: number }[]).filter(
-		(q) => q.book_id === bookId && q.chapter === chapterSeq,
-	).length;
+export function getRoleplayScenarioCount(m: CountMap, bookId: number, seq: number): number {
+	return activityCount(m, bookId, seq, "roleplay");
 }
 
-export function getReadQuestionCount(
-	bookId: number,
-	chapterSeq: number,
-): number {
-	const textIds = (
-		readTexts as { id: number; book_id: number; chapter: number }[]
-	)
-		.filter((t) => t.book_id === bookId && t.chapter === chapterSeq)
-		.map((t) => t.id);
-	return (readQuestions as { text_id: number }[]).filter((q) =>
-		textIds.includes(q.text_id),
-	).length;
+export function getListenQuestionCount(m: CountMap, bookId: number, seq: number): number {
+	return activityCount(m, bookId, seq, "listen-answer");
 }
+
+export function getBlankQuestionCount(m: CountMap, bookId: number, seq: number): number {
+	return activityCount(m, bookId, seq, "fill-blank");
+}
+
+export function getReadQuestionCount(m: CountMap, bookId: number, seq: number): number {
+	return activityCount(m, bookId, seq, "read-answer");
+}
+
+/** 플래시카드 **카드** 수 — 목록 화면이 「다 봤나」를 이 수로 판정한다 */
+export function getFlashcardWordCount(m: CountMap, bookId: number, seq: number): number {
+	return activityCount(m, bookId, seq, "flashcard");
+}
+
+export type { MenuType };

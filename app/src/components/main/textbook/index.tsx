@@ -6,10 +6,10 @@ import { getLearningProgress } from "@/api/learning-record";
 import { books } from "@/shared/data/book";
 import { chapters } from "@/shared/data/chapter";
 import { dialogs } from "@/shared/data/dialog";
-import { flashcards } from "@/shared/data/flashcard";
-import { flashcard_words } from "@/shared/data/flashcard_word";
+import { setNumericId } from "@/shared/data/flashcard";
 import {
 	getBlankQuestionCount,
+	getFlashcardWordCount,
 	getListenQuestionCount,
 	getReadQuestionCount,
 	getRoleplayScenarioCount,
@@ -23,6 +23,7 @@ import {
 import { modules } from "@/shared/data/module";
 import { units } from "@/shared/data/unit";
 import { useEntitlement } from "@/shared/store/entitlement-store";
+import { useManifest } from "@/shared/store/manifest-store";
 import { useTextbookSelectionStore } from "@/shared/store/menu-store";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -40,6 +41,8 @@ import PaywallPanel from "./paywall-panel";
 export default function TextbookContent() {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	/** 과별 활동 개수 — 서버 매니페스트(DEV-05). 잠긴 과도 준다 */
+	const { counts: manifestCounts } = useManifest();
 
 	// --- State (persisted in Zustand) ---
 	const {
@@ -136,16 +139,23 @@ export default function TextbookContent() {
 		[selectedChapterId],
 	);
 
-	// Find flashcard for current book + chapter
-	const currentFlashcard = useMemo(() => {
-		if (!selectedChapter || activeBookTab === "jamo") return null;
+	/**
+	 * 이 과에 플래시카드가 있나 — **매니페스트가 답한다**(DEV-05).
+	 *
+	 * 전에는 번들의 `flashcards` 에서 세트를 찾았다. 여기서 세트로 하는 일은
+	 * ① 있나 없나 ② 학습자 기록을 부를 세트 번호 둘뿐인데, **번호는 급·과에서
+	 * 계산한다**(`setNumericId`) — 그래서 세트 자체가 필요 없다.
+	 */
+	const hasFlashcard = useMemo(() => {
+		if (!selectedChapter || activeBookTab === "jamo") return false;
 		return (
-			flashcards.find(
-				(fc) =>
-					fc.book_id === activeBookTab && fc.chapter === selectedChapter.seq,
-			) ?? null
+			getFlashcardWordCount(
+				manifestCounts,
+				activeBookTab as number,
+				selectedChapter.seq,
+			) > 0
 		);
-	}, [activeBookTab, selectedChapter]);
+	}, [activeBookTab, selectedChapter, manifestCounts]);
 
 	// Check if mission_chat exists for current chapter
 	const hasMissionChat = useMemo(() => {
@@ -172,14 +182,11 @@ export default function TextbookContent() {
 		getLearningProgress(bookId, seq).then(setProgress);
 
 		// Flashcard completion: check if all words answered for both types
-		const fc = flashcards.find(
-			(f) => f.book_id === bookId && f.chapter === seq,
-		);
-		if (fc) {
-			const totalWords = flashcard_words.filter(
-				(w) => w.flashcard_id === fc.id,
-			).length;
-			listUserFlashcardWord(fc.id).then((words) => {
+		const totalWords = getFlashcardWordCount(manifestCounts, bookId, seq);
+		if (totalWords > 0) {
+			// 세트 번호는 급·과에서 계산한다 — 서버 표에 그런 열이 없다
+			const setId = setNumericId(bookId, seq);
+			listUserFlashcardWord(setId).then((words) => {
 				// Complete if at least one card type (wm or mw) has all words answered
 				const wmCards = words.filter((w) => w.card_type === "wm");
 				const mwCards = words.filter((w) => w.card_type === "mw");
@@ -257,44 +264,47 @@ export default function TextbookContent() {
 					{
 						id: "word",
 						title: t("catalog.act.word"),
-						progress: menuState("word", getWordQuizCount(bookId, seq)),
-						disabled: !hasWordData(bookId, seq),
+						progress: menuState(
+							"word",
+							getWordQuizCount(manifestCounts, bookId, seq),
+						),
+						disabled: !hasWordData(manifestCounts, bookId, seq),
 					},
 					{
 						id: "roleplay",
 						title: t("catalog.act.roleplay"),
 						progress: menuState(
 							"roleplay",
-							getRoleplayScenarioCount(bookId, seq),
+							getRoleplayScenarioCount(manifestCounts, bookId, seq),
 						),
-						disabled: !hasRoleplayData(bookId, seq),
+						disabled: !hasRoleplayData(manifestCounts, bookId, seq),
 					},
 					{
 						id: "listen-answer",
 						title: t("catalog.act.listen-answer"),
 						progress: menuState(
 							"listen-answer",
-							getListenQuestionCount(bookId, seq),
+							getListenQuestionCount(manifestCounts, bookId, seq),
 						),
-						disabled: !hasListenData(bookId, seq),
+						disabled: !hasListenData(manifestCounts, bookId, seq),
 					},
 					{
 						id: "fill-blank",
 						title: t("catalog.act.fill-blank"),
 						progress: menuState(
 							"fill-blank",
-							getBlankQuestionCount(bookId, seq),
+							getBlankQuestionCount(manifestCounts, bookId, seq),
 						),
-						disabled: !hasBlankData(bookId, seq),
+						disabled: !hasBlankData(manifestCounts, bookId, seq),
 					},
 					{
 						id: "read-answer",
 						title: t("catalog.act.read-answer"),
 						progress: menuState(
 							"read-answer",
-							getReadQuestionCount(bookId, seq),
+							getReadQuestionCount(manifestCounts, bookId, seq),
 						),
-						disabled: !hasReadData(bookId, seq),
+						disabled: !hasReadData(manifestCounts, bookId, seq),
 					},
 				],
 			},
@@ -311,7 +321,7 @@ export default function TextbookContent() {
 						id: "flashcard",
 						title: t("catalog.act.flashcard"),
 						progress: flashcardCompleted ? "done" : "none",
-						disabled: !currentFlashcard,
+						disabled: !hasFlashcard,
 					},
 				],
 			},
@@ -320,7 +330,10 @@ export default function TextbookContent() {
 		selectedChapterId,
 		selectedChapter,
 		activeBookTab,
-		currentFlashcard,
+		// **매니페스트는 화면이 뜬 뒤에 온다.** 빼면 첫 그림이 「활동 없음」으로 굳고
+		// 답이 도착해도 다시 안 그려진다 — biome 이 짚어 줘서 찾았다(2026-08-31)
+		manifestCounts,
+		hasFlashcard,
 		hasMissionChat,
 		menuState,
 		flashcardCompleted,
@@ -344,7 +357,7 @@ export default function TextbookContent() {
 	const handleModuleClick = (id: string) => {
 		if (id === "flashcard") {
 			// 신 경로는 급·과만 받는다 — 세트는 그쪽에서 찾는다 (명세 §4)
-			if (currentFlashcard) {
+			if (hasFlashcard) {
 				navigate({
 					to: "/learn/flashcard",
 					search: {

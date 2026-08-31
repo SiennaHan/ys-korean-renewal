@@ -26,6 +26,7 @@ import {
 } from "@/shared/content/use-chapter-content";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
 import { nextLessonActivity } from "@/shared/lesson-flow";
+import { useManifest } from "@/shared/store/manifest-store";
 import { Navigate, useNavigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -216,6 +217,8 @@ export default function FillBlank({
 }: FillBlankProps) {
 	const router = useRouter();
 	const navigate = useNavigate();
+	/** 다음 활동이 있는지 — 서버 매니페스트가 답한다(DEV-05) */
+	const { counts: manifestCounts } = useManifest();
 	const { t } = useTranslation();
 	const sound = useSoundEffects();
 
@@ -610,7 +613,12 @@ export default function FillBlank({
 				onNext={() => {
 					const next =
 						bookId && chapterSeq
-							? nextLessonActivity("fill-blank", bookId, chapterSeq)
+							? nextLessonActivity(
+									manifestCounts,
+									"fill-blank",
+									bookId,
+									chapterSeq,
+								)
 							: null;
 					// 과의 마지막 활동이면 갈 다음이 없다 — 목업 정본이 이 버튼을
 					// 늘 켜 두고 그리므로, 눌러도 아무 일 없는 버튼을 만들지 않으려고

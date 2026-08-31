@@ -35,6 +35,12 @@ BUNDLES: dict[str, list[tuple[str, type, str | None]]] = {
 # **앱에 내보내지 않는 열.** 원장 살림살이지 학습자가 볼 것이 아니다.
 # `review_status` 는 표에 남기고 응답에서만 뺀다. **다만 이 열로 게이트를 걸면
 # 안 된다** — 실제 검수 상태가 아니다(2026-08-31 확인 · `model.py` 의 그 절).
+# **원장에서 지운 행은 표에 남는다** — 지우지 않고 이 표시만 붙인다
+# (`seed_textbook_content.py`). 학습 기록이 그 문항을 가리키고 있을 수 있어서다.
+# 그러니 **내보낼 때 빼야 한다.** 처음엔 안 뺐고, 매니페스트 합계가 2329(지운 것 포함)로
+# 나오는 것으로 찾았다 — 살아 있는 것은 2327 이다(2026-08-31).
+DELETED = "deleted"
+
 HIDDEN = {
     "review_status", "source_page", "change_note", "hold_reason",
     "error_note", "module_code", "created_at", "updated_at",
@@ -65,7 +71,7 @@ async def findChapter(bookId: int, chapterSeq: int, menuType: str, db: Session) 
     out: dict[str, list[dict]] = {}
     parent_ids: set[str] = set()
     for name, mdl, parent_col in bundle:
-        q = db.query(mdl)
+        q = db.query(mdl).filter(mdl.review_status != DELETED)
         if parent_col and parent_ids:
             q = q.filter(getattr(mdl, parent_col).in_(parent_ids))
         else:
@@ -78,19 +84,50 @@ async def findChapter(bookId: int, chapterSeq: int, menuType: str, db: Session) 
 
 
 async def countAll(db: Session) -> list[dict]:
-    """과별로 활동마다 몇 개인지 — **본문은 주지 않는다.**
+    """과별로 **목록 화면이 그리는 수**를 낸다 — 본문은 주지 않는다.
 
     목록 화면이 자물쇠와 「몇 문항」을 그리려면 잠긴 과의 수도 알아야 한다.
     그래서 이것은 권한을 안 본다. 수만으로는 콘텐츠가 새지 않는다.
+
+    **으뜸 표를 세면 안 된다.** 활동마다 화면이 세는 것이 다르다 —
+    전에 `learn-data-check.ts` 가 번들에서 이렇게 세고 있었고, 그 셈법을 그대로 옮겼다:
+
+      word           어휘가 아니라 **퀴즈** 수      (ko_word_quiz)
+      roleplay       대사가 아니라 **시나리오** 수  (scenario_id 의 가짓수)
+      listen-answer  지문이 아니라 **문항** 수      (ko_listen_question)
+      read-answer    지문이 아니라 **문항** 수      (ko_read_question)
+      flashcard      세트가 아니라 **카드** 수      (ko_flashcard_card)
+      fill-blank · mission-chat · jamo             그 표의 행 수
+
+    **플래시카드 세트 번호는 안 낸다.** 앱이 급·과에서 계산한다
+    (`flashcard.ts` 의 `setNumericId`) — 서버 표에 그런 열이 없고, 있지도 않아야 한다.
     """
     out: dict[tuple[int, int], dict] = {}
-    for menu, bundle in BUNDLES.items():
-        name, mdl, _p = bundle[0]          # 그 활동의 으뜸 표 하나만 센다
-        rows = (db.query(mdl.book_id, mdl.chapter_seq,
-                         func.count(mdl.item_id))
-                  .group_by(mdl.book_id, mdl.chapter_seq).all())
-        for book, ch, n in rows:
-            key = (book, ch)
-            out.setdefault(key, {"bookId": book, "chapterSeq": ch, "counts": {}})
-            out[key]["counts"][menu] = n
+
+    def put(book, ch, key, value):
+        k = (book, ch)
+        out.setdefault(k, {"bookId": book, "chapterSeq": ch, "counts": {}})
+        out[k]["counts"][key] = value
+
+    # 그 표의 행을 과별로 센다
+    for menu, mdl in (("word", model.KoWordQuiz),
+                      ("listen-answer", model.KoListenQuestion),
+                      ("fill-blank", model.KoBlankQuestion),
+                      ("read-answer", model.KoReadQuestion),
+                      ("flashcard", model.KoFlashcardCard),
+                      ("mission-chat", model.KoMissionChat),
+                      ("jamo", model.KoJamo)):
+        for book, ch, n in (db.query(mdl.book_id, mdl.chapter_seq, func.count(mdl.item_id))
+                              .filter(mdl.review_status != DELETED)
+                              .group_by(mdl.book_id, mdl.chapter_seq).all()):
+            put(book, ch, menu, n)
+
+    # 롤플레잉만 가짓수다 — 대사가 여럿이어도 시나리오 하나다
+    rp = model.KoRoleplayTurn
+    for book, ch, n in (db.query(rp.book_id, rp.chapter_seq,
+                                 func.count(func.distinct(rp.scenario_id)))
+                          .filter(rp.review_status != DELETED)
+                          .group_by(rp.book_id, rp.chapter_seq).all()):
+        put(book, ch, "roleplay", n)
+
     return [out[k] for k in sorted(out)]

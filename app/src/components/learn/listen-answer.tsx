@@ -31,6 +31,7 @@ import {
 	getScriptLines,
 } from "@/shared/data/listen-answer";
 import { nextLessonActivity } from "@/shared/lesson-flow";
+import { useManifest } from "@/shared/store/manifest-store";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -180,6 +181,8 @@ export default function ListenAnswer({
 }: ListenAnswerProps) {
 	const router = useRouter();
 	const navigate = useNavigate();
+	/** 다음 활동이 있는지 — 서버 매니페스트가 답한다(DEV-05) */
+	const { counts: manifestCounts } = useManifest();
 	const { t } = useTranslation();
 	const sharedAudio = useSharedAudio();
 	const sound = useSoundEffects();
@@ -542,7 +545,12 @@ export default function ListenAnswer({
 				onNext={() => {
 					const next =
 						bookId && chapterSeq
-							? nextLessonActivity("listen-answer", bookId, chapterSeq)
+							? nextLessonActivity(
+									manifestCounts,
+									"listen-answer",
+									bookId,
+									chapterSeq,
+								)
 							: null;
 					navigate(
 						next
