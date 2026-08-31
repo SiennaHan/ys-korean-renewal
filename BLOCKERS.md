@@ -960,10 +960,9 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 1163e36
-     — 확인: ko_user_flashcard_word.card_id 를 VARCHAR(10)→(12) 로 넓혔다(migration_flashcard_card_id.sql).
-       이 절의 마이그레이션 목록에 그것을 더했고, 「지금 11개」라고 적힌 수가 이미 13개라
-       틀려 있어서 수를 걷었다 -->
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 8793060
+     — 확인: repo_content 가 매니페스트를 화면 셈법에 맞추고, review_status='deleted' 인 행을
+       내보내지 않게 됐다. 이 절이 쥔 서버 표 목록과 마이그레이션 얘기는 그대로다 -->
 <!-- 왜: 여기 적은 "이미 된다/안 된다" 는 전부 api/ 코드를 읽고 적은 관찰이다 -->
 
 외부 리뷰가 **".env 만 받지 말고 재현 가능한 로컬 환경을 만들라"** 고 했다. 옳다.

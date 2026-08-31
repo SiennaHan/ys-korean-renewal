@@ -1,5 +1,7 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 36c7830 -->
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 8793060
+     — 확인: 목록 화면이 매니페스트로 옮겨졌다(DEV-05). §04 「목록을 만드는 데이터」 표의
+       네 줄이 낡아서 고쳤다 — 활동 유무·문항 수·플래시카드·미션대화 전부 출처가 바뀌었다 -->
 <!-- 왜: 심화학습 두 줄이 켜지는지가 이 데이터와 이 목록 컴포넌트에 걸려 있다 -->
 <title>교재학습 탭 — 활동으로 들어가는 유일한 길</title>
 <style>
@@ -182,14 +184,14 @@
     <tr><td>급 탭</td><td><span class="file">book.ts</span> + <span class="file">chapter.ts</span> 의 <span class="file">type==="jamo"</span></td>
       <td>8급 + 한글 탭</td></tr>
     <tr><td>과 칩</td><td><span class="file">chapter.ts</span></td><td><b>급마다 15과 · 전체 120과</b></td></tr>
-    <tr><td>활동 있음/없음</td><td><span class="file">learn-data-check.ts</span> 의 <span class="file">has*Data()</span></td>
-      <td>다섯 함수. 없으면 <span class="file">off</span></td></tr>
-    <tr><td>총 문항 수</td><td>같은 파일의 <span class="file">get*Count()</span></td>
-      <td><span class="file">done</span> 판정의 분모다</td></tr>
-    <tr><td>심화 — 플래시카드</td><td><span class="file">flashcard.ts</span> (급 + 과로 찾는다)</td>
-      <td><b>1~8급 전부에 있다</b>(2026-08-25 원장 배선) — 2~8급도 <span class="file">on</span> 이다.<br>세트 수는 여기 적지 않는다 — <code>build-content.py --check</code> 의 <code>n6_flashcard</code></td></tr>
-    <tr><td>심화 — 미션 대화</td><td><span class="file">module.ts</span> 의 <span class="file">scene_type==="mission_chat"</span></td>
-      <td><b>117모듈</b> — 8급 전체에 과마다 하나씩 고르게 있다</td></tr>
+    <tr><td>활동 있음/없음</td><td><b>서버 매니페스트</b> — <code>GET /content/manifest</code><br><span class="file">learn-data-check.ts</span> 의 <span class="file">has*Data()</span> 가 그것을 읽는다</td>
+      <td>일곱 활동 전부. 없으면 <span class="file">off</span>.<br><b>2026-08-31 에 번들에서 서버로 옮겼다</b>(DEV-05) — 전에는 이 파일이 원장 JSON 다섯을 직접 읽었다</td></tr>
+    <tr><td>총 문항 수</td><td>같은 파일의 <span class="file">get*Count()</span> — 역시 매니페스트</td>
+      <td><span class="file">done</span> 판정의 분모다.<br><b>활동마다 세는 것이 다르다</b> — 어휘는 퀴즈 수, 롤플레잉은 시나리오 수, 듣기·읽기는 문항 수, 플래시카드는 카드 수. 서버가 그 셈법대로 낸다</td></tr>
+    <tr><td>심화 — 플래시카드</td><td>같은 매니페스트의 <code>flashcard</code> 개수</td>
+      <td><b>1~8급 전부에 있다</b>(2026-08-25 원장 배선) — 2~8급도 <span class="file">on</span> 이다.<br><b>세트 번호는 서버가 안 준다</b> — 앱이 급·과로 계산한다(<span class="file">flashcard.ts</span> 의 <code>setNumericId</code>).<br>수는 여기 적지 않는다 — <code>build-content.py --check</code> 의 <code>n6_flashcard</code></td></tr>
+    <tr><td>심화 — 미션 대화</td><td>같은 매니페스트의 <code>mission-chat</code> 개수</td>
+      <td>전에는 <span class="file">module.ts</span> 의 <code>scene_type==="mission_chat"</code> 을 뒤졌다 — <b>2026-08-31 에 매니페스트로 모았다.</b><br>수는 여기 적지 않는다</td></tr>
   </tbody>
 </table>
 </div>
