@@ -121,6 +121,21 @@ function RouteComponent() {
 	};
 
 	/*
+	 * **인라인 람다로 내려보내면 안 된다.**
+	 *
+	 * `MissionDialog` 의 `createMsg` 가 이 둘을 의존성으로 들고 있고, 그 아래
+	 * 초기 로드 효과가 다시 `createMsg` 를 들고 있다. 렌더마다 새 함수를 주면
+	 * **로드 효과가 매 렌더 돌아 `getChatDialog` 를 다시 부른다** — 위쪽
+	 * `missionList` 의 되먹임과 맞물려 8초에 3,520건이 나갔다(2026-08-31 실측).
+	 */
+	const exitToTextbook = useCallback(
+		() => navigate({ to: "/main/textbook" }),
+		[navigate],
+	);
+	const goToReport = useCallback(() => setPhase("report"), []);
+	const goToChatPhase = useCallback(() => setPhase("chat"), []);
+
+	/*
 	 * 콘텐츠가 서버에서 오면서 생긴 갈래(2026-08-31 · DEV-05).
 	 * 잠긴 과는 자물쇠가 사는 교재 목록으로 — 형제 활동들과 같다.
 	 */
@@ -136,9 +151,10 @@ function RouteComponent() {
 		return (
 			<MissionDialog
 				dialogId={dialogId}
+				dialog={dialog}
 				lesson={t("player.lessonTitle", { level, lesson })}
-				onClose={() => navigate({ to: "/main/textbook" })}
-				onReport={() => setPhase("report")}
+				onClose={exitToTextbook}
+				onReport={goToReport}
 				onMissionState={handleMissionState}
 			/>
 		);
@@ -149,8 +165,8 @@ function RouteComponent() {
 			<MissionReport
 				dialogId={dialogId}
 				lesson={t("player.lessonTitle", { level, lesson })}
-				onRetry={() => setPhase("chat")}
-				onExit={() => navigate({ to: "/main/textbook" })}
+				onRetry={goToChatPhase}
+				onExit={exitToTextbook}
 			/>
 		);
 	}

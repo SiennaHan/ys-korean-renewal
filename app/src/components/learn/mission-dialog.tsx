@@ -13,14 +13,14 @@ import ChatMessage, {
 import { DialogInput } from "@/components/dialog/dialog-input";
 import { DialogSkipModal } from "@/components/dialog/dialog-skip-modal";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
-import { ChatScreen, FailedScreen } from "@/components/main/activity";
+import { ChatScreen } from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { env } from "@/config/env";
 import { useRecording } from "@/hooks/useRecording";
-import { dialogs } from "@/shared/data/dialog";
 import { dialog_keywords } from "@/shared/data/dialog_keyword";
+import type { MissionChatItem } from "@/shared/data/mission-chat";
 import { getTTSAudio } from "@/shared/tts-cache";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -32,12 +32,22 @@ import { useTranslation } from "react-i18next";
  */
 export default function MissionDialog({
 	dialogId,
+	dialog,
 	lesson,
 	onClose,
 	onReport,
 	onMissionState,
 }: {
 	dialogId: string;
+	/**
+	 * 그 과의 시나리오 — **서버에서 온 원장 행이다**(2026-08-31 · DEV-05).
+	 *
+	 * 전에는 이 컴포넌트가 `dialogs`(구 앱 덤프 `dialog.ts`)에서 `dialogId` 로
+	 * 찾아 썼다. 그 파일이 **1.96MB 였고 그중 95%가 이 화면이 읽지도 않는
+	 * 프롬프트**였다 — 프롬프트는 서버(`ko_chat_dialog`)가 쥔다. 부모가 이미
+	 * 같은 과의 행을 서버에서 받아 두므로 그것을 그대로 내려받는다.
+	 */
+	dialog: MissionChatItem;
 	lesson: string;
 	/** 대화를 그만두고 나간다 */
 	onClose: () => void;
@@ -61,24 +71,26 @@ export default function MissionDialog({
 	const { addToast } = useToast();
 
 	// --- Data lookups ---
-	const dialog = dialogs.find((item) => item.id === dialogId);
-	// dialogs 는 정적 데이터라 여기 없는 id 는 기다린다고 생기지 않는다 —
-	// "Loading dialog" 라는 영문 리터럴이 박혀 있었는데 뜻도 틀렸다.
-	// 공용 실패 화면(state.loadFailed)으로 보낸다. 목업 정본(activity__failed)이
-	// 다시 시도 버튼을 켜 둔 채로 그리므로 __root.tsx 의 에러 경계와 같은
-	// 새로고침을 물린다 — 안 물리면 눌리는데 아무 일도 안 하는 버튼이 된다.
-	if (!dialog)
-		return (
-			<FailedScreen
-				lesson={lesson}
-				onExit={onClose}
-				onRetry={() => window.location.reload()}
-			/>
-		);
-
+	// **찾는 일이 없어졌다.** 부모(`routes/learn/mission-chat.tsx`)가 서버에서
+	// 받은 그 과의 행을 넘겨 주고, `dialog` 가 없으면 애초에 이 화면을 안 그린다.
+	// 예전 실패 화면은 부모의 `contentState` 가 대신 본다(loading · locked · failed).
 	const gender = dialog.ai_gender;
-	const missionList = dialog_keywords.filter(
-		(item) => item.dialog_id === dialogId,
+	/*
+	 * **`useMemo` 가 없으면 화면이 무한히 다시 그린다.**
+	 *
+	 * `filter` 는 렌더마다 새 배열을 낸다. 그 배열이 아래 「달성 수를 위로
+	 * 올린다」 효과의 의존성에 들어 있어서, 효과가 **매 렌더** 돌며 부모의
+	 * `setMissionState` 를 부른다 → 부모가 다시 그린다 → 새 배열 → 다시…
+	 *
+	 * 그 고리가 부모의 인라인 콜백까지 새로 만들어 `createMsg` 를 갈아치우고,
+	 * 그러면 초기 로드 효과가 다시 돌아 `getChatDialog` 를 또 부른다.
+	 * **2026-08-31 실측: 8초에 3,520건** — 브라우저가 소켓이 모자라 죽었다
+	 * (`ERR_INSUFFICIENT_RESOURCES`). 서버가 500 을 내고 있어서 눈에 띄었지,
+	 * 200 이었으면 조용히 돌기만 했을 자리다.
+	 */
+	const missionList = useMemo(
+		() => dialog_keywords.filter((item) => item.dialog_id === dialogId),
+		[dialogId],
 	);
 	const scenarioImgUrl = `${env.RES_URL_ROOT}/${dialog.content_img}`;
 
@@ -407,8 +419,8 @@ export default function MissionDialog({
 	return (
 		<ChatScreen
 			lesson={lesson}
-			scenario={dialog.scenario}
-			scenarioTranslated={dialog.scenario_eng}
+			scenario={dialog.situation_ko}
+			scenarioTranslated={dialog.situation_en}
 			scenarioImgUrl={scenarioImgUrl}
 			missions={missionList}
 			completed={completedList}

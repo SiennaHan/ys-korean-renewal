@@ -3,9 +3,12 @@ import { getChatListByBookId } from "@/api/chat";
 import { isChapterOpen, isJamoChapterOpen } from "@/api/entitlement";
 import { listUserFlashcardWord } from "@/api/flashcard";
 import { getLearningProgress } from "@/api/learning-record";
+import {
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
 import { books } from "@/shared/data/book";
 import { chapters } from "@/shared/data/chapter";
-import { dialogs } from "@/shared/data/dialog";
 import { setNumericId } from "@/shared/data/flashcard";
 import {
 	getBlankQuestionCount,
@@ -20,6 +23,7 @@ import {
 	hasRoleplayData,
 	hasWordData,
 } from "@/shared/data/learn-data-check";
+import type { MissionChatItem } from "@/shared/data/mission-chat";
 import { modules } from "@/shared/data/module";
 import { units } from "@/shared/data/unit";
 import { useEntitlement } from "@/shared/store/entitlement-store";
@@ -162,6 +166,25 @@ export default function TextbookContent() {
 		return !!findModuleCode("mission_chat");
 	}, [findModuleCode]);
 
+	/*
+	 * 그 과의 미션대화 시나리오 — **서버에서 온다**(DEV-05).
+	 *
+	 * 완료 판정에 `legacy_id`("C4")가 필요해서다. 전에는 구 앱 덤프
+	 * `dialog.ts`(1.96MB)를 걸러 썼다.
+	 *
+	 * **잠긴 과에는 안 부른다.** 부르면 402 만 받는다 — 자물쇠는 이미 그려져 있고
+	 * 잠긴 과의 완료 여부는 물을 일이 아니다. 열린 과는 캐시에 남아, 학습자가
+	 * 실제로 들어갈 때 왕복이 없다.
+	 */
+	const missionChapter =
+		activeBookTab === "jamo" || selectedLocked ? null : activeBookTab;
+	const { bundle: missionBundle } = useChapterContent(
+		missionChapter,
+		missionChapter == null ? null : selectedChapter?.seq,
+		"mission-chat",
+	);
+	const missionScenarios = rowsOf<MissionChatItem>(missionBundle, "scenarios");
+
 	// Fetch learning progress
 	const [progress, setProgress] = useState<LearningProgress>({});
 	const [flashcardCompleted, setFlashcardCompleted] = useState(false);
@@ -197,25 +220,37 @@ export default function TextbookContent() {
 		} else {
 			setFlashcardCompleted(false);
 		}
-
-		// Mission chat completion: check chat status
-		const chapterDialogs = dialogs.filter(
-			(d: { book_id: number; chapter: number }) =>
-				d.book_id === bookId && d.chapter === seq,
-		);
-		if (chapterDialogs.length > 0) {
-			getChatListByBookId(bookId).then((chats) => {
-				const dialogIds = chapterDialogs.map((d: { id: string }) => d.id);
-				const allCompleted = dialogIds.every((dialogId: string) => {
-					const chat = chats.find((c) => c.dialog_id === dialogId);
-					return chat?.status === "completed";
-				});
-				setMissionChatCompleted(allCompleted);
-			});
-		} else {
-			setMissionChatCompleted(false);
-		}
 	}, [activeBookTab, selectedChapter?.id]);
+
+	/*
+	 * 미션대화 완료 판정 — **효과를 따로 뒀다.**
+	 *
+	 * 시나리오 id 가 서버에서 오므로(위 `missionScenarios`) 늦게 도착한다. 위
+	 * 효과에 합치면 도착할 때마다 학습 진도·플래시카드까지 다시 부르게 된다.
+	 * 그리고 합치면서 의존성에 안 넣으면 **빈 목록으로 굳어 영영 미완료**가 된다 —
+	 * 이 저장소가 DEV-05 에서 세 번 밟은 자리다.
+	 */
+	useEffect(() => {
+		const bookId = activeBookTab === "jamo" ? null : (activeBookTab as number);
+		const ids = missionScenarios.map((s) => s.legacy_id).filter(Boolean);
+		if (bookId == null || ids.length === 0) {
+			setMissionChatCompleted(false);
+			return;
+		}
+		let alive = true;
+		getChatListByBookId(bookId).then((chats) => {
+			if (!alive) return;
+			setMissionChatCompleted(
+				ids.every(
+					(id) => chats.find((c) => c.dialog_id === id)?.status === "completed",
+				),
+			);
+		});
+		return () => {
+			// 과를 빠르게 옮기면 늦게 온 응답이 새 과의 판정을 덮어쓴다
+			alive = false;
+		};
+	}, [activeBookTab, missionScenarios]);
 
 	/** 메뉴의 완료 여부: 학습한 문항 수 >= 총 문제 수이면 완료 */
 	/**
