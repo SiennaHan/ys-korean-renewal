@@ -209,7 +209,8 @@ const vi = {
 		withdraw: {
 			title: "Xóa tài khoản",
 			lead: "Khi bạn rời đi, những điều sau sẽ xảy ra.",
-			lossAccount: "Bạn không thể dùng lại tài khoản này — đăng nhập sẽ bị chặn",
+			lossAccount:
+				"Bạn không thể dùng lại tài khoản này — đăng nhập sẽ bị chặn",
 			lossName: "Tên và email của bạn bị xóa và không thể khôi phục",
 			keptRecords:
 				"Hồ sơ học tập vẫn được giữ lại nhưng không còn gắn với tên bạn — câu đã làm, tiến độ, hội thoại với AI, tệp ghi âm",
