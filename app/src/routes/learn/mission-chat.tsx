@@ -1,4 +1,5 @@
 import {
+	Navigate,
 	createFileRoute,
 	useNavigate,
 	useRouter,
@@ -11,7 +12,12 @@ import { BriefingScreen } from "@/components/main/activity";
 import { env } from "@/config/env";
 import { useActivityState } from "@/hooks/use-activity-state";
 import {
-	findMissionChat,
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
+import {
+	type MissionChatItem,
+	firstMissionChat,
 	parseMissionDetail,
 } from "@/shared/data/mission-chat";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -44,7 +50,13 @@ function RouteComponent() {
 	);
 	const { unlock } = useSharedAudio();
 
-	const dialog = findMissionChat(level, lesson);
+	/** 시나리오는 서버에서 온다(2026-08-31 · DEV-05). 과당 하나다 */
+	const { bundle, state: contentState } = useChapterContent(
+		level,
+		lesson,
+		"mission-chat",
+	);
+	const dialog = firstMissionChat(rowsOf<MissionChatItem>(bundle, "scenarios"));
 	const keywordList = parseMissionDetail(dialog?.mission_detail ?? "");
 	const scenarioImgUrl = `${env.RES_URL_ROOT}/${dialog?.content_img}`;
 
@@ -107,6 +119,17 @@ function RouteComponent() {
 	const goBack = () => {
 		router.history.back();
 	};
+
+	/*
+	 * 콘텐츠가 서버에서 오면서 생긴 갈래(2026-08-31 · DEV-05).
+	 * 잠긴 과는 자물쇠가 사는 교재 목록으로 — 형제 활동들과 같다.
+	 */
+	if (contentState === "loading") {
+		return <div className="h-full bg-white" />;
+	}
+	if (contentState === "locked") {
+		return <Navigate to="/main/textbook" replace />;
+	}
 
 	// 대화·리포트 단계 — 라우트가 아니라 이 화면이 띄운다 (명세 §4)
 	if (phase === "chat" && dialog) {

@@ -13,7 +13,6 @@
  * 완료 판정 화면)도 당분간 구 데이터를 그대로 쓴다 — 완료 판정이 백엔드가 돌려주는
  * 키워드 문자열과 정확히 맞아야 하는데, 백엔드는 아직 검수 전 라벨을 들고 있다.
  */
-import raw from "@/shared/data/n7_mission_chat.json";
 
 export interface MissionChatItem {
 	item_id: string;
@@ -44,15 +43,15 @@ export interface MissionChatItem {
 	user_role: string;
 }
 
-export const missionChats = raw as MissionChatItem[];
-
-export function findMissionChat(
-	bookId: number | undefined,
-	chapter: number | undefined,
+/*
+ * **번들의 배열을 걷었다**(2026-08-31 · DEV-05). 시나리오는 서버에서 온다 —
+ * `useChapterContent(bookId, chapterSeq, "mission-chat")` 이 `scenarios` 를 준다.
+ * 과당 하나라 첫 항목이 곧 그 과의 시나리오다.
+ */
+export function firstMissionChat(
+	scenarios: MissionChatItem[],
 ): MissionChatItem | undefined {
-	return missionChats.find(
-		(item) => item.book_id === bookId && item.chapter === chapter,
-	);
+	return scenarios[0];
 }
 
 /** "인사: Say hello. / 이름: Say what your name is." → [{label, instruction}] */
