@@ -1,7 +1,7 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 8793060
-     — 확인: 목록 화면이 매니페스트로 옮겨졌다(DEV-05). §04 「목록을 만드는 데이터」 표의
-       네 줄이 낡아서 고쳤다 — 활동 유무·문항 수·플래시카드·미션대화 전부 출처가 바뀌었다 -->
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 20b591b
+     — 확인: 미션대화 완료 판정이 구 앱 덤프(dialog.ts)를 떠나 서버로 갔다. §04 표에
+       그 줄을 더했다 — 개수와 달리 id 가 필요해 매니페스트로는 안 되는 자리다 -->
 <!-- 왜: 심화학습 두 줄이 켜지는지가 이 데이터와 이 목록 컴포넌트에 걸려 있다 -->
 <title>교재학습 탭 — 활동으로 들어가는 유일한 길</title>
 <style>
@@ -192,6 +192,8 @@
       <td><b>1~8급 전부에 있다</b>(2026-08-25 원장 배선) — 2~8급도 <span class="file">on</span> 이다.<br><b>세트 번호는 서버가 안 준다</b> — 앱이 급·과로 계산한다(<span class="file">flashcard.ts</span> 의 <code>setNumericId</code>).<br>수는 여기 적지 않는다 — <code>build-content.py --check</code> 의 <code>n6_flashcard</code></td></tr>
     <tr><td>심화 — 미션 대화</td><td>같은 매니페스트의 <code>mission-chat</code> 개수</td>
       <td>전에는 <span class="file">module.ts</span> 의 <code>scene_type==="mission_chat"</code> 을 뒤졌다 — <b>2026-08-31 에 매니페스트로 모았다.</b><br>수는 여기 적지 않는다</td></tr>
+    <tr><td>미션 대화 <b>완료 판정</b></td><td><code>GET /content/{급}/{과}/mission-chat</code> 의 <code>legacy_id</code><br>+ <code>GET /dialog/mission/book/{급}</code> 의 <code>status</code></td>
+      <td>전에는 구 앱 덤프 <span class="file">dialog.ts</span>(1.96MB)를 걸렀다 — <b>2026-08-31 에 그 파일을 지웠다</b>(DEV-05).<br><b>잠긴 과에는 안 부른다</b> — 402 만 받고, 잠긴 과의 완료 여부는 물을 일이 아니다.<br>개수(위 줄)와 달리 <b>id 가 필요해서</b> 매니페스트로는 안 된다</td></tr>
   </tbody>
 </table>
 </div>
