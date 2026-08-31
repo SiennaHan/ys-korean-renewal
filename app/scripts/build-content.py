@@ -235,6 +235,58 @@ def odd_quotes(sheet, rows):
     return out
 
 
+# 그 행이 무엇인지 말해 주는 열. **번호가 밀렸는지 보려면 내용을 봐야 한다**
+IDENTITY = {
+    "n1_word_list": "word", "n1_word_quiz": "prompt", "n2_ai_role_play": "ko",
+    "n3_listen_script": "audio_text", "n3_listen_script_line": "text",
+    "n3_listen_repeat": "question", "n4_blank_question": "question",
+    "n5_read_answer_text": "text", "n5_read_answer_questions": "question",
+    "n6_flashcard": "set_title", "n6_flashcard_card": "word",
+    "n7_mission_chat": "scenario_title", "n8_jamo": "target_word",
+}
+
+ID_MAX = 12          # `FCW-3-12-004` 가 12자다. 학습 기록의 card_id 도 이 폭에 맞춘다
+
+
+def renumbered(sheet, rows, prev):
+    """**같은 `item_id` 가 딴 것을 가리키게 됐나** — 행을 지우면서 번호를 다시 매긴 것.
+
+    `item_id` 는 `FCW-3-12-004` 처럼 **과 안의 자리 번호**다. 가운데 행을 지우고
+    번호를 다시 매기면 그 뒤가 전부 한 칸씩 밀린다. 2026-08-31 에 실제로 났다 —
+    3급 12과에서 「면허증」을 지우자 `FCW-3-12-004` 가 「자가용」에서 「중고차」가 됐다.
+
+    **왜 위험한가.** 학습 기록(`ko_learning_record.question_id`)·복습 큐·플래시카드의
+    「알아요/몰라요」가 그 번호로 문항을 가리킨다. 밀리면 **맞힌 기록이 다른 문항에
+    붙는다.** 채점 시트는 지금까지 삭제가 없어서 안 터졌을 뿐이다.
+
+    **정한 것(2026-08-31) — 행을 지울 때 번호를 다시 매기지 않는다.** 빈 번호를
+    남긴다. 그러면 `FCW-3-12-003` 은 영영 「면허증」의 자리이고 아무도 그것을 쓰지 않는다.
+
+    문항을 **다시 쓰는 것**도 내용이 바뀌는 일이라(v48 의 읽기 오답 수정) 기계가 둘을
+    못 가른다. 그래서 **과의 행 수가 줄어든 자리만** 밀림으로 본다 — 빈 번호를 남기면
+    행 수는 줄어도 남은 번호의 뜻은 안 바뀌므로 여기 안 걸린다.
+    """
+    col = IDENTITY.get(sheet)
+    if not col or not prev:
+        return []
+    was = {r.get("item_id"): r.get(col) for r in prev if r.get("item_id")}
+    def chapters(rs):
+        out = {}
+        for r in rs:
+            k = (r.get("book_id"), r.get("chapter"))
+            out[k] = out.get(k, 0) + 1
+        return out
+    before, after = chapters(prev), chapters(rows)
+    shrunk = {k for k, n in before.items() if after.get(k, 0) < n}
+    hits = []
+    for r in rows:
+        k = r.get("item_id")
+        if k in was and str(r.get(col) or "") != str(was[k] or "") \
+           and (r.get("book_id"), r.get("chapter")) in shrunk:
+            hits.append((k, was[k], r.get(col)))
+    return hits
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", type=Path, default=None)
@@ -248,6 +300,8 @@ def main():
 
     warnings: list[tuple[str, int, str, str]] = []
     warnings_status: list[tuple[str, list[str]]] = []
+    renumber_warnings: list[tuple[str, list]] = []
+    long_ids: list[tuple[str, list[str]]] = []
     dropped_total = 0
     plan = [(s, f"{s}.json") for s in CONTENT_SHEETS] + list(EXTRA_SHEETS.items())
     for sheet, filename in plan:
@@ -267,6 +321,14 @@ def main():
         derive_from_prompt(sheet, rows)
         rows = coerce(rows, int_columns(rows, prev))
         derived = carry(sheet, rows, prev)
+
+        moved = renumbered(sheet, rows, prev)
+        if moved:
+            renumber_warnings.append((sheet, moved))
+        too_long = sorted({r["item_id"] for r in rows
+                           if len(str(r.get("item_id") or "")) > ID_MAX})
+        if too_long:
+            long_ids.append((sheet, too_long))
 
         text = json.dumps(rows, ensure_ascii=False, indent="\t") + "\n"
         before = len(prev) if prev else 0
@@ -304,6 +366,28 @@ def main():
     # n7_mission_chat·n8_jamo 둘 다 배선됐다(2026-08-24) — 이 안내는 더 필요 없다.
     # 새로 원장에 시트가 생기고 아직 안 쓴다면 여기에 같은 모양으로 다시 둔다.
 
+    # ── 번호가 밀렸나 · 번호가 길어졌나 ───────────────────────────────
+    #
+    # 둘 다 **막는다(종료코드 1)**. 경고로 두면 다음 사람이 지나간다 —
+    # 그리고 이 둘은 지나가면 학습 기록이 조용히 어긋나는 종류다.
+    if renumber_warnings:
+        print("\n❌ 같은 item_id 가 딴 것을 가리킨다 — **행을 지우며 번호를 다시 매긴 것 같다**")
+        print("   정한 것(2026-08-31): 행을 지울 때 번호를 다시 매기지 마라. **빈 번호를 남겨라.**")
+        print("   그래야 학습 기록·복습 큐·플래시카드의 「알아요」가 딴 문항에 안 붙는다.")
+        for sheet, moved in renumber_warnings:
+            print(f"   {sheet} — {len(moved)}개")
+            for k, was, now in moved[:5]:
+                print(f"     {k}  {str(was)[:18]!r}  →  {str(now)[:18]!r}")
+            if len(moved) > 5:
+                print(f"     … 외 {len(moved) - 5}개")
+    if long_ids:
+        print(f"\n❌ item_id 가 {ID_MAX}자를 넘는다 — 학습 기록의 card_id 가 그 폭이라 잘린다")
+        for sheet, ids in long_ids:
+            print(f"   {sheet}: {', '.join(ids[:6])}")
+    if renumber_warnings or long_ids:
+        return 1
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main() or 0)

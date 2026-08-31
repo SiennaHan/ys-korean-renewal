@@ -112,7 +112,10 @@ class UserFlashcardWord(Base) :
     user_id        = Column(String(45),   nullable=False, index=True)
     flashcard_id   = Column(Integer,      nullable=False, index=True)
     card_type      = Column(String(2),    nullable=False, index=True)
-    card_id        = Column(String(10),   nullable=False, index=True)
+    # **12자다.** `FCW-3-12-004` 처럼 item_id 가 그대로 들어온다
+    # (`flashcard_word.ts` 의 `legacy_id || item_id`). 전에 VARCHAR(10) 이라
+    # 잘렸고, 그러면 한 과의 001~009 가 같은 값이 됐다 — migration_flashcard_card_id.sql
+    card_id        = Column(String(12),   nullable=False, index=True)
     status         = Column(String(10),   nullable=False)
     updated_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 
