@@ -41,8 +41,19 @@ HIDDEN = {
 }
 
 
+# DB 안에서만 쓰는 이름 → **앱이 이미 쓰는 이름**으로 되돌린다.
+#
+# 표에서는 `chapter_seq`·`ledger_id` 로 두었다(기존 표들과 어휘를 맞추려고).
+# 그런데 앱은 JSON 시절의 `chapter`·`id` 로 거른다 — 예컨대 `fill-blank.tsx` 가
+# `q.chapter === chapterSeq` 와 `retryOnly.includes(q.id)` 를 쓴다.
+#
+# **응답을 앱 모양으로 내면 배선은 「어디서 오느냐」만 바뀌고 「무엇이냐」는 안 바뀐다.**
+# 앱 13곳을 동시에 고치는 것보다 여기 두 줄이 싸고, 되돌리기도 쉽다.
+OUT_NAME = {"chapter_seq": "chapter", "ledger_id": "id"}
+
+
 def _row(obj) -> dict:
-    return {c.name: getattr(obj, c.name)
+    return {OUT_NAME.get(c.name, c.name): getattr(obj, c.name)
             for c in obj.__table__.columns if c.name not in HIDDEN}
 
 

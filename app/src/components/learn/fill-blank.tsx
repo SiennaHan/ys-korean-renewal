@@ -13,16 +13,20 @@ import {
 	Dock,
 	FailedScreen,
 	FeedbackMessage,
+	LoadingScreen,
 	PrimaryButton,
 	ProblemCard,
 	ResultScreen,
 	WRONG_VISIBLE_MS,
 } from "@/components/main/activity";
 import { useActivityState } from "@/hooks/use-activity-state";
+import {
+	rowsOf,
+	useChapterContent,
+} from "@/shared/content/use-chapter-content";
 import { type InstructedItem, useInstruction } from "@/shared/data/instruction";
-import blankQuestions from "@/shared/data/n4_blank_question.json";
 import { nextLessonActivity } from "@/shared/lesson-flow";
-import { useNavigate, useRouter } from "@tanstack/react-router";
+import { Navigate, useNavigate, useRouter } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { ReactNode } from "react";
@@ -227,15 +231,22 @@ export default function FillBlank({
 	 * 큐가 비어 있으면(다른 기기에서 이미 다 풀었다든가) 손대지 않는다 —
 	 * retryOnly 가 빈 배열이면 문항이 0개인 화면이 된다.
 	 */
+	/**
+	 * **문항은 서버에서 온다**(2026-08-31 · DEV-05). 전에는 번들의 원장을 걸렀다.
+	 *
+	 * 훅이 캐시·잠금·실패를 쥔다. 응답이 JSON 시절과 **같은 모양**이라
+	 * 아래 거르는 규칙은 그대로다 — 서버가 `chapter`·`id` 로 되돌려 낸다.
+	 */
+	const { bundle, state: contentState } = useChapterContent(
+		bookId,
+		chapterSeq,
+		"fill-blank",
+	);
 	const questions = useMemo(() => {
-		const all = (blankQuestions as BlankItem[]).filter(
-			(q) =>
-				(bookId == null || q.book_id === bookId) &&
-				(chapterSeq == null || q.chapter === chapterSeq),
-		);
+		const all = rowsOf<BlankItem>(bundle, "questions");
 		// 결과 화면의 [다시 풀기] 는 "그 활동의 미해결 항목만" 이다(shell_spec §3.3)
 		return retryOnly ? all.filter((q) => retryOnly.includes(q.id)) : all;
-	}, [bookId, chapterSeq, retryOnly]);
+	}, [bundle, retryOnly]);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -617,7 +628,42 @@ export default function FillBlank({
 		);
 	}
 
-	if (!question) {
+	/**
+	 * 콘텐츠가 서버에서 오면서 생긴 세 갈래(2026-08-31 · DEV-05).
+	 *
+	 * **`locked` 와 `failed` 를 가른다** — 사용자에게 할 말이 다르다. 잠긴 것은
+	 * 구독을 권할 자리고, 실패는 다시 시도를 권할 자리다. 뭉뚱그리면 둘 다 틀린
+	 * 말을 한다. 잠김은 사실 여기까지 오기 전에 목록 화면이 막지만, **주소를
+	 * 직접 치면 여기로 온다** — 그래서 화면에도 갈래가 있어야 한다.
+	 */
+	if (contentState === "loading") {
+		return (
+			<LoadingScreen
+				lesson={chapterLabel}
+				current={0}
+				total={0}
+				onExit={() => router.history.back()}
+			/>
+		);
+	}
+	/*
+	 * **잠긴 과는 결제 안내로 보낸다.** 목록 화면이 자물쇠를 그리지만 주소를 직접
+	 * 치면 그 목록을 거치지 않는다 — 게임이 `GameGate` 로 같은 자리를 막는 것과
+	 * 같은 사정이다. 「인터넷을 확인하세요」로 뭉뚱그리면 구독하면 열린다는 것을
+	 * 알 길이 없다.
+	 */
+	if (contentState === "locked") {
+		/*
+		 * **결제 안내를 여기서 그리지 않는다.** `PaywallPanel` 의 스타일이
+		 * `nav.css` 안에서 `.nav-frame` 아래에만 정의돼 있는데(95~115행)
+		 * `/learn/*` 은 그 껍데기 밖이라 **글자만 남는다** — 실제로 그렇게 떴다.
+		 *
+		 * 자물쇠가 사는 곳은 교재 목록이다. 거기로 돌려보내면 이미 있는 잠금 UI 가
+		 * 제 모양으로 뜬다. 게임은 `GameGate` 가 `.nav-frame` 안이라 직접 그릴 수 있다.
+		 */
+		return <Navigate to="/main/textbook" replace />;
+	}
+	if (contentState === "failed" || !question) {
 		return (
 			<FailedScreen
 				lesson={chapterLabel}
