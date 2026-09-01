@@ -6,10 +6,50 @@ from persistence import model
 from util import timeutils
 
 # dialog
+class _Dialog :
+    """대화 런타임이 쓰는 여섯 칸만 노출하는 껍데기.
+
+    호출부(business/chat.py 8곳 · business/dialog.py 1곳)가 `dialog.prompt` 꼴로
+    읽으므로 이름을 그대로 맞춰 준다 — 그래서 이 파일 밖은 안 고쳐도 된다.
+    """
+    __slots__ = ("book_id", "prompt", "first_msg", "mission", "scenario", "level", "item_id")
+
+    def __init__(self, row) :
+        self.item_id   = row.item_id
+        self.book_id   = row.book_id
+        self.prompt    = row.ai_persona_prompt
+        self.first_msg = row.ai_first_line
+        self.mission   = row.mission_detail
+        self.scenario  = row.situation_ko
+        self.level     = str(row.level or row.book_id)
+
+
 async def getDialog(dialogId: str, db: Session) :
-    query = db.query(model.KoChatDialog)
-    query = query.filter(model.KoChatDialog.id == dialogId)
-    return query.first()
+    """`ko_mission_chat` 에서 legacy_id 로 찾는다.
+
+    **전에는 `ko_chat_dialog.id == dialogId` 였다. 그것으로는 못 찾는다.**
+    프런트가 넘기는 값은 구 앱 식별자인 문자열(`"C4"`)인데 그 열은 `int
+    AUTO_INCREMENT` 다. MySQL 은 `WHERE id = 'C4'` 를 **`id = 0` 으로** 견준다 —
+    2026-09-01 에 로컬 DB 에서 확인했다:
+
+        WHERE id = 'C4'   → id=0 행에 걸림
+        WHERE id = 'C10'  → 같은 id=0 행에 걸림
+
+    그러니 `id=0` 행이 없으면 **모든 과가 404** 이고, 있으면 **117개 과가 전부
+    같은 프롬프트**를 받는다. 어느 쪽이든 맞물리지 않는다.
+
+    그리고 `ko_chat_dialog` 는 **이 저장소가 채울 방법이 없다** — 씨드 스크립트
+    여섯 중 그 표를 건드리는 것이 하나도 없다. 원장(v53)이 실제로 흘러드는 표는
+    `ko_mission_chat` 이고(`api/seed_textbook_content.py`), 대화가 쓰는 여섯 칸을
+    그 표가 전부 갖고 있다. 그래서 읽는 곳을 그쪽으로 옮겼다.
+
+    `legacy_id` 는 `String(20)` 이라 `"C4"` 가 그대로 열쇠가 된다. 사용자 대화
+    기록 `ko_chat.dialog_id` 도 이미 `String(10)` 으로 그 값을 담고 있다.
+    """
+    row = (db.query(model.KoMissionChat)
+             .filter(model.KoMissionChat.legacy_id == dialogId)
+             .first())
+    return _Dialog(row) if row else None
 
 # TTS cache (hash → audio url)
 async def getTtsCache(hashKey: str, db: Session) :
