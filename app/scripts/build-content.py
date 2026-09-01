@@ -52,11 +52,19 @@ EXTRA_SHEETS = {
 
 # ai_persona_prompt 본문에 박혀 있는 것을 정규식으로 뽑아 JSON 에 얹는다.
 # 컬럼을 늘리지 않되, 화면이 바로 쓸 수 있게 한다(n3 의 voice CARRY_OVER 와 같은 결).
+#
+# **원장 v51 에서 프롬프트를 다시 쓰며 이 형식이 영어에서 한국어로 바뀌었다.**
+# 옛 정규식(`**AI Gender:** female`)은 하나도 안 맞게 됐는데 **아무 데서도 안 걸렸다** —
+# 파생이 빈 문자열이 되어도 조용히 통과했고, 서버 `_normGender` 가 빈 값을 female 로
+# 떨어뜨려서 **남성 배역 35개가 여성 목소리로 말할 뻔했다**(2026-09-01 에 찾음).
+# 그래서 아래 derive_from_prompt 가 **하나라도 못 뽑으면 실패로 멈춘다.**
 DERIVE_FROM_PROMPT = {
-    "ai_gender": r"\*\*AI Gender:\*\*\s*(\w+)",
-    "ai_role": r"\*\*Role:\*\*\s*([^\n-]+?)\s*-\s*\*\*AI Gender",
-    "user_role": r"\*\*User Role:\*\*\s*([^\n]+?)\s*-\s*\*\*Situation",
+    "ai_gender": r"- 당신의 성별:\s*(.+)",
+    "ai_role": r"- 당신의 역할:\s*(.+)",
+    "user_role": r"- 사용자의 역할:\s*(.+)",
 }
+# 프롬프트는 한국어로 적고 앱·서버는 영어 값을 쓴다
+GENDER_KO = {"여성": "female", "남성": "male", "여": "female", "남": "male"}
 
 # 컬럼 이름을 JSON 키로 쓸 수 없는 것만 바꾼다
 KEY_FIX = {"grammar_tag(대표형)": "grammar_tag", "급": "level", "분류": "category",
@@ -182,15 +190,36 @@ def derive_from_prompt(sheet, rows):
 
     n7_mission_chat 전용. 컬럼을 늘리지 않기로 한 결정(v27) 때문에 이 셋은
     프롬프트 텍스트 안에만 있다 — 화면이 매번 정규식을 돌리게 두지 않고
-    생성 시점에 한 번 뽑아 둔다. 117행 전량 매치 확인됨(2026-08-24).
+    생성 시점에 한 번 뽑아 둔다. 117행 전량 매치 확인됨(2026-09-01 재확인 — 형식이 한국어로 바뀌어 정규식을 고쳤다).
+    **하나라도 못 뽑으면 멈춘다.** 조용한 빈 값이 목소리를 바꿔 놓는다.
     """
     if sheet != "n7_mission_chat":
         return
+    miss = []
     for r in rows:
         p = str(r.get("ai_persona_prompt", ""))
         for key, pat in DERIVE_FROM_PROMPT.items():
             m = re.search(pat, p)
-            r[key] = m.group(1).strip() if m else ""
+            if not m:
+                miss.append(f"{r.get('item_id')} · {key}")
+                r[key] = ""
+                continue
+            val = m.group(1).strip()
+            if key == "ai_gender":
+                if val not in GENDER_KO:
+                    miss.append(f"{r.get('item_id')} · 모르는 성별 값 {val!r}")
+                    r[key] = ""
+                    continue
+                val = GENDER_KO[val]
+            r[key] = val
+    if miss:
+        raise SystemExit(
+            f"★ ai_persona_prompt 에서 파생 값을 못 뽑았다 — {len(miss)}곳\n"
+            f"   {', '.join(miss[:6])}{' …' if len(miss) > 6 else ''}\n"
+            "   프롬프트 형식이 바뀌면 DERIVE_FROM_PROMPT 를 같이 고쳐라.\n"
+            "   **조용히 빈 값으로 두면 안 된다** — 서버가 빈 성별을 female 로 떨어뜨려\n"
+            "   남성 배역이 여성 목소리로 말한다(2026-09-01 에 실제로 그랬다)."
+        )
 
 
 def carry(sheet, rows, prev):
