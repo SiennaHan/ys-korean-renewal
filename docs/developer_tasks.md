@@ -1,7 +1,10 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ e3f5cae
-     — 확인: xternal 이 여섯에서 일곱으로 늘었다(feedback_hub.py, 2026-08-29) — DEV-12 의 셈에
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 144d3fe
+     — 확인: 2026-09-01(2) · gates.yml 주석이 어드민 게이트를 못 넣는 이유로 적어 둔 것이 거짓이 됐다
+       — 이 문서 DEV-10 과 같은 거짓이었고 DEV-14 는 이미 끝났다고 적고 있었다. 워크플로의
+       job·스텝 자체는 안 바뀌었다(DEV-10 의 셈에 영향 없음).
+       앞 확인: xternal 이 여섯에서 일곱으로 늘었다(feedback_hub.py, 2026-08-29) — DEV-12 의 셈에
        반영했다. model.py 는 ko_inquiry 에 actual·expected 가 늘었을 뿐 이 문서가 보는
        표·게이트·기능 게이트와는 무관하다. 그 뒤 6d203e5(다른 세션)는 build-content.py·
        n7_mission_chat.json 만 건드려 이 문서와 무관. 440900f(다른 세션)는 model.py 에
