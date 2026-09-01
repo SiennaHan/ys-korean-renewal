@@ -539,6 +539,7 @@ const en = {
 		catLifestyle: "Lifestyle",
 		reportAudio: "Hard to hear the speech",
 		reportInappropriate: "Sexual or violent content",
+		reportFailed: "Couldn't save the report. Please try again.",
 		noResultTitle: "No results for “{{word}}”",
 		noResultBody: "Try another expression",
 	},

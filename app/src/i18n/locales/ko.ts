@@ -554,6 +554,7 @@ const ko = {
 		catLifestyle: "일상",
 		reportAudio: "발음이 잘 안 들려요",
 		reportInappropriate: "선정적·폭력적 내용",
+		reportFailed: "신고를 저장하지 못했어요. 다시 눌러 주세요.",
 		noResultTitle: "'{{word}}' 검색 결과가 없어요",
 		noResultBody: "다른 표현으로 찾아보세요",
 	},

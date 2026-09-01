@@ -130,7 +130,14 @@ export interface ReportItem {
 
 	error_code?: string;
 	error_msg?: string;
+	/** 검색어(진단용) — 정렬·제외 키가 아니다 */
 	content?: string;
+	/** 구간 시작 초 · 검색에 걸린 대본 줄 — 영상 단위 신고는 둘 다 없다 (DEV-02) */
+	segment_start?: number;
+	matched_line?: string;
+	/** 슬랙 알림에만 쓴다 — 서버 컬럼이 아니다 */
+	title?: string;
+	clip_category?: string;
 	user_id?: string | null;
 	created_at?: Date;
 }

@@ -544,6 +544,7 @@ const ja = {
 		catLifestyle: "日常",
 		reportAudio: "発音が聞き取りにくいです",
 		reportInappropriate: "性的・暴力的な内容",
+		reportFailed: "通報を保存できませんでした。もう一度お試しください。",
 		noResultTitle: "「{{word}}」の検索結果がありません",
 		noResultBody: "別の表現で探してみてください",
 	},

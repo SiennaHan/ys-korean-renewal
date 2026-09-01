@@ -1,4 +1,4 @@
-import { getGuestId } from "@/api/api";
+import type { ReportItem } from "@/api/apiType";
 import { createReport, listReport } from "@/api/report";
 import { clips } from "@/shared/data/clip";
 import { MoreVertical, Search, X } from "lucide-react";
@@ -36,6 +36,47 @@ const timeStringToSeconds = (time: string) => {
 };
 
 const CATEGORY = "video";
+
+/**
+ * 어떤 검색어로도 재생되지 않는다 — 이 셋만 검색 결과에서 **뺀다**(clip_spec_v1 §05-6).
+ * 「발음이 잘 안 들려요」(audio_quality)는 하위 정렬로, 「선정적·폭력적 내용」
+ * (inappropriate)은 숨기지 않고 슬랙으로만 다룬다 — 되돌릴 사람이 없어서다.
+ */
+const UNPLAYABLE_CODES = new Set(["100", "101", "150"]);
+
+/** 신고된 구간의 키. 검색어가 달라도 같은 줄이면 같은 구간이라 (영상, 시작 초)만 본다 */
+const segmentKey = (youtubeId: string, start: number) =>
+	`${youtubeId}@${start}`;
+
+const matchPriority = (text: string, word: string) => {
+	const lower = text.toLowerCase();
+	const target = word.toLowerCase();
+	if (lower.startsWith(target)) return 1;
+	const words = lower.split(/\s+/);
+	if (words.includes(target)) return 2;
+	if (lower.includes(target)) return 3;
+	return 999;
+};
+
+/*
+ * 정렬 — clip_spec_v1 §05-6. **신고 여부가 우선순위보다 앞선 축이다.**
+ * 신고된 구간은 목록에서 빠지지 않고, 우선순위·길이로 매긴 순서를 유지한
+ * 채로 신고 안 된 구간들 아래로 내려간다. 뺀 것이 아니라 **뒤로 보낸 것**이다.
+ */
+const compareResults = (
+	a: ResultItem,
+	b: ResultItem,
+	word: string,
+	demoted: Set<string>,
+) => {
+	const dA = demoted.has(segmentKey(a.youtubeId, a.start)) ? 1 : 0;
+	const dB = demoted.has(segmentKey(b.youtubeId, b.start)) ? 1 : 0;
+	if (dA !== dB) return dA - dB;
+	const pA = matchPriority(a.content, word);
+	const pB = matchPriority(b.content, word);
+	if (pA !== pB) return pA - pB;
+	return a.content.length - b.content.length;
+};
 
 /** 값은 클립 데이터가 쓰는 영어 그대로다 — 보이는 글자만 번역한다 */
 const CATEGORIES = [
@@ -291,7 +332,12 @@ const VideoPlayer = ({
 			default:
 				errorMsg = "알 수 없는 재생 오류가 발생했습니다.";
 		}
-		if (errorCode) await reportError(video, errorCode, errorMsg);
+		if (!errorCode) return;
+		// 같은 영상에서 재생 오류가 반복 나도(자동 재시도 등) 세션에 한 번만 신고한다.
+		// 이 dedupe 는 자동 신고 전용이다 — 사람이 바텀시트로 보내는 신고는 막지 않는다
+		if (errorIds.includes(video.youtubeId)) return;
+		errorIds.push(video.youtubeId);
+		await reportError(video, errorCode, errorMsg);
 	};
 
 	const onPlayerStateChange = (event: YouTubeEvent) => {
@@ -336,10 +382,16 @@ const ReportBottomSheet = ({
 	video,
 	onClose,
 	onReport,
+	pending,
+	failed,
 }: {
 	video: ResultItem;
 	onClose: () => void;
 	onReport: (type: string) => void;
+	/** 신고를 보내는 중 — 두 번 보내는 것을 막으려고 버튼을 잠깐 잠근다 */
+	pending: boolean;
+	/** 직전 시도가 저장에 실패했다 — 같은 이유를 다시 누르면 재시도된다(DEV-02) */
+	failed: boolean;
 }) => {
 	const { t } = useTranslation();
 	return (
@@ -361,10 +413,16 @@ const ReportBottomSheet = ({
 						<X size={14} />
 					</button>
 				</div>
+				{failed && (
+					<p className="px-[16px] pb-[8px] font-medium text-[#F76853] text-[13px] leading-[18px]">
+						{t("clip.reportFailed")}
+					</p>
+				)}
 				<button
 					type="button"
+					disabled={pending}
 					onClick={() => onReport("audio_quality")}
-					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px]"
+					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px] disabled:opacity-50"
 				>
 					<div className="flex size-[24px] items-center justify-center text-icon-strong">
 						<svg
@@ -387,8 +445,9 @@ const ReportBottomSheet = ({
 				</button>
 				<button
 					type="button"
+					disabled={pending}
 					onClick={() => onReport("inappropriate")}
-					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px]"
+					className="flex w-full items-center gap-[4px] bg-white px-[16px] py-[12px] disabled:opacity-50"
 				>
 					<div className="flex size-[24px] items-center justify-center text-icon-strong">
 						<svg
@@ -423,22 +482,29 @@ const ReportBottomSheet = ({
 	);
 };
 
+/**
+ * 신고 저장. **누가 신고했는지는 서버가 인증 토큰에서 정한다** — 여기서 user_id 를
+ * 안 보내는 이유다(DEV-02). 실패하면 `null` 을 돌려주고, 호출부가 실패 상태를 보여 준다.
+ */
 const reportError = async (
 	video: ResultItem,
 	errorCode: string | number,
 	errorMsg: string,
-) => {
-	if (errorIds.includes(video.youtubeId)) return;
-	errorIds.push(video.youtubeId);
-	const userId = getGuestId();
-	const request = {
+): Promise<ReportItem | null> => {
+	const request: ReportItem = {
 		category: CATEGORY,
 		target_id: video.youtubeId,
 		error_code: `${errorCode}`,
 		error_msg: errorMsg,
-		user_id: userId,
+		// 검색어(진단용) · 구간 시작 초 · 검색에 걸린 대본 줄 — clip_spec_v1 §06
+		content: video.word,
+		segment_start: video.start,
+		matched_line: video.content,
+		// 슬랙 알림에만 쓴다(inappropriate 일 때) — DB 컬럼이 아니다
+		title: video.title,
+		clip_category: video.category,
 	};
-	await createReport(request);
+	return await createReport(request);
 };
 
 /**
@@ -623,6 +689,15 @@ export default function Content4() {
 	const [selectedCategory, setSelectedCategory] = useState<CategoryType>("All");
 	const [playingVideo, setPlayingVideo] = useState<ResultItem | null>(null);
 	const [reportVideo, setReportVideo] = useState<ResultItem | null>(null);
+	const [reportPending, setReportPending] = useState(false);
+	const [reportFailed, setReportFailed] = useState(false);
+	/**
+	 * 신고된 구간(발음이 잘 안 들려요) — `${youtubeId}@${start}` 키. 정렬에서
+	 * 하위로 미는 재료다. 재생 불가로 뺀 영상과 별도로 관리한다 — clip_spec_v1 §05-6
+	 */
+	const [demotedSegments, setDemotedSegments] = useState<Set<string>>(
+		() => new Set(),
+	);
 
 	/*
 	 * **한 번에 그리는 수.** 결과 상한이 아니다 — `clip_spec_v1` §05 의 2번
@@ -712,26 +787,13 @@ export default function Content4() {
 				}
 			}
 
-			// 우선순위 정렬
-			const sorted = searchResults.sort((a, b) => {
-				const getPriority = (text: string) => {
-					const lower = text.toLowerCase();
-					const target = word.toLowerCase();
-					if (lower.startsWith(target)) return 1;
-					const words = lower.split(/\s+/);
-					if (words.includes(target)) return 2;
-					if (lower.includes(target)) return 3;
-					return 999;
-				};
-				const pA = getPriority(a.content);
-				const pB = getPriority(b.content);
-				if (pA !== pB) return pA - pB;
-				return a.content.length - b.content.length;
-			});
+			const sorted = searchResults.sort((a, b) =>
+				compareResults(a, b, word, demotedSegments),
+			);
 
 			setResults(sorted);
 		},
-		[filteredClips],
+		[filteredClips, demotedSegments],
 	);
 
 	const onSearchChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -765,8 +827,17 @@ export default function Content4() {
 		);
 	};
 
+	/** 신고 시트를 완전히 닫는다 — 진행 중·실패 상태까지 같이 지운다 */
+	const closeReportSheet = () => {
+		setReportVideo(null);
+		setReportPending(false);
+		setReportFailed(false);
+	};
+
 	const onMenuClick = (video: ResultItem) => {
 		setReportVideo(video);
+		setReportPending(false);
+		setReportFailed(false);
 	};
 
 	/*
@@ -786,24 +857,70 @@ export default function Content4() {
 		inappropriate: "inappropriate content (sexual/violent)",
 	};
 
+	/*
+	 * **조용한 실패를 없앤다** — clip_spec_v1 §06 · DEV-02. 전에는 `createReport` 가
+	 * 실패해도 반환을 안 보고 바텀시트를 닫아 보낸 것처럼 보였다. 이제 실패하면
+	 * 시트를 열어 둔 채 실패 문구를 보여 준다 — 같은 이유 버튼을 다시 누르면 재시도된다.
+	 */
 	const onReport = async (type: string) => {
-		if (!reportVideo) return;
-		await reportError(reportVideo, type, REPORT_LABEL[type] ?? type);
-		setReportVideo(null);
+		if (!reportVideo || reportPending) return;
+		setReportPending(true);
+		setReportFailed(false);
+		const saved = await reportError(
+			reportVideo,
+			type,
+			REPORT_LABEL[type] ?? type,
+		);
+		setReportPending(false);
+		if (saved) {
+			/*
+			 * 방금 신고된 구간을 **지금 보이는 목록에도** 바로 반영한다 —
+			 * `setDemotedSegments` 는 다음 렌더에서야 반영되므로, 그 자리에서 바로
+			 * `searchScript` 를 다시 불러도 옛 값으로 정렬한다. 대신 병합한 집합을
+			 * 직접 만들어 지금 결과를 그 자리에서 다시 정렬한다
+			 */
+			if (type === "audio_quality") {
+				const key = segmentKey(reportVideo.youtubeId, reportVideo.start);
+				const nextDemoted = new Set(demotedSegments);
+				nextDemoted.add(key);
+				setDemotedSegments(nextDemoted);
+				setResults((prev) =>
+					[...prev].sort((a, b) =>
+						compareResults(a, b, searchWord, nextDemoted),
+					),
+				);
+			}
+			closeReportSheet();
+		} else {
+			setReportFailed(true);
+		}
 	};
 
 	useEffect(() => {
 		const fetch = async () => {
 			const reportedList = await listReport(CATEGORY);
-			if (reportedList.length > 0) {
-				const reportedIds = reportedList.map((item) => item.target_id);
-				const excludeReported = clips.filter(
-					(item) => !reportedIds.includes(item.youtube_id),
-				);
-				setFilteredClips(excludeReported);
-			} else {
-				setFilteredClips(clips);
-			}
+
+			// 재생 불가(100·101·150)만 검색 결과에서 뺀다 — 나머지는 하위 정렬/슬랙으로 다룬다
+			const unplayableIds = new Set(
+				reportedList
+					.filter((r) => UNPLAYABLE_CODES.has(r.error_code ?? ""))
+					.map((r) => r.target_id),
+			);
+			setFilteredClips(
+				unplayableIds.size > 0
+					? clips.filter((item) => !unplayableIds.has(item.youtube_id))
+					: clips,
+			);
+
+			// 신고된 구간(발음이 잘 안 들려요) — 정렬에서 하위로 미는 재료
+			setDemotedSegments(
+				new Set(
+					reportedList
+						.filter((r) => r.error_code === "audio_quality")
+						.filter((r) => typeof r.segment_start === "number")
+						.map((r) => segmentKey(r.target_id, r.segment_start as number)),
+				),
+			);
 		};
 		fetch();
 	}, []);
@@ -873,8 +990,10 @@ export default function Content4() {
 				reportVideo ? (
 					<ReportBottomSheet
 						video={reportVideo}
-						onClose={() => setReportVideo(null)}
+						onClose={closeReportSheet}
 						onReport={onReport}
+						pending={reportPending}
+						failed={reportFailed}
 					/>
 				) : null
 			}

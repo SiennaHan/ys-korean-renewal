@@ -540,6 +540,7 @@ const vi = {
 		catLifestyle: "Đời sống",
 		reportAudio: "Khó nghe rõ phát âm",
 		reportInappropriate: "Nội dung khiêu dâm hoặc bạo lực",
+		reportFailed: "Không lưu được báo cáo. Vui lòng thử lại.",
 		noResultTitle: "Không có kết quả cho “{{word}}”",
 		noResultBody: "Thử một cách diễn đạt khác",
 	},
