@@ -95,7 +95,7 @@ cd app && pnpm install && pnpm dev
 |---|---|
 | 1 파이썬 의존성 | `api/.venv`. `requirements.txt` 에 `httpx` 가 빠져 있어 넣었다 |
 | 2 `api/.env` | **`DB_*` 다섯과 `JWT_SECRET` 뿐.** 본보기가 `api/.env.example` 이다.<br>**`JWT_SECRET` 은 base64 여야 한다** — `auth.py:38` 이 `b64decode` 한다. 아무 문자열이면 로그인이 500 이다 |
-| 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**표는 안 넣는다** — `createAllTables()` 가 표를 스스로 만든다. **칸은 아니다** — 기존 표에 칼럼을 더하는 마이그레이션은 손으로 돌려야 한다(`api/migration_*.sql`. `BLOCKERS.md` §6-b)(2026-08-29 기준 **33개**. 세려면 `grep -c '^class Ko' api/persistence/model.py`) |
+| 3 MySQL | `brew install mysql` · `brew services start mysql` · `CREATE DATABASE korean`.<br>**표는 안 넣는다** — `createAllTables()` 가 표를 스스로 만든다(모델 클래스 수는 `grep -c '^class Ko' api/persistence/model.py`로 센다). **칸은 아니다** — 기존 표에 칼럼을 더하는 마이그레이션은 손으로 돌려야 한다(`api/migration_*.sql`. `BLOCKERS.md` §6-b). **수를 여기 적지 않는다** — `ls api/migration_*.sql \| wc -l`로 세라(전에 「33개」라 적혀 있었는데, 그 수는 실은 마이그레이션이 아니라 모델 클래스 수였다 — 2026-08-29 편집 때 문장만 바뀌고 괄호가 옛 문장 것을 그대로 끌고 왔다) |
 | 4 외부 키 | **하나도 없어도 된다.** 2026-08-26 에 로드 때 자격증명을 요구하던 다섯 곳을<br>요청 시점으로 옮겼다 — `BLOCKERS.md` §6-b |
 
 **앱까지 붙여서 화면에서 돌렸다.** 게스트 로그인 → 홈 → 교재학습 → 활동 →
