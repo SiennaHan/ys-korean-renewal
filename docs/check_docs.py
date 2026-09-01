@@ -624,6 +624,24 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         ]),
     ]
 
+    # 교재 표 수 · 공개 금지가 지키는 자산 — 둘 다 사람이 적었다가 낡은 것들이다
+    st = seed_tables()
+    if st:
+        specs.append(("교재 표 수", st, [
+            r"교재\s*(?:표\s*)?(\d+)\s*개",
+            r"표\s*(\d+)\s*개\s*·\s*API",
+            r"교재\s*문항[^\n]{0,30}?표\s*(\d+)개",
+        ]))
+    for label, prefix, pats in [
+        ("추적된 듣기 음원 수", "app/public/audio",
+         [r"mp3\s*([\d,]+)\s*개"]),
+        ("추적된 교재 지면 이미지 수", "app/public/textbook",
+         [r"jpg\s*([\d,]+)\s*장"]),
+    ]:
+        n, _ = tracked_under(prefix)
+        if n:
+            specs.append((label, n, pats))
+
     # 콘텐츠 실측 — 원장이 갱신되면 문서의 수가 낡는다
     dc = data_counts()
     if "i18n 로케일 수" in dc:
@@ -709,7 +727,10 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             flat = re.sub(r"\s+", " ", body)
             for pat in pats:
                 for m in re.finditer(pat, flat):
-                    tok = m.group(1)
+                    # **쉼표를 떼고 본다.** 「mp3 1,133개」처럼 천 단위 쉼표가 있으면
+                    # 아래 isdigit() 이 거짓이 되어 **조용히 건너뛰었다**(2026-09-01).
+                    # 안 걸리는 것이 아니라 안 세는 것이라 티가 안 난다.
+                    tok = m.group(1).replace(",", "")
                     got = HANGUL_NUM.get(tok, None)
                     if got is None:
                         if not tok.isdigit():
@@ -1063,7 +1084,7 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
         r"(?:번들에 (?:남은 콘텐츠는|콘텐츠는) ?자모뿐"
         r"|번들에 구 앱 덤프가 (?:하나도 )?안 남았"
         r"|번들의 구 앱 덤프는 이것뿐"
-        r"|번들에서 구 앱 덤프가 다 없어졌다)"
+        r"|(?:번들에서 )?구 앱 덤프(?:가|는)[^\n]{0,20}?(?:다 )?없어졌다)"
         r"(?![^\n]{0,60}(?:적혀|적어|있었다|였다|거짓|아니다|기록|참이 아니))",
         "**원장(교재 문항) 콘텐츠** 중 번들에 남은 것이 자모뿐이다 — 번들 전체는 아니다. "
         "clip.ts(표현클립 329편)가 5.5MB 로 실려 나가는 JS 7,691KB 의 71% 이고 "
@@ -1087,9 +1108,12 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
 
 # 「전에 이렇게 적혀 있었다」를 봐주는 낱말. 각 지뢰의 부정 예측과 같은 뜻인데
 # **줄 전체**를 본다는 것이 다르다.
+# **주장 자체에 쓰일 수 있는 낱말은 넣지 마라.**
+# 처음에 「지웠·삭제·없어졌·되찾·0행」을 넣었다가, 「구 앱 덤프는 다 없어졌다」라는
+# **거짓 주장이 「없어졌」때문에 스스로 면제**되는 것을 대조군에서 봤다(2026-09-01).
+# 여기 들어갈 것은 「이건 지금 하는 말이 아니다」를 뜻하는 표지뿐이다.
 UNSAYING = ("적혀", "적어", "있었다", "이었다", "였다", "거짓", "아니다", "아니었",
-            "기록", "지웠", "삭제", "없어졌", "되찾", "참이 아니", "0행",
-            "옛 이름", "그때", "전에는")
+            "기록", "참이 아니", "옛 이름", "그때는", "전에는", "전에 이렇게")
 
 
 def quoting(flat: str, m) -> bool:
@@ -1112,6 +1136,43 @@ def quoting(flat: str, m) -> bool:
     b = flat.find("\n", m.end())
     line = flat[a: b if b != -1 else len(flat)]
     return any(w in line for w in UNSAYING)
+
+
+def seed_tables() -> int:
+    """`seed_textbook_content.py` 가 채우는 교재 표 수.
+
+    CLAUDE.md 에 「표 13개」로 적혀 있었는데 `ko_mission_hint` 를 더한 날
+    **14개가 됐고 아무 데서도 안 걸렸다**(2026-09-01). 세션마다 읽히는 문서라
+    그 한 줄이 모든 새 작업의 출발점이 된다.
+    """
+    f = ROOT / "api" / "seed_textbook_content.py"
+    if not f.exists():
+        return 0
+    s = f.read_text(encoding="utf-8")
+    if "TABLES: list[" not in s:
+        return 0
+    blk = s.split("TABLES: list[")[1].split("= [", 1)[1].split("\n]")[0]
+    return len(re.findall(r'^    \("(\w+)", "[\w.]+\.json"', blk, re.M))
+
+
+def tracked_under(prefix: str) -> tuple[int, int]:
+    """git 이 **추적하는** 그 폴더의 파일 수와 바이트.
+
+    「공개 금지」가 무엇을 지키라는 것인지 이 수가 정한다. 전에 「약 21MB」로
+    적혀 있었는데 2026-08-21 의 값이었고, 실제로는 **듣기 음원 68.9MB(mp3 1,133개)와
+    교재 지면 이미지 34.2MB(jpg 939장)를 아예 안 세고 있었다** — 여섯 배 축소된
+    수였다(2026-09-01 실측). 크기를 사람이 적으면 이렇게 낡는다.
+    """
+    r = subprocess.run(["git", "ls-files", "-z", "--", prefix],
+                       cwd=ROOT, capture_output=True, text=True)
+    names = [n for n in r.stdout.split("\0") if n]
+    total = 0
+    for n in names:
+        try:
+            total += (ROOT / n).stat().st_size
+        except OSError:
+            pass
+    return len(names), total
 
 
 def stale_phrases(text: dict[str, str]) -> list[str]:
