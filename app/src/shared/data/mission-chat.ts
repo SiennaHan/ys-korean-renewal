@@ -6,12 +6,13 @@
  * 이후 검수(v29)에서 고친 내용이 반영돼 있지 않다. 이제 원장에서 생성한
  * n7_mission_chat.json 을 쓴다 — 117행 전량 검수 완료(BLOCKERS.md §8).
  *
- * ⚠️ 실제 AI 대화(백엔드 `/chat/{dialogId}/...`)는 아직 별도다. 그쪽은
- * `ko_chat_dialog` DB 테이블(자체 prompt·first_msg·mission·scenario 컬럼)을 쓰고,
- * 이 배선은 그 테이블을 건드리지 않는다 — 그래서 `dialogId` 는 이 파일이 아니라
- * 계속 구 체계(`legacy_id`, 예: "C4")를 쓴다. mission-dialog.tsx(실제 대화·미션
- * 완료 판정 화면)도 당분간 구 데이터를 그대로 쓴다 — 완료 판정이 백엔드가 돌려주는
- * 키워드 문자열과 정확히 맞아야 하는데, 백엔드는 아직 검수 전 라벨을 들고 있다.
+ * **실제 AI 대화도 2026-09-01 부터 이 원장을 본다.** 서버가 읽던 `ko_chat_dialog`
+ * 는 0행이었고 열쇠도 안 맞았다(`id` 가 int 라 MySQL 이 `"C4"` 를 `id=0` 으로
+ * 견줬다). 그래서 `repo_chat.getDialog` 가 `ko_mission_chat` 을 `legacy_id` 로
+ * 읽도록 옮겼다 — BLOCKERS.md §8.
+ *
+ * `dialogId` 는 그대로 구 체계(`legacy_id`, 예: "C4")다. 사용자 대화 기록
+ * `ko_chat.dialog_id` 가 이미 그 값을 담고 있어 바꾸면 기록이 끊긴다.
  */
 
 export interface MissionChatItem {
@@ -73,4 +74,60 @@ export function parseMissionDetail(missionDetail: string): MissionKeyword[] {
 			};
 		})
 		.filter((item) => item.label);
+}
+
+/**
+ * 미션 슬롯마다 모범 문장 하나 — 원장 `n7_mission_hint`(354행).
+ *
+ * **브리핑에서만 쓴다.** 대화 화면에는 힌트를 여는 길이 없다(93e869f) — 그래야
+ * 대화 중에 베낄 문장이 화면에 없고 미션 발화가 전부 기억에서 나온다.
+ *
+ * `chat_item_id` 가 부모 미션(`MC-1-04-001`)이고 `item_id` 는 이 행(`MH-…-1`)이다.
+ * 서버 열 이름이 원장과 뒤집혀 있다 — `api/persistence/model.py` 의 그 절.
+ */
+export interface MissionHintItem {
+	item_id: string;
+	chat_item_id: string;
+	book_id: number;
+	chapter: number;
+	slot_seq: number;
+	mission_label: string;
+	hint_ko: string;
+	hint_en: string;
+	hint_jp: string;
+	hint_cn: string;
+	hint_vi: string;
+	hint_grammar: string;
+}
+
+/** 학습자 언어의 번역. 없으면 영어로, 그것도 없으면 빈 문자열 */
+function hintTranslated(hint: MissionHintItem, lang: string): string {
+	if (lang === "ja" && hint.hint_jp) return hint.hint_jp;
+	if (lang === "zh" && hint.hint_cn) return hint.hint_cn;
+	if (lang === "vi" && hint.hint_vi) return hint.hint_vi;
+	return hint.hint_en ?? "";
+}
+
+/**
+ * 브리핑이 그릴 [한국어, 번역] 짝 — **`slot_seq` 순서 그대로**.
+ *
+ * 브리핑은 `keywords` 와 `hints` 를 **자리로** 짝지어 그린다. 그래서 순서가
+ * 곧 뜻이고, 어긋나면 「이름」 밑에 인사 문장이 붙는데 **화면은 멀쩡해 보인다** —
+ * 구 앱 덤프가 정확히 그 꼴이었다(117과 중 109과). 원장 쪽에서 그것을 막는 것은
+ * `build-content.py` 의 `hint_slot_mismatch` 다.
+ *
+ * 그래서 여기서는 **개수가 안 맞으면 아예 안 그린다.** 모자란 채로 그리면 남은
+ * 라벨에 엉뚱한 문장이 붙는데, 힌트가 없는 것보다 나쁘다.
+ */
+export function hintsFor(
+	hints: MissionHintItem[],
+	chatItemId: string,
+	missionCount: number,
+	lang: string,
+): [string, string][] {
+	const mine = hints
+		.filter((h) => h.chat_item_id === chatItemId)
+		.sort((a, b) => a.slot_seq - b.slot_seq);
+	if (mine.length !== missionCount) return [];
+	return mine.map((h) => [h.hint_ko, hintTranslated(h, lang)]);
 }

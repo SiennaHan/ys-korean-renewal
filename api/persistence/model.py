@@ -991,6 +991,51 @@ class KoMissionChat(Base) :
     )
 
 
+class KoMissionHint(Base) :
+    """미션 힌트 — 원장 n7_mission_hint.json · 354행.
+
+    미션 슬롯 하나에 모범 문장 하나다. **브리핑에서만 보여 준다** — 대화 화면에는
+    힌트를 여는 길이 없다(93e869f). 그래서 대화 중에 베낄 문장이 화면에 없고
+    미션 발화는 전부 기억에서 나온다.
+
+    **열 이름이 원장과 다르다.** 원장은 행 열쇠를 `hint_id`, 부모를 `item_id` 라
+    부르는데 여기서는 뒤집어 둔다 — `item_id` 가 이 행의 것(`MH-1-04-001-1`)이고
+    부모는 `chat_item_id`(`MC-1-04-001`)다. `ko_flashcard_card` 의
+    `set_item_id`, `ko_read_question` 의 `text_item_id` 와 같은 규약이다.
+    바꾸는 자리는 `seed_textbook_content.py` 의 RENAME_BY_TABLE 이다.
+
+    **원장 이름 그대로 두면 씨드가 멈춘다.** 씨드는 「`item_id` 가 표를 가로질러
+    겹치면 열쇠 전제가 깨진 것」이라며 멈추는데, 원장의 힌트 `item_id` 는 일부러
+    부모와 같은 값이고 한 과에서 서넛이 나눠 쓴다. 이름을 규약에 맞추면 그 불변식이
+    그대로 참이 된다 — 검사를 느슨하게 하는 대신 데이터를 규약에 맞췄다.
+
+    **`slot_seq` 순서가 곧 뜻이다.** 브리핑은 미션 라벨과 힌트를 자리로 짝지어
+    그리므로, 순서가 어긋나면 「이름」 밑에 인사 문장이 붙는데 화면은 멀쩡해 보인다.
+    `build-content.py` 의 hint_slot_mismatch 가 그것을 막는다.
+    """
+    __tablename__  = "ko_mission_hint"
+    item_id        = Column(String(24),        nullable=False, primary_key=True)
+    chat_item_id   = Column(String(24),        nullable=False)
+    book_id        = Column(Integer,           nullable=False)
+    chapter_seq    = Column(Integer,           nullable=False)
+    slot_seq       = Column(Integer,           nullable=False)
+    mission_label  = Column(String(50),        nullable=True)
+    hint_ko        = Column(String(200),       nullable=True)
+    hint_en        = Column(String(300),       nullable=True)
+    hint_jp        = Column(String(200),       nullable=True)
+    hint_cn        = Column(String(200),       nullable=True)
+    hint_vi        = Column(String(300),       nullable=True)
+    hint_grammar   = Column(String(100),       nullable=True)
+    review_status  = Column(String(24),        nullable=False)
+    change_note    = Column(Text,              nullable=True)
+    created_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp())
+    updated_at     = Column(DateTime,        nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_mission_hint_ch", "book_id", "chapter_seq"),
+        Index("ix_ko_mission_hint_chat", "chat_item_id"),
+    )
+
+
 class KoJamo(Base) :
     """자모 — 원장 n8_jamo.json · 529행"""
     __tablename__  = "ko_jamo"

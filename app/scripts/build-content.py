@@ -48,6 +48,10 @@ EXTRA_SHEETS = {
     # ai_persona_prompt 본문에서 뽑는다(파생 가능한 것은 옆에 안 둔다는 원칙) —
     # DERIVE_FROM_PROMPT 참고.
     "n7_mission_chat": "n7_mission_chat.json",
+    # 354행 · 미션 슬롯마다 모범 문장 하나(5개 언어). 브리핑의 힌트 버튼이 쓴다 —
+    # **대화 화면에는 힌트를 여는 길이 없다**(93e869f). 슬롯 수와 정확히 맞는다:
+    # 칩 3개인 과 114 + 4개인 과 3 = 354. 그 짝이 어긋나면 hint_slot_match 가 멈춘다.
+    "n7_mission_hint": "n7_mission_hint.json",
 }
 
 # ai_persona_prompt 본문에 박혀 있는 것을 정규식으로 뽑아 JSON 에 얹는다.
@@ -126,7 +130,7 @@ DROP_STATUS = {"deleted"}
 KNOWN_STATUS = {
     "auto_checked", "draft", "reviewed", "deleted",
     "tagged_v20", "filled_v19", "added_v17", "authored_v21", "authored_v23",
-} | {f"fixed_v{n}" for n in range(10, 40)}
+} | {f"fixed_v{n}" for n in range(10, 40)} | {f"draft_v{n}" for n in range(40, 60)}
 
 # 전에 여기 `PORTED_AS_IS` 가 있었다 — 자모 529행이 전부 `draft` 인데 그게 "저작 전"
 # 이라는 뜻이 아니라는 것을 이름으로 적어 두는 예외였다. **2026-08-28 에 없앴다** —
@@ -272,9 +276,70 @@ IDENTITY = {
     "n5_read_answer_text": "text", "n5_read_answer_questions": "question",
     "n6_flashcard": "set_title", "n6_flashcard_card": "word",
     "n7_mission_chat": "scenario_title", "n8_jamo": "target_word",
+    "n7_mission_hint": "hint_ko",
 }
 
+# 그 시트의 **행 하나를 가리키는 열**. 기본은 item_id 다.
+#
+# 힌트 시트만 다르다 — item_id 는 미션 대화(`MC-1-04-001`)를 가리켜 3~4행이 나눠 쓰고,
+# 행을 가리키는 것은 `hint_id`(`MH-1-04-001-1`)다. 이것을 안 갈라 두면 renumbered() 가
+# 한 과의 힌트 서넛을 같은 열쇠로 뭉개서 **밀림 검사가 조용히 헛돈다.**
+KEY = {"n7_mission_hint": "hint_id"}
+
 ID_MAX = 12          # `FCW-3-12-004` 가 12자다. 학습 기록의 card_id 도 이 폭에 맞춘다
+
+
+def mission_slots(detail):
+    """`mission_detail` 을 라벨 목록으로. **앱의 `parseMissionDetail` 과 같은 규칙이다.**
+
+    앱은 `" / "` 를 **조건 없이** 자르고 첫 `:` 앞을 라벨로 본다
+    (`app/src/shared/data/mission-chat.ts`). 여기서 더 똑똑하게 자르면 검사만
+    통과하고 화면은 딴 것을 그린다 — 그러니 규칙을 일부러 그대로 베낀다.
+    """
+    out = []
+    for chunk in (detail or "").split(" / "):
+        i = chunk.find(":")
+        label = (chunk if i < 0 else chunk[:i]).strip()
+        if label:
+            out.append(label)
+    return out
+
+
+def hint_slot_mismatch(chat_rows, hint_rows):
+    """힌트가 미션 슬롯과 **자리까지** 맞나. (어긋난 것, 힌트가 아예 없는 과) 를 준다.
+
+    **왜 자리까지 보나.** 브리핑은 `keywords` 와 `hints` 를 **같은 순서로** 짝지어
+    그린다(`BriefingContent.hints` 주석). 순서가 어긋나면 「이름」 밑에 인사 문장이
+    붙는데 **화면은 멀쩡해 보인다** — 2026-09-01 에 구 앱 덤프가 정확히 그 꼴이었다
+    (`이름 → "Say hello."`, 117과 중 109과). 그때는 사람이 눈으로 찾았다.
+
+    그래서 라벨을 **위치별로** 견준다. 개수만 세면 순서가 바뀐 것을 못 잡는다.
+    """
+    want = {r.get("item_id"): mission_slots(r.get("mission_detail"))
+            for r in chat_rows if r.get("item_id")}
+    got = {}
+    for r in hint_rows:
+        got.setdefault(r.get("item_id"), []).append(r)
+    bad, missing = [], []
+    for item_id, labels in sorted(want.items()):
+        rows = sorted(got.get(item_id, []), key=lambda r: r.get("slot_seq") or 0)
+        if not rows:
+            missing.append(item_id)
+            continue
+        if len(rows) != len(labels):
+            bad.append((item_id, f"슬롯 {len(labels)}개인데 힌트 {len(rows)}개"))
+            continue
+        for i, (label, r) in enumerate(zip(labels, rows), start=1):
+            if str(r.get("mission_label") or "").strip() != label:
+                bad.append((item_id,
+                            f"{i}번째 — 미션은 「{label}」인데 힌트는 「{r.get('mission_label')}」"))
+                break
+            if not str(r.get("hint_ko") or "").strip():
+                bad.append((item_id, f"{i}번째 「{label}」의 hint_ko 가 비었다"))
+                break
+    # 힌트 시트에만 있고 미션에는 없는 과 — 지운 미션의 힌트가 남은 것
+    orphan = sorted(set(got) - set(want))
+    return bad, missing, orphan
 
 
 def renumbered(sheet, rows, prev):
@@ -298,7 +363,8 @@ def renumbered(sheet, rows, prev):
     col = IDENTITY.get(sheet)
     if not col or not prev:
         return []
-    was = {r.get("item_id"): r.get(col) for r in prev if r.get("item_id")}
+    key = KEY.get(sheet, "item_id")
+    was = {r.get(key): r.get(col) for r in prev if r.get(key)}
     def chapters(rs):
         out = {}
         for r in rs:
@@ -309,7 +375,7 @@ def renumbered(sheet, rows, prev):
     shrunk = {k for k, n in before.items() if after.get(k, 0) < n}
     hits = []
     for r in rows:
-        k = r.get("item_id")
+        k = r.get(key)
         if k in was and str(r.get(col) or "") != str(was[k] or "") \
            and (r.get("book_id"), r.get("chapter")) in shrunk:
             hits.append((k, was[k], r.get(col)))
@@ -332,6 +398,7 @@ def main():
     renumber_warnings: list[tuple[str, list]] = []
     long_ids: list[tuple[str, list[str]]] = []
     dropped_total = 0
+    built: dict[str, list] = {}   # 시트끼리 견주는 검사용 (아래 hint_slot_mismatch)
     plan = [(s, f"{s}.json") for s in CONTENT_SHEETS] + list(EXTRA_SHEETS.items())
     for sheet, filename in plan:
         if sheet not in wb.sheetnames:
@@ -359,6 +426,7 @@ def main():
         if too_long:
             long_ids.append((sheet, too_long))
 
+        built[sheet] = rows
         text = json.dumps(rows, ensure_ascii=False, indent="\t") + "\n"
         before = len(prev) if prev else 0
         delta = f"{before} → {len(rows)}" if before != len(rows) else f"{len(rows)}"
@@ -413,7 +481,28 @@ def main():
         print(f"\n❌ item_id 가 {ID_MAX}자를 넘는다 — 학습 기록의 card_id 가 그 폭이라 잘린다")
         for sheet, ids in long_ids:
             print(f"   {sheet}: {', '.join(ids[:6])}")
-    if renumber_warnings or long_ids:
+
+    # ── 힌트가 미션 슬롯과 자리까지 맞나 ───────────────────────────────
+    hint_bad, hint_missing, hint_orphan = [], [], []
+    if "n7_mission_chat" in built and "n7_mission_hint" in built:
+        hint_bad, hint_missing, hint_orphan = hint_slot_mismatch(
+            built["n7_mission_chat"], built["n7_mission_hint"])
+        total = sum(len(mission_slots(r.get("mission_detail")))
+                    for r in built["n7_mission_chat"])
+        print(f"\n힌트  미션 슬롯 {total}개 · 힌트 {len(built['n7_mission_hint'])}행"
+              f" · 힌트 없는 과 {len(hint_missing)}")
+    if hint_bad:
+        print("\n❌ 힌트가 미션 슬롯과 어긋난다 — **브리핑이 라벨과 문장을 자리로 짝짓는다**")
+        print("   어긋나도 화면은 멀쩡해 보인다. 「이름」 밑에 인사 문장이 붙을 뿐이다.")
+        for item_id, why in hint_bad[:8]:
+            print(f"   {item_id}: {why}")
+        if len(hint_bad) > 8:
+            print(f"   … 외 {len(hint_bad) - 8}개")
+    if hint_orphan:
+        print("\n❌ 미션에 없는 과의 힌트가 남아 있다 — 미션을 지우고 힌트를 안 지운 것 같다")
+        print(f"   {', '.join(hint_orphan[:8])}")
+
+    if renumber_warnings or long_ids or hint_bad or hint_orphan:
         return 1
     return 0
 

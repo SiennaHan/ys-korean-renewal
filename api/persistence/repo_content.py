@@ -28,7 +28,10 @@ BUNDLES: dict[str, list[tuple[str, type, str | None]]] = {
                      ("questions", model.KoReadQuestion, "text_item_id")],
     "flashcard":    [("sets", model.KoFlashcardSet, None),
                      ("cards", model.KoFlashcardCard, "set_item_id")],
-    "mission-chat": [("scenarios", model.KoMissionChat, None)],
+    # 힌트는 **브리핑에서만** 쓴다 — 대화 화면에는 힌트를 여는 길이 없다(93e869f).
+    # 같은 묶음에 실어 보내면 화면이 요청을 더 하지 않는다.
+    "mission-chat": [("scenarios", model.KoMissionChat, None),
+                     ("hints", model.KoMissionHint, "chat_item_id")],
     "jamo":         [("items", model.KoJamo, None)],
 }
 

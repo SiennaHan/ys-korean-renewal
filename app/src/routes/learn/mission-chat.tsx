@@ -17,7 +17,9 @@ import {
 } from "@/shared/content/use-chapter-content";
 import {
 	type MissionChatItem,
+	type MissionHintItem,
 	firstMissionChat,
+	hintsFor,
 	parseMissionDetail,
 } from "@/shared/data/mission-chat";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -37,7 +39,7 @@ function RouteComponent() {
 	 * 하나뿐이라(실측 117개 · 과마다 하나) 원장을 (급, 과)로 바로 찾는다 —
 	 * 구 앱처럼 모듈→유닛→챕터를 거쳐 코드를 되짚을 필요가 없다.
 	 */
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { level, lesson } = Route.useSearch();
 	const navigate = useNavigate();
 	const router = useRouter();
@@ -48,6 +50,12 @@ function RouteComponent() {
 	const [phase, setPhase] = useState<"briefing" | "chat" | "report">(
 		"briefing",
 	);
+	/*
+	 * 힌트가 펼쳐져 있나. **브리핑 안에 두지 않고 여기서 쥔다** — 「열었다」가
+	 * 지표라서다(`hint_opened_at_briefing` · 개발 요청 v53 §2). 기록 자체는 아직
+	 * 안 붙었다. 붙일 때 이 자리에 이벤트 한 줄이면 된다.
+	 */
+	const [hintOpen, setHintOpen] = useState(false);
 	const { unlock } = useSharedAudio();
 
 	/** 시나리오는 서버에서 온다(2026-08-31 · DEV-05). 과당 하나다 */
@@ -59,6 +67,20 @@ function RouteComponent() {
 	const dialog = firstMissionChat(rowsOf<MissionChatItem>(bundle, "scenarios"));
 	const keywordList = parseMissionDetail(dialog?.mission_detail ?? "");
 	const scenarioImgUrl = `${env.RES_URL_ROOT}/${dialog?.content_img}`;
+
+	/*
+	 * 미션마다 모범 문장 하나 — **브리핑에서만 보여 준다**(개발 요청 v53 §2).
+	 * 대화 화면에는 힌트를 여는 길이 없어서 미션 발화는 전부 기억에서 나온다.
+	 *
+	 * 개수가 미션과 안 맞으면 `hintsFor` 가 빈 배열을 주고 브리핑은 버튼을 아예
+	 * 안 그린다 — 자리로 짝짓는 화면이라 모자란 채로 그리면 엉뚱한 라벨에 붙는다.
+	 */
+	const hintList = hintsFor(
+		rowsOf<MissionHintItem>(bundle, "hints"),
+		dialog?.item_id ?? "",
+		keywordList.length,
+		i18n.language,
+	);
 
 	/*
 	 * ⚠️ dialogId 는 구 체계(legacy_id, 예: "C4")를 그대로 쓴다. 실제 AI 대화를
@@ -134,6 +156,7 @@ function RouteComponent() {
 	);
 	const goToReport = useCallback(() => setPhase("report"), []);
 	const goToChatPhase = useCallback(() => setPhase("chat"), []);
+	const toggleHint = useCallback(() => setHintOpen((v) => !v), []);
 
 	/*
 	 * 콘텐츠가 서버에서 오면서 생긴 갈래(2026-08-31 · DEV-05).
@@ -182,7 +205,10 @@ function RouteComponent() {
 				sceneTranslated: dialog?.situation_en ?? "",
 				sceneImageUrl: dialog ? scenarioImgUrl : undefined,
 				keywords: keywordList.map((item) => [item.label, item.instruction]),
+				hints: hintList,
 			}}
+			hintOpen={hintOpen}
+			onHintToggle={toggleHint}
 			onExit={goBack}
 			onStart={() => void goChat()}
 		/>

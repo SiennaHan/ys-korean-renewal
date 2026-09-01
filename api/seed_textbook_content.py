@@ -64,10 +64,23 @@ TABLES: list[tuple[str, str, tuple[str, str, str | None] | None]] = [
     ("ko_flashcard_card", "n6_flashcard_card.json",
      ("set_item_id", "n6_flashcard.json", None)),
     ("ko_mission_chat", "n7_mission_chat.json", None),
+    # 힌트는 item_id 가 이미 부모(ko_mission_chat)의 열쇠라 부모 해석이 필요 없다
+    ("ko_mission_hint", "n7_mission_hint.json", None),
     ("ko_jamo", "n8_jamo.json", None),
 ]
 
 RENAME = {"chapter": "chapter_seq", "id": "ledger_id"}
+
+# 그 표에서만 다르게 부르는 열. **RENAME 보다 먼저 본다.**
+#
+# 힌트 시트는 행 열쇠를 `hint_id`, 부모를 `item_id` 라 부른다. 그대로 넣으면 아래
+# 「item_id 가 표를 가로질러 겹치면 멈춘다」에 걸린다 — 힌트의 `item_id` 는 일부러
+# 부모(`MC-1-04-001`)와 같은 값이고 한 과에서 서넛이 나눠 쓰기 때문이다.
+# **검사를 느슨하게 하는 대신 이름을 규약에 맞춘다** — 다른 자식 표들처럼
+# 자기 `item_id` 를 갖고 부모는 `<부모>_item_id` 로 가리킨다.
+RENAME_BY_TABLE = {
+    "ko_mission_hint": {"hint_id": "item_id", "item_id": "chat_item_id"},
+}
 
 
 def load(name: str) -> list[dict]:
@@ -104,8 +117,9 @@ def build_rows(cols: dict[str, set[str]]) -> dict[str, list[dict]]:
         made = []
         for r in rows:
             rec: dict = {}
+            per_table = RENAME_BY_TABLE.get(table, {})
             for k, v in r.items():
-                nm = RENAME.get(k, k)
+                nm = per_table.get(k) or RENAME.get(k, k)
                 if nm in cols[table]:
                     rec[nm] = v
             if parent:
@@ -138,6 +152,7 @@ IDENTITY = {
     "ko_read_text": "text", "ko_read_question": "question",
     "ko_flashcard_set": "set_title", "ko_flashcard_card": "word",
     "ko_mission_chat": "scenario_title", "ko_jamo": "target_word",
+    "ko_mission_hint": "hint_ko",
 }
 
 
