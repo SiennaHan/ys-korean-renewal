@@ -32,6 +32,16 @@ from shared import free_scope, full_scope
 # 기본은 켜짐. 사고가 나면 `.env` 한 줄과 재시작으로 끈다
 SCHOOL_FULL_SCOPE = os.environ.get("SCHOOL_FULL_SCOPE", "true").lower() in {"1", "true", "yes"}
 
+# **기본은 꺼짐 — 운영 배포는 지금과 동일하게 동작한다.**
+#
+# 켜면 `master_admin`·`school_admin` 계정도 학생 앱에서 전 범위를 본다. 어드민
+# 계정은 결제 없이 만들어지므로, 이게 없으면 관리자가 학생 화면을 확인하려 할 때
+# 게스트와 똑같이 잠긴 것만 본다 — 콘텐츠를 QA 하려면 결국 실제 학생 계정을
+# 빌려야 했다. 로컬 개발용 스위치라 `SCHOOL_FULL_SCOPE` 와 달리 기본값을 켜 두지
+# 않는다 — 운영의 모든 관리자 계정이 그 순간 전 콘텐츠를 보게 되는 것은 이 칸
+# 하나로 결정할 일이 아니다.
+ADMIN_FULL_SCOPE = os.environ.get("ADMIN_FULL_SCOPE", "false").lower() in {"1", "true", "yes"}
+
 
 def _utcNow():
     """**`util/timeutils.now()` 를 쓰지 마라** — 그쪽은 KST 라 9시간 어긋난다.
@@ -136,6 +146,21 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
         if accessEndedAt and accessEndedAt <= _utcNow():
             return _freeScope("school", expiresAt=jsonable_encoder(accessEndedAt))
         return _schoolScope() if SCHOOL_FULL_SCOPE else _freeScope("school")
+
+    # **관리자 계정 — `ADMIN_FULL_SCOPE` 가 켜져 있을 때만.** 기본은 꺼짐이므로
+    # 운영에서는 이 줄에 닿지 않는다(위 상수 주석). `_schoolScope()` 를 그대로
+    # 재쓴다 — 「전 급 · 자모 전부 · 게임 전부」는 학교 계약과 같은 모양이고,
+    # 판정을 한 벌 더 만들면 갈라진다.
+    #
+    # **`source` 를 새로 만들지 않는다 — `school` 그대로 낸다.** 앱의
+    # `EntitlementSource` 는 `"guest" | "school" | "purchase"` 로 닫혀 있다
+    # (`app/src/api/entitlement.ts`). 여기서 넷째 값을 내면 `asEntitlement` 가
+    # 응답 전체를 거절해 `entitlement` 가 `null` 이 되고, `isChapterOpen` 은
+    # `!ent` 를 먼저 보므로 **오히려 전부 잠긴 것처럼 보인다** — 이 스위치의
+    # 목적과 정반대다. 앱을 고치지 않고 서버 스위치 하나로 끝내려면 이미 있는
+    # 값만 써야 한다
+    if ADMIN_FULL_SCOPE and role in ("master_admin", "school_admin"):
+        return _schoolScope()
 
     # 개인 계정. 결제가 없으므로 아직 무료 범위다 — 잠긴 것을 누르면 결제로 간다
     return _freeScope("guest")
