@@ -961,8 +961,10 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 57ccc4a
-     — 확인(2026-09-01): repo_chat.getDialog 가 ko_chat_dialog 대신 ko_mission_chat 을
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 8bc23be
+     — 확인: 2026-09-01(2) · 표가 하나 늘었다(ko_mission_hint · 354행) — 씨드가 채우므로
+       「키 없이 학습 흐름이 돈다」는 그대로 참이고 힌트까지 포함된다. repo_error_report 는
+       DEV-02(표현클립 신고)라 이 절과 무관하다. 앞 확인: repo_chat.getDialog 가 ko_chat_dialog 대신 ko_mission_chat 을
        legacy_id 로 읽는다(6c5ec6a). 이 절이 말하는 「키 없이 학습 흐름이 돈다」는
        그대로 참이고 오히려 넓어졌다 — 미션 대화가 이제 로컬 씨드만으로 돈다
        (전에는 ko_chat_dialog 가 0행이라 500 이었다). 다만 TTS 는 여전히 GEMINI_API_KEY
@@ -1716,8 +1718,9 @@ JSON → DB 표 14개 → API 까지 **잃은 열 0 · 값도 「모두 같다�
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 5078017
-     — 확인(2026-09-01): package.json 이 두 번 움직였다 — Playwright(e2e 스크립트 ·
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 8bc23be
+     — 확인: 2026-09-01(2) · parity:activity 에 bundle-content-check.py 가 물렸다(8bc23be).
+       라우터 셋의 고정은 그대로다. 앞 확인: package.json 이 두 번 움직였다 — Playwright(e2e 스크립트 ·
        @playwright/test)와 parity:activity 에 bundle-content-check.py 를 물린 것.
        **라우터 셋의 고정은 그대로다**(실측: react-router 1.136.8 · router-plugin 1.136.8 ·
        router-devtools ^1.114.13 — 「셋 중 둘만」이 여전히 참이다).
