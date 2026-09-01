@@ -1,9 +1,10 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 1511e48
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 6d203e5
      — 확인: xternal 이 여섯에서 일곱으로 늘었다(feedback_hub.py, 2026-08-29) — DEV-12 의 셈에
        반영했다. model.py 는 ko_inquiry 에 actual·expected 가 늘었을 뿐 이 문서가 보는
-       표·게이트·기능 게이트와는 무관하다 -->
+       표·게이트·기능 게이트와는 무관하다. 그 뒤 6d203e5(다른 세션)는 build-content.py·
+       n7_mission_chat.json 만 건드려 이 문서와 무관 -->
 <!-- 왜: 카드의 「현재」는 전부 이 코드를 읽고 적은 관찰이다. 원본이 바뀌면 카드가 낡는다.
      경로를 넷으로 좁혔다 — 표(DEV-04·09·14) · 외부 호출 타임아웃(DEV-12) ·
      기능 게이트(DEV-03·09) · CI(DEV-10). 자주 우는 검사는 안 보고 넘기게 된다 -->
