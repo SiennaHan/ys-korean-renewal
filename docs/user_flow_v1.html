@@ -1,7 +1,7 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ 8031e54
-     — 확인: 리베이스로 sha 만 바뀌었다. 「나가는 길」 절은 그 커밋이 학기 종료와 탈퇴를
-       표로 가른 판 그대로다 -->
+<!-- 관찰: app/src/routes/qr.tsx, app/src/api/qr.ts, app/src/config/env.ts, api/accepter/auth_accepter.py, api/business/auth_business.py, api/accepter/user_accepter.py, api/accepter/student_accepter.py @ 1253b71
+     — 확인: 「홈 보장 보정이 남았다」가 거짓이 됐다(DEV-01) — qr.tsx 가 이제 게스트
+       세션을 만든 뒤 /main 으로 바로 간다. 그 줄을 고쳤다 -->
 <!-- 왜: §02 의 착지점과 §05 의 "막힘" 은 전부 이 파일들을 읽고 적은 관찰이다 -->
 <title>유저 플로우 — 진입에서 결제까지 한 장</title>
 <style>
@@ -145,7 +145,12 @@
   <thead><tr><th>어디서</th><th>어디에 떨어지나</th><th>지금 상태</th></tr></thead>
   <tbody>
     <tr><td><b>책의 QR</b></td>
-      <td><code>/qr</code> → 스캔 기록 → <b>홈</b>. 현재 구현은 <code>PUBLIC_QR_WEB_REDIRECT_URL</code>(비어 있으면 <code>/</code>)을 사용하므로 홈 보장 보정이 남았다</td>
+      <td><code>/qr</code> → 스캔 기록(최선 다해 시도 · 실패해도 안 막는다) → <b>게스트 세션 보장</b> →
+      <b>홈(`/main`)으로 SPA 이동</b>. <span class="pill done">끝났다(2026-09-01 · DEV-01)</span>
+      전에는 `PUBLIC_QR_WEB_REDIRECT_URL` 기본값이 `/`(IntroSection)였고 그 화면은
+      2초 뒤 자기 `isSignedIn` 을 다시 읽어 — 막 만든 게스트 세션을 못 보고 로그인으로
+      보낼 수 있었다. `PUBLIC_QR_WEB_REDIRECT_URL` 을 실제 외부 주소로 정해 둔 경우만
+      그쪽으로 간다</td>
       <td><span class="pill open">책 신원이 없다</span> <code>/qr/scan</code> 이 받는 것은 <code>accessUrl</code> 하나다.
         어느 급·과의 QR 이었는지 아무도 읽지 않는다 — 아래 05</td></tr>
     <tr><td><b>직접 방문</b></td><td><code>/</code></td><td><span class="pill done">된다</span></td></tr>

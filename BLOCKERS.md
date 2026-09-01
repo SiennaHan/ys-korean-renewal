@@ -3454,9 +3454,10 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 6d203e5
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 440900f
      — 확인: model.py 에 그 뒤로 늘어난 것은 ko_inquiry.actual·expected 뿐이다 — user_id 가
-       없는 표라 이 절의 「user_id 가진 표 열다섯」 셈과 무관하다 -->
+       없는 표라 이 절의 「user_id 가진 표 열다섯」 셈과 무관하다. 440900f(다른 세션)는
+       KoMissionHint 표를 추가했다 — 이 표도 user_id 가 없어 열다섯 셈과 무관 -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.
