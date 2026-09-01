@@ -1,5 +1,7 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 93e869f
-     — 확인: 브리핑에 힌트 토글이 생겼다(§3 「그 밖의 역할」에 줄 추가). 값은 새 리터럴이 아니라 기존 semantic 토큰을 그대로 쓰고(색 절반 리터럴 문제와 무관), 간격도 4px 눈금을 지킨다 — 이 문서가 걱정하는 두 축(리터럴 색·비4배수 간격) 다 해당 없다 -->
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 1511e48
+     — 확인: 브리핑에 힌트 토글이 생겼다(§3 「그 밖의 역할」에 줄 추가). 값은 새 리터럴이 아니라 기존 semantic 토큰을 그대로 쓰고(색 절반 리터럴 문제와 무관), 간격도 4px 눈금을 지킨다 — 이 문서가 걱정하는 두 축(리터럴 색·비4배수 간격) 다 해당 없다.
+       열림 색을 파랑(choice/pressed)에서 중립 회색(base/line-normal/text-strong)으로 다시
+       바꿨다(같은 날) — 여전히 새 리터럴 없음. 표의 값 문구는 안 바뀌므로 더 고칠 것 없음 -->
 
 # DESIGN.md — 학생앱 디자인
 

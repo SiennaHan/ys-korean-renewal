@@ -1,6 +1,9 @@
 <meta charset="utf-8">
-<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal, api/business/user_withdraw.py, api/shared/withdrawal_scope.py @ 1163e36
-     — 확인: model.py 변경은 플래시카드 card_id 폭 하나다. 개인정보 표와 무관하다 -->
+<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal, api/business/user_withdraw.py, api/shared/withdrawal_scope.py @ 1511e48
+     — 확인: model.py 에 ko_inquiry.actual·expected 가 늘었다(재현 정보) — 문의 표에 반영했다.
+       xternal 에 feedback_hub.py 가 새로 생겼고(2026-08-29) 이번에 actual·expected 도 보내게
+       고쳤다 — **국외 이전 표에 줄을 추가했지만 나라는 「확인 필요」로 비워 뒀다**(코드만으로는
+       모른다). 이 문서를 다루는 사람이 반드시 채워야 한다 -->
 <!-- 왜: 수집 항목·제3자·국외 이전은 전부 이 파일들을 읽고 적은 관찰이다. 코드가 바뀌면 이 표가 낡는다 -->
 <title>이용약관 · 개인정보 처리방침 초안</title>
 <style>
@@ -205,12 +208,15 @@
     <tr><td><b>음성</b></td><td><b>녹음 파일과 전사 텍스트</b> — 발음 평가·따라 말하기·AI 대화에서 생긴다</td>
       <td>S3 <span class="file">pulley-mock/korean/stt/shadow/</span> · <span class="file">ko_stt_shadow</span>
         <span class="qa">위 §01 을 보라 — 지금은 공개 읽기다</span></td></tr>
-    <tr><td>문의</td><td>문의 내용 · 답장 받을 이메일 · 갈래 · 작성 언어 · 보낸 화면 ·
-      <b>회원이 붙인 화면 캡처</b></td>
-      <td><span class="file">ko_inquiry</span> · <span class="file">ko_inquiry_file</span> ·
-      S3 <span class="file">korean/inquiry/</span> · <b>Slack</b>
+    <tr><td>문의</td><td>문의 내용 · <b>재현 정보(2026-09-01 추가 — 무엇을 했는지 · 실제로
+      어떻게 됐는지 · 어떻게 되길 기대했는지, 유형이 「잘 안 돼요」·「학습 내용」일 때만)</b> ·
+      답장 받을 이메일 · 갈래 · 작성 언어 · 보낸 화면 · <b>회원이 붙인 화면 캡처</b></td>
+      <td><span class="file">ko_inquiry</span>(<span class="file">actual</span>·
+      <span class="file">expected</span> 칸 추가) · <span class="file">ko_inquiry_file</span> ·
+      S3 <span class="file">korean/inquiry/</span> · <b>Slack</b> · <b>사내 피드백 허브</b>(아래 표)
       <span class="qa">우리 저장소의 캡처는 <b>비공개</b>다. 다만 슬랙에도 <b>사본이 하나 더</b> 생긴다 —
-      슬랙 쪽 보관은 워크스페이스 설정을 따르고 우리가 지우지 못한다. 보관 기간을 정할 때 같이 봐야 한다</span></td></tr>
+      슬랙 쪽 보관은 워크스페이스 설정을 따르고 우리가 지우지 못한다. 보관 기간을 정할 때 같이 봐야 한다.
+      재현 정보도 같은 표의 칸이라 이 문단이 그대로 적용된다</span></td></tr>
     <tr><td>게임·단어장</td><td>점수 · 진행 · 담은 낱말</td>
       <td><span class="file">ko_game_progress</span> · <span class="file">ko_user_flashcard</span></td></tr>
     <tr><td>QR 유입</td><td><b>IP 주소 · 접속 국가·도시 · 브라우저 정보 · 기기 지문 해시</b></td>
@@ -241,13 +247,23 @@ PG 가 직접 받고 우리는 거래 식별자만 보관하는 형태가 되어
       <td>문의를 담당자에게 전달</td><td>미국(국외)
       <span class="qa"><b>이 줄이 처음에 빠져 있었다</b>(2026-08-27 정정) — 문의를 만들 때부터
       글이 슬랙으로 가고 있었는데 표에 없었다</span></td></tr>
+    <tr><td><b>사내 피드백 허브</b></td><td><b>문의 내용(재현 정보 포함) · 답장 주소 · 접속 화면 ·
+      브라우저 정보 · 붙인 화면 캡처</b></td>
+      <td>같은 문의를 사내 도구(Claude Code 프롬프트 생성)로도 전달</td>
+      <td><span class="blank">확인 필요</span>
+      <span class="qa">2026-08-29 에 생긴 길이다(<span class="file">xternal/feedback_hub.py</span> ·
+      <span class="file">FEEDBACK_HUB_URL</span> 로 HTTP 전송). 국내 인프라인지 국외인지,
+      우리 회사 시스템인지 별도 법인의 서비스인지 <b>코드만으로는 알 수 없다</b> —
+      확인해서 이 칸을 채워라. Slack 줄과 같은 사고(표에서 빠짐)가 반복되지 않게
+      먼저 적어 둔다. 설정 안 된 환경(로컬·검사)에서는 조용히 안 나간다</span></td></tr>
     <tr><td><span class="blank">PG</span></td><td>결제 정보</td><td>결제 처리</td><td>미정</td></tr>
   </tbody>
 </table>
 </div>
 <div class="callout warn">
   <div class="t">국외 이전은 따로 알리고 동의를 받아야 한다</div>
-  <p>OpenAI·Google 로 <b>음성과 대화 내용</b>이, Slack 으로 <b>문의 글과 화면 캡처</b>가 나간다. 국내법상 국외 이전은
+  <p>OpenAI·Google 로 <b>음성과 대화 내용</b>이, Slack 과 <b>사내 피드백 허브</b>(국가 미확인)로
+  <b>문의 글과 화면 캡처</b>가 나간다. 국내법상 국외 이전은
   받는 자·국가·시점·항목·목적·보유기간을 알리고 <b>별도 동의</b>를 받아야 하는 경우가 있다.
   지금 가입 화면의 동의 하나로 다 덮이지 않을 수 있다 — <b>변호사에게 이 표를 그대로 보여라.</b></p>
   <p>표현클립은 유튜브 임베드라 <b>유튜브가 자체 쿠키를 심는다.</b> 우리가 심는 것이 아니어도
