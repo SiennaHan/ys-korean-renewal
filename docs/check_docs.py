@@ -1023,7 +1023,32 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
     ),
     (
         r"미션대화[^\n]{0,30}앱 JSON[^\n]{0,16}안 (?:들어|받)",
-        "브리핑 화면은 원장 n7_mission_chat 을 읽는다. 실제 AI 대화만 구 데이터(ko_chat_dialog)를 쓴다 — BLOCKERS §8",
+        "브리핑도 대화도 원장 n7_mission_chat 을 읽는다 (2026-09-01) — BLOCKERS §8",
+        {},
+    ),
+    # ── 2026-09-01 에 넣은 둘. 미션 대화가 「구 데이터로 돈다」는 말이
+    # CLAUDE.md · BLOCKERS §0 · §8 · developer_tasks 네 곳에 있었고, 그 중 하나는
+    # **틀린 이유**까지 적고 있었다 — ko_chat_dialog 가 옛 내용을 들고 있다고 했는데
+    # 실제로는 0행이었고 이 저장소에 채울 씨드도 없었다. 열쇠도 안 맞았다
+    # (id 는 int 라 MySQL 이 'C4' 를 id=0 으로 견준다). 그래서 UPSERT 가 아니라
+    # 읽는 곳을 ko_mission_chat 으로 옮겨서 닫혔다(6c5ec6a).
+    (
+        r"(?:dialog_keywords?\.ts|dialog_keywords)"
+        r"(?![^\n]{0,60}(?:지웠|삭제|없어졌|되찾|적혀|있었다|였다|기록))",
+        "dialog_keyword.ts 는 2026-09-01 에 지웠다 — 미션 라벨은 원장(ko_mission_chat)에서 "
+        "parseMissionDetail 로 만든다. 그 덤프는 117과 중 28과에서 라벨·개수가, 109과에서 "
+        "지시문이 원장과 달랐다(1급 4과는 라벨과 지시가 한 칸씩 밀려 있었다). "
+        "되찾으려면 git show 57ccc4a:app/src/shared/data/dialog_keyword.ts",
+        {},
+    ),
+    (
+        r"ko_chat_dialog[^\n]{0,40}(?:UPSERT|채워|다시 채|v29 이전|옛 내용|검수 전 내용)"
+        r"|실제 (?:AI )?대화[^\n]{0,20}구 (?:앱 )?(?:데이터|덤프)"
+        r"(?![^\n]{0,60}(?:적혀|있었다|였다|거짓|아니다|기록|0행))",
+        "ko_chat_dialog 는 0행이었고 이 저장소에 채우는 씨드도 없었다. 열쇠도 안 맞는다 — "
+        "id 가 int AUTO_INCREMENT 라 MySQL 은 WHERE id='C4' 를 id=0 으로 견준다('C10' 도 같은 행). "
+        "그래서 채우는 대신 repo_chat.getDialog 가 ko_mission_chat 을 legacy_id 로 읽는다(6c5ec6a). "
+        "「UPSERT 하면 된다」는 계획이 BLOCKERS §8 과 developer_tasks DEV-13 **양쪽에** 있었다",
         {},
     ),
 ]

@@ -6,7 +6,6 @@ import {
 	ReportScreen,
 	type SentenceFeedback,
 } from "@/components/main/activity";
-import { dialog_keywords } from "@/shared/data/dialog_keyword";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -32,20 +31,24 @@ function parseJson<T>(value: unknown, fallback: T): T {
  */
 export default function MissionReport({
 	dialogId,
+	missionCount,
 	lesson,
 	onRetry,
 	onExit,
 }: {
 	dialogId: string;
+	/**
+	 * 그 과의 미션 수 — **부모가 원장에서 세어 넘긴다**(2026-09-01).
+	 * 전에는 구 앱 덤프 `dialog_keyword.ts` 를 여기서 다시 걸러 셌는데,
+	 * 그 파일이 원장과 슬롯 수가 7건 달랐다. 리포트의 분모가 대화 화면의
+	 * 미션 수와 어긋나면 「3개 중 4개 달성」 같은 것이 나온다.
+	 */
+	missionCount: number;
 	lesson: string;
 	onRetry: () => void;
 	onExit: () => void;
 }) {
 	const { t } = useTranslation();
-	const missionCount = useMemo(
-		() => dialog_keywords.filter((item) => item.dialog_id === dialogId).length,
-		[dialogId],
-	);
 	const [loading, setLoading] = useState(true);
 	const [completedCount, setCompletedCount] = useState(0);
 	const [values, setValues] = useState<RadarValues>(EMPTY_VALUES);

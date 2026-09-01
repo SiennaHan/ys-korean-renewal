@@ -17,7 +17,7 @@ import { ChatScreen } from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { env } from "@/config/env";
 import { useRecording } from "@/hooks/useRecording";
-import { dialog_keywords } from "@/shared/data/dialog_keyword";
+import { parseMissionDetail } from "@/shared/data/mission-chat";
 import type { MissionChatItem } from "@/shared/data/mission-chat";
 import { getTTSAudio } from "@/shared/tts-cache";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -88,9 +88,25 @@ export default function MissionDialog({
 	 * (`ERR_INSUFFICIENT_RESOURCES`). 서버가 500 을 내고 있어서 눈에 띄었지,
 	 * 200 이었으면 조용히 돌기만 했을 자리다.
 	 */
+	/*
+	 * **미션은 원장에서 온다**(2026-09-01). 전에는 구 앱 덤프
+	 * `dialog_keyword.ts` 를 `dialogId` 로 걸러 썼는데, 그 파일이 원장과
+	 * 갈라져 있었다 — 라벨 21건 · 슬롯 수 7건. 화면에서도 보였다:
+	 * 브리핑은 「인사·이름·직업」인데 대화 화면은 「이름·인사·직업」이었다
+	 * (구 덤프에서 라벨과 설명이 한 칸씩 밀려 있었다).
+	 *
+	 * **완료 판정이 이 문자열을 서버 응답과 그대로 대조하므로** 갈라져 있으면
+	 * 체크가 조용히 안 켜진다. 서버도 같은 원장을 보게 됐으니(repo_chat.getDialog)
+	 * 이제 양쪽이 한 곳에서 나온다.
+	 */
 	const missionList = useMemo(
-		() => dialog_keywords.filter((item) => item.dialog_id === dialogId),
-		[dialogId],
+		() =>
+			parseMissionDetail(dialog.mission_detail ?? "").map((item, i) => ({
+				id: `${dialogId}-${i}`,
+				keyword: item.label,
+				content: item.instruction,
+			})),
+		[dialog.mission_detail, dialogId],
 	);
 	const scenarioImgUrl = `${env.RES_URL_ROOT}/${dialog.content_img}`;
 

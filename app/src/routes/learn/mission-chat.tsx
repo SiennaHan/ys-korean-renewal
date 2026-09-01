@@ -164,6 +164,7 @@ function RouteComponent() {
 		return (
 			<MissionReport
 				dialogId={dialogId}
+				missionCount={keywordList.length}
 				lesson={t("player.lessonTitle", { level, lesson })}
 				onRetry={goToChatPhase}
 				onExit={exitToTextbook}
