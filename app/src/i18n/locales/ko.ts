@@ -866,6 +866,7 @@ const ko = {
 		briefSubtitle: "Practice with AI using the scenario.",
 		errTooShort: "메시지를 2자 이상 입력해 주세요.",
 		errNoRecording: "녹음된 내용이 없습니다.",
+		errNoResponse: "응답을 받지 못했어요.",
 		noMessage: "메시지 없음",
 		recordingWave: "녹음 중인 소리",
 	},

@@ -837,6 +837,7 @@ const en = {
 		briefSubtitle: "Practice with AI using the scenario.",
 		errTooShort: "Please enter at least 2 characters.",
 		errNoRecording: "There is no recording.",
+		errNoResponse: "We couldn't get a response.",
 		noMessage: "No message",
 		recordingWave: "Sound being recorded",
 	},

@@ -7,6 +7,7 @@ import {
 	Languages,
 	Lightbulb,
 	MessageCircleWarning,
+	RotateCcw,
 	Volume2,
 } from "lucide-react";
 import { Fragment, useState } from "react";
@@ -199,6 +200,37 @@ export const BotMsgProgress = () => {
 				<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />
 			</span>
 			<TypingIndicator />
+		</div>
+	);
+};
+
+/**
+ * AI 응답을 못 받았을 때 — **무한 스피너 대신** 이 자리에 뜬다(DEV-12).
+ *
+ * 전에는 `postChat` 이 실패(타임아웃 포함)하면 아무 상태도 안 바뀌어
+ * `BotMsgProgress` 가 영원히 돌았다 — 사용자는 답이 오는지 끊겼는지 알 길이
+ * 없었다. 목업엔 이 상태가 없어 새로 만들었다 — 기존 `FeedbackBox` · 흰
+ * 아이콘 버튼과 같은 부품을 재써서 새 시각 언어를 안 만들었다.
+ */
+export const BotMsgError = ({ onRetry }: { onRetry: () => void }) => {
+	const { t } = useTranslation();
+	return (
+		<div className="mission-msg mission-msg-bot">
+			<span className="mission-avatar">
+				<img alt="" src="/images/chat_ai_img.svg" width="40" height="40" />
+			</span>
+			<div className="mission-bubble">
+				<FeedbackBox
+					text={t("missionChat.errNoResponse")}
+					color="#F76853"
+					icon={<MessageCircleWarning color="#fff" fill="#F76853" size="px" />}
+				/>
+				<div className="mission-tools">
+					<PopIconButton onClick={onRetry}>
+						<RotateCcw color="#4396f4" size={16} />
+					</PopIconButton>
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -840,6 +840,7 @@ const ja = {
 		briefSubtitle: "シナリオに沿ってAIと会話を練習しましょう。",
 		errTooShort: "メッセージは2文字以上入力してください。",
 		errNoRecording: "録音された内容がありません。",
+		errNoResponse: "応答を受け取れませんでした。",
 		noMessage: "メッセージなし",
 		recordingWave: "録音中の音",
 	},

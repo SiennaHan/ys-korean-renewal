@@ -810,6 +810,7 @@ const zh = {
 		briefSubtitle: "按照情景和 AI 练习对话。",
 		errTooShort: "请至少输入 2 个字符。",
 		errNoRecording: "没有录音内容。",
+		errNoResponse: "没有收到回复。",
 		noMessage: "没有消息",
 		recordingWave: "正在录制的声音",
 	},

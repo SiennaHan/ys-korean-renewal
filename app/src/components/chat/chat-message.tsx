@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import {
 	AlertUserMsgBox,
 	BotMsgBox,
+	BotMsgError,
 	BotMsgProgress,
 	CompletedMsgBox,
 	TipUserMsgBox,
@@ -52,6 +53,13 @@ export default function ChatMessage({
 	const [resMsg, setResMsg] = useState<string | null>(null);
 	const [lastText, setLastText] = useState<string | null>(null);
 	const [isAudioLoading, setIsAudioLoading] = useState(false);
+	/**
+	 * `postChat` 이 실패(타임아웃 포함)했나 — **`BotMsgProgress` 가 무한히
+	 * 도는 것을 막는다**(DEV-12). `msg`(사용자가 한 말)는 이 컴포넌트가
+	 * 만들어질 때부터 prop 으로 들고 있으므로 재시도해도 잃을 것이 없다 —
+	 * 다시 보낼 값이 이미 손에 있다.
+	 */
+	const [hasError, setHasError] = useState(false);
 	const { playBlob, playPcmStream, unlock } = useSharedAudio();
 
 	const fetchAudio = useCallback(
@@ -99,6 +107,7 @@ export default function ChatMessage({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: t 를 넣으면 안 된다 — 이 콜백은 아래 useEffect 의 의존성이고, 그 몸통이 postChat 을 부른다. 언어를 바꾸면 t 의 정체가 바뀌어 fetchData 가 새로 만들어지고, 효과가 다시 돌아 **같은 말이 서버로 한 번 더 날아간다.** t 는 여기서 응답이 비었을 때의 대체 문구에만 쓰이므로 클로저가 한 박자 낡아도 화면이 틀리지 않는다
 	const fetchData = useCallback(
 		async (userMsg: string) => {
+			setHasError(false);
 			setResponding(true);
 			const response = await postChat({
 				dialogId,
@@ -114,12 +123,18 @@ export default function ChatMessage({
 				setResMsg(response.answer ?? t("missionChat.noMessage"));
 				setTimeout(() => scrollToBottom(), 100);
 				await fetchAudio(response.answer);
+			} else {
+				setHasError(true);
 			}
 
 			setResponding(false);
 		},
 		[chatId, dialogId, fetchAudio, scrollToBottom, setChatId, setResponding],
 	);
+
+	const retry = useCallback(() => {
+		void fetchData(msg);
+	}, [fetchData, msg]);
 
 	const replayAudio = useCallback(async () => {
 		// 캐시 히트 시 즉시 재생, 미스(직전 스트림이 중단된 경우 등)면 재스트리밍
@@ -156,7 +171,10 @@ export default function ChatMessage({
 					isAudioLoading={isAudioLoading}
 				/>
 			)}
-			{msgType === "request" && !resMsg && <BotMsgProgress />}
+			{msgType === "request" && !resMsg && hasError && (
+				<BotMsgError onRetry={retry} />
+			)}
+			{msgType === "request" && !resMsg && !hasError && <BotMsgProgress />}
 		</div>
 	);
 }

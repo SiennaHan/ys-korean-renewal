@@ -837,6 +837,7 @@ const vi = {
 		briefSubtitle: "Hãy luyện hội thoại với AI theo tình huống.",
 		errTooShort: "Vui lòng nhập ít nhất 2 ký tự.",
 		errNoRecording: "Không có nội dung ghi âm.",
+		errNoResponse: "Không nhận được phản hồi.",
 		noMessage: "Không có tin nhắn",
 		recordingWave: "Âm thanh đang ghi",
 	},
