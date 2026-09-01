@@ -106,12 +106,22 @@ def buildMessage(inquiry: dict, withLinks: bool = True) -> dict:
     lang = inquiry.get("lang") or "-"
     path = inquiry.get("from_path") or "-"
 
+    # 세 칸 유형(bug·content)이면 재현 정보가 나뉘어 온다. 없으면 그 줄 자체가
+    # 없다 — 「(없음)」이 늘어서면 훑기 어려워진다
+    body = f"*문의 #{inquiry.get('id')}* · `{topic}`\n{_trim(inquiry.get('message'), 900)}"
+    actual = (inquiry.get("actual") or "").strip()
+    expected = (inquiry.get("expected") or "").strip()
+    if actual:
+        body += f"\n\n*실제로 어떻게 됐나요*\n{_trim(actual, 500)}"
+    if expected:
+        body += f"\n\n*어떻게 되길 기대하셨나요*\n{_trim(expected, 500)}"
+
     blocks = [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"*문의 #{inquiry.get('id')}* · `{topic}`\n{_trim(inquiry.get('message'), 900)}",
+                "text": body,
             },
         },
         {

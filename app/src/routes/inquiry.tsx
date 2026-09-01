@@ -3,6 +3,7 @@ import {
 	INQUIRY_MAX,
 	INQUIRY_MAX_FILES,
 	INQUIRY_MAX_FILE_BYTES,
+	INQUIRY_REPRO_TOPICS,
 	INQUIRY_TOPICS,
 	type InquiryTopic,
 	sendInquiry,
@@ -55,6 +56,8 @@ function InquiryPage() {
 	const [replyEmail, setReplyEmail] = useState(user?.email ?? "");
 	const [topic, setTopic] = useState<InquiryTopic>("etc");
 	const [message, setMessage] = useState("");
+	const [actual, setActual] = useState("");
+	const [expected, setExpected] = useState("");
 	const [error, setError] = useState("");
 	const [sending, setSending] = useState(false);
 	const [sentId, setSentId] = useState<number | null>(null);
@@ -78,7 +81,35 @@ function InquiryPage() {
 	>([]);
 	const fileRef = useRef<HTMLInputElement>(null);
 
-	const canSend = replyEmail.trim() !== "" && message.trim() !== "" && !sending;
+	/** bug·content — 화면이 세 칸을 보여주고 재현 정보를 받는 유형 */
+	const isRepro = INQUIRY_REPRO_TOPICS.includes(topic);
+	const canSend =
+		replyEmail.trim() !== "" &&
+		message.trim() !== "" &&
+		(!isRepro || actual.trim() !== "") &&
+		!sending;
+
+	/**
+	 * 유형을 바꿔도 이미 적은 글을 잃지 않는다.
+	 *
+	 * 세 칸 → 한 칸으로 가면 세 칸을 이어 붙여 `message` 하나에 담고,
+	 * 반대로 가면 지금 `message`(한 칸일 때 자유 서술)를 그대로
+	 * 「무엇을 했는지」자리에 남긴다 — 세 칸에서 시작하지 않았으므로
+	 * `actual`·`expected` 는 채울 것이 없다.
+	 */
+	const handleTopicChange = (next: InquiryTopic) => {
+		const nextRepro = INQUIRY_REPRO_TOPICS.includes(next);
+		if (isRepro && !nextRepro) {
+			const combined = [message, actual, expected]
+				.map((v) => v.trim())
+				.filter(Boolean)
+				.join("\n\n");
+			setMessage(combined.slice(0, INQUIRY_MAX));
+			setActual("");
+			setExpected("");
+		}
+		setTopic(next);
+	};
 
 	const handlePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const picked = [...(e.target.files ?? [])];
@@ -128,6 +159,8 @@ function InquiryPage() {
 			replyEmail,
 			topic,
 			message,
+			actual: isRepro ? actual : undefined,
+			expected: isRepro ? expected : undefined,
 			lang: i18n.language,
 			fromPath: from ?? "-",
 			files: shots.map((s) => s.dataUrl),
@@ -216,7 +249,9 @@ function InquiryPage() {
 							<select
 								id="inquiry-topic"
 								value={topic}
-								onChange={(e) => setTopic(e.target.value as InquiryTopic)}
+								onChange={(e) =>
+									handleTopicChange(e.target.value as InquiryTopic)
+								}
 								className="auth-select"
 							>
 								{INQUIRY_TOPICS.map((v) => (
@@ -245,7 +280,7 @@ function InquiryPage() {
 
 						<div className="auth-field">
 							<label htmlFor="inquiry-message" className="auth-label">
-								{t("inquiry.message")}
+								{t(isRepro ? "inquiry.steps" : "inquiry.message")}
 							</label>
 							<textarea
 								id="inquiry-message"
@@ -253,7 +288,11 @@ function InquiryPage() {
 								onChange={(e) =>
 									setMessage(e.target.value.slice(0, INQUIRY_MAX))
 								}
-								placeholder={t("inquiry.messagePlaceholder")}
+								placeholder={t(
+									isRepro
+										? "inquiry.stepsPlaceholder"
+										: "inquiry.messagePlaceholder",
+								)}
 								required
 								className="auth-textarea"
 							/>
@@ -261,6 +300,47 @@ function InquiryPage() {
 								{message.length} / {INQUIRY_MAX}
 							</p>
 						</div>
+
+						{isRepro && (
+							<div className="auth-field">
+								<label htmlFor="inquiry-actual" className="auth-label">
+									{t("inquiry.actual")}
+								</label>
+								<textarea
+									id="inquiry-actual"
+									value={actual}
+									onChange={(e) =>
+										setActual(e.target.value.slice(0, INQUIRY_MAX))
+									}
+									placeholder={t("inquiry.actualPlaceholder")}
+									required
+									className="auth-textarea"
+								/>
+								<p className="auth-counter">
+									{actual.length} / {INQUIRY_MAX}
+								</p>
+							</div>
+						)}
+
+						{isRepro && (
+							<div className="auth-field">
+								<label htmlFor="inquiry-expected" className="auth-label">
+									{t("inquiry.expected")}
+								</label>
+								<textarea
+									id="inquiry-expected"
+									value={expected}
+									onChange={(e) =>
+										setExpected(e.target.value.slice(0, INQUIRY_MAX))
+									}
+									placeholder={t("inquiry.expectedPlaceholder")}
+									className="auth-textarea"
+								/>
+								<p className="auth-counter">
+									{expected.length} / {INQUIRY_MAX}
+								</p>
+							</div>
+						)}
 
 						{/*
 						 * 화면 캡처 — 글로만 설명하기 어려운 것이 많다.

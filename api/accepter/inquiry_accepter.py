@@ -42,6 +42,7 @@ async def create_inquiry(
 ):
     data, error = await inquiry.createInquiry(
         _whoFrom(authorization), body.replyEmail, body.topic, body.message,
+        body.actual, body.expected,
         body.lang, body.fromPath, body.files, userAgent=(user_agent or ""),
     )
     if error:

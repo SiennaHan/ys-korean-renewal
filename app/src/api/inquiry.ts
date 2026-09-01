@@ -43,10 +43,23 @@ export function toDataUrl(file: File): Promise<string> {
 	});
 }
 
+/**
+ * `topic` 이 재현 정보(세 칸)를 받는 유형인가.
+ *
+ * **서버는 이 목록을 모른다** — `actual`·`expected` 를 유형과 무관하게
+ * 선택으로 받는다(`business/inquiry.py`). 「어느 유형이 세 칸이냐」는 화면의
+ * 판단이라 여기 한 곳에만 둔다 — 서버에도 같은 목록이 생기면 둘이 갈라진다.
+ */
+export const INQUIRY_REPRO_TOPICS: InquiryTopic[] = ["bug", "content"];
+
 export async function sendInquiry(input: {
 	replyEmail: string;
 	topic: InquiryTopic;
 	message: string;
+	/** 실제로 어떻게 됐는지 — 재현 유형(bug·content)에서만 보낸다 */
+	actual?: string;
+	/** 어떻게 되길 기대했는지 — 재현 유형에서도 선택이다 */
+	expected?: string;
 	lang: string;
 	fromPath: string;
 	/** `data:image/…;base64,…` 최대 3장 */

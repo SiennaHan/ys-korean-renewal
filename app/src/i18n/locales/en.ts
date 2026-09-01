@@ -54,6 +54,12 @@ const en = {
 		email: "Email for our reply",
 		emailHint: "We only reply to this address",
 		message: "Message",
+		steps: "What did you do",
+		stepsPlaceholder: "e.g. Tapped play on the Lesson 3 listening activity",
+		actual: "What actually happened",
+		actualPlaceholder: "e.g. The audio played twice, overlapping",
+		expected: "What did you expect (optional)",
+		expectedPlaceholder: "e.g. I expected it to play only once",
 		messagePlaceholder:
 			"Tell us what happened. Naming the screen helps us find it faster.",
 		send: "Send",

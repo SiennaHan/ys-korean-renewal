@@ -65,21 +65,29 @@ def _decodeDataUrl(dataUrl: str):
 
 
 async def createInquiry(
-    userId, replyEmail, topic, message, lang=None, fromPath=None, files=None, userAgent=""
+    userId, replyEmail, topic, message, actual=None, expected=None,
+    lang=None, fromPath=None, files=None, userAgent="",
 ):
     """오류는 한국어 문장이 아니라 **코드**로 낸다 — 화면이 5개 언어다.
 
     가입(`user_business.signUpStudent`)과 같은 규약이다. 앱이 `inquiry.err_*` 로 옮긴다.
+
+    **`actual`·`expected` 는 선택이다.** 화면이 유형에 따라 세 칸을 보여줄 때만
+    보낸다 — payment·account·etc 는 `message` 한 칸뿐이라 안 보낸다. 서버가
+    유형으로 강제하지 않는 이유는 화면이 이미 그 판단을 하고 있어서다(두 벌이
+    되면 갈라진다).
     """
     replyEmail = (replyEmail or "").strip().lower()
     message = (message or "").strip()
+    actual = (actual or "").strip()
+    expected = (expected or "").strip()
     topic = (topic or "etc").strip()
 
     if not _EMAIL.match(replyEmail):
         return None, "emailInvalid"
     if not message:
         return None, "messageRequired"
-    if len(message) > MAX_MESSAGE:
+    if len(message) > MAX_MESSAGE or len(actual) > MAX_MESSAGE or len(expected) > MAX_MESSAGE:
         return None, "messageTooLong"
     if topic not in TOPICS:
         topic = "etc"
@@ -103,6 +111,8 @@ async def createInquiry(
             reply_email=replyEmail,
             topic=topic,
             message=message,
+            actual=(actual or None),
+            expected=(expected or None),
             lang=(lang or None),
             from_path=(fromPath or None),
         )

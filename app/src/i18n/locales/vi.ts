@@ -54,6 +54,12 @@ const vi = {
 		email: "Email nhận trả lời",
 		emailHint: "Chúng tôi chỉ trả lời tới địa chỉ này",
 		message: "Nội dung",
+		steps: "Bạn đã làm gì",
+		stepsPlaceholder: "Ví dụ: Đã nhấn nút phát trong bài nghe Bài 3",
+		actual: "Thực tế đã xảy ra chuyện gì",
+		actualPlaceholder: "Ví dụ: Âm thanh phát chồng lên nhau hai lần",
+		expected: "Bạn mong đợi điều gì (không bắt buộc)",
+		expectedPlaceholder: "Ví dụ: Mong âm thanh chỉ phát một lần",
 		messagePlaceholder:
 			"Hãy kể chuyện gì đã xảy ra. Cho biết tên màn hình sẽ giúp tìm nhanh hơn.",
 		send: "Gửi",

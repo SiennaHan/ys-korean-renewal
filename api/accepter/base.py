@@ -89,6 +89,9 @@ class InquiryRequest(BaseModel):
     replyEmail: str
     topic: str
     message: str
+    # 재현 정보 — bug·content 유형(세 칸 화면)에서만 온다. 나머지 유형은 안 보낸다
+    actual: Optional[str] = None
+    expected: Optional[str] = None
     lang: Optional[str] = None
     fromPath: Optional[str] = None
     # 화면 캡처. `data:image/png;base64,...` 꼴로 최대 3장.

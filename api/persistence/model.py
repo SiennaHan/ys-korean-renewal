@@ -497,7 +497,13 @@ class KoInquiry(Base) :
     reply_email    = Column(String(100),  nullable=False)
     # 화면에서 고른 갈래 — 결제 · 계정 · 학습 내용 · 오류 · 그 밖
     topic          = Column(String(30),   nullable=False, index=True)
+    # 세 칸(bug·content)으로 받을 때는 이 칸이 "무엇을 했는지" 다.
+    # 한 칸(payment·account·etc)일 때는 자유 서술 그대로다
     message        = Column(String(2000), nullable=False)
+    # "실제로 어떻게 됐는지" — 세 칸 유형에서만 채워진다
+    actual         = Column(String(2000), nullable=True)
+    # "어떻게 되길 기대했는지" — 세 칸 유형에서도 선택이다
+    expected       = Column(String(2000), nullable=True)
     # 어느 언어로 썼나. 답장을 그 언어로 하기 위해서다
     lang           = Column(String(5),    nullable=True)
     # 어느 화면에서 보냈나. 재현에 쓴다

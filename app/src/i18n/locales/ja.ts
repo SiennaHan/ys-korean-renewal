@@ -54,6 +54,12 @@ const ja = {
 		email: "返信先メールアドレス",
 		emailHint: "このアドレスにのみ返信します",
 		message: "内容",
+		steps: "何をしましたか",
+		stepsPlaceholder: "例: 3課のリスニングで再生ボタンを押しました",
+		actual: "実際にどうなりましたか",
+		actualPlaceholder: "例: 音が二重に重なって流れました",
+		expected: "どうなることを期待していましたか（任意）",
+		expectedPlaceholder: "例: 一度だけ流れることを期待していました",
 		messagePlaceholder:
 			"何が起きたかお書きください。画面名を教えていただけると早く見つかります。",
 		send: "送信",

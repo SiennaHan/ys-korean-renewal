@@ -62,6 +62,12 @@ const ko = {
 		email: "답장 받을 이메일",
 		emailHint: "이 주소로만 답장을 보냅니다",
 		message: "내용",
+		steps: "무엇을 했는지",
+		stepsPlaceholder: "예: 3과 듣기에서 재생 버튼을 눌렀습니다",
+		actual: "실제로 어떻게 됐나요",
+		actualPlaceholder: "예: 소리가 두 번 겹쳐서 났습니다",
+		expected: "어떻게 되길 기대했나요 (선택)",
+		expectedPlaceholder: "예: 한 번만 나기를 기대했습니다",
 		messagePlaceholder:
 			"무슨 일이 있었는지 적어 주세요. 어느 화면이었는지 알려 주시면 더 빨리 찾습니다.",
 		send: "보내기",

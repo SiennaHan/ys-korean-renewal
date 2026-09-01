@@ -10,14 +10,17 @@
 사용자에게 제보 창구가 둘이 되고, 둘 중 어디로 온 것인지 우리가 관리해야 한다.
 그래서 **화면은 그대로 두고 서버에서 한 번 더 보낸다.**
 
-## 그래서 못 채우는 칸이 있다
+## 세 칸을 나눠 보낸다 (2026-09-01)
 
 허브의 폼 규격은 「무엇을 했는지 / 실제로 어떻게 됐는지 / 어떻게 되길
-기대했는지」를 나눠 받지만, **이 앱의 문의 폼은 자유 서술 한 칸뿐이다.**
-그래서 `steps` 만 채우고 `actual`·`expected` 는 비운다 — 허브가 프롬프트를
-만들 때 「이 서비스 폼에 이 칸이 없다」고 밝힌다. 지어내지 않는다.
+기대했는지」를 나눠 받는다. `bug`·`content` 유형은 화면이 이제 그 셋을 나눠
+받으므로 그대로 넘긴다 — `steps` 는 「무엇을 했는지」(`message`), `actual`·
+`expected` 가 나머지 둘이다.
 
-칸을 나눠 받게 폼을 고치면 그때부터 제보 품질이 올라간다. 그건 별도 작업이다.
+**`payment`·`account`·`etc` 는 여전히 `message` 한 칸뿐이다.** 재현할 것이
+없는 유형이라 화면이 세 칸을 안 보여준다(`inquiry.py` 참고) — 그때는
+`actual`·`expected` 가 빈 문자열로 오고, `_multipart` 가 빈 값을 건너뛰므로
+허브는 예전과 같이 「이 칸이 없다」로 받아들인다. 지어내지 않는다.
 
 ## 설정 (없으면 조용히 안 보낸다)
 
@@ -114,7 +117,9 @@ def forward(saved: dict, shots=None, userAgent: str = "") -> bool:
         ("type", TOPIC_TO_TYPE.get(topic, "question")),
         ("title", _title(message, topic)),
         ("steps", message),
-        # actual·expected 는 보내지 않는다 — 이 폼에 그 칸이 없다
+        # 세 칸 유형에서만 채워진다. 비어 있으면 _multipart 가 건너뛴다
+        ("actual", saved.get("actual") or ""),
+        ("expected", saved.get("expected") or ""),
         ("reporter_email", saved.get("reply_email") or ""),
         ("reporter_role", "student"),
         ("service_user_id", "" if userId == "anonymous" else userId),
