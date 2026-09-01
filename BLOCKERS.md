@@ -3326,7 +3326,9 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 "테스트가 생겼다" 로 읽으면 안 된다. 위 세 칸(테스트 파일 · E2E · 러너)은 그대로 0 이다.
 
 일곱째 게이트(`build-content.py --check`)는 **원장 xlsx 가 저장소에 없어서** CI 에 못 넣었고,
-어드민은 `typecheck` 가 통과하지 않아 못 넣었다 — `developer_tasks.md` DEV-10 · DEV-14.
+어드민은 그때 `typecheck` 가 통과하지 않아 못 넣었다. **그쪽은 2026-08-29 에 끝났다** —
+지금 `cd admin && pnpm typecheck` 는 0 이다(2026-09-01 실행해 확인). 남은 것은
+**빌드가 유틸리티 CSS 를 안 내는 것** 하나다 — `developer_tasks.md` DEV-10 · DEV-14.
 
 > 이걸 잴 때 한 번 틀렸다. `glob("app/**/*.spec.ts")` 가 `node_modules` 안의
 > 남의 테스트를 집어 "있다" 가 나왔다. **탐침을 `app/src` 로 좁혀야 한다** —

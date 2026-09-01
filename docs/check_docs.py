@@ -653,6 +653,20 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         if n:
             specs.append((label, n, pats))
 
+    # 원장 상태값 — 판본마다 는다. developer_tasks DEV-07 이 「54행」·「16종」으로
+    # 적어 두었다가 60행·18종이 됐다(2026-09-01). 손으로 적으면 반드시 낡는 종류다.
+    dropped, kinds = review_status_counts()
+    if dropped:
+        specs.append(("원장에서 지운 행 수", dropped, [
+            r"`?deleted`?\s*행을 빼고[^\n]{0,10}?지금\s*(\d+)\s*행",
+            r"지운 행\s*(\d+)\s*개",
+        ]))
+    if kinds:
+        specs.append(("review_status 값 종류 수", kinds, [
+            r"값이\s*(\d+)\s*종",
+            r"review_status[^\n]{0,20}?(\d+)\s*종",
+        ]))
+
     # 콘텐츠 실측 — 원장이 갱신되면 문서의 수가 낡는다
     dc = data_counts()
     if "i18n 로케일 수" in dc:
@@ -1086,6 +1100,21 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
         {},
     ),
     (
+        # 2026-09-01. developer_tasks 검수. **같은 문서가 자기와 반대로 말하고 있었다** —
+        # DEV-14 는 「끝났다 지금 0 이다」, DEV-10 은 「통과하지 않고」. gates.yml 주석에도
+        # 같은 거짓이 있었다. 한 사실이 두 곳에 손으로 적히면 한 번 바뀔 때 하나만 낡는다.
+        # **또 갈래를 안 묶어서 인용을 물었다**(2026-09-01). doc_review §6 에 적어 둔
+        # 그 실수를 같은 날 다시 했다 — `A|B(?!…)` 는 B 에만 붙는다.
+        r"(?:(?:admin|어드민)[^\n]{0,40}?(?:`?pnpm )?typecheck[^\n]{0,20}?(?:가 )?통과하지 ?않"
+        r"|typecheck[^\n]{0,12}?(?:가 )?통과하지 ?않[^\n]{0,20}?(?:어드민|admin))"
+        r"(?![^\n]{0,60}(?:적혀|있었다|였다|거짓|아니다|기록|끝났다|통과한다))",
+        "`cd admin && pnpm typecheck` 는 2026-08-29 부터 **통과한다**(2026-09-01 실행해 0 확인 · "
+        "BLOCKERS §14). 어드민에 남은 것은 **빌드가 유틸리티 CSS 를 안 내는 것** 하나다 — "
+        "developer_tasks DEV-14. 이 거짓이 developer_tasks 와 .github/workflows/gates.yml "
+        "**두 곳에** 있었다",
+        {},
+    ),
+    (
         # 2026-09-01. **이번 회차에 내가 직접 쓴 문장이 거짓이었다** — 「번들에 구 앱
         # 덤프가 하나도 안 남았다」. 미션 대화 덤프만 보고 번들 전체를 말한 것이다.
         # 원장에서 출발하는 대조(build-content --check · seed --check)는 이것을 영영
@@ -1147,6 +1176,34 @@ def quoting(flat: str, m) -> bool:
     b = flat.find("\n", m.end())
     line = flat[a: b if b != -1 else len(flat)]
     return any(w in line for w in UNSAYING)
+
+
+def review_status_counts() -> tuple[int, int]:
+    """산출물 JSON 에서 (`deleted` 행 수, `review_status` 값 종류 수).
+
+    DEV-07 이 「지금 54행」·「값이 16종」으로 적어 뒀는데 원장 v53 에서 60행·18종이
+    됐다(2026-09-01). **판본이 오를 때마다 낡는 수**라 사람이 적으면 안 된다.
+    `deleted` 는 산출물에서 빠지므로 원장이 아니라 **빠진 수**를 다시 셀 수 없다 —
+    그래서 build-content 가 찍는 것과 같은 값을 여기서 다시 세지 않고, 산출물에
+    남은 상태값의 **종류**만 세고 지운 행 수는 원장이 있을 때만 낸다.
+    """
+    import json as _json
+    d = ROOT / "app" / "src" / "shared" / "data"
+    if not d.is_dir():
+        return 0, 0
+    kinds: set[str] = set()
+    for f in sorted(d.glob("n*.json")):
+        try:
+            rows = _json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not isinstance(rows, list):
+            continue
+        for r in rows:
+            if isinstance(r, dict) and r.get("review_status"):
+                kinds.add(str(r["review_status"]))
+    # 지운 행은 산출물에 없다 — 원장이 있을 때만 셀 수 있으므로 0 을 낸다
+    return 0, len(kinds)
 
 
 def seed_tables() -> int:
