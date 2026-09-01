@@ -551,7 +551,7 @@
    대화 화면에는 이 버튼이 없다 — 그래서 대화 중에 베낄 문장이 화면에 없고,
    미션 발화는 전부 기억에서 나온다. 「스스로 말한다」를 재는 자리가 여기 하나다 */
 .activity-frame .hint-toggle { display:block; margin:8px 0 0; border:1px solid var(--color-line-normal); background:var(--color-background-surface); border-radius:999px; padding:4px 12px; font-size:12px; font-weight:600; color:var(--color-text-sub); }
-.activity-frame .hint-toggle[aria-expanded="true"] { border-color:var(--color-line-tint); background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .hint-toggle[aria-expanded="true"] { border-color:var(--color-line-normal); background:var(--color-background-base); color:var(--color-text-strong); }
 .activity-frame .hint-card { margin-top:8px; display:grid; gap:12px; }
 .activity-frame .kw-hint { display:flex; align-items:flex-start; gap:8px; }
 /* 키워드 칩 — kw-line 과 같은 100px 폭이라 두 카드의 왼쪽 기둥이 맞는다.

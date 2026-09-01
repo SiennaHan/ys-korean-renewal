@@ -1,4 +1,5 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 36c7830 -->
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 93e869f
+     — 확인: 브리핑에 힌트 토글이 생겼다(§3 「그 밖의 역할」에 줄 추가). 값은 새 리터럴이 아니라 기존 semantic 토큰을 그대로 쓰고(색 절반 리터럴 문제와 무관), 간격도 4px 눈금을 지킨다 — 이 문서가 걱정하는 두 축(리터럴 색·비4배수 간격) 다 해당 없다 -->
 
 # DESIGN.md — 학생앱 디자인
 
@@ -307,6 +308,7 @@ BlinkMacSystemFont, sans-serif` 다.
 | **입력칸** | — (활동엔 거의 없다) | — | `.auth-input` `height:52px` · radius `12px` · padding `0 16px` |
 | **선택지** | `.choice` `min-height:64px` · radius `12px` · padding `16px 48px 16px 18px` | — | — |
 | **칩** | `.chip-opt` radius `8px` · padding `10px 16px` | `.chip3` `height:32px` · radius `9px` · padding `0 12px` | — |
+| **토글** | `.hint-toggle`(브리핑의 힌트 접기/펼치기) radius `999px` · padding `4px 12px`. 열릴 때 배경·글자색만 바뀐다(토큰째로 — 새 리터럴 없음) | — | — |
 | **카드** | `.problem-card` radius `16px` · padding `18px` | `--radius-card` = `14px` | `.auth-panel` `max-width:360px` · gap `28px` |
 | **모달** | `.activity-confirm` 바텀시트, radius `20px 20px 0 0` | — | — |
 | **토스트** | 화면군에 안 산다 — `components/toast/` 하나가 전 화면 공용. radius `12px` · padding `16px` · 글자 14px · 최대폭 320 · 배경 `--color-fill-wrong`(오류) / `--color-text-strong`(안내) | 〃 | 〃 |
