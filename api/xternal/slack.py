@@ -319,3 +319,85 @@ async def notifyInquiry(inquiry: dict, shots=None) -> tuple:
 
     # 웹훅은 파일을 못 올린다 — 그래서 올라간 캡처는 늘 0이다
     return await asyncio.to_thread(_send), 0
+
+
+def buildClipReportMessage(report: dict) -> dict:
+    """표현클립 「선정적·폭력적 내용」 신고 — DEV-02 · clip_spec_v1 §05-6.
+
+    **그 순간으로 바로 가는 링크가 요점이다** — 영상 링크만 주면 18분짜리에서
+    5초를 찾아 헤매야 조치할 수 있다. `&t={start}s` 를 붙여 그 자리로 바로 연다.
+    """
+    title = report.get("title") or "-"
+    category = report.get("clip_category") or "-"
+    targetId = report.get("target_id") or ""
+    start = report.get("segment_start") or 0
+    link = f"https://www.youtube.com/watch?v={targetId}&t={start}s"
+    word = (report.get("content") or "").strip()
+    line = (report.get("matched_line") or "").strip()
+    reporter = _trim(report.get("user_id"), 30) or "-"
+    count = report.get("report_count", 1)
+
+    body = f"*표현클립 신고* · `{category}`\n*{title}*\n<{link}|그 순간으로 가기>"
+    if word:
+        body += f"\n\n*검색어*\n{_trim(word, 200)}"
+    if line:
+        body += f"\n\n*걸린 대본 줄*\n{_trim(line, 300)}"
+
+    blocks = [
+        {"type": "section", "text": {"type": "mrkdwn", "text": body}},
+        {
+            "type": "context",
+            "elements": [
+                {"type": "mrkdwn", "text": f"신고자 `{reporter}`"},
+                # 임계값 자동 처리에는 안 쓴다(clip_spec_v1 §05-6) — 사람이 볼 때 판단을 돕는 값이다
+                {"type": "mrkdwn", "text": f"이 영상 누적 신고 {count}건"},
+                {"type": "mrkdwn", "text": f"구간 시작 {start}초"},
+            ],
+        },
+    ]
+    return {"text": f"[표현클립 신고] {title} · {category}", "blocks": blocks}
+
+
+async def notifyClipReport(report: dict) -> bool:
+    """표현클립 신고를 슬랙으로. 문의하기와 같은 채널(#…_오류신고)을 쓴다.
+
+    `notifyInquiry` 와 달리 파일이 없다 — 이 신고는 캡처를 안 받는다. 부르는 쪽
+    (`business/report.py`)이 **DB 저장 뒤에** 부르므로 여기서 실패해도 신고 자체는
+    이미 남아 있다 — 예외를 던지지 않고 `False` 로 알린다.
+    """
+    import asyncio
+
+    msg = buildClipReportMessage(report)
+
+    if _hasBot():
+        channel = os.getenv(CHANNEL_ENV)
+        res = await asyncio.to_thread(
+            lambda: _call(
+                "chat.postMessage",
+                {"channel": channel, "text": msg["text"], "blocks": msg["blocks"]},
+            )
+        )
+        if not res.get("ok"):
+            print(f"[slack] 표현클립 신고 알림 실패 — {res.get('error')}")
+        return bool(res.get("ok"))
+
+    url = os.getenv(WEBHOOK_ENV)
+    if not url:
+        return False
+
+    body = json.dumps(msg).encode("utf-8")
+
+    def _send() -> bool:
+        req = urllib.request.Request(
+            url, data=body, headers={"Content-Type": "application/json"}, method="POST"
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT_SEC) as res:
+                return 200 <= res.status < 300
+        except urllib.error.HTTPError as e:
+            print(f"[slack] 표현클립 신고 전송 실패 HTTP {e.code} — {e.read()[:200]!r}")
+        except Exception as e:
+            print(f"[slack] 표현클립 신고 전송 실패 — {e!r}")
+        return False
+
+    return await asyncio.to_thread(_send)

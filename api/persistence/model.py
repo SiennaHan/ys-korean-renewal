@@ -83,15 +83,35 @@ class KoChatFeedback(Base) :
     created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
 
 class KoErrorReport(Base) :
+    """표현클립 신고 — DEV-02 · clip_spec_v1 §05~§06.
+
+    신고 단위는 영상이 아니라 **영상 구간**이다. `target_id`(유튜브 ID, 11자)만으로는
+    부족해 `segment_start` 를 같이 둔다 — 영상 단위 신고(재생 불가·부적절)는 이 칸이
+    NULL 이다. `content` 는 검색어를 담는다(진단용, 정렬 키가 아니다) —
+    `matched_line`(검색에 걸린 대본 줄)과는 다른 값이다.
+
+    **`target_id` 가 예전엔 varchar(10) 였다.** 유튜브 ID 는 11자라 저장이 항상 500
+    이었다(`1406 Data too long`) — `migration_error_report_segment.sql` 로 늘렸다.
+
+    **`error_code` 도 같이 늘렸다.** varchar(10) 이던 시절엔 자동 재생 오류 코드
+    (`"100"`·`"101"`·`"150"`)만 넣었으니 몰랐는데, 바텀시트 신고 사유
+    `"audio_quality"`·`"inappropriate"`(둘 다 13자)를 실제로 넣어 보니 여기서도
+    같은 1406 이 났다 — 로컬에서 직접 신고를 넣어 보다가 찾았다.
+    """
     __tablename__  = "ko_error_report"
     id             = Column(Integer,      nullable=False, primary_key=True, autoincrement=True)
     category       = Column(String(50),   nullable=False)
-    target_id      = Column(String(10),   nullable=False)
-    error_code     = Column(String(10),   nullable=True)
+    target_id      = Column(String(32),   nullable=False)
+    error_code     = Column(String(20),   nullable=True)
     error_msg      = Column(String(500),  nullable=True)
     content        = Column(String(500),  nullable=True)
+    segment_start  = Column(Integer,      nullable=True)
+    matched_line   = Column(String(500),  nullable=True)
     user_id        = Column(String(50),   nullable=True)
     created_at     = Column(DateTime,     nullable=False, default=func.utc_timestamp())
+    __table_args__ = (
+        Index("ix_ko_error_report_target", "category", "target_id"),
+    )
 
 
 class UserFlashcard(Base) :

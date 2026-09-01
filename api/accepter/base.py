@@ -40,7 +40,17 @@ class ReportItem(BaseModel):
     target_id: str
     error_code: Optional[str] = None
     error_msg: Optional[str] = None
+    # 검색어(진단용) — DEV-02. 정렬·제외 키가 아니다
     content: Optional[str] = None
+    # 구간 시작 초 · 검색에 걸린 대본 줄 — DEV-02. 영상 단위 신고는 둘 다 없다
+    segment_start: Optional[int] = None
+    matched_line: Optional[str] = None
+    # 슬랙 알림에만 쓴다(DB 컬럼이 아니다) — inappropriate 신고를 사람이 조치할 때
+    # 영상 제목·갈래가 없으면 무엇을 봐야 하는지 알 수 없다
+    title: Optional[str] = None
+    clip_category: Optional[str] = None
+    # **더 이상 신뢰하지 않는다** — 신고자는 인증 토큰에서만 정한다(DEV-02).
+    # 보내와도 무시한다. 옛 클라이언트와의 모양 호환을 위해 필드만 남긴다
     user_id: Optional[str] = None
 
 class GoogleTtsName(Enum):
