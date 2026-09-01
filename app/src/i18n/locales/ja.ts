@@ -841,6 +841,8 @@ const ja = {
 	briefing: {
 		scenario: "会話の場面",
 		keyword: "ミッションキーワード",
+		hintOpen: "ヒントを見る",
+		hintClose: "ヒントを閉じる",
 		start: "会話を始める",
 	},
 	review: {

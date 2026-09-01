@@ -16,8 +16,16 @@ export interface BriefingContent {
 	sceneTranslated: string;
 	/** 미션 키워드 — [무엇을, 언제] */
 	keywords: [string, string][];
-	/** 미리 볼 낱말 — [한국어, 뜻] */
-	words: [string, string][];
+	/**
+	 * 미션마다 모범 문장 — [한국어, 번역]. `keywords` 와 **같은 순서**다.
+	 *
+	 * **여기서만 보여 준다.** 대화 화면에는 힌트를 여는 길이 없다 — 그래서 대화
+	 * 중에는 베낄 문장이 화면에 없고, 미션 발화는 전부 기억에서 나온다.
+	 * 「스스로 말한다」를 재는 자리가 여기 하나로 좁아진다(개발 요청 v53 §2).
+	 *
+	 * 비어 있으면 힌트 버튼을 아예 안 그린다.
+	 */
+	hints?: [string, string][];
 	/** 원장에 있는 실제 상황 이미지. 없을 때만 빈 이미지 자리를 쓴다 */
 	sceneImageUrl?: string;
 }
@@ -32,15 +40,27 @@ export interface BriefingContent {
 export function BriefingScreen({
 	lesson,
 	content,
+	hintOpen = false,
+	onHintToggle,
 	onExit,
 	onStart,
 }: {
 	lesson: string;
 	content: BriefingContent;
+	/**
+	 * 힌트가 펼쳐져 있나. **부모가 쥔다.**
+	 *
+	 * 안에서 `useState` 로 두지 않은 이유가 둘이다 — ① 「열었다」가 지표라
+	 * 부모가 알아야 기록한다(`hint_opened_at_briefing`), ② 목업 대조가 두 상태를
+	 * 각각 그려야 하는데 안에 숨겨 두면 열린 쪽을 그릴 길이 없다.
+	 */
+	hintOpen?: boolean;
+	onHintToggle?: () => void;
 	onExit?: () => void;
 	onStart?: () => void;
 }) {
 	const { t } = useTranslation();
+	const hints = content.hints ?? [];
 	return (
 		<ActivityFrame>
 			<ActivityAppBar lesson={lesson} onExit={onExit} />
@@ -81,17 +101,33 @@ export function BriefingScreen({
 									</div>
 								))}
 							</div>
-							{content.words.length > 0 && (
-								<div className="word-strip">
-									{content.words.map(([word, meaning]) => (
-										<div key={word}>
-											<b>{word}</b>
-											<span>{meaning}</span>
-										</div>
-									))}
-								</div>
-							)}
 						</div>
+						{hints.length > 0 && (
+							<button
+								type="button"
+								className="hint-toggle"
+								data-action="briefHint"
+								aria-expanded={hintOpen}
+								onClick={onHintToggle}
+							>
+								{hintOpen ? t("briefing.hintClose") : t("briefing.hintOpen")}
+							</button>
+						)}
+						{hintOpen && (
+							<div className="brief-card hint-card">
+								{content.keywords.map(([what], i) =>
+									hints[i] ? (
+										<div className="kw-hint" key={what}>
+											<b>{what}</b>
+											<div>
+												<strong>{hints[i][0]}</strong>
+												<span>{hints[i][1]}</span>
+											</div>
+										</div>
+									) : null,
+								)}
+							</div>
+						)}
 					</div>
 				</div>
 			</main>

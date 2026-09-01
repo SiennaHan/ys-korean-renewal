@@ -838,6 +838,8 @@ const vi = {
 	briefing: {
 		scenario: "Tình huống hội thoại",
 		keyword: "Từ khóa nhiệm vụ",
+		hintOpen: "Xem gợi ý",
+		hintClose: "Ẩn gợi ý",
 		start: "Bắt đầu hội thoại",
 	},
 	review: {

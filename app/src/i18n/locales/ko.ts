@@ -867,6 +867,8 @@ const ko = {
 	briefing: {
 		scenario: "대화 상황",
 		keyword: "미션 키워드",
+		hintOpen: "힌트 보기",
+		hintClose: "힌트 닫기",
 		start: "대화 시작하기",
 	},
 	review: {

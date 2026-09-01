@@ -547,10 +547,19 @@
 .activity-frame .kw-line { display:flex; align-items:center; gap:8px; }
 .activity-frame .kw-line b { width:100px; flex:none; text-align:center; font-size:14px; font-weight:700; color:var(--color-fill-primary-pressed); background:var(--color-background-choice); border-radius:5px; padding:4px 0; }
 .activity-frame .kw-line span { flex:1; font-size:14px; color:var(--blue-gray-800); }
-.activity-frame .word-strip { display:flex; gap:8px; overflow-x:auto; padding-top:12px; border-top:1px solid var(--color-background-base); margin-top:12px; }
-.activity-frame .word-strip div { min-width:100px; background:var(--color-background-base); border-radius:6px; padding:8px; text-align:center; }
-.activity-frame .word-strip b { display:block; font-size:14px; color:var(--color-text-strong); }
-.activity-frame .word-strip span { display:block; font-size:12px; color:var(--blue-gray-400); }
+/* 힌트 — 브리핑에서 **보고 싶은 사람만** 연다. 미션 키워드 카드 **밖, 그 아래**다.
+   대화 화면에는 이 버튼이 없다 — 그래서 대화 중에 베낄 문장이 화면에 없고,
+   미션 발화는 전부 기억에서 나온다. 「스스로 말한다」를 재는 자리가 여기 하나다 */
+.activity-frame .hint-toggle { display:block; margin:8px 0 0; border:1px solid var(--color-line-normal); background:var(--color-background-surface); border-radius:999px; padding:4px 12px; font-size:12px; font-weight:600; color:var(--color-text-sub); }
+.activity-frame .hint-toggle[aria-expanded="true"] { border-color:var(--color-line-tint); background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
+.activity-frame .hint-card { margin-top:8px; display:grid; gap:12px; }
+.activity-frame .kw-hint { display:flex; align-items:flex-start; gap:8px; }
+/* 키워드 칩 — kw-line 과 같은 100px 폭이라 두 카드의 왼쪽 기둥이 맞는다.
+   다만 색은 한 단 죽인다. 미션 이름은 위 카드가 이미 말했다 */
+.activity-frame .kw-hint > b { width:100px; flex:none; text-align:center; font-size:13px; font-weight:700; color:var(--color-text-sub); background:var(--color-background-base); border-radius:5px; padding:4px 0; }
+.activity-frame .kw-hint > div { flex:1; }
+.activity-frame .kw-hint strong { display:block; font-size:14px; font-weight:600; color:var(--color-text-strong); }
+.activity-frame .kw-hint span { display:block; font-size:12px; color:var(--blue-gray-400); }
 .activity-frame .activity-confirm-backdrop { position:absolute; inset:0; z-index:50; display:flex; align-items:flex-end; background:rgba(15,31,49,.36); }
 .activity-frame .activity-confirm { width:100%; padding:20px 20px max(20px,env(safe-area-inset-bottom)); border-radius:20px 20px 0 0; background:var(--color-background-surface); }
 .activity-frame .activity-confirm h2 { margin:0; color:var(--color-text-heading); font-size:18px; line-height:26px; font-weight:600; }

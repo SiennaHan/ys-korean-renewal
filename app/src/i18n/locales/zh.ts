@@ -811,6 +811,8 @@ const zh = {
 	briefing: {
 		scenario: "对话情景",
 		keyword: "任务关键词",
+		hintOpen: "查看提示",
+		hintClose: "关闭提示",
 		start: "开始对话",
 	},
 	review: {

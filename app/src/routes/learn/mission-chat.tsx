@@ -181,7 +181,6 @@ function RouteComponent() {
 				sceneTranslated: dialog?.situation_en ?? "",
 				sceneImageUrl: dialog ? scenarioImgUrl : undefined,
 				keywords: keywordList.map((item) => [item.label, item.instruction]),
-				words: [],
 			}}
 			onExit={goBack}
 			onStart={() => void goChat()}

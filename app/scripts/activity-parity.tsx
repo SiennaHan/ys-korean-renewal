@@ -37,7 +37,10 @@ import {
 } from "@/components/learn/word-learning";
 import WordQuizCard from "@/components/learn/word-quiz-card";
 import { AudioRow } from "@/components/main/activity/audio";
-import { BriefingScreen } from "@/components/main/activity/briefing-screen";
+import {
+	type BriefingContent,
+	BriefingScreen,
+} from "@/components/main/activity/briefing-screen";
 import { ChatScreen } from "@/components/main/activity/chat";
 import {
 	ChipOption,
@@ -339,6 +342,24 @@ function fromData<T>(key: string, value: T): T {
 	(DATA_FIXTURES[key] ??= []).push(value);
 	return value;
 }
+
+/** 브리핑 표본 — 닫힘·열림 두 상태가 **같은 값**을 봐야 해서 밖에 둔다 */
+const BRIEFING_CONTENT = {
+	title: "카페에서 주문하기",
+	titleTranslated: "Ordering at a cafe",
+	scene: "카페에 왔습니다. 마실 것을 주문해 보세요.",
+	sceneTranslated: "You are at a cafe. Try ordering a drink.",
+	keywords: [
+		["주문하기", "마실 것을 골라 주문해요"],
+		["가격 묻기", "얼마인지 물어봐요"],
+		["인사하기", "헤어질 때 인사해요"],
+	],
+	hints: [
+		["따뜻한 커피 한 잔 주세요.", "One hot coffee, please."],
+		["얼마예요?", "How much is it?"],
+		["안녕히 계세요.", "Goodbye."],
+	],
+} satisfies BriefingContent;
 
 const SCREENS: Record<string, ReactElement> = {
 	/*
@@ -687,26 +708,18 @@ const SCREENS: Record<string, ReactElement> = {
 		/>
 	),
 
-	briefing: (
-		<BriefingScreen
-			lesson="4과"
-			content={{
-				title: "카페에서 주문하기",
-				titleTranslated: "Ordering at a cafe",
-				scene: "카페에 왔습니다. 마실 것을 주문해 보세요.",
-				sceneTranslated: "You are at a cafe. Try ordering a drink.",
-				keywords: [
-					["주문하기", "마실 것을 골라 주문해요"],
-					["가격 묻기", "얼마인지 물어봐요"],
-					["인사하기", "헤어질 때 인사해요"],
-				],
-				words: [
-					["커피", "coffee"],
-					["얼마", "how much"],
-					["따뜻하다", "to be hot"],
-				],
-			}}
-		/>
+	briefing: <BriefingScreen lesson="4과" content={BRIEFING_CONTENT} />,
+
+	/*
+	 * **힌트를 편 상태.** 화면 하나가 상태 둘이라 따로 그린다 — `write`·`write3`
+	 * 이 조합/따라쓰기를 나눠 뜬 것과 같은 이유다.
+	 *
+	 * 이 상태가 대조에 없으면 **모범 문장이 어떻게 그려지는지 아무도 안 본다.**
+	 * 힌트는 브리핑에만 있는 길이라(대화 화면에는 버튼이 없다) 여기서 안 보면
+	 * 볼 자리가 없다.
+	 */
+	briefing_hint: (
+		<BriefingScreen lesson="4과" content={BRIEFING_CONTENT} hintOpen />
 	),
 };
 

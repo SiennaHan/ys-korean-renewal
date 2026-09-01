@@ -368,10 +368,10 @@ export const 미션브리핑: Story = {
 						["가격 묻기", "얼마인지 물어봐요"],
 						["인사하기", "헤어질 때 인사해요"],
 					],
-					words: [
-						["커피", "coffee"],
-						["얼마", "how much"],
-						["따뜻하다", "to be hot"],
+					hints: [
+						["따뜻한 커피 한 잔 주세요.", "One hot coffee, please."],
+						["얼마예요?", "How much is it?"],
+						["안녕히 계세요.", "Goodbye."],
 					],
 				}}
 			/>

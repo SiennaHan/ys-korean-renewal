@@ -65,6 +65,10 @@ ALLOW = {
 	"src/components/main/activity/stimulus.tsx .mouth-video": "영상 칸이다 — 글자가 아니다",
 	"src/components/main/activity/briefing-screen.tsx .kw-line": "폭 규칙이 없는 flex "
 	"줄이다(.kw-line 은 display:flex 뿐)",
+	"src/components/main/activity/briefing-screen.tsx .kw-hint": "안의 칩이 100px "
+	"고정인데 **재 봤다** — 원장(ko_mission_chat.mission_detail)의 라벨 355개 중 "
+	"가장 긴 것이 8자('긍정·부정 영향')이고 13px/700 로 75px 다(2026-09-01 브라우저 "
+	"실측). 25px 남는다. 라벨은 한국어 한 벌뿐이라 다섯 언어를 따로 볼 것이 없다",
 	"src/components/main/course-list/jamo.tsx .syls": "음절 칩을 받는 껍데기다 — 칩마다 "
 	"자기 폭을 쓴다",
 }

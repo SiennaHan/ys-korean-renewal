@@ -838,6 +838,8 @@ const en = {
 	briefing: {
 		scenario: "Conversation scenario",
 		keyword: "Mission keyword",
+		hintOpen: "Show hints",
+		hintClose: "Hide hints",
 		start: "Start the conversation",
 	},
 	review: {
