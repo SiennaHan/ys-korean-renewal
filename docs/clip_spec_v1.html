@@ -1,5 +1,8 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/components/main/content4.tsx, app/src/shared/data/clip.ts, api/business/report.py, api/persistence/repo_error_report.py @ 3ad062c -->
+<!-- 관찰: app/src/components/main/content4.tsx, app/src/shared/data/clip.ts, api/business/report.py, api/persistence/repo_error_report.py @ e3f5cae
+     — 확인: 98d4eba·e3f5cae(DEV-02)가 §04 의 4·5·6 번과 §06 의 신고 관련 여섯 줄이
+       말하던 "아직 안 됨" 을 실제로 구현했다 — 이 문서에서 그 부분을 전부 고쳤다.
+       clip.ts 는 이 구간에서 안 바뀌었다 -->
 <!-- 왜: 이 문서의 "지금 이렇게 돈다" 는 전부 저 넷을 읽고 재서 적은 것이다. 원본이 바뀌면 §03·§04 가 낡는다 -->
 <title>표현클립 — 명세도 목업도 없던 유입의 첫 화면</title>
 <style>
@@ -300,18 +303,28 @@
         <b><span class="file">varchar(10)</span></b> 인데 <b>유튜브 ID 는 11자</b>다.
         실제로 넣어 보면 <span class="file">1406 Data too long</span> →
         <b><span class="file">POST /report</span> 가 500</b> 이다.
-        DB 에 <span class="file">category='video'</span> 행이 <b>0건</b>인 것이 그 증거다</td>
-      <td><span class="pill stop">죽은 기능</span></td></tr>
+        DB 에 <span class="file">category='video'</span> 행이 <b>0건</b>인 것이 그 증거다.
+        <span class="qa"><b>고쳤다(2026-09-01)</b> — <span class="file">target_id</span> 를
+        32자로 늘렸다. 로컬에서 실제로 신고를 넣어 보다가 <span class="file">error_code</span>
+        도 <span class="file">varchar(10)</span> 이라 <span class="file">"audio_quality"</span>
+        (13자)가 같은 이유로 죽는 것을 찾아 20자로 같이 늘렸다 — 이 표에는 없던,
+        실측으로만 찾을 수 있던 것이다</span></td>
+      <td><span class="pill done">고쳤다 09-01</span></td></tr>
     <tr><td>5</td><td><b>그런데 학습자에게는 성공처럼 보인다</b></td>
       <td><span class="file">createReport</span> 가
         <span class="file">catch → return null</span> 로 삼키고, 화면은 반환을 보지 않고
-        <b>바텀시트를 닫는다</b>. 아무 말도 나오지 않는다</td>
-      <td><span class="pill stop">조용한 실패</span></td></tr>
+        <b>바텀시트를 닫는다</b>. 아무 말도 나오지 않는다.
+        <span class="qa"><b>고쳤다(2026-09-01)</b> — 실패하면 시트를 열어 둔 채 실패
+        문구를 보여 준다. 같은 이유 버튼을 다시 누르면 재시도된다</span></td>
+      <td><span class="pill done">고쳤다 09-01</span></td></tr>
     <tr><td>6</td><td><b>재생 오류 자동 신고도 같이 죽어 있다</b></td>
       <td><span class="file">onError</span> 가 코드 2·5·100·101·150 을 받아
         <span class="file">reportError</span> 를 부르는데 그 길이 4번에서 막힌다.
-        즉 <b>삭제된 영상·임베드 금지 영상이 스스로 걸러지지도 않는다</b></td>
-      <td><span class="pill stop">죽은 기능</span></td></tr>
+        즉 <b>삭제된 영상·임베드 금지 영상이 스스로 걸러지지도 않는다</b>.
+        <span class="qa"><b>고쳤다(2026-09-01)</b> — 4번이 고쳐지며 같이 살아났다.
+        검색 결과 제외는 <span class="file">100·101·150</span> 셋만(재생 불가), 2·5 는
+        저장은 되지만 제외 판단에는 안 쓴다(§05-6)</span></td>
+      <td><span class="pill done">고쳤다 09-01</span></td></tr>
     <tr><td>7</td><td><b>열면 gzip 3.0 MB 를 받고 그 절반을 아무도 읽지 않았다</b></td>
       <td><span class="file">script_org</span> 3.0 MB(§02).
         무료·비로그인으로 열리는 첫 화면이라 <b>가장 인내심이 없는 순간</b>에 받는다.<br>
@@ -514,36 +527,42 @@
         <span class="file">link</span> 와의 불일치 · 필드 누락 ·
         <b><span class="file">script_org</span> 가 다시 들어오는 것</b>을 본다.
         <b>일부러 다섯 가지를 깨뜨려 잡히는 것을 확인했다</b></td></tr>
-    <tr><td>신고를 하위 정렬로 <span class="pill done">§05-6</span></td>
+    <tr><td>신고를 하위 정렬로 <span class="pill done">구현 09-01</span></td>
       <td><b>예</b></td>
-      <td><b>이것을 먼저 넣는다</b>(§04 의 순서 칸). 클라이언트는 목록에서 빼는 대신
-        정렬 감점으로 쓴다. 재생 불가 코드(100·101·150)만 빼는 길로 남긴다</td></tr>
-    <tr><td>신고 단위를 구간으로 <span class="pill done">§05-6</span></td>
+      <td><b>이것을 먼저 넣었다</b>(§04 의 순서 칸). 클라이언트는 목록에서 빼는 대신
+        정렬 감점으로 쓴다. 재생 불가 코드(100·101·150)만 빼는 길로 남겼다.
+        <span class="qa">눌러 봄 — 검색 → 신고 → 재검색 없이 그 자리에서 바로 맨
+        아래로 내려가는 것을 확인했다</span></td></tr>
+    <tr><td>신고 단위를 구간으로 <span class="pill done">구현 09-01</span></td>
       <td><b>예</b></td>
-      <td><span class="file">target_id</span> 를 <b>최소 <span class="file">varchar(32)</span></b> 로
-        늘리고 <b>구간 시작 초</b>를 담는다(<span class="file">"{youtube_id}@{start}"</span> 규약이든
-        칸을 하나 더 두든 개발 판단이다). 검색어는 <span class="file">content</span> 에.
-        <b>컬럼을 늘리는 것은 위 항목 다음이다</b></td></tr>
-    <tr><td>사유 이름을 좁힌다 <span class="pill done">§05-6</span></td>
+      <td><span class="file">target_id</span> 를 <b>32자</b>로 늘렸다. 구간 시작 초는
+        칸을 하나 더 두는 쪽으로 갔다(<span class="file">segment_start</span> 정수 칸) —
+        문자열 규약보다 쿼리하기 쉽다. 검색어는 <span class="file">content</span> 에,
+        걸린 대본 줄은 새 칸 <span class="file">matched_line</span> 에.
+        <b>컬럼을 늘리는 것은 위 항목 다음에 했다</b></td></tr>
+    <tr><td>사유 이름을 좁힌다 <span class="pill done">이미 됨</span></td>
       <td><b>아니오</b></td>
-      <td>「부적절한 영상 신고」 → <b>「선정적·폭력적 내용」</b>. <b>다섯 언어.</b>
-        지금 <span class="file">error_msg</span> 에 <b>한국어가 그대로 박혀</b> 들어가는 것도
-        같이 본다 — 신고 사유는 <b>코드로 보내고 문구는 화면이 만든다</b></td></tr>
-    <tr><td>내용 신고를 슬랙으로 <span class="pill done">§05-6</span></td>
+      <td>「부적절한 영상 신고」 → <b>「선정적·폭력적 내용」</b>은 2026-08-27 에 이미
+        다섯 언어로 끝나 있었다(§04 의 6번 각주). <span class="file">error_code</span> 로
+        보내고 <span class="file">error_msg</span> 는 고정 라벨 — 여기서 새로 할 것은 없었다</td></tr>
+    <tr><td>내용 신고를 슬랙으로 <span class="pill done">구현 09-01</span></td>
       <td><b>예 — 작다</b></td>
-      <td><span class="file">api/xternal/slack.py</span> 를 재사용한다(문의하기가 이미 쓴다).
-        <span class="file">notifyInquiry</span> 옆에 형제 함수 하나.
-        <b>담을 것은 §05-6 의 표</b> — 특히 <span class="file">&amp;t={start}s</span> 링크가 없으면
-        18분짜리에서 5초를 찾아야 한다. <b>보내기 실패는 남긴다</b></td></tr>
-    <tr><td>신고 API 에 인증 <span class="pill stop">§3.4</span></td>
+      <td><span class="file">api/xternal/slack.py</span> 를 재사용했다 —
+        <span class="file">notifyClipReport</span>(<span class="file">notifyInquiry</span> 자매
+        함수). <span class="file">&amp;t={start}s</span> 링크·검색어·걸린 대본 줄·신고자·
+        누적 신고 수를 담는다. <b>보내기 실패는 예외를 안 던진다</b>(DB 저장 뒤에 불러서
+        저장 자체는 이미 끝나 있다)</td></tr>
+    <tr><td>신고 API 에 인증 <span class="pill done">구현 09-01</span></td>
       <td><b>예 — 작다</b></td>
-      <td><span class="file">POST /report</span> · <span class="file">GET /report/list</span> 둘 다
-        지금 무인증이다. 게스트도 쓰는 화면이라 게스트 토큰까지 받되
-        <b>토큰 없는 호출은 막는다</b></td></tr>
-    <tr><td>조용한 실패를 없앤다 <span class="pill stop">§04-5</span></td>
+      <td><span class="file">POST /report</span> · <span class="file">GET /report/list</span>
+        둘 다 <span class="file">JWTBearer</span> 를 걸었다 — 다른 보호 라우트와 같은 패턴.
+        <span class="file">user_id</span> 는 요청 바디를 안 믿고 토큰에서만 뽑는다.
+        <span class="qa">눌러 봄 — 토큰 없는 요청 401, 게스트 토큰 요청 정상 저장</span></td></tr>
+    <tr><td>조용한 실패를 없앤다 <span class="pill done">구현 09-01</span></td>
       <td><b>아니오</b></td>
-      <td>신고가 실패하면 <b>실패했다고 말한다</b>. 지금은 500 을 삼키고 바텀시트를 닫아
-        <b>보낸 것처럼 보인다</b></td></tr>
+      <td>신고가 실패하면 <b>실패했다고 말한다</b>. 전에는 500 을 삼키고 바텀시트를 닫아
+        보낸 것처럼 보였다 — <b>바텀시트에 빨간 문구를 두고, 같은 버튼을 다시 누르면
+        재시도된다</b>(연타는 <span class="file">pending</span> 상태로 막는다)</td></tr>
     <tr><td>하트(저장)를 만든다면</td><td><b>예</b></td>
       <td>표 하나(사용자 · 영상 · 구간 시작 초) + 목록·추가·삭제 API.
         게스트는 기기에만 남기고 로그인하면 옮기는 규약이 필요하다.

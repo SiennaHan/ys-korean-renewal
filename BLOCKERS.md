@@ -1668,11 +1668,13 @@ PWA 에서만 푸시가 되고 그 유도 UX 가 비싸며, iOS/안드로이드 
 
 ## 9. 출시 전 남은 것 — 55개를 하나씩 찍었다 (2026-08-26)
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 6d203e5
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ e3f5cae
      — 확인: 「유료 API 접근 제한: 아직 0곳」이 거짓이 됐다 — content 라우트가 requireChapter 를
        지나 402 를 낸다. 그 줄을 고쳤다. 라우터 고정과 n8_jamo 는 손대지 않았다.
        그 뒤 inquiry.ts 에 재현 정보 필드(actual·expected)가 늘었지만 이 절은 그 파일을
-       이름으로 짚지 않는다 — 무관 -->
+       이름으로 짚지 않는다 — 무관.
+       e3f5cae(DEV-02)는 apiType.ts 의 ReportItem 에 필드 넷(segment_start·matched_line·
+       title·clip_category)만 더했다 — 라우터 고정·n8_jamo·reset-password 어느 것과도 무관 -->
 <!-- 왜: 이 절은 전부 코드를 보고 적은 관찰이다. 원본이 바뀌면 이 표가 낡는다 -->
 
 외부 리뷰(GPT)가 출시 전 필수 항목을 정리해 왔고, **하나씩 코드로 확인했다.**
@@ -3454,10 +3456,13 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 
 ## 12. 탈퇴가 표 하나를 빠뜨리고 있었다 — 고쳤다 (2026-08-29)
 
-<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 440900f
+<!-- 관찰: api/shared/withdrawal_scope.py, api/business/user_withdraw.py, api/persistence/model.py @ 98d4eba
      — 확인: model.py 에 그 뒤로 늘어난 것은 ko_inquiry.actual·expected 뿐이다 — user_id 가
        없는 표라 이 절의 「user_id 가진 표 열다섯」 셈과 무관하다. 440900f(다른 세션)는
-       KoMissionHint 표를 추가했다 — 이 표도 user_id 가 없어 열다섯 셈과 무관 -->
+       KoMissionHint 표를 추가했다 — 이 표도 user_id 가 없어 열다섯 셈과 무관.
+       98d4eba(DEV-02)는 이미 열다섯에 들어 있던 ko_error_report 에 segment_start(정수)·
+       matched_line(자유 텍스트)을 더했다 — 표 자체는 새로 안 늘었지만 「자유 텍스트 둘」
+       이 셋이 됐길래 그 문장을 고쳤다(아래) -->
 <!-- 왜: 아래 「어느 표가 어느 갈래인가」와 「이 표만 Integer 다」는 그 셋을 읽고 적은 관찰이다 -->
 
 `api/shared/withdrawal_scope.py` 의 `PURGE_MODELS` 에 `KoSignupCodeUse` 가 없었다.
@@ -3548,7 +3553,8 @@ app/src 의 테스트 파일 0 · E2E 도구 없음 · 테스트 러너 없음
 「어떻게 공부하는지」는 전부 이 여덟 안에 있다. 나머지 일곱은 내용 자체가 개인정보다 —
 `ko_stt_shadow`(목소리 · 전사문 셋) · `ko_chat_msg`·`ko_chat_feedback`(5000자 자유 발화) ·
 `ko_chat`(2000자 리포트) · `ko_inquiry`(회신 이메일 · 2000자 본문) · `ko_inquiry_file`(캡처) ·
-`ko_error_report`(자유 텍스트 둘).
+`ko_error_report`(자유 텍스트 셋 — DEV-02 가 검색에 걸린 대본 줄을 담는
+`matched_line` 을 더했다, 2026-09-01).
 
 ### 잡히지 않은 채로 있는 것
 

@@ -1,11 +1,15 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 440900f
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ e3f5cae
      — 확인: xternal 이 여섯에서 일곱으로 늘었다(feedback_hub.py, 2026-08-29) — DEV-12 의 셈에
        반영했다. model.py 는 ko_inquiry 에 actual·expected 가 늘었을 뿐 이 문서가 보는
        표·게이트·기능 게이트와는 무관하다. 그 뒤 6d203e5(다른 세션)는 build-content.py·
        n7_mission_chat.json 만 건드려 이 문서와 무관. 440900f(다른 세션)는 model.py 에
-       KoMissionHint 표를 추가했다 — 콘텐츠 표라 이 카드가 세는 표·게이트·기능 게이트와 무관 -->
+       KoMissionHint 표를 추가했다 — 콘텐츠 표라 이 카드가 세는 표·게이트·기능 게이트와 무관.
+       1a16d25(DEV-12) 는 openai.py·gcloud.py 를 고쳤다 — 이 판에서 DEV-12 카드를 그
+       내용대로 다시 썼다(바로 아래). 98d4eba·e3f5cae(DEV-02) 는 model.py 에
+       ko_error_report 칸을 늘리고 xternal/slack.py 에 notifyClipReport 를 더했다 —
+       DEV-02 카드를 그 내용대로 다시 썼고, DEV-01 카드도 이 판에서 같이 정리했다 -->
 <!-- 왜: 카드의 「현재」는 전부 이 코드를 읽고 적은 관찰이다. 원본이 바뀌면 카드가 낡는다.
      경로를 넷으로 좁혔다 — 표(DEV-04·09·14) · 외부 호출 타임아웃(DEV-12) ·
      기능 게이트(DEV-03·09) · CI(DEV-10). 자주 우는 검사는 안 보고 넘기게 된다 -->
@@ -96,55 +100,63 @@
 상태 표기: **READY**는 바로 시작 가능, **PARTIAL**은 기반 작업까지만 가능,
 **BLOCKED**는 위 결정 전 구현 금지다. 번호 순서가 권장 실행 순서다.
 
-### DEV-01 · QR을 홈으로 보내기 — READY · P0
+### DEV-01 · QR을 홈으로 보내기 — DONE(2026-09-01) · P0
 
 **목적:** 책의 QR은 권한 키가 아니라 유입 경로다. 로그인 여부와 무관하게 게스트 세션을
 보장한 뒤 홈(`/main`)으로 보낸다.
 
-**현재:** `app/src/routes/qr.tsx`는 `PUBLIC_QR_WEB_REDIRECT_URL`의 기본값 `/`을 쓴다.
-비로그인 사용자가 `/`을 거치면 로그인으로 갈 수 있어 확정 정책과 다르다.
+**했다 (`1253b71`).** `externalRedirectUrl()` 이 운영자가 진짜 외부 URL
+(`PUBLIC_QR_WEB_REDIRECT_URL`)을 명시적으로 준 경우가 아니면 `null` 을 낸다 —
+전에는 빈 값이면 `/` 로 떨어져 `IntroSection` 의 2초 지연 재확인 경쟁에 걸릴 수 있었다.
+추적(`createQrScan`/`reportQrRedirect`) 은 try/catch 로 감싸 절대 이동을 막지 않는다.
+게스트 세션은 `useAuth()` 로 `isSignedIn` 을 본 뒤 `if (!isSignedIn)` 일 때만 만들어
+이미 로그인한 방문자의 세션을 덮지 않는다. `navigate({to:"/main", replace:true})`
+(SPA) 로 이동한다 — 외부 URL 이 설정된 경우만 예외.
 
-**구현 범위**
+**눌러 본 것** — 로컬스토리지를 비운 새 브라우저로 `/qr` 접속 → `/main` 에 곧장 도착,
+`/qr/scan` · `/user/sign/guest` · `/qr/scan/…/redirect` 각각 정확히 1회. 이미
+로그인한 방문자는 토큰 그대로 유지된 채 `/main` 도착.
 
-1. 스캔 기록 요청은 한 번만 보낸다. 실패해도 사용자를 빈 화면에 두지 않는다.
-2. 로그인 토큰이 없으면 기존 게스트 인증 흐름으로 게스트 세션을 만든다.
-3. 언어 설정과 QR 추적 정보는 보존하고 `/main`으로 이동한다.
-4. QR은 무료 범위 이상의 권한을 만들지 않는다.
+**남은 것** — 완료 판정의 "언어 설정 이동 전후 동일" 은 별도로 다시 확인 안 함(코드
+경로상 언어는 이 라우트가 건드리지 않아 위험이 낮다고 판단했다).
 
-**완료 판정**
-
-- 새 브라우저·기존 게스트·로그인 계정 세 경우가 모두 홈에 도착한다.
-- 새 브라우저는 도착 즉시 `GET /entitlement`와 학습 기록 API를 호출할 수 있다.
-- 잘못된 QR 코드·추적 API 실패·중복 탭에서도 무한 리다이렉트나 중복 스캔이 없다.
-- 한국어·영어를 포함한 언어 설정이 이동 전후 동일하다.
-
-### DEV-02 · 표현클립 신고를 안전하게 저장하기 — READY · P0
+### DEV-02 · 표현클립 신고를 안전하게 저장하기 — DONE(2026-09-01) · P0
 
 **목적:** 신고가 실제로 저장되고, 신고 한 건이 영상을 전 사용자에게서 즉시 숨기지 않게 한다.
 
-**현재**
+**한 것 — 순서 그대로**
 
-- `ko_error_report.target_id`는 `varchar(10)`인데 유튜브 ID는 11자라 `POST /report`가 500이다.
-- 신고 영상 제외 로직은 살아 있어 컬럼만 먼저 늘리면 익명 한 명이 영상을 전원에게서 숨길 수 있다.
-- `POST /report` 와 `GET /report/list/{category}` 가 **둘 다 무인증**이고(라우트에 `Depends` 가 없다), 클라이언트는 실패를 성공처럼 닫는다.
+1. **제외 → 하위 정렬.** `content4.tsx` 의 정렬에 신고 여부를 우선순위보다 앞선 축으로
+   넣었다(`compareResults`) — 신고된 구간은 목록에서 안 빠지고 같은 우선순위 안에서
+   뒤로 간다. **재생 불가(100·101·150)만** `UNPLAYABLE_CODES` 로 따로 걸러 검색
+   결과에서 뺀다.
+2. **DB 마이그레이션** (`migration_error_report_segment.sql`, 1번 뒤에 돈다고 파일
+   머리에 못박았다) — `target_id` varchar(10)→32. 로컬에서 실제로 신고를 넣어 보다가
+   `error_code` 도 varchar(10) 이라 `"audio_quality"`(13자)가 같은 1406 으로 죽는 것을
+   찾아 20자로 같이 늘렸다 — 명세에는 없던, 실측으로 찾은 것이다.
+3. **구간 단위 저장** — `segment_start`(구간 시작 초)·`matched_line`(걸린 대본 줄) 컬럼을
+   새로 두고, 그동안 한 번도 안 쓰인 `content` 칸을 검색어 용도로 재사용했다(rename 안 함).
+4. **인증** — `POST /report`·`GET /report/list/{category}` 둘 다
+   `dependencies=[Depends(auth.JWTBearer())]`. `user_id` 는 더 이상 요청 바디를 안 믿고
+   토큰에서만 뽑는다(`ReportItem.user_id` 필드는 옛 클라이언트 호환용으로 남기되 무시).
+5. **슬랙** — `xternal/slack.py` 에 `notifyClipReport` 신설(`notifyInquiry` 자매 함수,
+   문의하기와 같은 채널). `&t={start}s` 링크·검색어·걸린 대본 줄·신고자·누적 신고 수를
+   담는다. **DB 저장 뒤에** 부르고 실패해도 예외를 안 던진다 — `business/report.py`.
+6. **저장 실패 UI** — `ReportBottomSheet` 에 `pending`(연타 방지)·`failed`(빨간 문구 +
+   같은 버튼을 다시 누르면 재시도) 상태 추가. 5개 언어 `clip.reportFailed`.
 
-**반드시 지킬 구현 순서**
+**눌러 본 것** — 로컬 DB 에 마이그레이션을 실제로 돌리고(`DESCRIBE` 로 스키마 확인),
+API 서버로 게스트 토큰 발급 → `POST /report`(audio_quality·inappropriate 둘 다) →
+`GET /report/list/video` 왕복을 curl 로 확인. 브라우저로는 표현클립 화면에서 실제
+검색 → 신고 → **정렬이 그 자리에서 바로 바뀌는 것**(재검색 없이, 17건 중 신고한
+구간이 즉시 맨 아래로)을 확인. 서버를 잠깐 내려 저장 실패 화면(빨간 문구)을 띄운
+뒤 같은 버튼을 다시 눌러 재시도가 성공하는 것도 확인. 토큰 없는 호출은 401 확인.
 
-1. 앱의 신고 결과를 **제외가 아니라 하위 정렬**로 바꾼다. 재생 불가 코드 100·101·150만 제외한다.
-2. 그다음 DB를 마이그레이션한다. 신고 단위는 영상이 아니라 **영상 구간**이며 `target_id`는 최소 32자다.
-3. 구간 시작 초·검색어·맞은 대본 줄·신고 사유 코드를 저장한다.
-4. 두 신고 API 모두 로그인/게스트 토큰을 받고 토큰 없는 호출은 거부한다.
-5. `inappropriate`는 기존 문의 채널로 알리되, 슬랙 실패가 DB 저장을 되돌리지 않게 한다.
-6. 앱은 저장 실패 시 실패 상태와 재시도를 보여 준다.
-
-**완료 판정**
-
-- 같은 영상의 서로 다른 구간을 별도로 신고할 수 있다.
-- `audio_quality` 신고 후 해당 구간은 사라지지 않고 같은 우선순위 안에서 뒤로 간다.
-- `inappropriate` 신고는 DB에 먼저 남고 조치 가능한 시점 링크와 맥락이 알림에 포함된다.
-- 토큰 없는 요청은 401/403, 게스트·회원 요청은 정상 처리된다.
-- 중복 전송은 중복 행·중복 알림을 만들지 않거나 명시한 멱등 규칙으로 처리된다.
-- 마이그레이션 전후 데이터와 롤백 절차가 PR에 포함된다.
+**남은 것** — 중복 전송 방지는 **클라이언트의 `pending` 잠금뿐**이다(연타는 막지만
+새로고침 뒤 같은 사람이 같은 구간을 또 신고하면 행이 또 쌓이고 `inappropriate` 면
+슬랙도 또 온다). DB 유니크 제약은 안 걸었다 — `report_count` 가 부풀 뿐 정렬(존재
+여부만 봄)에는 영향이 없어 지금 범위에서는 낮은 위험으로 봤다. 필요해지면
+`(category, target_id, segment_start, error_code, user_id)` 유니크가 자리다.
 
 상세 근거는 `BLOCKERS.md` §6-e와 `clip_spec_v1.html` §05~§06이다.
 

@@ -1,12 +1,18 @@
 <meta charset="utf-8">
-<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal, api/business/user_withdraw.py, api/shared/withdrawal_scope.py @ 440900f
+<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal, api/business/user_withdraw.py, api/shared/withdrawal_scope.py @ 98d4eba
      — 확인: model.py 에 ko_inquiry.actual·expected 가 늘었다(재현 정보) — 문의 표에 반영했다.
        xternal 에 feedback_hub.py 가 새로 생겼고(2026-08-29) 이번에 actual·expected 도 보내게
        고쳤다 — **국외 이전 표에 줄을 추가했지만 나라는 「확인 필요」로 비워 뒀다**(코드만으로는
        모른다). 이 문서를 다루는 사람이 반드시 채워야 한다.
        그 뒤 6d203e5(다른 세션)는 build-content.py·n7_mission_chat.json 만 건드려 이 절과 무관.
        440900f(다른 세션)는 model.py 에 KoMissionHint 표를 추가했다 — user_id 도 개인정보도
-       없는 콘텐츠 표(모범 문장 원장)라 수집 항목·제3자·국외 이전 어느 쪽과도 무관 -->
+       없는 콘텐츠 표(모범 문장 원장)라 수집 항목·제3자·국외 이전 어느 쪽과도 무관.
+       1a16d25(DEV-12)는 openai.py·gcloud.py 에 타임아웃·스레드 오프로딩만 넣었다 —
+       이미 표에 있는 처리자(OpenAI·Google)를 새로 늘리지 않는다.
+       98d4eba(DEV-02)는 model.py 에 ko_error_report.segment_start·matched_line 을
+       더했다(개인정보 아님, user_id 는 기존 칸) — 그리고 xternal/slack.py 에
+       notifyClipReport 를 신설해 표현클립 신고가 Slack 으로도 간다 — **Slack 줄에
+       반영했다** -->
 <!-- 왜: 수집 항목·제3자·국외 이전은 전부 이 파일들을 읽고 적은 관찰이다. 코드가 바뀌면 이 표가 낡는다 -->
 <title>이용약관 · 개인정보 처리방침 초안</title>
 <style>
@@ -246,10 +252,13 @@ PG 가 직접 받고 우리는 거래 식별자만 보관하는 형태가 되어
     <tr><td>RTZR(VITO)</td><td>음성 파일</td><td>한국어 전사</td><td>국내</td></tr>
     <tr><td>Tutorus Research</td><td>음성 파일</td><td>발음 평가 · 비원어민 전사</td><td>국내</td></tr>
     <tr><td>AWS S3</td><td>음성 파일 · 합성 음성 · <b>문의에 붙인 화면 캡처</b></td><td>보관</td><td>서울 리전(ap-northeast-2)</td></tr>
-    <tr><td><b>Slack</b></td><td><b>문의 내용 · 답장 주소 · 붙인 화면 캡처</b></td>
-      <td>문의를 담당자에게 전달</td><td>미국(국외)
+    <tr><td><b>Slack</b></td><td><b>문의 내용 · 답장 주소 · 붙인 화면 캡처 · 표현클립
+      「선정적·폭력적 내용」 신고(영상 제목·검색어·걸린 대본 줄·신고자 식별자)</b></td>
+      <td>문의·신고를 담당자에게 전달</td><td>미국(국외)
       <span class="qa"><b>이 줄이 처음에 빠져 있었다</b>(2026-08-27 정정) — 문의를 만들 때부터
-      글이 슬랙으로 가고 있었는데 표에 없었다</span></td></tr>
+      글이 슬랙으로 가고 있었는데 표에 없었다. <b>표현클립 신고는 2026-09-01 에 추가됐다</b>
+      (DEV-02, <span class="file">notifyClipReport</span>) — 같은 채널을 재사용해 새 줄을
+      만들지 않고 이 줄에 더했다</span></td></tr>
     <tr><td><b>사내 피드백 허브</b></td><td><b>문의 내용(재현 정보 포함) · 답장 주소 · 접속 화면 ·
       브라우저 정보 · 붙인 화면 캡처</b></td>
       <td>같은 문의를 사내 도구(Claude Code 프롬프트 생성)로도 전달</td>

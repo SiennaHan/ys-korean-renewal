@@ -49,14 +49,13 @@
 
 ## 문서
 
-관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 11개 · 선언 14개 —
+관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 10개 · 선언 12개 —
 
-- `BLOCKERS.md` (4개)
+- `BLOCKERS.md` (3개)
 - `DESIGN.md`
 - `docs/access_and_pricing_v1.html`
 - `docs/clip_spec_v1.html`
 - `docs/developer_tasks.md`
-- `docs/doc_review_v1.md`
 - `docs/legal_draft_v1.html`
 - `docs/masterplan_v3.html`
 - `docs/shell_spec_v1.html`
