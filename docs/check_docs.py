@@ -88,10 +88,19 @@ def load() -> tuple[dict[str, str], dict[str, str], dict[str, Path]]:
         if m.exists():
             text["(문) " + m.name] = m.read_text(encoding="utf-8")
             raw["(문) " + m.name] = text["(문) " + m.name]
-    idx = HERE / "INDEX.md"
-    if idx.exists():
-        text["(문) " + idx.name] = idx.read_text(encoding="utf-8")
-        raw["(문) " + idx.name] = text["(문) " + idx.name]
+    # docs/*.md 도 코퍼스에 넣는다 — INDEX.md 만 넣던 자리다.
+    #
+    # **2026-09-01 에 이것 때문에 데였다.** `developer_tasks.md`(개발자에게 넘기는
+    # 인계서)에 「번들의 구 앱 덤프는 이것뿐이다」가 거짓인 채로 남아 있었는데
+    # **STALE_PHRASES 가 그 파일을 아예 안 보고 있었다** — 코퍼스가 docs/*.html 과
+    # 루트의 문 넷뿐이었다. 지뢰를 심어도 인계서는 면제였다는 뜻이다.
+    # 관찰 기준 검사는 `*.md` 까지 보는데(아래 sorted(HERE.glob("*.md"))) 여기만
+    # 안 봤다 — **같은 폴더를 두 검사가 다르게 세고 있었다.**
+    for m in [HERE / "INDEX.md"] + sorted(HERE.glob("*.md")):
+        if not m.exists() or ("(문) " + m.name) in text:
+            continue
+        text["(문) " + m.name] = m.read_text(encoding="utf-8", errors="replace")
+        raw["(문) " + m.name] = text["(문) " + m.name]
     for t in sorted(HERE.glob("*.txt")):
         body = t.read_text(encoding="utf-8", errors="replace")
         text["(메모) " + t.name] = body
@@ -969,6 +978,9 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
         {
             "paywall_SOT": "주장이 아니라 화면 규칙이다 — '가격 미정 설명은 페이월에서 "
             "제거합니다'. 가격이 정해진 지금도 그 문장은 그대로 참이다",
+            "screen_promotions": "승격 이력이라 **걷어낸 것**을 적는다 — '가격 미정 카드를 "
+            "제거하고'. 가격이 미정이라는 주장이 아니다(2026-09-01 · docs/*.md 가 "
+            "코퍼스에 들어오면서 처음 보였다)",
         },
     ),
     (
@@ -1042,8 +1054,27 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
         {},
     ),
     (
-        r"ko_chat_dialog[^\n]{0,40}(?:UPSERT|채워|다시 채|v29 이전|옛 내용|검수 전 내용)"
-        r"|실제 (?:AI )?대화[^\n]{0,20}구 (?:앱 )?(?:데이터|덤프)"
+        # 2026-09-01. **이번 회차에 내가 직접 쓴 문장이 거짓이었다** — 「번들에 구 앱
+        # 덤프가 하나도 안 남았다」. 미션 대화 덤프만 보고 번들 전체를 말한 것이다.
+        # 원장에서 출발하는 대조(build-content --check · seed --check)는 이것을 영영
+        # 못 잡는다 — 그 사슬 밖이기 때문이다. bundle-content-check.py 가 잡는다.
+        # **부정 예측은 갈래 전체를 묶어야 한다.** 처음에 `A|B|C|D(?!…)` 로 썼더니
+        # 예측이 D 에만 붙어서, 바로 뒤에 「거짓이었다」가 오는 인용 셋을 물었다.
+        r"(?:번들에 (?:남은 콘텐츠는|콘텐츠는) ?자모뿐"
+        r"|번들에 구 앱 덤프가 (?:하나도 )?안 남았"
+        r"|번들의 구 앱 덤프는 이것뿐"
+        r"|번들에서 구 앱 덤프가 다 없어졌다)"
+        r"(?![^\n]{0,60}(?:적혀|적어|있었다|였다|거짓|아니다|기록|참이 아니))",
+        "**원장(교재 문항) 콘텐츠** 중 번들에 남은 것이 자모뿐이다 — 번들 전체는 아니다. "
+        "clip.ts(표현클립 329편)가 5.5MB 로 실려 나가는 JS 7,691KB 의 71% 이고 "
+        "자모 JSON(444KB)의 12배다. clip.ts 도 problem_wordgroup*.ts 도 구 앱에서 온 것이다. "
+        "매번 재는 것은 app/scripts/bundle-content-check.py — BLOCKERS §8-c",
+        {},
+    ),
+    (
+        # 위와 같은 이유로 갈래를 묶는다 — 안 묶으면 예측이 뒤 갈래에만 붙는다
+        r"(?:ko_chat_dialog[^\n]{0,40}(?:UPSERT|채워|다시 채|v29 이전|옛 내용|검수 전 내용)"
+        r"|실제 (?:AI )?대화[^\n]{0,20}구 (?:앱 )?(?:데이터|덤프))"
         r"(?![^\n]{0,60}(?:적혀|있었다|였다|거짓|아니다|기록|0행))",
         "ko_chat_dialog 는 0행이었고 이 저장소에 채우는 씨드도 없었다. 열쇠도 안 맞는다 — "
         "id 가 int AUTO_INCREMENT 라 MySQL 은 WHERE id='C4' 를 id=0 으로 견준다('C10' 도 같은 행). "
@@ -1052,6 +1083,35 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
         {},
     ),
 ]
+
+
+# 「전에 이렇게 적혀 있었다」를 봐주는 낱말. 각 지뢰의 부정 예측과 같은 뜻인데
+# **줄 전체**를 본다는 것이 다르다.
+UNSAYING = ("적혀", "적어", "있었다", "이었다", "였다", "거짓", "아니다", "아니었",
+            "기록", "지웠", "삭제", "없어졌", "되찾", "참이 아니", "0행",
+            "옛 이름", "그때", "전에는")
+
+
+def quoting(flat: str, m) -> bool:
+    """그 줄이 **인용이나 시점 기록**인가 — 맞으면 지뢰를 안 터뜨린다.
+
+    지뢰마다 `(?!…)` 로 앞을 내다보게 해 뒀는데 그것만으로 부족한 경우가 둘 있었다
+    (2026-09-01, 이 저장소의 문서를 고치다 셋을 헛짚었다):
+
+    ① **반박어가 매치보다 앞에 있을 때.** 예측은 뒤만 본다 —
+       「되찾으려면 `git show …dialog_keyword.ts`」가 그랬다.
+    ② **갈래가 탐욕적으로 늘어나 반박어를 지나칠 때.** `ko_chat_dialog[^\n]{0,40}(?:UPSERT|…|옛 내용)`
+       은 바로 뒤의 「UPSERT 한다」고 적혀 있었다」를 건너뛰고 더 뒤의 「옛 내용」까지
+       늘어난다. 그러면 예측이 시작되는 자리가 반박어 **뒤**가 된다.
+
+    그래서 **매치가 놓인 줄 전체**에 반박어가 있으면 넘긴다. 그물이 조금 성겨지지만,
+    이 지뢰들의 목적은 「완벽한 그물」이 아니라 **되살아남을 막는 것**이다 —
+    거짓 문장을 새로 쓰면서 같은 줄에 「거짓이다」를 같이 적는 사람은 없다.
+    """
+    a = flat.rfind("\n", 0, m.start()) + 1
+    b = flat.find("\n", m.end())
+    line = flat[a: b if b != -1 else len(flat)]
+    return any(w in line for w in UNSAYING)
 
 
 def stale_phrases(text: dict[str, str]) -> list[str]:
@@ -1073,6 +1133,8 @@ def stale_phrases(text: dict[str, str]) -> list[str]:
                     guarded.add(name)
                 continue
             for m in rx.finditer(flat):
+                if quoting(flat, m):
+                    continue
                 line = body[: m.start()].count("\n") + 1
                 out.append(
                     f"[문구 지뢰] {src}:{line} 에 {m.group(0)[:44]!r}\n"
