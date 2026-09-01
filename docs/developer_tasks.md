@@ -657,6 +657,56 @@ v42의 6·7·8권 45항목). 헬퍼 `parseMissionDetail` 은 **브리핑 화면�
 - `admin` 빌드 산출물에서 학생 화면이 쓰는 유틸리티 클래스가 실제로 grep 된다.
 - 학교 계정으로 운영 도구 주소를 직접 쳤을 때의 결과가 PR 에 적혀 있다.
 
+### DEV-15 · 사내 피드백 허브 연동 — 환경변수 넣고 재시작만 하면 된다 — READY · P0
+
+**목적:** 문의(`POST /inquiry`)를 사내 피드백 허브로도 흘려보내는 코드가 이미 커밋돼
+있다. **코드 작업이 아니라 배포 작업이다** — §0 이 배포·롤백을 개발자 몫으로 못 박은
+그 경우다.
+
+**현재**
+
+| | |
+|---|---|
+| 어댑터 본체 | `b2a0aed` — `api/xternal/feedback_hub.py` 신규 · `inquiry.py`·`inquiry_accepter.py` 수정 |
+| `.env.example` 문서화 | `de2a17e` |
+| 재현 정보(세 칸 화면) 배선 | `805e4db` — `ko_inquiry` 에 `actual`·`expected` 두 칸이 늘었다 |
+
+**세 환경변수가 없으면 조용히 아무것도 안 한다.** 문의 접수·S3 저장·슬랙 알림은 그대로
+동작한다 — 잘못 넣어도 문의를 잃지 않는다.
+
+**배포 절차**
+
+```bash
+# 프로덕션 SSH 접속 후
+cd /path/to/koreanapi
+git pull origin master
+
+# api/.env 에 세 줄 추가
+FEEDBACK_HUB_URL=https://feedback-collect.olim.freewheelin.io
+FEEDBACK_HUB_SERVICE_KEY=<허브가 발급한 쓰기 전용 키 — 이 문서에 값을 적지 않는다.
+  §5-2 「비밀값은 쓰지 않는다」를 따른다. 전달자에게 out-of-band 로 받아라>
+PUBLIC_SITE_ORIGIN=https://korean.pulleyai.co.kr
+
+# DB 마이그레이션 — **빼먹으면 문의 저장이 500 이 난다**
+# (ko_inquiry 는 이미 있는 표라 createAllTables() 가 지나간다 — BLOCKERS.md §6-b)
+mysql -u $DB_USER -p $DB_NAME < api/migration_inquiry_repro.sql
+
+bash stop.sh && bash start.sh
+```
+
+기존 행은 NULL 로 시작하고 잃는 것이 없다.
+
+**`FEEDBACK_HUB_SERVICE_KEY` 에 대해.** 허브가 발급한 **쓰기 전용 키**다 — 이 키로는
+제보를 넣을 수만 있고 조회는 한 건도 못 한다. 다른 서비스의 제보도 못 본다.
+
+**완료 판정**
+
+- 배포 후 앱에서 문의를 1건 보내면 서버 로그에 `[inquiry] 허브 접수 — YONSEI-nnn` 이
+  찍힌다.
+- 세 값을 일부러 비운 환경에서도 문의 접수·슬랙 알림이 그대로 된다(회귀 없음).
+- **401/403 이 나오면 서버 쪽에서 우회하지 않는다** — 키나 도메인 등록 문제이므로
+  허브 쪽에 알린다.
+
 ---
 
 ---
@@ -665,7 +715,7 @@ v42의 6·7·8권 45항목). 헬퍼 `parseMissionDetail` 은 **브리핑 화면�
 
 | 단계 | 기획 | 개발 |
 |---|---|---|
-| A · 즉시 | PD-01~07 답변 준비 | DEV-01 QR, DEV-02 신고, DEV-10 CI·관측 기반, DEV-12 AI 타임아웃 |
+| A · 즉시 | PD-01~07 답변 준비 | DEV-01 QR, DEV-02 신고, DEV-10 CI·관측 기반, DEV-12 AI 타임아웃, DEV-15 피드백 허브 배포 |
 | B · 외부 연동 기반 | 메일 사업자·보관일 승인 | DEV-03 재설정, DEV-06 음성 운영 |
 | C · 접근과 과금 | 가격·PG·보호 수준 확정 | DEV-04 결제·권한, DEV-05 콘텐츠 보호 |
 | D · 콘텐츠와 법률 | 게이트·정확도·최종 문서·연령·열람 방식 확정 | DEV-07 게이트, DEV-08 MY, DEV-09 동의 증거, DEV-11 계정 데이터·연령, DEV-13 미션 대화 DB |
