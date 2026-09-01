@@ -15,7 +15,7 @@ from fastapi.encoders import jsonable_encoder
 from persistence import repo_inquiry
 from persistence.database import sessionScope
 from util import s3utils
-from xternal import slack
+from xternal import feedback_hub, slack
 
 TOPICS = ("payment", "account", "content", "bug", "etc")
 MAX_MESSAGE = 2000
@@ -64,7 +64,9 @@ def _decodeDataUrl(dataUrl: str):
     return raw, real
 
 
-async def createInquiry(userId, replyEmail, topic, message, lang=None, fromPath=None, files=None):
+async def createInquiry(
+    userId, replyEmail, topic, message, lang=None, fromPath=None, files=None, userAgent=""
+):
     """오류는 한국어 문장이 아니라 **코드**로 낸다 — 화면이 5개 언어다.
 
     가입(`user_business.signUpStudent`)과 같은 규약이다. 앱이 `inquiry.err_*` 로 옮긴다.
@@ -141,6 +143,14 @@ async def createInquiry(userId, replyEmail, topic, message, lang=None, fromPath=
             saved["notified"] = True
     except Exception as e:
         print(f"[inquiry] 슬랙 알림 실패 — id[{saved['id']}] {e!r}")
+
+    # 사내 피드백 허브로도 흘려보낸다. **슬랙과 나란한 자리다** —
+    # 여기서 실패해도 접수는 성공이고, 글은 우리 DB 와 슬랙에 이미 남아 있다.
+    # 폼을 새로 만들지 않고 서버에서 한 번 더 보내는 이유는 feedback_hub.py 에 적었다
+    try:
+        feedback_hub.forward(saved, shots=decoded, userAgent=userAgent)
+    except Exception as e:
+        print(f"[inquiry] 허브 전송 실패 — id[{saved['id']}] {e!r}")
 
     # 앱에는 접수 번호와 **붙은 캡처 수**만 준다. 본문을 되돌려 줄 이유는 없지만,
     # 몇 장이 올라갔는지는 보낸 사람이 알아야 한다

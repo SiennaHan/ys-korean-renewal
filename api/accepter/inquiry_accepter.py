@@ -33,10 +33,16 @@ def _whoFrom(authorization: Optional[str]) -> str:
 
 
 @router.post("")
-async def create_inquiry(body: InquiryRequest, authorization: Optional[str] = Header(None)):
+async def create_inquiry(
+    body: InquiryRequest,
+    authorization: Optional[str] = Header(None),
+    # 앱이 안 보내는 값이라 요청 헤더에서 읽는다. 재현할 때 브라우저·기기를
+    # 아는 것이 크게 도움이 된다 — 피드백 허브의 프롬프트에 그대로 들어간다
+    user_agent: Optional[str] = Header(None),
+):
     data, error = await inquiry.createInquiry(
         _whoFrom(authorization), body.replyEmail, body.topic, body.message,
-        body.lang, body.fromPath, body.files,
+        body.lang, body.fromPath, body.files, userAgent=(user_agent or ""),
     )
     if error:
         return makeResponse({"error": error})
