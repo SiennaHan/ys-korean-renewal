@@ -31,19 +31,26 @@ class _LazyTts:
 client = _LazyTts()
 
 def generateAudio(text: str, gender: GoogleTtsName):
+    """**지금은 어디서도 안 부른다**(2026-09-01 확인 — `business/`·`accepter/`
+    전체를 grep 해도 이 함수를 부르는 곳이 `__main__` 블록뿐이다). 실제 TTS는
+    `gemini.py`·`openai.py` 로 옮겨 갔다. 그래도 타임아웃은 넣어 둔다 — 되살아나면
+    그 순간부터 무제한 대기가 시작되고, 지금 안 넣으면 다음 사람이 또 재발견한다.
+    """
     # API 호출 및 응답 수신
     response = client.synthesize_speech(
         input=texttospeech.SynthesisInput(
             text=text
-        ), 
+        ),
         voice=texttospeech.VoiceSelectionParams(
-            language_code="ko-KR", 
+            language_code="ko-KR",
             name=f'{gender.getVoice()}',
             # model_name="gemini-2.5-flash-tts"
-        ), 
+        ),
         audio_config=texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3
         ),
+        # gemini.py 의 TTS 타임아웃과 같은 값(60초) — DEV-12
+        timeout=60.0,
     )
 
     return response.audio_content

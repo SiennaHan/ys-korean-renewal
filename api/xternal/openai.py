@@ -3,7 +3,7 @@ import io
 from asyncio import sleep
 from typing import List
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import AsyncOpenAI, OpenAI, Timeout
 from fastapi import HTTPException
 
 from accepter.base import TranslateReq
@@ -19,6 +19,19 @@ TTS_VOICES = ["marin", "cedar", "alloy", "ash", "ballad", "coral", "echo", "fabl
 
 load_dotenv(override=True)
 
+# **타임아웃 필수 — 없으면 SDK 기본값(무제한에 가깝다)에 맡겨진다**(DEV-12).
+# gemini.py 의 `httpx.Timeout(60.0, connect=10.0)` 과 같은 값으로 맞췄다 —
+# 이 저장소의 xternal 모듈들이 이미 공유하는 관례다. connect 10s(연결 자체가
+# 안 되면 빨리 포기) · 그 밖(read·write·pool) 60s(한 청크를 못 받고 60초가
+# 지나면 포기 — 스트리밍이면 "다음 토큰이 60초째 안 온다", 비스트리밍이면
+# "응답을 60초째 못 받았다"는 뜻이라 두 경우 모두 같은 값으로 뜻이 선다).
+#
+# `max_retries=2`(SDK 기본값을 그대로 명시)는 연결 실패·429·5xx 같은 **응답을
+# 아예 못 받은 상황**에서만 돈다 — 이미 받은 응답을 버리고 다시 묻는 것이
+# 아니다. 그래서 "채팅 응답을 말없이 두 번 만들지 않는다" 를 어기지 않는다.
+_TIMEOUT = Timeout(60.0, connect=10.0)
+_MAX_RETRIES = 2
+
 
 class _LazyOpenAI:
     """첫 호출 때 만든다 — 서버가 뜰 때 키를 요구하지 않게.
@@ -33,11 +46,33 @@ class _LazyOpenAI:
 
     def __getattr__(self, name):
         if _LazyOpenAI._client is None:
-            _LazyOpenAI._client = OpenAI()
+            _LazyOpenAI._client = OpenAI(timeout=_TIMEOUT, max_retries=_MAX_RETRIES)
         return getattr(_LazyOpenAI._client, name)
 
 
 client = _LazyOpenAI()
+
+
+class _LazyAsyncOpenAI:
+    """`quest_stream` 전용 — **비동기 클라이언트라야 스트리밍이 이벤트 루프를 안 막는다.**
+
+    동기 `client` 로 `for chunk in stream:` 을 돌리면(전에 그랬다) 토큰이
+    오는 동안 **서버 전체가 멈춘다** — 그 대화 하나가 다른 모든 사용자의
+    요청까지 막는다. `AsyncOpenAI` 는 `async for` 를 쓸 수 있어 기다리는
+    동안 이벤트 루프가 다른 요청을 처리한다.
+    """
+
+    _client = None
+
+    def __getattr__(self, name):
+        if _LazyAsyncOpenAI._client is None:
+            _LazyAsyncOpenAI._client = AsyncOpenAI(
+                timeout=_TIMEOUT, max_retries=_MAX_RETRIES
+            )
+        return getattr(_LazyAsyncOpenAI._client, name)
+
+
+asyncClient = _LazyAsyncOpenAI()
 
 
 async def transcribe(audio_bytes: bytes, filename: str = "audio.webm") -> str:
@@ -89,19 +124,23 @@ async def quest(chat_history: List[object]) :
         raise HTTPException(503, ERROR503)
 
 async def quest_stream(chat_history: List[object]) :
+    """미션 대화의 AI 응답 스트림. **`asyncClient` 를 쓴다** — 위 클래스 주석 참고.
+
+    전에는 동기 `client` 로 `for chunk in stream:` 을 돌렸다. 토큰 하나하나가
+    올 때마다 이벤트 루프가 그 자리에서 멈춰 **다른 모든 요청이 밀렸다** —
+    대화가 길수록, 사용자가 많을수록 심해지는 종류의 문제다.
+    """
 
     try :
-        stream = client.chat.completions.create(
+        stream = await asyncClient.chat.completions.create(
             model=MODEL,
             messages=chat_history,
             stream=True
         )
 
-        for chunk in stream:
+        async for chunk in stream:
             if chunk.choices[0].delta.content is not None:
-                # print(chunk.choices[0].delta.content)
                 yield chunk.choices[0].delta.content
-                await sleep(0.001) #sleep 이 없을경우 stream 처리가 안되는 버그가 있음
 
     except Exception as e:
         print("Error in creating campaigns from openAI:", str(e))
@@ -379,13 +418,16 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
     completeHistory.append(userMsg)
 
     try :
-        completion = client.chat.completions.create(
-            model=MODEL,
-            messages=completeHistory,
-            response_format = {"type":"json_object"}
+        # 동기 SDK 호출을 스레드로 오프로드해 이벤트 루프 블로킹 방지
+        completion = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model=MODEL,
+                messages=completeHistory,
+                response_format = {"type":"json_object"}
+            )
         )
         return jsonutils.to_json(completion.choices[0].message.content)
-    
+
     except Exception as e:
         errMsg = f'Error in [generating an image] from openAI: {str(e)}'
         print(errMsg)
@@ -415,13 +457,15 @@ async def evaluate_speech(expected: str, actual: str):
 {{"pass": true 또는 false, "reason": "짧은 판정 사유"}}"""
 
     try:
-        completion = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": "당신은 한국어 발화 평가 심판입니다. JSON으로만 응답하세요."},
-                {"role": "user", "content": prompt},
-            ],
-            response_format={"type": "json_object"},
+        completion = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": "당신은 한국어 발화 평가 심판입니다. JSON으로만 응답하세요."},
+                    {"role": "user", "content": prompt},
+                ],
+                response_format={"type": "json_object"},
+            )
         )
         return jsonutils.to_json(completion.choices[0].message.content)
     except Exception as e:
@@ -431,16 +475,22 @@ async def evaluate_speech(expected: str, actual: str):
 
 async def translate(req: TranslateReq):
     prompt = f"Translate the following Korean text to {req.targetLang}: {req.text}"
-    completion = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": "You are a translation assistant."},
-            {"role": "user", "content": prompt},
-        ]
-    )
-
-    content = completion.choices[0].message.content
-    return {"translated": content}
+    try:
+        completion = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": "You are a translation assistant."},
+                    {"role": "user", "content": prompt},
+                ]
+            )
+        )
+        return {"translated": completion.choices[0].message.content}
+    except Exception as e:
+        # 실패하면 원문을 그대로 돌려준다 — 번역은 보조 기능이라 여기서
+        # 막히면 안 된다. 화면은 이미 원문(한국어)을 들고 있다
+        print("Error in translate:", str(e))
+        return {"translated": req.text}
 
 
 async def generate_roleplay_line(template: str, context: str = ""):
@@ -460,12 +510,14 @@ async def generate_roleplay_line(template: str, context: str = ""):
 {f"[이전 대화 맥락]{chr(10)}{context}" if context else ""}"""
 
     try:
-        completion = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": "한국어 대화 문장을 생성합니다. 문장만 반환하세요."},
-                {"role": "user", "content": prompt},
-            ],
+        completion = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": "한국어 대화 문장을 생성합니다. 문장만 반환하세요."},
+                    {"role": "user", "content": prompt},
+                ],
+            )
         )
         text = completion.choices[0].message.content.strip().strip('"').strip("'")
         return {"text": text}
@@ -500,13 +552,15 @@ async def generate_scenario(turns: list):
 {{"turns": [{{"turn_seq": 1, "text": "변환된 문장"}}, {{"turn_seq": 2, "text": "변환된 문장"}}, ...]}}"""
 
     try:
-        completion = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": "한국어 대화 시나리오를 생성합니다. JSON으로만 응답하세요."},
-                {"role": "user", "content": prompt},
-            ],
-            response_format={"type": "json_object"},
+        completion = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": "한국어 대화 시나리오를 생성합니다. JSON으로만 응답하세요."},
+                    {"role": "user", "content": prompt},
+                ],
+                response_format={"type": "json_object"},
+            )
         )
         result = jsonutils.to_json(completion.choices[0].message.content)
         return result
@@ -539,13 +593,15 @@ async def evaluate_speech_flexible(template: str, actual: str):
 {{"pass": true 또는 false, "reason": "짧은 판정 사유"}}"""
 
     try:
-        completion = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": "한국어 발화 평가 심판입니다. JSON으로만 응답하세요."},
-                {"role": "user", "content": prompt},
-            ],
-            response_format={"type": "json_object"},
+        completion = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": "한국어 발화 평가 심판입니다. JSON으로만 응답하세요."},
+                    {"role": "user", "content": prompt},
+                ],
+                response_format={"type": "json_object"},
+            )
         )
         return jsonutils.to_json(completion.choices[0].message.content)
     except Exception as e:
