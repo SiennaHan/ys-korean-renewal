@@ -1,5 +1,9 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 1511e48
-     — 확인: 브리핑에 힌트 토글이 생겼다(§3 「그 밖의 역할」에 줄 추가). 값은 새 리터럴이 아니라 기존 semantic 토큰을 그대로 쓰고(색 절반 리터럴 문제와 무관), 간격도 4px 눈금을 지킨다 — 이 문서가 걱정하는 두 축(리터럴 색·비4배수 간격) 다 해당 없다.
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ ca8826d
+     — 확인: 2026-09-02 · `shell.tsx` 가 바뀐 것은 **주석뿐**이다 — 진행 막대가 16칸부터
+       「연속 막대」가 아니라 칸을 유지한 압축 분절바이고 `continuous` 는 옛 클래스명이라는
+       정정(8b55cdd). **이 문서는 진행 막대의 그 규칙을 말하지 않는다**(색 토큰 소비처로
+       한 번 나올 뿐) — 값은 하나도 안 바뀌었다. §8-b 를 다시 재서 수를 맞췄다.
+       앞 확인: 브리핑에 힌트 토글이 생겼다(§3 「그 밖의 역할」에 줄 추가). 값은 새 리터럴이 아니라 기존 semantic 토큰을 그대로 쓰고(색 절반 리터럴 문제와 무관), 간격도 4px 눈금을 지킨다 — 이 문서가 걱정하는 두 축(리터럴 색·비4배수 간격) 다 해당 없다.
        열림 색을 파랑(choice/pressed)에서 중립 회색(base/line-normal/text-strong)으로 다시
        바꿨다(같은 날) — 여전히 새 리터럴 없음. 표의 값 문구는 안 바뀌므로 더 고칠 것 없음 -->
 
@@ -541,28 +545,50 @@ oklch 35줄 · `.dark` 34줄 · `@theme inline` 38줄, 즉 **파일의 절반**�
 
 ### 8-b. 근거가 되는 측정치
 
-게임을 뺀 `app/src` 의 tsx **116개** 기준(2026-08-28 마지막 실측).
+게임을 뺀 `app/src` 의 tsx **117개** 기준(2026-09-02 마지막 실측).
 **개발 도구도 뺀다** — `components/dev/`(디자인 결정 패널)는 프로덕션에 안 나가므로
 제품 부채가 아니다. 안 빼면 그 파일 하나가 hex 20 · 인라인 style 7 을 얹는다.
 
 | 무엇 | 수 | 몰려 있는 곳 |
 |---|---|---|
-| 임의값 `bg-[#hex]` 류 | **100** (레거시 삭제 전 162) | `components/learn/jamo/**` · `chat-text.tsx` |
+| 임의값 `bg-[#hex]` 류 | **101** (전 100 · 레거시 삭제 전 162) | `components/learn/jamo/**` · `chat-text.tsx` |
 | Tailwind 기본 색 클래스 | **37** (전 63 → 41 → 37) · 14파일 | `app-layout` 6 · `qr` 6 · `jamo/choose` 4 · `problem/scene/header` 4 |
 | semantic 토큰 유틸리티 | **153** (전 137 — 토스트와 `__root` 오류 화면이 들어왔다) | `ui/button` · `my-profile` · `content4/5` |
-| 인라인 `style={{` | **50** (중 20은 스토리 파일) | 활동 화면 몇 곳 |
-| 하드코딩 `"#hex"` (tsx) | **25** (전 31 — 죽은 `assess-chart` 를 지우며 6이 빠졌다) | `chat-text` · 자모 넷 |
+| 인라인 `style={{` | **50** (중 **21**은 스토리 파일) | 활동 화면 몇 곳 |
+| 하드코딩 `"#hex"` (tsx) | **29** (전 25 로 적혀 있었다 — 아래 넷을 안 세고 있었다) | `chat-text` 11 · 자모 **셋** 14(`word-repeat`·`pronounce`·`word-write`) · `problem/audio-recorder` 2 · `dialog/dialog-input` 1 · `assets/icons` 1 |
 | 하드코딩 hex (토큰화된 CSS) | **18** (전 63) · 토큰 값 복제 **0** | 남은 18은 팔레트 밖이거나 `mask-image` 의 `#000` 이다 |
 
-> `tokens.css` 주석은 이 부채를 **389 · 998** 로 적고 있다. **낡았다** — 게임까지
-> 포함해도 69 · 189 다. 이관이 그만큼 진행됐다는 뜻이다.
+> `tokens.css` 주석은 이 부채를 **389 · 998** 로 적고 있다. **낡았다** — 게임까지 넣고
+> 세도 **Tailwind 기본 색 37 · 임의값 128** 이다(2026-09-02 · 위 명령에서 게임 제외만 뺀 것).
+> 이관이 그만큼 진행됐다는 뜻이다.
+>
+> **전에 여기 「69 · 189」로 적혀 있었는데 그 수는 어느 범위로도 재현되지 않았다**
+> (tsx / tsx+ts / +css 를 다 해 봐서 가장 큰 것이 55 · 176). 어떻게 센 수인지 알 수
+> 없어 고쳐 적지 않고 **지금 잰 값과 명령으로 바꿨다.** 아래 명령이 그래서 있다.
 
-<details><summary>다시 재는 법</summary>
+<details><summary>다시 재는 법 — <b>글이 아니라 명령이다</b></summary>
 
-`app/src` 의 `*.tsx` 에서 `routeTree.gen` 과 `components/main/game/` ·
-`routes/main/game/` · `components/draw/` · `components/dev/` 를 뺀 뒤,
-`bg|text|border|…-\[#hex\]` · Tailwind 기본 팔레트 클래스 ·
-`bg|text|border-(text|background|fill|line|icon)-*` · `style={{` · `"#hex"` 를 센다.
+**전에 여기가 산문이었다.** 그래서 다시 재는 사람이 제 나름의 범위로 세고
+「문서가 +6 · +14 틀렸다」는 결론에 이르렀다(2026-09-02) — `components/draw/` 를
+빼야 한다는 것을 안 지켰기 때문이다. 그 줄을 명령으로 바꾼다. `app/` 에서 돌린다.
+
+```bash
+F=$(find src -name '*.tsx' \
+      ! -path '*routeTree.gen*' ! -path '*components/main/game/*' \
+      ! -path '*routes/main/game/*' ! -path '*components/draw/*' ! -path '*components/dev/*')
+TW='\b(bg|text|border|ring|fill|stroke|from|to|via)-(gray|blue|slate|green|emerald|red|amber|yellow|indigo|purple|pink|orange|teal|cyan|violet|rose|lime|sky|fuchsia|stone|zinc|neutral)-[0-9]{2,3}\b'
+n(){ echo "$F" | xargs grep -oE "$1" 2>/dev/null | wc -l | tr -d ' '; }
+echo "대상 tsx        $(echo "$F" | wc -l | tr -d ' ')개"
+echo "임의값 [#hex]   $(n '\[#[0-9a-fA-F]{3,8}\]')"
+echo "Tailwind 기본색 $(n "$TW")  ($(echo "$F" | xargs grep -lE "$TW" | wc -l | tr -d ' ')파일)"
+echo "semantic 유틸   $(n '\b(bg|text|border|ring|fill|stroke)-(text|background|fill|line|icon)-[a-z-]+\b')"
+echo "인라인 style    $(n 'style=\{\{')  (스토리 $(echo "$F" | grep stories | xargs grep -oE 'style=\{\{' | wc -l | tr -d ' '))"
+echo "하드코딩 \"#hex\" $(n '\"#[0-9a-fA-F]{3,8}\"')"
+```
+
+2026-09-02 에 이 명령이 낸 값: 117 · 101 · 37(14파일) · 153 · 50(스토리 21) · 29.
+**「토큰화된 CSS 의 하드코딩 hex 18」은 이 명령이 안 센다** — 그 줄은 팔레트 정의를
+빼고 세야 해서 손으로 봐야 한다.
 </details>
 
 ---

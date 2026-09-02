@@ -1,6 +1,9 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 6d203e5
-     — 확인: 미션대화 완료 판정이 구 앱 덤프(dialog.ts)를 떠나 서버로 갔다. §04 표에
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ ca8826d
+     — 확인: 2026-09-02 · 원장 v55 가 n7_mission_chat 의 ai_persona_prompt(117행) ·
+       ai_first_line(55행) · change_note 만 바꿨다. **§04 가 기대는 legacy_id 와
+       situation_ko 는 바뀐 행 0** 이고 행 수도 117 그대로다(대 봐서 확인) — 이 문서에
+       고칠 것 없음. 앞 확인: 미션대화 완료 판정이 구 앱 덤프(dialog.ts)를 떠나 서버로 갔다. §04 표에
        그 줄을 더했다 — 개수와 달리 id 가 필요해 매니페스트로는 안 되는 자리다.
        그 뒤 다른 세션이 n7_mission_chat.json 의 **셀 값**을 고쳤다(ai_gender·ai_role·
        user_role 파생 정규식 버그 수정 + 원장 v53 반영) — **키 구조는 그대로**라 §04 가
