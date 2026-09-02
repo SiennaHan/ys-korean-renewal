@@ -31,6 +31,10 @@ ROOT = Path(__file__).resolve().parent.parent
 # 열어 보고 괜찮다고 판단한 자리. 값은 **왜 괜찮은지** — "괜찮음" 만 적지 마라.
 # 들어오는 값이 바뀌면 이 이유도 낡는다.
 ALLOW = {
+	"src/components/inquiry/inquiry-form.tsx .auth-back": "40×40 인데 들어오는 것은 "
+	"lucide 아이콘 둘뿐이다(ArrowLeft ↔ X · asModal 로만 갈린다). **auth.css 의 "
+	"`.auth-back svg` 가 width/height 를 22px 로 못박아서** 어느 아이콘이 와도 "
+	"칸 안에서 같은 크기다 — 글자가 아니라 늘어날 값이 없다",
 	"src/components/main/activity/roleplay.tsx .who": "34×24 인데 들어오는 값은 "
 	'"나" · "AI" 둘뿐이다(learn/ai-roleplay.tsx:546 이 그 두 개만 만든다). '
 	"원장의 speaker(유리·슈테판·샤오밍…)는 이 칸에 오지 않는다 — TTS 로만 간다",

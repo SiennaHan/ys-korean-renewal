@@ -44,6 +44,8 @@ const vi = {
 	inquiry: {
 		title: "Liên hệ",
 		back: "Quay lại",
+		/** 모달로 열렸을 때의 닫기 — paywall.close 와 같은 낱말이다 */
+		close: "Đóng",
 		lead: "Bạn viết gì cũng được. Chúng tôi trả lời tới địa chỉ bạn ghi bên dưới.",
 		topic: "Bạn cần hỗ trợ về việc gì?",
 		topic_payment: "Thanh toán & đăng ký",

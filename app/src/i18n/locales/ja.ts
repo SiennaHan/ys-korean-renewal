@@ -44,6 +44,8 @@ const ja = {
 	inquiry: {
 		title: "お問い合わせ",
 		back: "戻る",
+		/** 모달로 열렸을 때의 닫기 — paywall.close 와 같은 낱말이다 */
+		close: "閉じる",
 		lead: "何でもお書きください。下のアドレスにお返事します。",
 		topic: "どのようなご用件ですか？",
 		topic_payment: "決済・定期購読",

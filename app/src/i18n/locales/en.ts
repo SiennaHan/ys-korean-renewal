@@ -44,6 +44,8 @@ const en = {
 	inquiry: {
 		title: "Contact us",
 		back: "Back",
+		/** 모달로 열렸을 때의 닫기 — paywall.close 와 같은 낱말이다 */
+		close: "Close",
 		lead: "Write anything. We reply to the address you give below.",
 		topic: "What is this about?",
 		topic_payment: "Payment & subscription",

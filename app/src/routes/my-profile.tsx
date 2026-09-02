@@ -2,7 +2,7 @@ import { useAuth } from "@/components/sign/sign-provider";
 import { SettingsPage } from "@/components/ui/settings-page";
 import { cn } from "@/lib/utils";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -268,24 +268,6 @@ function MyProfilePage() {
 			{error && (
 				<p className="text-center text-[14px] text-fill-wrong">{error}</p>
 			)}
-
-			{/*
-			 * 문의하기 — 앱 안에서 도움을 청할 수 있는 유일한 자리다.
-			 * 전화를 두지 않기로 했다(이용자 상당수가 국외다 · 2026-08-27 확정).
-			 * 개인정보 열람·삭제 요청도 여기로 온다(docs/legal_draft_v1.html §03 제6조).
-			 */}
-			<button
-				type="button"
-				onClick={() =>
-					navigate({ to: "/inquiry", search: { from: "/my-profile" } })
-				}
-				className="flex h-[52px] w-full items-center justify-between rounded-[12px] bg-white px-[16px]"
-			>
-				<span className="font-semibold text-[16px] text-text-strong leading-[24px]">
-					{t("inquiry.title")}
-				</span>
-				<ChevronRight className="size-[20px] text-text-sub" />
-			</button>
 		</SettingsPage>
 	);
 }

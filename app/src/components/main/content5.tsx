@@ -1,7 +1,9 @@
+import InquiryModal from "@/components/main/inquiry-modal";
 import { useAuth } from "@/components/sign/sign-provider";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { useNavigate } from "@tanstack/react-router";
 import { ChevronRight, LogOut, Pencil, User } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function Content5() {
@@ -9,6 +11,7 @@ export default function Content5() {
 	const navigate = useNavigate();
 	// 라우트가 게스트를 막으므로 여기 오는 사람은 늘 로그인 상태다
 	const { user, signOut } = useAuth();
+	const [inquiryOpen, setInquiryOpen] = useState(false);
 
 	const handleSignOut = () => {
 		signOut();
@@ -116,6 +119,32 @@ export default function Content5() {
 					{t("mypage.withdrawEntry")}
 				</span>
 			</button>
+
+			{/*
+			 * 문의하기 — 앱 안에서 도움을 청할 수 있는 유일한 자리다.
+			 * 전화를 두지 않기로 했다(이용자 상당수가 국외다 · 2026-08-27 확정).
+			 * 개인정보 열람·삭제 요청도 여기로 온다(docs/legal_draft_v1.html §03 제6조).
+			 *
+			 * **2026-09-02 에 여기로 옮겼다.** 전에는 `/my-profile`(「프로필 수정」을
+			 * 한 번 더 눌러야 나오는 하위 화면)에 있었다 — 같은 주석을 달고서도
+			 * 두 번 눌러야 닿아서 사실상 없는 자리였다.
+			 *
+			 * **페이지 이동이 아니라 모달이다.** 설정 목록을 떠나지 않는다.
+			 * `/inquiry` 라우트는 그대로 산다 — 약관 미준비 화면과 재설정 막힘 화면이
+			 * 아직 그 주소로 보낸다.
+			 */}
+			<button
+				type="button"
+				onClick={() => setInquiryOpen(true)}
+				className="mt-[16px] flex h-[52px] w-full items-center rounded-[12px] bg-white px-[16px] active:bg-background-base"
+			>
+				<span className="font-semibold text-[14px] text-text-strong leading-[20px]">
+					{t("inquiry.title")}
+				</span>
+				<ChevronRight className="ml-auto size-[20px] text-icon-faint" />
+			</button>
+
+			<InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} />
 		</div>
 	);
 }

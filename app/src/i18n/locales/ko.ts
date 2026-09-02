@@ -52,6 +52,8 @@ const ko = {
 	inquiry: {
 		title: "문의하기",
 		back: "뒤로",
+		/** 모달로 열렸을 때의 닫기 — paywall.close 와 같은 낱말이다 */
+		close: "닫기",
 		lead: "무엇이든 적어 주세요. 답장은 아래 적어 주신 주소로 드립니다.",
 		topic: "무엇에 대한 문의인가요?",
 		topic_payment: "결제·구독",
