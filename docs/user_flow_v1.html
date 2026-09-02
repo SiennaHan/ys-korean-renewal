@@ -305,7 +305,7 @@
 </table>
 </div>
 
-<h2><span class="n">04</span>걸어 보면 여기서 멈춘다 — 막힘 다섯</h2>
+<h2><span class="n">04</span>당시 막힘 다섯 — 현재 상태를 함께 표시</h2>
 <ol class="path">
   <li><div><div class="h"><s>학생이 스스로 계정을 만들 길이 없다</s> — 풀렸다 (2026-08-27)</div>
     <div class="d"><code>POST /user/sign/up</code> 과 <code>/signup</code> 화면을 만들었다
@@ -314,11 +314,13 @@
     <b>대신 새 조건이 생겼다 — 법률 검토를 마친 최종 약관·개인정보 처리방침과 실제 링크가 있어야 한다</b></div></div></li>
   <li><div><div class="h"><s>잠금이 없어서 벽이 아예 안 선다</s> — 풀렸다 (2026-08-26)</div>
     <div class="d"><code>GET /entitlement</code> 와 앱의 잠금을 만들었다(<span class="file">access_and_pricing_v1</span> §09 의 1~3단계).
-    유료 게임 콘텐츠 라우트는 현재 <span class="file">RequireGame</span>으로 막혔다. 교재 문항은 번들 콘텐츠라
-    잠긴 활동 URL을 직접 여는 경우까지 차단되는지 별도 회귀 검증이 필요하다</div></div></li>
+    유료 게임 콘텐츠 라우트는 현재 <span class="file">RequireGame</span>으로 막혔다.
+    <b>교재 문항도 2026-08-31부터 서버 인증 뒤에서 받고 잠긴 과는 402를 낸다.</b>
+    무료 범위는 첫 온라인 실행 뒤 프리페치하며 자모만 번들 예외다. 현재 계약은
+    <span class="file">project_status.json</span>의 <code>free_content_delivery</code>가 쥔다</div></div></li>
   <li><div><div class="h">결제가 없다</div>
     <div class="d"><code>payment</code>·<code>subscription</code>·PG 이름 어느 것도 <code>api/</code> 와 <code>app/src</code> 에 없다.
-    가격과 PG 도 아직 안 정했다 — 아래 05</div></div></li>
+    월 가격은 6달러로 확정됐고, PG·통화 표시·세금·환불 정책은 아직 정하지 않았다 — 아래 05</div></div></li>
   <li><div><div class="h">메일이 안 나간다</div>
     <div class="d">보낼 수단이 아예 없다(<code>boto3</code> 는 S3 전용). 재설정이 껍데기인 것도, 영수증을 못 보내는 것도 같은 뿌리다.
     보낼 것은 넷뿐이고 5개 언어 템플릿이 필요하다</div></div></li>
@@ -326,8 +328,9 @@
     <div class="d">유료 게임 셋의 콘텐츠 라우트에 <span class="file">RequireGame</span> 가드가 붙었다
     (<span class="file">card_sort</span> · <span class="file">particle_sniper</span> · <span class="file">seoul_puzzle</span>).
     무료인 <span class="file">vocashot</span> · <span class="file">spring_picnic</span> 은 가드가 없는 것이 맞다.<br>
-    <b>교재 콘텐츠는 아직이다</b> — 잠긴 과의 주소를 직접 치면 그대로 열린다
-    (<span class="file">access_and_pricing_v1</span> §08 의 3번 · §09 의 7단계)</div></div></li>
+    <b>교재 콘텐츠도 풀렸다(2026-08-31).</b> 서버 콘텐츠 API가 권한을 검사하고 잠긴 과는
+    402를 내며, 무료 범위 프리페치 뒤 오프라인 캐시를 쓴다
+    (<span class="file">project_status.json</span>의 <code>free_content_delivery</code>)</div></div></li>
 </ol>
 
 <h2><span class="n">05</span>아직 정하지 않은 것 하나 + 구현 차이 하나</h2>
@@ -342,9 +345,9 @@
     <tr><td><b>PG</b></td><td><span class="pill open">뒤로 밀기로 정했다 (2026-08-26)</span> <span class="file">access_and_pricing_v1</span> §09 의 1~4단계는 PG 없이 다 된다.
       권고는 <span class="file">access_and_pricing_v1</span> §08 에 있다 — 국내는 토스페이먼츠·포트원, 해외는 Stripe</td></tr>
     <tr><td><b>QR 을 어디에 떨어뜨리나</b></td>
-      <td><span class="pill done">홈으로 확정</span> QR은 결제·특정 과 잠금 해제와 무관하며 스캔 뒤 홈으로 보낸다.
-      다만 현재 <code>/qr</code>의 기본값 <code>/</code>은 비로그인 사용자를 <code>/login</code>으로 보낼 수 있다.
-      게스트 세션을 만든 뒤 <code>/main</code>으로 보내거나 같은 결과를 보장하도록 구현해야 한다</td></tr>
+      <td><span class="pill done">홈으로 확정·구현</span> QR은 결제·특정 과 잠금 해제와 무관하다.
+      현재 <code>/qr</code>는 게스트 세션을 보장한 뒤 <code>/main</code>으로 보낸다.
+      외부 주소는 <code>PUBLIC_QR_WEB_REDIRECT_URL</code>을 실제 외부 URL로 설정한 경우에만 쓴다</td></tr>
   </tbody>
 </table>
 </div>

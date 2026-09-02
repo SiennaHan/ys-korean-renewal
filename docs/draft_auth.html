@@ -206,12 +206,12 @@
         <div class="rule">
           <span class="rule-no">03</span>
           <div><b>계정 만드는 길이 둘이 됩니다</b>
-            <p>지금 학생 계정은 <b>본인이 만들지 않습니다.</b> 학교 관리자가 일괄 등록합니다 —
-              <code>POST /student/batch</code> · <code>/upload</code>(둘 다 <code>AdminRequired</code>).
-              서버의 <code>sign</code> 라우트가 <b>guest · login · migrate 셋뿐</b>이었습니다 —
-              2026-08-27 에 <code>up</code> 이 더해져 넷입니다.<br>
-              그래서 B2C 자체 가입은 <b>빠진 화면이 아니라 새 계정 모델</b>입니다. 기존 기관 학생(관리자가
-              만든다)과 개인 구독자(스스로 만든다)가 <b>같이 존재</b>해야 합니다.</p></div>
+            <p>현재 계정 생성은 둘이다. 기관은 관리자의 일괄 등록
+              (<code>POST /student/batch</code> · <code>/upload</code>)과 기관 발급 코드를 통한 학생 가입
+              (<code>/join</code> → <code>/signup</code>)을 함께 쓴다. 개인 사용자는 <code>/signup</code>에서
+              스스로 가입한다. 서버의 <code>sign</code> 라우트도 <b>guest · login · migrate · up</b> 넷이다.<br>
+              따라서 “기관 학생은 관리자가 만들고 개인만 스스로 만든다”는 옛 설명도 더는 완전하지 않다.
+              현재 구분은 가입 주체가 아니라 <b>기관 코드 연결 여부와 권한 출처</b>다.</p></div>
         </div>
 
         <div class="rule">
@@ -251,9 +251,10 @@
         <div class="rule">
           <span class="rule-no">07</span>
           <div><b>동의는 받을 것만 받습니다</b>
-            <p>녹음 파일을 서버에 보관할지가 아직 미정입니다(<code>BLOCKERS.md</code> §9-d).
-              보관하게 되면 <b>음성 동의 항목이 하나 더 필요</b>합니다 — 자리만 잡아 두고
-              문구는 정해지면 씁니다.</p></div>
+            <p>현재 STT 비교 표본은 기본 10%이고 학습자 음성은 비공개 저장을 사용한다.
+              다만 보관기간·처리 근거·삭제 절차는 아직 법률 확정 전이다.
+              <b>제품에 없는 임시 음성 동의 체크박스를 가입 시안에 두지 않는다.</b>
+              별도 동의가 필요하다는 법률 결정이 나올 때 정확한 문구와 증거 저장을 함께 설계한다.</p></div>
         </div>
 
         <div class="state-jump">
@@ -311,8 +312,8 @@
       },
 
       signup: {
-        label: '회원가입 (새 제안)',
-        note: '구현이 없다. 게스트 기록이 옮겨진다는 것을 맨 위에 둔다 — 오늘 확정한 것이다.',
+        label: '회원가입 · 현재 구현',
+        note: '2026-08-27부터 구현돼 있다. 게스트 기록 이전 안내와 필수 약관 동의를 확인한다.',
         html: `<div class="auth">
           ${topBar(back)}
           <h3>회원가입</h3>
@@ -332,9 +333,6 @@
             <div class="box"><span class="ph">학습 화면에 표시됩니다</span></div></div>
           <div class="agree"><span class="cb on">✓</span>
             <p>이용약관과 개인정보 처리방침에 동의합니다 <em>필수</em></p></div>
-          <div class="agree"><span class="cb"></span>
-            <p>음성 기록 보관에 동의합니다
-              <em>보관 여부가 아직 정해지지 않았습니다 — 자리만 잡아 둔 항목입니다</em></p></div>
           <div class="dock"><button class="primary">가입하고 시작하기</button></div>
         </div>`,
       },

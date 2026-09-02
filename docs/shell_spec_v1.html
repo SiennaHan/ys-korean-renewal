@@ -323,7 +323,7 @@
   <tr><th>요소</th><th>규격</th></tr>
   <tr><td>✕ 버튼</td><td>탭하면 항상 <code>current_item_index</code> 저장 후 이전 화면으로. 확인 다이얼로그 없음(저장되니 안전) — 구 앱의 "저장 없이 나가기"를 완전히 제거</td></tr>
   <tr><td>앱바 제목</td><td>중앙, <b><code>{급} {과}</code></b>만 (예: <code>1급 4과</code> / <code>Level 1 Lesson 4</code>) <span class="pill new">v2.4 개정</span><br><span class="qa">초안은 <code>{과} · {활동명}</code>이었다. 활동명은 <b>지시문(Title)이 이미 말하고 있어</b> 중복이고, 실제 화면에서 <code>[모음 1] ㅏ,ㅓ,ㅗ,ㅜ…</code>처럼 <b>말줄임으로 잘리고 있었다</b>(자모·플래시카드·미션대화 3곳). 과 제목·학습 대상은 넣지 않는다.</span></td></tr>
-  <tr><td>진행 세그먼트바</td><td>문항 수만큼 분할된 바. 상태는 <b>지나감 · 현재 · 미응답</b> 세 가지뿐이다. 지나온 칸은 파랑, 현재 칸은 조금 길게, 미응답은 회색으로 표시한다. <b>정답·오답 색과 아이콘을 진행바에 남기지 않는다.</b> 재시도형 문제의 답을 누적 공개하지 않고, 답 상태는 선택지·피드백·결과 화면에서만 말한다. 높이 5 · 칸 간격 4이며 문항 수에 따른 표시 방식은 아래를 따른다.</td></tr>
+  <tr><td>진행 세그먼트바</td><td>문항 수만큼 분할된 바. 상태는 <b>지나감 · 현재 · 미응답</b> 세 가지뿐이다. 지나온 칸은 연한 파랑, 현재 칸은 진한 파랑, 미응답은 회색으로 표시한다. <b>정답·오답 색과 아이콘을 진행바에 남기지 않는다.</b> 재시도형 문제의 답을 누적 공개하지 않고, 답 상태는 선택지·피드백·결과 화면에서만 말한다. 모든 칸은 높이 5 · 간격 4이며 문항 수에 따른 표시 방식은 아래를 따른다.</td></tr>
 </table></div>
 <h4>활동별 진행 표시 정책 <span class="pill new">2026-08-25 확정</span></h4>
 <p>진행바는 화면마다 임의로 넣지 않고 아래 네 유형으로 구분한다. <b>어휘 미리보기는 퀴즈의 0번 문항이 아니라 준비 화면</b>이므로 진행바와 퀴즈 분모에서 제외한다.</p>
@@ -340,9 +340,9 @@
 <div class="tablewrap"><table>
   <tr><th>문항 수</th><th>표시 방식</th></tr>
   <tr><td>1개</td><td><b>숨김</b> — 늘 꽉 찬 한 칸은 현재 위치 정보를 주지 못하고 자리만 차지한다</td></tr>
-  <tr><td>2~15개</td><td><b>분절바</b> — 문항 수만큼 칸 분할, <b>칸 높이 6 · 색만</b>(기본형)</td></tr>
-  <tr><td>16개 이상</td><td><b>연속 진행바 + <code>n/N</code></b> — 개별 칸을 포기하고 채워지는 바 하나로.
-      <code>n/N</code>은 <b>바 오른쪽에</b> 붙인다(얇은 바 위에는 얹을 자리가 없다)</td></tr>
+  <tr><td>2~15개</td><td><b>분절바</b> — 문항 수만큼 칸 분할, <b>칸 높이 5 · 간격 4 · 색만</b>(기본형)</td></tr>
+  <tr><td>16개 이상</td><td><b>압축 분절바 + <code>n/N</code></b> — 같은 칸을 좁게 유지하고
+      <code>n/N</code>을 <b>바 오른쪽에</b> 붙인다. 현재 제품과 시각 정본은 별도 knob 없는 이 구조다</td></tr>
 </table></div>
 <p class="qa">이 규칙 덕분에 <b>콘텐츠를 세트로 쪼갤 필요가 없다.</b> 44장을 한 세션에 다 못 끝내는 문제는 §1의 이어하기(문항 단위 위치 저장)가 이미 해결하므로, 분량 때문에 세트를 분할하는 설계는 채택하지 않는다.</p>
 
@@ -356,7 +356,7 @@
 <p class="qa">색만으로 구분하지 않는 이유는 §7(접근성) — 초록–빨강은 적록색각이상에서 구별되지 않으므로 <b>아이콘이 주 신호</b>다. 문구는 §8 대조표를 따른다. 진동 규격과 <code>prefers-reduced-motion</code> 대체안은 <b>이 문서 구조 §14.3</b>.</p>
 <div class="callout warn">
   <div class="t">재시도형이 바꾸는 것 — 기록 기준</div>
-  <p>맞힐 때까지 다시 고르게 하면 <b>정답률이 항상 100%</b>가 될 수 있다. 그래서 <b>첫 시도만 기록</b>한다 — 세그먼트 색·정답률·복습 큐 예약이 모두 첫 시도 기준이며, <b>재시도로 맞혀도 세그먼트는 빨강으로 남고 복습 큐에서 빠지지 않는다.</b></p>
+  <p>맞힐 때까지 다시 고르게 하면 <b>정답률이 항상 100%</b>가 될 수 있다. 그래서 <b>첫 시도만 기록</b>한다 — 정답률과 복습 큐 예약이 첫 시도 기준이며, 재시도로 맞혀도 복습 큐에서 빠지지 않는다. <b>진행 세그먼트는 정오답을 기록하지 않고 위치만 표시한다.</b></p>
 </div>
 
 <h3>3.3 결과 화면 (전 활동 공통 규격)</h3>
@@ -494,8 +494,8 @@
 <div class="callout warn">
   <div class="t">색만으로 정보를 전달하고 있었다</div>
   <p>v1 §3.1의 진행 세그먼트바는 정답과 오답을 <b>색으로만</b> 구분했다. <b>색각 이상 학습자는 자신이 무엇을 틀렸는지 알 수 없다.</b> 게다가 플래시카드에서는 같은 색이 다른 뜻(알아요/몰라요)이라 색의 의미가 활동마다 달라지는 문제도 있었다.</p>
-  <p><b>수정 v3.5 — 아이콘을 진행바에 넣지 않는다.</b> 진행바를 <b>높이 24 → 6</b>으로 줄였다(사각형 줄이 화면 위쪽을 무겁게 만든다).
-     <b>6px에는 아이콘이 들어가지 않는다.</b> 초록–빨강은 적록색각이상(남성 약 8%)에게 구별되지 않으므로,
+  <p><b>수정 v3.5 — 아이콘을 진행바에 넣지 않는다.</b> 진행바를 <b>높이 24 → 현재 5</b>로 줄였다(사각형 줄이 화면 위쪽을 무겁게 만든다).
+     <b>5px에는 아이콘이 들어가지 않는다.</b> 초록–빨강은 적록색각이상(남성 약 8%)에게 구별되지 않으므로,
      <b>정오답의 권위 있는 표시를 다른 곳으로 옮긴다</b>:</p>
   <ul>
     <li><b>문항 화면</b> — 피드백 pill의 <b>문구</b>("아주 잘 했어요!" / "다시 해보세요"). 색이 아니라 글자다.</li>
@@ -503,14 +503,14 @@
   </ul>
   <p><b>진행바는 "어디까지 왔나"만 말한다.</b> 정오답 신호는 남기지 않는다 —
      <b>진행률을 주 지표로 올린 결정</b>(<b>이 문서 값 §28</b>)과도 맞는다.
-     현재 위치는 색이 아니라 <b>칸 길이 10</b>으로 구분한다.</p>
+     현재 위치는 지난 칸보다 진한 파랑으로 구분하며 <b>칸 길이는 같다.</b></p>
 </div>
 <ul>
   <li>진행 세그먼트의 <code>aria-label</code>은 "3번 문항, 완료" / "4번 문항, 현재"처럼 위치 상태만 말한다. 정오답을 읽지 않는다.</li>
   <li>스크린리더는 진동·효과음을 받지 못한다. 오답 pill을 <code>aria-live</code>로 두되, <b>같은 문구를 반복 고지</b>하려면 영역을 비웠다 다시 채운다(동일 텍스트는 재고지하지 않는 리더가 있다).</li>
-  <li><code>prefers-reduced-motion: reduce</code>일 때 진동 대신 테두리 200ms 1회 깜빡으로 대체 — <b>현재 코드에 이 분기가 없다.</b> activity.css 에 <code>@media (prefers-reduced-motion:reduce)</code> 블록이 <b>하나 있는데 녹음 버튼 펄스만 끈다</b> — 오답 신호 분기는 없다.</li>
-  <li>피드백은 색 변화만이 아니라 텍스트로도 명시("정답이에요" / "정답은 ○○예요")</li>
-  <li>탭 대상 최소 44×44pt (구 앱 O/X 버튼은 충분, 세그먼트바는 탭 대상 아님)</li>
+  <li><code>prefers-reduced-motion: reduce</code>일 때 진동 대신 테두리 200ms 1회 깜빡으로 대체 — <b>이미 있다.</b> activity.css 의 <code>@media (prefers-reduced-motion:reduce)</code> 블록이 녹음 버튼 펄스를 끄는 것과 같은 자리에서 <code>.choice.shake</code> 를 <code>choice-blink</code>(테두리 200ms 1회 깜빡)로 바꾼다.</li>
+  <li>피드백은 색 변화만이 아니라 텍스트로도 명시("아주 잘 했어요!" / "다시 해보세요")</li>
+  <li>탭 대상의 목표는 최소 44×44px이다. 현재 진행 세그먼트는 누를 수 있는 버튼이므로 예외가 아니며, 실제 탭 면적은 이 기준보다 작다 — §33의 구현 차이를 본다</li>
 </ul>
 
 <h2 id="s8"><span class="no">8</span>용어와 문구 — 내부 언어를 화면에 내보내지 않기</h2>
@@ -581,7 +581,8 @@
   <tr><td><b>아직 미결</b></td><td>없음 — 운영 데이터가 쌓이면 ①의 60과 10을 재검토한다</td></tr>
 </table></div>
 
-<h2 id="s10"><span class="no">10</span>G2 종료 · 다음</h2>
+<h2 id="s10"><span class="no">10</span>G2 종료 · 당시 다음 단계</h2>
+<p class="qa"><b>시점 기록:</b> 아래 Phase 1 착수 조건과 남은 일은 2026-08-14 당시의 실행 계획이다. 현재 개발 상태와 남은 과업은 <code>project_status.json</code>·<code>status.generated.md</code>·<code>developer_tasks.md</code>를 기준으로 판단한다.</p>
 <p>이 문서로 D2·D4·D5·라우트 규칙이 실행 가능한 스펙이 됐다. G2가 닫히면 <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a>의 <b>Phase 1(공통 셸 구현)</b> 착수 조건이 갖춰진다. Phase 1은 콘텐츠 저작(G1 결과물)과 무관하게 구 앱 콘텐츠를 임시로 꽂아 검증 가능 — 두 트랙이 이 시점부터 완전히 병렬로 간다.</p>
 <div class="callout warn">
   <div class="t">Phase 1 착수 전 남는 것</div>
@@ -603,6 +604,11 @@
   <h1>플레이어 공통 셸 — UI/UX 컴포넌트 명세</h1>
   <div class="meta">2026-08-17 · <b>기존 v1과 별도로 관리하는 구조 변경안</b> · 구현 기준은 <b>이 문서 값 §21~§34</b>, 셸 화면은 <a href="_superseded/legacy_shell_mockup.html">셸 목업 UI/UX</a>(정본 아님), 활동 예시는 <a href="screens_SOT.html#mk-act">활동 확정 목업</a></div>
 </header>
+
+<div class="callout bad">
+  <div class="t">§11~§20은 2026-08-17 설계 과정 기록 — 현재 구현에 사용하지 않는다</div>
+  <p>이 절의 4상태 초록·빨강 진행바, 연속형 막대와 손잡이, 선택지 <code>min-height:68</code>·<code>radius:14</code>·<code>gap:10</code> 등은 이후 검수에서 폐기되거나 바뀌었다. 특히 §14.1 진행바는 §23의 최종 규칙으로 대체됐다. 현재 계약은 <b>§21~§34</b>, <a href="screens_SOT.html#mk-act"><b>screens_SOT 활동 화면</b></a>, 제품의 <code>activity.css</code>를 함께 따른다.</p>
+</div>
 
 <div class="callout good">
   <div class="t">활동 목업 확정 — 시안 2 · Functional Clarity</div>
@@ -932,7 +938,7 @@
 <div class="callout bad">
   <div class="t">② 소리를 못 듣는 상황이 기본값이다</div>
   <p>교실·대중교통·무음 모드·청각장애 — <b>소리가 안 들리는 쪽이 오히려 흔하다</b>. 그래서 효과음은 보조이고 <b>진동이 주 신호</b>다. 소리 없이도 오답이 전달되는지 반드시 확인한다.</p>
-  <p><b>반대 방향도 있다.</b> 진동 애니메이션은 <b>전정 장애(vestibular)</b>가 있는 사용자에게 불편을 준다. 현행 코드의 <code>prefers-reduced-motion</code> 대응은 <b>한 곳뿐이다</b>(전수 검색 1건) — activity.css 에 <code>@media (prefers-reduced-motion:reduce)</code> 블록이 <b>하나 있는데 녹음 버튼 펄스만 끈다</b> — 오답 신호 분기는 없다.</p>
+  <p><b>반대 방향도 있다.</b> 진동 애니메이션은 <b>전정 장애(vestibular)</b>가 있는 사용자에게 불편을 준다. activity.css 의 <code>@media (prefers-reduced-motion:reduce)</code> 블록은 녹음 버튼 펄스를 끄는 것과 <b>같은 자리에서</b> 오답 진동(<code>.choice.shake</code>)도 <code>choice-blink</code>(테두리 200ms 1회 깜빡)로 바꾼다 — 아래 표가 그 계약이다.</p>
   <div class="tablewrap"><table>
     <tr><th>조건</th><th>오답 신호</th></tr>
     <tr><td>기본</td><td>진동 300ms + 효과음 + pill</td></tr>
@@ -1133,26 +1139,26 @@
 <div class="tablewrap"><table>
   <tr><th>구분</th><th>항목</th></tr>
   <tr><td><b>폭 따라 변함</b></td><td>콘텐츠 폭 · 선택지 너비 · 버튼 너비 · 긴 문장의 줄 수</td></tr>
-  <tr><td><b>고정</b></td><td><b>글자 크기 전부</b> · 좌우 여백 16 · 앱바 58 · 버튼 높이 56 · 아이콘 24 · 탭 대상 44 · 선택지 최소 높이 68</td></tr>
+  <tr><td><b>고정</b></td><td><b>글자 크기 전부</b> · 좌우 여백 16 · 앱바 58 · 버튼 높이 56 · 아이콘 24 · 탭 대상 44 · 선택지 최소 높이 64</td></tr>
 </table></div>
 <p class="qa">글자를 폭에 비례해 키우면 큰 화면에서 우스꽝스러워진다 — 16px는 어느 기기에서나 16px다.</p>
 <h4>세로 구성 — 높이를 고정하지 않는다</h4>
 <pre>┌ App Bar          58  고정
-├ ProgressBar      20  고정   여백 5 + 바 6(현재 칸 10) + 여백 5   <b>v3.5 얇게</b>
+├ ProgressBar      28  고정   5px 바 + 아래 여백 8
 ├ Title            48  고정   지시문 1줄(UI 언어)
 ├ ContentSlot   flex   ← 남는 높이를 전부 먹는다
 ├ 피드백 자리      44  고정   pill 36 + 간격 8 · 응답 전에도 비워둔다
 └ 하단 버튼 영역   88  고정   버튼 56 + 여백 16×2
                   ───
-    고정 합계     258      밴드 = 화면 높이 − 258</pre>
+    고정 합계     266      밴드 = 화면 높이 − 266</pre>
 <p><b>세로를 고정 픽셀로 그리지 않는 이유</b>: 모바일 웹은 브라우저 주소창 때문에 <b>실제 가용 높이가 기기 스펙보다 작다</b>. 844에 맞춰 그리면 아래가 잘린다. 헤더·푸터만 고정하고 밴드를 <code>flex</code>로 두면 667·720·844 어디서나 성립한다.</p>
 <h4>폭별 실측</h4>
 <div class="tablewrap"><table>
   <tr><th>항목</th><th>390 <span class="qa">기준</span></th><th>360</th><th>320 <span class="qa">최소</span></th></tr>
   <tr><td>콘텐츠 폭</td><td><b>358</b></td><td>328</td><td>288</td></tr>
-  <tr><td>선택지</td><td><b>358 × min 68</b></td><td>328 × min 68</td><td>288 × min 68</td></tr>
-  <tr><td>선택지 안쪽</td><td colspan="3">padding <b>16</b> · radius <b>14</b> · height auto</td></tr>
-  <tr><td>선택지 간격</td><td colspan="3"><b>10</b></td></tr>
+  <tr><td>선택지</td><td><b>358 × min 64</b></td><td>328 × min 64</td><td>288 × min 64</td></tr>
+  <tr><td>선택지 안쪽</td><td colspan="3">padding <b>16</b> · radius <b>12</b> · height auto</td></tr>
+  <tr><td>선택지 간격</td><td colspan="3"><b>8</b></td></tr>
   <tr><td>버튼</td><td>358 × 56</td><td>328 × 56</td><td>288 × 56</td></tr>
 </table></div>
 <div class="callout good">
@@ -1561,7 +1567,7 @@ y=648  마이크 영역                  360×92
   <tr><td><code>fill-correct</code></td><td class="n"><span class="sw" style="background:#11C378"></span>#11C378</td><td>선택지 정답 표면·테두리 · ✓ 아이콘 <b>(진행바에는 쓰지 않는다)</b></td></tr>
   <tr><td><code>fill-wrong</code></td><td class="n"><span class="sw" style="background:#F15F49"></span>#F15F49</td><td>선택지 오답 표면·테두리 · ✕ 아이콘 <b>(진행바에는 쓰지 않는다)</b></td></tr>
   <tr><td><code>fill-caution</code></td><td class="n"><span class="sw" style="background:#F98900"></span>#F98900</td><td>3회 이상 틀린 문항 강조</td></tr>
-  <tr><td><code>fill-track</code></td><td class="n"><span class="sw" style="background:#E0E0E0"></span>#E0E0E0</td><td>진행바 미응답 칸 · 연속바 트랙</td></tr>
+  <tr><td><code>fill-track</code></td><td class="n"><span class="sw" style="background:#E0E0E0"></span>#E0E0E0</td><td>진행바 미응답 칸 · 진행 트랙</td></tr>
   <tr><td><code>fill-known</code> / <code>fill-unknown</code></td><td class="n">#0180FF / #FFDB5C</td><td>플래시카드 알아요 / 몰라요</td></tr>
   <tr><td><code>text-strong</code></td><td class="n"><span class="sw" style="background:#383A3F"></span>#383A3F</td><td>본문</td></tr>
   <tr><td><code>text-sub</code></td><td class="n"><span class="sw" style="background:#7F848D"></span>#7F848D</td><td>보조 문구 · 해설</td></tr>
@@ -1594,19 +1600,19 @@ y=648  마이크 영역                  360×92
 <h2 id="s22"><span class="n">22</span>화면 골격</h2>
 <p><b>기준 폭 390.</b> 세로는 고정하지 않는다 — 헤더·푸터만 고정이고 가운데 밴드가 남는 높이를 전부 먹는다.</p>
 <pre>┌ App Bar          58   고정
-├ ProgressBar      20   고정 · 여백 5 + 바 6(현재 칸 10) + 여백 5
+├ ProgressBar      28   고정 · 5px 바 + 아래 여백 8
 ├ Title            48   지시문 1줄 기준 · 2줄이면 74로 늘어난다
 ├ ContentSlot    flex   ← 남는 높이 전부
 ├ 피드백 자리      44   pill 36 + 간격 8 · <b>응답 전에도 비워 둔다</b>
 └ 하단 버튼 영역   89   상단 구분선 1 + 버튼 56 + 위아래 여백 16
                  ───
-   고정 합계     259   밴드 = 화면 높이 − 259</pre>
+   고정 합계     267   밴드 = 화면 높이 − 267</pre>
 <h3>폭에 따라 변하는 값</h3>
 <div class="tablewrap"><table>
   <tr><th>항목</th><th>390</th><th>360</th><th>320</th></tr>
   <tr><td>좌우 여백</td><td class="n">16</td><td class="n">16</td><td class="n">16</td></tr>
   <tr><td>콘텐츠 폭</td><td class="n">358</td><td class="n">328</td><td class="n">288</td></tr>
-  <tr><td>선택지</td><td class="n">358 × min 68</td><td class="n">328 × min 68</td><td class="n">288 × min 68</td></tr>
+  <tr><td>선택지</td><td class="n">358 × min 64</td><td class="n">328 × min 64</td><td class="n">288 × min 64</td></tr>
   <tr><td>버튼 · 진행바</td><td class="n">358</td><td class="n">328</td><td class="n">288</td></tr>
 </table></div>
 <div class="rule stop">
@@ -1626,9 +1632,9 @@ y=648  마이크 영역                  360×92
 <h3>진행바</h3>
 <div class="tablewrap"><table>
   <tr><th>모드</th><th>조건</th><th>구성</th></tr>
-  <tr><td>분절</td><td>문항 ≤ 15</td><td>문항 수만큼 칸 분할 · <b>칸 높이 6</b> · 칸 사이 3 · <b>아이콘 없음</b></td></tr>
-  <tr><td>연속</td><td>문항 ≥ 16</td><td>트랙 <b>높이 6</b> + 채움 + 끝에 원형 knob <b>10</b> ·
-      <b>바 오른쪽에</b> <code>n/N</code></td></tr>
+  <tr><td>분절</td><td>문항 2~15</td><td>문항 수만큼 칸 분할 · <b>칸 높이 5</b> · 칸 사이 4 · <b>아이콘 없음</b></td></tr>
+  <tr><td>압축 분절</td><td>문항 ≥ 16</td><td>같은 5px 칸을 좁게 유지 · 칸 사이 4 ·
+      <b>바 오른쪽에</b> <code>n/N</code>. 별도 knob 없음</td></tr>
 </table></div>
 <div class="rule stop">
   <div class="t">얇은 선이다 — 칸 안 아이콘을 버렸다 <b>· 정오답도 버렸다</b></div>
@@ -1646,14 +1652,12 @@ y=648  마이크 영역                  360×92
   <tr><th>칸 상태</th><th>색</th><th>높이</th><th>기준</th></tr>
   
   
-  <tr><td><b>응답</b> <span class="qa">채점 없는 활동</span></td><td><code>fill-primary</code></td><td class="n">6</td>
-      <td><b>발음 · 플래시카드 · 롤플레잉</b> — 정오답 의미색을 쓰지 않는다</td></tr>
   <tr><td>지난 문항</td><td><code>fill-primary</code></td><td class="n">5</td><td>목업 <code>done</code></td></tr>
   <tr><td>현재</td><td><code>fill-primary</code></td><td class="n">5</td><td>목업 <code>now</code> — 색이 진하다. <b>길이는 같다</b></td></tr>
   <tr><td>미응답</td><td><code>fill-track</code></td><td class="n">5</td><td>건너뛴 문항 포함. 목업 클래스 없음</td></tr>
   
 </table></div>
-<p class="qa">카운트 표기는 <b>연속형에서 바 오른쪽 <code>n/N</code></b> 하나로 통일한다. 분절형은 칸이 곧 카운트라 숫자를 넣지 않는다.</p>
+<p class="qa">카운트 표기는 <b>16개 이상 압축 분절형에서 바 오른쪽 <code>n/N</code></b> 하나로 통일한다. 2~15개 기본 분절형은 칸이 곧 카운트라 숫자를 넣지 않는다. 제품 코드의 <code>continuous</code> 클래스명은 옛 이름이 남은 것이며 실제 마크업은 칸을 유지한다.</p>
 
 <h2 id="s24"><span class="n">24</span>콘텐츠 밴드</h2>
 <div class="tablewrap"><table>
@@ -2053,9 +2057,9 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
 <div class="rule">
   <div class="t">활동별로 다른 것</div>
   <ul>
-    <li><b>플래시카드</b> — 진행바 색 의미가 바뀐다: <code>fill-known</code>(알아요) / <code>fill-unknown</code>(몰라요).
-        <b>자기 평가이므로 정답/오답 의미색을 쓰지 않는다.</b> 판정 버튼에 <b>비활성 상태를 추가</b>한다 —
-        카드를 뒤집기 전에는 누를 수 없어야 한다. 과당 최대 44장이므로 <b>연속 진행바 경로가 반드시 동작</b>해야 한다.</li>
+    <li><b>플래시카드</b> — 진행바는 다른 활동과 마찬가지로 <b>지난 문항·현재·미응답만</b> 표시한다.
+        알아요/몰라요는 카드 아래 판정 버튼과 집계에서만 구분한다. 판정 버튼에 <b>비활성 상태를 추가</b>한다 —
+        카드를 뒤집기 전에는 누를 수 없어야 한다. 과당 최대 44장이므로 <b>16개 이상 압축 분절 경로가 반드시 동작</b>해야 한다.</li>
     <li><b>롤플레잉</b> — 밴드에 마이크 영역. 오답 개념이 없고 <b>녹음·분석을 한 대사는 일치 여부와 무관하게 응답</b>이다. 녹음 없이 건너뛴 대사만 미해결로 남긴다.</li>
     <li><b>미션 대화</b> — 진행 단위가 문항이 아니라 <b>미션 키워드</b>다. 종료 시 확인 다이얼로그(§29).
         미션 키워드 목록은 <b>가로로 잘리지 않게</b> 하고, 지시문 전문은 브리핑 화면이 담당한다.</li>
@@ -2141,13 +2145,20 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
       결과 화면의 오답 목록(<code>[오답 N]</code> 칩 · 고른 답 · 해설)이 <b>글자</b>로 다시 확인해 준다.</li>
   <li><b>피드백 pill에는 문구가 반드시 있다</b>(§27) — 정답 "아주 잘 했어요!" · 오답 "다시 해보세요".
       문항을 푸는 순간의 정오답은 <b>색이 아니라 이 문구</b>로 전달된다.</li>
-  <li>진행바 칸에 <code>aria-label</code> — <code>player.a11ySegment</code> 사용.</li>
+  <li>진행바 칸은 현재 <code>player.goToQuestion</code>으로 이동 목적을 읽고, 현재 칸에만 <code>aria-current</code>를 준다. 지난 칸과 아직 안 푼 칸의 상태는 음성으로 구분하지 않는다.</li>
   <li>피드백 pill을 <code>aria-live</code>로 둔다. 같은 문구를 반복 고지하려면 <b>영역을 비웠다 다시 채운다</b> —
       텍스트가 동일하면 다시 읽지 않는 스크린리더가 있다.</li>
-  <li>탭 대상 최소 <b>44 × 44</b>. 아이콘 24보다 크므로 주변 여백을 포함해 확보한다.</li>
-  <li>키보드 포커스에 <code>line-focus</code> 표시를 준다.</li>
+  <li>일반 조작의 탭 대상 목표는 최소 <b>44 × 44</b>. 아이콘 24보다 크므로 주변 여백을 포함해 확보한다.</li>
+  <li>키보드 포커스에는 <code>line-focus</code> 표시를 주는 것이 목표다.</li>
   <li>효과음은 <b>보조</b>다 — 무음 상태에서도 오답이 전달되어야 한다.</li>
 </ul>
+<div class="rule stop">
+  <div class="t">현재 구현 차이 — 진행바 탐색의 접근성은 아직 닫히지 않았다</div>
+  <p><code>.progress .seg</code>는 5px 막대에 위아래 8px padding을 더한 작은 버튼이고,
+  16개 이상에서는 가로 폭도 크게 줄어 44×44를 만족하지 않는다. 전용 <code>:focus-visible</code>도 없고,
+  <code>prefers-reduced-motion</code>은 녹음 펄스만 끌 뿐 오답 진동의 대체 신호가 없다.
+  시각 모양을 유지하면서 하나의 키보드 탐색 컨트롤로 묶을지, 별도 이전 문항 조작을 둘지 UX 결정 후 구현·검증해야 한다.</p>
+</div>
 
 <h2 id="s34"><span class="n">34</span>검증</h2>
 <div class="tablewrap"><table>
@@ -2158,7 +2169,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
   <tr><td>3</td><td>같은 오답을 연속으로 3번 탭</td><td><b>매번</b> 진동과 효과음이 난다</td></tr>
   <tr><td>4</td><td>다음 날 홈 확인</td><td>어제 첫 시도에 틀린 문항이 목록에 있다</td></tr>
   <tr><td>5</td><td>완료한 활동 재진입 → 중간에 이탈</td><td>완료 상태·정답률·<code>completedAt</code> 모두 <b>불변</b></td></tr>
-  <tr><td>6</td><td>플래시카드 44장 활동 진입(1급 8과 — 가장 큰 세트)</td><td>분절이 아니라 <b>연속 진행바 + <code>n/N</code></b></td></tr>
+  <tr><td>6</td><td>플래시카드 44장 활동 진입(1급 8과 — 가장 큰 세트)</td><td><b>44칸을 유지한 압축 분절바 + <code>n/N</code></b>. 별도 knob 없음</td></tr>
   <tr><td>7</td><td>듣기 활동에서 2개·4개 문항을 오가며 진행</td><td><b>첫 선택지의 시작 y가 동일</b>하고 빈 공간은 목록 아래에 남는다</td></tr>
   <tr><td>8</td><td>UI 언어 5종 전환</td><td>미번역 0. 가장 긴 문자열(보통 베트남어)에서 레이아웃이 깨지지 않는다</td></tr>
   <tr><td>9</td><td>폭 320 · 긴 문장 4개</td><td>min-height 64·padding 16 18을 유지하고 <b>선택지 목록만 스크롤</b>. 하단 버튼은 고정</td></tr>

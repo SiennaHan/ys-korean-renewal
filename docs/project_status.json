@@ -17,6 +17,16 @@
 				"app/src/shared/content/prefetch-free.ts",
 				"app/scripts/bundle-content-check.py"
 			]
+		},
+		"content_publication": {
+			"mode": "exclude_deleted_warn_and_include_unknown",
+			"excluded_review_statuses": ["deleted"],
+			"unknown_status_behavior": "warn_and_include",
+			"scope": "workbook_to_generated_json",
+			"evidence": [
+				"app/scripts/build-content.py",
+				"docs/G1_content_gate_v1.html"
+			]
 		}
 	},
 	"items": [
@@ -77,8 +87,8 @@
 			"evidence": ["app/scripts/bundle-content-check.py", "api/shared/free_scope.py"]
 		},
 		{
-			"id": "mission_content_v54",
-			"label": "미션대화 원장 v54 승격",
+			"id": "mission_content_current_ledger",
+			"label": "미션대화 최신 원장 승격",
 			"status": "부분완료",
 			"verification": "python3 app/scripts/build-content.py --check",
 			"evidence": ["app/scripts/build-content.py"]

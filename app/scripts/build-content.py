@@ -125,8 +125,9 @@ def cell(v):
 # 무게가 다르다 — 뒤쪽만 막는다.
 DROP_STATUS = {"deleted"}
 
-# 위 목록에 없는 값이 나오면 **조용히 내보내지 않고 알린다.** 새 상태가 생겼는데
-# 아무도 모르는 채 학생에게 가는 것이 지금까지의 문제였다.
+# 위 목록에 없는 값이 나오면 **경고하되 포함한다.** 현재 공개 정책은 삭제 표시만
+# 확실히 제외하는 것이며, 새 상태가 생긴 사실을 조용히 넘기지 않도록 경고한다.
+# 기계 판독 정본은 docs/project_status.json 이다.
 KNOWN_STATUS = {
     "auto_checked", "draft", "reviewed", "deleted",
     "tagged_v20", "filled_v19", "added_v17", "authored_v21", "authored_v23",

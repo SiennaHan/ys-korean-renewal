@@ -80,8 +80,12 @@
 
 <div class="callout good">
   <div class="t">공개 게이트를 생성기에 넣었다 — ②로 정했다 <span class="pill">기획 확정 2026-08-28</span></div>
-  <p>어긋남을 짚은 것은 옳았다. 다만 <b>①(reviewed 만 내보낸다)은 그대로는 성립하지 않는다</b> —
-  원장을 세어 보면 상태 값이 두 갈래가 아니라 여럿이고 <code>reviewed</code> 는 거의 없다.</p>
+  <p><b>현재 정책의 기계 판독 정본은 <code>docs/project_status.json</code>의
+  <code>content_publication</code>이다.</b> <code>reviewed</code>만 내보내는 안은 채택하지 않았다.
+  생성기는 <code>deleted</code>만 제외하고, 모르는 상태값은 경고한 뒤 포함한다.</p>
+  <p class="qa"><b>아래 표는 정책을 정한 2026-08-28 원장 스냅샷이다.</b>
+  현재 원장 수치로 읽지 않는다. 2026-09-02 현재 최고 번호 원장을 다시 확인하면
+  <code>n8_jamo</code> 529행은 전부 <code>reviewed</code>다.</p>
   <div class="tablewrap"><table>
     <tr><th>시트</th><th><code>reviewed</code></th><th>실제로 붙어 있는 값</th></tr>
     <tr><td><code>n7_mission_chat</code></td><td><b>0 / 117</b></td><td>전부 <code>fixed_v29</code> — <b>검수 완료된 것이다</b></td></tr>
@@ -100,11 +104,12 @@
     <tr><th>정한 것</th><th>내용</th></tr>
     <tr><td><b>막는다</b></td><td><code>review_status = deleted</code> 뿐이다</td></tr>
     <tr><td><b>낸다</b></td><td>그 밖 전부 — <code>draft</code> 포함</td></tr>
-    <tr><td><b>알린다</b></td><td>규칙에 없는 값이 나오면 <b>조용히 내보내지 않고 경고한다</b>.
-      새 상태가 생겼는데 아무도 모르는 채 학생에게 가는 것이 지금까지의 문제였다</td></tr>
-    <tr><td><b>예외를 이름으로</b></td><td><code>PORTED_AS_IS</code> 에 <code>n8_jamo</code> 를 적었다 —
-      "구 앱 <code>problem.ts</code> 를 그대로 이전(2026-08-24). <b>draft 는 '저작 전' 이 아니다</b>".
-      나중에 "draft 는 다 막자" 가 나왔을 때 <b>이 시트가 왜 다른지</b>를 그 자리에서 알 수 있게 한 것이다</td></tr>
+    <tr><td><b>알린다</b></td><td>규칙에 없는 값이 나오면 <b>경고하고 포함한다</b>.
+      경고는 새 상태가 생긴 사실을 숨기지 않는 장치이고, 제외 여부를 임의로 바꾸지는 않는다</td></tr>
+    <tr><td><b>자모 예외</b></td><td><span class="pill keep">현재 없음</span>
+      한때 <code>PORTED_AS_IS</code>에 <code>n8_jamo</code>를 적었지만, 원장 v41에서
+      529행을 모두 <code>reviewed</code>로 바로잡아 예외를 삭제했다. 화면 여섯도
+      구 <code>problem.ts</code>가 아니라 <code>jamoProblems</code>를 읽는다</td></tr>
   </table></div>
 
   <div class="callout bad">
@@ -115,8 +120,8 @@
     <p>빼기 전에 <b>다른 시트가 그 id 를 가리키는지 전수로 확인했다</b> — 끊기는 참조는 없었다.
     빼고 나서 어휘 화면을 열어 정상인 것도 봤다.</p>
   </div>
-  <p class="qa">규칙은 <code>app/scripts/build-content.py</code> 의 <code>DROP_STATUS</code> ·
-  <code>KNOWN_STATUS</code> · <code>PORTED_AS_IS</code> 셋에 있고, 왜 그렇게 정했는지도 그 자리에 적혀 있다.
+  <p class="qa">실행 규칙은 <code>app/scripts/build-content.py</code>의 <code>DROP_STATUS</code> ·
+  <code>KNOWN_STATUS</code>에 있고, 정책값은 <code>docs/project_status.json</code>이 쥔다.
   <b>원장은 고치지 않았다</b> — 상태 값을 다시 붙이는 것은 콘텐츠 결정이라 기획자의 몫이다.</p>
 </div>
 
@@ -297,13 +302,16 @@
   <p>설명문 자체는 학습자에게 보여줄 값어치가 있으므로 없애자는 게 아니다. 문제는 <b>이것만으로는 "-을까요/-ㄹ까요를 다루는 문항 전부"를 뽑을 수 없다</b>는 것이다. 그래서 ① 과별 문법 커버리지 점검이 불가능하고 ② 복습 큐가 "이 문법이 약하다"로 묶어줄 수 없다.</p>
 </div>
 
-<h2 id="s8"><span class="no">8</span>확정 결정 대비 빠진 것 — 6가지</h2>
+<h2 id="s8"><span class="no">8</span>당시 확정 결정 대비 빠졌던 것 — 6가지</h2>
+<p class="qa"><b>아래 §8~9는 2026-08-21 스키마 제안 기록이다.</b> 이후 공개 게이트는
+이 문서 맨 위의 2026-08-28 결정으로 대체됐다. 특히 「reviewed만 학생 노출」 문장은
+현재 정책이 아니라 당시 제안이다.</p>
 <div class="tablewrap"><table>
   <tr><th>#</th><th>빠진 것</th><th>왜 필요한가</th><th>등급</th></tr>
   <tr><td>①</td><td><b>문법 태그 통제 어휘</b><br><code>grammar_tag</code> + 문법 목록 시트</td><td>§2에서 확인한 대로 <code>grammar_focus</code>는 설명문이라 조회에 못 쓴다. <b>이 파일 안에 문법 목록 시트</b>(코드·대표형·분류·도입 과)를 만들고 문항이 <code>grammar_tag</code>로 참조하면, 커버리지 점검과 "약한 문법" 묶음이 가능해진다. 설명문 컬럼은 <b>그대로 유지</b>(학습자 노출용) → <b>§7에서 1급 초안 작성 완료</b></td><td><span class="pill keep">확정·착수</span></td></tr>
   <tr><td>①-b</td><td><code>word_ref</code><br><span class="qa">(어휘 원장 참조)</span></td><td>§2 실측상 어휘는 이미 잘 맞아서 급하지 않다. 다만 컬럼이 있으면 원장의 뜻을 고칠 때 퀴즈가 따라오고, 발견된 <b>en 뜻 불일치 2건</b>류가 원천 차단된다</td><td><span class="pill opt">권장</span></td></tr>
   <tr><td>②</td><td><b>문항 전역 유일 ID</b></td><td>현재 <code>id</code>는 시트마다 1부터 다시 시작한다. 복습 큐가 "이 문항을 다시"로 작동하고 오류 신고·어드민 편집이 문항을 지목해야 하므로 안정적 단일 키가 필요하다. <code>(시트, id)</code> 조합으로도 되지만 구 앱이 ID 4계열 혼재로 겪은 문제를 반복하게 된다</td><td><span class="pill must">필수</span></td></tr>
-  <tr><td>③</td><td><b>검수 상태</b><br><code>review_status</code></td><td>파이프라인에서 <code>draft → auto_checked → reviewed</code>를 확정했고 <b>reviewed만 학생에게 노출</b>하기로 했다. 컬럼이 없으면 이 게이트가 작동하지 않는다</td><td><span class="pill must">필수</span></td></tr>
+  <tr><td>③</td><td><b>검수 상태</b><br><code>review_status</code></td><td><b>당시 제안:</b> <code>draft → auto_checked → reviewed</code>로 흐르고 reviewed만 노출. <b>현재:</b> 상태값은 판 번호까지 여러 갈래이며 <code>deleted</code>만 제외한다(문서 맨 위 결정)</td><td><span class="pill keep">대체됨</span></td></tr>
   <tr><td>④</td><td><b>지시문 다국어</b></td><td>다국어 원칙은 "지시문 = 한국어 + UI 언어 병기"다. <code>n1_word_quiz</code>는 <code>prompt_en/jp/cn/vi</code>를 갖췄지만 <b><code>n3_listen_repeat</code>의 <code>instruction</code>은 한국어 단일</b>, <code>n4</code>·<code>n5</code>는 지시문 컬럼 자체가 없다</td><td><span class="pill must">필수</span></td></tr>
   <tr><td>⑤</td><td><b>교재 근거·변경·보류를 행에</b></td><td>지금은 이 정보가 <b>별도 체인지로그 파일</b>에 있다. 방법론은 훌륭하지만 행과 분리돼 있어, 2~8급으로 물량이 늘면 "이 문항이 교재 몇 페이지 근거인지, 보류 중인지"를 행에서 알 수 없다. <code>n3</code> 보류 5건이 실제로 그 상태다</td><td><span class="pill must">필수</span></td></tr>
   <tr><td>⑥</td><td><b>라인업 8종 중 3종 시트</b></td><td>확정 라인업의 <b>플래시카드 · AI 미션 대화 · 자모</b>가 이 파일에 없다. 플래시카드는 어휘 재사용이라 가볍지만 <b>세트 구성 시트</b>가 필요하고, 미션 대화는 시나리오·미션 키워드·프롬프트가 저작 대상이다</td><td><span class="pill must">필수</span></td></tr>
@@ -335,7 +343,7 @@ instruction_ko / _en / _jp / _cn / _vi
 [활동별 고유 컬럼]  ─ 기존 그대로 (prompt, selection1~4, answer_index, …)
 
 [공통 꼬리 — 저작·검수 관리]
-review_status  draft | auto_checked | reviewed    reviewed만 학생 노출
+review_status  여러 저작·검수 상태                현재는 deleted만 학생 JSON에서 제외
 source_page    p.44              교재 근거 페이지 (체인지로그 방법론을 행에 내장)
 change_note    구판 "미국 사람이에요?" → 신판 "슈테판 씨는 …"
 hold_reason    새 음원 필요 — 정답 반전   비었으면 정상, 값이 있으면 노출 보류
@@ -347,7 +355,7 @@ updated_at / updated_by</pre>
     <li><b>"이 문법을 다루는 문항 전부"를 뽑을 수 있다</b> — 과별 문법 커버리지 점검과 "약한 문법" 묶음이 가능해진다(지금은 불가능).</li>
     <li><b>원장 수정이 문항으로 전파된다</b> — <code>word_ref</code>를 넣으면 §2의 뜻 불일치류가 원천 차단된다.</li>
     <li><b>보류가 행에서 보인다</b> — <code>hold_reason</code>이 있는 문항은 자동으로 학생에게 안 나간다. 별도 파일 대조가 불필요.</li>
-    <li><b>검수 게이트가 실제로 작동한다</b> — 저작 중인 2~8급이 학생 화면에 새지 않는다.</li>
+    <li><b>검수 이력이 행에 남는다</b> — 공개 여부는 현재 정책 계약에 따라 <code>deleted</code>만 제외한다.</li>
   </ul>
 </div>
 
@@ -500,7 +508,7 @@ updated_at / updated_by</pre>
 
 <h3>B. 스키마 작업에서 놓친 것 — 3건</h3>
 <div class="callout warn">
-  <div class="t">B-1. <code>review_status=reviewed</code>가 사실과 다르다 &nbsp;<span class="pill fix">가장 심각</span></div>
+  <div class="t">B-1. 당시 <code>review_status=reviewed</code>가 사실과 달랐다 &nbsp;<span class="pill keep">과거 감사 기록</span></div>
   <p>스키마 완성판에서 1급 전 활동을 <code>reviewed</code>로 마킹했다. 그러나 <b>실제로 복수정답 검수를 거친 것은 빈칸 채우기(n4) 70문항뿐</b>이다.</p>
   <div class="tablewrap"><table>
     <tr><th>활동</th><th>현재 마킹</th><th>실제 검수 이력</th></tr>
@@ -512,7 +520,10 @@ updated_at / updated_by</pre>
     <tr><td>읽기 (n5_q)</td><td>reviewed 60</td><td><span class="pill fix">없음</span></td></tr>
   </table></div>
   <p><b>왜 심각한가:</b> <code>reviewed</code>는 "학생에게 노출해도 되는 상태"라는 게이트다. 이 값이 사실과 다르면 <b>게이트가 아무것도 막지 못한다.</b> G2 문서에서 지적한 것과 같은 종류의 잘못 — 내부 상태값이 실제를 반영하지 않는 문제다.</p>
-  <p><b>정정 방향:</b> 검수 이력이 없는 활동은 <code>auto_checked</code>로 내린다(뜻: 스키마·형식은 확인됐으나 내용 검수 미실시). 학생 노출 게이트는 <code>reviewed</code> 기준을 유지한다.</p>
+  <p><b>당시 정정 제안:</b> 검수 이력이 없는 활동은 <code>auto_checked</code>로 내리고
+  학생 노출 게이트는 <code>reviewed</code> 기준을 유지한다는 안이었다.
+  <b>이 공개 기준은 2026-08-28에 폐기됐다.</b> 현재 규칙은 문서 맨 위와
+  <code>docs/project_status.json</code>을 따른다.</p>
 </div>
 <div class="callout" style="border-left-color:var(--good)">
   <div class="t" style="color:var(--good)">B-2. 읽기 지시문 — <b>정정 완료</b></div>
@@ -570,7 +581,7 @@ updated_at / updated_by</pre>
 <h3>정정 우선순위</h3>
 <div class="tablewrap"><table>
   <tr><th>순위</th><th>항목</th><th>이유</th></tr>
-  <tr><td>1</td><td>B-1 <code>review_status</code> 정정</td><td>게이트가 무력화된 상태. 데이터 수정만으로 해결되며 즉시 가능</td></tr>
+  <tr><td><s>1</s></td><td><s>B-1 <code>review_status</code> 정정</s> <span class="pill keep">정책 대체</span></td><td>2026-08-28에 <code>deleted</code>만 제외하는 정책으로 대체. 자모 529행은 이후 원장에서도 <code>reviewed</code>로 정정됨</td></tr>
   <tr><td><s>2</s></td><td><s>B-3 플래시카드 세트 분할</s> <span class="pill keep">해소</span></td><td>전제 오류(교재 어휘 파생) 정정 — 구 앱 자산 계승(중복 1건 제거 → 327장). <b>분할은 하지 않음</b>(이어하기 + G2 진행바 규칙으로 해결)</td></tr>
   <tr><td><s>3</s></td><td><s>B-2 읽기 ox 지시문</s> <span class="pill keep">해소</span></td><td>ox 전용 문구 5개 언어 적용(전 급 177행). 전 시트 점검 결과 추가 결함 0건</td></tr>
   <tr><td><s>4</s></td><td><s>A-1 게임 재매핑 물량 반영</s> <span class="pill keep">해소</span></td><td>실측 대조 결과 <b>VocaShot 1종만</b> 재매핑 필요(40단어). 조사 스나이퍼는 9/9 과 일치, 어휘 카드 마스터는 1급 데이터 없음 → 추가 작업 0</td></tr>

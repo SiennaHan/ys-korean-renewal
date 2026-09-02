@@ -17,6 +17,9 @@ FREE_DELIVERY_MODES = (
     "bundled",
     "server_prefetch_after_first_online_launch",
 )
+CONTENT_PUBLICATION_MODES = (
+    "exclude_deleted_warn_and_include_unknown",
+)
 
 
 def load_contract(root: Path) -> dict:
@@ -72,6 +75,24 @@ def validate_contract(root: Path, contract: dict | None = None) -> list[str]:
         if not (root / "app" / "src" / "shared" / "content" / "prefetch-free.ts").exists():
             errors.append("서버 프리페치 정책인데 prefetch-free.ts 가 없다")
 
+    publication = data.get("policies", {}).get("content_publication", {})
+    publication_mode = publication.get("mode")
+    if publication_mode not in CONTENT_PUBLICATION_MODES:
+        errors.append(f"content_publication.mode 가 허용값이 아니다: {publication_mode!r}")
+    if publication.get("excluded_review_statuses") != ["deleted"]:
+        errors.append("콘텐츠 공개 제외 상태는 deleted 하나여야 한다")
+    if publication.get("unknown_status_behavior") != "warn_and_include":
+        errors.append("모르는 review_status 는 경고 후 포함해야 한다")
+    builder_path = root / "app" / "scripts" / "build-content.py"
+    if not builder_path.exists():
+        errors.append("콘텐츠 공개 정책인데 build-content.py 가 없다")
+    else:
+        builder = builder_path.read_text(encoding="utf-8", errors="replace")
+        if 'DROP_STATUS = {"deleted"}' not in builder:
+            errors.append("콘텐츠 공개 정책과 build-content.py의 DROP_STATUS가 다르다")
+        if "unknown.add(st)" not in builder or "warnings_status.append" not in builder:
+            errors.append("build-content.py가 모르는 review_status를 경고 대상으로 수집하지 않는다")
+
     items = data.get("items")
     if not isinstance(items, list):
         return errors + ["items 는 배열이어야 한다"]
@@ -120,6 +141,7 @@ def validate_contract(root: Path, contract: dict | None = None) -> list[str]:
 
 def render_contract(contract: dict) -> list[str]:
     free = contract["policies"]["free_content_delivery"]
+    publication = contract["policies"]["content_publication"]
     lines = [
         "## 정책 계약",
         "",
@@ -132,6 +154,13 @@ def render_contract(contract: dict) -> list[str]:
             f"`{free['mode']}` | 첫 설치 오프라인: **{'가능' if free['first_install_offline'] else '불가'}** · "
             f"프리페치 뒤 오프라인: **{'가능' if free['offline_after_prefetch'] else '불가'}** · "
             f"범위 정본: `{free['scope_source']}` · 번들 예외: `{free['bundled_exception']}` |"
+        ),
+        (
+            "| 원장 → 학생 JSON 공개 게이트 | "
+            f"`{publication['mode']}` | 제외: "
+            f"`{', '.join(publication['excluded_review_statuses'])}` · "
+            "모르는 `review_status`: **경고 후 포함** · "
+            f"범위: `{publication['scope']}` |"
         ),
         "",
         "## 공통 개발 상태표",

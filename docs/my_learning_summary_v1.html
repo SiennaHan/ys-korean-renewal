@@ -110,10 +110,10 @@
 </header>
 
 <div class="callout">
-  <p><b>정확도 정책을 먼저 확정해야 한다.</b> 현재 <code>ko_learning_record.is_correct</code>는 재시도 때 덮이는
-  마지막 답이고, 복습 큐 예약은 첫 시도 오답 기준이다. MY의 “정답률”을 마지막 답 기준으로 내면 향상 결과를,
-  첫 시도 기준으로 내면 최초 숙련도를 말한다. 지금 스키마는 첫 시도 정오답을 영구 보존하지 않으므로
-  둘 다 보여 주려면 필드 또는 별도 집계가 필요하다.</p>
+  <p><b>정확도는 첫 시도 기준으로 확정됐다.</b> 현재 <code>repo_learning_record.upsert</code>는
+  문항의 첫 응답만 만들고 재시도 때 기존 행을 덮어쓰지 않는다. 따라서
+  <code>ko_learning_record.is_correct</code>는 첫 시도 정오답이며, 복습 큐와 MY 정확도도
+  같은 기준을 쓴다. 향상 정도나 마지막 답 정확도를 별도로 보여 주려면 그때 새 데이터가 필요하다.</p>
 </div>
 
 <h2><span class="num">1</span>지금 쌓이고 있는 것</h2>
@@ -127,7 +127,7 @@
       <td><code>ko_learning_record</code></td>
       <td>문항을 풀 때마다</td>
       <td>급 · 과 · 활동 · 문항 · 고른 답 · 정오답 · 시각.
-        <b>문항당 한 줄</b>(upsert)이라 <code>is_correct</code> 는 <b>마지막 답</b>이다</td>
+        <b>문항당 한 줄</b>이며 최초 insert 뒤에는 덮어쓰지 않아 <code>is_correct</code>는 <b>첫 시도</b>다</td>
     </tr>
     <tr>
       <td><code>ko_daily_activity</code></td>
@@ -210,7 +210,7 @@
   <li>
     <b>얼마나 맞았나</b>
     <div class="how"><code>SUM(is_correct) / COUNT(*)</code>.
-      마지막 답 기준이라 <b>다시 풀어 맞히면 올라간다</b> — 그게 이 앱의 채점 방식과 맞는다</div>
+      <b>첫 시도 기준</b>이며 다시 풀어 맞혀도 바뀌지 않는다 — 활동 완료·재시도와 숙련도 측정을 분리한다</div>
   </li>
   <li>
     <b>다시 풀 것이 몇 개인가</b>
@@ -233,21 +233,21 @@
   },
   "answers": {
     "answered": 812,           // 푼 문항 (중복 제외 · 문항당 한 줄)
-    "correct": 640,            // 마지막 답이 정답인 문항
+    "correct": 640,            // 첫 시도에 정답인 문항
     "words": 214               // 단어 활동의 고유 문항 수 — §2 의 고친 정의
   },
   "byBook": [
     { "bookId": 1, "answered": 340, "chapters": 12 },
     { "bookId": 2, "answered": 210, "chapters": 8 }
   ],
-  "review": { "count": 172 },  // 아직 못 맞힌 문항
+  "review": { "count": 172 },  // 복습 큐에 남은 오답·건너뜀 문항
   "games": { "played": 4 }     // 한 번이라도 한 게임 수
 }</code></pre>
 
 <div class="callout">
-  <p><b>총 문항 수가 응답에 없는 이유.</b> 급별 총 문항 수는 앱이 이미 안다
-  (<code>shared/data</code>). 서버가 그걸 알게 하면 콘텐츠 원장이 서버로 한 발 더 가므로,
-  <b>서버는 푼 개수만 주고 진행률은 앱이 나눈다</b>(§5-3).</p>
+  <p><b>총 문항 수가 응답에 없는 이유.</b> 앱은 <code>GET /content/manifest</code>에서
+  급·과·활동별 문항 수를 이미 받는다. 따라서 요약 API는 푼 개수만 주고,
+  진행률 계산은 앱이 매니페스트의 분모와 합친다(§5-3).</p>
 </div>
 
 <h2><span class="num">5</span>정해진 것</h2>
@@ -267,9 +267,9 @@
   </div>
   <div>
     <p class="ask">3 · 급별 총 문항 수를 서버가 알아야 하나</p>
-    <p class="ans">아니다 — 앱에서 나눈다</p>
+    <p class="ans">요약 API에 다시 넣지 않는다 — 앱이 콘텐츠 매니페스트로 나눈다</p>
     <p class="then">응답의 <code>byBook</code> 은 푼 개수만 담는다.
-      콘텐츠 원장은 앱에 남는다</p>
+      분모의 정본은 서버 <code>GET /content/manifest</code>다</p>
   </div>
   <div>
     <p class="ask">4 · 게스트에게 이 화면을 보여 줄지</p>

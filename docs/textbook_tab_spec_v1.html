@@ -193,8 +193,9 @@
       <td><span class="file">done</span> 판정의 분모다.<br><b>활동마다 세는 것이 다르다</b> — 어휘는 퀴즈 수, 롤플레잉은 시나리오 수, 듣기·읽기는 문항 수, 플래시카드는 카드 수. 서버가 그 셈법대로 낸다</td></tr>
     <tr><td>심화 — 플래시카드</td><td>같은 매니페스트의 <code>flashcard</code> 개수</td>
       <td><b>1~8급 전부에 있다</b>(2026-08-25 원장 배선) — 2~8급도 <span class="file">on</span> 이다.<br><b>세트 번호는 서버가 안 준다</b> — 앱이 급·과로 계산한다(<span class="file">flashcard.ts</span> 의 <code>setNumericId</code>).<br>수는 여기 적지 않는다 — <code>build-content.py --check</code> 의 <code>n6_flashcard</code></td></tr>
-    <tr><td>심화 — 미션 대화</td><td>같은 매니페스트의 <code>mission-chat</code> 개수</td>
-      <td>전에는 <span class="file">module.ts</span> 의 <code>scene_type==="mission_chat"</code> 을 뒤졌다 — <b>2026-08-31 에 매니페스트로 모았다.</b><br>수는 여기 적지 않는다</td></tr>
+    <tr><td>심화 — 미션 대화</td><td><span class="file">module.ts</span>의 <code>scene_type==="mission_chat"</code>으로 목록 노출 판단<br>+ 서버의 <code>mission-chat</code> 본문</td>
+      <td>매니페스트에도 개수는 있지만 <b>현재 목록의 켜짐 판정은 아직 module을 쓴다.</b>
+      본문과 <code>legacy_id</code>는 서버에서 받는다. 두 원천이 갈리는 현재 상태를 숨기지 않는다</td></tr>
     <tr><td>미션 대화 <b>완료 판정</b></td><td><code>GET /content/{급}/{과}/mission-chat</code> 의 <code>legacy_id</code><br>+ <code>GET /dialog/mission/book/{급}</code> 의 <code>status</code></td>
       <td>전에는 구 앱 덤프 <span class="file">dialog.ts</span>(1.96MB)를 걸렀다 — <b>2026-08-31 에 그 파일을 지웠다</b>(DEV-05).<br><b>잠긴 과에는 안 부른다</b> — 402 만 받고, 잠긴 과의 완료 여부는 물을 일이 아니다.<br>개수(위 줄)와 달리 <b>id 가 필요해서</b> 매니페스트로는 안 된다</td></tr>
   </tbody>
@@ -246,24 +247,28 @@
       <td><span class="pill done">있다</span></td>
       <td>심화 2종의 완료 판정. <b>기초와 판정 방식이 다르다</b> — 문항 수가 아니라 전량 응답·대화 종료로 본다</td></tr>
     <tr><td><span class="file">GET /review-queue</span></td>
-      <td><span class="pill stop">없다</span></td>
-      <td><span class="file">review</span> 상태(복습 N)를 만들 유일한 원천. 이것이 없어 화면이 죽어 있다</td></tr>
+      <td><span class="pill done">있다</span> · 목록 미연결</td>
+      <td>홈의 다시 풀기에는 연결됐다. 다만 교재학습 목록은 <span class="file">ModuleList</span>가
+      <code>reviewCount</code>를 받을 수만 있고 <span class="file">TextbookContent</span>가 값을 넘기지 않아
+      <span class="file">review</span> 상태(복습 N)가 아직 나오지 않는다</td></tr>
     <tr><td><span class="file">GET /entitlement</span></td>
-      <td><span class="pill stop">없다</span></td>
-      <td>어느 급·과가 열렸나 → 잠금 표시. <span class="file">access_and_pricing_v1</span> §04</td></tr>
+      <td><span class="pill done">있다</span> · 목록 연결</td>
+      <td><span class="file">useEntitlement</span>가 열린 급·과를 받아 과 칩과 페이월을 판정한다. <span class="file">access_and_pricing_v1</span> §04</td></tr>
+    <tr><td><span class="file">GET /content/manifest</span> · <span class="file">GET /content/{급}/{과}/{활동}</span></td>
+      <td><span class="pill done">있다</span> · 목록 연결</td>
+      <td>매니페스트는 활동 유무·문항 수를, 본문 API는 열린 과의 실제 콘텐츠를 준다. 자모만 번들 예외다</td></tr>
   </tbody>
 </table>
 </div>
 
-<div class="callout bad">
-  <div class="t">한 과를 열 때 요청이 셋 나간다</div>
-  <p><span class="file">progress</span> · 플래시카드 낱말 · 대화 목록. <b>과 칩을 넘길 때마다</b> 다시 나가고,
-  대화 목록은 급 단위라 같은 급 안에서 과만 바꿔도 통째로 다시 받는다.
-  과 칩은 <b>손가락으로 훑는 자리</b>라 15과를 넘기면 요청이 45개다.</p>
-  <p>고칠 방법 둘 — ① <b>급 단위로 한 번</b> 받아 앱에서 과별로 가른다(응답에 과가 들어 있어야 한다).
-  ② 급·과별로 <b>캐시</b>하고 되돌아올 때 다시 받지 않는다.
-  <b>①이 낫다</b>. 어차피 <span class="file">/entitlement</span> 도 급 단위로 오므로 모양이 맞는다.
-  <span class="file">dev_spec_v1</span> §16 에 물음으로 올려야 한다.</p>
+<div class="callout warn">
+  <div class="t">현재 요청 구조 — 공통값은 캐시됐고 과별 판정은 아직 나뉜다</div>
+  <p><span class="file">/entitlement</span>와 <span class="file">/content/manifest</span>는 전역 스토어가 한 번 받아 공유한다.
+  과를 바꾸면 기본 진도, 해당 과의 미션 본문, 플래시카드 기록(있을 때), 미션 완료 대화 목록(시나리오가 있을 때)이
+  각각 필요하다. 즉 예전의 “무조건 세 요청·15과면 45개” 계산은 현재 구조를 설명하지 못한다.</p>
+  <p>성능을 고칠 때는 추측으로 합치지 말고 네 요청의 실제 횟수와 캐시 적중을 측정한다.
+  특히 급 단위 대화 목록은 같은 급 안에서 재사용할 여지가 있고, 교재 목록의 복습 N 연결과 함께
+  별도 개발 카드로 다룬다.</p>
 </div>
 
 <h2><span class="n">07</span>어긋난 것 — 목업이 기준이다</h2>
@@ -310,7 +315,8 @@
   <li><div><div class="h">복습 N <span class="pill done">구현 완료</span></div>
     <div class="d"><span class="file">ko_review_queue</span>와 <span class="file">GET /review-queue</span>가 생겼고,
     홈이 <span class="file">reviewCount</span>·<span class="file">reviewReady</span>를 실제 응답에서 받는다.
-    아래의 “값을 주는 쪽이 없다”는 2026-08-26 전 조사 결과였다.</div></div></li>
+    <b>교재학습 목록의 복습 N은 아직 미연결</b>이다 — API 부재가 아니라
+    <span class="file">TextbookContent</span>가 <span class="file">ModuleList</span>에 값을 넘기지 않는 문제다.</div></div></li>
   <li><div><div class="h">심화 2종만 구 경로다 <span class="pill done">2026-08-21 이관 완료</span></div>
     <div class="d">기초 5종은 <span class="file">/learn/*</span> 로 옮겼는데 플래시카드·미션 대화는
     <span class="file">/book/chapter/unit/…/$id</span> 에 남아 <b>콘텐츠 ID 를 URL 에 노출한다.</b>

@@ -34,6 +34,7 @@
 | 정책 | 값 | 제품에서 뜻하는 것 |
 |---|---|---|
 | 무료 콘텐츠 전달 | `server_prefetch_after_first_online_launch` | 첫 설치 오프라인: **불가** · 프리페치 뒤 오프라인: **가능** · 범위 정본: `GET /entitlement chapters` · 번들 예외: `jamo` |
+| 원장 → 학생 JSON 공개 게이트 | `exclude_deleted_warn_and_include_unknown` | 제외: `deleted` · 모르는 `review_status`: **경고 후 포함** · 범위: `workbook_to_generated_json` |
 
 ## 공통 개발 상태표
 
@@ -49,7 +50,7 @@
 | `vertical_e2e_ci` | 세로 흐름 E2E의 CI 연결 | **미구현** | `generated:ci_step:pnpm e2e` |
 | `api_tests` | API 단위·통합 테스트 | **미구현** | `inspect first-party API test suite` |
 | `content_protection` | 교재 콘텐츠 보호와 오프라인 캐시 | **부분완료** | `cd app && pnpm parity:activity; API entitlement tests remain` |
-| `mission_content_v54` | 미션대화 원장 v54 승격 | **부분완료** | `python3 app/scripts/build-content.py --check` |
+| `mission_content_current_ledger` | 미션대화 최신 원장 승격 | **부분완료** | `python3 app/scripts/build-content.py --check` |
 | `personal_payment` | 개인 결제·구독·환불·웹훅 | **미구현** | `inspect payment model, routes, and webhook` |
 | `password_reset_mail` | 비밀번호 재설정 메일 | **미구현** | `inspect reset route and mail sender` |
 | `operational_observability` | 오류 수집·운영 관측 | **미구현** | `inspect error collection and analytics integration` |
