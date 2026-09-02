@@ -5,7 +5,7 @@
 **손으로 고치지 마라 — 다음 생성에서 지워진다.** 고칠 것은 원장이다.
 
     python3 scripts/build-content.py            # 최신 원장으로 다시 만든다
-    python3 scripts/build-content.py --check    # 쓰지 않고 무엇이 달라지는지만
+    python3 scripts/build-content.py --check    # 쓰지 않고 대조, 다르면 종료코드 1
 
 원장은 교재 파생이라 저장소에 없다(`.gitignore`의 `*.xlsx`). 돌리려면 저장소
 루트에 원장 파일이 있어야 한다.
@@ -45,7 +45,7 @@
 넘는 칸만 센다.
 
 ```bash
-python3 scripts/build-content.py --check
+python3 scripts/build-content.py --check  # 차이가 있으면 실패한다
 ```
 
 경고가 뜨면 원장에서 그 칸의 맨 앞 `'` 를 되돌려라.

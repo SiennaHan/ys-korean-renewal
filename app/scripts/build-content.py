@@ -5,7 +5,7 @@
 고치면 다음 생성에서 지워진다. 고칠 것은 xlsx 쪽이다.
 
     python3 scripts/build-content.py            # 저장소 루트의 최신 v*.xlsx
-    python3 scripts/build-content.py --check    # 쓰지 않고 무엇이 달라지는지만
+    python3 scripts/build-content.py --check    # 쓰지 않고 대조, 다르면 종료코드 1
 
 원장은 교재 파생이라 저장소에 없다(.gitignore *.xlsx). 이 스크립트를 돌리려면
 원장 파일이 저장소 루트에 있어야 한다.
@@ -399,6 +399,7 @@ def main():
     long_ids: list[tuple[str, list[str]]] = []
     dropped_total = 0
     built: dict[str, list] = {}   # 시트끼리 견주는 검사용 (아래 hint_slot_mismatch)
+    drifted: list[str] = []       # --check 에서 원장과 다른 산출물
     plan = [(s, f"{s}.json") for s in CONTENT_SHEETS] + list(EXTRA_SHEETS.items())
     for sheet, filename in plan:
         if sheet not in wb.sheetnames:
@@ -436,6 +437,8 @@ def main():
         note += f" · 새 열 {len(new_cols)}" if new_cols else ""
         note += f" · voice 추정 {derived}" if derived else ""
         same = path.exists() and path.read_text(encoding="utf-8") == text
+        if not same:
+            drifted.append(filename)
         mark = "같음" if same else ("쓸 것" if args.check else "썼음")
         if not args.check and not same:
             path.write_text(text, encoding="utf-8")
@@ -503,6 +506,15 @@ def main():
         print(f"   {', '.join(hint_orphan[:8])}")
 
     if renumber_warnings or long_ids or hint_bad or hint_orphan:
+        return 1
+    if args.check and drifted:
+        print(
+            f"\n❌ 원장과 다른 산출물 {len(drifted)}개 — "
+            "`--check` 이므로 쓰지 않았고 실패로 끝낸다"
+        )
+        for filename in drifted:
+            print(f"   {filename}")
+        print("   검수 뒤 `python3 scripts/build-content.py` 로 다시 만들고 변경을 커밋해라.")
         return 1
     return 0
 

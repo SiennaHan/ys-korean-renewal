@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""문서끼리의 참조가 실제로 닿는지 검사한다.
+"""문서 구조와 기계 판독 계약을 검사한다.
 
 문서를 합치거나 옮기거나 절 번호를 바꿀 때 쓴다. 사람이 "다 고쳤다" 고 믿는 대신
 이것을 돌려서 확인한다 — 이 저장소는 문서를 이름과 절 번호로 인용하기 때문에
@@ -32,6 +32,7 @@
   [관찰 기준]    문서가 선언한 관찰 경로가 기준 커밋 이후 바뀐 경우 — <!-- 관찰: … @ 커밋 -->
   [관찰 확인]    기준 커밋만 옮기고 「확인」 줄은 안 쓰거나 그대로 둔 경우
   [화면 승격]    _snapshots/ 와 screens_ref/ 가 갈라졌는데 이력 문서에 없는 경우
+  [상태 계약]    project_status.json 이 공통 상태 네 개·실제 CI·정책 계약과 다른 경우
 
 [옛 경로] 는 인계 메모(*.txt)까지 본다.
 
@@ -53,6 +54,8 @@ import subprocess
 import sys
 import unicodedata
 from pathlib import Path
+
+from project_contract import validate_contract
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -1831,6 +1834,9 @@ def main() -> int:
     problems += ledger_claims(text)
     problems += data_source_claims()
 
+    # ── 기계 판독 정책과 공통 상태표
+    problems += [f"[상태 계약] {error}" for error in validate_contract(ROOT)]
+
     # ── 7. 색인 정합성
     problems += index_covers(live)
     problems += claude_md_size()
@@ -1863,7 +1869,7 @@ def main() -> int:
     for line in twin_ok:
         print(f"눈감아 준 목업 차이: {line}")
     if not problems:
-        print("통과 — 끊어진 참조 없음")
+        print("구조 검사 통과 — 참조·색인·등록된 계약은 맞음; 문서 의미 전체를 보증하지 않음")
         return 0
     print(f"\n걸린 것 {len(problems)}개\n")
     for p in problems:

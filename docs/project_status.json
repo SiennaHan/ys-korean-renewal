@@ -1,0 +1,108 @@
+{
+	"schema_version": 1,
+	"status_definitions": {
+		"완료": "완료 조건을 충족했고 다시 확인할 수 있는 검증 근거가 있다.",
+		"부분완료": "일부 경로는 동작하지만 완료 조건이나 검증이 남아 있다.",
+		"미구현": "제품 코드 또는 운영 연결이 아직 없다.",
+		"검증 안 됨": "구현 여부를 주장할 근거가 부족하다. 확인 전에는 완료로 올리지 않는다."
+	},
+	"policies": {
+		"free_content_delivery": {
+			"mode": "server_prefetch_after_first_online_launch",
+			"first_install_offline": false,
+			"offline_after_prefetch": true,
+			"scope_source": "GET /entitlement chapters",
+			"bundled_exception": "jamo",
+			"evidence": [
+				"app/src/shared/content/prefetch-free.ts",
+				"app/scripts/bundle-content-check.py"
+			]
+		}
+	},
+	"items": [
+		{
+			"id": "student_app_ci",
+			"label": "학생 앱 CI",
+			"status": "완료",
+			"verification": "generated:ci_job:app",
+			"evidence": [".github/workflows/gates.yml"]
+		},
+		{
+			"id": "admin_typecheck",
+			"label": "어드민 타입 검사",
+			"status": "완료",
+			"verification": "cd admin && pnpm typecheck",
+			"evidence": ["admin/package.json"]
+		},
+		{
+			"id": "admin_release_css",
+			"label": "어드민 배포 CSS",
+			"status": "부분완료",
+			"verification": "cd admin && pnpm build; inspect dist CSS utilities",
+			"evidence": ["docs/developer_tasks.md"]
+		},
+		{
+			"id": "admin_ci",
+			"label": "어드민 CI",
+			"status": "미구현",
+			"verification": "generated:ci_job:admin",
+			"evidence": [".github/workflows/gates.yml"]
+		},
+		{
+			"id": "vertical_e2e_local",
+			"label": "가입·무료 학습·계정 벽 세로 흐름 E2E",
+			"status": "부분완료",
+			"verification": "cd app && pnpm e2e",
+			"evidence": ["app/e2e/vertical-flow.spec.ts", "app/e2e/README.md"]
+		},
+		{
+			"id": "vertical_e2e_ci",
+			"label": "세로 흐름 E2E의 CI 연결",
+			"status": "미구현",
+			"verification": "generated:ci_step:pnpm e2e",
+			"evidence": [".github/workflows/gates.yml"]
+		},
+		{
+			"id": "api_tests",
+			"label": "API 단위·통합 테스트",
+			"status": "미구현",
+			"verification": "inspect first-party API test suite",
+			"evidence": ["api/smoke_test.py"]
+		},
+		{
+			"id": "content_protection",
+			"label": "교재 콘텐츠 보호와 오프라인 캐시",
+			"status": "부분완료",
+			"verification": "cd app && pnpm parity:activity; API entitlement tests remain",
+			"evidence": ["app/scripts/bundle-content-check.py", "api/shared/free_scope.py"]
+		},
+		{
+			"id": "mission_content_v54",
+			"label": "미션대화 원장 v54 승격",
+			"status": "부분완료",
+			"verification": "python3 app/scripts/build-content.py --check",
+			"evidence": ["app/scripts/build-content.py"]
+		},
+		{
+			"id": "personal_payment",
+			"label": "개인 결제·구독·환불·웹훅",
+			"status": "미구현",
+			"verification": "inspect payment model, routes, and webhook",
+			"evidence": ["docs/developer_tasks.md"]
+		},
+		{
+			"id": "password_reset_mail",
+			"label": "비밀번호 재설정 메일",
+			"status": "미구현",
+			"verification": "inspect reset route and mail sender",
+			"evidence": ["docs/developer_tasks.md"]
+		},
+		{
+			"id": "operational_observability",
+			"label": "오류 수집·운영 관측",
+			"status": "미구현",
+			"verification": "inspect error collection and analytics integration",
+			"evidence": ["docs/developer_tasks.md"]
+		}
+	]
+}

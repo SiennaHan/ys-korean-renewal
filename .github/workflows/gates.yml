@@ -49,18 +49,23 @@ jobs:
           python-version: '3.12'
 
       # 외부 패키지가 필요 없다 — 전부 표준 라이브러리다(확인함 2026-08-29)
-      - name: check_docs.py
+      - name: 문서 구조 검사
         run: python3 docs/check_docs.py
 
       # **검사기를 검사한다.** 검사마다 일부러 어기고 그 검사가 우는지 본다 —
       # 패턴을 넣는 것과 그 패턴이 무언가를 잡는 것은 다르다.
       # 원본을 건드렸다 되돌리므로 **깨끗한 트리**를 요구한다(체크아웃 직후라 만족한다).
-      - name: check_docs 가 제 몫을 하는지
+      - name: 문서 구조 검사 대조군
         run: python3 docs/check_docs_probe.py
+
+      # 완료·부분완료·미구현·검증 안 됨 네 상태와 정책 계약을 코드와 역대조한다.
+      # 특히 app/admin/E2E 의 CI 포함 여부는 이 JSON 을 믿지 않고 바로 이 워크플로를 읽는다.
+      - name: 정책·공통 상태 계약
+        run: python3 docs/project_contract.py
 
       # `status.generated.md` 는 코드에서 뽑는다. 손으로 고치거나 코드가 바뀐 뒤
       # 다시 안 뽑으면 여기서 걸린다 — **문서가 「현재 상태」를 손으로 적지 않게 하려는 것**이다.
-      - name: 지금 상태가 코드와 같은지
+      - name: 생성 상태가 코드와 같은지
         run: python3 docs/gen_status.py --check
 
       # **훅이 실제로 도는지.** 2026-08-31 에 셋이 전부 죽어 있었다 — settings.json 에

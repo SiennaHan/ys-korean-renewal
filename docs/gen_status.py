@@ -31,6 +31,7 @@ import re
 import sys
 
 from check_docs import OBSERVE_RE   # 패턴을 베끼지 않고 빌린다
+from project_contract import load_contract, render_contract, validate_contract
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -105,7 +106,8 @@ def mail_senders() -> list[str]:
     return found
 
 
-def build() -> str:
+def build(contract: dict | None = None) -> str:
+    contract = contract or load_contract(ROOT)
     jobs = ci_jobs()
     ent, pur = model_has("KoEntitlement"), model_has("KoPurchase")
     reset = api_routes("reset-password", "new-password")
@@ -153,6 +155,7 @@ def build() -> str:
     a("")
     L += jobs
     a("")
+    L += render_contract(contract)
     a("## 게이트")
     a("")
     L += gates()
@@ -183,7 +186,14 @@ def build() -> str:
 
 
 def main() -> int:
-    body = build()
+    contract = load_contract(ROOT)
+    contract_errors = validate_contract(ROOT, contract)
+    if contract_errors:
+        print("project_status.json 계약이 코드와 다르다:")
+        for error in contract_errors:
+            print(f"  - {error}")
+        return 2
+    body = build(contract)
     if not body.strip():
         print("빈 내용을 만들었다 — 쓰지 않는다")
         return 2

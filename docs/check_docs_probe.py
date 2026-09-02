@@ -218,6 +218,17 @@ CASES: list[tuple] = [
     ("사실 중복 — 문서가 CI 스텝 수를 적는다", "사실 중복",
      append("README.md", "\n게이트 8 개를 돌린다.\n")),
 
+    # ── 공통 상태 계약. 자유 문구가 아니라 enum·실제 워크플로를 역대조한다
+    ("상태 계약 — 허용하지 않은 다섯째 상태", "상태 계약",
+     replace("docs/project_status.json", '"status": "완료"', '"status": "끝남"')),
+    ("상태 계약 — 어드민 CI를 실제와 반대로 주장", "상태 계약",
+     replace("docs/project_status.json",
+             '"id": "admin_ci",\n\t\t\t"label": "어드민 CI",\n\t\t\t"status": "미구현"',
+             '"id": "admin_ci",\n\t\t\t"label": "어드민 CI",\n\t\t\t"status": "완료"')),
+    ("상태 계약 — 서버 프리페치인데 첫 설치 오프라인이라고 주장", "상태 계약",
+     replace("docs/project_status.json", '"first_install_offline": false',
+             '"first_install_offline": true')),
+
     ("숫자 주장 — 원장 버전", "원장 버전",
      append("README.md", "\n원장 정본은 v3 이다.\n"), has_ledger),
     ("사실 중복 — 주인이 아닌 문서가 그 수를 적는다", "사실 중복",

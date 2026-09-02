@@ -176,6 +176,9 @@
     <b>어느 영역이 무엇을 갖췄고 무엇이 비었는지는 §2 덮개 지도</b>에 있다.
     "무엇을 만들까" 는 이 문서 §5 의 D1~D7 표와 각 정의처,
     지금 막힌 것은 <span class="file">BLOCKERS.md</span> 다.</div>
+  <div class="callout" style="margin-top:14px"><b>현재 상태는 이 본문의 자유 문장으로 판정하지 않는다.</b>
+    <span class="file">project_status.json</span>의 완료·부분완료·미구현·검증 안 됨 네 상태와
+    <span class="file">status.generated.md</span>의 생성 표가 정본이다. 이 문서는 제품 목적·결정 근거·경위를 쥔다.</div>
 </header>
 
 
@@ -370,7 +373,7 @@
     <tr><td><b>교재학습</b></td><td>asis_v1 §3</td><td><b>textbook_tab_spec_v1</b></td><td>screens_SOT(홈·목록)</td><td>textbook_tab_spec_v1 §06</td></tr>
     <tr><td><b>게임 5종</b></td><td>asis_v1 §4</td><td>games_spec_v1</td><td>screens_SOT(게임)</td><td>기존 API 로 충분</td></tr>
     <tr><td><b>VocaShot</b></td><td>games_spec_v1</td><td>games_spec_v1 §16</td><td>screens_SOT(VocaShot)</td><td>기존 API 로 충분</td></tr>
-    <tr><td><b>표현클립</b></td><td>asis_v1 §5</td><td><span class="pill done">clip_spec_v1</span></td><td><span class="pill stop">없음</span></td><td><span class="pill open">clip_spec_v1 §06</span></td></tr>
+    <tr><td><b>표현클립</b></td><td>asis_v1 §5</td><td><span class="pill done">clip_spec_v1</span></td><td><span class="pill done">screens_SOT 클립 4상태</span></td><td><span class="pill done">신고 저장 구현</span></td></tr>
     <tr><td><b>MY</b></td><td>my_learning_summary_v1</td><td>my_learning_summary_v1 §4</td><td><span class="pill stop">없음</span></td><td>my_learning_summary_v1 §4</td></tr>
     <tr><td><b>인증·권한·결제</b></td><td>access_and_pricing_v1</td><td>access_and_pricing_v1 §04·05</td><td><span class="pill done">paywall_SOT</span> 결제 안내 넷(2026-08-27 시각 정본 승격) · <span class="pill done">draft_auth</span> 로그인·가입·재설정 (2026-08-26)<br><b>화면이 다 구현됐다 (2026-08-27)</b> — 잠금·페이월 넷·자체 회원가입·문의하기. <b>남은 것은 결제와 메일</b>이다.</td><td>access_and_pricing_v1 §05</td></tr>
     <tr><td><b>콘텐츠 파이프</b></td><td>G1_content_gate_v1 §6~11</td><td><span class="file">app/src/shared/data/README.md</span></td><td>—</td><td>원장(xlsx)</td></tr>
@@ -379,14 +382,14 @@
     <tr><td><b>접근성</b></td><td>—</td><td>shell_spec_v1 §7</td><td>—</td><td>—</td></tr>
     <tr><td><b>오프라인·오류</b></td><td>—</td><td>shell_spec_v1 §6</td><td>screens_SOT (상태 화면) — <code>activity__loading</code> · <code>activity__failed</code> · <code>activity__micdenied</code></td><td>dev_spec_v1 §15</td></tr>
     <tr><td><b>알림·리텐션</b></td><td><span class="pill done">정했다</span> <b>푸시·PWA 를 만들지 않는다</b></td><td colspan="3">밖으로 나가는 것은 <b>메일 넷만</b>(재설정 · 영수증 · 환불 · 구독 만료). 재방문 유도는 앱 안의 연속 학습일로 한다 — <span class="file">BLOCKERS.md</span> §7</td></tr>
-    <tr><td><b>어드민</b></td><td><span class="file">_superseded/renewal_plan_v0.2</span> §7</td><td colspan="3">이번 리뉴얼 <b>범위 밖</b>으로 선언됐다 — 의도된 공백이다</td></tr>
+    <tr><td><b>어드민</b></td><td><span class="file">access_and_pricing_v1</span> §10~§12</td><td colspan="3"><b>2026-08-28부터 리뉴얼 범위 안</b>이다. 타입 검사는 통과하지만 배포 CSS와 CI가 남았다 — 현재 판정은 <span class="file">status.generated.md</span></td></tr>
   </tbody>
 </table>
 </div>
 
 <div class="callout warn">
   <div class="t">빈 칸을 읽는 법 — 셋은 의도된 공백이고 넷은 아니다</div>
-  <p><b>의도된 것</b> — 어드민(범위 밖) · 자모 API(검수 뒤에 정함) ·
+  <p><b>의도된 것</b> — 자모 API(검수 뒤에 정함) ·
   게임·VocaShot 의 API(기존 것으로 충분하다고 판정했다) ·
   <b>알림·리텐션</b>(2026-08-21 에 푸시를 만들지 않기로 정했다).</p>
   <p><b>의도되지 않은 것 둘.</b>
@@ -394,7 +397,7 @@
   329편을 무료로 열기로 한 지금 유입의 첫 화면인데 그랬다.
   <b>명세는 2026-08-27 에 채웠다</b>(<span class="file">clip_spec_v1</span>) —
   구현을 읽고 재서 규칙으로 고정했고 어긋난 것 여덟과 기획 결정 여섯을 가려냈다.
-  <b>목업은 아직 없다</b>(그 문서 §07 이 그려야 할 상태 일곱을 적어 뒀다).
+  <b>그 뒤 screens_SOT에 클립 4상태를 승격했다.</b>
   ② <b>MY 화면의 목업이 없다.</b> 설계는 있고 그림이 없다.<br>
   결제 안내는 2026-08-27 에 <span class="file">paywall_SOT</span> v1.1로 승격했다 — 결제 안내 넷과 목록의 자물쇠.
   로그인·가입·재설정도 같은 날 <span class="file">draft_auth</span> 로 채웠다 —
@@ -1358,18 +1361,18 @@ footer / dock   primary "다음" | "결과 보기"</pre>
       기관 발급 코드 · 학교별 권한 경계 · 학기 종료 · 학생 활동 현황
       (<span class="file">access_and_pricing_v1</span> §10~§12).
       남은 것은 <b>개인 결제</b>, 비밀번호 재설정 메일,
-      표현클립 신고 저장, <code>/learning-summary</code> 다.</div></div>
+      <code>/learning-summary</code> 다. 표현클립 신고 저장은 구현됐다.</div></div>
   <div class="card"><div class="k">2-b</div><div class="nm">어드민 — 게이트가 없고 조용히 어긋나는 곳 둘</div>
-    <div class="d">어드민이 <b>학교가 직접 쓰는 도구</b>가 됐는데
-      <code>pnpm typecheck</code> 가 통과하지 않고 <code>pnpm build</code> 가 유틸리티 CSS 를
-      내지 않는다 — <b>둘 다 리뉴얼 전부터다.</b> 그래서 어드민을 고칠 때는 앱과 달리
-      <b>검사가 아무것도 말해 주지 않는다.</b><br>
+    <div class="d">어드민이 <b>학교가 직접 쓰는 도구</b>가 됐고
+      <code>pnpm typecheck</code>는 통과한다. 다만 <code>pnpm build</code> 산출물이 유틸리티 CSS를
+      내지 않고 CI에도 아직 없다. 현재 판정은 <span class="file">status.generated.md</span>가 쥔다.<br>
       그리고 화면으로는 안 보이는 어긋남 둘 — 학교 코드를 고치면 그 학교 학생이 조용히
       고아가 되고, 탈퇴한 학생의 코드 사용 기록이 남는다.
       작업 카드는 <span class="file">developer_tasks.md</span> <b>DEV-14</b> 다</div></div>
   <div class="card"><div class="k">3</div><div class="nm">출시 안전장치와 정책 검증</div>
-    <div class="d">E2E·CI·오류 수집·분석이 없다. 콘텐츠 공개 게이트와 음성 보관기간을 확정한 뒤
-      가입 → 무료 학습 → 벽 → 구독 → 복습의 세로 흐름을 회귀 검증한다.</div></div>
+    <div class="d">CI와 로컬 세로 흐름 E2E는 생겼지만 E2E는 CI에 연결되지 않았다.
+      오류 수집·분석도 없다. 현재 상태는 <span class="file">status.generated.md</span>의 공통 상태표를 보고,
+      가입 → 무료 학습 → 벽 → 구독 → 복습의 전체 흐름은 결제 구현 뒤 확장한다.</div></div>
 </div>
 
 <h2 id="s19"><span class="n">19</span>건드리면 깨지는 것</h2>

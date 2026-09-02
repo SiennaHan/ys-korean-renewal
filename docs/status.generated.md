@@ -13,9 +13,10 @@
 워크플로: **있다** (`.github/workflows/gates.yml`)
 
 - **docs** — 문서
-  - check_docs.py
-  - check_docs 가 제 몫을 하는지
-  - 지금 상태가 코드와 같은지
+  - 문서 구조 검사
+  - 문서 구조 검사 대조군
+  - 정책·공통 상태 계약
+  - 생성 상태가 코드와 같은지
   - 훅이 실제로 도는지
 - **app** — 앱
   - pnpm 준비
@@ -25,6 +26,33 @@
   - build
   - check:css (건너뛰지 않았는지까지 본다)
   - biome (src) — 늘어나지만 않으면 통과
+
+## 정책 계약
+
+정본: `docs/project_status.json` — 사람이 쓰는 설명도 이 값을 가리키며 같은 정책을 다시 선언하지 않는다.
+
+| 정책 | 값 | 제품에서 뜻하는 것 |
+|---|---|---|
+| 무료 콘텐츠 전달 | `server_prefetch_after_first_online_launch` | 첫 설치 오프라인: **불가** · 프리페치 뒤 오프라인: **가능** · 범위 정본: `GET /entitlement chapters` · 번들 예외: `jamo` |
+
+## 공통 개발 상태표
+
+상태는 **완료 / 부분완료 / 미구현 / 검증 안 됨** 네 개뿐이다. 상세한 경위는 근거 문서를 보고, 현재 판정은 이 표를 본다.
+
+| ID | 영역 | 상태 | 검증 |
+|---|---|---|---|
+| `student_app_ci` | 학생 앱 CI | **완료** | `generated:ci_job:app` |
+| `admin_typecheck` | 어드민 타입 검사 | **완료** | `cd admin && pnpm typecheck` |
+| `admin_release_css` | 어드민 배포 CSS | **부분완료** | `cd admin && pnpm build; inspect dist CSS utilities` |
+| `admin_ci` | 어드민 CI | **미구현** | `generated:ci_job:admin` |
+| `vertical_e2e_local` | 가입·무료 학습·계정 벽 세로 흐름 E2E | **부분완료** | `cd app && pnpm e2e` |
+| `vertical_e2e_ci` | 세로 흐름 E2E의 CI 연결 | **미구현** | `generated:ci_step:pnpm e2e` |
+| `api_tests` | API 단위·통합 테스트 | **미구현** | `inspect first-party API test suite` |
+| `content_protection` | 교재 콘텐츠 보호와 오프라인 캐시 | **부분완료** | `cd app && pnpm parity:activity; API entitlement tests remain` |
+| `mission_content_v54` | 미션대화 원장 v54 승격 | **부분완료** | `python3 app/scripts/build-content.py --check` |
+| `personal_payment` | 개인 결제·구독·환불·웹훅 | **미구현** | `inspect payment model, routes, and webhook` |
+| `password_reset_mail` | 비밀번호 재설정 메일 | **미구현** | `inspect reset route and mail sender` |
+| `operational_observability` | 오류 수집·운영 관측 | **미구현** | `inspect error collection and analytics integration` |
 
 ## 게이트
 

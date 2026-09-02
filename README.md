@@ -9,6 +9,10 @@
 > 누가 쓰나 · 교재가 어떤 모양인가 · 화면 다섯이 무엇인가 · 무엇이 무료인가가
 > 한 절에 있다. 아래 셋은 그다음이다.
 
+> **현재 개발 상태는 `docs/status.generated.md` 한 곳만 본다.** 원본은
+> `docs/project_status.json`이고 상태는 완료·부분완료·미구현·검증 안 됨 네 개뿐이다.
+> `check_docs.py`의 초록불은 문서 **구조** 검사 통과이지 문서 의미 전체의 보증이 아니다.
+
 문서가 여럿인데 **처음에 볼 것은 셋뿐이다.**
 
 무엇이 갖춰졌고 **무엇이 빠졌는지**는 정본 기획서 `docs/masterplan_v3.html`
@@ -50,7 +54,7 @@
 |---|---|
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
-| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. 명세는 `docs/access_and_pricing_v1.html` §10~§12 다 — **전에는 어드민 문서가 없었다.** **어드민에는 게이트가 없다** — `pnpm typecheck` 가 통과하지 않고(`host.$pin.tsx` 한 파일) `pnpm build` 가 유틸리티 CSS 를 내지 않는다. 둘 다 리뉴얼 전부터다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
+| `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. 명세는 `docs/access_and_pricing_v1.html` §10~§12 다. `pnpm typecheck`와 빌드 명령은 통과하지만 **빌드 산출물에 유틸리티 CSS가 빠져 배포 UI는 아직 안전하지 않고 CI에도 없다.** 현재 판정은 `docs/status.generated.md`를 본다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
 | `docs/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `docs/INDEX.md`.<br>그 밖에 인계 메모(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
