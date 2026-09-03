@@ -51,6 +51,21 @@ from check_docs import (  # 패턴도 세는 함수도 베끼지 않고 빌린�
 from project_contract import load_contract, render_contract, validate_contract
 from pathlib import Path
 
+# 「시점 기록」 못. **`<!-- 관찰: … -->` 과 같은 자리에 붙이는 같은 문법이다.**
+#
+# 관찰 기준은 「이 문서가 무엇을 보고 썼나」를 말하고, 시점 못은 **「이 절은 언제 것이며
+# 현재 판정이 아니다」** 를 말한다. 둘은 다른 것이다 — 관찰은 *다시 읽어라* 의 방아쇠고,
+# 시점은 *읽지 않아도 된다* 의 표시다.
+#
+# **막지 않고 센다.** 어느 절이 시점 기록으로 선언됐는지 사람이 알 수 있게만 한다 —
+# 「이 절 전체가 시점 기록인가」는 기계가 못 하는 판단이라(2026-09-03 · BLOCKERS §15 가
+# 섞여 있어서 통째로 못 박았다) 검사로 만들지 않는다.
+# **숫자로 시작하는 것만 센다.** `doc_review_v1.md` §6-b 가 이 문법을 **예시로
+# 인용**하는데, 그냥 세면 그 예시가 잡힌다 — 이 저장소가 「인용과 주장을 못 가른다」로
+# 적어 둔 그 문제다. `OBSERVE_RE` 가 커밋 해시를 요구해 CLAUDE.md 의 예시를 걸러내는
+# 것과 같은 방식으로, 여기는 **날짜**를 요구한다. 예시는 `<날짜>` 로 쓴다.
+TIMEPOINT_RE = re.compile(r"<!--\s*시점:\s*(\d[^>]*?)-->", re.S)
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 OUT = HERE / "status.generated.md"
@@ -123,6 +138,76 @@ def mail_senders() -> list[str]:
     return found
 
 
+# 카드 보드 — `developer_tasks.md` 에서 뽑는다.
+#
+# **왜 생성하나.** 「지금 뭘 먼저 해야 하나」에 답하는 지도가 다섯 벌이었고 신뢰
+# 등급이 다 달랐다(masterplan §2·§3, 옛 §18, developer_tasks, 이 파일). 손으로 적힌
+# 넷은 카드 상태가 바뀌어도 따라오지 않았다 — §3 은 그렇게 15일 동안 이미 끝난
+# 콘텐츠를 「먼저 하라」고 가리켰다. **상태는 카드가 쥐고, 여기서 모아 낸다.**
+#
+# **판단은 생성하지 않는다.** 임계 경로(무엇이 가장 길고 왜 앞을 막나)는 사람이
+# 쓴다 — masterplan §3 에 남아 있다. 기계는 *무엇이 끝났나* 는 알아도
+# *무엇을 먼저 해야 하나* 는 모른다. 그것까지 생성하면 **신선한데 쓸모없는 지도**가 된다.
+#
+# **git log 요약은 일부러 안 넣는다.** 커밋마다 이 파일이 바뀌면 `--check` 가 매번
+# 빨간불이고, 그러면 아무도 안 본다. 최근 한 일은 `git log` 가 원본이다.
+CARD_RE = re.compile(
+    r"^### (DEV-\d+) · (.+?) — \*\*(완료|부분완료|미구현|검증 안 됨)\*\*"
+    r"(?:\(([^)]*)\))? · (P\d)", re.M)
+PD_RE = re.compile(r"^\| (~~)?\*\*(PD-\d+)\*\*(~~)? \| ([^|]+?) \|[^|]*\| ([^|]*?) \|", re.M)
+
+
+def cards() -> tuple[list, list]:
+    """(DEV 카드, PD 결정) — 상태 어휘 넷은 project_status.json 이 정본이다."""
+    body = read("docs/developer_tasks.md")
+    dev = [(m.group(1), m.group(2).strip(), m.group(3), (m.group(4) or "").strip(),
+            m.group(5)) for m in CARD_RE.finditer(body)]
+    pd = [(m.group(2), m.group(4).strip(), m.group(5).strip(), bool(m.group(1)))
+          for m in PD_RE.finditer(body)]
+    return dev, pd
+
+
+def board() -> list[str]:
+    dev, pd = cards()
+    if not dev:
+        return ["**카드를 못 읽었다** — `developer_tasks.md` 의 헤더 꼴이 바뀌었나 본다.",
+                "상태 어휘는 넷이다(완료·부분완료·미구현·검증 안 됨).", ""]
+    open_pd = {i: what for i, what, _, done in pd if not done}
+    L = ["## 카드 보드 — `developer_tasks.md` 에서 뽑았다", "",
+         "**순서는 여기 없다.** 무엇을 먼저 할지는 판단이라 `masterplan_v3.html` §3 이 쥔다.", ""]
+    groups = [("미구현", "아직 안 된 것"), ("부분완료", "일부만 된 것"),
+              ("검증 안 됨", "됐다는데 확인 안 된 것"), ("완료", "끝난 것")]
+    for status, title in groups:
+        rows = [d for d in dev if d[2] == status]
+        if not rows:
+            continue
+        L.append(f"### {title} — {status} {len(rows)}장")
+        L.append("")
+        for cid, name, _, note, pri in rows:
+            # 괄호 안에서 막은 PD 를 캔다. **「PD-01·02 대기」 꼴을 조심해라** —
+            # 뒷번호에는 `PD-` 접두가 없어서 `PD-(\d+)` 만 쓰면 02 를 놓친다.
+            blockers = []
+            for grp in re.finditer(r"PD-((?:\d+)(?:[·,]\s*(?:PD-)?\d+)*)", note):
+                blockers += re.findall(r"\d+", grp.group(1))
+            tail = ""
+            if blockers:
+                names = [f"PD-{b} {open_pd.get(f'PD-{b}', '')}".strip()
+                         for b in blockers]
+                tail = f" ← **막은 결정** {' · '.join(names)}"
+            elif note:
+                tail = f" ({note})"
+            L.append(f"- `{cid}` {name} · {pri}{tail}")
+        L.append("")
+    if open_pd:
+        L.append(f"### 기다리는 기획 결정 — {len(open_pd)}건")
+        L.append("")
+        for i, what in open_pd.items():
+            blocks = [b for b, _, bl, done in pd if b == i for b in [bl]]
+            L.append(f"- `{i}` {what}" + (f" → {blocks[0]}" if blocks and blocks[0] else ""))
+        L.append("")
+    return L
+
+
 def build(contract: dict | None = None) -> str:
     contract = contract or load_contract(ROOT)
     jobs = ci_jobs()
@@ -173,6 +258,7 @@ def build(contract: dict | None = None) -> str:
     L += jobs
     a("")
     L += render_contract(contract)
+    L += board()
     a("## 게이트")
     a("")
     L += gates()
@@ -199,6 +285,21 @@ def build(contract: dict | None = None) -> str:
     a("")
     a("선언하지 않은 문서는 **코드가 바뀌어도 「다시 읽어라」를 못 받는다.**")
     a("")
+
+    # 시점 못 — 「읽지 않아도 되는 자리」가 어디인지
+    nails: list[tuple[str, str]] = []
+    for p2 in cand:
+        if not p2.exists() or p2.name == OUT.name:
+            continue
+        for m in TIMEPOINT_RE.finditer(p2.read_text(encoding="utf-8", errors="replace")):
+            nails.append((str(p2.relative_to(ROOT)), " ".join(m.group(1).split())))
+    if nails:
+        a("**「시점 기록」으로 못을 박은 자리** — 현재 판정에 쓰지 않는다.")
+        a("읽어야 할 양을 줄이는 표시다(삭제가 아니다 — `doc_review_v1.md` §6-b).")
+        a("")
+        for f2, what in nails:
+            a(f"- `{f2}` — {what}")
+        a("")
 
     # ── 센 것 ──────────────────────────────────────────────────────────
     #
