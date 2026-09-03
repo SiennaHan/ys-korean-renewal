@@ -1,0 +1,237 @@
+<meta charset="utf-8">
+<title>masterplan 시점 기록 — 냉동</title>
+<!-- 왜: 「현재 판정에 쓰지 말라」고 적힌 절이 masterplan 본문의 3분의 1을 차지하고 있었다.
+     읽지 말라는 것이 본문을 그만큼 먹을 이유가 없어 여기로 옮겼다(2026-09-03). -->
+<h1>masterplan 시점 기록 — 냉동</h1>
+<p><b>현재 판정에 쓰지 마라.</b> 지금 상태는 <code>docs/status.generated.md</code>,
+실행 목록은 <code>docs/developer_tasks.md</code> 가 쥔다. 여기 있는 것은 그때 그랬다는 기록이다.</p>
+<p>남긴 이유 — §16(목업을 일부러 벗어난 여섯 곳)과 §19(건드리면 깨지는 것)는
+<b>결정문·규칙이라 낡지 않아</b> masterplan 에 그대로 두었다. §15 는 「이식한 화면 수」의
+주인이라 그 숫자를 생성물로 옮긴 뒤에 다시 본다.</p>
+<hr>
+<h2 id="s1"><span class="no">1</span>구현 경위 스냅샷 · 현재 판정 아님</h2>
+<p class="qa"><b>이 앱이 무엇인지 모르고 여기 왔다면 <b>이 문서 §0</b> 을 먼저 읽어라.</b> 아래는 "무엇이 얼마나 됐나" 이지 "무엇을 만드는가" 가 아니다.</p>
+<div class="tablewrap"><table>
+  <tr><th>구분</th><th>상태</th><th>산출물</th></tr>
+  <tr><td>현행 파악</td><td><span class="pill done">완료</span></td><td>역기획서 v1.2 (소스 4종 전수 조사) · 현행 인터랙티브 목업</td></tr>
+  <tr><td>방향 설정</td><td><span class="pill done">완료</span></td><td>코어 루프 목업 v1 · 리뉴얼 기획서 v0.2.1 (결정 D1~D7 권고안)</td></tr>
+  <tr><td>결정 확정</td><td><span class="pill done">대부분 완료</span></td><td>G1 · G2 닫힘 · G3 절반(§5). <b>구독·월 단위로 정해졌다 (2026-08-26)</b> · <b>가격도 정해졌다 — 월 6달러 (2026-08-28)</b></td></tr>
+  <tr><td>콘텐츠 저작·승격</td><td><span class="pill now">부분완료</span></td><td>원장 정본은 <b>루트의 <code>글로벌_교재기반_콘텐츠_v*.xlsx</code> 중 가장 높은 번호</b>다 — 번호를 여기 적지 않는다(적었다가 이 문서만 낡았다). 앱에 반영된 문항 수와 최신 승격 여부도 <b>여기 적지 않는다</b>. <code>python3 app/scripts/build-content.py --check</code>가 원장과 산출물을 직접 대조하며, 현재 판정은 <code>docs/status.generated.md</code>의 <code>mission_content_current_ledger</code>가 쥔다.<br>미션대화 화면·서버 표·브리핑 힌트 배선은 끝났다(2026-09-01). 다만 최신 원장의 미션대화·힌트 산출물이 같아야 승격 완료다. 자모 529는 <span class="pill done">배선·검수 완료</span> — 화면 여섯이 <code>jamoProblems</code>를 읽고 전부 <code>reviewed</code>다</td></tr>
+  <tr><td>디자인</td><td><span class="pill done">완료</span></td><td>확정 목업. <b>목업이 시각 정본</b>이고 Figma 를 대체했다<br><span class="note">CSS 규칙 수는 §9 가 쥔다 — 손으로 센 시점 기록이라 여기 또 적으면 갈린다(실제로 1,229 로 남아 있었다).</span></td></tr>
+  <tr><td>개발 — 화면</td><td><span class="pill done">완료</span></td><td>화면 이식 <b>완료</b> — 수는 <code>CLAUDE.md</code> 표가 쥔다(§15 의 합계다) · 활동 컴포넌트 전부로 짜였다 · 목업 대조 <b>통과</b>(<span class="file">pnpm parity:activity</span> — 화면 수는 <code>README.md</code>)</td></tr>
+  <tr><td>개발 — 서버</td><td><span class="pill done">핵심 학습 상태 완료</span></td><td><b>DB 2종 · 활동 상태 API · 복습 큐를 만들고 활동과 홈에 연결했다</b> — <code>ko_activity_state</code> · <code>ko_review_queue</code>, <code>/activity/enter·progress·complete·chapter</code> · <code>/review-queue</code>. 홈은 <code>reviewCount</code>와 <code>reviewReady</code>를 실제 응답에서 받는다.<br><span class="note">남은 서버 작업은 개인 결제, 비밀번호 재설정 메일, MY 누적 요약과 운영 안전장치다. 표현클립 신고 저장은 2026-09-01에 구현됐다. 아래의 “DB·API 미착수” 문단은 과거 계획 기록이다.</span></td></tr>
+  <tr><td>B2C·결제</td><td><span class="pill now">잠금까지 됐다</span></td><td>경계·권한 판정·신설 DB·API 는 정해졌다(<span class="file">access_and_pricing_v1</span>). <b>§09 의 1~3단계를 만들었다 (2026-08-26)</b> — 무료 경계를 데이터로, <code>GET /entitlement</code>, 앱의 자물쇠와 안내 넷(5개 언어). <b>결제는 여전히 코드 0줄</b>이다 — <b>가격은 월 6달러로 정해졌고(2026-08-28)</b> PG 는 아직이다. <b>4단계(학생 자체 회원가입)도 됐다 (2026-08-27)</b> — BLOCKERS §9-a-4. <b>그 뒤 2026-08-28 에 기관 쪽이 크게 나갔다</b> — 학교가 어드민에서 <b>기관 발급 코드</b>를 만들고 학생이 그 코드로 스스로 가입한다(표 셋 · 앱 화면 둘). 그리고 <b>계약 학교는 전 급</b>으로 확정되면서 <code>GET /entitlement</code> 가 기관 학생에게 실제 범위를 내주기 시작했다 — 그전까지는 <code>source</code> 만 갈랐다. <b>학기 종료</b>도 붙었다(<code>ko_user.access_ended_at</code>) — 어드민이 접근을 끊으면 다음 요청부터 무료 범위로 내려가고, 학생은 앱에 들어올 때 모달로 한 번 · 잠긴 것을 누르면 페이월로 다시 안내받는다. 규칙은 <span class="file">access_and_pricing_v1</span> §10~§12.<br>남은 것은 <b>개인 결제(PG 미정)</b>와 <b>약관·개인정보 처리방침 두 문서</b>다</td></tr>
+</table></div>
+<div class="card ok">
+  <div class="t">v1 을 쓸 때와 무엇이 달라졌나</div>
+  <p>v1(2026-08-13)은 <b>"실제 생산은 아직 한 줄도 시작하지 않은 지점"</b>이라고 적었다.
+  그 문장이 이 문서를 합친 이유다 — 8일 만에 <b>콘텐츠·디자인·화면이 다 끝났는데</b>
+  지도 쪽 문서는 계속 미착수라고 말하고 있었다.</p>
+  <p><b>임계 경로가 바뀌었다.</b> v1 은 콘텐츠 저작을 가장 긴 것으로 보고 그것을 먼저
+  집으라고 했다(§4의 판단 근거 3가지). 그 판단은 맞았고 실제로 그렇게 진행돼 끝났다.
+  <b>2026-08-21 당시 가장 긴 것은 서버였다.</b> 이후 활동 상태와 복습 큐는 구현됐다.
+  현재 임계 경로는 <b>결제·메일·법률 확정·출시 회귀/관측</b>이며,
+  지금 무엇을 먼저 집을지는 <b>developer_tasks.md</b>, 현재 판정은 <b>status.generated.md</b>를 본다.</p>
+</div>
+
+<details><summary>이 절이 낡았던 기록</summary><p>「개발 — 화면」 칸에 <b>"24개 · handoff §02"</b> 라고 적혀 있었는데 둘 다 낡은 값이었다 — 화면 수는 그 뒤로 늘었고 인계 절 번호도 바뀌었다. <b>그래서 지금은 수를 여기 안 적는다</b> — 주인은 <span class="file">README.md</span> 이고, 세려면 <code>python3 docs/check_docs.py</code> 가 첫 줄에 찍는다.</p><p>「디자인」 칸에는 CSS 규칙 수가 <b>1,229</b> 로 남아 있었다. 손으로 센 시점 기록이라 금방 갈렸다 — 지금은 §9 만 쥔다.</p></details>
+
+
+<h2 id="s14"><span class="n">14</span>문서 지도 — 어느 것이 무엇에 답하나</h2>
+<div class="callout">
+  <div class="t">지도와 인계가 한 문서가 됐다 (2026-08-21)</div>
+  <p><b>이 문서 §2 덮개 지도</b> — 영역 × 산출물이고 <b>빈 칸이 곧 빠진 기획이다.</b>
+  아래 §14~§20 은 <b>"2026-08-21 현재 이렇다"</b> 는 시점 기록이고, §1~§13 은 시점과 무관한
+  상시 자산이다. 전에는 이 둘이 파일 둘이었고 <b>지도가 인계 쪽에 들어 있었다</b> —
+  인계가 끝나면 지도도 같이 낡는 자리였다. 이제 지도는 §2 가 쥔다.</p>
+  <p class="qa">이 절이 답하는 것은 <b>"어느 문서가 무엇에 답하나"</b> 뿐이다 — 아래 역할별 목록.</p>
+</div>
+
+<p><b>합치기는 끝났다</b>(2026-08-21, 26 → 12) — 무엇을 어떻게 했는지는 아래 표다.
+   지금 문서 수는 <code>docs/INDEX.md</code> 가 쥔다(숫자의 주인).</p>
+
+<h3>합치기 — 무엇을 합쳤고 무엇을 안 합쳤나</h3>
+<p>처음엔 "합칠 수 없다" 고 적었는데 <b>뭉뚱그린 판단이었다.</b> 축을 나눠 재 보니 갈렸다.
+   <b>아래는 결과다</b> — 판단이 아니라 이미 한 일이다.</p>
+<div class="tablewrap"><table>
+  <thead><tr><th>묶음</th><th>결과</th><th>근거 — 실측</th></tr></thead>
+  <tbody>
+  <tr><td><b>확정 목업 넷</b><br>activity · nav · vocashot · game_screens</td>
+      <td><span class="pill done">합쳤다</span><br><code>screens_SOT</code></td>
+      <td>같은 하네스에 <code>:root</code> 공유 변수 39개가 값이 하나도 다르지 않다 ·
+          <code>@keyframes</code> 이름 충돌 0 · 클래스 누출 여섯 방향 0.
+          <b>37 + 20 = 57개 상태를 원본과 하나씩 대조</b>했다</td></tr>
+  <tr><td><code>_superseded/legacy_shell_mockup</code></td>
+      <td><span class="pill stop">안 합쳤다</span></td>
+      <td>공유 변수 <b>0개</b> · 겹치는 규칙 24개가 <b>전부 값이 다르다</b> ·
+          화면이 iframe 밖이라 클래스 이름이 활동 화면과 부딪힌다</td></tr>
+  <tr><td><b>as-is 둘</b> home · games</td>
+      <td><span class="pill done">합쳤다</span><br><code>asis_v1</code></td>
+      <td>"리뉴얼 전이 어땠나" 하나의 질문에 탭만 나눠 답하고 있었다.
+          공유 선택자 34개가 값이 하나도 다르지 않다</td></tr>
+  <tr><td><b>G1 둘</b> activity_lineup · item_schema</td>
+      <td><span class="pill done">합쳤다</span><br><code>G1_content_gate_v1</code></td>
+      <td>같은 게이트의 산출물 — 활동 라인업과 그 문항 스키마</td></tr>
+  <tr><td><b>셸 명세 셋</b> G2 · 컴포넌트 · 구현 사양</td>
+      <td><span class="pill done">합쳤다</span><br><code>shell_spec_v1</code></td>
+      <td><b>층이라서 안 합친다고 했던 것을 뒤집었다.</b> 층은 맞지만 파일이 셋이라
+          하나만 보고 판단하는 일이 잦았다. 이제 한 문서의 세 층이다 —
+          <code>shell_spec_v1</code> 안에서 §0~§10 은 행동 · §11~§20 은 구조 · §21~§34 는 값</td></tr>
+  <tr><td><b>개발 명세 둘</b> 착수 명세 · API 스키마</td>
+      <td><span class="pill done">합쳤다</span><br><code>dev_spec_v1</code></td>
+      <td>경로만 있고 필드가 없거나 반대인 채로 읽히곤 했다</td></tr>
+  <tr><td><b>게임 명세 둘</b> 손볼 것 · VocaShot 설계</td>
+      <td><span class="pill done">합쳤다</span><br><code>games_spec_v1</code></td>
+      <td>게임을 보려면 두 문서를 오가야 했다</td></tr>
+  <tr><td><b>지도 둘</b> 기획서 · 인계</td>
+      <td><span class="pill done">합쳤다</span><br><b>이 문서</b></td>
+      <td>문서 지도가 인계 쪽에 있었다 — 인계가 끝나면 지도도 같이 낡는 자리였다</td></tr>
+  <tr><td><b>폐기 셋</b><br>mockup_read_v1 · app_asis_mockup_v1 · core_loop_mockup_v1</td>
+      <td><span class="pill stop">폐기</span></td>
+      <td>대신 볼 곳이 있어서 뺐다 — 목업 규격은 <code>parity:activity</code> 가,
+          as-is 는 <code>asis_v1</code> 이, "오답은 기록이 아니라 예약" 원칙은
+          <code>dev_spec_v1</code> §2.3 과 <code>shell_spec_v1</code> §1 이 쥔다</td></tr>
+  <tr><td><code>_superseded/renewal_plan_v0.2</code></td>
+      <td><span class="pill done">흡수했다</span> 08-21</td>
+      <td>D1~D7 중 일곱이 이미 다른 문서에서 확정으로 다시 쓰여 있었다 —
+          같은 결정이 두 곳에 살면서 갈라지는 출처였다. D 이름의 뜻은
+          <b>이 문서 §5</b> 의 표가 쥐고, 내용은 각 정의처에 있다</td></tr>
+  </tbody>
+</table></div>
+<p class="qa"><b>합치기의 비용은 "남이 그 문서의 절을 몇 번 부르나" 다.</b>
+전에 여기 "명세는 § 인용 130개를 지고 있어 위험하다" 고 적어 두었는데 <b>그건 틀렸다</b> —
+그 130개는 문서가 <b>자기 안에서</b> 쓰는 § 였고, 그건 한 파일을 다시 쓰면서 같이 고치면 된다.
+실제로 재 보니 남이 부르는 인용은 문서마다 최대 11개였고, 그래서 26 → 12 로 합칠 수 있었다.
+<b>다만 자기 안의 § 를 안 고치면 조용히 어긋난다</b> — 실제로 그렇게 12곳이 남았던 적이 있고,
+지금은 <span class="file">check_docs</span> 의 <b>[자기 절]</b> 검사가 잡는다.</p>
+
+<p class="qa">옛 판은 <span class="file">docs/_superseded/</span> 로 옮겼다 — 목록과 개수는 <code>docs/INDEX.md</code> 에 있다.
+그 폴더의 <span class="file">README.txt</span> 가 무엇이 무엇을 대체했는지 적는다.
+이름은 한 갈래가 아니다 — <span class="file">_v1</span>(초안) · <span class="file">_uiux</span>(확정 디자인) · <span class="file">_v3</span>(판을 올린 것)이 섞여 있다. 무엇이 정본인지는 이름이 아니라 <span class="file">docs/INDEX.md</span> 가 정한다.</p>
+
+<h3>착수에 필요한 것 — 기획 쪽은 이 둘이다</h3>
+
+<p class="qa">개발자에게 실제로 넘기는 묶음은 <b>셋</b>이다 — 여기 둘에
+   <span class="file">access_and_pricing_v1</span>(권한·결제)이 더 붙고, 작업 목록은
+   <span class="file">../BLOCKERS.md</span> §6·§7 이 쥔다. 그 목록은 <span class="file">docs/INDEX.md</span> §6 에 있다.</p>
+
+<div class="tw"><table>
+<thead><tr><th>파일</th><th>답하는 질문</th></tr></thead>
+<tbody>
+<tr><td><b>이 문서</b></td><td>어디까지 됐고 무엇이 남았나. 목업을 벗어난 곳은 어디이고 왜인가</td></tr>
+<tr><td><span class="file">dev_spec_v1</span></td><td><b>무엇을 만들기로 했나</b> — 이미 구현된 DB·API·라우트·셸의 필드 계약과 회귀 기준. 현재 새 작업 목록은 <span class="file">developer_tasks.md</span></td></tr>
+</tbody>
+</table></div>
+
+<h3>나머지 문서는 색인에서 찾는다</h3>
+
+<p>여기 목록을 두지 않는다. <b>문서 목록은 <span class="file">docs/INDEX.md</span>
+하나에만 있다</b> — 전에는 이 절과 <span class="file">README</span> 두 곳에 같은 목록이
+있었고, 한쪽만 고쳐져서 <b>문서 수가 25 와 26 으로, 목업 대조 화면 수가 22·24·27 로
+갈렸다.</b> 그때 이 절은 <b>인계 문서 안에</b> 있었고, 스스로
+"인계가 끝나면 지도도 같이 낡는다" 고 적어 놓고도 목록을 싣고 있었다. 지금은 인계와
+기획서가 한 문서가 됐으니(§14 머리말) 지도의 자리 문제는 사라졌고, 남은 규칙은 하나다 —
+<b>목록은 색인에만 둔다.</b></p>
+
+<p>색인이 답하는 것 — 시각 정본 목업 둘 · <b>셸 명세의 세 층</b>(행동 · 구조 · 값이
+<span class="file">shell_spec_v1</span> 한 문서 안에 있다) · 화면별 명세 · 실측과 근거 ·
+<b>개발자에게 넘길 묶음 셋</b>.
+<span class="file">python3 docs/check_docs.py</span> 가 정본이 모두 색인에
+있는지 검사하므로, 문서를 만들고 색인에 안 넣으면 통과하지 않는다.</p>
+
+
+
+<h2 id="s17"><span class="n">17</span>그 밖에 오늘 바뀐 것</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>무엇</th><th>내용</th></tr></thead>
+  <tbody>
+    <tr><td><b>콘텐츠 v23 반영</b></td>
+      <td>앱은 8/6 이식본에 머물러 있었다. 원장(xlsx)과 앱 JSON 을 잇는 것이 없어서다.
+        <span class="file">app/scripts/build-content.py</span> 가 그 일을 한다 —
+        <b>원장이 정본이고 JSON 은 산출물</b>이다. 들어온 것: 듣기 <b>375문항의 빈 지시문</b>(5개 언어) ·
+        신판 대사 · n4 가 8열→27열 · 플래시카드(1~8급, 수는 <code>build-content.py --check</code>) · 문법 234개</td></tr>
+    <tr><td><b>자모 경로 이동</b></td>
+      <td><span class="file">/book/chapter/unit/{scene}/{code}</span> →
+        <span class="file">/learn/jamo/*</span>. 이름도 바꿨다 — <span class="file">listen-repeat2</span> 는
+        2판이 아니라 다른 활동이고 <span class="file">read-write</span> 는 단어 쓰기다.
+        <b>2026-08-24 에 명세 §4 의 꼴로 합쳤다</b> — <span class="file">/learn/jamo?level&amp;lesson&amp;group&amp;sub</span> 하나이고 화면 여섯은 <span class="file">components/learn/jamo/</span> 에 있다. 검수를 기다리지 않았다 — 내용이 전에 화면이 쓰던 것과 같아서 배관을 막지 않았다(<code>BLOCKERS.md</code> §2-c)</td></tr>
+    <tr><td><b>자모 콘텐츠를 원장으로</b></td>
+      <td><b>당시에는</b> 자모가 원장 밖(<span class="file">problem.ts</span>)에만 있어 검수 이력이 없고
+        한국어·영어뿐이었다 — 다른 활동은 5개 언어였다. 529문항을
+        <span class="file">v24</span> 의 <span class="file">n8_jamo</span> 로 옮겼다(컬럼 12→27).
+        <b>그 v24 는 8/24 에 덮여 사라졌고 v26 으로 다시 만들었다</b>(정본은 늘 가장 높은 번호다) — <span class="file">BLOCKERS.md</span> §2-b.
+        <b>이식 당시에는 전부 draft였으나, 현재는 529행 전부 reviewed이고 여섯 화면이 <code>n8_jamo</code> 파생 데이터를 쓴다.</b>
+        <span class="file">jamo_authoring_spec_v1</span> §4 스키마로는 담기지 않아 실측으로 넓혔다</td></tr>
+    <tr><td><b>문서 정리 — 문을 하나로</b></td>
+      <td>루트에 문서 여덟이 흩어져 있어서 저장소를 열면 읽을 것이 열 개로 보였다.
+        <span class="file">docs/</span> 로 모아 <b>루트에 README.md 와 BLOCKERS.md 만</b> 남겼다.
+        README 를 <b>"처음 30분에 볼 셋"</b> 과 <b>"무엇을 알고 싶으면 어느 문서"</b> 로 다시 썼다 —
+        31개를 나열하는 대신 물음으로 찾게 했다.
+        <span class="file">handoff_v1</span> 은 네 곳이 §03 을 인용해서 옮길 수 없었다.
+        그 규칙을 이 문서 §16 이 직접 말하게 하고 인용을 고친 뒤 <span class="file">_superseded/</span> 로 옮겼다.
+        같은 방식으로 넷을 더 옮겨 <b>31 → 27</b> 이 됐다. 그러면서
+        <span class="file">_superseded/</span> 가 두 가지를 섞어 담고 있다는 것이 드러나
+        폴더 뜻을 정의했다 — <b>[대체됨]</b>(더 새 판이 있다)과
+        <b>[근거]</b>(대체된 게 아니라 다른 문서의 주장을 받치는 산출물)</td></tr>
+    <tr><td><b>koreanapi 편입</b></td>
+      <td><span class="file">api/</span> 로 그대로 들여왔다. 자격증명은 전부 환경변수다.
+        <span class="file">api/IMPORT.md</span></td></tr>
+    <tr><td><b>MY — 게스트 차단</b></td>
+      <td>계정 화면이라 게스트는 로그인해야 들어온다. 이걸 넣다가 <b>죽은 경로를 찾았다</b> —
+        로그인 화면이 게스트까지 돌려보내서, 로그인 시 게스트 기록을 계정으로 옮기는
+        <span class="file">migrateGuestData</span> 가 <b>한 번도 쓰이지 않았다</b></td></tr>
+    <tr><td><b>로그인하지 않고 둘러보기</b></td>
+      <td>위 차단에 출구가 없었다. MY 를 누른 게스트가 로그인 화면에 갇혀서 <b>로그인 말고는
+        빠져나올 방법이 없었다.</b> 로그인 버튼 아래에 둘러보기를 붙였다(5개 언어).
+        게스트로 들어가는 길 자체가 없었던 것도 이때 드러났다 —
+        <span class="file">guestSign()</span> 은 컨텍스트에 올라만 있고 <b>부르는 곳이 없었다.</b>
+        <span class="file">/</span> 스플래시는 토큰이 없으면 로그인으로만 보낸다</td></tr>
+    <tr><td><b>토큰 없는 게스트 로그인</b></td>
+      <td><span class="file">checkSign()</span> 이 토큰이 안 와도 성공이라고 답했다.
+        <span class="file">setAccessToken(undefined)</span> 가 문자열 <span class="file">"undefined"</span> 를
+        저장해서 <b>들어온 것처럼 보이다가 모든 요청이 Bearer undefined 로 나가 조용히 실패</b>한다.
+        위 버튼이 이 함수를 살아 있는 길로 만들었으므로 같이 고쳤다.
+        가짜 API 도 실서버처럼 토큰을 내도록 했다</td></tr>
+    <tr><td><b>표현클립 다국어</b></td>
+      <td>한국어 화면에 영어 안내문이 있었고 신고 사유는 한국어로 박혀 있었다. 12문구를 5개 언어로.
+        급·과 태그로 클립을 추천하는 안은 <b>접었다</b> — 10단어 과 하나에 329개 중 221개가 걸려 고르는 데 도움이 안 된다</td></tr>
+    <tr><td><b>프로덕션 빌드 수리</b></td>
+      <td>배포가 안 되고 있었다. React 19 문제로 보였지만 <b>락파일이 둘</b>이어서
+        react-router 가 1.170 으로 떠오른 것이었다. 1.136.8 로 고정하고
+        <span class="file">package-lock.json</span> 을 지웠다.
+        <b>npm 으로 설치하지 마라</b> — 다시 깨진다. BLOCKERS §1</td></tr>
+    <tr><td><b>진행 막대 한 칸</b></td>
+      <td>칸이 하나면 늘 꽉 찬 줄이라 어디쯤인지를 말해 주지 못한다. 그리지 않는다</td></tr>
+    <tr><td><b>리포트 축 이름</b></td>
+      <td>레이더는 번역되는데 바로 아래 칩은 한국어였다. 같은 축을 가리키므로 <b>이름은 앱이 쥔다</b>.
+        축 이름을 번역하니 <b>레이더가 잘려서</b> viewBox 를 넓혔다</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="qa">결정마다 왜 그렇게 했는지 커밋 메시지에 있다 —
+<b>git log --format='%h %s%n%b' --since='2026-08-20'</b>. 하루 29건이다.</p>
+
+
+<h2 id="s20"><span class="n">20</span>회신 부탁드릴 것</h2>
+<ol>
+  <li><b>빌드</b> — React 19 로 올릴지, react-router 를 내릴지</li>
+  <li><b>자모 라우트</b> — 명세를 고칠지, API 가 생길 때 구현을 옮길지</li>
+  <li><b>dev_spec_v1 §16 의 남은 둘</b> — <code>DELETE /review-queue</code> 를 남길지 ·
+    진행 저장을 매 문항 보낼지 묶을지. 둘 다 <b>권고안이 적혀 있다</b>.<br>
+    나머지 둘(해설 문자열 · 게스트 범위)은 <b>정해졌다</b> — 회신 대상이 아니다</li>
+</ol>
+
+<hr>
+<footer class="qa">
+  대체: <span class="file">_superseded/handoff_v1.html</span>.
+  같이 볼 것: 저장소 루트 <span class="file">README.md</span> ·
+  <span class="file">BLOCKERS.md</span> · <span class="file">api/IMPORT.md</span> ·
+  <span class="file">app/src/shared/data/README.md</span>.
+</footer>
+</main>
+</section>
+</body>
+</html>
