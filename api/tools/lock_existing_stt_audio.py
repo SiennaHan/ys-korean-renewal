@@ -14,6 +14,7 @@ ACL 을 지우는 것만으로 부족할 수 있다. 버킷에 **공개 정책(b
 걸려 있으면 객체 ACL 과 무관하게 공개다. 콘솔에서 Block Public Access 도 같이 봐라.
 """
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -28,6 +29,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+
+    # **어느 버킷을 건드리는지 먼저 찍는다.** 버킷은 S3_BUCKET 환경변수로 오고
+    # 없으면 기본값(`pulley-mock`)이다 — 운영이 다른 버킷이면 그것을 안 준 채로 돌려도
+    # 「본 것 0 · 공개였던 것 0」이 나오고, 그게 「깨끗하다」로 읽힌다.
+    # 이 줄이 없으면 잘못된 버킷을 본 것을 알 길이 없다.
+    print(f"버킷 {s3utils.BUCKET_NAME} · 지역 {s3utils.REGION} · 접두 {PREFIX}")
+    if not os.getenv("S3_BUCKET"):
+        print("  ⚠ S3_BUCKET 을 주지 않아 기본값을 쓴다 — 운영 버킷이 다르면 지금 헛것을 보고 있다")
 
     s3 = s3utils.s3
     seen = locked = failed = public = 0
