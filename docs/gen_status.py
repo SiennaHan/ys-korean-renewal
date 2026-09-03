@@ -157,11 +157,28 @@ CARD_RE = re.compile(
 PD_RE = re.compile(r"^\| (~~)?\*\*(PD-\d+)\*\*(~~)? \| ([^|]+?) \|[^|]*\| ([^|]*?) \|", re.M)
 
 
+# `### DEV-…` 로 시작하는 줄은 다 카드다. CARD_RE 가 그 중 몇 개를 놓쳤는지 보려고
+# 따로 센다 — **전부 실패할 때만 우는 검사는 둘이 빠진 것을 못 잡는다.**
+# 실제로 2026-09-03 에 카드 제목의 상태 자리에 「미구현 · 결정은 끝났다」처럼 넷 밖의
+# 말을 넣었다가 DEV-06·DEV-11 이 **보드에서 조용히 사라졌다.** `--check` 는 깨진 상태로
+# 일관되니 통과했다. 그게 이 문서가 「정본」으로 읽히는 동안 거짓을 말하는 방식이다.
+CARD_HEAD_RE = re.compile(r"^### (DEV-\d+)\b.*$", re.M)
+
+
 def cards() -> tuple[list, list]:
     """(DEV 카드, PD 결정) — 상태 어휘 넷은 project_status.json 이 정본이다."""
     body = read("docs/developer_tasks.md")
     dev = [(m.group(1), m.group(2).strip(), m.group(3), (m.group(4) or "").strip(),
             m.group(5)) for m in CARD_RE.finditer(body)]
+    got = {d[0] for d in dev}
+    missed = [(m.group(1), m.group(0)) for m in CARD_HEAD_RE.finditer(body)
+              if m.group(1) not in got]
+    if missed:
+        lines = "\n".join(f"      {h.strip()[:110]}" for _, h in missed)
+        sys.exit(
+            f"❌ 카드 {len(missed)}개를 못 읽었다 — 보드에서 조용히 빠진다:\n{lines}\n"
+            "   꼴은 `### DEV-N · 이름 — **상태**(덧말) · Pn` 이고 **상태는 넷뿐이다**\n"
+            "   (완료 · 부분완료 · 미구현 · 검증 안 됨). 덧말은 괄호 안에 넣어라.")
     pd = [(m.group(2), m.group(4).strip(), m.group(5).strip(), bool(m.group(1)))
           for m in PD_RE.finditer(body)]
     return dev, pd
