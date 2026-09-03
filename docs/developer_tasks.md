@@ -1,7 +1,12 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ fad6aeb
-     — 확인: 2026-09-03 · gates.yml 문서 job 에 「콘텐츠 공개 게이트 대조군」이 늘었다
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ c93c91e
+     — 확인: 2026-09-03(2) · 앞 커밋(c93c91e)이 gates.yml 을 건드려 **자기 스탬프를
+       스스로 무효로 만들었다** — 573d051 과 같은 사정이라 기준만 올린다. 그 커밋이
+       이 문서가 보는 경로 중 건드린 것은 **gates.yml 하나뿐**이고(model.py · xternal ·
+       feature-gates.ts 는 무변경), 늘어난 것은 문서 job 의 스텝 하나다. **job 수는
+       그대로**라 DEV-10 의 셈에 영향이 없다.
+       앞 확인: 2026-09-03 · gates.yml 문서 job 에 「콘텐츠 공개 게이트 대조군」이 늘었다
        (DEV-07 회귀 테스트). **job 은 그대로 문서·앱 둘**이고 어드민·E2E job 은 여전히
        없으므로 DEV-10 의 현재/목표 구분과 셈은 그대로다. §「CI 필수 단계」는 목표 계약이라
        손대지 않았다 — 실제 목록은 status.generated.md 가 코드에서 뽑는다.
