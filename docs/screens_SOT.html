@@ -1,4 +1,25 @@
 <!doctype html>
+<!--
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │  이 파일은 「사람이 고치는 프로토타입」이다 — **게이트는 이 파일을 안 읽는다.**  │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  이름이 거짓말한다. `_SOT` 가 붙었지만 `pnpm parity:activity` 가 앱 DOM 과
+  견주는 대상은 `app/src/screens_ref/*.html`(캡처)이고, Storybook 이 읽는 것은
+  거기서 생성한 `screens.ts` 다. 셋의 역할표는 `docs/INDEX.md` §2 한 곳이다.
+
+      docs/screens_SOT.html      ← 여기. 손으로 고친다. 권위는 여기서 시작한다
+        └ app/src/screens_ref/*.html   캡처. 게이트가 읽는다. **손으로 맞춘다**
+            └ screens.ts               산출물 (scripts/screens-ref-build.py)
+
+  **여기를 고쳐도 캡처는 저절로 안 따라온다.** 생성기가 없어서 그렇고, 그래서
+  둘이 실제로 갈라졌다 — 이름을 바꾸지 않은 이유와 갈라진 목록은
+  `BLOCKERS.md` §5-c 다. 화면을 고쳤으면 캡처도 같이 고치고, 갈라졌는지는
+
+      cd app && python3 scripts/mockup-source-diff.py
+
+  로 본다(브라우저가 필요해서 게이트 사슬에 없다 — 사람이 돌린다).
+-->
 <html lang="ko">
 <head>
 <meta charset="utf-8">
