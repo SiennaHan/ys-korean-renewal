@@ -71,7 +71,7 @@
 | | 정본 | 뜻 |
 |---|---|---|
 | **콘텐츠** | 원장 `글로벌_교재기반_콘텐츠_v*.xlsx` | `app/src/shared/data/n*.json` 은 **산출물이다. 손으로 고치지 마라** — 고칠 것은 원장이고, `app/scripts/build-content.py` 로 다시 만든다 |
-| **화면** | `app/src/screens_ref/*.html` (목업 캡처) | **구현이 목업과 다르면 목업이 기준이다.** 일부러 벗어난 여섯 곳은 `docs/masterplan_v3.html` §16 에 이유까지 있다.<br>이 캡처도 그 자체가 정본이 아니다 — `docs/screens_SOT.html`(프로토타입)을 뜬 것이고, `screens.ts` 는 캡처에서 생성한다. **이름이 거짓말하니**(`_SOT` 는 게이트가 안 읽는다) 셋의 역할은 `docs/INDEX.md` §2 표 하나에서 본다 |
+| **화면** | `app/src/screens_ref/*.html` (목업 캡처) | **구현이 목업과 다르면 목업이 기준이다.** 일부러 벗어난 여섯 곳은 `docs/masterplan_v3.html` §16 에 이유까지 있다.<br>**손으로 고치는 자리는 이 캡처 하나다.** `docs/screens_SOT.html`(사람이 보는 뷰어)과 `screens.ts` 는 여기서 생성한다 — 뷰어를 직접 고치지 마라. **이름이 거짓말하니**(`_SOT` 가 정본이 아니다) 셋의 역할은 `docs/INDEX.md` §2 표 하나에서 본다 |
 | **문서 목록** | `docs/INDEX.md` | 목록을 **다른 곳에 새로 만들지 마라.** 전에 두 곳에 있어서 계속 어긋났다 |
 | **결정의 이유** | 커밋 메시지 | `git log --format='%h %s%n%b' -- <경로>` |
 
