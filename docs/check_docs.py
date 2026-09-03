@@ -470,10 +470,6 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         "목업 캡처 수": "(문) README.md",
         # 활동 갈래만 따로 세는 수. CLAUDE.md 의 "화면 수가 넷이다" 표가 주인이다 —
         # 그 표가 이 숫자로 무엇을 판단할지 가르쳐 준다
-        "활동 컴포넌트 수": "(문) CLAUDE.md",
-        "이식한 화면 수": "(문) CLAUDE.md",
-        "정본 문서 수": "(문) INDEX.md",
-        "_superseded 문서 수": "(문) INDEX.md",
         # 아래 셋은 지금 우연히 한 곳뿐이다. 우연을 규칙으로 굳혀 둔다 —
         # 나중에 누가 다른 문서에 또 적으면 그때 걸린다.
         # 2026-08-29 에 넣었다. 둘 다 **이번 회차에 실제로 낡은 것**이다 —
@@ -482,18 +478,32 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         "페이월 상태 수": "paywall_SOT",
         # 문서는 이 수를 적지 않는다 — 생성물이 job·스텝 목록을 쥔다
         "CI 검사 스텝 수": "docs/status.generated.md",
-        "ko_* 표 수": "(문) README.md",
         "i18n 로케일 수": "(문) BLOCKERS.md",
-        "VocaShot 문항 은행": "games_spec_v1",
         "n1_word_quiz 행": "games_spec_v1",
         # 토큰 수는 셋 다 shell_spec §3.5 가 쥔다. dev_spec 이 같은 줄을
         # 베껴 두었다가 둘 다 낡았다(2026-08-26).
-        "primitive 색 토큰": "shell_spec_v1",
-        "semantic 색 토큰": "shell_spec_v1",
         "타이포 눈금": "shell_spec_v1",
     }
 
     # (이름, 실제, 문서가 그 수를 말할 때 쓰는 문구들)
+    # ── 2026-09-03 · 항목 아홉과 정규식 열아홉을 **지웠다** ──────────────
+    #
+    # 이 목록은 「문서가 손으로 적은 수」를 기계가 센 값과 대조한다. 그런데 **세는
+    # 코드는 이미 여기 있는데 내는 데는 안 썼다** — 그래서 문서가 수를 적고, 이 목록이
+    # 그 손글씨를 쫓는 정규식을 계속 늘려야 했다. 위 주석들이 그 기록이다:
+    # 「패턴이 없으면 검사는 조용히 통과한다」·「사람이 grep 해서 찾았다」.
+    #
+    # **출력처를 바꿨다.** `gen_status.py` 가 같은 함수를 빌려 `status.generated.md` 의
+    # 「센 것」 표로 낸다. 문서는 수를 적지 않고 그 표를 가리킨다 — 대조할 손글씨가
+    # 없으니 대조하는 검사도 없앴다(활동 컴포넌트 수 · 이식한 화면 수 · ko_* 표 수 ·
+    # 정본/폐기본 문서 수 · review_status 값 종류 수 · VocaShot 문항 은행 ·
+    # primitive/semantic 색 토큰).
+    #
+    # **거래를 밝혀 둔다.** 누가 그 수를 다시 손으로 적으면 **이제 아무도 안 잡는다.**
+    # 실제로 확인했다 — INDEX 에 「정본 99개」를 되살려 놓고 돌렸더니 조용했다.
+    # 막는 것은 검사가 아니라 **적을 자리가 생성물 하나라는 사실**이다.
+    # 다시 정규식을 늘리는 쪽으로 가지 마라. 그 길은 이미 한 번 막혔다.
+    #
     specs: list[tuple[str, int, list[str]]] = [
         ("목업 대조 화면 수", sum(parity.values()), [
             r"(\d+)개\s*화면이\s*일치",
@@ -518,26 +528,6 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             r"대조\s*검사는?\s*전체\s*\*?\*?(\d+)",
             r"지금은\s*\*?\*?(\d+)\*?\*?\s*이다",
         ]),
-        # 2026-08-26 에 활동 화면을 22 → 23 으로 늘렸는데 CLAUDE.md 와 masterplan 이
-        # 22 로 남았고 **검사가 못 잡았다** — 세기는 세면서 견주지는 않았다.
-        ("활동 컴포넌트 수", parity["활동"], [
-            # 문구를 좁게 잡는다 — "활동 컴포넌트" 라는 말은 수 없이 쓰이는 자리가
-            # 많아서(설명·표 머리) 넓게 잡으면 엉뚱한 수를 claim 으로 읽는다
-            r"활동\s*컴포넌트\s*(\d+)\s*종",
-            r"\|\s*\*\*(\d+)\*\*\s*\|\s*\*\*활동 컴포넌트\*\*",
-        ]),
-        # masterplan §15 표를 더한 수. CLAUDE.md 가 "그 표의 합계" 라고 말하므로
-        # 둘이 갈리면 CLAUDE.md 가 거짓말을 한다
-        *(
-            [("이식한 화면 수", ported_screens(), [
-                r"\|\s*\*\*(\d+)\*\*\s*\|\s*\*\*이식한 화면\*\*",
-                # 2026-08-30 — README 가 산문으로 "이식 화면 25" 라고 적어 두었는데
-                # 표 꼴만 보던 패턴이 **조용히 지나갔다**(참값 26). 산문 꼴도 본다
-                r"이식(?:한)?\s*화면\s*(\d+)",
-            ])]
-            if ported_screens()
-            else []
-        ),
         ("CI 검사 스텝 수", ci_steps(), [
             rf"게이트\s*{NUM}\s*(?:개)?\s*(?:을|를)?\s*(?:돈다|돌린다)",
             rf"(?:푸시|PR)[^\n]{{0,20}}?{NUM}\s*이\s*돈다",
@@ -594,25 +584,10 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             rf"paywall-panel[^\n]{{0,80}}?{NUM}\s*으로 갈린다",
             rf"페이월[^\n]{{0,30}}?{NUM}\s*(?:상태|갈래)로",
         ]),
-        ("ko_* 표 수", ko_tables(), [
-            r"createAllTables\(\)[^\n]{0,80}?\*\*(\d+)개\*\*",
-            r"표를? 스스로 만든다[^\n]{0,60}?\*\*(\d+)개\*\*",
-        ]),
         ("목업 캡처 수", mockup_captures(), [
             r"캡처\s*(\d+)개(?:는|가|를|만)",
             r"캡처\s*(\d+)개가\s*곧",
             r"목업\s*캡처\s*(\d+)",
-        ]),
-        ("정본 문서 수", len(live), [
-            r"문서가\s*(\d+)개",
-            r"목업\s*HTML\s*(\d+)개",
-            r"정본\s*(\d+)개가\s*모두",
-            r"정본\s*(\d+)개\s*·",
-        ]),
-        ("_superseded 문서 수", len(list((HERE / "_superseded").glob("*.html"))), [
-            r"정본이\s*아닌\s*(\d+)개",
-            r"`?_superseded/`?\s*(\d+)개",
-            r"_superseded/?\s*로\s*옮겼다\s*\(\s*([가-힣\d]+)\s*개",
         ]),
         # 절 인용 총합은 여기 넣지 않는다 — 문서를 한 줄 고칠 때마다 바뀌어서
         # 정확히 맞추게 하면 신호가 아니라 잡일이 된다(한 세션에 네 번 갈렸다).
@@ -644,16 +619,12 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
 
     # 원장 상태값 — 판본마다 는다. developer_tasks DEV-07 이 「54행」·「16종」으로
     # 적어 두었다가 60행·18종이 됐다(2026-09-01). 손으로 적으면 반드시 낡는 종류다.
-    dropped, kinds = review_status_counts()
+    # 값 종류 수는 이제 `status.generated.md` 의 「센 것」이 낸다 — 대조할 손글씨가 없다
+    dropped, _ = review_status_counts()
     if dropped:
         specs.append(("원장에서 지운 행 수", dropped, [
             r"`?deleted`?\s*행을 빼고[^\n]{0,10}?지금\s*(\d+)\s*행",
             r"지운 행\s*(\d+)\s*개",
-        ]))
-    if kinds:
-        specs.append(("review_status 값 종류 수", kinds, [
-            r"값이\s*(\d+)\s*종",
-            r"review_status[^\n]{0,20}?(\d+)\s*종",
         ]))
 
     # 콘텐츠 실측 — 원장이 갱신되면 문서의 수가 낡는다
@@ -661,9 +632,6 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     if "i18n 로케일 수" in dc:
         specs.append(("i18n 로케일 수", dc["i18n 로케일 수"],
                       [r"i18n\s*은?\s*(\d+)개\s*로케일"]))
-    if "VocaShot 문항 은행" in dc:
-        specs.append(("VocaShot 문항 은행", dc["VocaShot 문항 은행"],
-                      [r"문항\s*은행\s*(\d+)", r"은행은\s*(?:\*\*)?(\d+)"]))
     if "n1 어휘퀴즈 문항" in dc:
         specs.append(("n1_word_quiz 행", dc["n1 어휘퀴즈 문항"],
                       [r"n1_word_quiz\.json.{0,14}?(\d{3,5})\s*(?:행|문항|건)"]))
@@ -671,8 +639,6 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     tc = token_counts()
     if tc:
         specs += [
-            ("primitive 색 토큰", tc["primitive 색 토큰"], [r"primitive\s*(\d+)"]),
-            ("semantic 색 토큰", tc["semantic 색 토큰"], [r"semantic\s*(\d+)\s*\+"]),
             ("타이포 눈금", tc["타이포 눈금"], [r"타이포\s*(\d+)"]),
         ]
 

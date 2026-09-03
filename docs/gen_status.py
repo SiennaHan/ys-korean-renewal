@@ -30,7 +30,24 @@ import io
 import re
 import sys
 
-from check_docs import OBSERVE_RE   # 패턴을 베끼지 않고 빌린다
+from check_docs import (  # 패턴도 세는 함수도 베끼지 않고 빌린다
+    OBSERVE_RE,
+    chapters_per_book,
+    ci_steps,
+    data_counts,
+    jamo_activities,
+    jamo_rows,
+    ko_tables,
+    lesson_activities,
+    mockup_captures,
+    parity_screens,
+    paywall_kinds,
+    ported_screens,
+    review_status_counts,
+    seed_tables,
+    token_counts,
+    tracked_under,
+)
 from project_contract import load_contract, render_contract, validate_contract
 from pathlib import Path
 
@@ -181,6 +198,70 @@ def build(contract: dict | None = None) -> str:
         a(f"- `{n}`" + (f" ({k}개)" if k > 1 else ""))
     a("")
     a("선언하지 않은 문서는 **코드가 바뀌어도 「다시 읽어라」를 못 받는다.**")
+    a("")
+
+    # ── 센 것 ──────────────────────────────────────────────────────────
+    #
+    # **여기가 이 절의 요점이다.** 아래 수는 전부 `check_docs.py` 가 **이미 세고
+    # 있던 것**이다. 그런데 세어서 **문서의 손글씨와 대조**하는 데만 썼다 — 내는
+    # 데는 안 썼다. 그래서 문서가 수를 손으로 적고, 검사는 그 손글씨를 쫓는
+    # 정규식 47개를 들고 있었다. 문구를 새로 쓰면 패턴을 하나 더 넣어야 했고
+    # 그러지 못한 자리는 **조용히 통과했다**(check_docs 의 그 주석들이 기록이다).
+    #
+    # **출력처를 바꾼다.** 수는 여기서 나오고, 문서는 여기를 가리킨다.
+    # 그러면 대조할 손글씨가 없어 검사도 필요 없다 — 검사가 줄어드는 것이 성과다.
+    #
+    # 함수를 `check_docs` 에서 빌린다. 베끼면 두 벌이 되고 한쪽만 고쳐진다.
+    par = parity_screens()
+    tc, dc = token_counts(), data_counts()
+    per_book, total_ch = chapters_per_book()
+    _, status_kinds = review_status_counts()
+    audio_n, audio_b = tracked_under("app/public/audio")
+    page_n, page_b = tracked_under("app/public/textbook")
+    data_n, data_b = tracked_under("app/src/shared/data")
+    mb = lambda b: f"{b / 1024 / 1024:.1f} MB"
+    live_html = len(list(HERE.glob("*.html")))
+    dead_html = len(list((HERE / "_superseded").glob("*.html")))
+
+    a("## 센 것 — 문서에 옮겨 적지 말고 여기를 가리켜라")
+    a("")
+    a("| 무엇 | 수 | 어디서 세나 |")
+    a("|---|---|---|")
+    rows = [
+        ("목업 대조 화면", sum(par.values()),
+         "`activity-parity.tsx` 의 `SCREENS` — " +
+         " · ".join(f"{k} {v}" for k, v in par.items())),
+        ("목업 캡처", mockup_captures(), "`app/src/screens_ref/*.html`"),
+        ("활동 컴포넌트", par["활동"], "위 `SCREENS` 의 활동 항목"),
+        ("이식한 화면", ported_screens(), "`masterplan_v3.html` §15 표 합계"),
+        ("`ko_*` 표", ko_tables(), "`api/persistence/model.py`"),
+        ("교재 콘텐츠 표", seed_tables(), "`api/seed_textbook_content.py` 의 `TABLES`"),
+        ("과 활동 종", lesson_activities(), "`app/src/shared/data/module.ts`"),
+        ("자모 문항", jamo_rows(), "`n8_jamo.json`"),
+        ("자모 활동", jamo_activities(), "`module.ts` 의 자모 묶음"),
+        ("급별 과 · 전체 과", f"{per_book} · {total_ch}", "`chapter.ts` — **과 구조의 정본**"),
+        ("페이월 상태", paywall_kinds(), "`paywall` 컴포넌트"),
+        ("CI 검사 스텝", ci_steps(), "`.github/workflows/gates.yml`"),
+        ("`review_status` 값 종류", status_kinds, "생성된 `n*.json`"),
+        ("i18n 로케일", dc["i18n 로케일 수"], "`app/src/i18n/locales/`"),
+        ("VocaShot 문항 은행", dc["VocaShot 문항 은행"], "`vocashot-bank.ts`"),
+        ("`n1_word_quiz` 행", dc["n1 어휘퀴즈 문항"], "생성된 `n1_word_quiz.json`"),
+        ("primitive 색 토큰", tc["primitive 색 토큰"], "`docs/tokens.css`"),
+        ("semantic 색 토큰", tc["semantic 색 토큰"], "같은 파일"),
+        ("타이포 눈금", tc["타이포 눈금"], "같은 파일"),
+        ("정본 HTML", live_html, "`docs/*.html`"),
+        ("폐기본 HTML", dead_html, "`docs/_superseded/*.html`"),
+        # 아래 셋은 **공개 금지의 근거**다. CLAUDE.md 가 이 수를 손으로 적고 있었는데
+        # 「약 21MB」로 낡아 있었다 — 참값의 6분의 1이었고 음원·지면을 아예 안 셌다.
+        ("추적된 듣기 음원", f"mp3 {audio_n:,}개 · {mb(audio_b)}",
+         "`git ls-files app/public/audio` — **공개 금지**"),
+        ("추적된 교재 지면", f"jpg {page_n:,}장 · {mb(page_b)}",
+         "`git ls-files app/public/textbook` — **공개 금지**"),
+        ("추적된 문장·어휘·지문", f"{data_n:,}개 · {mb(data_b)}",
+         "`git ls-files app/src/shared/data` — **공개 금지**"),
+    ]
+    for label, val, where in rows:
+        a(f"| {label} | **{val}** | {where} |")
     a("")
     return "\n".join(L)
 

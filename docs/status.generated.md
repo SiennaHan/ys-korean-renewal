@@ -94,3 +94,32 @@
 - `docs/user_flow_v1.html`
 
 선언하지 않은 문서는 **코드가 바뀌어도 「다시 읽어라」를 못 받는다.**
+
+## 센 것 — 문서에 옮겨 적지 말고 여기를 가리켜라
+
+| 무엇 | 수 | 어디서 세나 |
+|---|---|---|
+| 목업 대조 화면 | **55** | `activity-parity.tsx` 의 `SCREENS` — 활동 24 · 내비 5 · VocaShot 5 · 게임 17 · 표현클립 4 |
+| 목업 캡처 | **55** | `app/src/screens_ref/*.html` |
+| 활동 컴포넌트 | **24** | 위 `SCREENS` 의 활동 항목 |
+| 이식한 화면 | **26** | `masterplan_v3.html` §15 표 합계 |
+| `ko_*` 표 | **47** | `api/persistence/model.py` |
+| 교재 콘텐츠 표 | **14** | `api/seed_textbook_content.py` 의 `TABLES` |
+| 과 활동 종 | **7** | `app/src/shared/data/module.ts` |
+| 자모 문항 | **529** | `n8_jamo.json` |
+| 자모 활동 | **6** | `module.ts` 의 자모 묶음 |
+| 급별 과 · 전체 과 | **15 · 120** | `chapter.ts` — **과 구조의 정본** |
+| 페이월 상태 | **5** | `paywall` 컴포넌트 |
+| CI 검사 스텝 | **11** | `.github/workflows/gates.yml` |
+| `review_status` 값 종류 | **17** | 생성된 `n*.json` |
+| i18n 로케일 | **5** | `app/src/i18n/locales/` |
+| VocaShot 문항 은행 | **1143** | `vocashot-bank.ts` |
+| `n1_word_quiz` 행 | **1138** | 생성된 `n1_word_quiz.json` |
+| primitive 색 토큰 | **53** | `docs/tokens.css` |
+| semantic 색 토큰 | **37** | 같은 파일 |
+| 타이포 눈금 | **23** | 같은 파일 |
+| 정본 HTML | **19** | `docs/*.html` |
+| 폐기본 HTML | **31** | `docs/_superseded/*.html` |
+| 추적된 듣기 음원 | **mp3 1,133개 · 68.9 MB** | `git ls-files app/public/audio` — **공개 금지** |
+| 추적된 교재 지면 | **jpg 939장 · 34.2 MB** | `git ls-files app/public/textbook` — **공개 금지** |
+| 추적된 문장·어휘·지문 | **36개 · 15.3 MB** | `git ls-files app/src/shared/data` — **공개 금지** |
