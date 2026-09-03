@@ -41,12 +41,18 @@ Storybook 이 `.html` 을 직접 읽게 하는 쪽이 더 깨끗하지만, 이 �
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REF = ROOT / "src" / "screens_ref"
 OUT = REF / "screens.ts"
+# 사람이 보는 뷰어. 이 파일 안의 `<script id="screens">` 한 블록만 이 생성기가 쥔다 —
+# 껍데기(디자인 시스템 CSS · 절 버튼 · 기기틀 · 라벨표)는 손으로 고치는 자리로 남는다.
+VIEW = ROOT.parent / "docs" / "screens_SOT.html"
+VIEW_OPEN = '<script id="screens" type="application/json">'
+VIEW_CLOSE = "</script>"
 
 # 그룹 → 프레임 클래스. **캡처 데이터가 아니라 설정이라 여기 둔다** — 생성물에
 # 손으로 적으면 다시 두 벌이 된다.
@@ -133,11 +139,43 @@ def build() -> str:
     return "\n".join(L)
 
 
+def view_block(files: list[Path]) -> str:
+    r"""뷰어에 박을 JSON 한 줄. **`</script>` 로 블록을 탈출하지 못하게 막는다** —
+    JSON 은 `\/` 를 허용하므로 `</` 를 그렇게 escape 하면 내용은 그대로다."""
+    data = {p.stem: p.read_text(encoding="utf-8").strip() for p in files}
+    return json.dumps(data, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
+
+
+def sync_view(files: list[Path], check: bool) -> int:
+    """뷰어의 JSON 블록을 캡처와 맞춘다. 바이트 왕복이라 눈대중이 안 낀다."""
+    if not VIEW.exists():
+        sys.exit(f"뷰어가 없다: {VIEW}")
+    src = VIEW.read_text(encoding="utf-8")
+    i = src.find(VIEW_OPEN)
+    if i < 0:
+        sys.exit(f"{VIEW.name} 에 `{VIEW_OPEN}` 블록이 없다 — 뷰어 껍데기가 바뀌었나 본다.")
+    a = i + len(VIEW_OPEN)
+    b = src.find(VIEW_CLOSE, a)
+    want = view_block(files)
+    rel = "docs/" + VIEW.name
+    if src[a:b] == want:
+        print(f"뷰어 블록  {len(files)}화면 · {rel} 는 캡처와 같다")
+        return 0
+    if check:
+        print(f"❌ {rel} 의 `id=\"screens\"` 블록이 낡았다 — 캡처 {len(files)}화면과 다르다.\n"
+              f"   `cd app && python3 scripts/screens-ref-build.py` 를 돌리고 커밋해라.")
+        return 1
+    VIEW.write_text(src[:a] + want + src[b:], encoding="utf-8")
+    print(f"뷰어 블록  {len(files)}화면 → {rel} 을 다시 썼다")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="쓰지 않고 다른지만 본다")
     args = ap.parse_args()
 
+    rc = sync_view(sorted(REF.glob("*.html")), args.check)
     want = build()
     have = OUT.read_text(encoding="utf-8") if OUT.exists() else ""
     n = want.count("\t\tgroup:")
@@ -145,7 +183,7 @@ def main() -> int:
 
     if want == have:
         print(f"목업 캡처  {n}화면 · {rel} 는 캡처와 같다")
-        return 0
+        return rc
     if args.check:
         print(f"❌ {rel} 가 낡았다 — 캡처 {n}화면과 다르다.\n"
               f"   `python3 scripts/screens-ref-build.py` 를 돌리고 변경을 커밋해라.")
@@ -154,7 +192,7 @@ def main() -> int:
     # 쓸 내용을 만들다 죽으면 파일이 0바이트로 남는다(2026-08-30 에 실제로 겪었다).
     OUT.write_text(want, encoding="utf-8")
     print(f"목업 캡처  {n}화면 → {rel} 를 다시 썼다")
-    return 0
+    return rc
 
 
 if __name__ == "__main__":
