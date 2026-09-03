@@ -100,12 +100,16 @@
 
 **2026-08-29 부터 CI 가 게이트를 돌린다** — `.github/workflows/gates.yml`.
 **무엇이 도는지는 `docs/status.generated.md` 가 쥔다**(job·스텝을 코드에서 뽑는다).
-평소에 손으로 다 돌릴 필요는 없다. **다만 둘은 여전히 사람 몫이다:**
+평소에 손으로 다 돌릴 필요는 없다. **다만 셋은 여전히 사람 몫이다:**
 
 ```bash
-cd app && python3 scripts/build-content.py --check   # 콘텐츠 — CI 가 못 돈다(원장이 저장소에 없다)
-cd admin && pnpm typecheck                            # 어드민 — 통과한다. CI 에는 아직 안 넣었다
+cd app && python3 scripts/build-content.py --check     # 콘텐츠 — CI 가 못 돈다(원장이 저장소에 없다)
+cd app && python3 scripts/mockup-source-diff.py        # 목업 정본 둘을 견준다 — 브라우저가 필요하다
+cd admin && pnpm typecheck                              # 어드민 — 통과한다. CI 에는 아직 안 넣었다
 ```
+
+**목업 견주기는 고치지 않고 잰다.** 프로토타입(`screens_SOT`)과 캡처(`screens_ref`)가
+갈라졌는지만 본다 — 어느 쪽을 맞출지는 기획 판단이다. `BLOCKERS.md` §5-c.
 
 빠른 되먹임이 필요하면 손으로도 돌린다 —
 `python3 docs/check_docs.py` · `cd app && pnpm parity:activity`.

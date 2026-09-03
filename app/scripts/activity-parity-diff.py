@@ -448,47 +448,61 @@ def strip_app_wrapper(html):
     return body[: body.rindex("</div>")]
 
 
-here = os.path.dirname(os.path.abspath(__file__))
-out = os.path.join(here, "..", ".parity-out")
-mock = os.path.join(here, "..", "src", "screens_ref")
+# ── 여기부터가 대조 본문이다 ─────────────────────────────────────────────
+#
+# **`main()` 으로 감싸 둔 이유** — 위의 정규화(`flat` · `DROP_ATTRS` · `norm_style`)를
+# **다른 스크립트가 빌려 쓴다**(`mockup-source-diff.py` 가 프로토타입 ↔ 캡처를 견줄 때).
+# 최상위에서 바로 돌면 import 하는 순간 이 대조가 같이 돌아 버린다.
+# 규약을 베끼면 두 벌이 되고 한쪽만 고쳐진다 — `gen_status` 가 `check_docs` 에서
+# 패턴을 빌리는 것과 같은 사정이다.
 
-print("봐주는 차이 —")
-for k, why in IGNORED.items():
-    print(f"  {k:22} {why}")
-for old, (new, hexv) in COLOR_ALIAS.items():
-    print(f"  {old:22} → {new} (둘 다 {hexv})")
-print()
 
-bad = 0
-for f in sorted(glob.glob(os.path.join(out, "*.html"))):
-    name = os.path.basename(f)[:-5]
-    # 이름이 곧 캡처 이름인 것(nav__*)과 activity__ 가 붙는 것 둘 다 받는다
-    ref = os.path.join(mock, f"{name}.html")
-    if not os.path.exists(ref):
-        ref = os.path.join(mock, f"activity__{name}.html")
-    if not os.path.exists(ref):
-        print(f"✗ {name}: 목업 캡처가 없다")
-        bad += 1
-        continue
+def main():
+    here = os.path.dirname(os.path.abspath(__file__))
+    out = os.path.join(here, "..", ".parity-out")
+    mock = os.path.join(here, "..", "src", "screens_ref")
 
-    root = SCREEN_ROOT.get(name)
+    print("봐주는 차이 —")
+    for k, why in IGNORED.items():
+        print(f"  {k:22} {why}")
+    for old, (new, hexv) in COLOR_ALIAS.items():
+        print(f"  {old:22} → {new} (둘 다 {hexv})")
+    print()
 
-    def prep(html):
-        rows = flat(strip_app_wrapper(html))
-        rows = drop_above_root(rows, root) if root else drop_game_wrapper(rows)
-        return drop_record_limit(drop_tabbar(rows))
-
-    a = prep(open(ref, encoding="utf-8").read())
-    b = prep(open(f, encoding="utf-8").read())
-    if a == b:
-        print(f"✓ {name}")
-        continue
-    bad += 1
-    print(f"✗ {name}")
-    for line in difflib.unified_diff(a, b, "목업", "컴포넌트", lineterm="", n=1):
-        if line.startswith(("---", "+++", "@@")):
+    bad = 0
+    for f in sorted(glob.glob(os.path.join(out, "*.html"))):
+        name = os.path.basename(f)[:-5]
+        # 이름이 곧 캡처 이름인 것(nav__*)과 activity__ 가 붙는 것 둘 다 받는다
+        ref = os.path.join(mock, f"{name}.html")
+        if not os.path.exists(ref):
+            ref = os.path.join(mock, f"activity__{name}.html")
+        if not os.path.exists(ref):
+            print(f"✗ {name}: 목업 캡처가 없다")
+            bad += 1
             continue
-        print(f"    {line}")
-print()
-print("모두 같다" if not bad else f"{bad}개 화면이 다르다")
-sys.exit(1 if bad else 0)
+
+        root = SCREEN_ROOT.get(name)
+
+        def prep(html):
+            rows = flat(strip_app_wrapper(html))
+            rows = drop_above_root(rows, root) if root else drop_game_wrapper(rows)
+            return drop_record_limit(drop_tabbar(rows))
+
+        a = prep(open(ref, encoding="utf-8").read())
+        b = prep(open(f, encoding="utf-8").read())
+        if a == b:
+            print(f"✓ {name}")
+            continue
+        bad += 1
+        print(f"✗ {name}")
+        for line in difflib.unified_diff(a, b, "목업", "컴포넌트", lineterm="", n=1):
+            if line.startswith(("---", "+++", "@@")):
+                continue
+            print(f"    {line}")
+    print()
+    print("모두 같다" if not bad else f"{bad}개 화면이 다르다")
+    raise SystemExit(1 if bad else 0)
+
+
+if __name__ == "__main__":
+    main()
