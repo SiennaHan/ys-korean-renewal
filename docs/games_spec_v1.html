@@ -818,9 +818,9 @@ complete 그 장소 완료</pre>
 
 <div class="callout ok">
   <div class="t">문구 다국어도 <b>8이 박혀 있었다</b> — 고쳤다</div>
-  <p><code>game_ui_i18n_v1.ts</code> 의 <code>lessonHint</code> 가
-     <b>5개 로케일 전부</b> "8"을 문자열에 물고 있었다.
-     <code>{n}</code> 매개변수로 바꿨다.</p>
+  <p>이관 초안의 <code>lessonHint</code>는 "8"을 문자열에 물고 있었지만,
+     현재 실행 정본인 <code>app/src/i18n/locales/{ko,en,ja,zh,vi}.ts</code>의
+     <code>game.particleSniper.lessonNote</code>는 <code>{{count}}</code> 매개변수를 쓴다.</p>
 <pre>ko  현재 과와 이전 과에서 최대 <b>{n}</b>문제가 랜덤 출제됩니다
 en  Up to <b>{n}</b> questions, drawn from this lesson and earlier ones
 ja  この課と前の課から最大<b>{n}</b>問が出ます

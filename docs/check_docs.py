@@ -34,8 +34,6 @@
   [화면 승격]    _snapshots/ 와 screens_ref/ 가 갈라졌는데 이력 문서에 없는 경우
   [상태 계약]    project_status.json 이 공통 상태 네 개·실제 CI·정책 계약과 다른 경우
 
-[옛 경로] 는 인계 메모(*.txt)까지 본다.
-
 [숫자 주장] 과 [하위절] 이 값어치가 크다. 참조가 끊어졌는지만 보면
 작업이 진행되며 문서의 수와 절 번호가 조용히 낡는 것을 못 잡는다 —
 목업 대조 화면 수가 22·24·27 로 갈렸고, 문서를 합치며 h2 만 다시 매기고
@@ -76,12 +74,10 @@ def strip_tags(s: str) -> str:
 def load() -> tuple[dict[str, str], dict[str, str], dict[str, Path]]:
     """정본·폐기본의 본문(태그 제거)과 경로를 모은다.
 
-    코퍼스에 세 종류가 들어간다. 이름의 접두로 갈라 놓아야 검사마다
+    코퍼스에 두 종류가 들어간다. 이름의 접두로 갈라 놓아야 검사마다
     대상을 골라 쓸 수 있다.
       (접두 없음)  docs/*.html — 정본. 인용의 대상이 되는 것
       "(문) "      README.md · BLOCKERS.md — 저장소의 문
-      "(메모) "    docs/*.txt — 인계 메모. 인용 대상은 아니지만
-                   폐기본을 부르고 있으면 사람을 잘못 보낸다
     """
     live = {p.stem: p for p in sorted(HERE.glob("*.html"))}
     dead = {p.stem: p for p in sorted((HERE / "_superseded").glob("*.html"))}
@@ -104,16 +100,12 @@ def load() -> tuple[dict[str, str], dict[str, str], dict[str, Path]]:
             continue
         text["(문) " + m.name] = m.read_text(encoding="utf-8", errors="replace")
         raw["(문) " + m.name] = text["(문) " + m.name]
-    for t in sorted(HERE.glob("*.txt")):
-        body = t.read_text(encoding="utf-8", errors="replace")
-        text["(메모) " + t.name] = body
-        raw["(메모) " + t.name] = body
     return text, raw, {**live, **{n: dead[n] for n in dead}}
 
 
 # "옛이름.html → _superseded/" 꼴의 줄. 문서 맨 위에 이걸 적어 두면
 # 그 이름은 그 문서 안에서 봐준다 — 어디로 갔는지 이미 밝혔다는 뜻이다.
-# 시점 기록(인계 메모)처럼 본문을 고쳐 쓰면 안 되는 문서를 위한 장치다.
+# 시점 기록에서 옛 파일이 어디로 갔는지 선언하기 위한 장치다.
 REDIRECT_RE = re.compile(r"([A-Za-z0-9_.가-힣-]+)\.html\s*→\s*_superseded/", re.M)
 
 
@@ -447,7 +439,6 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     맞는 숫자를 틀렸다고 잡는다.
     """
     parity = parity_screens()
-    memos = len(list(HERE.glob("*.txt")))
     sec_total = sum(t.count("§") for n, t in text.items() if n in live)
 
     # 사실마다 **주인 문서 하나**를 정해 둔다. 주인 밖에서 그 수를 말하면
@@ -455,8 +446,8 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
     # 늘렸을 때 같은 숫자가 **일곱 문서**에 적혀 있어서 다섯 곳이 한꺼번에 낡았다.
     # 문서 개수가 문제가 아니라 한 사실이 여러 곳에 적힌 것이 문제였다.
     #
-    # 주인을 고르는 기준은 "그 수로 무언가를 판단하는 곳". 화면 수는 인계에서
-    # "이것이 통과한다" 를 말하는 README, 문서·폐기본·메모 수는 목록을 쥔 INDEX 다.
+    # 주인을 고르는 기준은 "그 수로 무언가를 판단하는 곳". 화면 수는
+    # "이것이 통과한다" 를 말하는 README, 문서·폐기본 수는 목록을 쥔 INDEX 다.
     # 나머지 문서는 숫자를 적지 말고 질적으로 쓴다("목업 캡처 전부가 일치한다").
     # 시점 기록과 인용은 봐준다. "그때는 30화면이었다" 는 지금도 참이고,
     # 다른 문서의 옛 문장을 따옴표로 옮긴 것도 고치면 안 된다.
@@ -483,7 +474,6 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         "이식한 화면 수": "(문) CLAUDE.md",
         "정본 문서 수": "(문) INDEX.md",
         "_superseded 문서 수": "(문) INDEX.md",
-        "인계 메모 수": "(문) INDEX.md",
         # 아래 셋은 지금 우연히 한 곳뿐이다. 우연을 규칙으로 굳혀 둔다 —
         # 나중에 누가 다른 문서에 또 적으면 그때 걸린다.
         # 2026-08-29 에 넣었다. 둘 다 **이번 회차에 실제로 낡은 것**이다 —
@@ -576,7 +566,7 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
             # 하려던 말이 깨진다. 대신 **둘 다 검사받게** 한다.
             #
             # 패턴은 좁게 쓴다. 처음엔 `자모…활동…N종` 으로 넓게 잡았다가
-            # 인계 메모의 "자모 목록 인계] 앞서 활동 화면 19종" 을 **문장을 가로질러**
+            # 과거 인계 문서의 "자모 목록 인계] 앞서 활동 화면 19종" 을 **문장을 가로질러**
             # 잡았다 — 시점 기록이라 고치면 안 되는 문서다.
             rf"한글 파트는 활동이 따로 {NUM}",
             rf"자모는 활동이 {NUM}\s*(?:종|개)",
@@ -627,10 +617,6 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         # 절 인용 총합은 여기 넣지 않는다 — 문서를 한 줄 고칠 때마다 바뀌어서
         # 정확히 맞추게 하면 신호가 아니라 잡일이 된다(한 세션에 네 번 갈렸다).
         # 대신 "400개가 넘는다" 류의 하한 주장만 아래 floors 에서 본다.
-        ("인계 메모 수", memos, [
-            r"인계\s*메모\s*([가-힣]+)\(",
-            r"인계\s*메모\s*(\d+)개",
-        ]),
     ]
 
     # 교재 표 수 · 공개 금지가 지키는 자산 — 둘 다 사람이 적었다가 낡은 것들이다
@@ -713,7 +699,7 @@ def claims(live: set[str], text: dict[str, str]) -> list[str]:
         if not keeper:
             continue
         for src, body in text.items():
-            if src == keeper or src.startswith("(메모) "):
+            if src == keeper:
                 continue
             flat = re.sub(r"\s+", " ", body)
             # finditer 로 **모든** 자리를 본다. re.search 로 첫 자리만 보면,
@@ -1648,14 +1634,14 @@ def index_covers(live: set[str]) -> list[str]:
 
 def main() -> int:
     text, raw, paths = load()
-    # 정본은 docs/*.html 뿐이다 — 인용의 "출처" 로는 문과 메모를 안 센다
+    # 정본은 docs/*.html 뿐이다 — 저장소의 문은 정본 HTML 수에서 뺀다
     live = {
         n for n in text
-        if not n.startswith("(문) ") and not n.startswith("(메모) ")
+        if not n.startswith("(문) ")
     }
     dead = {p.stem for p in (HERE / "_superseded").glob("*.html")}
     secs = {n: sections(raw[n]) for n in live}
-    # **문서도 인용의 대상이다.** 여기 "문과 메모는 인용의 대상이 아니다" 라고
+    # **문서도 인용의 대상이다.** 여기 "문은 인용의 대상이 아니다" 라고
     # 적혀 있었는데, 정작 `CLAUDE.md` 는 `BLOCKERS.md §N` 을 수시로 부른다.
     # 그래서 .md 로 가는 §N 인용은 **한 번도 검사되지 않았다**(2026-08-30 에 찾았다) —
     # CLAUDE.md 가 두 곳에서 `BLOCKERS.md §3-b` 를 가리켰는데 그 절은 전혀 다른
@@ -1813,12 +1799,11 @@ def main() -> int:
                     )
 
     # ── 3. 고아
-    # 메모는 문이 아니다 — 메모만 가리키는 문서는 여전히 고아로 본다
     for n in sorted(live):
         cited = any(
             n in body
             for src, body in text.items()
-            if src != n and not src.startswith("(메모) ")
+            if src != n
         )
         if not cited:
             problems.append(f"[고아] {n} — 아무 문서도, README·BLOCKERS 도 가리키지 않는다")
@@ -1854,11 +1839,10 @@ def main() -> int:
 
     # ── 결과
     parity = parity_screens()
-    memos = len(list(HERE.glob("*.txt")))
     kinds = len(set(re.findall(r"^  \[([^\]]+)\]", __doc__ or "", re.M)))
     print(
         f"정본 {len(live)}개 · 폐기본 {len(dead)}개 · "
-        f"문 {len(DOORS)}개 + 색인 1 · 메모 {memos}개 · 검사 {kinds}종"
+        f"문 {len(DOORS)}개 + 색인 1 · 검사 {kinds}종"
     )
     print(
         f"센 것: 목업 대조 {sum(parity.values())}화면("

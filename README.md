@@ -22,9 +22,9 @@
 
 | | 무엇 | 왜 먼저 |
 |---|---|---|
-| 1 | **[BLOCKERS.md](BLOCKERS.md) §0 현재 스냅샷** | 지금 막혀 있는 것과 **정해지지 않은 것**. 여기 없는 것은 대체로 정해져 있다는 뜻이다.<br>**통째로 읽지 마라 — 4천 줄이 넘는다.** §0 이 표 한 장으로 요약하고, 필요한 절만 이름으로 찾아 들어간다 |
-| 2 | **`docs/masterplan_v3.html`** | 정본 기획서. **이 앱이 무엇인가**(§0) · **무엇이 비었나**(§2 덮개 지도) ·<br>**지금 무엇이 앞을 막나**(§3 전체 지도) · 게이트(§5) · Phase 1 상태(§8) ·<br>**지금 계획**(§12) · **리스크**(§13) · 문서 지도(§14) · **목업을 일부러 벗어난 여섯 곳**(§16) |
-| 3 | **`docs/dev_spec_v1.html`** | 최초 개발 계약 + 현재 필드·회귀 기준. 핵심 활동 DB·API·라우트·셸은 구현 완료 |
+| 1 | **`docs/status.generated.md`** | 코드와 공통 상태표에서 생성한 현재 판정. 완료·부분완료·미구현·검증 안 됨만 사용한다 |
+| 2 | **`docs/developer_tasks.md`** | 지금 할 일과 기획 결정 대기 항목. 개발자는 이 카드의 완료 판정과 반환 산출물을 따른다 |
+| 3 | **`docs/masterplan_v3.html`** | 제품 목적·덮개 지도·게이트·결정 근거. 구현의 오늘 상태를 판정하는 문서가 아니다 |
 
 나머지는 **필요할 때 `docs/INDEX.md`에서 찾아 보는 참고서다.** 개수를 여기 중복해 적지 않는다.
 
@@ -55,7 +55,7 @@
 | `app/` | 학생용 앱. 리뉴얼의 본체다 (React 18 · RSBuild · TanStack Router) — `app/README.md` |
 | `api/` | 서버(`koreanapi`). 2026-08-20 에 그대로 들여왔다 — `api/IMPORT.md` |
 | `admin/` | 어드민(React 18 · RSBuild · TanStack Router · 포트 3001). **2026-08-28 부터 리뉴얼 범위 안이다** — 기관 발급 코드 화면이 들어오고 학생 화면에 활동 현황·학기 종료·탈퇴가 붙었다. 그 전에는 "범위 밖" 이었다. 명세는 `docs/access_and_pricing_v1.html` §10~§12 다. `pnpm typecheck`와 빌드 명령은 통과하지만 **빌드 산출물에 유틸리티 CSS가 빠져 배포 UI는 아직 안전하지 않고 CI에도 없다.** 현재 판정은 `docs/status.generated.md`를 본다. 배포 원본은 다른 저장소다(`api/DEPLOY_GAME_CONTENT.md` §3) |
-| `docs/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `docs/INDEX.md`.<br>그 밖에 인계 메모(`*_handoff_note.txt`) · 디자인 토큰(`tokens.css` · `figma_*.json`) · 가짜 API(`game_mockapi.py`) |
+| `docs/` | 기획·명세·목업 HTML + 옛 판 `_superseded/`.<br>목록과 개수는 `docs/INDEX.md`.<br>그 밖에 디자인 토큰 정본(`tokens.css`) · 가짜 API(`game_mockapi.py`) |
 
 `korean-master/` · `korean-admin-master/` · `koreanapi-master/` · `writeapi-master/` 는
 **지금 배포돼 있는 버전의 참고본**이다. 저장소에 없고(`.gitignore`) 대조용으로만 쓴다.
@@ -242,7 +242,6 @@ h3 33개를 부모 h2 에 맞춰 다시 매겨 풀었다.
 
     목업 대조 화면 수 (활동 + 내비)   활동 컴포넌트 수와 다른 지표다
     정본 문서 수 · _superseded 문서 수
-    인계 메모 수
 
 **정확히 맞추게 하는 것과 하한만 보는 것을 가른다.** 문서를 한 줄 고칠 때마다
 바뀌는 수(절 인용 총합이 그렇다)를 정확히 맞추게 하면 신호가 아니라 잡일이 된다 —

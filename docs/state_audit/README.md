@@ -5,6 +5,11 @@
 `docs/captured/` 와 `app/src/mockups/` 를 건드리지 않았고, 이후 확정된 공통 아이콘과
 제품 반영분은 두 정본 폴더에 함께 갱신했다.
 
+> **보존 규칙 (2026-09-03).** 최종 판정과 무관한 캡처 실험물
+> (`look__*` · `snap__*` · `fixflash__*` · `flash__t*` · `promote__*`)은
+> 결론이 이 문서와 `screen_promotions.md`에 반영된 뒤 제거했다. 이 폴더에는
+> 상태 ID가 있는 감사 캡처, 실제 라우트 증거, 재현 스크립트만 남긴다.
+
 > **v2.5 이후 롤플레잉 주의 (2026-08-25).** 이 폴더의 기존 녹음 완료 캡처는
 > 과거 상태를 보존한 감사 증거다. 현재 정본은 `docs/screens_uiux.html`이며,
 > `preparing(2초) → recording → finishing(1초) → sending → 결과 카드`와

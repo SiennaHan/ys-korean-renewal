@@ -416,7 +416,7 @@
   <tr><td>Title 높이</td><td><b>68 → 48</b>. 2줄(26+20)이 1줄(26)로 — 전 활동 화면 공통</td></tr>
   <tr><td>콘텐츠 밴드</td><td><b>+20</b>. §3.1의 세로 배분에 여유가 생긴다</td></tr>
   <tr><td>콘텐츠 데이터</td><td><b>변경 없음</b>. G1의 <code>instruction_*</code> 5개 언어 컬럼을 그대로 쓰고 <b>렌더링만 1개</b>로 줄인다</td></tr>
-  <tr><td>i18n 리소스</td><td>셸 문자열 <b>5개 언어 × 55키</b>(<code>i18n_player_shell.ts</code>). 지시문은 콘텐츠 쪽 컬럼에서 온다</td></tr>
+  <tr><td>i18n 리소스</td><td>셸 문자열은 실행 정본 <code>app/src/i18n/locales/{ko,en,ja,zh,vi}.ts</code>의 <code>player</code>·<code>result</code>·<code>review</code>·<code>state</code> 블록에 있다. 지시문은 콘텐츠 쪽 컬럼에서 온다</td></tr>
 </table></div>
 <p class="qa">앱바 제목도 같은 규칙을 받는다 — <code>{급} {과}</code>를 UI 언어로 쓴다(예: <code>1급 4과</code> / <code>Level 1 Lesson 4</code>). 과 제목과 학습 대상은 앱바에 넣지 않는다.</p>
 
@@ -465,7 +465,7 @@
   <p><b>이름을 나눠야 하는 이유:</b> "다시 풀기"는 §8 용어표에서 <b>복습 큐(틀린 문항만)</b>에 이미 배정돼 있다.
      완료 활동 <b>전체</b>를 다시 푸는 것과 <b>틀린 것만</b> 다시 푸는 것은 다른 행동이라, 같은 말을 쓰면 학습자가 무엇이 나올지 예상할 수 없다.</p>
   <p class="qa">두 문구는 <b>서로 다른 화면</b>에 나오므로(활동 목록 / 결과 화면) 충돌이 크지는 않다.
-     다만 "한 번 더"는 <b>활동 목록에 있어 셸 밖</b>이라, 이번 <code>i18n_player_shell.ts</code>(55키) 범위에는 들어 있지 않다 — 목록 화면 작업 때 함께 등록한다.</p>
+     다만 "한 번 더"는 <b>활동 목록에 있어 셸 밖</b>이므로 활동 목록의 런타임 번역 키가 담당한다.</p>
 </div>
 
 <div class="callout warn">
@@ -1311,7 +1311,7 @@ y=648  마이크 영역                  360×92
   <tr><td>"아주 잘 했어요!" · "다시 해보세요"</td><td>UI 언어만</td><td>피드백 pill</td></tr>
   <tr><td><b>지시문 2줄</b></td><td><b>UI 언어 1줄</b></td><td>Title 68 → 48</td></tr>
 </table></div>
-<p class="qa"><b>i18n 파일에 키를 더 넣어야 한다.</b> Phase 1의 <code>i18n_player_shell.ts</code>는 30키인데, 위 표의 도구 버튼·오디오 버튼 라벨이 빠져 있다 — <code>player.playAudio</code> · <code>player.eraseAll</code> · <code>player.undo</code> · <code>player.viewMission</code> 등을 5개 언어로 추가한다.</p>
+<p class="qa"><b>이관 당시 빠졌던 키는 현재 구현됐다.</b> <code>player.playAudio</code> · <code>player.eraseAll</code> · <code>player.undo</code> · <code>player.viewMission</code> 등은 실행 정본인 다섯 로케일 파일에 등록돼 있다.</p>
 
 <h3>17.5-b "다시 풀기"가 세 가지를 가리킨다 <span class="pill keep">정리</span></h3>
 <p>같은 말이 서로 다른 행동 셋에 걸쳐 있었다. 학습자가 무엇이 나올지 예상할 수 없다.</p>
@@ -1532,7 +1532,7 @@ y=648  마이크 영역                  360×92
   <tr><td>기존 화면의 토큰 교체</td><td>93개 파일 — Phase 2~3 점진 작업</td></tr>
 </table></div>
 
-<p class="qa" style="margin-top:44px">근거: <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2 셸·상태 스펙</a> · <a href="https://claude.ai/code/artifact/c045e99a-a438-4f3a-8260-2e339f84c515">Phase 1 개발 명세</a> · <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">G1 활동 라인업</a> · i18n 키는 <code>i18n_player_shell.ts</code></p>
+<p class="qa" style="margin-top:44px">근거: <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2 셸·상태 스펙</a> · <a href="https://claude.ai/code/artifact/c045e99a-a438-4f3a-8260-2e339f84c515">Phase 1 개발 명세</a> · <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">G1 활동 라인업</a> · 실행 i18n 키는 <code>app/src/i18n/locales/</code></p>
 </main>
 </section>
 <!-- ═══════ 값 — build_spec_uiux.html ═══════ -->
@@ -2107,7 +2107,7 @@ framer-motion(^12.23.24 설치돼 있음)으로 구현</pre>
 </table></div>
 <p><b>한국어·영어 병기를 하지 않는다.</b> 지시문도 UI 언어 <b>한 줄</b>이다.
    지시문 문자열은 콘텐츠의 <code>instruction_*</code> 컬럼에서 오고, 셸 UI 문자열은
-   <code>i18n_player_shell.ts</code>(5개 언어 × 55키)에서 온다.</p>
+   실행 정본 <code>app/src/i18n/locales/{ko,en,ja,zh,vi}.ts</code>에서 온다.</p>
 
 <h2 id="s32"><span class="n">32</span>상태 저장</h2>
 <div class="tablewrap"><table>

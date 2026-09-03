@@ -5,7 +5,7 @@
   [근거]    대체된 게 아니다. 다른 문서의 주장을 받치는 산출물이라
             결론은 이미 그 문서에 있다. 근거를 직접 확인할 때만 열면 된다.
 
-아래 첫 묶음의 목업은 activity_mockups_uiux.html 로 대체되었다.
+아래 첫 묶음의 목업은 activity_mockups_uiux.html 로 대체됐고 원문은 Git 이력으로만 보존한다.
 
 shell_mockup_v1.html
   내가 처음 만든 셸 목업. 활동 7종 + 결과 + 예외 3종.
@@ -14,8 +14,8 @@ shell_mockup_v1.html
 activity_mockups_gaps.html
   확정 목업에 빠져 있던 11화면을 채운 것. 그 내용이 확정 파일에 흡수됐다.
 
-둘 다 참고용으로만 남긴다. 규격의 근거는 ../build_spec_uiux.html 을 본다
-(build_spec_v1 도 여기로 옮겼다 — 아래 08-20 항목).
+두 파일의 규격은 ../shell_spec_v1.html 과 ../screens_SOT.html 에 흡수됐다.
+삭제한 원문 목록과 대체 정본은 ARCHIVE_MANIFEST.md에 있다.
 
 ── 게임 목업 넷 (2026-08-18 대체)
 game_mockups_v1 · card_sort_mockup_v1 · seoul_puzzle_mockup_v1 · spring_picnic_mockup_v1
@@ -24,7 +24,8 @@ game_mockups_v1 · card_sort_mockup_v1 · seoul_puzzle_mockup_v1 · spring_picni
 빠진 것이 많았다 — 봄소풍과 서울 퍼즐의 CSS 일러스트(벚나무·한강 지도)가
 통째로 없었고, 카드 마스터 결과 화면의 통계 배치도 달랐다.
 
-대체: 앱을 로컬에서 띄워 실제 화면을 본다. 방법은 game_handoff_note.txt 에.
+대체: 앱을 로컬에서 띄워 실제 화면을 본다. 옛 인계 메모의 핵심 판단은
+ARCHIVE_MANIFEST.md에 남겼고 원문은 Git 이력에서 복원할 수 있다.
 남긴 것: gamelist_mockup_v1.html(단순 정적 화면이고 진행 표시 제안을 담고 있다)
 
 vocashot_mockup_uiux.html  (08-18 15:58)

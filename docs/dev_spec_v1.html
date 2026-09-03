@@ -455,7 +455,7 @@
 </ul>
 
 <h2 id="s6"><span class="no">6</span>i18n</h2>
-<p>동봉 파일 <code>i18n_player_shell.ts</code>에 <b>5개 언어 × 30키</b>를 작성했다(키 일치 검증 완료). 각 언어 파일 최상위에 <code>player</code>·<code>result</code>·<code>review</code>·<code>state</code> 블록을 추가하면 된다. 기존 키는 건드리지 않는다.</p>
+<p>이 절은 이관 당시의 계약이다. 셸 문구는 현재 <code>app/src/i18n/locales/{ko,en,ja,zh,vi}.ts</code>의 <code>player</code>·<code>result</code>·<code>review</code>·<code>state</code> 블록에 구현돼 있으며, 실행 문구의 정본도 그 다섯 파일이다.</p>
 <div class="callout warn">
   <div class="t">번역은 초안이다</div>
   <p>특히 학습 앱 문맥에서 <b>practice / review의 뉘앙스</b>는 언어마다 다르다. 원어민 검수 후 확정할 것. 다만 <b>내부 용어를 화면에 내보내지 않는다</b>는 원칙(큐·상태·세션 금지)은 검수에서도 유지해야 한다.</p>
@@ -509,7 +509,7 @@
   <tr><th>산출물</th><th>상태</th></tr>
   <tr><td><b>HTML 목업</b></td><td><span class="pill keep">시각 정본</span> 기획이 제작. 상태별 화면 포함. <b>구현이 목업과 다르면 목업이 기준</b></td></tr>
   <tr><td><b><code>tokens.css</code></b></td><td><span class="pill keep">그대로 적용</span> 수는 shell_spec_v1 §3.5 가 쥔다. 참조 무결성 검증 완료</td></tr>
-  <tr><td><b><code>i18n_player_shell.ts</code></b></td><td><span class="pill keep">파일 제공</span> 5개 언어 × <b>55키</b>, 키 일치 검증 완료. <b>번역은 초안 — 원어민 검수 전</b></td></tr>
+  <tr><td><b><code>app/src/i18n/locales/{ko,en,ja,zh,vi}.ts</code></b></td><td><span class="pill keep">구현됨</span> 셸 키가 런타임 로케일에 이관됐다. 번역 품질 판단은 <code>i18n_검수_20260828.md</code>를 따른다</td></tr>
   <tr><td>DB 2종 DDL(§2)</td><td><span class="pill keep">그대로 실행 가능</span> 기존 명명·타입 규칙 확인 완료</td></tr>
   <tr><td>라우트 매핑표(§4)</td><td><span class="pill keep">그대로 적용 가능</span></td></tr>
   <tr><td>검증 시나리오 16건(§7)</td><td><span class="pill keep">QA 기준</span></td></tr>
@@ -534,7 +534,7 @@
   <p><b>① Phase 0 핫픽스를 먼저 보낸다</b> — 독립적이고, <code>fill-blank</code>가 정답만 저장하는 버그는 Phase 1의 선행조건이다(재시도형에서도 <b>첫 시도 오답</b>이 저장돼야 복습 큐가 동작한다). <b>② 목업 + 이 문서 + <code>tokens.css</code> + i18n 파일을 한 묶음으로</b> 보내 공수·실현성 의견을 받는다. <b>③ 토큰 적용과 DB·API는 목업을 기다리지 않고</b> 바로 시작할 수 있다.</p>
 </div>
 
-<p class="qa" style="margin-top:44px">근거 문서: <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2 셸·상태 스펙</a> · <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">G1 활동 라인업</a> · <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a> · 동봉 <code>i18n_player_shell.ts</code></p>
+<p class="qa" style="margin-top:44px">근거 문서: <a href="https://claude.ai/code/artifact/e4dfe53d-286d-4c23-a6c8-b0aec9c47919">G2 셸·상태 스펙</a> · <a href="https://claude.ai/code/artifact/b70f1726-0dec-4f29-8a57-b5c053a24962">G1 활동 라인업</a> · <a href="https://claude.ai/code/artifact/02fa21ac-3b5b-45ea-873f-6b5f6384ff86">전체 지도</a> · 실행 i18n은 <code>app/src/i18n/locales/</code></p>
 </main>
 </section>
 <!-- ═══════ 필드 계약 — api_schema_v1.html ═══════ -->

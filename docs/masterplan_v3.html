@@ -5,7 +5,7 @@
 <!-- 관찰: app/src/routes/learn/jamo.tsx, app/src/components/learn/jamo @ f86e595 -->
 <!-- 왜: 자모 라우트 통합 상태를 적어 두었다 — 전에 여섯 곳이 낡았다 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>리뉴얼 정본 기획서 — 지도 · 게이트 · 현재 상태 · 인계</title>
+<title>리뉴얼 정본 기획서 — 제품 지도 · 게이트 · 결정 · 인계</title>
 <style>
 /* ───────── 합친 문서의 껍데기 (원본에 없던 것은 이것뿐) ───────── */
   .mergehead { max-width:860px; margin:0 auto; padding:30px 24px 0; font:15px/1.75 -apple-system,"Pretendard","Apple SD Gothic Neo",sans-serif; color:#2a3038; }
@@ -155,8 +155,8 @@
 <body>
 <header class="mergehead">
   <div class="kick">정본 기획서 · 여기서 시작한다</div>
-  <h1>리뉴얼 정본 기획서 — 지도 · 게이트 · 현재 상태 · 인계</h1>
-  <p>정본 기획서와 인계 문서를 합친 것이다. <b>문서 지도가 인계 문서에 들어 있는 게 이상했다</b> — 지도는 기획서가 쥐는 것이 맞다. 무엇이 비었는지는 <b>§2 덮개 지도</b>, 어디까지 됐는지는 <b>§14~§20</b>, 지금 막힌 것은 <code>../BLOCKERS.md</code> 에 있다.</p>
+  <h1>리뉴얼 정본 기획서 — 제품 지도 · 게이트 · 결정 · 인계</h1>
+  <p>정본 기획서와 인계 문서를 합친 것이다. <b>문서 지도가 인계 문서에 들어 있는 게 이상했다</b> — 지도는 기획서가 쥐는 것이 맞다. 무엇이 비었는지는 <b>§2 덮개 지도</b>, 과거 인계 경위는 <b>§14~§20</b>, 현재 판정과 실행 목록은 <code>status.generated.md</code>와 <code>developer_tasks.md</code>에 있다.</p>
   <table><tbody>
 <tr><td><b>지도와 상태</b></td><td>덮개 지도 · 트랙과 임계 경로 · 게이트 · Phase 1 상태 · 확정 디자인 반영도 · 리스크</td><td>그대로</td></tr>
 <tr><td><b>인계</b></td><td>문서 지도 · 화면 현황 · <b>목업을 일부러 벗어난 여섯 곳</b> · 남은 일 · 건드리면 깨지는 것 · 회신 부탁</td><td>§14~§20</td></tr>
@@ -168,14 +168,14 @@
 <main>
 <header class="doc">
   <div class="eyebrow">Renewal Master Plan v2 · 정본 기획서</div>
-  <h1>연세 글로벌 한국어 리뉴얼<br>전체 지도 · 게이트 · 현재 상태</h1>
+  <h1>연세 글로벌 한국어 리뉴얼<br>전체 지도 · 게이트 · 결정 근거</h1>
   <div class="meta">2026-08-21 · <b>이 저장소의 정본 기획서다.</b>
     <span class="file">_superseded/renewal_masterplan_v1</span>(2026-08-13 지도·게이트)과
     <span class="file">_superseded/renewal_plan_v1</span>(2026-08-19 Phase 1 상태)을 합쳤다 —
     지도와 상태가 갈라져 있으면 어느 쪽이 지금인지 알 수 없었다.
     <b>어느 영역이 무엇을 갖췄고 무엇이 비었는지는 §2 덮개 지도</b>에 있다.
     "무엇을 만들까" 는 이 문서 §5 의 D1~D7 표와 각 정의처,
-    지금 막힌 것은 <span class="file">BLOCKERS.md</span> 다.</div>
+    현재 판정은 <span class="file">status.generated.md</span>, 실행 목록은 <span class="file">developer_tasks.md</span>다.</div>
   <div class="callout" style="margin-top:14px"><b>현재 상태는 이 본문의 자유 문장으로 판정하지 않는다.</b>
     <span class="file">project_status.json</span>의 완료·부분완료·미구현·검증 안 됨 네 상태와
     <span class="file">status.generated.md</span>의 생성 표가 정본이다. 이 문서는 제품 목적·결정 근거·경위를 쥔다.</div>
@@ -332,7 +332,7 @@
   <tr><td>어느 문서가 무엇에 답하나</td><td><span class="file">INDEX.md</span></td></tr>
 </table></div>
 
-<h2 id="s1"><span class="no">1</span>지금 어디까지 왔나</h2>
+<h2 id="s1"><span class="no">1</span>구현 경위 스냅샷 · 현재 판정 아님</h2>
 <p class="qa"><b>이 앱이 무엇인지 모르고 여기 왔다면 <b>이 문서 §0</b> 을 먼저 읽어라.</b> 아래는 "무엇이 얼마나 됐나" 이지 "무엇을 만드는가" 가 아니다.</p>
 <div class="tablewrap"><table>
   <tr><th>구분</th><th>상태</th><th>산출물</th></tr>
@@ -354,7 +354,7 @@
   집으라고 했다(§4의 판단 근거 3가지). 그 판단은 맞았고 실제로 그렇게 진행돼 끝났다.
   <b>2026-08-21 당시 가장 긴 것은 서버였다.</b> 이후 활동 상태와 복습 큐는 구현됐다.
   현재 임계 경로는 <b>결제·메일·법률 확정·출시 회귀/관측</b>이며,
-  지금 무엇을 먼저 집을지는 <b>BLOCKERS §0 현재 스냅샷</b>을 본다.</p>
+  지금 무엇을 먼저 집을지는 <b>developer_tasks.md</b>, 현재 판정은 <b>status.generated.md</b>를 본다.</p>
 </div>
 
 <details><summary>이 절이 낡았던 기록</summary><p>「개발 — 화면」 칸에 <b>"24개 · handoff §02"</b> 라고 적혀 있었는데 둘 다 낡은 값이었다 — 화면 수는 그 뒤로 늘었고 인계 절 번호도 바뀌었다. <b>그래서 지금은 수를 여기 안 적는다</b> — 주인은 <span class="file">README.md</span> 이고, 세려면 <code>python3 docs/check_docs.py</code> 가 첫 줄에 찍는다.</p><p>「디자인」 칸에는 CSS 규칙 수가 <b>1,229</b> 로 남아 있었다. 손으로 센 시점 기록이라 금방 갈렸다 — 지금은 §9 만 쥔다.</p></details>
@@ -1012,11 +1012,11 @@ PG를 기다리는 동안 남은 독립 작업은 출시 안전장치의 빈 곳
   화면 작업을 마친 뒤의 상태다. 화면은 목업대로 들어갔다(§15 의 표 — 수는
   <span class="file">README.md</span> 가 쥔다).</p>
   <div class="callout warn">
-    아래 §14~§20 은 <b>2026-08-20~21 시점 기록</b>이다. 지금 상태는 §0~§13 과
-    <span class="file">BLOCKERS.md</span> §0 을 본다.
+    아래 §14~§20 은 <b>2026-08-20~21 시점 기록</b>이다. 현재 판정은
+    <span class="file">status.generated.md</span>, 실행 순서는 <span class="file">developer_tasks.md</span>를 본다.
   </div>
-  <p class="lead">막힌 것은 저장소 루트의 <span class="file">BLOCKERS.md</span> <b>§0 현재 스냅샷</b>에 있다 —
-  <b>통째로 읽지 마라, 4천 줄이 넘는다.</b></p>
+  <p class="lead"><span class="file">BLOCKERS.md</span>는 현재 목록이 아니라 조사·해결 경위다.
+  작업 카드가 근거로 지정한 절만 찾아 읽는다.</p>
 </header>
 
 <h2 id="s14"><span class="n">14</span>문서 지도 — 어느 것이 무엇에 답하나</h2>
