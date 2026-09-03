@@ -49,6 +49,90 @@ def _evidence_path(value: str) -> str:
     return value.split("#", 1)[0].split(":", 1)[0]
 
 
+# ── 공개 정책을 **돌려서** 확인한다 ─────────────────────────────────────────
+#
+# **소스를 grep 하는 것만으로는 정책이 지켜지는지 알 수 없다.** 아래 상수 대조는
+# `DROP_STATUS = {"deleted"}` 라는 **글자**가 있는지만 본다. 그런데 상수를 그대로
+# 두고 거르는 자리를 하나 더 만들면 **글자는 통과하고 행 처리만 바뀐다** —
+# 그러면 「학생에게 무엇이 나가는가」가 조용히 달라진다. DEV-07 이 「정책 상수·
+# **실제 행 처리까지** 깨뜨려 보는 회귀 테스트가 없다」고 적어 둔 자리다.
+#
+# 그래서 `drop_unshippable` 을 **불러서** 지어낸 행을 통과시켜 본다. 원장은
+# 저장소에 없으므로(`.gitignore` 의 `*.xlsx`) 이 검사는 원장 없이 돈다 — CI 에서
+# 도는 것이 요점이다.
+
+#: (상태값, 나가야 하나, 모르는 상태로 보고돼야 하나)
+PUBLICATION_ROWS = (
+    ("reviewed", True, False),        # 검수 끝 — 나간다
+    ("draft", True, False),           # 저작 중 — **나간다**(현재 정책)
+    ("auto_checked", True, False),    # 형식만 확인 — 나간다
+    ("fixed_v56", True, False),       # 판본 도장 — 나간다
+    ("deleted", False, False),        # 지운 것 — **유일하게 막는다**
+    ("draft_v99", True, True),        # 처음 보는 값 — 나가되 경고
+    ("", True, False),                # 빈 칸 — 나간다
+)
+
+
+def _load_builder(root: Path):
+    """`build-content.py` 를 모듈로 읽는다. 이름에 `-` 가 있어 import 로는 안 된다."""
+    import importlib.util
+
+    path = root / "app" / "scripts" / "build-content.py"
+    spec = importlib.util.spec_from_file_location("_build_content", path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"{path} 를 모듈로 못 읽는다")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)          # 최상위에서 도는 것이 없다(main 은 __main__ 가드)
+    return module
+
+
+def check_publication_behavior(root: Path) -> list[str]:
+    """정책이 **행에 실제로 적용되는지** 본다. 어긋난 것들을 준다."""
+    try:
+        builder = _load_builder(root)
+    except Exception as exc:                 # noqa: BLE001 — 무엇이 터지든 계약 실패다
+        return [f"build-content.py 를 불러 볼 수 없다: {exc}"]
+
+    fn = getattr(builder, "drop_unshippable", None)
+    if not callable(fn):
+        return ["build-content.py 에 drop_unshippable 이 없다 — 정책을 돌려 볼 수 없다"]
+
+    errors: list[str] = []
+    rows = [{"item_id": f"P-{i}", "review_status": st}
+            for i, (st, _, _) in enumerate(PUBLICATION_ROWS)]
+    try:
+        kept, dropped, unknown = fn("계약검사", rows)
+    except Exception as exc:                 # noqa: BLE001
+        return [f"drop_unshippable 이 터졌다: {exc}"]
+
+    kept_ids = {r["item_id"] for r in kept}
+    for i, (status, should_ship, should_warn) in enumerate(PUBLICATION_ROWS):
+        shipped = f"P-{i}" in kept_ids
+        label = repr(status) if status else "빈 칸"
+        if shipped != should_ship:
+            errors.append(
+                f"공개 정책이 안 지켜진다 — review_status {label} 은 "
+                f"{'나가야' if should_ship else '막혀야'} 하는데 "
+                f"{'나갔다' if shipped else '막혔다'}"
+            )
+        if should_warn and status not in unknown:
+            errors.append(f"모르는 review_status {label} 을 경고하지 않는다")
+        if not should_warn and status in unknown:
+            errors.append(f"아는 review_status {label} 을 모르는 값이라고 한다")
+
+    expected_dropped = sum(1 for _, ship, _ in PUBLICATION_ROWS if not ship)
+    if dropped != expected_dropped:
+        errors.append(f"뺀 행 수가 {expected_dropped} 이어야 하는데 {dropped} 이다")
+
+    # `review_status` 열이 아예 없는 시트(문법목록 등)는 손대지 않고 지나야 한다
+    plain = [{"item_id": "N-0"}]
+    kept2, dropped2, unknown2 = fn("열없음", plain)
+    if len(kept2) != 1 or dropped2 or unknown2:
+        errors.append("review_status 열이 없는 시트를 그대로 통과시키지 않는다")
+
+    return errors
+
+
 def validate_contract(root: Path, contract: dict | None = None) -> list[str]:
     try:
         data = contract or load_contract(root)
@@ -92,6 +176,8 @@ def validate_contract(root: Path, contract: dict | None = None) -> list[str]:
             errors.append("콘텐츠 공개 정책과 build-content.py의 DROP_STATUS가 다르다")
         if "unknown.add(st)" not in builder or "warnings_status.append" not in builder:
             errors.append("build-content.py가 모르는 review_status를 경고 대상으로 수집하지 않는다")
+        # **글자 대조는 여기까지다.** 나머지는 돌려서 본다 — 위 주석 참고
+        errors.extend(check_publication_behavior(root))
 
     items = data.get("items")
     if not isinstance(items, list):

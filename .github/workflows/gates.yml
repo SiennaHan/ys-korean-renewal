@@ -63,6 +63,14 @@ jobs:
       - name: 정책·공통 상태 계약
         run: python3 docs/project_contract.py
 
+      # **공개 정책이 행에 실제로 적용되는지.** 바로 위 계약은 build-content.py 의
+      # `DROP_STATUS = {"deleted"}` 라는 **글자**를 보는데, 상수를 그대로 두고
+      # 거르는 자리를 하나 더 만들면 글자는 통과하고 학생에게 나가는 것만 달라진다.
+      # 그래서 정책을 **돌려서** 보고(project_contract 의 check_publication_behavior),
+      # 여기서는 그 검사가 정말 무는지를 지킨다. 원장 없이 돈다 — 지어낸 행을 쓴다.
+      - name: 콘텐츠 공개 게이트 대조군
+        run: python3 docs/content_gate_probe.py
+
       # `status.generated.md` 는 코드에서 뽑는다. 손으로 고치거나 코드가 바뀐 뒤
       # 다시 안 뽑으면 여기서 걸린다 — **문서가 「현재 상태」를 손으로 적지 않게 하려는 것**이다.
       - name: 생성 상태가 코드와 같은지
