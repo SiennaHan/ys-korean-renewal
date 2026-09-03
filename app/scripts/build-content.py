@@ -12,6 +12,7 @@
 """
 
 import argparse
+import collections
 import json
 import re
 import sys
@@ -423,6 +424,8 @@ def main():
     renumber_warnings: list[tuple[str, list]] = []
     long_ids: list[tuple[str, list[str]]] = []
     dropped_total = 0
+    # 시트 → (상태별 행 수, 포함, 제외). **원장 상태를 눈에 보이게 하는 유일한 자리다.**
+    manifest: dict[str, tuple[collections.Counter, int, int]] = {}
     built: dict[str, list] = {}   # 시트끼리 견주는 검사용 (아래 hint_slot_mismatch)
     drifted: list[str] = []       # --check 에서 원장과 다른 산출물
     plan = [(s, f"{s}.json") for s in CONTENT_SHEETS] + list(EXTRA_SHEETS.items())
@@ -437,7 +440,15 @@ def main():
 
         path = OUT_DIR / filename
         prev = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        # **거르기 전에** 센다 — 제외된 행도 매니페스트에는 나와야 한다
+        if "review_status" in rows[0]:
+            manifest[sheet] = (
+                collections.Counter(str(r.get("review_status") or "").strip() or "(빈 칸)"
+                                    for r in rows),
+                0, 0)
         rows, dropped, unknown = drop_unshippable(sheet, rows)
+        if sheet in manifest:
+            manifest[sheet] = (manifest[sheet][0], len(rows), dropped)
         if unknown:
             warnings_status.append((sheet, sorted(unknown)))
         derive_from_prompt(sheet, rows)
@@ -472,6 +483,27 @@ def main():
         # 엑셀이 여는 따옴표를 먹었을 수 있다 — 위 odd_quotes 주석 참조
         for line, key, val in odd_quotes(sheet, rows):
             warnings.append((sheet, line, key, val))
+
+    # ── 검수 상태 매니페스트 ──────────────────────────────────────────
+    #
+    # **왜 찍나(DEV-07).** 게이트는 「상태값이 정책대로 처리되는가」만 볼 수 있다.
+    # 「그 상태값이 사실인가」는 못 본다 — 사람이 검수를 하고도 도장을 안 찍으면
+    # 아무것도 울지 않는다. 원장 v56 에서 실제로 그랬다: 354슬롯을 전수검수했는데
+    # 도장은 고친 14행에만 찍혀서, 나머지 340행이 `draft_v52` 를 달고 나갔다.
+    # **그때 이 표가 있었으면 `draft_v52 307` 이 그 자리에서 눈에 걸렸다.**
+    #
+    # 기계는 검수 여부를 모른다. 하지만 **「이 시트에 검수 전 상태가 몇 행 있다」**
+    # 는 말할 수 있고, 그거면 사람이 알아챈다. 그래서 막지 않고 보여만 준다.
+    #
+    # **파일로 안 남긴다.** 원장이 저장소에 없어 CI 가 이 스크립트를 못 돌리므로,
+    # 파일로 두면 아무도 다시 뽑지 않아 조용히 낡는다 — 낡은 파일은 없느니만 못하다.
+    if manifest:
+        print("\n검수 상태 — 원장이 무엇을 검수됐다고 말하는가")
+        for sheet, (counts, kept, dropped) in manifest.items():
+            parts = " · ".join(f"{st} {n}" for st, n in counts.most_common())
+            tail = f" · 제외 {dropped}" if dropped else ""
+            print(f"  {sheet:<26} {parts}")
+            print(f"  {'':<26} → 포함 {kept}{tail}")
 
     if dropped_total:
         print(f"\n원장에서 지운 행 {dropped_total}개를 내보내지 않았다 (review_status = deleted)")
