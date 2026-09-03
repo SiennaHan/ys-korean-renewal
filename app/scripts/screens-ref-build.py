@@ -103,6 +103,7 @@ def build() -> str:
         rows.append((group, name, html))
 
     groups = sorted({g for g, _, _ in rows})
+    union = " | ".join('"%s"' % g for g in groups)
     L = [
         "/**",
         " * 확정 목업에서 캡처한 마크업 — **자동 생성. 손으로 고치지 마라.**",
@@ -125,7 +126,13 @@ def build() -> str:
         " * 고쳤다(2026-09-03).",
         " */",
         "",
-        f"export type MockupGroup = {' | '.join(f'"{g}"' for g in groups)};",
+        # **중첩 f-string 을 쓰지 마라.** 전에 여기가
+        #     f"… {' | '.join(f'\"{g}\"' for g in groups)};"
+        # 였는데, 바깥 f-string 이 `"` 로 닫히는데 안쪽에 `"` 가 또 나온다. 그건
+        # **3.12 전용 문법**(PEP 701)이라 Python 3.10·3.11 에서는 SyntaxError 로 죽는다.
+        # CI 는 3.12 로 고정돼 있어서(`gates.yml`) 통과했고, 3.10 을 쓰는 사람 앞에서만
+        # 이 게이트가 조용히 사라졌다. 저장소의 다른 파이썬 20여 개엔 이런 자리가 없다.
+        f"export type MockupGroup = {union};",
         "",
         "export interface MockupScreen {",
         "\tgroup: MockupGroup;",
@@ -156,6 +163,24 @@ def built_css() -> str | None:
     return hits[-1].read_text(encoding="utf-8") if hits else None
 
 
+# 캡처는 이 클래스 안에서만 제 모양이 난다. **개수까지 본다** — 낡은 빌드를 가리키면
+# 바이트 비교는 통과하면서(그 낡은 것과 같으니) 화면만 깨진다. 2026-08-25~09-03 에
+# 실제로 그랬다: 스냅숏에 `.activity-frame` 이 0회라 미션대화 말풍선이 안 나왔다.
+SCOPE_MIN = {"activity-frame": 400, "nav-frame": 50, "game-frame": 300,
+             "vocashot-frame": 50, "mission-bubble": 5}
+
+
+def scope_note(css: str) -> str:
+    bad = [f"{k} {css.count('.' + k if k.endswith('frame') else k)}<{v}"
+           for k, v in SCOPE_MIN.items()
+           if css.count("." + k if k.endswith("frame") else k) < v]
+    if not bad:
+        return " · 스코프 클래스 다 있다"
+    sys.exit("❌ 이 CSS 에 캡처를 감쌀 스코프 클래스가 모자라다 — 낡은 빌드를 가리키고 있다.\n"
+             "   " + " · ".join(bad) + "\n"
+             "   `pnpm build` 를 다시 돌려라. 이게 모자라면 화면이 조용히 깨진다.")
+
+
 def sync_css(check: bool) -> int:
     """뷰어의 앱 CSS 블록을 빌드 산출물과 맞춘다.
 
@@ -169,19 +194,23 @@ def sync_css(check: bool) -> int:
     a, b = i + len(CSS_OPEN), src.find(VIEW_CLOSE, i + len(CSS_OPEN))
     if css is None:
         if check:
-            print("앱 CSS    빌드가 없어 건너뛴다 — `pnpm build` 뒤에 다시 돌려라")
+            # **건너뛴다고 크게 찍는다.** 조용히 넘어가면 「검사가 돌았다」로 읽힌다 —
+            # 이번 고장(말풍선이 9일)이 안 잡힌 구조가 정확히 그것이다.
+            print("⚠ 앱 CSS    **검사하지 않았다** — 빌드가 없다.\n"
+                  "            목업이 낡은 CSS 를 들고 있어도 여기서 안 잡힌다.\n"
+                  "            `cd app && pnpm build && python3 scripts/screens-ref-build.py`")
             return 0
         sys.exit("빌드된 CSS 가 없다 — `pnpm build` 를 먼저 돌려라.\n"
                  f"   찾은 곳: {CSS_DIR}/index.*.css")
     if src[a:b] == css:
-        print(f"앱 CSS    {len(css):,}자 · 빌드와 같다")
+        print(f"앱 CSS    {len(css):,}자 · 빌드와 같다{scope_note(css)}")
         return 0
     if check:
         print(f"❌ docs/{VIEW.name} 의 앱 CSS 가 빌드와 다르다({len(src[a:b]):,} → {len(css):,}자).\n"
               f"   `cd app && pnpm build && python3 scripts/screens-ref-build.py` 뒤 커밋해라.")
         return 1
     VIEW.write_text(src[:a] + css + src[b:], encoding="utf-8")
-    print(f"앱 CSS    {len(css):,}자 → docs/{VIEW.name} 을 다시 썼다")
+    print(f"앱 CSS    {len(css):,}자 → docs/{VIEW.name} 을 다시 썼다{scope_note(css)}")
     return 0
 
 
