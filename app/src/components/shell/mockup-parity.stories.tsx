@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
  * 여기서 목업과 같아 보이면 CSS 이관이 맞은 것이고, 다르면 이관이 틀린 것이다.
  * 컴포넌트로 쪼갤 때는 이 화면이 기준이 된다.
  *
- * 게임 넷(screens_SOT 의 게임 절)만 여기 없다. 기준은 게임이냐 아니냐가 아니라
+ * 게임 열일곱(screens_SOT 의 게임 절)만 여기 없다. 기준은 게임이냐 아니냐가 아니라
  * 목업이 자기완결적이냐 앱 DOM 캡처냐다.
  *
  *  · 활동 · 내비 · VocaShot — 손으로 짠 목업이다. 자기 클래스(g-dark · g-body · choice)와
@@ -100,3 +100,32 @@ export const nav__jamo = stories.nav__jamo__resume;
 export const vocashot__start = stories.vocashot__start;
 export const vocashot__play = stories.vocashot__play;
 export const vocashot__result = stories.vocashot__result;
+
+/*
+ * **여덟이 여기 없었다.** 그리고 갈라진 자리가 둘이었다 —
+ *
+ *   캡처 `*.html`   55개  ← `parity:activity` 가 보는 것
+ *   `screens.ts`   48개  ← 손으로 맞추다 일곱을 놓쳤다
+ *   이 목록          30개  ← 비게임 38 중 여덟을 놓쳤다
+ *
+ * 표현클립 넷은 2026-08-28 에 대조에 들어왔는데(e886deb) **html 만** 들어왔고,
+ * `activity__briefing_hint` 는 2026-09-01(93e869f)에 `screens.ts` 까지는 갔는데
+ * 이 목록에 안 왔다. 셋을 손으로 맞추라는 지시(`masterplan_v3` §19)가 있었지만
+ * 지시는 장치가 아니다.
+ *
+ * `screens-ref-build.py` 가 `screens.ts` 를 캡처에서 생성하게 하고(2026-09-03)
+ * 이 목록도 채웠다. **이 목록은 여전히 손이다** — Storybook 이 정적 export 를
+ * 요구한다. 캡처를 더하면 여기도 한 줄 더해라. `parity:activity` 가 캡처와
+ * `screens.ts` 의 어긋남은 잡지만 이 목록은 안 본다.
+ *
+ * 표현클립은 `FRAME_CLASS` 가 빈 문자열이다 — 전역 Tailwind 만 써서 감쌀 스코프가 없다.
+ */
+export const activity__briefing_hint = stories.activity__briefing_hint;
+export const activity__wordQuiz_image = stories.activity__wordQuiz_image;
+export const vocashot__play_type = stories.vocashot__play_type;
+export const vocashot__result_best = stories.vocashot__result_best;
+
+export const clip__results = stories.clip__results;
+export const clip__playing = stories.clip__playing;
+export const clip__empty = stories.clip__empty;
+export const clip__noresult = stories.clip__noresult;
