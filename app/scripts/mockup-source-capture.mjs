@@ -65,7 +65,7 @@ await page.goto(url, { waitUntil: "networkidle" });
 /** 절을 열고, 렌더가 끝날 틈을 준다 */
 async function openSection(key) {
 	await page.click(`button.deck-btn[data-mk="${key}"]`);
-	await page.waitForTimeout(200);
+	await settle(key);
 }
 
 /**
@@ -115,41 +115,51 @@ async function readScreen(key) {
 	return await frame.locator("body").evaluate(UNFADE);
 }
 
-/**
- * **`polished` 플래그만으로는 부족하다.** 프로토타입은 플래그를 *먼저* 찍고
- * `polishFrame` 을 부르므로, body 가 덜 채워진 순간에 걸리면 **플래그는 1인데 클래스는
- * 안 붙는다** — 그 파일 주석이 「아무것도 못 찾고 조용히 지나간다」고 예고한 그것이다.
- * `game__cs_level`(canvas 가 있는 화면)이 실제로 그랬다.
+/*
+ * **`ux-control` 로 주입 성공을 재려 했다가 틀렸다 — 되돌렸다(2026-09-03).**
  *
- * 그래서 **주입 결과를 직접 확인한다** — `polishFrame` 은 모든 button 에 `ux-control` 을
- * 붙이므로, button 이 있는데 그 클래스가 없으면 주입이 안 된 것이다. 그러면 한 번 더
- * 렌더시킨다(같은 옵션을 다시 눌러 iframe 을 새로 만들면 플래그도 초기화된다).
+ * `polishFrame` 이 모든 button 에 `ux-control` 을 붙인다고 읽고 「button 이 있는데 그
+ * 클래스가 없으면 주입 실패」로 판정했다. 그러면 `cs_level`·`ps_level` 이 고쳐졌지만
+ * **`game__ps_play` 가 「못 닿음」으로 빠졌다** — 그 캡처의 button 다섯에는 원래
+ * `ux-control` 이 하나도 없다(`ps-back` · `ps-answer` 뿐). 그 함수는 화면마다 다르게
+ * 붙이는데 내가 그것을 보편으로 가정했다.
+ *
+ * **멀쩡한 화면(a)을 「못 닿음」(d)으로 만든 것**이라 되돌렸다. 대신 아래 `settle()` 로
+ * DOM 이 멎기를 기다린다 — 그건 화면과 무관한 신호다. 그래도 `polishFrame` 이 조용히
+ * 지나간 화면은 남는데, 그건 (d) 로 이름을 찍는 것이 맞다. **55/55 는 목표가 아니다.**
  */
-async function polished(key) {
-	if (key !== "game") return true;
-	return await page
-		.frameLocator(`#screen-${key} iframe`)
-		.locator("body")
-		.evaluate((b) => {
-			const btns = [...b.querySelectorAll("button")];
-			return btns.length === 0 || btns.some((x) => x.classList.contains("ux-control"));
-		});
-}
 
 /**
- * 화면을 고르고 렌더가 앉을 틈을 준다.
+ * **DOM 이 멎기를 기다린다 — 시간을 재지 않는다.**
  *
- * **게임은 더 기다려야 한다.** 180ms 로는 `game__cs_level` 이 2,060자만 떠서
- * (캡처는 14,052자) 「다르다」로 나왔다 — canvas 와 진입 애니메이션이 있는 화면이다.
- * 도구가 안 기다린 것을 갈라짐으로 보고하면 그 보고가 거짓이 된다(2026-09-03).
+ * 처음엔 `SETTLE = { game: 700, clip: 400 }` 으로 절마다 시간을 박았다. 그러면
+ * **느린 기계에서 조용히 「다르다」를 낸다** — 이 게이트가 거짓말하는 방식이 그거다.
+ * 시간은 화면·기계·캐시에 따라 달라지고, 맞는 값을 고를 방법이 없다.
+ *
+ * 그래서 **마크업 길이가 두 번 연속 그대로일 때까지** 기다린다. 렌더가 끝났다는
+ * 신호를 그것으로 삼는다. 상한을 두어 영원히 안 멎는 화면(애니메이션 루프)에서도
+ * 빠져나온다 — 그 경우는 마지막으로 읽은 값을 쓴다.
  */
-const SETTLE = { game: 700, clip: 400 };
+async function settle(key, { step = 150, max = 4000 } = {}) {
+	let last = -1;
+	for (let spent = 0; spent < max; spent += step) {
+		await page.waitForTimeout(step);
+		const n = await page.evaluate((k) => {
+			const el = document.getElementById(`screen-${k}`);
+			if (!el) return -1;
+			const f = el.querySelector("iframe");
+			return (f?.contentDocument?.body ?? el).innerHTML.length;
+		}, key);
+		if (n === last) return;
+		last = n;
+	}
+}
 
 async function pick(key, set, value) {
 	await page.click(
 		`section[data-mk="${key}"] .control-group[data-set="${set}"] button.option[data-value="${value}"]`,
 	);
-	await page.waitForTimeout(SETTLE[key] ?? 200);
+	await settle(key);
 }
 
 fs.mkdirSync(outDir, { recursive: true });
@@ -201,17 +211,7 @@ for (const key of ["act", "nav", "game", "clip", "voca"]) {
 		const name = `${PREFIX[key]}__${v}`;
 		try {
 			await pick(key, set, v);
-			let html = await readScreen(key);
-			if (!(await polished(key))) {
-				// 주입이 조용히 지나갔다 — 한 번 더 렌더시킨다(위 주석)
-				await pick(key, set, v);
-				html = await readScreen(key);
-				if (!(await polished(key))) {
-					failed.push([name, "polishFrame 주입이 두 번 다 조용히 지나갔다"]);
-					continue;
-				}
-			}
-			fs.writeFileSync(path.join(outDir, `${name}.html`), html);
+			fs.writeFileSync(path.join(outDir, `${name}.html`), await readScreen(key));
 			wrote.push(name);
 		} catch (e) {
 			failed.push([name, String(e).split("\n")[0].slice(0, 90)]);

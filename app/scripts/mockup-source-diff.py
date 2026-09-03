@@ -84,11 +84,38 @@ GAME_UNRESOLVED = ["game__pc_result", "game__ps_level", "game__sp_entry"]
 # 값을 맞추는 대신 **선언을 양쪽에서 지운다** — 페이드 진행률은 설계가 아니다.
 RUNTIME_ATTRS = ("data-cue-bound", "data-more-left", "data-more-right")
 
+# ── 끝 상태 — 차이를 넣을 통 넷 ─────────────────────────────────────────────
+#
+# **「다름 0」은 완료 판정이 아니다.** `CLAUDE.md` 의 「숫자를 0으로 만드는 일은 목표가
+# 아니다 — 먼저 끝 상태를 정해라」다. 실제로 19 → 11 로 숫자를 쫓으며 케이스를 만나서
+# 정하다가, 멀쩡한 화면(`game__ps_play`)을 「못 닿음」으로 만든 적이 있다(되돌렸다).
+#
+#   (a) 같다              수만 찍는다
+#   (b) 실행 시점 노이즈    규약(`scrub`)에 넣고 봐준다
+#   (c) 진짜 갈라짐        이름과 diff 만 낸다 — **고치지 않는다. 기획 판단이다**
+#   (d) 계측 한계          이름과 이유를 찍고 **그대로 둔다. 55/55 는 목표가 아니다**
+#
+# 아래는 (c)·(d) 의 장부다. **여기 없는 차이는 「미분류」로 크게 찍는다** — 새 갈라짐이
+# 조용히 (c) 무리에 섞이면 이 게이트가 있으나 마나다.
+BIN = {
+    # (c) 승격이 캡처에만 적용됐다 — 전부 「캡처가 앞섰다」. §5-c 의 기준으로는
+    #     **설계가 정한 것이라 프로토타입으로 올린다.** 방향에 판단이 필요 없다.
+    "activity__role": ("c", "v3.0 승격 — 대본 줄 소리 아이콘을 `aria-label=\"AI|나\"` 버튼으로"),
+    "activity__write": ("c", "힌트 버튼 `aria-label` 이 캡처에만 (+아래 상태 차이도 섞임)"),
+    "activity__write3": ("c", "같음 — 힌트 버튼 `aria-label`"),
+    "game__pc_result": ("c", "🔊 를 `pc-wrong-play ux-replay` 버튼으로 감싼 승격"),
+    "game__sp_map": ("c", "장소 카드 열을 `div` → `button` 으로 (키보드로 닿게)"),
+    "game__sp_entry": ("c", "진입 대화 + 공유 `<style>` 의 `.sp-loc-card` 버튼 기본값 되돌림"),
+    "game__sp_puzzle": ("c", "공유 `<style>` 의 `.sp-loc-card` 버튼 기본값 되돌림"),
+    # (d) 계측 한계 — 갈라짐이 아니다
+    "activity__jamoListen": ("d", "선택지 축(jamoChoices 2↔4) — 캡처는 4, 다시 뜬 쪽은 기본값 2"),
+    "game__cs_level": ("d", "`polishFrame` 이 조용히 지나갔다 — 빠진 클래스가 전부 그 함수가 붙이는 것이다"),
+    "game__ps_level": ("d", "같음 — `ps-stage`·`ps-level-shell`·`ps-back` 도 그 함수가 붙인다"),
+}
+
 # 상태 선택이 섞인 화면 — 프로토타입에서 그 축을 기본값으로 두고 떠서 생긴 차이다.
-# §5-c 도 같은 항목을 「내가 상태를 안 맞춘 것」으로 따로 셌다. **차이로는 보고하되
-# 갈라짐과 구별해 표시한다** — 안 그러면 없는 갈라짐을 고치려 든다.
+# §5-c 도 같은 항목을 「내가 상태를 안 맞춘 것」으로 따로 셌다.
 STATE_NOTE = {
-    "activity__jamoListen": "선택지 축(jamoChoices 2↔4) — 캡처는 4, 다시 뜬 쪽은 기본값 2",
     "activity__write": "힌트 열림 상태 — 캡처는 글자가 보이고(`가`) 다시 뜬 쪽은 `?` 다",
     "activity__write3": "힌트 열림 상태 — 캡처는 `산`, 다시 뜬 쪽은 `?` 다",
 }
@@ -193,11 +220,28 @@ def main() -> int:
         print()
 
     if diff:
-        print("다른 화면 — **고치지 않는다. 어느 쪽을 맞출지는 기획 판단이다**")
-        for n, lines in diff:
+        c = [(n, l) for n, l in diff if BIN.get(n, ("?",))[0] == "c"]
+        d = [(n, l) for n, l in diff if BIN.get(n, ("?",))[0] == "d"]
+        new = [(n, l) for n, l in diff if n not in BIN]
+        print(f"통 — (c) 진짜 갈라짐 {len(c)} · (d) 계측 한계 {len(d)}"
+              f" · **미분류 {len(new)}**\n")
+        if new:
+            print("❗ **미분류 — 장부에 없는 차이다.** 통에 넣고 `BIN` 에 이유를 적어라:")
+            for n, _ in new:
+                print(f"     {n}")
+            print()
+        print("(d) 계측 한계 — 갈라짐이 아니다. 그대로 둔다")
+        for n, _ in d:
+            print(f"     {n:26} {BIN[n][1]}")
+        print("\n(c) 진짜 갈라짐 — **고치지 않는다.** §5-c 기준: 설계가 정한 것은")
+        print("    프로토타입으로 올리고, React 산출물은 캡처에 둔다")
+        for n, _ in c:
+            print(f"     {n:26} {BIN[n][1]}")
+        print()
+        for n, lines in c + new:
             print(f"\n  ✗ {n}")
             if n in STATE_NOTE:
-                print(f"      ⓘ 상태 선택이 섞여 있다 — {STATE_NOTE[n]}")
+                print(f"      ⓘ 상태 선택도 섞여 있다 — {STATE_NOTE[n]}")
             for l in lines[:12]:
                 print(f"      {l}")
             if len(lines) > 12:
