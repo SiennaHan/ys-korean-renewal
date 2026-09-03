@@ -1,5 +1,9 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ ca8826d
-     — 확인: 2026-09-02 · `shell.tsx` 가 바뀐 것은 **주석뿐**이다 — 진행 막대가 16칸부터
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ a0cf8f4
+     — 확인: 2026-09-03 · `globals.css` 가 바뀐 것은 **주석뿐**이다(a0cf8f4) —
+       `@source` 경로가 없는 폴더(`mockups/`)를 가리키던 것을 `screens_ref/` 로 고치고,
+       **그 8일 동안 아무것도 빠지지 않았음**을 재서 적었다(Tailwind v4 는 자동 스캔한다).
+       **규칙·값·토큰은 한 줄도 안 바뀌었다** — 이 문서가 캐는 것은 그쪽이다.
+       앞 확인: 2026-09-02 · `shell.tsx` 가 바뀐 것은 **주석뿐**이다 — 진행 막대가 16칸부터
        「연속 막대」가 아니라 칸을 유지한 압축 분절바이고 `continuous` 는 옛 클래스명이라는
        정정(8b55cdd). **이 문서는 진행 막대의 그 규칙을 말하지 않는다**(색 토큰 소비처로
        한 번 나올 뿐) — 값은 하나도 안 바뀌었다. §8-b 를 다시 재서 수를 맞췄다.

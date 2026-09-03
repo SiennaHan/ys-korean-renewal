@@ -1750,8 +1750,13 @@ JSON → DB 표 14개 → API 까지 **잃은 열 0 · 값도 「모두 같다�
 > 가리킨다(「복습을 위한 새 화면이 없다 — §9-a-1」·「새로고침하면 이 목록이
 > 빈다 — §9-c」). **무엇을 언제 왜 그렇게 했나**는 여기가 맞다.
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 8bc23be
-     — 확인: 2026-09-01(2) · parity:activity 에 bundle-content-check.py 가 물렸다(8bc23be).
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ a0cf8f4
+     — 확인: 2026-09-03 · `parity:activity` 에 `screens-ref-build.py --check` 가 하나 더
+       물렸다(a0cf8f4) — `package.json` 에서 바뀐 것은 **그 스크립트 문자열 한 줄뿐**이다.
+       이 절이 그 파일에서 말하는 것은 **라우터 셋의 고정**(react-router 1.136.8 ·
+       router-plugin 1.136.8 · router-devtools ^1.114.13)이고 **그건 하나도 안 바뀌었다** —
+       「셋 중 둘만 캐럿이 없다」가 여전히 참이다(실측).
+       앞 확인: 2026-09-01(2) · parity:activity 에 bundle-content-check.py 가 물렸다(8bc23be).
        라우터 셋의 고정은 그대로다. 앞 확인: package.json 이 두 번 움직였다 — Playwright(e2e 스크립트 ·
        @playwright/test)와 parity:activity 에 bundle-content-check.py 를 물린 것.
        **라우터 셋의 고정은 그대로다**(실측: react-router 1.136.8 · router-plugin 1.136.8 ·
