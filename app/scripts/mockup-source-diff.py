@@ -38,10 +38,10 @@
 """
 from __future__ import annotations
 
-import contextlib
 import http.server
 import importlib.util
 import json
+import re
 import socket
 import subprocess
 import sys
@@ -72,6 +72,37 @@ FIXED_MARKERS = [
 
 # §5-c 가 「같은 무늬가 셋 보인다」고 적고 맞췄다는 기록이 없는 것들. 상태를 찍는다.
 GAME_UNRESOLVED = ["game__pc_result", "game__ps_level", "game__sp_entry"]
+
+# ── 실행 시점 노이즈 — 걷어야 진짜 갈라짐이 보인다 ──────────────────────────
+#
+# §5-c 가 이미 분류해 뒀다: 「게임 17 중 13 은 대부분 페이드(opacity 0/1) 같은 실행
+# 시점 차이」·「내비 2 는 data-cue-bound 같은 실행 시점 속성만 다르다」.
+# 걷지 않으면 **차이 19개 중 아홉이 노이즈**라서 사람이 목록을 안 읽는다.
+#
+# **캡처 쪽이 `opacity:0` 인 이유** — 캡처를 뜬 순간 framer-motion 이 페이드 도중에
+# 굳혀 놓은 것이다. 다시 뜨는 쪽은 `UNFADE` 로 1 로 올려 두므로 늘 어긋난다.
+# 값을 맞추는 대신 **선언을 양쪽에서 지운다** — 페이드 진행률은 설계가 아니다.
+RUNTIME_ATTRS = ("data-cue-bound", "data-more-left", "data-more-right")
+
+# 상태 선택이 섞인 화면 — 프로토타입에서 그 축을 기본값으로 두고 떠서 생긴 차이다.
+# §5-c 도 같은 항목을 「내가 상태를 안 맞춘 것」으로 따로 셌다. **차이로는 보고하되
+# 갈라짐과 구별해 표시한다** — 안 그러면 없는 갈라짐을 고치려 든다.
+STATE_NOTE = {
+    "activity__jamoListen": "선택지 축(jamoChoices 2↔4) — 캡처는 4, 다시 뜬 쪽은 기본값 2",
+    "activity__write": "힌트 열림 상태 — 캡처는 글자가 보이고(`가`) 다시 뜬 쪽은 `?` 다",
+    "activity__write3": "힌트 열림 상태 — 캡처는 `산`, 다시 뜬 쪽은 `?` 다",
+}
+
+
+def scrub(rows: list[str]) -> list[str]:
+    """실행 시점 노이즈를 걷는다 — 위 주석 참고."""
+    out = []
+    for r in rows:
+        r = re.sub(r"\s*opacity:\s*[\d.]+;?", "", r)
+        for a in RUNTIME_ATTRS:
+            r = re.sub(rf'\s{a}="[^"]*"', "", r)
+        out.append(r)
+    return out
 
 
 def borrow():
@@ -135,8 +166,8 @@ def main() -> int:
         if not ref.exists():
             diff.append((name, ["(캡처 파일이 없다 — 프로토타입에만 있는 화면)"]))
             continue
-        a = apd.flat(ref.read_text(encoding="utf-8"))
-        b = apd.flat((out / f"{name}.html").read_text(encoding="utf-8"))
+        a = scrub(apd.flat(ref.read_text(encoding="utf-8")))
+        b = scrub(apd.flat((out / f"{name}.html").read_text(encoding="utf-8")))
         if a == b:
             same.append(name)
         else:
@@ -165,6 +196,8 @@ def main() -> int:
         print("다른 화면 — **고치지 않는다. 어느 쪽을 맞출지는 기획 판단이다**")
         for n, lines in diff:
             print(f"\n  ✗ {n}")
+            if n in STATE_NOTE:
+                print(f"      ⓘ 상태 선택이 섞여 있다 — {STATE_NOTE[n]}")
             for l in lines[:12]:
                 print(f"      {l}")
             if len(lines) > 12:
