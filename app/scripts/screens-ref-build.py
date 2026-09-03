@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -156,11 +157,17 @@ def build() -> str:
 
 
 def built_css() -> str | None:
-    """앱이 방금 빌드한 CSS. 없으면 None — 부르는 쪽이 어떻게 할지 정한다."""
+    """앱이 방금 빌드한 CSS. 없으면 None — 부르는 쪽이 어떻게 할지 정한다.
+
+    **`index.*.css` 하나만 보지 않는다.** 컴포넌트가 직접 `import "*.css"` 하면
+    번들러가 그 컴포넌트를 실어 나르는 코드 분할(`async/`) 청크에 CSS 를 함께
+    쪼개 넣는다 — `src/styles/` 밖에 있는 CSS 는 전부 그렇다. 봄소풍
+    (`components/main/game/spring-picnic.css`)이 그래서 `index.*.css` 에 없고
+    `async/2199.*.css` 에만 있었다(2026-09-03). `rglob` 로 그 아래 전부를 문다."""
     if not CSS_DIR.is_dir():
         return None
-    hits = sorted(CSS_DIR.glob("index.*.css"))
-    return hits[-1].read_text(encoding="utf-8") if hits else None
+    hits = sorted(CSS_DIR.rglob("*.css"))
+    return "\n".join(p.read_text(encoding="utf-8") for p in hits) if hits else None
 
 
 # 캡처는 이 클래스 안에서만 제 모양이 난다. **개수까지 본다** — 낡은 빌드를 가리키면
@@ -201,7 +208,7 @@ def sync_css(check: bool) -> int:
                   "            `cd app && pnpm build && python3 scripts/screens-ref-build.py`")
             return 0
         sys.exit("빌드된 CSS 가 없다 — `pnpm build` 를 먼저 돌려라.\n"
-                 f"   찾은 곳: {CSS_DIR}/index.*.css")
+                 f"   찾은 곳: {CSS_DIR}/**/*.css")
     if src[a:b] == css:
         print(f"앱 CSS    {len(css):,}자 · 빌드와 같다{scope_note(css)}")
         return 0
@@ -212,6 +219,63 @@ def sync_css(check: bool) -> int:
     VIEW.write_text(src[:a] + css + src[b:], encoding="utf-8")
     print(f"앱 CSS    {len(css):,}자 → docs/{VIEW.name} 을 다시 썼다{scope_note(css)}")
     return 0
+
+
+# 캡처가 다는데 appcss 에 규칙이 없어도 되는 이름. **스타일이 아니라 동작 표식**이다 —
+# 시각 규칙은 옆에 같이 붙은 다른 클래스(괄호 안)가 이미 진다. 지우기 전에
+# 이유를 다시 확인해라 — 안 그러면 다음 사람이 이걸 고장으로 보고 CSS 를 새로 쓴다.
+UNSTYLED_MARKERS = {
+    "ux-answer": "봄소풍 선택지 — 스타일은 옆의 `.ch` 가 진다",
+    "ux-exit": "봄소풍 나가기 — 스타일은 옆의 `.g-exit` 가 진다",
+    "ux-level": "봄소풍 급 버튼 — 스타일은 옆의 `.sel-lvbtn`·`.back-btn` 이 진다. "
+                "조사 스나이퍼의 `.ux-level-card`(규칙 있음)와 다른 이름이니 혼동 말 것",
+    "ux-replay": "봄소풍 오답 다시듣기 — 스타일은 옆의 `.pc-wrong-play` 가 진다",
+    "ps-blank-value": "조사 스나이퍼 빈칸 값 — 부모 `.ps-blank` 가 스타일을 지고 이건 글자만 감싼다",
+    "idle": "녹음 버튼의 기본 상태 — `.record-button` 기본 규칙이 이미 이 모양이라 "
+            "`.idle` 전용 규칙이 없다(activity.css). `recording`·`done` 처럼 "
+            "기본과 **달라지는** 상태만 따로 규칙이 있다",
+    "review": "교재 활동 행의 '복습' 상태 — `module-list.tsx`(`ActRow`)는 `doing`·`off` 만 "
+              "행 전체를 다르게 칠하고, `done`·`review` 는 안의 `.bdg`·`.rv` 배지가 "
+              "구분을 진다. 행 자체는 기본 `.act` 그대로라 `.review` 전용 규칙이 없다",
+}
+
+
+def html_classes(html: str) -> set[str]:
+    return {c for m in re.finditer(r'class="([^"]*)"', html) for c in m.group(1).split()}
+
+
+def css_classes_in(css: str) -> set[str]:
+    """CSS 글에서 클래스 이름을 뽑는다. `css-class-check.py` 의 `classes_in` 과 같은 규칙 —
+    Tailwind 이스케이프(`.bg-\\[\\#fff\\]`)를 안 풀면 무관한 것 수십 개가 섞인다."""
+    css = re.sub(r"/\*.*?\*/", " ", css, flags=re.S)
+    return {
+        re.sub(r"\\(.)", r"\1", m)
+        for m in re.findall(r"\.(-?(?:[_a-zA-Z]|\\.)(?:[-\w]|\\.)*)", css)
+    }
+
+
+def check_coverage(css: str, files: list[Path]) -> int:
+    """캡처가 쓰는 클래스 중 appcss 에도 캡처 자기 `<style>` 에도 규칙이 없는 것을 찾는다.
+
+    목업 견주기(`parity:activity`)는 마크업 구조만 보고 CSS 가 실제로 먹는지는
+    안 본다 — 봄소풍이 9일 동안 그렇게 깨져 있었다. 이건 그 틈을 메운다."""
+    styled = css_classes_in(css)
+    fails = 0
+    for p in files:
+        html = p.read_text(encoding="utf-8")
+        own = css_classes_in("".join(re.findall(r"<style[^>]*>(.*?)</style>", html, re.S)))
+        for name in sorted(html_classes(html)):
+            if name in styled or name in own or name.startswith("lucide"):
+                continue
+            if name in UNSTYLED_MARKERS:
+                continue
+            print(f"❌ {p.name} `.{name}` — appcss 에도 캡처 자기 <style> 에도 규칙이 없다.\n"
+                  f"   이름을 잘못 적었거나, 새 표식이면 이 스크립트의 UNSTYLED_MARKERS 에 이유를 적어라.")
+            fails += 1
+    if not fails:
+        print(f"클래스 커버리지  캡처 {len(files)}개 · 규칙 없는 이름 없다"
+              f"({len(UNSTYLED_MARKERS)}개는 표식으로 면제)")
+    return fails
 
 
 def view_block(files: list[Path]) -> str:
@@ -252,6 +316,9 @@ def main() -> int:
 
     rc = sync_view(sorted(REF.glob("*.html")), args.check)
     rc = sync_css(args.check) or rc
+    css = built_css()
+    if css is not None:
+        rc = (1 if check_coverage(css, sorted(REF.glob("*.html"))) else 0) or rc
     want = build()
     have = OUT.read_text(encoding="utf-8") if OUT.exists() else ""
     n = want.count("\t\tgroup:")
