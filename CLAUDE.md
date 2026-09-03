@@ -104,7 +104,7 @@
 
 ```bash
 cd app && python3 scripts/build-content.py --check     # 콘텐츠 — CI 가 못 돈다(원장이 저장소에 없다)
-cd app && python3 scripts/mockup-source-diff.py        # 목업 정본 둘을 견준다 — 브라우저가 필요하다
+cd app && pnpm build && python3 scripts/screens-ref-build.py   # 목업이 앱 CSS 를 따라간다 — 빌드가 있어야 한다
 cd admin && pnpm typecheck                              # 어드민 — 통과한다. CI 에는 아직 안 넣었다
 ```
 

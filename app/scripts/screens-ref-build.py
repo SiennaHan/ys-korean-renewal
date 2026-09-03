@@ -53,6 +53,15 @@ OUT = REF / "screens.ts"
 VIEW = ROOT.parent / "docs" / "screens_SOT.html"
 VIEW_OPEN = '<script id="screens" type="application/json">'
 VIEW_CLOSE = "</script>"
+# 캡처를 그리는 CSS. **앱이 진짜로 빌드하는 그 CSS 여야 한다.**
+# 전에는 목업이 손으로 들고 있는 스냅숏(202KB)이었는데, CSS 를 `.activity-frame` 처럼
+# 프레임으로 스코프한 개편 **이전** 것이라 그 클래스가 0회였다. 그래서 미션대화 말풍선이
+# 통째로 안 나왔다 — 2026-08-25 부터 목업에서 그 화면이 깨져 있었고 아무도 안 잡았다.
+CSS_OPEN = '<script id="appcss" type="text/plain">'
+CSS_DIR = ROOT / "dist" / "static" / "css"
+
+# 캡처를 감쌀 클래스. 앱 CSS 가 이걸로 스코프하므로 **없으면 규칙이 하나도 안 먹는다.**
+# Storybook 의 Frame 도 같은 표를 쓴다(mockup-parity.stories.tsx) — 그게 이 조리법의 선례다.
 
 # 그룹 → 프레임 클래스. **캡처 데이터가 아니라 설정이라 여기 둔다** — 생성물에
 # 손으로 적으면 다시 두 벌이 된다.
@@ -139,6 +148,43 @@ def build() -> str:
     return "\n".join(L)
 
 
+def built_css() -> str | None:
+    """앱이 방금 빌드한 CSS. 없으면 None — 부르는 쪽이 어떻게 할지 정한다."""
+    if not CSS_DIR.is_dir():
+        return None
+    hits = sorted(CSS_DIR.glob("index.*.css"))
+    return hits[-1].read_text(encoding="utf-8") if hits else None
+
+
+def sync_css(check: bool) -> int:
+    """뷰어의 앱 CSS 블록을 빌드 산출물과 맞춘다.
+
+    **`--check` 에서는 빌드가 없으면 넘어간다.** 이 검사는 `pnpm parity:activity`
+    사슬 안이라, 빌드 안 한 작업 트리에서 게이트가 죽으면 안 된다."""
+    css = built_css()
+    src = VIEW.read_text(encoding="utf-8")
+    i = src.find(CSS_OPEN)
+    if i < 0:
+        sys.exit(f"{VIEW.name} 에 `{CSS_OPEN}` 블록이 없다.")
+    a, b = i + len(CSS_OPEN), src.find(VIEW_CLOSE, i + len(CSS_OPEN))
+    if css is None:
+        if check:
+            print("앱 CSS    빌드가 없어 건너뛴다 — `pnpm build` 뒤에 다시 돌려라")
+            return 0
+        sys.exit("빌드된 CSS 가 없다 — `pnpm build` 를 먼저 돌려라.\n"
+                 f"   찾은 곳: {CSS_DIR}/index.*.css")
+    if src[a:b] == css:
+        print(f"앱 CSS    {len(css):,}자 · 빌드와 같다")
+        return 0
+    if check:
+        print(f"❌ docs/{VIEW.name} 의 앱 CSS 가 빌드와 다르다({len(src[a:b]):,} → {len(css):,}자).\n"
+              f"   `cd app && pnpm build && python3 scripts/screens-ref-build.py` 뒤 커밋해라.")
+        return 1
+    VIEW.write_text(src[:a] + css + src[b:], encoding="utf-8")
+    print(f"앱 CSS    {len(css):,}자 → docs/{VIEW.name} 을 다시 썼다")
+    return 0
+
+
 def view_block(files: list[Path]) -> str:
     r"""뷰어에 박을 JSON 한 줄. **`</script>` 로 블록을 탈출하지 못하게 막는다** —
     JSON 은 `\/` 를 허용하므로 `</` 를 그렇게 escape 하면 내용은 그대로다."""
@@ -176,6 +222,7 @@ def main() -> int:
     args = ap.parse_args()
 
     rc = sync_view(sorted(REF.glob("*.html")), args.check)
+    rc = sync_css(args.check) or rc
     want = build()
     have = OUT.read_text(encoding="utf-8") if OUT.exists() else ""
     n = want.count("\t\tgroup:")
