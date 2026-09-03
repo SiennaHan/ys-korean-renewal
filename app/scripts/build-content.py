@@ -113,12 +113,20 @@ def cell(v):
 # ── 검수 상태 ────────────────────────────────────────────────────────────────
 #
 # **G1 은 "reviewed 만 학생에게 낸다" 로 정했는데 그대로는 성립하지 않는다.**
-# 원장을 세어 보면 `reviewed` 가 거의 없다 — 미션 대화 117행은 **0개**이고
-# (전부 `fixed_v29`), 자모 529행도 0개다. 그대로 걸면 **이미 배선까지 끝난 화면이
-# 통째로 빈다.** 실제 상태 값이 두 갈래가 아니라 여럿이기 때문이다:
+# 원장 v57 을 세어 보면 `reviewed` 는 1,354행이고 `draft` 가 9,124행이다.
+# 미션 대화 117행에는 `reviewed` 가 **하나도 없다**(fixed_v29 103 · fixed_v56 14).
+# 그대로 걸면 **이미 배선까지 끝난 화면이 통째로 빈다.** 실제 상태 값이 두 갈래가
+# 아니라 여럿이기 때문이다 — v57 기준으로 실제 쓰이는 값은 이렇다:
 #
 #   auto_checked · draft · reviewed · deleted
-#   fixed_v14~v29 · authored_v21/v23 · tagged_v20 · filled_v19 · added_v17
+#   fixed_v14~v18 · fixed_v22/v24 · fixed_v29 · fixed_v56
+#   authored_v21/v23 · tagged_v20 · filled_v19 · added_v17
+#
+# `draft_v52/v53/v55` 는 v57 에서 사라졌다 — 힌트 340행이 `reviewed` 가 됐다.
+# 다만 **`KNOWN_STATUS` 에서는 빼지 마라.** 옛 원장으로 되돌려 돌릴 때 경고만 늘고
+# 막을 이유는 없다.
+#
+# (자모 529행은 v41 에서 전부 `reviewed` 가 됐다 — 아래 PORTED_AS_IS 주석 참고.)
 #
 # 그래서 **내보내지 않을 것만 정한다**(기획 확정 2026-08-28 — "예외 상태를 둔다").
 # 나머지는 낸다. 저작이 진행 중인 것을 학생이 보는 것과, 지운 것을 학생이 보는 것은
@@ -131,7 +139,7 @@ DROP_STATUS = {"deleted"}
 KNOWN_STATUS = {
     "auto_checked", "draft", "reviewed", "deleted",
     "tagged_v20", "filled_v19", "added_v17", "authored_v21", "authored_v23",
-} | {f"fixed_v{n}" for n in range(10, 40)} | {f"draft_v{n}" for n in range(40, 60)}
+} | {f"fixed_v{n}" for n in range(10, 60)} | {f"draft_v{n}" for n in range(40, 60)}
 
 # 전에 여기 `PORTED_AS_IS` 가 있었다 — 자모 529행이 전부 `draft` 인데 그게 "저작 전"
 # 이라는 뜻이 아니라는 것을 이름으로 적어 두는 예외였다. **2026-08-28 에 없앴다** —
@@ -156,12 +164,28 @@ def drop_unshippable(sheet, rows):
 
 
 def read_sheet(ws):
+    """원장 시트 한 장을 (헤더, 행들) 로 읽는다.
+
+    **행을 헤더 길이까지 늘려서 준다.** openpyxl 은 read_only 로 읽을 때 행 끝의
+    빈 칸을 잘라서 주므로, 그냥 `zip(head, r)` 하면 **뒤쪽 열의 열쇠가 행마다
+    있다 없다 한다.** `cell()` 은 「빈 칸은 빈 문자열」이라고 약속하는데 그 약속이
+    맨 오른쪽 열에서만 조용히 깨지는 것이다.
+
+    실제로 원장 v56 에서 이것이 터졌다 — `n8_jamo` 529행이 헤더 27칸인데 행은
+    26칸으로 와서 `hold_reason` 이 **JSON 에서 통째로 사라졌다.** `jamo.ts` 와
+    `mission-chat.ts` 는 그 열을 `hold_reason: string` 으로 선언해 두었으므로
+    선언이 거짓이 됐고, 그런데도 타입 검사는 통과했다(JSON 을 캐스팅해 읽는다).
+    값을 잃지는 않았다 — 잘린 칸은 그 행에서 비어 있던 칸이다. 잃은 것은 **모양의
+    일관성**이고, 그래서 원장을 어떻게 저장했느냐에 따라 산출물 diff 가 2만 줄씩
+    흔들려 **진짜 바뀐 곳이 묻힌다.**
+    """
     it = ws.iter_rows(values_only=True)
     head = [KEY_FIX.get(str(h).strip(), str(h).strip()) if h is not None else "" for h in next(it)]
     rows = []
     for r in it:
         if not any(x is not None and str(x).strip() for x in r):
             continue  # 원장 끝의 빈 줄
+        r = tuple(r) + (None,) * (len(head) - len(r))
         rows.append({k: cell(v) for k, v in zip(head, r) if k})
     return head, rows
 

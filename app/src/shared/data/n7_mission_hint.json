@@ -12,7 +12,7 @@
 		"hint_cn": "你好。",
 		"hint_vi": "Xin chào.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -28,7 +28,7 @@
 		"hint_cn": "我是玛丽亚。",
 		"hint_vi": "Tôi là Maria.",
 		"hint_grammar": "은/는",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -44,7 +44,7 @@
 		"hint_cn": "我是学生。",
 		"hint_vi": "Tôi là học sinh.",
 		"hint_grammar": "이에요/예요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -60,7 +60,7 @@
 		"hint_cn": "你好。",
 		"hint_vi": "Xin chào.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -76,7 +76,7 @@
 		"hint_cn": "我是丽莎。",
 		"hint_vi": "Tôi là Lisa.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 미션인 이름 말하기만 남기고 한 문장으로 줄임."
 	},
 	{
@@ -92,7 +92,7 @@
 		"hint_cn": "我是日本人。",
 		"hint_vi": "Tôi là người Nhật.",
 		"hint_grammar": "",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — 나라 미션은 실제 자기 나라를 말해야 완료되도록 예시를 수정. prompt user_example과 동기화."
 	},
 	{
@@ -108,7 +108,7 @@
 		"hint_cn": "这是书。",
 		"hint_vi": "Đây là quyển sách.",
 		"hint_grammar": "이/가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 한 문장으로 줄임."
 	},
 	{
@@ -124,7 +124,7 @@
 		"hint_cn": "这本书是我的书。",
 		"hint_vi": "Quyển sách này là sách của tôi.",
 		"hint_grammar": "이/가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 소유를 말하는 한 문장만 남김."
 	},
 	{
@@ -140,7 +140,7 @@
 		"hint_cn": "那本书是迈克尔的书。",
 		"hint_vi": "Quyển sách kia là sách của anh Michael.",
 		"hint_grammar": "이/그/저",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -156,7 +156,7 @@
 		"hint_cn": "我现在在餐厅。",
 		"hint_vi": "Bây giờ tôi đang ở nhà hàng.",
 		"hint_grammar": "에 있다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -172,7 +172,7 @@
 		"hint_cn": "这里有三个朋友。",
 		"hint_vi": "Ở đây có ba người bạn.",
 		"hint_grammar": "에 있다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -188,7 +188,7 @@
 		"hint_cn": "餐厅旁边还有咖啡厅。",
 		"hint_vi": "Bên cạnh nhà hàng còn có cả quán cà phê.",
 		"hint_grammar": "도",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -198,14 +198,14 @@
 		"chapter": 8,
 		"slot_seq": 1,
 		"mission_label": "가족",
-		"hint_ko": "우리 가족은 아버지, 어머니, 동생, 저 네 명이에요.",
-		"hint_en": "My family has four people: my father, my mother, my younger brother, and me.",
-		"hint_jp": "うちの家族は父、母、弟、私の四人です。",
-		"hint_cn": "我家有四口人：爸爸、妈妈、弟弟和我。",
-		"hint_vi": "Gia đình tôi có bốn người: bố, mẹ, em tôi và tôi.",
+		"hint_ko": "우리 가족은 아버지, 어머니, 여동생, 저 네 명이에요.",
+		"hint_en": "My family has four people: my father, my mother, my younger sister, and me.",
+		"hint_jp": "うちの家族は父、母、妹、私の四人です。",
+		"hint_cn": "我家有四口人：爸爸、妈妈、妹妹和我。",
+		"hint_vi": "Gia đình tôi có bốn người: bố, mẹ, em gái và tôi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
-		"change_note": "미션이 요구하는 '몇 명'이 빠져 있어서 인원을 넣음."
+		"review_status": "reviewed",
+		"change_note": "v55 — 시나리오의 여동생 설정과 한국어·4개 번역의 성별을 일치시킴"
 	},
 	{
 		"hint_id": "MH-1-08-001-2",
@@ -220,7 +220,7 @@
 		"hint_cn": "妈妈做饭。",
 		"hint_vi": "Mẹ tôi nấu ăn.",
 		"hint_grammar": "아요/어요/여요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -236,7 +236,7 @@
 		"hint_cn": "弟弟喜欢音乐。",
 		"hint_vi": "Em tôi thích âm nhạc.",
 		"hint_grammar": "을/를",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -252,7 +252,7 @@
 		"hint_cn": "我的家乡是釜山。",
 		"hint_vi": "Quê tôi là Busan.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -268,7 +268,7 @@
 		"hint_cn": "我的家乡非常热。",
 		"hint_vi": "Quê tôi rất nóng.",
 		"hint_grammar": "ㅂ동사",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 ㅂ불규칙이 드러나는 한 문장만 남김."
 	},
 	{
@@ -284,7 +284,7 @@
 		"hint_cn": "我的家乡不拥挤。",
 		"hint_vi": "Quê tôi không đông đúc.",
 		"hint_grammar": "-지 않다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 목표 문법 '-지 않다'가 있는 한 문장만 남김."
 	},
 	{
@@ -300,7 +300,7 @@
 		"hint_cn": "我喜欢韩式烤肉。",
 		"hint_vi": "Tôi thích bulgogi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -310,14 +310,14 @@
 		"chapter": 10,
 		"slot_seq": 2,
 		"mission_label": "같이",
-		"hint_ko": "그럼 같이 불고기를 먹을까요?",
-		"hint_en": "Then shall we eat bulgogi together?",
-		"hint_jp": "では、一緒にプルコギを食べましょうか。",
-		"hint_cn": "那我们一起吃韩式烤肉，好吗？",
-		"hint_vi": "Vậy chúng ta cùng ăn bulgogi nhé?",
+		"hint_ko": "그럼 같이 밥을 먹을까요?",
+		"hint_en": "Then shall we eat together?",
+		"hint_jp": "では、一緒にご飯を食べましょうか。",
+		"hint_cn": "那我们一起吃饭，好吗？",
+		"hint_vi": "Vậy chúng ta cùng ăn nhé?",
 		"hint_grammar": "-을까요/ㄹ까요?",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 제안 슬롯에서 다음 메뉴 선택 슬롯의 불고기를 선점하지 않도록 일반적인 식사 제안으로 보정"
 	},
 	{
 		"hint_id": "MH-1-10-001-3",
@@ -332,7 +332,7 @@
 		"hint_cn": "那就吃韩式烤肉吧。",
 		"hint_vi": "Vậy chúng ta ăn bulgogi nhé.",
 		"hint_grammar": "-어요/아요/여요(제안)",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -348,7 +348,7 @@
 		"hint_cn": "韩式烤肉和冷面。",
 		"hint_vi": "Bulgogi và mì lạnh ạ.",
 		"hint_grammar": "하고",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -359,13 +359,13 @@
 		"slot_seq": 2,
 		"mission_label": "수",
 		"hint_ko": "불고기는 이 인분이요.",
-		"hint_en": "Two servings of bulgogi.",
-		"hint_jp": "プルコギは二人前です。",
-		"hint_cn": "韩式烤肉是两人份。",
-		"hint_vi": "Bulgogi thì hai suất ạ.",
+		"hint_en": "Two servings of bulgogi, please.",
+		"hint_jp": "プルコギを二人前お願いします。",
+		"hint_cn": "韩式烤肉要两份。",
+		"hint_vi": "Bulgogi thì cho tôi hai suất ạ.",
 		"hint_grammar": "",
-		"review_status": "draft_v55",
-		"change_note": "v55 — 실제 식당 주문 상황에서 더 자연스러운 생략형으로 수정. prompt user_example과 동기화."
+		"review_status": "reviewed",
+		"change_note": "v55 — 수량 진술이 실제 주문으로 들리도록 4개 번역을 다듬음"
 	},
 	{
 		"hint_id": "MH-1-11-001-3",
@@ -380,7 +380,7 @@
 		"hint_cn": "请给我韩式烤肉两人份和冷面。",
 		"hint_vi": "Cho tôi hai suất bulgogi và mì lạnh ạ.",
 		"hint_grammar": "-으세요/-세요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -396,7 +396,7 @@
 		"hint_cn": "我早上七点起床。",
 		"hint_vi": "Tôi thức dậy lúc bảy giờ sáng.",
 		"hint_grammar": "에(시점)",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -412,7 +412,7 @@
 		"hint_cn": "我从九点工作到六点。",
 		"hint_vi": "Tôi làm việc từ chín giờ đến sáu giờ.",
 		"hint_grammar": "부터 까지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -428,7 +428,7 @@
 		"hint_cn": "星期六看电影。",
 		"hint_vi": "Thứ Bảy tôi xem phim.",
 		"hint_grammar": "에(시점)",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -444,7 +444,7 @@
 		"hint_cn": "我想在公园见面。",
 		"hint_vi": "Tôi muốn gặp ở công viên.",
 		"hint_grammar": "에서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -460,7 +460,7 @@
 		"hint_cn": "我想在公园骑自行车。",
 		"hint_vi": "Tôi muốn đạp xe ở công viên.",
 		"hint_grammar": "-고 싶다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -476,7 +476,7 @@
 		"hint_cn": "我想星期六见面。",
 		"hint_vi": "Tôi muốn gặp vào thứ Bảy.",
 		"hint_grammar": "-고 싶다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -492,7 +492,7 @@
 		"hint_cn": "我周末去东大门市场。",
 		"hint_vi": "Cuối tuần tôi đi chợ Dongdaemun.",
 		"hint_grammar": "에 가다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -508,7 +508,7 @@
 		"hint_cn": "我买衣服和鞋。",
 		"hint_vi": "Tôi mua quần áo và giày.",
 		"hint_grammar": "과/와",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -524,7 +524,7 @@
 		"hint_cn": "衣服和鞋非常便宜。",
 		"hint_vi": "Quần áo và giày rất rẻ.",
 		"hint_grammar": "과/와",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 한 문장으로 줄이고 목표 문법 '과/와'를 넣음."
 	},
 	{
@@ -540,7 +540,7 @@
 		"hint_cn": "我买玩偶。",
 		"hint_vi": "Tôi mua búp bê.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -556,7 +556,7 @@
 		"hint_cn": "那么三个三万韩元吗？",
 		"hint_vi": "Vậy ba cái là ba mươi nghìn won phải không?",
 		"hint_grammar": "에(per)",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -572,7 +572,7 @@
 		"hint_cn": "我把这个玩偶送给朋友。",
 		"hint_vi": "Tôi tặng con búp bê này cho bạn.",
 		"hint_grammar": "에게",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -588,7 +588,7 @@
 		"hint_cn": "我是公司职员。",
 		"hint_vi": "Tôi là nhân viên công ty.",
 		"hint_grammar": "-입니다, -입니까?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -598,14 +598,14 @@
 		"chapter": 1,
 		"slot_seq": 2,
 		"mission_label": "하는 일",
-		"hint_ko": "저는 회사에서 컴퓨터 일을 합니다.",
-		"hint_en": "I do computer work at my company.",
-		"hint_jp": "私は会社でコンピューターの仕事をしています。",
-		"hint_cn": "我在公司做电脑方面的工作。",
-		"hint_vi": "Tôi làm công việc về máy tính ở công ty.",
+		"hint_ko": "저는 회사에서 컴퓨터로 자료를 정리합니다.",
+		"hint_en": "I organize data on a computer at work.",
+		"hint_jp": "私は会社でコンピューターを使って資料を整理します。",
+		"hint_cn": "我在公司用电脑整理资料。",
+		"hint_vi": "Tôi dùng máy tính để sắp xếp tài liệu ở công ty.",
 		"hint_grammar": "-습니다, -습니까?",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — '컴퓨터 일을 하다'를 초급 수준의 구체적이고 자연스러운 업무 표현으로 수정함"
 	},
 	{
 		"hint_id": "MH-2-01-001-3",
@@ -620,7 +620,7 @@
 		"hint_cn": "那您在哪里工作？",
 		"hint_vi": "Vậy bạn làm việc ở đâu ạ?",
 		"hint_grammar": "-습니다, -습니까?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -636,7 +636,7 @@
 		"hint_cn": "从家到学校要三十分钟。",
 		"hint_vi": "Từ nhà đến trường mất ba mươi phút.",
 		"hint_grammar": "-에서 ~까지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -652,7 +652,7 @@
 		"hint_cn": "我坐地铁来。",
 		"hint_vi": "Tôi đi tàu điện ngầm đến.",
 		"hint_grammar": "-으로",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -668,7 +668,7 @@
 		"hint_cn": "我住在新村。",
 		"hint_vi": "Tôi sống ở Sinchon.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -680,12 +680,12 @@
 		"mission_label": "목적지",
 		"hint_ko": "서울백화점으로 가 주세요.",
 		"hint_en": "Please take me to Seoul Department Store.",
-		"hint_jp": "ソウル百貨店まで行ってください。",
-		"hint_cn": "请送我去首尔百货商店。",
-		"hint_vi": "Xin hãy đưa tôi đến Bách hóa Seoul.",
+		"hint_jp": "ソウル百貨店までお願いします。",
+		"hint_cn": "请去首尔百货商店。",
+		"hint_vi": "Xin hãy đưa tôi đến Trung tâm thương mại Seoul.",
 		"hint_grammar": "-어 주다",
-		"review_status": "draft_v55",
-		"change_note": "v55 — 택시 손님 상황에서 '-읍시다'를 강제하던 부자연스러운 예시를 실제 요청 표현으로 수정."
+		"review_status": "reviewed",
+		"change_note": "v55 — 택시 승객의 목적지 말하기에 어색한 '-읍시다'를 자연스러운 요청으로 수정함"
 	},
 	{
 		"hint_id": "MH-2-03-001-2",
@@ -700,7 +700,7 @@
 		"hint_cn": "百货商店正门前。",
 		"hint_vi": "Trước cửa chính của trung tâm bách hóa ạ.",
 		"hint_grammar": "",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — 정차 위치 미션이 별도 부탁 미션을 자동 충족하지 않도록 위치 정보만 말하는 예시로 수정."
 	},
 	{
@@ -716,7 +716,7 @@
 		"hint_cn": "请开慢一点。",
 		"hint_vi": "Xin đi chậm một chút ạ.",
 		"hint_grammar": "-어 주다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -732,7 +732,7 @@
 		"hint_cn": "今天下雨。",
 		"hint_vi": "Hôm nay trời mưa.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -748,7 +748,7 @@
 		"hint_cn": "下着雨，还刮风。",
 		"hint_vi": "Trời mưa và còn có gió nữa.",
 		"hint_grammar": "-고",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -764,7 +764,7 @@
 		"hint_cn": "比起雪，我更讨厌雨。",
 		"hint_vi": "Tôi ghét mưa hơn tuyết.",
 		"hint_grammar": "-보다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "대화 전에도 보이는 힌트라 특정 질문을 전제하는 '아니요'를 뺌."
 	},
 	{
@@ -780,7 +780,7 @@
 		"hint_cn": "这个菜辣，但是很好吃。",
 		"hint_vi": "Món này cay nhưng ngon.",
 		"hint_grammar": "-지만",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -796,7 +796,7 @@
 		"hint_cn": "这是泡菜汤。",
 		"hint_vi": "Đây là canh kimchi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -812,7 +812,7 @@
 		"hint_cn": "泡菜汤比拉面辣，所以我喝很多水。",
 		"hint_vi": "Canh kimchi cay hơn mì ramyeon nên tôi uống nhiều nước.",
 		"hint_grammar": "-어서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -828,7 +828,7 @@
 		"hint_cn": "我要吃拌饭。",
 		"hint_vi": "Tôi sẽ ăn bibimbap.",
 		"hint_grammar": "-겠-",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -844,7 +844,7 @@
 		"hint_cn": "甜点我要吃红豆刨冰。",
 		"hint_vi": "Tráng miệng tôi sẽ ăn đá bào đậu đỏ.",
 		"hint_grammar": "-겠-",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -860,7 +860,7 @@
 		"hint_cn": "茶我要绿茶。",
 		"hint_vi": "Trà thì tôi chọn trà xanh.",
 		"hint_grammar": "-겠-",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -876,7 +876,7 @@
 		"hint_cn": "那我们一起去，好吗？",
 		"hint_vi": "Vậy chúng ta cùng đi nhé?",
 		"hint_grammar": "-을까요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -892,7 +892,7 @@
 		"hint_cn": "我六点去买衣服。",
 		"hint_vi": "Sáu giờ tôi đi mua quần áo.",
 		"hint_grammar": "-으러",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -908,7 +908,7 @@
 		"hint_cn": "那我们在百货商店前面见，好吗？",
 		"hint_vi": "Vậy chúng ta gặp nhau trước trung tâm thương mại nhé?",
 		"hint_grammar": "-을까요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -924,7 +924,7 @@
 		"hint_cn": "我一周游泳两次左右。",
 		"hint_vi": "Tôi bơi khoảng hai lần một tuần.",
 		"hint_grammar": "-에 ~쯤",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -940,7 +940,7 @@
 		"hint_cn": "我最喜欢游泳。",
 		"hint_vi": "Tôi thích bơi nhất.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -956,7 +956,7 @@
 		"hint_cn": "周末我看电影，然后吃晚饭。",
 		"hint_vi": "Cuối tuần tôi xem phim rồi ăn tối.",
 		"hint_grammar": "-고",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -972,7 +972,7 @@
 		"hint_cn": "昨天我去学校了。",
 		"hint_vi": "Hôm qua tôi đã đến trường.",
 		"hint_grammar": "-었-",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -988,7 +988,7 @@
 		"hint_cn": "我在图书馆做作业了。",
 		"hint_vi": "Tôi đã làm bài tập ở thư viện.",
 		"hint_grammar": "-었-",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1004,7 +1004,7 @@
 		"hint_cn": "我先做作业，然后听了音乐。",
 		"hint_vi": "Trước tiên tôi làm bài tập, sau đó nghe nhạc.",
 		"hint_grammar": "-ㄷ 동사",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1020,7 +1020,7 @@
 		"hint_cn": "我在找裤子。",
 		"hint_vi": "Tôi đang tìm quần.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1036,7 +1036,7 @@
 		"hint_cn": "没有比这个更长的裤子吗？",
 		"hint_vi": "Không có quần nào dài hơn cái này ạ?",
 		"hint_grammar": "-은",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1052,7 +1052,7 @@
 		"hint_cn": "这条裤子比那条裤子更合我的心意。",
 		"hint_vi": "Tôi thích cái quần này hơn cái quần kia.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1062,14 +1062,14 @@
 		"chapter": 11,
 		"slot_seq": 1,
 		"mission_label": "선물",
-		"hint_ko": "동생에게 줄 지갑을 샀어요.",
-		"hint_en": "I bought a wallet to give to my younger brother.",
-		"hint_jp": "弟にあげる財布を買いました。",
-		"hint_cn": "我买了要送给弟弟的钱包。",
-		"hint_vi": "Tôi đã mua chiếc ví để tặng em tôi.",
-		"hint_grammar": "-는, -은, -을",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"hint_ko": "선물로 줄 작은 지갑을 샀어요.",
+		"hint_en": "I bought a small wallet to give as a gift.",
+		"hint_jp": "プレゼントにする小さな財布を買いました。",
+		"hint_cn": "我买了一个要当礼物送的小钱包。",
+		"hint_vi": "Tôi đã mua một chiếc ví nhỏ để làm quà.",
+		"hint_grammar": "-을",
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 선물 슬롯이 다음 슬롯의 받는 사람(동생)을 미리 말하지 않도록 보정"
 	},
 	{
 		"hint_id": "MH-2-11-001-2",
@@ -1084,7 +1084,7 @@
 		"hint_cn": "收礼物的人是我弟弟。",
 		"hint_vi": "Người nhận quà là em tôi.",
 		"hint_grammar": "-는, -은, -을",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "'제가 좋아하는 동생'이 어색해서 받을 사람을 자연스럽게 밝히는 문장으로 고침."
 	},
 	{
@@ -1100,7 +1100,7 @@
 		"hint_cn": "那是白色的钱包。",
 		"hint_vi": "Đó là chiếc ví màu trắng.",
 		"hint_grammar": "-ㅎ 동사",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1116,7 +1116,7 @@
 		"hint_cn": "我见了朋友，然后看了电影。",
 		"hint_vi": "Tôi gặp bạn rồi đi xem phim.",
 		"hint_grammar": "-어서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1132,7 +1132,7 @@
 		"hint_cn": "我先去图书馆做了作业，然后见了朋友。",
 		"hint_vi": "Trước tiên tôi đến thư viện làm bài tập, rồi sau đó gặp bạn.",
 		"hint_grammar": "-어서",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — '먼저 한 일+그다음 일' 완료조건을 모범 문장도 실제로 충족하도록 수정."
 	},
 	{
@@ -1148,7 +1148,7 @@
 		"hint_cn": "我只看了电影就回家了。",
 		"hint_vi": "Tôi chỉ xem phim rồi về nhà.",
 		"hint_grammar": "-만",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1164,7 +1164,7 @@
 		"hint_cn": "我们去电影院吧。",
 		"hint_vi": "Chúng ta đi rạp chiếu phim nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1180,7 +1180,7 @@
 		"hint_cn": "电影院很近，所以很好。",
 		"hint_vi": "Rạp chiếu phim gần nên tốt đấy.",
 		"hint_grammar": "-으니까",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1196,7 +1196,7 @@
 		"hint_cn": "保龄球馆太远了，我们别去吧。",
 		"hint_vi": "Sân bowling xa quá nên chúng ta đừng đi nhé.",
 		"hint_grammar": "-지 말다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1212,7 +1212,7 @@
 		"hint_cn": "你现在方便通话吗？",
 		"hint_vi": "Bây giờ bạn nói chuyện điện thoại được không?",
 		"hint_grammar": "-을 수 있다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1228,7 +1228,7 @@
 		"hint_cn": "你现在在学校吧？",
 		"hint_vi": "Bây giờ bạn đang ở trường, đúng không?",
 		"hint_grammar": "-지요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1244,7 +1244,7 @@
 		"hint_cn": "我想知道明天约的时间，所以打了电话。",
 		"hint_vi": "Tôi gọi vì muốn biết mai mình hẹn mấy giờ.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1260,7 +1260,7 @@
 		"hint_cn": "三周来一直帮我，真的很感谢。",
 		"hint_vi": "Cảm ơn bạn rất nhiều vì đã giúp tôi suốt ba tuần.",
 		"hint_grammar": "-동안",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1276,7 +1276,7 @@
 		"hint_cn": "在韩国的生活真的很愉快。",
 		"hint_vi": "Cuộc sống ở Hàn Quốc thật sự rất vui.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1292,7 +1292,7 @@
 		"hint_cn": "不过我没能去济州岛。",
 		"hint_vi": "Nhưng tôi đã không đi được đảo Jeju.",
 		"hint_grammar": "-못",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1308,7 +1308,7 @@
 		"hint_cn": "来韩国之前，我在家乡上过补习班。",
 		"hint_vi": "Trước khi đến Hàn Quốc, tôi đã học ở trung tâm tiếng Hàn tại quê nhà.",
 		"hint_grammar": "-기 전에",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1324,7 +1324,7 @@
 		"hint_cn": "我学了两年。",
 		"hint_vi": "Tôi đã học trong hai năm.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1340,7 +1340,7 @@
 		"hint_cn": "我是跟韩国朋友学的。",
 		"hint_vi": "Tôi học được từ một người bạn Hàn Quốc.",
 		"hint_grammar": "한테서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1356,7 +1356,7 @@
 		"hint_cn": "我发了短信，可是还没有回复。",
 		"hint_vi": "Tôi đã nhắn tin rồi mà vẫn chưa có trả lời.",
 		"hint_grammar": "-는데, -은데/ㄴ데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1372,7 +1372,7 @@
 		"hint_cn": "约好的时间已经过了还没来，我有点担心。",
 		"hint_vi": "Đã quá giờ hẹn mà vẫn chưa đến nên tôi lo quá.",
 		"hint_grammar": "-는데, -은데/ㄴ데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1388,7 +1388,7 @@
 		"hint_cn": "我再打一次电话吧。",
 		"hint_vi": "Để tôi gọi lại lần nữa.",
 		"hint_grammar": "-을게요/ㄹ게요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1404,7 +1404,7 @@
 		"hint_cn": "我在韩国看过《乱打秀》。",
 		"hint_vi": "Tôi đã từng xem Nanta ở Hàn Quốc.",
 		"hint_grammar": "-은/ㄴ 적이 있다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이었고 앞 문장이 미션과 무관한 반응이어서, 경험을 말하는 한 문장으로 줄임."
 	},
 	{
@@ -1420,7 +1420,7 @@
 		"hint_cn": "我是在大学路的剧场看的。",
 		"hint_vi": "Tôi xem ở một nhà hát tại Daehangno.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1436,7 +1436,7 @@
 		"hint_cn": "演员们真的很帅，时间过得特别快。",
 		"hint_vi": "Các diễn viên rất tuyệt nên thời gian trôi qua rất nhanh.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1452,7 +1452,7 @@
 		"hint_cn": "我打算明天去看棒球，所以现在正在买票。",
 		"hint_vi": "Ngày mai tôi định đi xem bóng chày nên bây giờ đang mua vé.",
 		"hint_grammar": "-으려고/려고 하다, -고 있다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1468,7 +1468,7 @@
 		"hint_cn": "我们在蚕室棒球场前面见吧。",
 		"hint_vi": "Chúng ta gặp nhau ở trước sân bóng chày Jamsil nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1484,7 +1484,7 @@
 		"hint_cn": "那我们两点见吧。",
 		"hint_vi": "Vậy hai giờ gặp nhau nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1500,7 +1500,7 @@
 		"hint_cn": "因为是下班时间，路上好像很堵。",
 		"hint_vi": "Vì là giờ tan làm nên hình như đường rất tắc.",
 		"hint_grammar": "-는, -은/ㄴ 것 같다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1516,7 +1516,7 @@
 		"hint_cn": "好像还要再花二十分钟左右。",
 		"hint_vi": "Chắc phải mất thêm khoảng hai mươi phút nữa.",
 		"hint_grammar": "-을/ㄹ 것 같다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1526,14 +1526,14 @@
 		"chapter": 5,
 		"slot_seq": 3,
 		"mission_label": "약속 장소",
-		"hint_ko": "지금 지하철로 강남역까지 가고 있어요.",
-		"hint_en": "I'm on the subway heading to Gangnam Station right now.",
-		"hint_jp": "今、地下鉄で江南駅まで行っています。",
-		"hint_cn": "我现在正坐地铁去江南站。",
-		"hint_vi": "Bây giờ tôi đang đi tàu điện ngầm đến ga Gangnam.",
+		"hint_ko": "지금 택시로 강남역까지 가고 있어요.",
+		"hint_en": "I'm going to Gangnam Station by taxi right now.",
+		"hint_jp": "今、タクシーで江南駅まで向かっています。",
+		"hint_cn": "我现在正坐出租车去江南站。",
+		"hint_vi": "Bây giờ tôi đang đi taxi đến ga Gangnam.",
 		"hint_grammar": "으로/로",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 앞 슬롯의 퇴근 시간 교통 체증과 교통수단이 지하철로 모순되던 흐름을 택시로 통일"
 	},
 	{
 		"hint_id": "MH-3-06-001-1",
@@ -1548,7 +1548,7 @@
 		"hint_cn": "从这里坐4号线，在明洞站下车。",
 		"hint_vi": "Từ đây bạn đi tuyến số 4 rồi xuống ở ga Myeongdong.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1564,7 +1564,7 @@
 		"hint_cn": "坐地铁的话只要十分钟。",
 		"hint_vi": "Nếu đi tàu điện ngầm thì chỉ mất mười phút thôi.",
 		"hint_grammar": "-으면/면, 밖에",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1580,7 +1580,7 @@
 		"hint_cn": "坐出租车的话会堵车，所以要花更长时间。",
 		"hint_vi": "Nếu đi taxi thì đường tắc nên mất nhiều thời gian hơn.",
 		"hint_grammar": "-으면/면",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1596,7 +1596,7 @@
 		"hint_cn": "今天下午我要去图书馆。",
 		"hint_vi": "Chiều nay tôi sẽ đến thư viện.",
 		"hint_grammar": "-을/ㄹ 거예요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1612,7 +1612,7 @@
 		"hint_cn": "明天有考试，所以我要学习。",
 		"hint_vi": "Ngày mai có bài thi nên tôi sẽ học bài.",
 		"hint_grammar": "-을/ㄹ 거예요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1628,7 +1628,7 @@
 		"hint_cn": "我要在图书馆舒舒服服地坐着准备考试。",
 		"hint_vi": "Tôi sẽ ngồi thoải mái ở thư viện và ôn thi.",
 		"hint_grammar": "-게, -을/ㄹ 거예요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1644,7 +1644,7 @@
 		"hint_cn": "拌饭很好吃，您尝一次看看吧。",
 		"hint_vi": "Bibimbap ngon lắm, bạn thử ăn một lần đi.",
 		"hint_grammar": "-어/아/여 보다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1660,7 +1660,7 @@
 		"hint_cn": "里面有蔬菜和肉，而且不辣。",
 		"hint_vi": "Món này có rau và thịt, lại không cay.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1676,7 +1676,7 @@
 		"hint_cn": "价格便宜又管饱，所以我经常吃。",
 		"hint_vi": "Giá rẻ mà lại no bụng nên tôi hay ăn.",
 		"hint_grammar": "르 동사",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1686,14 +1686,14 @@
 		"chapter": 9,
 		"slot_seq": 1,
 		"mission_label": "길거리 음식",
-		"hint_ko": "떡볶이하고 저 튀김도 맛있겠어요.",
-		"hint_en": "The tteokbokki and that fried food over there look good too.",
-		"hint_jp": "トッポッキと、あの揚げ物もおいしそうです。",
-		"hint_cn": "炒年糕和那边的炸物看起来都很好吃。",
-		"hint_vi": "Tteokbokki và món chiên kia trông cũng ngon nữa.",
+		"hint_ko": "떡볶이도 저 튀김도 맛있겠어요. 둘 다 먹고 싶어요.",
+		"hint_en": "Both the tteokbokki and those fried snacks look delicious. I want to try both.",
+		"hint_jp": "トッポッキもあの揚げ物もおいしそうです。両方食べてみたいです。",
+		"hint_cn": "炒年糕和那边的炸物看起来都很好吃。我两个都想吃。",
+		"hint_vi": "Cả tteokbokki lẫn món chiên kia trông đều ngon. Tôi muốn ăn cả hai.",
 		"hint_grammar": "-겠-",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 맛있어 보인다는 평가만으로 끝나지 않고 먹고 싶은 음식이라는 미션 의미까지 명시"
 	},
 	{
 		"hint_id": "MH-3-09-001-2",
@@ -1708,7 +1708,7 @@
 		"hint_cn": "吃完炒年糕以后我要吃红豆刨冰。",
 		"hint_vi": "Sau khi ăn tteokbokki tôi sẽ ăn patbingsu.",
 		"hint_grammar": "-은/ㄴ 후에",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "앞으로의 순서를 말하는 자리인데 현재형이라 어색해서 미래 표현으로 고침."
 	},
 	{
@@ -1724,7 +1724,7 @@
 		"hint_cn": "我们坐那边一起吃吧。",
 		"hint_vi": "Chúng ta ngồi đằng kia ăn cùng nhau nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1740,7 +1740,7 @@
 		"hint_cn": "我无聊的时候经常去练歌房。",
 		"hint_vi": "Khi buồn chán tôi hay đi quán karaoke.",
 		"hint_grammar": "-을/ㄹ 때",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1756,7 +1756,7 @@
 		"hint_cn": "我一般周末晚上去。",
 		"hint_vi": "Tôi thường đi vào buổi tối cuối tuần.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1772,7 +1772,7 @@
 		"hint_cn": "我是为了解压才去的。",
 		"hint_vi": "Tôi đi để giải tỏa căng thẳng.",
 		"hint_grammar": "-으려고/려고",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1788,7 +1788,7 @@
 		"hint_cn": "我的爱好是拍照。",
 		"hint_vi": "Sở thích của mình là chụp ảnh.",
 		"hint_grammar": "-이야/야",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1804,7 +1804,7 @@
 		"hint_cn": "去年跟着朋友开始的。",
 		"hint_vi": "Năm ngoái mình bắt đầu theo một người bạn.",
 		"hint_grammar": "-아/어/여",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1820,7 +1820,7 @@
 		"hint_cn": "拍照能解压，所以我很喜欢。",
 		"hint_vi": "Chụp ảnh giúp mình giải tỏa căng thẳng nên mình thích.",
 		"hint_grammar": "-아/어/여",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "'그거 하면'이 막연하고 어색해서 취미를 그대로 밝히는 문장으로 고침."
 	},
 	{
@@ -1830,14 +1830,14 @@
 		"chapter": 12,
 		"slot_seq": 1,
 		"mission_label": "장소",
-		"hint_ko": "동대문 시장에서 샀는데요, 거기가 값이 아주 싸요.",
-		"hint_en": "I bought it at Dongdaemun Market, and things are really cheap there.",
-		"hint_jp": "東大門市場で買ったんですが、あそこは値段がとても安いです。",
-		"hint_cn": "我是在东大门市场买的，那里的价格非常便宜。",
-		"hint_vi": "Tôi mua ở chợ Dongdaemun, ở đó giá rất rẻ.",
+		"hint_ko": "동대문 시장에서 샀는데요.",
+		"hint_en": "I bought it at Dongdaemun Market.",
+		"hint_jp": "東大門市場で買ったんですが。",
+		"hint_cn": "我是在东大门市场买的。",
+		"hint_vi": "Tôi mua ở chợ Dongdaemun.",
 		"hint_grammar": "-는데요, -은데요/ㄴ데요",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 장소 슬롯이 뒤의 구매 이유(값이 싸다)를 미리 수행하지 않도록 보정"
 	},
 	{
 		"hint_id": "MH-3-12-001-2",
@@ -1852,7 +1852,7 @@
 		"hint_cn": "我经常在那里买衣服或者鞋。",
 		"hint_vi": "Tôi hay mua quần áo hay giày dép ở đó.",
 		"hint_grammar": "이나/나",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1868,7 +1868,7 @@
 		"hint_cn": "价格便宜、种类又多，所以我常去。",
 		"hint_vi": "Giá rẻ và nhiều loại nên tôi hay đến đó.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1884,7 +1884,7 @@
 		"hint_cn": "我是来给妈妈买礼物的。",
 		"hint_vi": "Tôi đến để mua quà cho mẹ.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1900,7 +1900,7 @@
 		"hint_cn": "因为香味好闻，所以我选了这款乳液。",
 		"hint_vi": "Vì mùi hương thơm nên tôi đã chọn loại lotion này.",
 		"hint_grammar": "-기 때문에",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1916,7 +1916,7 @@
 		"hint_cn": "这个在百货商店应该会更贵。",
 		"hint_vi": "Cái này ở trung tâm thương mại chắc sẽ đắt hơn.",
 		"hint_grammar": "-을/ㄹ 거예요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1932,7 +1932,7 @@
 		"hint_cn": "我昨天买了这件T恤，可是有点小。",
 		"hint_vi": "Hôm qua tôi mua chiếc áo phông này nhưng hơi nhỏ.",
 		"hint_grammar": "-는데,은데/ㄴ데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1948,7 +1948,7 @@
 		"hint_cn": "我在家试穿了，尺码不合适。",
 		"hint_vi": "Tôi đã mặc thử ở nhà nhưng không vừa size.",
 		"hint_grammar": "-어/아/여 보다, -는데,은데/ㄴ데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1964,7 +1964,7 @@
 		"hint_cn": "请给我换成大号的。",
 		"hint_vi": "Xin hãy đổi cho tôi sang size lớn hơn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1980,7 +1980,7 @@
 		"hint_cn": "我的家乡一年到头都很热，真希望能凉快一点。",
 		"hint_vi": "Quê tôi nóng quanh năm nên tôi ước gì trời mát hơn một chút.",
 		"hint_grammar": "-었으면/았으면/였으면 좋겠다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -1996,7 +1996,7 @@
 		"hint_cn": "韩国会下雪，可是我的家乡不下雪。",
 		"hint_vi": "Ở Hàn Quốc có tuyết nhưng quê tôi thì không có tuyết.",
 		"hint_grammar": "-는데,-은데/ㄴ데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2012,7 +2012,7 @@
 		"hint_cn": "夏天我和朋友们去海边游泳。",
 		"hint_vi": "Mùa hè tôi đi bơi ở biển với bạn bè.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2028,7 +2028,7 @@
 		"hint_cn": "我主修经营学。",
 		"hint_vi": "Tôi đang học chuyên ngành quản trị kinh doanh.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2044,7 +2044,7 @@
 		"hint_cn": "我来韩国学习已经六个月了。",
 		"hint_vi": "Tôi đến Hàn Quốc học được sáu tháng rồi.",
 		"hint_grammar": "-은/ㄴ 지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2060,7 +2060,7 @@
 		"hint_cn": "专业书虽然难，但学起来真的很有意思。",
 		"hint_vi": "Sách chuyên ngành thì khó thật nhưng học rất thú vị.",
 		"hint_grammar": "-기는 하지만",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2076,7 +2076,7 @@
 		"hint_cn": "比刚开始的时候韩语进步了很多，朋友也变多了。",
 		"hint_vi": "So với lúc đầu, tiếng Hàn của tôi khá lên nhiều và bạn bè cũng nhiều hơn.",
 		"hint_grammar": "-어지다/아지다/여지다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2092,7 +2092,7 @@
 		"hint_cn": "平时上学，每个周末都和朋友们去旅行。",
 		"hint_vi": "Ngày thường tôi đi học, còn cuối tuần nào cũng đi du lịch với bạn bè.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2108,7 +2108,7 @@
 		"hint_cn": "最近虽然很忙，但我很喜欢现在的生活。",
 		"hint_vi": "Dạo này tuy bận nhưng tôi rất hài lòng với cuộc sống hiện tại.",
 		"hint_grammar": "",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v53 — 미션은 '내 생활의 느낌'인데 '많이 바쁘시겠군요'로 상대를 평가하고 있었다. -겠군요는 상대를 추측하는 형태라 이 슬롯에서 성립하지 않아 문법 표기를 비운다"
 	},
 	{
@@ -2124,7 +2124,7 @@
 		"hint_cn": "我把书落在家里了，想在旁边跟你一起看。",
 		"hint_vi": "Tôi để quên sách ở nhà nên muốn ngồi cạnh xem chung với bạn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2140,7 +2140,7 @@
 		"hint_cn": "不好意思，就今天一起看一本书可以吗？",
 		"hint_vi": "Xin lỗi, chỉ hôm nay thôi, tôi xem chung sách được không?",
 		"hint_grammar": "-어도/아도/여도 되다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2156,7 +2156,7 @@
 		"hint_cn": "那我把书放在桌子中间。",
 		"hint_vi": "Vậy tôi sẽ đặt sách ở giữa bàn nhé.",
 		"hint_grammar": "에다가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2172,7 +2172,7 @@
 		"hint_cn": "学校图书馆的借书在二楼资料室办理。",
 		"hint_vi": "Việc mượn sách ở thư viện trường được làm tại phòng tư liệu tầng 2.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2188,7 +2188,7 @@
 		"hint_cn": "要借书的话，一定得有学生证。",
 		"hint_vi": "Muốn mượn sách thì nhất định phải có thẻ sinh viên.",
 		"hint_grammar": "-어야/아야/여야 하다, -으려면/려면",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2204,7 +2204,7 @@
 		"hint_cn": "要借书的话，请先在网站上注册会员。",
 		"hint_vi": "Muốn mượn sách thì trước tiên hãy đăng ký thành viên trên trang web.",
 		"hint_grammar": "-으려면/려면",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "세 절로 길어서 -으려면 중심의 한 문장으로 줄임."
 	},
 	{
@@ -2220,7 +2220,7 @@
 		"hint_cn": "我现在在二楼陶瓷展厅前面。",
 		"hint_vi": "Bây giờ tôi đang ở trước phòng trưng bày gốm sứ tầng 2.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2236,7 +2236,7 @@
 		"hint_cn": "我想在展厅里拍点照片。",
 		"hint_vi": "Tôi muốn chụp vài tấm ảnh bên trong phòng trưng bày.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2252,7 +2252,7 @@
 		"hint_cn": "在展厅里不可以拍照吗？",
 		"hint_vi": "Trong phòng trưng bày không được chụp ảnh ạ?",
 		"hint_grammar": "-나요?, -은가요?/ㄴ가요?, -으면/면 안 되다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2268,7 +2268,7 @@
 		"hint_cn": "我正要去见朋友，可是迷路了。",
 		"hint_vi": "Tôi đang trên đường đi gặp bạn thì bị lạc.",
 		"hint_grammar": "-는데,-은데/ㄴ데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2284,7 +2284,7 @@
 		"hint_cn": "在这里随便坐哪趟车都可以吗？",
 		"hint_vi": "Ở đây tôi lên tàu nào cũng được ạ?",
 		"hint_grammar": "아무",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2300,7 +2300,7 @@
 		"hint_cn": "要去市厅站的话，中间需要换乘吗？",
 		"hint_vi": "Muốn đến ga Sicheong thì giữa chừng có phải đổi tàu không ạ?",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 한 문장으로 합치고 묻는 내용을 분명히 함."
 	},
 	{
@@ -2316,7 +2316,7 @@
 		"hint_cn": "先在锅里倒油，然后炒泡菜。",
 		"hint_vi": "Trước tiên hãy cho dầu vào chảo rồi xào kimchi.",
 		"hint_grammar": "-어라/아라/여라",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "이 과의 목표인 반말체(해라체)가 안 쓰여 있어서 명령형으로 고침."
 	},
 	{
@@ -2332,7 +2332,7 @@
 		"hint_cn": "炒着泡菜的时候把米饭放进去。",
 		"hint_vi": "Đang xào kimchi thì cho cơm vào.",
 		"hint_grammar": "-다가, -어라/아라/여라",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "슬롯 1과 문체를 맞춰 해라체 명령형으로 고침."
 	},
 	{
@@ -2348,7 +2348,7 @@
 		"hint_cn": "火太大米饭会糊，所以把火调小一点。",
 		"hint_vi": "Lửa to quá thì cơm sẽ cháy nên hãy vặn nhỏ lửa một chút.",
 		"hint_grammar": "-어라/아라/여라",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "슬롯 1·2와 문체를 맞춰 해라체 명령형으로 고침."
 	},
 	{
@@ -2364,7 +2364,7 @@
 		"hint_cn": "因为是朋友的生日，所以我去参加了聚会。",
 		"hint_vi": "Vì là sinh nhật bạn nên tôi đã đến dự tiệc.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2380,7 +2380,7 @@
 		"hint_cn": "去了以后发现房子比想象中大得多。",
 		"hint_vi": "Đến nơi mới thấy nhà rộng hơn tôi tưởng rất nhiều.",
 		"hint_grammar": "-으니까/니까",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2396,7 +2396,7 @@
 		"hint_cn": "我是坐地铁去的，晚上打车回来的。",
 		"hint_vi": "Tôi đi bằng tàu điện ngầm, đến tối thì bắt taxi về.",
 		"hint_grammar": "-었다가/았다가/였다가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2412,7 +2412,7 @@
 		"hint_cn": "你穿那件衣服显得个子高。",
 		"hint_vi": "Cậu mặc bộ đó trông cao hơn đấy.",
 		"hint_grammar": "-어/아/여 보이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2428,7 +2428,7 @@
 		"hint_cn": "比起条纹的，那件黑色的更好。",
 		"hint_vi": "So với cái kẻ sọc thì cái màu đen kia đẹp hơn.",
 		"hint_grammar": "ㅅ동사",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2444,7 +2444,7 @@
 		"hint_cn": "黑色显得脸色也亮，而且跟什么都很搭。",
 		"hint_vi": "Màu đen làm khuôn mặt trông sáng hơn, lại hợp với mọi thứ.",
 		"hint_grammar": "-어/아/여 보이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "세 절로 길어서 두 절로 줄임."
 	},
 	{
@@ -2460,7 +2460,7 @@
 		"hint_cn": "我打算买韩国紫菜和红参寄回去。",
 		"hint_vi": "Tôi định mua rong biển Hàn Quốc và hồng sâm rồi gửi về.",
 		"hint_grammar": "-어/아/여 가지고",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2476,7 +2476,7 @@
 		"hint_cn": "不知道父母会不会喜欢这样的东西。",
 		"hint_vi": "Tôi không biết bố mẹ có thích những thứ này không.",
 		"hint_grammar": "-을지/ㄹ지 모르겠다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2486,14 +2486,14 @@
 		"chapter": 10,
 		"slot_seq": 3,
 		"mission_label": "걱정",
-		"hint_ko": "어머니가 매운 걸 못 드셔서 그게 좀 걱정이에요.",
-		"hint_en": "My mother can't eat spicy food, so that worries me a little.",
-		"hint_jp": "母が辛い物を食べられないので、それが少し心配です。",
-		"hint_cn": "我妈妈不能吃辣，所以有点担心。",
-		"hint_vi": "Mẹ tôi không ăn được đồ cay nên tôi hơi lo về điều đó.",
+		"hint_ko": "홍삼 맛이 너무 쓸 것 같아서 좀 걱정이에요.",
+		"hint_en": "I'm a little worried that the red ginseng might taste too bitter.",
+		"hint_jp": "紅参の味が苦すぎるんじゃないかと、少し心配です。",
+		"hint_cn": "我有点担心红参的味道会不会太苦。",
+		"hint_vi": "Tôi hơi lo là hồng sâm có thể có vị quá đắng.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 실제 준비한 선물(김·홍삼)과 무관한 매운 음식 걱정을 홍삼에 대한 구체적 걱정으로 수정"
 	},
 	{
 		"hint_id": "MH-4-11-001-1",
@@ -2508,7 +2508,7 @@
 		"hint_cn": "我想在家看看电影什么的。",
 		"hint_vi": "Tôi định ở nhà xem phim gì đó thôi.",
 		"hint_grammar": "-을까/ㄹ까 하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2524,7 +2524,7 @@
 		"hint_cn": "别整个周末都待在家里，跟我一起出去吧。",
 		"hint_vi": "Đừng ở nhà suốt cuối tuần, đi chơi với tôi đi.",
 		"hint_grammar": "-지 말고",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2540,7 +2540,7 @@
 		"hint_cn": "天气也好，我们一起去南山爬山吧。",
 		"hint_vi": "Thời tiết cũng đẹp, chúng ta cùng đi leo núi Namsan nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 활동을 하나로 묶은 한 문장으로 줄임."
 	},
 	{
@@ -2556,7 +2556,7 @@
 		"hint_cn": "我们说好明天一起去听音乐会。",
 		"hint_vi": "Chúng ta đã quyết định ngày mai cùng đi nghe hòa nhạc.",
 		"hint_grammar": "-기로 하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2572,7 +2572,7 @@
 		"hint_cn": "可是音乐会七点就开始了呢？",
 		"hint_vi": "Nhưng hòa nhạc bắt đầu lúc bảy giờ mà?",
 		"hint_grammar": "-는데요?, -은데요/ㄴ데요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 되묻는 한 문장만 남김."
 	},
 	{
@@ -2588,7 +2588,7 @@
 		"hint_cn": "那我们六点在江南站2号出口见吧。",
 		"hint_vi": "Vậy sáu giờ gặp nhau ở cửa số 2 ga Gangnam nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2604,7 +2604,7 @@
 		"hint_cn": "还没决定是吃冷面还是吃拌饭。",
 		"hint_vi": "Tôi vẫn chưa quyết định ăn naengmyeon hay bibimbap.",
 		"hint_grammar": "-을지/ㄹ지 -을지/ㄹ지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2620,7 +2620,7 @@
 		"hint_cn": "只要好吃，什么都可以。",
 		"hint_vi": "Chỉ cần ngon thì món gì tôi cũng thích.",
 		"hint_grammar": "이든지/든지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2636,7 +2636,7 @@
 		"hint_cn": "那请你从两个里面选一个吧。",
 		"hint_vi": "Vậy bạn chọn giúp tôi một trong hai món nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2652,7 +2652,7 @@
 		"hint_cn": "没有哪个地方的景色像济州岛这么美。",
 		"hint_vi": "Không có nơi nào phong cảnh đẹp như đảo Jeju.",
 		"hint_grammar": "만큼",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2668,7 +2668,7 @@
 		"hint_cn": "你知道怎么去那里吗？",
 		"hint_vi": "Bạn có biết đi đến đó bằng cách nào không?",
 		"hint_grammar": "-는지 알다/모르다, -은지/ㄴ지 알다/모르다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이어서 목표 문법이 쓰인 한 문장만 남김."
 	},
 	{
@@ -2684,7 +2684,7 @@
 		"hint_cn": "离海近，食物也有名，所以很多人去。",
 		"hint_vi": "Biển thì gần, đồ ăn lại nổi tiếng nên rất nhiều người đến đó.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2700,7 +2700,7 @@
 		"hint_cn": "可能是因为没睡好，题目看得不太清楚。",
 		"hint_vi": "Chắc do không ngủ được nên tôi nhìn đề không rõ.",
 		"hint_grammar": "-어서/아서/여서 그런지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2716,7 +2716,7 @@
 		"hint_cn": "分数差一点也没关系。",
 		"hint_vi": "Điểm có hơi thấp thì cũng không sao.",
 		"hint_grammar": "-어도/아도/여도",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2732,7 +2732,7 @@
 		"hint_cn": "就算辛苦，我也要一直学到下次考试。",
 		"hint_vi": "Dù vất vả tôi vẫn sẽ tiếp tục học đến kỳ thi lần sau.",
 		"hint_grammar": "-어도/아도/여도",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2748,7 +2748,7 @@
 		"hint_cn": "为了进韩国公司工作，我开始学韩语了。",
 		"hint_vi": "Tôi bắt đầu học tiếng Hàn để xin việc ở công ty Hàn Quốc.",
 		"hint_grammar": "-기 위해서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2758,14 +2758,14 @@
 		"chapter": 1,
 		"slot_seq": 2,
 		"mission_label": "경험",
-		"hint_ko": "친구가 한국 사람이라서 이 년 전부터 학원에 다녔어요.",
-		"hint_en": "My friend is Korean, so I started going to a language academy two years ago.",
-		"hint_jp": "友達が韓国人なので、二年前から語学教室に通いました。",
-		"hint_cn": "因为我朋友是韩国人，所以我从两年前开始上补习班了。",
-		"hint_vi": "Vì bạn tôi là người Hàn Quốc nên tôi đã đi học ở trung tâm từ hai năm trước.",
+		"hint_ko": "친구가 한국 사람이라서 이 년 전부터 학원에 다니고 있어요.",
+		"hint_en": "My friend is Korean, so I've been attending a language academy for two years.",
+		"hint_jp": "友達が韓国人なので、二年前から語学教室に通っています。",
+		"hint_cn": "因为我朋友是韩国人，所以我从两年前开始一直在上语言培训班。",
+		"hint_vi": "Vì bạn tôi là người Hàn Quốc nên tôi đã học ở trung tâm ngoại ngữ được hai năm rồi.",
 		"hint_grammar": "이라서/라서",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — '-부터'와 과거 종결의 시제 불일치를 현재까지 이어지는 경험으로 수정함"
 	},
 	{
 		"hint_id": "MH-5-01-001-3",
@@ -2780,7 +2780,7 @@
 		"hint_cn": "为了以后成为口译员，我打算读研究生。",
 		"hint_vi": "Sau này để trở thành phiên dịch viên, tôi sẽ học cao học.",
 		"hint_grammar": "-기 위해서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2796,7 +2796,7 @@
 		"hint_cn": "我一边吃饭一边看新闻。",
 		"hint_vi": "Tôi vừa ăn cơm vừa xem tin tức.",
 		"hint_grammar": "-으면서/면서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2812,7 +2812,7 @@
 		"hint_cn": "我每天都打扫，越打扫越觉得有意思。",
 		"hint_vi": "Tôi dọn dẹp mỗi ngày, càng làm thì càng thấy thú vị.",
 		"hint_grammar": "-으면 -을수록/ㄹ수록",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "미션이 요구하는 '습관 설명'이 빠져 있어 앞절에 습관을 넣음."
 	},
 	{
@@ -2828,7 +2828,7 @@
 		"hint_cn": "那样做的话时间过得快，挺好的。",
 		"hint_vi": "Làm như vậy thì thời gian trôi nhanh nên tôi thích.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2844,7 +2844,7 @@
 		"hint_cn": "周末从几点开到几点？",
 		"hint_vi": "Cuối tuần thì mở cửa từ mấy giờ đến mấy giờ ạ?",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2860,7 +2860,7 @@
 		"hint_cn": "因为快考试了，我周末也得学习。",
 		"hint_vi": "Vì sắp thi rồi nên cuối tuần tôi cũng phải học đấy ạ.",
 		"hint_grammar": "-거든요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2870,14 +2870,14 @@
 		"chapter": 3,
 		"slot_seq": 3,
 		"mission_label": "추측",
-		"hint_ko": "주말에는 학생들이 많아서 자리가 없을걸요?",
+		"hint_ko": "주말에는 학생들이 많아서 자리가 없을걸요.",
 		"hint_en": "There are a lot of students on weekends, so there probably won't be any seats.",
 		"hint_jp": "週末は学生が多いので、席がないと思いますよ。",
-		"hint_cn": "周末学生多，恐怕没有座位吧？",
+		"hint_cn": "周末学生多，恐怕没有座位吧。",
 		"hint_vi": "Cuối tuần đông sinh viên nên chắc là không còn chỗ đâu.",
 		"hint_grammar": "-을걸요/ㄹ걸요",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — 추측 종결 '-을걸요'에 붙은 불필요한 물음표를 제거함"
 	},
 	{
 		"hint_id": "MH-5-04-001-1",
@@ -2892,7 +2892,7 @@
 		"hint_cn": "我想把五百美元换成韩元。",
 		"hint_vi": "Tôi muốn đổi năm trăm đô la sang tiền Hàn ạ.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "'달러'가 두 번 나와 어색해서 한 번으로 정리함."
 	},
 	{
@@ -2908,7 +2908,7 @@
 		"hint_cn": "这里的手续费跟机场比便宜吗？",
 		"hint_vi": "Ở đây phí có rẻ hơn so với sân bay không ạ?",
 		"hint_grammar": "에 비해서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2924,7 +2924,7 @@
 		"hint_cn": "我一般只有去旅行的时候才换钱。",
 		"hint_vi": "Tôi thường chỉ đổi tiền khi đi du lịch thôi.",
 		"hint_grammar": "-는 편이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2940,7 +2940,7 @@
 		"hint_cn": "天气预报说周末会下雨。",
 		"hint_vi": "Dự báo thời tiết nói cuối tuần trời sẽ mưa.",
 		"hint_grammar": "-는다고/ㄴ다고 하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2956,7 +2956,7 @@
 		"hint_cn": "听说从周六到周日一直都会下雨呢。",
 		"hint_vi": "Nghe nói trời mưa suốt từ thứ Bảy đến Chủ nhật đấy.",
 		"hint_grammar": "-더군요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -2966,14 +2966,14 @@
 		"chapter": 5,
 		"slot_seq": 3,
 		"mission_label": "걱정",
-		"hint_ko": "그래서 축제가 취소될 수도 있다고 해요.",
-		"hint_en": "So they say the festival might get canceled.",
-		"hint_jp": "それで祭りが中止になるかもしれないそうです。",
-		"hint_cn": "所以听说庆典有可能会取消。",
-		"hint_vi": "Nên nghe nói lễ hội có thể sẽ bị hủy.",
+		"hint_ko": "그래서 축제가 취소될 수도 있다고 해요. 좀 걱정돼요.",
+		"hint_en": "So they say the festival might be canceled. I'm a little worried.",
+		"hint_jp": "それで、祭りが中止になるかもしれないそうです。少し心配です。",
+		"hint_cn": "所以听说庆典可能会取消。我有点担心。",
+		"hint_vi": "Vì vậy nghe nói lễ hội có thể bị hủy. Tôi hơi lo.",
 		"hint_grammar": "-다고 하다",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 취소 가능성 전달만 하던 문장에 실제 걱정 화행을 명시"
 	},
 	{
 		"hint_id": "MH-5-06-001-1",
@@ -2988,7 +2988,7 @@
 		"hint_cn": "我姨让我坐一次城市观光巴士看看。",
 		"hint_vi": "Dì tôi bảo tôi thử đi xe buýt tham quan thành phố.",
 		"hint_grammar": "-으라고/라고 하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3004,7 +3004,7 @@
 		"hint_cn": "朋友们提议晚上去看夜景。",
 		"hint_vi": "Các bạn tôi rủ buổi tối đi ngắm cảnh đêm.",
 		"hint_grammar": "-자고 하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3020,7 +3020,7 @@
 		"hint_cn": "那条路线越来越受欢迎，听说得提前预约。",
 		"hint_vi": "Lộ trình đó trở nên được ưa chuộng nên nghe nói phải đặt trước.",
 		"hint_grammar": "-어지다/아지다/여지다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3030,14 +3030,14 @@
 		"chapter": 7,
 		"slot_seq": 1,
 		"mission_label": "기대와 다른 것",
-		"hint_ko": "저는 그냥 눈으로 구경만 하는 줄 알았어요.",
-		"hint_en": "I thought we were just going to look at things, and that was it.",
-		"hint_jp": "私はただ目で見て回るだけだと思っていました。",
-		"hint_cn": "我还以为只是用眼睛参观一下而已呢。",
-		"hint_vi": "Tôi cứ tưởng chỉ đứng ngắm bằng mắt thôi.",
+		"hint_ko": "저는 그냥 눈으로 구경만 하는 줄 알았는데 직접 체험도 할 수 있어요.",
+		"hint_en": "I thought you could only look around, but you can actually try the activities yourself too.",
+		"hint_jp": "私はただ見て回るだけだと思っていたんですが、実際には自分で体験もできます。",
+		"hint_cn": "我原以为只能看看而已，实际上还可以亲自体验。",
+		"hint_vi": "Tôi cứ tưởng chỉ được đứng xem thôi, nhưng thực ra còn có thể tự mình trải nghiệm.",
 		"hint_grammar": "-는 줄 알다",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 원래 생각뿐 아니라 실제와 어떻게 달랐는지까지 한 문장 안에서 명확히 제시"
 	},
 	{
 		"hint_id": "MH-5-07-001-2",
@@ -3052,7 +3052,7 @@
 		"hint_cn": "以前去过的地方必须预约，但这里直接去就行。",
 		"hint_vi": "Chỗ tôi từng đến trước đây phải đặt trước, nhưng ở đây cứ đến là được.",
 		"hint_grammar": "-었던/았던/였던",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3068,7 +3068,7 @@
 		"hint_cn": "那这次我们体验一下茶道吧。",
 		"hint_vi": "Vậy lần này chúng ta thử trải nghiệm trà đạo nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3084,7 +3084,7 @@
 		"hint_cn": "嗓子疼，而且还老是咳嗽。",
 		"hint_vi": "Tôi bị đau họng, mà lại còn ho liên tục nữa.",
 		"hint_grammar": "-은/ㄴ 데다가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3100,7 +3100,7 @@
 		"hint_cn": "昨天开着窗户睡觉，好像感冒了。",
 		"hint_vi": "Hôm qua tôi mở cửa sổ ngủ nên hình như bị cảm rồi.",
 		"hint_grammar": "-나 보다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3116,7 +3116,7 @@
 		"hint_cn": "那请把对咳嗽有效的药也一起给我。",
 		"hint_vi": "Vậy cho tôi cả thuốc trị ho hiệu quả nữa ạ.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3132,7 +3132,7 @@
 		"hint_cn": "吃了药，可是烧还是不退。",
 		"hint_vi": "Tôi đã uống thuốc rồi mà vẫn không hạ sốt.",
 		"hint_grammar": "-는데도",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3148,7 +3148,7 @@
 		"hint_cn": "已经一个星期了，真让人着急。",
 		"hint_vi": "Đã một tuần rồi nên tôi thấy thật sự bức bối.",
 		"hint_grammar": "-네요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3164,7 +3164,7 @@
 		"hint_cn": "这次我想做个精密检查。",
 		"hint_vi": "Lần này tôi muốn thử làm kiểm tra chuyên sâu.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3180,7 +3180,7 @@
 		"hint_cn": "只有运动才能健康地减轻体重。",
 		"hint_vi": "Phải tập thể dục thì mới giảm cân một cách khỏe mạnh được.",
 		"hint_grammar": "-어야/아야/여야",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3196,7 +3196,7 @@
 		"hint_cn": "最近体力变差了，所以就开始了。",
 		"hint_vi": "Dạo này thể lực yếu đi nên tôi đã bắt đầu tập.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3212,7 +3212,7 @@
 		"hint_cn": "我的目标是三个月减五公斤，你要不要跟我一起跑步？",
 		"hint_vi": "Mục tiêu của tôi là giảm năm ký trong ba tháng, bạn chạy cùng tôi nhé?",
 		"hint_grammar": "-을래요/ㄹ래요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3228,7 +3228,7 @@
 		"hint_cn": "婚礼上不能穿白色。那是只有新娘才穿的颜色嘛。",
 		"hint_vi": "Ở đám cưới thì không nên mặc màu trắng. Đó là màu chỉ cô dâu mới mặc mà.",
 		"hint_grammar": "-잖아요",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — 금지 판단+이유 완료조건을 모범 문장도 명시적으로 충족하도록 수정."
 	},
 	{
@@ -3244,7 +3244,7 @@
 		"hint_cn": "不如穿件亮色的正装怎么样？",
 		"hint_vi": "Hay là bạn mặc bộ vest màu sáng đi?",
 		"hint_grammar": "-지 그래요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3260,7 +3260,7 @@
 		"hint_cn": "我打算穿藏青色的连衣裙去。",
 		"hint_vi": "Tôi sẽ mặc váy liền màu xanh navy đi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3276,7 +3276,7 @@
 		"hint_cn": "一个小时前我把它放在地铁二号线的行李架上就下车了。",
 		"hint_vi": "Một tiếng trước tôi đã để quên nó trên giá hành lý tàu điện ngầm tuyến số 2 rồi xuống tàu.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3286,14 +3286,14 @@
 		"chapter": 12,
 		"slot_seq": 2,
 		"mission_label": "겉모습",
-		"hint_ko": "파란색 가방이고 안에 지갑하고 여권이 들어 있어요.",
-		"hint_en": "It's a blue bag, and there's a wallet and a passport inside.",
-		"hint_jp": "青いかばんで、中に財布とパスポートが入っています。",
-		"hint_cn": "是蓝色的包，里面装着钱包和护照。",
-		"hint_vi": "Đó là túi màu xanh, bên trong có ví và hộ chiếu.",
+		"hint_ko": "파란색 네모난 가방이고 안에 지갑하고 여권이 들어 있어요.",
+		"hint_en": "It's a blue, rectangular bag, and there's a wallet and a passport inside.",
+		"hint_jp": "青い四角いかばんで、中に財布とパスポートが入っています。",
+		"hint_cn": "是一个蓝色的方形包，里面有钱包和护照。",
+		"hint_vi": "Đó là một chiếc túi màu xanh hình chữ nhật, bên trong có ví và hộ chiếu.",
 		"hint_grammar": "-어/아/여 있다",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 완료조건의 색·모양·내용물 중 빠져 있던 모양 정보를 추가"
 	},
 	{
 		"hint_id": "MH-5-12-001-3",
@@ -3308,7 +3308,7 @@
 		"hint_cn": "找到之后请马上联系我。",
 		"hint_vi": "Ngay khi tìm thấy xin hãy liên lạc với tôi ngay ạ.",
 		"hint_grammar": "-는 대로",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3324,7 +3324,7 @@
 		"hint_cn": "这段时间我真不知道有多想你们。",
 		"hint_vi": "Suốt thời gian qua tôi nhớ mọi người không biết bao nhiêu mà kể.",
 		"hint_grammar": "얼마나 -은지/ㄴ지 모르다",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — 친구들을 오랜만에 만난 상황에 맞게 '여러분이'보다 자연스러운 '다들'로 수정. prompt user_example과 동기화."
 	},
 	{
@@ -3340,7 +3340,7 @@
 		"hint_cn": "我找到了工作，一直过得很忙。",
 		"hint_vi": "Tôi đã đi làm nên sống khá bận rộn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3356,7 +3356,7 @@
 		"hint_cn": "还记得我们以前常去的那家炒年糕店吗？",
 		"hint_vi": "Bạn có nhớ quán tteokbokki mà chúng ta hay đến không?",
 		"hint_grammar": "-던",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3372,7 +3372,7 @@
 		"hint_cn": "我订的是经济舱的往返机票。",
 		"hint_vi": "Tôi đã đặt vé khứ hồi hạng phổ thông.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3382,14 +3382,14 @@
 		"chapter": 14,
 		"slot_seq": 2,
 		"mission_label": "좌석 선택 확인",
-		"hint_ko": "제가 예약할 때 창가 자리를 달라고 했는데요.",
-		"hint_en": "When I made the reservation, I asked for a window seat, though.",
-		"hint_jp": "予約するとき窓側の席をくださいとお願いしたのですが。",
-		"hint_cn": "我预订的时候说过要靠窗的座位。",
-		"hint_vi": "Lúc đặt vé tôi đã yêu cầu cho chỗ ngồi cạnh cửa sổ mà.",
-		"hint_grammar": "을/를 달라고 하다",
-		"review_status": "draft_v52",
-		"change_note": "목표 문법 '을/를 달라고 하다' 형태에 맞게 조사를 '로'에서 '를'로 고침."
+		"hint_ko": "제가 예약할 때 창가 자리로 해 달라고 했는데요.",
+		"hint_en": "When I made the reservation, I asked to be seated by the window.",
+		"hint_jp": "予約するとき、窓側の席にしてほしいとお願いしたのですが。",
+		"hint_cn": "我预订的时候请你们给我安排靠窗的座位。",
+		"hint_vi": "Lúc đặt vé tôi đã nhờ xếp chỗ ngồi cạnh cửa sổ.",
+		"hint_grammar": "-어/아/여 달라고 하다",
+		"review_status": "reviewed",
+		"change_note": "v55 — 좌석 요청을 실제 한국어에서 자연스러운 '자리로 해 달라고 하다'로 수정함"
 	},
 	{
 		"hint_id": "MH-5-14-001-3",
@@ -3404,7 +3404,7 @@
 		"hint_cn": "附加费用我来付，就按原样办理吧。",
 		"hint_vi": "Phí phụ thu tôi sẽ trả, nên anh/chị cứ tiến hành như vậy giúp tôi ạ.",
 		"hint_grammar": "-을/ㄹ 테니까",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3420,7 +3420,7 @@
 		"hint_cn": "我原来打算今年回去，但因为公司的工作，要在韩国再待一年了。",
 		"hint_vi": "Ban đầu tôi định năm nay về nước, nhưng vì công việc ở công ty nên tôi sẽ ở lại Hàn Quốc thêm một năm nữa.",
 		"hint_grammar": "-게 되다",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — 원래 계획+현재 달라진 상황 완료조건을 모범 문장도 충족하도록 수정."
 	},
 	{
@@ -3436,7 +3436,7 @@
 		"hint_cn": "因为有了好机会，所以我改变了计划。",
 		"hint_vi": "Vì có cơ hội tốt nên tôi đã thay đổi kế hoạch.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3452,7 +3452,7 @@
 		"hint_cn": "这次我得更加努力学习韩语了。",
 		"hint_vi": "Lần này tôi phải học tiếng Hàn chăm chỉ hơn mới được.",
 		"hint_grammar": "-어야겠다/아야겠다/여야겠다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3468,7 +3468,7 @@
 		"hint_cn": "是一套有两个房间和一个小客厅的老公寓。",
 		"hint_vi": "Đó là một căn hộ cũ có hai phòng và một phòng khách nhỏ.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3484,7 +3484,7 @@
 		"hint_cn": "交通非常方便，但是晚上车声太吵，我睡不着觉。",
 		"hint_vi": "Giao thông thì rất tiện nhưng ban đêm tiếng xe ồn quá nên tôi không ngủ được.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "배정 문법 '-거든'은 조건 연결어미라 장단점을 나란히 말하는 이 슬롯에 들어갈 자리가 없어 문법을 비움."
 	},
 	{
@@ -3500,7 +3500,7 @@
 		"hint_cn": "视野比不上以前住的房子，但是明亮干净多了。",
 		"hint_vi": "Tầm nhìn thì không bằng nhà tôi từng ở, nhưng sáng sủa và sạch sẽ hơn nhiều.",
 		"hint_grammar": "만 못하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3516,7 +3516,7 @@
 		"hint_cn": "我想修剪到齐肩的长度，再留一点刘海。",
 		"hint_vi": "Tôi muốn tỉa đến độ dài chạm vai và để một chút tóc mái.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3532,7 +3532,7 @@
 		"hint_cn": "夏天也到了，所以想换个清爽的发型。",
 		"hint_vi": "Mùa hè cũng đến rồi nên tôi muốn đổi sang kiểu tóc mát mẻ hơn.",
 		"hint_grammar": "-고 해서",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3548,7 +3548,7 @@
 		"hint_cn": "两边的头发请留着，别剪得太短。",
 		"hint_vi": "Phần tóc hai bên xin để lại, đừng cắt ngắn quá.",
 		"hint_grammar": "-게",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3564,7 +3564,7 @@
 		"hint_cn": "朋友说学校前面那家面馆又便宜又好吃。",
 		"hint_vi": "Bạn tôi bảo quán mì trước cổng trường vừa rẻ vừa ngon.",
 		"hint_grammar": "간접화법 축약형",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3580,7 +3580,7 @@
 		"hint_cn": "那里的宴会面（janchi-guksu）很有名，晚饭的时候去尝一次吧。",
 		"hint_vi": "Ở đó món mì janchi-guksu nổi tiếng lắm, bữa tối bạn thử ghé một lần đi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "슬롯 1의 '국숫집'과 맞지 않는 메뉴(갈비탕)라 일관되게 고침."
 	},
 	{
@@ -3596,7 +3596,7 @@
 		"hint_cn": "哪里谈得上了解啊，我也只是听说的。",
 		"hint_vi": "Biết rõ gì đâu ạ. Tôi cũng chỉ nghe người ta nói thôi.",
 		"hint_grammar": "-기는요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3612,7 +3612,7 @@
 		"hint_cn": "手机的声音听不太清楚，屏幕看起来也很模糊。",
 		"hint_vi": "Tiếng điện thoại của tôi nghe không rõ, màn hình trông cũng bị mờ.",
 		"hint_grammar": "피동",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3628,7 +3628,7 @@
 		"hint_cn": "有时候电话会自动断掉，而且电池也掉得特别快。",
 		"hint_vi": "Thỉnh thoảng cuộc gọi tự động ngắt, với lại pin cũng hết rất nhanh.",
 		"hint_grammar": "-고요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3644,7 +3644,7 @@
 		"hint_cn": "才买了两个月，可现在几乎没法用了。",
 		"hint_vi": "Tôi mới mua được hai tháng thôi mà giờ gần như không dùng được nữa.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3660,7 +3660,7 @@
 		"hint_cn": "去那儿的话，你就坐地铁去吧。",
 		"hint_vi": "Đến chỗ đó thì bạn cứ đi tàu điện ngầm đi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3676,7 +3676,7 @@
 		"hint_cn": "不开车去，改坐地铁的话，就不用担心停车了。",
 		"hint_vi": "Thay vì lái xe đi mà đi tàu điện ngầm thì không phải lo chỗ đỗ xe.",
 		"hint_grammar": "-는 대신에",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3692,7 +3692,7 @@
 		"hint_cn": "地铁不仅快，票价也便宜得多。",
 		"hint_vi": "Tàu điện ngầm không chỉ nhanh mà giá vé cũng rẻ hơn nhiều.",
 		"hint_grammar": "-을/ㄹ 뿐만 아니라",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3708,7 +3708,7 @@
 		"hint_cn": "那部电影一上映票就全卖光了。",
 		"hint_vi": "Bộ phim đó vừa công chiếu là vé đã bán hết sạch.",
 		"hint_grammar": "-자마자",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3718,14 +3718,14 @@
 		"chapter": 6,
 		"slot_seq": 2,
 		"mission_label": "결과",
-		"hint_ko": "인기가 너무 많아서 저도 결국 표를 못 구했어요.",
-		"hint_en": "It was so popular that in the end I couldn't get a ticket either.",
-		"hint_jp": "人気がありすぎて、私も結局チケットを手に入れられませんでした。",
-		"hint_cn": "因为太受欢迎，我最后也没买到票。",
-		"hint_vi": "Vì quá nổi tiếng nên cuối cùng tôi cũng không mua được vé.",
+		"hint_ko": "인기가 너무 많아서 표를 못 구했고 결국 영화를 못 봤어요.",
+		"hint_en": "It was so popular that I couldn't get a ticket, so in the end I didn't get to see the movie.",
+		"hint_jp": "人気がありすぎてチケットが取れず、結局映画を見られませんでした。",
+		"hint_cn": "因为太受欢迎，我没买到票，最后也没能看成电影。",
+		"hint_vi": "Vì quá nổi tiếng nên tôi không mua được vé, cuối cùng cũng không xem được phim.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 복합 완료조건인 인기의 결과와 최종 관람 여부를 모두 명시"
 	},
 	{
 		"hint_id": "MH-6-06-001-3",
@@ -3740,7 +3740,7 @@
 		"hint_cn": "因为忙着准备考试，我没时间去电影院。",
 		"hint_vi": "Vì bận chuẩn bị thi nên tôi không có thời gian đến rạp.",
 		"hint_grammar": "-느라고",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3756,7 +3756,7 @@
 		"hint_cn": "演员们的演技真的很出色呢。",
 		"hint_vi": "Diễn xuất của các diễn viên thật sự xuất sắc đấy.",
 		"hint_grammar": "-던데요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3772,7 +3772,7 @@
 		"hint_cn": "最后整个舞台变成雨中景象的那一幕，我印象最深。",
 		"hint_vi": "Cảnh cuối khi cả sân khấu biến thành cơn mưa là điều tôi nhớ nhất.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3788,7 +3788,7 @@
 		"hint_cn": "听说这场演出已经演了十年了，是吗？",
 		"hint_vi": "Nghe nói buổi diễn này đã diễn được mười năm rồi, đúng không ạ?",
 		"hint_grammar": "-는다면서요/ㄴ다면서요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "'공연이 … 하고 있다'가 비문이라 '공연을 … 한다면서요?'로 고침."
 	},
 	{
@@ -3804,7 +3804,7 @@
 		"hint_cn": "我给孩子们喂饭，还给他们洗澡，也陪他们一起玩。",
 		"hint_vi": "Tôi cho các bé ăn, tắm rửa cho các bé và cũng chơi cùng các bé nữa.",
 		"hint_grammar": "사동",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3820,7 +3820,7 @@
 		"hint_cn": "一开始我怕孩子受伤，所以特别小心。",
 		"hint_vi": "Lúc đầu tôi sợ các bé bị thương nên đã rất cẩn thận.",
 		"hint_grammar": "-을까/ㄹ까 봐",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3836,7 +3836,7 @@
 		"hint_cn": "孩子们认出我，主动跑过来的时候，我最有成就感。",
 		"hint_vi": "Tôi thấy tự hào nhất là khi các bé nhận ra tôi và chạy đến trước.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3846,14 +3846,14 @@
 		"chapter": 9,
 		"slot_seq": 1,
 		"mission_label": "불편",
-		"hint_ko": "자료가 계속 잘못 나와서 오래 기다리게 해서 정말 죄송해요.",
-		"hint_en": "The data kept coming out wrong and made you wait so long. I'm really sorry.",
-		"hint_jp": "資料が何度も間違って出てきて、長くお待たせしてしまい本当に申し訳ありません。",
-		"hint_cn": "资料一直出错，让您等了这么久，真的很抱歉。",
-		"hint_vi": "Tài liệu cứ bị lỗi liên tục nên đã để anh/chị phải chờ lâu, tôi thật sự xin lỗi.",
+		"hint_ko": "자료가 계속 잘못 나오는 바람에 오래 기다리게 해서 정말 죄송해요.",
+		"hint_en": "The materials kept coming out wrong, so I made you wait a long time. I'm really sorry.",
+		"hint_jp": "資料が何度も間違って出てきたせいで、長くお待たせしてしまい本当に申し訳ありません。",
+		"hint_cn": "资料一直出错，害您等了这么久，真的很抱歉。",
+		"hint_vi": "Do tài liệu cứ liên tục bị lỗi nên đã để anh/chị phải chờ lâu, tôi thật sự xin lỗi.",
 		"hint_grammar": "-게 하다",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — '잘못 나와서 ... 기다리게 해서'의 반복적인 연결을 더 자연스럽게 다듬음"
 	},
 	{
 		"hint_id": "MH-6-09-001-2",
@@ -3868,7 +3868,7 @@
 		"hint_cn": "本来想在午饭前完成的，结果一直要重做，就拖到了现在。",
 		"hint_vi": "Tôi định làm xong trước bữa trưa nhưng cứ phải làm lại nên mới kéo dài đến giờ này.",
 		"hint_grammar": "-는다는/ㄴ다는 것이",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v53 — '자꾸 다시 하게 돼서'는 무엇을 다시 하는지가 빠져 번역(redo/修改)보다 한국어가 흐렸다"
 	},
 	{
@@ -3884,7 +3884,7 @@
 		"hint_cn": "剩下的部分我今晚整理完，明天一早马上交给您。",
 		"hint_vi": "Phần còn lại tôi sẽ hoàn thành trong tối nay và sáng mai đưa cho anh/chị ngay.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3894,14 +3894,14 @@
 		"chapter": 10,
 		"slot_seq": 1,
 		"mission_label": "방법 안내",
-		"hint_ko": "편의점에서 종량제 봉투를 사다가 거기에 넣어서 내놓으면 돼요.",
-		"hint_en": "You buy a standard trash bag at the convenience store, put it in there, and set it out.",
-		"hint_jp": "コンビニで従量制のごみ袋を買ってきて、そこに入れて出せばいいです。",
-		"hint_cn": "你在便利店买来专用垃圾袋，装进去再拿出去放就行了。",
-		"hint_vi": "Bạn mua túi rác tính phí ở cửa hàng tiện lợi rồi cho vào đó và mang ra để là được.",
+		"hint_ko": "편의점에서 종량제 봉투를 사다가 쓰레기를 거기에 넣어 내놓으면 돼요.",
+		"hint_en": "Buy a standard trash bag at a convenience store, put the trash in it, and set it out.",
+		"hint_jp": "コンビニで指定ごみ袋を買ってきて、ごみをその中に入れて出せばいいです。",
+		"hint_cn": "从便利店买来专用垃圾袋，把垃圾装进去后放到外面就行了。",
+		"hint_vi": "Bạn mua túi rác chuyên dụng ở cửa hàng tiện lợi, cho rác vào đó rồi mang ra ngoài là được.",
 		"hint_grammar": "-어다가/아다가/여다가",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — 목적어가 빠져 모호했던 처리 절차에 '쓰레기'를 명시함"
 	},
 	{
 		"hint_id": "MH-6-10-001-2",
@@ -3916,7 +3916,7 @@
 		"hint_cn": "厨余垃圾一定要单独收集起来再扔。",
 		"hint_vi": "Rác thực phẩm nhất định phải gom riêng rồi mới vứt nhé.",
 		"hint_grammar": "-도록 하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3932,7 +3932,7 @@
 		"hint_cn": "我顺路给你买袋子带过来，好吗？",
 		"hint_vi": "Trên đường đi tôi mua túi rồi mang đến cho bạn nhé?",
 		"hint_grammar": "-어다가/아다가/여다가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3948,7 +3948,7 @@
 		"hint_cn": "外面只有一点灰尘，扇叶和按钮都还完好。",
 		"hint_vi": "Bên ngoài chỉ hơi bụi một chút thôi, còn cánh quạt và nút bấm vẫn còn nguyên vẹn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3964,7 +3964,7 @@
 		"hint_cn": "这种状态还能用，完全值得拿去卖。",
 		"hint_vi": "Tình trạng thế này thì vẫn dùng được nên hoàn toàn đáng để bán.",
 		"hint_grammar": "-을/ㄹ 만하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3980,7 +3980,7 @@
 		"hint_cn": "你是说，一口用了十年的锅卖了三万韩元？",
 		"hint_vi": "Bạn bảo là đã bán cái nồi đã dùng mười năm với giá ba mươi nghìn won á?",
 		"hint_grammar": "-는단/ㄴ단 말이에요?",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -3996,7 +3996,7 @@
 		"hint_cn": "不好意思，今天我恐怕帮不上忙。",
 		"hint_vi": "Xin lỗi nhưng hôm nay chắc tôi khó giúp được bạn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이라 한 문장으로 합침."
 	},
 	{
@@ -4012,7 +4012,7 @@
 		"hint_cn": "因为我为了延长签证，已经预约好了。",
 		"hint_vi": "Là vì tôi đã đặt lịch hẹn sẵn để gia hạn visa rồi ạ.",
 		"hint_grammar": "-어/아/여 놓다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4028,7 +4028,7 @@
 		"hint_cn": "看样子您很着急，要不要去问问别人？",
 		"hint_vi": "Có vẻ anh/chị đang rất gấp, hay là thử hỏi người khác xem sao ạ?",
 		"hint_grammar": "-은/ㄴ 모양이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4044,7 +4044,7 @@
 		"hint_cn": "如果出现了不用人开的汽车，就算深夜也能安全回家了。",
 		"hint_vi": "Nếu xe hơi không cần người lái ra đời thì dù đêm khuya cũng có thể về nhà an toàn.",
 		"hint_grammar": "-는다면/ㄴ다면",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4060,7 +4060,7 @@
 		"hint_cn": "那样的话，驾照也不需要了，事故也会大大减少。",
 		"hint_vi": "Nếu vậy thì bằng lái xe cũng không cần nữa và tai nạn cũng sẽ giảm đi nhiều.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4076,7 +4076,7 @@
 		"hint_cn": "我在新闻上看到，已经有些国家在跑没有司机的出租车了。",
 		"hint_vi": "Tôi xem trên tin tức thấy nói ở một số nước đã có taxi không người lái chạy rồi.",
 		"hint_grammar": "-는답니다/ㄴ답니다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4092,7 +4092,7 @@
 		"hint_cn": "上周我在练歌房尽情地喊了一通，真的觉得特别痛快。",
 		"hint_vi": "Tuần trước tôi đã hét thỏa thích ở quán karaoke, quả thật thấy rất sảng khoái.",
 		"hint_grammar": "-더라고요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "절이 셋이라 길어서 두 절로 줄임."
 	},
 	{
@@ -4108,7 +4108,7 @@
 		"hint_cn": "像运动啊、旅行啊，人们好像经常做一些活动身体的事。",
 		"hint_vi": "Kiểu như tập thể dục hay đi du lịch, hình như mọi người hay làm những việc vận động cơ thể.",
 		"hint_grammar": "이라든가/라든가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4124,7 +4124,7 @@
 		"hint_cn": "你去游乐园那样的地方，尽情喊一通再回来吧。",
 		"hint_vi": "Bạn hãy đến chỗ như công viên giải trí, hét thật thỏa thích rồi về nhé.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4140,7 +4140,7 @@
 		"hint_cn": "这段时间您各方面都很照顾我，真的非常感谢。",
 		"hint_vi": "Suốt thời gian qua anh/chị đã quan tâm giúp đỡ tôi đủ điều, tôi thật sự rất biết ơn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4156,7 +4156,7 @@
 		"hint_cn": "我正好今天也打算跟您联系呢。",
 		"hint_vi": "Đúng lúc hôm nay tôi cũng đang định liên lạc với anh/chị.",
 		"hint_grammar": "-으려던/려던 참이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4172,7 +4172,7 @@
 		"hint_cn": "您一定很忙，还抽时间出来，谢谢您。以后可能不能常见面了，真舍不得。",
 		"hint_vi": "Chắc anh/chị bận lắm mà vẫn dành thời gian cho tôi, cảm ơn anh/chị. Từ giờ chắc không gặp thường xuyên được nên tôi thấy tiếc.",
 		"hint_grammar": "-을/ㄹ 텐데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "두 문장이라 한 문장 두 절로 합침."
 	},
 	{
@@ -4188,7 +4188,7 @@
 		"hint_cn": "刚开始的时候韩语难得不得了，上课时我一句话都说不出来。",
 		"hint_vi": "Lúc đầu tiếng Hàn khó đến mức trong giờ học tôi không nói được một câu nào.",
 		"hint_grammar": "어찌나 -는지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4204,7 +4204,7 @@
 		"hint_cn": "不过只要不放弃、每天坚持听，听着听着某个瞬间就开始听得懂了。",
 		"hint_vi": "Nhưng nếu không bỏ cuộc mà cứ nghe mỗi ngày thì đến một lúc nào đó tự nhiên sẽ nghe ra.",
 		"hint_grammar": "-다가 보면",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4220,7 +4220,7 @@
 		"hint_cn": "我明白了不能一个人硬撑，应该先主动开口求助。",
 		"hint_vi": "Tôi đã nhận ra rằng đừng một mình chịu đựng mà phải chủ động nhờ giúp đỡ trước.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4236,7 +4236,7 @@
 		"hint_cn": "在我家乡就算是长辈也直接叫名字，可我发现在韩国一定要加上职称来称呼。",
 		"hint_vi": "Ở quê tôi thì người lớn cũng gọi bằng tên, nhưng ở Hàn Quốc tôi thấy nhất định phải gọi kèm chức danh.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4252,7 +4252,7 @@
 		"hint_cn": "我当时太慌张了，差点连招呼都没打就那么出来了。",
 		"hint_vi": "Tôi bối rối đến mức suýt nữa thì chào cũng không chào mà cứ thế đi ra ngoài.",
 		"hint_grammar": "-을 뻔하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4268,7 +4268,7 @@
 		"hint_cn": "现在我好像有点明白韩国人为什么会先问年龄了。",
 		"hint_vi": "Bây giờ thì tôi thấy mình đã hiểu phần nào vì sao người Hàn lại hỏi tuổi trước.",
 		"hint_grammar": "-는지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4284,7 +4284,7 @@
 		"hint_cn": "契机是去年打工的时候，一天要接待几十位客人。",
 		"hint_vi": "Bước ngoặt là năm ngoái khi làm thêm, mỗi ngày tôi gặp mấy chục vị khách.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4300,7 +4300,7 @@
 		"hint_cn": "我主动打招呼、主动搭话之后，身边的人就多起来了。",
 		"hint_vi": "Khi tôi chủ động chào hỏi và bắt chuyện trước thì xung quanh tôi đông người hẳn lên.",
 		"hint_grammar": "-었더니",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4310,14 +4310,14 @@
 		"chapter": 3,
 		"slot_seq": 3,
 		"mission_label": "판단 기준",
-		"hint_ko": "혼자 조용히 앉아서 하는 일을 하기에는 지금 성격이 안 맞아서, 사람을 많이 만나는 일이 잘 맞을 것 같아요.",
-		"hint_en": "My personality now doesn't suit sitting quietly on my own, so I think a job where I meet a lot of people fits me better.",
-		"hint_jp": "一人で静かに座ってする仕事をするには今の性格が合わないので、人にたくさん会う仕事のほうが合いそうです。",
-		"hint_cn": "要做一个人安静坐着的工作，我现在的性格不太合适，我觉得接触很多人的工作更适合我。",
-		"hint_vi": "Để làm công việc ngồi yên một mình thì tính cách bây giờ của tôi không hợp, nên tôi nghĩ công việc gặp gỡ nhiều người sẽ hợp hơn.",
+		"hint_ko": "지금 성격은 혼자 조용히 앉아서 일하기에는 너무 활동적이라 사람을 많이 만나는 일이 더 잘 맞을 것 같아요.",
+		"hint_en": "With my personality now, I'm too active for a job where I sit quietly alone, so I think work that involves meeting lots of people would suit me better.",
+		"hint_jp": "今の性格では、一人で静かに座って働くには活動的すぎるので、人にたくさん会う仕事のほうが合いそうです。",
+		"hint_cn": "我现在的性格太好动，不太适合一个人静静坐着工作，所以我觉得经常与人接触的工作更适合我。",
+		"hint_vi": "Với tính cách hiện giờ, tôi quá năng động để làm công việc ngồi yên một mình, nên tôi nghĩ công việc gặp gỡ nhiều người sẽ hợp hơn.",
 		"hint_grammar": "-기에는",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — 중복된 '일을 하다' 구조를 줄이고 성격과 직업의 판단 기준을 자연스럽게 연결함"
 	},
 	{
 		"hint_id": "MH-7-04-001-1",
@@ -4332,7 +4332,7 @@
 		"hint_cn": "搬家前一天搬家公司说来不了，这是怎么回事啊？",
 		"hint_vi": "Trước ngày chuyển nhà một hôm mà công ty vận chuyển bảo không đến được, chuyện gì thế này?",
 		"hint_grammar": "-다니",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4348,7 +4348,7 @@
 		"hint_cn": "一想到要一个人搬那么多东西，您该有多不知所措啊。",
 		"hint_vi": "Nghĩ đến cảnh một mình chuyển từng ấy đồ thôi thì chắc bạn thấy bế tắc lắm.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4364,7 +4364,7 @@
 		"hint_cn": "偏偏我明天上午要做报告，实在是没法去啊。",
 		"hint_vi": "Đúng lúc sáng mai tôi lại có buổi thuyết trình, nên có muốn đi cũng chẳng đi được.",
 		"hint_grammar": "-을 수가 있어야지요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4380,7 +4380,7 @@
 		"hint_cn": "我也有过分别的时候被韩国朋友说“改天一起吃顿饭吧”的经历。",
 		"hint_vi": "Tôi cũng từng được một người bạn Hàn nói lúc chia tay rằng “hôm nào ăn cơm với nhau nhé”.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4396,7 +4396,7 @@
 		"hint_cn": "我一开始还以为是真的约好了，后来才知道那只不过是表示亲近的客套话而已。",
 		"hint_vi": "Ban đầu tôi cũng tưởng đó là hẹn thật, hóa ra chỉ là câu chào thể hiện sự thân thiện mà thôi.",
 		"hint_grammar": "-을 뿐이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4412,7 +4412,7 @@
 		"hint_cn": "当时要是早点知道这种寒暄文化，我就不会白白地等对方联系了。",
 		"hint_vi": "Nếu hồi đó tôi biết trước văn hóa chào hỏi này thì đã không ngồi chờ liên lạc một cách vô ích.",
 		"hint_grammar": "-었더라면",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4428,7 +4428,7 @@
 		"hint_cn": "我梦见一头大猪推开大门走进了家里。",
 		"hint_vi": "Đó là giấc mơ một con lợn to mở cổng đi vào trong nhà.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4444,7 +4444,7 @@
 		"hint_cn": "大概是因为最近准备考试太费神了，才做了那样的梦。",
 		"hint_vi": "Chắc là do dạo này tôi lo nghĩ nhiều vì chuẩn bị thi nên mới mơ như vậy.",
 		"hint_grammar": "-는 바람에",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "'때문에'와 '-는 바람에'가 겹쳐 원인 표현이 중복돼 정리함."
 	},
 	{
@@ -4454,14 +4454,14 @@
 		"chapter": 6,
 		"slot_seq": 3,
 		"mission_label": "의미 해석",
-		"hint_ko": "돼지가 나오는 꿈은 재물이 들어온다고 하니까, 저한테도 좋은 소식이 올 꿈이었던 것 같아요.",
-		"hint_en": "They say dreaming of a pig means money is coming, so I think it was a dream telling me good news is on the way.",
-		"hint_jp": "豚が出てくる夢は財運が入ってくると言いますから、私にもいい知らせが来る夢だったような気がします。",
-		"hint_cn": "听说梦见猪是要发财的兆头，所以我觉得那大概是个预示好消息的梦。",
-		"hint_vi": "Nghe nói mơ thấy lợn là điềm có tài lộc, nên chắc đó là giấc mơ báo tin vui sắp đến với tôi.",
-		"hint_grammar": "-았던 것 같다",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"hint_ko": "돼지가 나오는 꿈은 재물이 들어온다고 하니까, 저한테도 좋은 소식이 찾아올 징조였던 것 같아요.",
+		"hint_en": "They say dreaming of a pig means money is coming, so I think it was a sign that good news would come my way too.",
+		"hint_jp": "豚が出てくる夢は財運が入ってくると言いますから、私にもいい知らせが訪れる兆しだったようです。",
+		"hint_cn": "听说梦见猪是要发财的兆头，所以我觉得那好像也是好消息将要降临到我身上的预兆。",
+		"hint_vi": "Nghe nói mơ thấy lợn là điềm có tài lộc, nên tôi nghĩ đó cũng là dấu hiệu tin vui sắp đến với mình.",
+		"hint_grammar": "-았/었/였던 것 같다",
+		"review_status": "reviewed",
+		"change_note": "v55 — 어색한 '소식이 올 꿈'을 자연스러운 '소식이 찾아올 징조'로 수정함"
 	},
 	{
 		"hint_id": "MH-7-07-001-1",
@@ -4476,7 +4476,7 @@
 		"hint_cn": "朋友说最近一个人去吃烤肉的人很多，所以我也想去试一次。",
 		"hint_vi": "Bạn tôi nói dạo này có nhiều người đi ăn thịt nướng một mình nên tôi cũng muốn thử đi một lần.",
 		"hint_grammar": "-는다기에",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — 정보 출처 미션이 실제로 출처+들은 내용을 모두 담도록 예시를 수정. prompt user_example과 동기화."
 	},
 	{
@@ -4492,7 +4492,7 @@
 		"hint_cn": "上周末我去了一家专为一个人开的烤肉店，自己烤五花肉吃了。",
 		"hint_vi": "Cuối tuần trước tôi đã đến quán thịt nướng dành riêng cho một người và tự nướng thịt ba chỉ ăn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4508,7 +4508,7 @@
 		"hint_cn": "怕尴尬就坐到了角落，结果反而很自在，我待了整整两个小时。",
 		"hint_vi": "Sợ ngượng nên tôi ngồi ở góc, ai ngờ lại thoải mái nên tôi ngồi luôn hai tiếng đồng hồ.",
 		"hint_grammar": "-었다가",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "한 문장에 '-다가'가 두 번 나와 뒤쪽을 정리함."
 	},
 	{
@@ -4524,7 +4524,7 @@
 		"hint_cn": "为了不浪费钱，我一定会比较价格之后再买。",
 		"hint_vi": "Để không lãng phí tiền, tôi luôn so sánh giá rồi mới mua.",
 		"hint_grammar": "-도록",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4540,7 +4540,7 @@
 		"hint_cn": "都怪我只挑便宜的买，家里堆了一大堆根本用不上的东西。",
 		"hint_vi": "Chỉ vì toàn tìm đồ rẻ mà nhà tôi chất đầy những thứ chẳng dùng đến.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4556,7 +4556,7 @@
 		"hint_cn": "再这么花下去的话，下个月的信用卡账单我可付不起。",
 		"hint_vi": "Cứ tiêu kiểu này thì tháng sau tôi sẽ không kham nổi tiền thẻ tín dụng đâu.",
 		"hint_grammar": "-다가는",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4572,7 +4572,7 @@
 		"hint_cn": "以前一到节日，大家都会穿韩服或者穿正装。",
 		"hint_vi": "Ngày trước cứ đến dịp lễ tết là ai nấy đều mặc hanbok hoặc mặc vest chỉnh tề.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4582,14 +4582,14 @@
 		"chapter": 9,
 		"slot_seq": 2,
 		"mission_label": "변화 행동",
-		"hint_ko": "저도 뒤처지는 게 싫어서 뭐에 쫓기는 듯이 유행하는 옷을 사러 다녔어요.",
-		"hint_en": "I hated the idea of falling behind, so I went around buying trendy clothes as if something were chasing me.",
+		"hint_ko": "저도 뒤처지는 게 싫어서 뭔가에 쫓기는 듯이 유행하는 옷을 사러 다녔어요.",
+		"hint_en": "I hated the idea of falling behind, so I went around buying trendy clothes as if I were being chased by something.",
 		"hint_jp": "私も遅れを取るのが嫌で、何かに追われるように流行の服を買い回りました。",
 		"hint_cn": "我也不想落后，就像被什么追着一样到处买流行的衣服。",
-		"hint_vi": "Tôi cũng ghét bị tụt lại phía sau nên cứ như bị ai đó rượt đuổi mà đi mua quần áo đang thịnh hành.",
+		"hint_vi": "Tôi cũng ghét bị tụt lại phía sau nên cứ như bị thứ gì đó rượt đuổi mà đi mua quần áo đang thịnh hành.",
 		"hint_grammar": "-는 듯이",
-		"review_status": "draft_v53",
-		"change_note": "v53 — '매장으로 달려갔다'에서 끊겨 미션이 요구한 '옷을 사거나 스타일을 바꾼 일'이 빠져 있었다. 결과 슬롯(사 버렸어요)과 겹치지 않게 '사러 다녔다'로"
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — '뭐에 쫓기는 듯이'를 더 자연스러운 '뭔가에 쫓기는 듯이'로 다듬음"
 	},
 	{
 		"hint_id": "MH-7-09-001-3",
@@ -4604,7 +4604,7 @@
 		"hint_cn": "价格挺有压力的，但我一狠心还是买下来了。",
 		"hint_vi": "Giá thì hơi quá sức nhưng tôi nhắm mắt mua luôn.",
 		"hint_grammar": "-어 버리다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4620,7 +4620,7 @@
 		"hint_cn": "以前缩略语不多，大家都会把句子从头到尾清清楚楚地说完。",
 		"hint_vi": "Ngày trước ít từ viết tắt nên ai cũng nói trọn câu, rõ ràng từng chữ.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4636,7 +4636,7 @@
 		"hint_cn": "就拿“점메추”来说，它就是“午餐菜单推荐”的缩略语。",
 		"hint_vi": "Chỉ riêng từ ‘점메추’ thôi cũng đã là dạng viết tắt của “gợi ý thực đơn bữa trưa”.",
 		"hint_grammar": "-만 해도",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v53 — 번역투를 다듬고 줄임말의 원말을 따옴표로 묶어 대응을 보이게 함"
 	},
 	{
@@ -4652,7 +4652,7 @@
 		"hint_cn": "使用的人变了，语言自然也会跟着变，所以我觉得这是很正常的事。",
 		"hint_vi": "Người sử dụng thay đổi thì ngôn ngữ tất nhiên cũng thay đổi theo, nên tôi thấy đó là chuyện tự nhiên.",
 		"hint_grammar": "-게 마련이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4668,7 +4668,7 @@
 		"hint_cn": "以前大家都认为到了年纪就该结婚，那是理所当然的。",
 		"hint_vi": "Ngày trước ai cũng nghĩ đến tuổi thì kết hôn là chuyện đương nhiên.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4684,7 +4684,7 @@
 		"hint_cn": "身边的人以前都说结婚是非做不可的，可最近却都说一个人过也挺好。",
 		"hint_vi": "Trước đây những người xung quanh cứ bảo nhất định phải kết hôn, vậy mà dạo này lại nói sống một mình cũng được.",
 		"hint_grammar": "-더니",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4700,7 +4700,7 @@
 		"hint_cn": "人们的生活方式变了，原本认为正确的标准自然也会跟着改变。",
 		"hint_vi": "Cách sống của con người thay đổi thì những chuẩn mực từng được coi là đúng cũng phải đổi theo.",
 		"hint_grammar": "-는 법이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4716,7 +4716,7 @@
 		"hint_cn": "看了记录晨练者一天生活的视频之后，我也开始早起了。",
 		"hint_vi": "Sau khi xem video ghi lại một ngày của những người tập thể dục buổi sáng, tôi cũng bắt đầu dậy sớm.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4732,7 +4732,7 @@
 		"hint_cn": "那个视频只不过是展示了平凡的一天而已，可反倒是这一点打动了我。",
 		"hint_vi": "Video đó chẳng qua chỉ cho thấy một ngày rất đỗi bình thường, vậy mà chính điều đó lại làm tôi xúc động.",
 		"hint_grammar": "-을 따름이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4748,7 +4748,7 @@
 		"hint_cn": "既然早上早起了，索性连简单的伸展运动也做上了。",
 		"hint_vi": "Nhân tiện dậy sớm buổi sáng, tôi còn tập luôn vài động tác giãn cơ đơn giản.",
 		"hint_grammar": "-는 김에",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4764,7 +4764,7 @@
 		"hint_cn": "我觉得首先应该马上把那张照片撤下来。",
 		"hint_vi": "Trước hết, tôi nghĩ nên gỡ ngay tấm ảnh đó xuống.",
 		"hint_grammar": "",
-		"review_status": "draft_v55",
+		"review_status": "reviewed",
 		"change_note": "v55 — 눈앞의 상대에게 실제 조언을 하는 상황에 맞게 간접 명령형 예시를 자연스러운 직접 조언으로 수정."
 	},
 	{
@@ -4780,7 +4780,7 @@
 		"hint_cn": "照片里连家庭住址都原样露出来了，我怎么想都觉得这太危险了。",
 		"hint_vi": "Vì tôi thấy ảnh để lộ nguyên cả địa chỉ nhà thì dù sao cũng nguy hiểm.",
 		"hint_grammar": "-는다 싶다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4796,7 +4796,7 @@
 		"hint_cn": "地址还留在上面的话，陌生人有可能会找上门来。",
 		"hint_vi": "Nếu địa chỉ còn để đó thì người lạ có thể tìm đến tận nhà.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4812,7 +4812,7 @@
 		"hint_cn": "那一带老韩屋和新盖的建筑紧挨在一起，所以每条巷子的氛围都不一样。",
 		"hint_vi": "Khu đó có những ngôi nhà hanok cũ nằm sát cạnh các tòa nhà mới xây, nên mỗi con hẻm lại có một bầu không khí khác nhau.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4828,7 +4828,7 @@
 		"hint_cn": "白天可以在安静的茶馆里喝茶，到了晚上每条巷子里又聚满了年轻人。",
 		"hint_vi": "Ban ngày thì ngồi uống trà trong quán trà yên tĩnh, còn ban đêm thì hẻm nào cũng đầy người trẻ tụ tập.",
 		"hint_grammar": "-는가 하면",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4844,7 +4844,7 @@
 		"hint_cn": "早知道那时候就该租一套韩服穿上拍几张照片。",
 		"hint_vi": "Biết vậy lúc đó tôi đã thuê hanbok mặc rồi chụp ảnh.",
 		"hint_grammar": "-을걸 그랬다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4860,7 +4860,7 @@
 		"hint_cn": "我去了趟海边，一来是去透透气，二来也是去拍拍照。",
 		"hint_vi": "Tôi đã ra biển một chuyến, vừa để hóng gió vừa để chụp ảnh.",
 		"hint_grammar": "-을 겸",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4876,7 +4876,7 @@
 		"hint_cn": "去之前身子沉甸甸的，可听了海浪声之后头脑一下子就清爽了。",
 		"hint_vi": "Trước khi đi người tôi nặng nề lắm, nhưng nghe tiếng sóng xong thì đầu óc nhẹ hẳn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4892,7 +4892,7 @@
 		"hint_cn": "周末别光在家睡觉，哪怕去附近的公园走走也好。",
 		"hint_vi": "Cuối tuần đừng chỉ ở nhà ngủ, bạn hãy thử đi bộ ở công viên gần nhà xem.",
 		"hint_grammar": "-을 게 아니라",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4902,14 +4902,14 @@
 		"chapter": 1,
 		"slot_seq": 1,
 		"mission_label": "변화 인정",
-		"hint_ko": "작년에 동료 한 명이 반년이나 쉬는 걸 보니 육아 휴직을 쓰긴 쓰나 봐요.",
-		"hint_en": "Seeing a coworker take a whole six months off last year, it looks like people really do use parental leave after all.",
-		"hint_jp": "去年、同僚が半年も休むのを見ると、育児休業を取るには取るようですね。",
-		"hint_cn": "去年看到一位同事一休就是半年，看来育儿假还真是有人在用的。",
-		"hint_vi": "Năm ngoái thấy một đồng nghiệp nghỉ hẳn nửa năm, xem ra chế độ nghỉ chăm con thì người ta cũng có dùng thật.",
+		"hint_ko": "작년에 남자 동료 한 명이 반년이나 육아 휴직을 쓴 걸 보니 남성도 육아 휴직을 쓰긴 쓰나 봐요.",
+		"hint_en": "Seeing a male coworker take six months of parental leave last year, it looks like men really do use parental leave now.",
+		"hint_jp": "去年、男性の同僚が半年も育児休業を取ったのを見て、男性も実際に育児休業を取るようになったんだなと思います。",
+		"hint_cn": "去年看到一位男同事休了半年育儿假，看来男性现在确实也会休育儿假了。",
+		"hint_vi": "Năm ngoái thấy một đồng nghiệp nam nghỉ chăm con suốt nửa năm, tôi thấy giờ đàn ông cũng thực sự dùng chế độ nghỉ chăm con.",
 		"hint_grammar": "-긴 -나 봐요",
-		"review_status": "draft_v53",
-		"change_note": "v53 — 일본 법정 용어는 育児休職이 아니라 育児休業. 「取るには取る」 구문은 '쓰긴 쓰다'의 대응이라 유지"
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 남성 육아휴직 변화 미션인데 사례의 성별이 불명확했던 점을 명시"
 	},
 	{
 		"hint_id": "MH-8-01-001-2",
@@ -4924,7 +4924,7 @@
 		"hint_cn": "以前都把育儿只当成妈妈的事，现在大家都说一起带孩子才是理所当然的。",
 		"hint_vi": "Ngày trước người ta chỉ coi việc nuôi con là phần của người mẹ, còn dạo này ai cũng nói cùng nhau nuôi dạy con mới là đương nhiên.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "'쪽으로 옮겨 가고 있어요'가 문어체라 대화체로 바꿈."
 	},
 	{
@@ -4934,14 +4934,14 @@
 		"chapter": 1,
 		"slot_seq": 3,
 		"mission_label": "한계선",
-		"hint_ko": "아무리 제도가 좋아졌기로서니 육아 휴직을 쓰는 사람에게 눈치를 주는 건 아직도 문제잖아요.",
-		"hint_en": "No matter how much the system has improved, it's still a problem to make people feel pressured for taking parental leave.",
-		"hint_jp": "いくら制度が良くなったからといって、育児休業を取る人に周りの目を気にさせるのは今でも問題じゃないですか。",
-		"hint_cn": "就算制度改善了很多，让休育儿假的人看人脸色这件事现在还是有问题的吧。",
-		"hint_vi": "Dù chế độ đã tốt lên đến đâu thì việc khiến người nghỉ chăm con phải nhìn sắc mặt người khác vẫn là vấn đề.",
+		"hint_ko": "아무리 제도가 좋아졌기로서니 쉬겠다고 말할 때 눈치를 보게 되는 분위기까지 사라진 건 아니잖아요.",
+		"hint_en": "No matter how much the system has improved, that doesn't mean the atmosphere that makes you read the room before saying you'll take leave has disappeared too, does it?",
+		"hint_jp": "いくら制度が良くなったからといって、休むと言うときに周りの目を気にしてしまう雰囲気まで消えたわけではないじゃないですか。",
+		"hint_cn": "就算制度再怎么改善，说要休假时那种得看人脸色的气氛也并没有跟着消失啊。",
+		"hint_vi": "Dù chế độ có tốt lên đến mấy đi nữa thì cái không khí phải dò xét thái độ người khác khi nói mình sẽ nghỉ đâu đã biến mất.",
 		"hint_grammar": "아무리 -기로서니",
-		"review_status": "draft_v55",
-		"change_note": "v55 — '-기로서니' 뒤에 비판할 행동이 오도록 모범 문장을 문법적으로 자연스럽게 수정."
+		"review_status": "reviewed",
+		"change_note": ""
 	},
 	{
 		"hint_id": "MH-8-02-001-1",
@@ -4956,7 +4956,7 @@
 		"hint_cn": "“大雁家庭”和多元文化家庭多了起来，独自生活的人也猛增。",
 		"hint_vi": "Những gia đình “ngỗng trời” sống xa nhau hay gia đình đa văn hóa cũng nhiều lên, và số người sống một mình cũng tăng hẳn.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -4972,7 +4972,7 @@
 		"hint_cn": "和父母那一辈不同，现在别说着急结婚了，很多人还在想是不是非结不可。",
 		"hint_vi": "Khác với thế hệ cha mẹ, bây giờ đừng nói là vội kết hôn, nhiều người còn nghĩ liệu có nhất thiết phải kết hôn không.",
 		"hint_grammar": "-기는커녕",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "세 절로 길어서 세대 비교를 앞절로 압축해 두 절로 줄임."
 	},
 	{
@@ -4988,7 +4988,7 @@
 		"hint_cn": "我有个朋友一个人住，连饭都总是吃一半不吃一半地凑合过。",
 		"hint_vi": "Tôi có một người bạn sống một mình, bữa ăn lúc nào cũng qua loa cho có, ăn cũng như không.",
 		"hint_grammar": "-는 둥 마는 둥",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v53 — KO '친구 하나'는 성별이 없는데 EN 만 he 를 붙였다. singular they 로"
 	},
 	{
@@ -5004,7 +5004,7 @@
 		"hint_cn": "想看的电视剧越积越多，可又要上班又要照顾孩子，连看一集的空闲都没有。",
 		"hint_vi": "Phim muốn xem thì cứ chồng chất lên, mà hết đi làm lại lo cho con, tôi chẳng có thời gian xem nổi một tập.",
 		"hint_grammar": "-으랴 -으랴",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5020,7 +5020,7 @@
 		"hint_cn": "周末要是能空出半天还说得过去，平日里我是怎么也看不了的。",
 		"hint_vi": "Nếu cuối tuần rảnh được nửa ngày thì còn có thể, chứ ngày thường thì tôi chịu, không xem nổi.",
 		"hint_grammar": "-으면 몰라도",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5036,7 +5036,7 @@
 		"hint_cn": "只要下个月项目一结束，我打算从那时起一口气全看完。",
 		"hint_vi": "Chỉ cần tháng sau dự án kết thúc là tôi định xem một lèo cho hết.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "배정된 '-으랴 -으랴'는 여러 일이 겹쳐 바쁘다는 뜻이라 '언제쯤 볼 수 있는가'에는 붙을 자리가 없어 비움(슬롯 1에서 이미 성립)."
 	},
 	{
@@ -5052,7 +5052,7 @@
 		"hint_cn": "为了做这份工作，我三年里每天天不亮就去补习班，准备考资格证。",
 		"hint_vi": "Để làm công việc này, suốt ba năm sáng nào tôi cũng đi học ở trung tâm từ sớm tinh mơ để ôn thi chứng chỉ.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5068,7 +5068,7 @@
 		"hint_cn": "我拼成那样，可第一年还是落榜落得干干净净，之后有一阵子就撒手不管了。",
 		"hint_vi": "Tôi đã dốc sức đến thế vậy mà năm đầu vẫn trượt một cách thảm hại, nên đã buông xuôi một thời gian.",
 		"hint_grammar": "-건만",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5084,7 +5084,7 @@
 		"hint_cn": "休息期间临时帮忙做的一份工作很适合我，最后我就转到了这个方向。",
 		"hint_vi": "Trong lúc nghỉ, công việc tôi phụ giúp một thời gian ngắn lại hợp với tôi, nên cuối cùng tôi đã rẽ sang hướng này.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5100,7 +5100,7 @@
 		"hint_cn": "要说心里话，我是想再多挑战一段时间的，可条件不允许，就选了稳定的那条路。",
 		"hint_vi": "Nói thật lòng thì tôi muốn thử sức thêm một thời gian nữa, nhưng hoàn cảnh không cho phép nên tôi đã chọn con đường ổn định.",
 		"hint_grammar": "같아선",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5116,7 +5116,7 @@
 		"hint_cn": "离散家属紧握着一张照片痛哭的场面，一直留在我心里。",
 		"hint_vi": "Cảnh người thân trong gia đình ly tán ôm chặt một tấm ảnh mà khóc cứ mãi đọng lại trong lòng tôi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5132,7 +5132,7 @@
 		"hint_cn": "故乡就在眼前，可想去也去不了——这一点对我触动最大。",
 		"hint_vi": "Điều khiến tôi thấm thía nhất là quê hương ngay trước mắt mà muốn về cũng không về được.",
 		"hint_grammar": "-을래야 -을 수가 없다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5148,7 +5148,7 @@
 		"hint_cn": "那种心情与其说是悲伤，不如说更接近委屈不甘。",
 		"hint_vi": "Tâm trạng đó, thay vì nói là buồn, thì có lẽ gần với sự uất ức hơn.",
 		"hint_grammar": "-는다기보다는",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "'-다기보다는' 앞뒤 형태가 안 맞아('슬프다'/'억울함') 대응을 맞춤."
 	},
 	{
@@ -5164,7 +5164,7 @@
 		"hint_cn": "有很多人批评说这归根到底只是商家的手段，也有人说当作乐趣过一过不就行了。",
 		"hint_vi": "Nhiều người phê phán rằng rốt cuộc đó chỉ là chiêu trò bán hàng, cũng có người bảo cứ coi như một niềm vui mà kỷ niệm thì có sao đâu.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5180,7 +5180,7 @@
 		"hint_cn": "就是为了多卖出一件东西，才不断造出新的节日来。",
 		"hint_vi": "Chẳng qua là để bán thêm được dù chỉ một món hàng nên họ cứ liên tục nghĩ ra ngày mới.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5196,7 +5196,7 @@
 		"hint_cn": "我曾想着要好好关心朋友，特意挑了份贵重的礼物，结果反而给对方添了负担。",
 		"hint_vi": "Tôi từng nghĩ là mình đang quan tâm đến bạn nên chọn một món quà đắt tiền, nhưng cuối cùng lại khiến bạn thấy áp lực.",
 		"hint_grammar": "-는답시고",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v53 — '-답시고'는 행위자가 진심으로 위한다고 여긴 일을 화자가 못마땅해하는 것인데, EN/CN/VI 가 'pretext·명의·cớ' 로 옮겨 처음부터 핑계였다는 뜻이 됐다"
 	},
 	{
@@ -5212,7 +5212,7 @@
 		"hint_cn": "也只是叫作“纪念日”罢了，仔细一看，我觉得大多都是商家的营销噱头。",
 		"hint_vi": "Chỉ gọi là “ngày kỷ niệm” vậy thôi, chứ nhìn kỹ thì tôi thấy phần lớn đều là chiêu trò kinh doanh.",
 		"hint_grammar": "-는다뿐이지",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v53 — '기념일이라뿐이지'는 -는다뿐이지의 결합을 어긴 형태라 동사 어간에 붙는 '부른다뿐이지'로 다시 씀"
 	},
 	{
@@ -5228,7 +5228,7 @@
 		"hint_cn": "我不止一两次开着灯就那样在沙发上睡着了。",
 		"hint_vi": "Tôi không ít lần cứ để nguyên đèn sáng rồi ngủ luôn trên ghế sofa.",
 		"hint_grammar": "-은 채",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v54 — 첫 대사에서 AI의 같은 경험 진술을 뺐으므로 모범 문장의 '저도'(私も·我也·cũng)도 함께 뺐다"
 	},
 	{
@@ -5244,7 +5244,7 @@
 		"hint_cn": "结果每天早上脖子都僵得难受，一整天都集中不了精神。",
 		"hint_vi": "Cứ như vậy nên sáng nào cổ tôi cũng cứng đờ và cả ngày không tập trung được.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5260,7 +5260,7 @@
 		"hint_cn": "只要稍微留点余地，日子本可以过得轻松得多，可大家好像都做不到。",
 		"hint_vi": "Chỉ cần để cho mình thư thả một chút thôi là đã sống thoải mái hơn nhiều rồi, vậy mà hình như ai cũng không làm được.",
 		"hint_grammar": "-으련만",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5276,7 +5276,7 @@
 		"hint_cn": "基础学力扎实不说，整个社会崇尚学习的氛围也很浓。",
 		"hint_vi": "Nền tảng học lực đã vững chắc, mà tinh thần ham học cũng đã ăn sâu trong toàn xã hội.",
 		"hint_grammar": "-거니와",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5292,7 +5292,7 @@
 		"hint_cn": "但另一方面，课外教育费的负担太重，孩子们几乎没有休息时间。",
 		"hint_vi": "Bù lại, gánh nặng chi phí học thêm quá lớn và bọn trẻ gần như không có thời gian nghỉ ngơi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5308,7 +5308,7 @@
 		"hint_cn": "不管制度怎么改，我认为至少每个人都应该拥有同样的学习机会。",
 		"hint_vi": "Dù chế độ có thay đổi thế nào đi nữa, tôi cho rằng riêng cơ hội học tập thì ai cũng phải được hưởng như nhau.",
 		"hint_grammar": "-더라도",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5324,7 +5324,7 @@
 		"hint_cn": "我希望先从一次考试就给学生排名的做法改起，不足的部分在学校里补上。",
 		"hint_vi": "Tôi mong trước hết hãy sửa cách xếp hạng học sinh chỉ bằng một kỳ thi, còn phần thiếu hụt thì bù đắp ngay trong nhà trường.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5340,7 +5340,7 @@
 		"hint_cn": "我原以为得有大笔钱才能捐赠，可我发现反倒是普通人更能坚持不断地去分享。",
 		"hint_vi": "Tôi cứ tưởng phải có nhiều tiền mới quyên góp được, nhưng hóa ra chính những người bình thường lại chia sẻ đều đặn hơn.",
 		"hint_grammar": "-더라고요",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5354,10 +5354,10 @@
 		"hint_en": "That person helped students by putting up the money they'd saved little by little for thirty years as a scholarship.",
 		"hint_jp": "三十年間少しずつ貯めたお金を奨学金として差し出すことで、学生たちを助けました。",
 		"hint_cn": "那位把三十年来一点一点攒下的钱拿出来做奖学金，以此帮助了学生们。",
-		"hint_vi": "Bằng cách đem số tiền dành dụm từng chút suốt ba mươi năm ra làm học bổng, người ấy đã giúp đỡ các em học sinh.",
+		"hint_vi": "Bằng cách dùng số tiền đã dành dụm từng chút trong suốt ba mươi năm để lập học bổng, người ấy đã giúp đỡ các sinh viên.",
 		"hint_grammar": "-음으로써",
-		"review_status": "draft_v53",
-		"change_note": "v53 — EN 'He' · CN '他' 가 원문에 없는 성별을 붙이고 있어 중립으로. 첫 대사에서 '할머니'를 뺀 것과 맞춤"
+		"review_status": "reviewed",
+		"change_note": "v55 — 베트남어의 장학금 수혜 대상을 대학생 맥락에 맞추고 문장을 자연스럽게 다듬음"
 	},
 	{
 		"hint_id": "MH-8-09-001-3",
@@ -5370,10 +5370,10 @@
 		"hint_en": "Thanks to that, students who were about to drop out over tuition were able to keep studying.",
 		"hint_jp": "そのおかげで、学費のせいで学校をやめようとしていた学生たちが勉強を続けられるようになりました。",
 		"hint_cn": "多亏了这笔钱，那些因为学费打算退学的学生才得以继续读书。",
-		"hint_vi": "Nhờ vậy mà những học sinh định bỏ học vì học phí đã có thể tiếp tục việc học.",
+		"hint_vi": "Nhờ vậy, những sinh viên định bỏ học vì học phí đã có thể tiếp tục việc học.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — 베트남어의 학비·중퇴 맥락에서 학생을 'sinh viên'으로 일치시킴"
 	},
 	{
 		"hint_id": "MH-8-10-001-1",
@@ -5382,14 +5382,14 @@
 		"chapter": 10,
 		"slot_seq": 1,
 		"mission_label": "계기",
-		"hint_ko": "지난봄에 고궁에 갔는데 사람들이 한복을 곱게 입고 다니길래 저도 한 벌 빌려 입어 봤어요.",
-		"hint_en": "This past spring I went to an old palace, and since everyone was walking around beautifully dressed in hanbok, I rented one and put it on too.",
-		"hint_jp": "この前の春に古宮に行ったのですが、みんなが韓服をきれいに着て歩いているので、私も一着借りて着てみました。",
-		"hint_cn": "今年春天我去了古宫，看到大家都穿着漂亮的韩服，我也就租了一套穿上试了试。",
-		"hint_vi": "Mùa xuân vừa rồi tôi đến cung điện cổ, thấy mọi người mặc hanbok đẹp đẽ dạo chơi nên tôi cũng thuê một bộ mặc thử.",
+		"hint_ko": "지난봄에 고궁에 갔는데 사람들이 한복을 곱게 입고 다니길래 저도 빌려 입어 봤어요. 그때부터 전통 문화에 관심이 생겼어요.",
+		"hint_en": "Last spring I went to an old palace, and seeing people walking around beautifully dressed in hanbok made me rent one to try too. That's when I became interested in traditional culture.",
+		"hint_jp": "去年の春、古宮に行ったらみんなが韓服をきれいに着て歩いていたので、私も一着借りて着てみました。それ以来、伝統文化に興味を持つようになりました。",
+		"hint_cn": "去年春天我去了古宫，看到大家都穿着漂亮的韩服，我也租了一套试穿。从那以后，我开始对传统文化感兴趣了。",
+		"hint_vi": "Mùa xuân năm ngoái tôi đến cung điện cổ, thấy mọi người mặc hanbok rất đẹp nên tôi cũng thuê một bộ mặc thử. Từ đó tôi bắt đầu quan tâm đến văn hóa truyền thống.",
 		"hint_grammar": "-길래",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "fixed_v56",
+		"change_note": "v56 힌트 전수검수 — 한복 체험 사건만 있던 예문에 전통문화 관심으로 이어진 결과를 명시"
 	},
 	{
 		"hint_id": "MH-8-10-001-2",
@@ -5402,10 +5402,10 @@
 		"hint_en": "I look at how much handwork went into it and how much of the life of that era it holds.",
 		"hint_jp": "私は、どれだけ手間がかかっているか、その時代の人々の暮らしがどれだけ込められているかを見ます。",
 		"hint_cn": "我会看它花了多少工夫，又承载了多少那个时代人们的生活。",
-		"hint_vi": "Tôi nhìn vào việc nó tốn bao nhiêu công sức và chứa đựng bao nhiêu đời sống của con người thời đó.",
+		"hint_vi": "Tôi xem xét món đồ đó đã tốn bao nhiêu công sức và phản ánh đời sống của con người thời ấy đến mức nào.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — 베트남어의 어색한 'bao nhiêu đời sống' 직역을 자연스러운 가치 판단 표현으로 수정함"
 	},
 	{
 		"hint_id": "MH-8-10-001-3",
@@ -5420,7 +5420,7 @@
 		"hint_cn": "我认为每逢节日全家团聚的习惯，对这样的传统能延续至今起了很大的作用。",
 		"hint_vi": "Tôi cho rằng thói quen cả gia đình sum họp vào mỗi dịp lễ tết đã đóng vai trò lớn trong việc gìn giữ truyền thống này đến tận bây giờ.",
 		"hint_grammar": "-는 데",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5436,7 +5436,7 @@
 		"hint_cn": "以前是一路问着路找过去的，现在只要有一个地图，第一次去的地方也不会迷路。",
 		"hint_vi": "Ngày trước phải hỏi đường hết người này đến người khác mới tìm ra, còn giờ chỉ cần một cái bản đồ là đến nơi lạ cũng không lạc.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5450,10 +5450,10 @@
 		"hint_en": "It's a good thing the car's warning beep went off in time — otherwise I would've crashed badly.",
 		"hint_jp": "車の警告音が前もって鳴ったからよかったものの、危うく大きくぶつかるところでした。",
 		"hint_cn": "幸亏车里提前响了警告音，不然差点就撞得很惨了。",
-		"hint_vi": "May mà xe đã phát tín hiệu cảnh báo kịp lúc, nếu không thì tôi đã suýt xảy ra va chạm nghiêm trọng.",
+		"hint_vi": "May mà xe đã phát tín hiệu cảnh báo kịp lúc, nếu không thì tôi suýt gây ra một vụ va chạm nghiêm trọng.",
 		"hint_grammar": "-기에 망정이지",
-		"review_status": "draft_v53",
-		"change_note": "v53 — 'đâm mạnh'(세게 들이받다)이 베트남어로 부자연스러워 다듬음"
+		"review_status": "reviewed",
+		"change_note": "v55 — 베트남어의 비문 'tôi đã suýt xảy ra va chạm'을 자연스러운 사고 회피 표현으로 수정함"
 	},
 	{
 		"hint_id": "MH-8-11-001-3",
@@ -5468,7 +5468,7 @@
 		"hint_cn": "最近很多人说得好像技术什么都会替我们搞定似的，但我觉得今后由人来判断的部分反而会更重要。",
 		"hint_vi": "Dạo này nhiều người nói cứ như thể công nghệ sẽ lo hết mọi thứ, nhưng tôi nghĩ sau này phần con người phải phán đoán sẽ càng quan trọng hơn.",
 		"hint_grammar": "-는다는 듯이",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5484,7 +5484,7 @@
 		"hint_cn": "我每个周末都在家里追剧，或者补补积攒的觉。",
 		"hint_vi": "Cuối tuần nào tôi cũng ở nhà xem phim một lèo hoặc ngủ bù.",
 		"hint_grammar": "",
-		"review_status": "draft_v53",
+		"review_status": "reviewed",
 		"change_note": "v53 — 「たまった睡眠をとる」는 '밀린 잠을 자다'의 직역이라 일본어에서 쓰지 않는다. 「寝だめ」로"
 	},
 	{
@@ -5500,7 +5500,7 @@
 		"hint_cn": "同样是两个小时，也全看你怎么用，最后留下的东西会完全不一样。",
 		"hint_vi": "Cũng là hai tiếng như nhau nhưng tùy cách mình dùng mà thứ đọng lại sẽ khác hẳn.",
 		"hint_grammar": "-기 나름이다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5516,7 +5516,7 @@
 		"hint_cn": "我就只知道休息，却从来没想过要去学点什么呢。",
 		"hint_vi": "Tôi thì chỉ biết mỗi nghỉ ngơi thôi, chưa một lần nghĩ đến chuyện học thử điều gì đó.",
 		"hint_grammar": "-을 줄만 알았지",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5532,7 +5532,7 @@
 		"hint_cn": "我认为企业的本分不是只顾追求利润，还要照顾好员工和当地社区。",
 		"hint_vi": "Tôi cho rằng phần việc của doanh nghiệp không phải là chỉ chạy theo lợi nhuận mà còn phải chăm lo cho nhân viên và cộng đồng địa phương.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5548,7 +5548,7 @@
 		"hint_cn": "新闻上不是有过那种公司吗，员工几乎是在工厂里吃住，可连一件像样的安全装备都没配备。",
 		"hint_vi": "Trên tin tức từng có công ty mà nhân viên gần như ăn ngủ luôn tại nhà máy, vậy mà đến một thiết bị an toàn tử tế cũng không trang bị.",
 		"hint_grammar": "-다시피 하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5564,7 +5564,7 @@
 		"hint_cn": "只要处罚到位，这种事按说就能明显减少，可现在还是有很多人说处罚不痛不痒。",
 		"hint_vi": "Chỉ cần xử phạt cho nghiêm thì hẳn những chuyện thế này đã giảm rõ rệt, vậy mà đến giờ nhiều người vẫn nói mức phạt còn quá nhẹ.",
 		"hint_grammar": "-을 법하다",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5577,11 +5577,11 @@
 		"hint_ko": "제가 존경하는 사람은 어릴 적 무용 선생님인데, 마흔이 넘어서 다시 무대에 서신 분이에요.",
 		"hint_en": "The person I admire is my childhood dance teacher, who stepped back onto the stage after turning forty.",
 		"hint_jp": "私が尊敬する人は、四十を過ぎてから再び舞台に立った子どもの頃の舞踊の先生です。",
-		"hint_cn": "我尊敬的人是我小时候的舞蹈老师，她四十多岁又重新站上了舞台。",
-		"hint_vi": "Người tôi kính trọng là cô giáo dạy múa hồi nhỏ của tôi, người đã trở lại sân khấu khi đã ngoài bốn mươi.",
+		"hint_cn": "我尊敬的人是我小时候的舞蹈老师，那位老师四十多岁时又重新站上了舞台。",
+		"hint_vi": "Người tôi kính trọng là giáo viên dạy múa hồi nhỏ của tôi, người đã trở lại sân khấu khi ngoài bốn mươi tuổi.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — 원문에 없는 인물 성별을 중립적으로 수정함"
 	},
 	{
 		"hint_id": "MH-8-14-001-2",
@@ -5591,13 +5591,13 @@
 		"slot_seq": 2,
 		"mission_label": "성공 요인",
 		"hint_ko": "몸이 버텨 주는 한 무대를 포기하지 않겠다는 마음이 제일 큰 힘이었다고 생각해요.",
-		"hint_en": "I think her greatest strength was the resolve not to give up the stage as long as her body held up.",
+		"hint_en": "I think their greatest strength was the resolve not to give up the stage as long as their body held up.",
 		"hint_jp": "体が持ちこたえてくれる限り舞台を諦めないという気持ちが、一番大きな力だったと思います。",
-		"hint_cn": "我觉得只要身体撑得住就绝不放弃舞台的这份心意，是她最大的力量。",
-		"hint_vi": "Tôi nghĩ chính tâm niệm chừng nào cơ thể còn trụ được thì sẽ không từ bỏ sân khấu mới là sức mạnh lớn nhất của cô.",
+		"hint_cn": "我觉得，只要身体撑得住就绝不放弃舞台的这份信念，是那位老师最大的力量。",
+		"hint_vi": "Tôi nghĩ chính tâm niệm chừng nào cơ thể còn trụ được thì sẽ không từ bỏ sân khấu là nguồn sức mạnh lớn nhất của người ấy.",
 		"hint_grammar": "-는 한",
-		"review_status": "draft_v52",
-		"change_note": ""
+		"review_status": "reviewed",
+		"change_note": "v55 — 원문에 없는 인물 성별을 영어·중국어·베트남어에서 중립적으로 수정함"
 	},
 	{
 		"hint_id": "MH-8-14-001-3",
@@ -5612,7 +5612,7 @@
 		"hint_cn": "我也打算把目标定得高一些，但每一天都不勉强自己，一步步来。",
 		"hint_vi": "Tôi cũng sẽ đặt mục tiêu thật cao, nhưng mỗi ngày thì cứ đi từ từ, không ép mình quá sức.",
 		"hint_grammar": "-되",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": "배정이 슬롯 2와 같은 '-는 한'으로 중복돼, 이 자리에 자연스러운 같은 과 목표 문법 '-되'로 표기함."
 	},
 	{
@@ -5628,7 +5628,7 @@
 		"hint_cn": "我也是明明很近却每次都开车出门，每次买东西都拿塑料袋。",
 		"hint_vi": "Tôi cũng vậy, gần thôi mà lần nào cũng lái xe đi, rồi mỗi lần đi chợ lại nhận túi ni lông.",
 		"hint_grammar": "",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5644,7 +5644,7 @@
 		"hint_cn": "十分钟的路程与其开车去，我打算就走着去。",
 		"hint_vi": "Thay vì lái xe cho quãng đường mười phút thì tôi định cứ đi bộ.",
 		"hint_grammar": "-느니",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	},
 	{
@@ -5660,7 +5660,7 @@
 		"hint_cn": "走路不但能省油钱，还能顺便锻炼身体，挺好的。",
 		"hint_vi": "Đi bộ thì vừa đỡ tốn tiền xăng lại vừa được vận động nên rất tốt.",
 		"hint_grammar": "-을뿐더러",
-		"review_status": "draft_v52",
+		"review_status": "reviewed",
 		"change_note": ""
 	}
 ]
