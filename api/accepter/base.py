@@ -27,6 +27,12 @@ class ChatItem(BaseModel):
     chatId: Optional[int] = None
     msg: str
     lang: str = "Korean"  # 미션 피드백 생성 언어 (check/mission 에서만 사용)
+    # 녹음 원본(base64). 있으면 발음 축을 **실제로 재고**, 없으면 「측정 안 됨」이다.
+    # 키보드로 입력한 발화는 늘 없다. check/mission 에서만 쓴다.
+    audio: Optional[str] = None
+    # STT 결과를 학습자가 키보드로 고쳤나. 고친 문장으로 낸 발음 점수는
+    # 「말한 것」의 점수가 아니므로 **리포트의 발음 분모에서 뺀다**(기획 확정 2026-09-03).
+    edited: bool = False
 
 class GuestSign(BaseModel):
     guestId: Optional[str] = None

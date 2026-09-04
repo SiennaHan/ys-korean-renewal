@@ -30,6 +30,21 @@ import { useTranslation } from "react-i18next";
  * "내부 단계는 컴포넌트 상태로" 라는 명세대로, 이제 /learn/mission-chat 이
  * 자기 상태로 브리핑 → 대화 → 리포트를 오간다.
  */
+/** Blob → base64(헤더 없는 본문만). 서버 `ChatItem.audio` 가 그 꼴을 받는다 */
+function blobToBase64(blob: Blob): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onerror = () => reject(reader.error);
+		reader.onload = () => {
+			const out = String(reader.result ?? "");
+			// "data:audio/webm;base64,XXXX" → "XXXX"
+			const at = out.indexOf(",");
+			resolve(at >= 0 ? out.slice(at + 1) : out);
+		};
+		reader.readAsDataURL(blob);
+	});
+}
+
 export default function MissionDialog({
 	dialogId,
 	dialog,
@@ -187,8 +202,12 @@ export default function MissionDialog({
 	);
 
 	const checkMission = useCallback(
-		async (msg: string): Promise<CheckMission | null> => {
-			const res = await postCheckMission({ dialogId, chatId, msg });
+		async (
+			msg: string,
+			audio?: string,
+			edited?: boolean,
+		): Promise<CheckMission | null> => {
+			const res = await postCheckMission({ dialogId, chatId, msg, audio, edited });
 			if (!res) return null;
 			if (res.completed_missions.length > 0) {
 				setCompletedList((prev) => [...prev, ...res.completed_missions]);
@@ -207,7 +226,29 @@ export default function MissionDialog({
 			}
 
 			recording.setRecordState("sending");
-			const mission = await checkMission(msg);
+
+			/*
+			 * 발음 축을 재려면 **녹음 원본**이 필요하다. 키보드로 보낸 발화는 없다 —
+			 * 그때는 서버가 `measured: false` 로 낸다(0점이 아니다).
+			 *
+			 * `edited` 는 학습자가 STT 결과를 고쳤는지다. 고친 문장으로 낸 발음 점수는
+			 * 「말한 것」의 점수가 아니므로 리포트가 **발음 분모에서 뺀다**(기획 확정).
+			 *
+			 * base64 로 바꾸는 데 실패하면 그냥 발음 없이 보낸다 — 판정이 먼저다.
+			 */
+			const blob = recording.recordedBlobRef.current;
+			let audio: string | undefined;
+			if (blob) {
+				try {
+					audio = await blobToBase64(blob);
+				} catch {
+					audio = undefined;
+				}
+			}
+			const raw = recording.sttRawRef.current;
+			const edited = Boolean(raw) && raw !== msg;
+
+			const mission = await checkMission(msg, audio, edited);
 
 			if (mission && ["perfect", "tip"].includes(mission.status)) {
 				sound.playMissionChecked();

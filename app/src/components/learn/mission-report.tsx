@@ -98,8 +98,40 @@ export default function MissionReport({
 				count > 0
 					? Math.floor((converted.filter(predicate).length / count) * 100)
 					: 0;
+			/*
+			 * **발음 축만 성질이 다르다.** 나머지 셋은 「불리언 통과율」인데 발음은
+			 * 음향 점수(0~100)의 **평균**이고, **분모도 다르다** —
+			 *
+			 *   문법·내용·어휘   분모 = 전체 발화
+			 *   발음             분모 = **실제로 잰 발화만**
+			 *
+			 * 잰 발화만 세는 이유(기획 확정 2026-09-03) —
+			 *  · 키보드로 보낸 발화는 소리가 없다. 0점을 주면 「발음이 나쁘다」는
+			 *    거짓말이 된다
+			 *  · **STT 결과를 고친 발화도 뺀다**(`edited`). 고친 문장을 기준으로 낸
+			 *    점수는 「말한 것」의 점수가 아니다
+			 *
+			 * 한 발화도 못 쟀으면 0 을 넣는다 — 그때 총평 줄은 서버가 빈 문자열을
+			 * 내고 화면이 `report.emptyPronunciation`(「평가할 발음 데이터가 없어요」)
+			 * 로 대체한다. **레이더가 0 으로 접히는 것을 「0점」으로 읽을 여지가 남는데,
+			 * 「측정 안 됨」을 따로 그리는 것은 목업이 필요해 별건으로 뒀다.**
+			 */
+			const pronScores = converted
+				.map((item) => item.answer.pron)
+				.filter(
+					(p): p is NonNullable<typeof p> =>
+						Boolean(p?.measured) && !p?.edited && typeof p?.score === "number",
+				)
+				.map((p) => p.score as number);
+			const pronAvg =
+				pronScores.length > 0
+					? Math.floor(
+							pronScores.reduce((a, b) => a + b, 0) / pronScores.length,
+						)
+					: 0;
+
 			setValues([
-				score((item) => item.answer.is_pronunciation_correct === true),
+				pronAvg,
 				score((item) => item.answer.is_grammar_correct === true),
 				score((item) => item.answer.is_context_natural === true),
 				score((item) => item.answer.is_vocabulary_natural === true),

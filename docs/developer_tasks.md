@@ -1,7 +1,13 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ c93c91e
-     — 확인: 2026-09-03(2) · 앞 커밋(c93c91e)이 gates.yml 을 건드려 **자기 스탬프를
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 4cdfa67
+     — 확인: 2026-09-03 · `openai.py` 가 바뀐 것은 **걷어낸 것과 고친 것**이다(`4cdfa67`) —
+       변수에 안 담긴 유령 프롬프트 2,341자 삭제 · 매 호출마다 프롬프트 전문을 찍던
+       `print` 삭제 · 리포트 입력의 번호를 `1.` → `{index}.` · 키 직접 색인을 `.get` 으로.
+       **새로 부르는 외부 API 도, 새로 보내는 데이터도 없다.** 그리고 그 블록이
+       **Python 3.10·3.11 에서 죽고 있었다**(407행 중첩 f-string) — 이제 3.9 로도 파싱된다.
+       DEV-12 의 「남은 것」 중 `checkMission` 실패 처리를 이 판에 닫았다.
+       앞 확인: 2026-09-03(2) · 앞 커밋(c93c91e)이 gates.yml 을 건드려 **자기 스탬프를
        스스로 무효로 만들었다** — 573d051 과 같은 사정이라 기준만 올린다. 그 커밋이
        이 문서가 보는 경로 중 건드린 것은 **gates.yml 하나뿐**이고(model.py · xternal ·
        feature-gates.ts 는 무변경), 늘어난 것은 문서 job 의 스텝 하나다. **job 수는
@@ -750,9 +756,11 @@ API 서버로 게스트 토큰 발급 → `POST /report`(audio_quality·inapprop
 
 **남은 것**
 
-- **미션 완료 판정(`checkMission`)의 실패 처리는 손대지 않았다.** 지금도
-  실패하면 `alert`(오답) 말풍선으로 떨어진다 — 무한 대기는 아니지만 "틀렸다"
-  와 "안 왔다" 가 같은 모양이라 헷갈릴 수 있다.
+- ~~**미션 완료 판정(`checkMission`)의 실패 처리는 손대지 않았다.**~~
+  **닫혔다 — `DEV-16` 이 같이 고쳤다(2026-09-03 · `4cdfa67`).** 실패는 이제 오답이
+  아니라 **색 없는 말풍선 + 토스트**다(`mission-dialog.tsx` 의 `mission === null` 분기).
+  서버 쪽도 같이 막았다 — 판정 응답에 키가 빠져 500 이 나면 앱이 `null` 을 받아
+  같은 자리로 떨어졌으므로, `_normalizeCheckMission` 으로 기본값을 메운다.
 - **재시도 간격은 SDK 기본값(지수 백오프)을 그대로 쓴다** — 직접 숫자를
   안 골랐다. 필요하면 `openai.Timeout`·`max_retries` 옆에 적으면 된다.
 - **STT(`transcribe`)·TTS(`tts`) 실패의 화면 쪽은 안 봤다** — 이번 카드는
@@ -943,7 +951,7 @@ bash stop.sh && bash start.sh
 
 ---
 
-### DEV-16 · 미션 대화의 발화 피드백과 발음 축 — **부분완료**(고친 문장·발음 배선 남음) · P0
+### DEV-16 · 미션 대화의 발화 피드백과 발음 축 — **부분완료**(배선 완료 · 대화 검증 남음) · P0
 
 **목적:** 학습자가 한 말에 **고친 문장과 짧은 이유**를 붙이고, 리포트의 「발음」 축이
 맞춤법이 아니라 **실제 발음**을 가리키게 한다.
@@ -977,11 +985,22 @@ bash stop.sh && bash start.sh
    총평 캐시 무효화(`dialog.py:38-40`) · 유령 프롬프트 삭제(`openai.py:245-321`).
 5. `PROMPT_VERSION` 을 판정 결과에 스탬프한다 — `mission_chat_spec_v1.md` §6 이 요구한다.
 
-**막는 것 — 발음 축은 자격증명이 먼저다**
+**발음 축이 실제로 재진다 — 2026-09-03 에 확인했다**
 
-Tutorus 는 **dev 엔드포인트 · 공용 자격증명**이고 서버에 **ffmpeg 가 필요하다**(§3-b).
-운영 URL·전용 계정 없이는 배선이 끝나도 **근거가 없다** — 그래서 발음 축만
-`project_status.json` 에 「검증 안 됨」으로 둔다.
+기획자가 벤더 테스트 클라이언트(`test_client_korpron`)를 줬다. 그 설정으로 **저장소
+코드 경로를 그대로 태워** 실제 응답을 받았다 — 인증 → ffmpeg 16k 리샘플 → korpron →
+`summarize` 까지 끊긴 데가 없다.
+
+    KO_HOLISTIC(overall) 90 · segment 90 · speed 88 · prosody 94 · acoustic 60
+    wordLevel 13개 (지하철 51 · 시간이어서 70 · 시계를 75 …)
+
+**`api/.env` 에는 키 이름 다섯이 있는데 값이 전부 빈 칸이다** — 그래서 서버가
+`PRONUNCIATION_ENABLED=false` 로 떨어져 503 을 낸다. 값은 기획자가 넣는다
+(살아 있는 공용 비밀값이라 개발자가 파일에 쓸 일이 아니다).
+
+**남는 것은 운영 승격이다** — 엔드포인트가 `dev.tutorusresearch.com` 이고 계정이
+`freewheelin` 공용이며, 배포 서버에 **ffmpeg 가 필요하다**(§3-b). 운영 URL·전용 계정
+전에는 「돈다」와 「운영에서 돈다」가 다르다.
 
 **완료 판정**
 

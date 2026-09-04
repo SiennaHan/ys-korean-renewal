@@ -1,6 +1,11 @@
 <meta charset="utf-8">
-<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal, api/business/user_withdraw.py, api/shared/withdrawal_scope.py @ 98d4eba
-     — 확인: model.py 에 ko_inquiry.actual·expected 가 늘었다(재현 정보) — 문의 표에 반영했다.
+<!-- 관찰: api/persistence/model.py, api/util/s3utils.py, api/business/stt.py, api/xternal, api/business/user_withdraw.py, api/shared/withdrawal_scope.py @ 4cdfa67
+     — 확인: 2026-09-03 · `openai.py` 가 바뀐 것은 **덜 내보내는 쪽**이다(`4cdfa67`) —
+       매 호출마다 프롬프트 전문을 표준출력에 찍던 `print("mission prompt=>", …)` 를
+       걷었다. 이 문서가 §3-2 에서 세는 「무엇이 외부로 나가나」는 **하나도 늘지 않았다** —
+       부르는 외부 API 도, 보내는 항목도 그대로다. 유령 프롬프트 삭제와 3.9 문법 수정도
+       내보내는 것과 무관하다.
+       앞 확인: model.py 에 ko_inquiry.actual·expected 가 늘었다(재현 정보) — 문의 표에 반영했다.
        xternal 에 feedback_hub.py 가 새로 생겼고(2026-08-29) 이번에 actual·expected 도 보내게
        고쳤다 — **국외 이전 표에 줄을 추가했지만 나라는 「확인 필요」로 비워 뒀다**(코드만으로는
        모른다). 이 문서를 다루는 사람이 반드시 채워야 한다.

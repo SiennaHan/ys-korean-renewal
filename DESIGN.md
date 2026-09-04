@@ -1,5 +1,15 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ a0cf8f4
-     — 확인: 2026-09-03 · `globals.css` 가 바뀐 것은 **주석뿐**이다(a0cf8f4) —
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 4cdfa67
+     — 확인: 2026-09-03 · 미션대화 발화 피드백을 붙였다(`8f059d2`). 이 문서가 캐는 두 축
+       — **리터럴 색**과 **비4배수 간격** — 은 둘 다 해당 없다. 새 규칙 넷
+       (`.mission-feedback-body` · `.mission-correction` · `.tag.c` · `.report-correction`)이
+       전부 semantic 토큰(`--color-text-strong` · `--color-background-choice` ·
+       `--color-fill-primary`)을 쓰고 간격은 `gap:4px` · `margin:8px` 다.
+       `check:css` 의 세 검사가 그것을 확인한다.
+       **`activity.css` 줄 수를 574 → 595 로 고쳤다** — 이 문서가 적는 유일한 수치다.
+       그러다 하나 배웠다: 처음에 교정 태그를 `.tag.s` 로 적었는데 **그 이름이 이미
+       「건너뜀」이었다.** 같은 선택자가 둘이면 뒤가 이겨서 내 규칙이 조용히 죽었고,
+       `check:css` 는 통과했다(값도 간격도 맞으니까). **계산값을 재서 잡았다.**
+       앞 확인: 2026-09-03 · `globals.css` 가 바뀐 것은 **주석뿐**이다(a0cf8f4) —
        `@source` 경로가 없는 폴더(`mockups/`)를 가리키던 것을 `screens_ref/` 로 고치고,
        **그 8일 동안 아무것도 빠지지 않았음**을 재서 적었다(Tailwind v4 는 자동 스캔한다).
        **규칙·값·토큰은 한 줄도 안 바뀌었다** — 이 문서가 캐는 것은 그쪽이다.
@@ -74,7 +84,7 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 
 | 화면군 | CSS | 클래스 접두사 | 색 출처 | 목업 대조 |
 |---|---|---|---|---|
-| **학습 활동** | `styles/activity.css` (574줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
+| **학습 활동** | `styles/activity.css` (595줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
 | **내비·홈·교재학습·자모 목록** | `styles/nav.css` (271줄) | `.nav-frame .*` | semantic 토큰 | ○ |
 | **인증** (로그인·가입·재설정) | `styles/auth.css` (748줄) | `.auth-*` | semantic 토큰 | ✕ |
 | **표현클립** | 없음 — Tailwind 인라인 | 없음 | semantic 토큰 유틸 + 임의값 | ○ |

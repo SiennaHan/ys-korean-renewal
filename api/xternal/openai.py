@@ -187,7 +187,9 @@ def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str 
 **2. is_vocabulary_natural (어휘)**
    - 상황이나 문맥에 어울리지 않는 단어를 사용했으면 `false`
 
-**3. is_pronunciation_correct (발음/맞춤법)**
+**3. is_pronunciation_correct (표기/맞춤법)**
+   - **이 항목은 발음을 판정하지 않습니다.** 소리는 별도의 음향 평가가 잽니다.
+     여기서는 **글로 적힌 형태**만 봅니다.
    - 오타가 있거나 철자가 틀렸으면 `false`
    - **필수 체크:** '되요(X) -> 돼요(O)', '할게요(O) -> 할께요(X)'와 같은 용언의 활용 실수를 엄격히 잡으세요.
    - **자소 분리:** 글자가 구성되지 않고 낱자로 쪼개진 경우(예: ㅎㅏㄴㄱㅜㄱ) `false`
@@ -302,8 +304,10 @@ def reportPrompt(lang: str = "Korean") :
 2. vocabulary_natural (어휘): 
  - 상황에 맞는 적절한 단어를 사용했는가?
 3. pronunciation_correct:
- - 텍스트 기반 대화이므로 **맞춤법(Spelling)** 정확도를 기준으로 평가하세요.
- - 단, 'ㅋㅋ', 'ㅎㅎ' 같은 의성어는 감점하지 마세요.
+ - **음향 발음 점수(pron_score, 0~100)와 취약 낱말이 주어지면 그것을 기준으로 평가하세요.**
+   점수가 낮았던 낱말을 짚어 주고 무엇을 연습하면 좋을지 한 마디 덧붙이세요.
+ - **주어지지 않았으면 빈 문자열을 내세요.** 키보드로 입력했거나 측정하지 못한 경우입니다.
+   맞춤법으로 대신 평가하지 마세요 — 그것은 이 축이 아닙니다.
 4. grammar_correct: 
  - 조사, 어미 활용, 어순이 정확한가?
 
@@ -353,6 +357,17 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
         feedbackStr += f", is_vocabulary_natural={voc}"
         feedbackStr += f", is_pronunciation_correct={pron}"
         feedbackStr += f", is_grammar_correct={gram}\n"
+        # 음향 발음 점수 — 있을 때만 넣는다. 위 프롬프트가 「주어지지 않았으면
+        # 빈 문자열을 내라」로 받으므로, 없는 발화는 그 축을 침묵한다
+        pron = feedback.get("pron")
+        if isinstance(pron, dict) and pron.get("measured"):
+            weak = ", ".join(
+                f"{w.get('text')}({w.get('score')})"
+                for w in (pron.get("weakWords") or [])
+                if w.get("text")
+            )
+            feedbackStr += f"pron_score={pron.get('score')}"
+            feedbackStr += f", pron_weak_words=[{weak}]\n"
         feedbackStr += f"feedback={why}\n\n"
 
     userMsg = {"role": "user", "content": feedbackStr}

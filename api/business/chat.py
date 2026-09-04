@@ -1,6 +1,9 @@
+import asyncio
+
 from typing import List
 from persistence.database import sessionScope
 from persistence import model, repo_chat, repo_feedback
+from business import tutorus_pron
 from xternal import openai
 
 from util import  jsonutils, timeutils
@@ -223,7 +226,9 @@ def _normalizeCheckMission(feedback):
     return out
 
 
-async def post_check_mission(dialogId: int, chatId: int, userId: str, msg:str, lang: str = "Korean"):
+async def post_check_mission(dialogId: int, chatId: int, userId: str, msg:str,
+                             lang: str = "Korean", audio: str | None = None,
+                             edited: bool = False):
     print(f"[{timeutils.get_current_datetime_ymdhmss()}] check mission => userId[{userId}], dialogId[{dialogId}], msg =", msg)
     with sessionScope() as db:
         chat_id = chatId
@@ -247,8 +252,22 @@ async def post_check_mission(dialogId: int, chatId: int, userId: str, msg:str, l
 
         chat_all = create_chat_history(dialog.prompt, dialog.first_msg, new_content, chat_history, None, False)
 
-        feedback = await openai.check_mission(dialog.mission, dialog.scenario, dialog.level, chat_all, lang)
+        # **판정과 발음을 나란히 돌린다.** 발음은 오디오를 다시 보내야 하므로 몇 초가
+        # 걸리는데, 직렬로 하면 그만큼 말풍선이 늦게 뜬다. `evaluateForFreeSpeech` 는
+        # 예외를 던지지 않기로 계약돼 있어(그 함수 주석) 판정을 죽이지 않는다.
+        #
+        # **기준 문장은 전송된 `msg` 다** — 학습자가 STT 결과를 키보드로 고칠 수 있어서
+        # (`dialog-input.tsx:106`) 「말하려던 문장」에 더 가깝다. raw STT 를 기준으로 쓰면
+        # STT 가 이미 그 오디오에 가장 잘 맞는 답이라 점수가 부풀려진다.
+        # 고쳤을 때는 `edited` 로 표시해 **리포트 발음 분모에서 뺀다**(기획 확정).
+        feedback, pron = await asyncio.gather(
+            openai.check_mission(dialog.mission, dialog.scenario, dialog.level, chat_all, lang),
+            tutorus_pron.evaluateForFreeSpeech(msg, audio),
+        )
         feedback = _normalizeCheckMission(feedback)
+        if edited and pron.get("measured"):
+            pron = {**pron, "edited": True}
+        feedback["pron"] = pron
 
         isAllNatural = (feedback["is_context_natural"] and feedback["is_vocabulary_natural"]
                         and feedback["is_pronunciation_correct"] and feedback["is_grammar_correct"])

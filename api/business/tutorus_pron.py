@@ -126,6 +126,50 @@ async def evaluatePronunciation(
     return summary
 
 
+# 미션대화에서 부르는 얇은 래퍼. 화면에 쓰는 값만 남긴다.
+#
+# **왜 요약을 더 줄이나** — `summarize()` 는 3,100자쯤 낸다(낱말 13개 + intonation
+# 295점). 판정 결과와 함께 `ko_chat_feedback.answer`(String(5000))에 들어가야 하므로
+# **점수 하나와 취약 낱말 셋만** 남긴다.
+#
+# **절대 예외를 위로 던지지 않는다.** 미션 판정과 병렬로 도는데, 발음이 실패해서
+# 판정까지 죽으면 학습자는 「틀렸다」와 「안 왔다」를 구별할 수 없다(같은 날 고친
+# 결함 2 와 같은 자리다). 못 재면 **`measured: false` 와 이유**를 낸다.
+_PRON_TIMEOUT_SEC = 12.0
+_PRON_WEAK_KEEP = 3
+
+
+async def evaluateForFreeSpeech(reference: str, base64sound: str | None) -> dict:
+    """자유 발화 발음 점수. 못 재면 {"measured": False, "reason": …}."""
+    if not base64sound:
+        return {"measured": False, "reason": "no_audio"}
+    if not tutorus.PRONUNCIATION_ENABLED:
+        return {"measured": False, "reason": "disabled"}
+    if not (reference or "").strip():
+        return {"measured": False, "reason": "no_reference"}
+    try:
+        raw = await asyncio.wait_for(
+            tutorus.evaluate(reference, _decode_audio(base64sound)),
+            timeout=_PRON_TIMEOUT_SEC,
+        )
+        summary = summarize(raw)
+        score = (summary.get("score") or {}).get("overall")
+        if not isinstance(score, (int, float)):
+            return {"measured": False, "reason": "no_score"}
+        weak = [
+            {"text": w.get("text"), "score": w.get("score")}
+            for w in (summary.get("weakWords") or [])[:_PRON_WEAK_KEEP]
+        ]
+        return {"measured": True, "score": round(float(score)), "weakWords": weak}
+    except asyncio.TimeoutError:
+        return {"measured": False, "reason": "timeout"}
+    except tutorus.TutorusError as e:
+        # 무음·너무 짧음(422)·토큰 실패(502) 등. 코드를 같이 남겨 나중에 센다
+        return {"measured": False, "reason": f"tutorus_{getattr(e, 'code', 0)}"}
+    except Exception as e:  # noqa: BLE001 — 판정을 죽이지 않는 것이 이 함수의 계약이다
+        return {"measured": False, "reason": type(e).__name__}
+
+
 async def evaluateShadow(shadow_id: int) -> dict:
     """STT shadow 행의 실제 학생 음성을 발음평가한다 (어드민 온디맨드).
 

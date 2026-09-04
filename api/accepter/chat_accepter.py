@@ -14,7 +14,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 @router.post("/check/mission", dependencies=[Depends(auth.JWTBearer())])
 async def post_check_mission(body: ChatItem, token:str = Depends(oauth2_scheme)):
     userId = auth.getUserIdFrom(token)
-    return makeResponse(await chat.post_check_mission(body.dialogId, body.chatId, userId, body.msg, body.lang))
+    return makeResponse(await chat.post_check_mission(
+        body.dialogId, body.chatId, userId, body.msg, body.lang, body.audio, body.edited
+    ))
 
 @router.post("/json", dependencies=[Depends(auth.JWTBearer())])
 async def post_chat_json(body: ChatItem, token:str = Depends(oauth2_scheme)):

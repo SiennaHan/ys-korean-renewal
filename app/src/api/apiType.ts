@@ -31,6 +31,10 @@ export interface KoChatRequest {
 	chatId: number;
 	msg: string;
 	lang?: string;
+	/** 녹음 원본(base64). 있으면 서버가 발음 축을 실제로 잰다. 키보드 입력은 없다 */
+	audio?: string;
+	/** STT 결과를 학습자가 고쳤나 — 고친 발화는 발음 분모에서 뺀다 */
+	edited?: boolean;
 }
 
 export interface KoChatMissionResponse {
@@ -74,6 +78,20 @@ export interface CheckMission {
 	recommend_example: string;
 	// description: string;
 	is_all_natural: boolean;
+	/**
+	 * 음향 발음 점수. **`is_pronunciation_correct` 와 다른 것이다** — 그쪽은
+	 * 「표기(맞춤법)」이고 이쪽이 실제 소리다.
+	 *
+	 * `measured: false` 이면 못 잰 것이다(키보드 입력 · 발음평가 비활성 · 타임아웃).
+	 * **0점이 아니다** — 리포트가 분모에서 빼야 한다.
+	 */
+	pron?: {
+		measured: boolean;
+		reason?: string;
+		score?: number;
+		weakWords?: { text?: string; score?: number }[];
+		edited?: boolean;
+	};
 }
 
 export interface MsgResponse {

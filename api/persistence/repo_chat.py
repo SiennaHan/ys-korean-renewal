@@ -12,7 +12,8 @@ class _Dialog :
     호출부(business/chat.py 8곳 · business/dialog.py 1곳)가 `dialog.prompt` 꼴로
     읽으므로 이름을 그대로 맞춰 준다 — 그래서 이 파일 밖은 안 고쳐도 된다.
     """
-    __slots__ = ("book_id", "prompt", "first_msg", "mission", "scenario", "level", "item_id")
+    __slots__ = ("book_id", "prompt", "first_msg", "mission", "scenario", "level",
+                 "item_id", "target_grammar")
 
     def __init__(self, row) :
         self.item_id   = row.item_id
@@ -22,6 +23,10 @@ class _Dialog :
         self.mission   = row.mission_detail
         self.scenario  = row.situation_ko
         self.level     = str(row.level or row.book_id)
+        # **원장에 있는데 판정이 못 보던 값이다.** 그 과에서 써야 할 문법이고,
+        # 문법 축의 판정 근거가 된다. 여기 한 줄이 없어서 안 닿고 있었다(2026-09-03).
+        # 다만 **완료 조건이 아니다** — `mission_chat_spec_v1.md` §3.
+        self.target_grammar = row.target_grammar
 
 
 async def getDialog(dialogId: str, db: Session) :

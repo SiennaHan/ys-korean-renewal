@@ -75,7 +75,7 @@
 - `DEV-10` 출시 안전장치와 운영 관측 · P0 (E2E 뼈대 · 관측 남음)
 - `DEV-12` 외부 AI 호출의 타임아웃과 실패 화면 · P0 (openai.py 2026-09-01)
 - `DEV-15` 사내 피드백 허브 연동 · P0 (코드 완료 · 배포만 남음)
-- `DEV-16` 미션 대화의 발화 피드백과 발음 축 · P0 (고친 문장·발음 배선 남음)
+- `DEV-16` 미션 대화의 발화 피드백과 발음 축 · P0 (배선 완료 · 대화 검증 남음)
 
 ### 끝난 것 — 완료 5장
 
@@ -115,7 +115,7 @@
 
 ## 문서
 
-관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 11개 · 선언 13개 —
+관찰 기준(`<!-- 관찰: … @ 커밋 -->`)을 선언한 문서 10개 · 선언 12개 —
 
 - `BLOCKERS.md` (3개)
 - `DESIGN.md`
@@ -123,7 +123,6 @@
 - `docs/clip_spec_v1.html`
 - `docs/developer_tasks.md`
 - `docs/doc_review_v1.md`
-- `docs/legal_draft_v1.html`
 - `docs/masterplan_v3.html`
 - `docs/shell_spec_v1.html`
 - `docs/textbook_tab_spec_v1.html`

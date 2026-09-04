@@ -32,6 +32,17 @@ export function useRecording(options: UseRecordingOptions = {}) {
 
 	const [recordState, setRecordState] = useState<RecordState>("idle");
 	const [recordedMsg, setRecordedMsg] = useState<string | null>(null);
+	/*
+	 * 발음 평가에 보낼 **녹음 원본**과 **STT 가 처음 낸 글자**를 따로 쥔다.
+	 *
+	 * `recordedMsg` 는 학습자가 키보드로 고칠 수 있어서(`dialog-input.tsx:106`)
+	 * 전송 시점에는 「말한 것」이 아닐 수 있다. 발음 점수를 「고쳤는가」와 함께
+	 * 기록해야 리포트가 **고친 발화를 발음 분모에서 뺄** 수 있다(기획 확정 2026-09-03).
+	 *
+	 * state 가 아니라 ref 다 — 이 값이 바뀌어도 화면은 다시 그릴 필요가 없다.
+	 */
+	const recordedBlobRef = useRef<Blob | null>(null);
+	const sttRawRef = useRef<string | null>(null);
 	const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
 		null,
 	);
@@ -83,6 +94,7 @@ export function useRecording(options: UseRecordingOptions = {}) {
 					return;
 				}
 
+				sttRawRef.current = text;
 				setRecordedMsg(text);
 				setRecordState("done");
 				options.onTranscribed?.(text);
@@ -154,12 +166,15 @@ export function useRecording(options: UseRecordingOptions = {}) {
 
 				const blobType = mimeType || chunks[0]?.type || "audio/webm";
 				const blob = new Blob(chunks, { type: blobType });
+				recordedBlobRef.current = blob;
 				void transcribeBlob(blob);
 			};
 
 			mediaRecorderRef.current = recorder;
 			setMediaRecorder(recorder);
 			setRecordedMsg(null);
+			recordedBlobRef.current = null;
+			sttRawRef.current = null;
 			recorder.start();
 			phaseTimerRef.current = setTimeout(() => {
 				setRecordState("recording");
@@ -230,6 +245,10 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		setRecordState,
 		recordedMsg,
 		setRecordedMsg,
+		/** 발음 평가에 보낼 녹음 원본. 없으면 「측정 안 됨」이다(키보드 입력) */
+		recordedBlobRef,
+		/** STT 가 처음 낸 글자. `recordedMsg` 와 다르면 학습자가 고친 것이다 */
+		sttRawRef,
 		mediaRecorder,
 		startRecording,
 		stopRecording,
