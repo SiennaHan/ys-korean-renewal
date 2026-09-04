@@ -1,7 +1,12 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 4cdfa67
-     — 확인: 2026-09-03 · `openai.py` 가 바뀐 것은 **걷어낸 것과 고친 것**이다(`4cdfa67`) —
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 6d03a9e
+     — 확인: 2026-09-04 · `openai.py` 가 바뀐 것은 **프롬프트 두 곳의 문구와 리포트
+     입력**이다(`6d03a9e`) — `is_pronunciation_correct` 의 이름표를 「표기(맞춤법)」로
+     고쳐 **발음을 판정하지 않는다고 프롬프트가 스스로 말하게** 했고(키는 그대로 뒀다),
+     리포트 프롬프트의 발음 항목을 실측 점수 요약으로 바꾸고 그 입력에 `pron_score` 를
+     넣었다. **새로 부르는 외부 API 는 없다** — 발음은 이미 있던 `tutorus_pron` 이다.
+     앞 확인: 2026-09-03 · `openai.py` 가 바뀐 것은 **걷어낸 것과 고친 것**이다(`4cdfa67`) —
        변수에 안 담긴 유령 프롬프트 2,341자 삭제 · 매 호출마다 프롬프트 전문을 찍던
        `print` 삭제 · 리포트 입력의 번호를 `1.` → `{index}.` · 키 직접 색인을 `.get` 으로.
        **새로 부르는 외부 API 도, 새로 보내는 데이터도 없다.** 그리고 그 블록이
@@ -1001,6 +1006,30 @@ bash stop.sh && bash start.sh
 **남는 것은 운영 승격이다** — 엔드포인트가 `dev.tutorusresearch.com` 이고 계정이
 `freewheelin` 공용이며, 배포 서버에 **ffmpeg 가 필요하다**(§3-b). 운영 URL·전용 계정
 전에는 「돈다」와 「운영에서 돈다」가 다르다.
+
+**어디까지 확인했나 (2026-09-04)**
+
+`api/.env` 에 Tutorus 값 다섯을 채우고(git 이 `.env*` 로 막는다) **서버 없이
+`post_check_mission` 을 직접 태워** 배선을 확인했다. DB 는 진짜다.
+
+| 본 것 | 결과 |
+|---|---|
+| 발음 실측 | `measured=true score=90` · 취약 낱말 「서둘러 40 · 급하게 48 · 지하철 51」 |
+| 실패 경로 | `no_audio` · `no_reference` · `tutorus_400` 전부 「측정 안 됨」. **예외가 위로 안 올라간다** |
+| 정규화 | 판정 응답에서 **키 하나를 일부러 뺐는데** 메웠다 — `KeyError`·500 없음 |
+| `edited` | STT 를 고친 발화에 `edited: true` 가 붙는다 |
+| 키보드 입력 | `measured=false reason=no_audio` — **0점이 아니다** |
+| DB 저장 | `ko_chat_feedback.answer` 401·334·420자 (한계 5000에 여유) |
+| 발음 축 계산 | 일곱 경우 시험 — 평균·키보드 섞임·고침 제외·전부 키보드→0·옛 행·타임아웃·전부 고침→0 |
+
+**시험 행은 지웠다** — `ko_chat` 1 + `ko_chat_feedback` 3, 남은 행 0.
+
+**★ 못 한 것 — 판정 AI 를 실제로 부르지 못했다.** 이 기계의 `api/.env` 는 **DB 값만
+실제고 외부 API 키가 전부 빈 칸이다**(`OPENAI_API_KEY`·`GEMINI_API_KEY`·`RTZR_*`·
+`S3_BUCKET` 다). 그래서 판정 응답을 대역으로 두고 **그 뒤 경로만** 태웠다.
+판정 품질(프롬프트가 네 축을 옳게 매기나)은 **아직 아무도 안 봤다** —
+`DEV-13` 이 「끝까지 대화해서 리포트의 「N개 중 M개」를 본 적이 없다」고 적은 그것이
+여전히 남아 있다. **키가 있는 환경에서 마이크로 한 번 돌려야 한다.**
 
 **완료 판정**
 

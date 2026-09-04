@@ -941,8 +941,14 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 8bc23be
-     — 확인: 2026-09-01(2) · 표가 하나 늘었다(ko_mission_hint · 354행) — 씨드가 채우므로
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 6d03a9e
+     — 확인: 2026-09-04 · 미션대화 발음 축을 붙이며 둘이 바뀌었다(`6d03a9e`) —
+     `repo_chat._Dialog` 에 **`target_grammar` 한 칸을 더했다**(원장에 있는데 판정에
+     안 닿고 있던 값이다. 이 절이 세는 표·열쇠·씨드 이야기는 그대로다) ·
+     `app/src/api/apiType.ts` 에 `KoChatRequest.audio`·`edited` 와 `CheckMission.pron` 을
+     더했다. **표를 새로 만들거나 스키마를 바꾼 것은 없다** — 이 절이 걱정하는
+     「마이그레이션 없는 표」와 무관하다.
+     앞 확인: 2026-09-01(2) · 표가 하나 늘었다(ko_mission_hint · 354행) — 씨드가 채우므로
        「키 없이 학습 흐름이 돈다」는 그대로 참이고 힌트까지 포함된다. repo_error_report 는
        DEV-02(표현클립 신고)라 이 절과 무관하다. 앞 확인: repo_chat.getDialog 가 ko_chat_dialog 대신 ko_mission_chat 을
        legacy_id 로 읽는다(6c5ec6a). 이 절이 말하는 「키 없이 학습 흐름이 돈다」는
@@ -1944,8 +1950,11 @@ JSON → DB 표 14개 → API 까지 **잃은 열 0 · 값도 「모두 같다�
 > 가리킨다(「복습을 위한 새 화면이 없다 — §9-a-1」·「새로고침하면 이 목록이
 > 빈다 — §9-c」). **무엇을 언제 왜 그렇게 했나**는 여기가 맞다.
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ a0cf8f4
-     — 확인: 2026-09-03 · `parity:activity` 에 `screens-ref-build.py --check` 가 하나 더
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 6d03a9e
+     — 확인: 2026-09-04 · `app/src/api` 에서 바뀐 것은 **타입 세 줄**이다(`6d03a9e`) —
+     `KoChatRequest.audio`·`edited`, `CheckMission.pron`. 이 절이 세는 것은 그쪽이
+     아니라 자모·재설정 쪽이라 **주장이 하나도 안 바뀌었다.**
+     앞 확인: 2026-09-03 · `parity:activity` 에 `screens-ref-build.py --check` 가 하나 더
        물렸다(a0cf8f4) — `package.json` 에서 바뀐 것은 **그 스크립트 문자열 한 줄뿐**이다.
        이 절이 그 파일에서 말하는 것은 **라우터 셋의 고정**(react-router 1.136.8 ·
        router-plugin 1.136.8 · router-devtools ^1.114.13)이고 **그건 하나도 안 바뀌었다** —
