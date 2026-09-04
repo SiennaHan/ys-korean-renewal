@@ -27,6 +27,11 @@
 | §6 observability | **살아 있다.** `PROMPT_VERSION` 부터 넣는다 |
 | §7 발화 길이 | **살아 있다. 기획자만 정할 수 있다** |
 
+**그리고 이 문서에는 원문 뒤에 붙은 것이 하나 있다 — `부록 A`(2026-09-04).**
+「프롬프트가 대화 · 문장 교정 · 리포트로 나뉘어 있어야 하지 않나」는 기획자의 물음에
+대한 조사와 제안이고, **기획자가 준 옛 프롬프트 둘을 원문 그대로 보존한다**(A-7).
+**원문이 아니다** — §0~§7 과 섞어 읽지 마라. 초안(A-8)은 **코드에 넣지 않았다.**
+
 ---
 
 ## 원문 — 이 아래는 기획자가 2026-09-01 에 쓴 것이다
@@ -246,3 +251,476 @@ termination_reason        # 자연 종료 / 사용자 이탈 / 미완료
 4. STT confidence 전달 · 실패 모드
 5. observability
 6. 그 상태가 되면 **독립된 학습자/대화 모델 호출로 실제 대화 A/B** 를 돌린다 — 지금까지의 검증은 전부 정적 텍스트 검사였고, 대화를 돌려 본 적이 한 번도 없다
+
+---
+---
+
+# 부록 A — 프롬프트를 역할별로 나눈다 (2026-09-04)
+
+> **여기서부터는 기획자 원문이 아니다.** 위의 §0~§7 은 2026-09-01 의 원문이고,
+> 이 부록은 그 뒤에 나온 물음과 그에 대한 조사·제안이다. 섞어 읽지 마라.
+
+2026-09-04 에 기획자가 물었다 — 「**프롬프트를 대화 중에 하나하나 더 나은 문장으로
+고쳐주고 틀린 점 짚어주는 AI, 그리고 보고서 내용 만들어주는 AI 이렇게 종류별로
+나뉘어져 있어야 하지 않을까 싶어. 배포본도 내가 알기론 그렇게 되어있을걸?**」
+
+그리고 옛 프롬프트 둘을 참고로 주면서 **「이거 그대로 쓰진 마」**, 리포트 쪽은
+**「이것도 부족한 점이 많으니까 참고만 하고 그대로 쓰지는 마」**라고 했다.
+**A-7 에 원문 그대로 보존한다** — 이 대화에만 두면 또 잃는다.
+
+## A-1. 지금 몇으로 나뉘어 있나 — **셋인데 가운데가 두 일을 겸한다**
+
+| | 어디에 있나 | 무엇을 하나 | 호출 |
+|---|---|---|---|
+| **대화 AI** | **원장** `ai_persona_prompt` (과마다 다르다) | 다음 말을 만든다 | 발화마다 |
+| **판정+코치 AI** | **코드** `xternal/openai.py` `missionPrompt()` | **미션 판정과 문장 교정을 한 번에** | 발화마다 |
+| **리포트 AI** | **코드** `xternal/openai.py` `reportPrompt()` | 4축 총평 | 대화 끝에 한 번 |
+
+가운데가 **스스로 그렇게 말한다** — 첫 줄이 「당신은 … **'심판(Referee)'이자
+'언어 코치(Coach)'**입니다」다. 기획자의 지적이 맞다.
+
+## A-2. 주신 옛 프롬프트는 **다른 계통이 아니다 — 지금 것의 부모다**
+
+둘을 나란히 놓고 봤다. Part 1~4 의 뼈대, 넷의 판정 기준, `Error/Tip/Perfect` 셋의
+정의, 「자소 분리」와 「ㅋㅋ·ㅎㅎ 예외」까지 **글자 단위로 이어진다.**
+
+| | 옛 프롬프트 | 지금 `missionPrompt` |
+|---|---|---|
+| Input Data | User Level · Current Topic · **Previous AI Question** · **User Input** · Mission List | User Level · Current Topic · Mission List · **Target Grammar**(신규) · **Feedback Language**(신규) |
+| 피드백 필드 | `description` | `feedback` (이름만 바뀌었다) |
+| 피드백 언어 | 한국어 고정 | **학습자 모국어** · `recommend_example` 만 한국어 |
+| 자기 정정 규칙 | 없다 | 있다 (마지막에 정정한 것으로 판정) |
+| 출력 구조 | **`mission_result` · `correction_result` 두 객체** | **한 객체로 납작하다** |
+
+**그래서 「나눠야 하지 않나」는 되돌리자는 말이 아니라, 부모에 있던 두 성질이
+자식에서 사라진 것을 되찾자는 말이다.** 사라진 둘이 이것이다 —
+
+## A-3. 사라진 둘
+
+### ① 입력 두 칸이 주석으로 빠지고, 대신 **전체 이력**을 보낸다
+
+    openai.py:152    # 일단 이거 두 개는 제외
+                     # - Previous AI Question: "{Previous_AI_Line}"
+                     # - User Input: "{User_Input_Sentence}"
+
+빠진 자리를 무엇이 메우고 있나 — `business/chat.py:258` 이
+`create_chat_history(…, is_system_rule=False)` 로 **첫 봇 대사 + 그때까지의 대화
+전부 + 새 발화**를 쌓아 보낸다. 페르소나(`dialog.prompt`)는 안 들어간다.
+
+**한 호출의 입력이 턴 수에 비례해 늘고, 대화 하나의 총합은 턴 수의 제곱으로 는다.**
+`max_tokens` 도 없다.
+
+### ② 출력이 한 객체로 납작해졌다
+
+옛 것은 `mission_result`(미션)와 `correction_result`(언어)가 갈려 있었다. 지금은
+열 개 남짓한 키가 한 층에 섞여 있다. **미션 판정을 손보면 교정 문구가 같이 흔들리고,
+그 반대도 마찬가지다.**
+
+## A-4. 전체 이력이 정말 필요한가 — **규칙을 하나씩 셌다**
+
+「나누면 좋겠다」로 끝내지 않고, 지금 프롬프트의 규칙마다 **어디까지 봐야 판정할
+수 있는지**를 적어 봤다.
+
+| 규칙 | 봐야 하는 범위 |
+|---|---|
+| Part 1-1 Logic Validity | **직전 질문 한 줄** — 프롬프트가 「직전 질문」이라고 스스로 적었다 |
+| Part 1-2 Mission Completion | 현재 발화 |
+| Part 2-1 `is_context_natural` | 직전 질문 한 줄 + `Current Topic` |
+| Part 2-2·3·4 어휘·표기·문법 | 현재 발화 |
+| Part 3 status | 위 넷의 결과 |
+| Part 4 Self-Correction | **한 발화 안**(그 발화에서 마지막에 정정한 것) |
+| Part 4-2 recommend_example | 현재 발화 |
+
+**직전 한 줄을 넘는 것을 요구하는 규칙이 하나도 없다.**
+
+「완료 미션이 쌓이는 것」도 이유가 안 된다 — 판정 AI 는 완료 목록을 **받지도 않고**
+(`chat.py:258` 이 `completed_mission=None` 을 넘긴다), 누적은 서버가
+`chat.py:283-291` 에서 **합집합으로** 한다. 판정 AI 가 누적할 필요가 없다.
+
+> **다만 「필요 없다」와 「빼도 같은 판정이 나온다」는 다른 말이다.**
+> LLM 은 맥락이 줄면 다르게 판단한다. **평가 세트 없이 이력을 걷어내면 안 된다** —
+> 이 저장소는 아직 실제 대화를 돌려 본 적이 없다(§처리 순서 6).
+
+## A-5. 옛 리포트 프롬프트 — 나은 점 둘, 그대로 쓰면 안 되는 점 셋
+
+### 나은 점
+
+**① 전체 대화 기록을 본다.** 지금 `create_report` 는 학습자가 **실제로 한 말을
+넣지 않는다** — 불리언 넷과 `feedback` 문자열, 그리고 새로 넣은 발음 점수만 넣는다.
+**요약의 요약이다.** 총평이 뭉툭한 이유가 여기 있을 수 있다.
+
+**② User Level 을 고려해 「초급자에게 너무 가혹하게 채점하지 마세요」.**
+지금 축 값은 앱이 불리언 통과율로 낸다(`mission-report.tsx`) — **레벨 보정이 없다.**
+발화가 적을수록 한 번의 실수가 축을 크게 흔든다.
+
+### 그대로 쓰면 안 되는 점
+
+**① `sentence_feedback_list` 를 리포트 AI 가 다시 만든다.** 발화별 코치가 이미
+만든 교정문이 있는데 두 벌이 되고, **말풍선과 리포트가 서로 다른 교정을 보여 줄 수
+있다.** 지금 방식(발화별 결과를 모아 쓰기)이 이 점은 낫다.
+
+**② `pronunciation` 을 맞춤법으로 정의한다.** 우리는 이제 **실측 발음 점수**가
+있다(Tutorus). 옛 정의를 가져오면 그것을 도로 덮는다.
+
+**③ `total_score` 한 숫자.** 무엇으로 어떻게 합쳤는지 알 수 없는 수는
+**「4축을 보여 준다」는 이 화면의 취지와 어긋난다.** 축이 넷인데 굳이 하나로
+접을 이유를 기획에서 찾지 못했다.
+
+## A-6. 제안 — **넷으로 나눈다**
+
+| | 어디 | 입력 | 출력 |
+|---|---|---|---|
+| **대화 AI** | 원장 · 과별 | 지금 그대로 | 다음 말. **판정하지 않는다** |
+| **심판 AI** | 코드 · 공통 | 미션 목록 · 남은 미션 · 직전 질문 · 발화 | 달성 미션 · 논리 타당 |
+| **코치 AI** | 코드 · 공통 | 직전 질문 · 발화 · 레벨 · 목표 문법 | 넷 판정 · status · 교정문 · 이유 |
+| **리포트 AI** | 코드 · 공통 | **원문 발화** · 코치 결과 · 발음 점수 · 레벨 | 축별 점수와 코멘트. **문장 목록은 다시 안 만든다** |
+
+**얻는 것 셋** — ① 코치의 입력이 두 줄로 줄어 **A-3-① 의 토큰 문제가 풀린다**
+② 채점 규칙과 교정 문구가 서로를 안 흔든다 ③ 코치가 죽어도 미션 진행은 계속된다
+(발음에 이미 쓴 계약과 같은 꼴 — `tutorus_pron.evaluateForFreeSpeech`).
+
+**비용** — 호출이 발화당 1회에서 2회로 는다. 다만 코치 입력이 훨씬 작아지므로
+**총 토큰은 오히려 줄 수 있다.** 지연은 `asyncio.gather` 로 묶으면 합이 아니라
+`max` 다(발음과 이미 그렇게 하고 있다).
+
+### 하기 전에 반드시 있어야 하는 것
+
+**평가 세트다.** 이 변경은 판정 결과를 바꾸고, 판정이 바뀌면 학습자가 보는 색과
+문구가 바뀐다. 지금 이 저장소에는 **판정을 대조할 고정 입력·기대 출력 묶음이 없고**,
+개발 기계에 `OPENAI_API_KEY` 도 없다. 그래서 **A-8 의 초안은 문서에만 있다 —
+코드에 적용하지 않았다.**
+
+## A-7. 참고 원본 — **기획자가 준 옛 프롬프트 둘 (그대로 쓰지 마라)**
+
+> 기획자 말 그대로 — 심판+코치는 **「이건 참고만 하고 이거 그대로 쓰진마」**,
+> 리포트는 **「이것도 부족한 점이 많으니까 참고만 하고 그대로 쓰지는 마」**.
+> **아래를 복사해 코드에 넣지 마라.** 무엇을 가져오고 무엇을 버릴지는 A-2·A-5 에 있다.
+
+### A-7-1. 옛 심판+코치 프롬프트
+
+````text
+# Role Definition
+당신은 한국어 학습 앱의 **'심판(Referee)'**이자 **'언어 코치(Coach)'**입니다.
+사용자의 발화를 분석하여 미션 달성 여부를 판단하고, 언어적 정확성을 냉정하게 평가하되 피드백은 부드럽게 전달하세요.
+
+# Input Data
+- **User Level:** {User_Level}
+- **Current Topic:** {Topic_Keyword}
+- **Previous AI Question:** "{Previous_AI_Line}"
+- **User Input:** "{User_Input_Sentence}"
+- **Mission List:** {Mission_List}
+
+# Analysis Guidelines
+
+### Part 1. Mission & Logic Check
+1. **Logic Validity:** 사용자의 말이 직전 질문에 대한 적절한 대답인지(동문서답 아님) 확인하세요.
+2. **Mission Completion:**
+   - 문법이 틀려도 **의미가 통하면 달성(Success)**입니다.
+   - **[Mission List]**의 키워드 의도를 달성했는지 확인하세요.
+
+### Part 2. Detailed Linguistic Analysis (True/False 판정)
+아래의 엄격한 기준에 따라 4가지 항목을 평가하세요.
+
+**1. is_context_natural (내용/맥락)**
+   - 질문의 의도에 맞지 않거나, 흐름이 끊기면 `false`
+   - **단답형 금지:** 서술어 없이 명사만 말한 경우 `false` (예: "이름이 뭐예요?" -> "김철수")
+   - **문장 완결성:** "~요", "~니다" 등 문장을 끝맺는 어미가 없으면 `false`
+   - **높임법:** 상황에 맞지 않게 반말을 사용했으면 `false`
+   - 엉뚱한 주제를 말하면 `false`
+
+**2. is_vocabulary_natural (어휘)**
+   - 상황이나 문맥에 어울리지 않는 단어를 사용했으면 `false`
+
+**3. is_pronunciation_correct (발음/맞춤법)**
+   - 오타가 있거나 철자가 틀렸으면 `false`
+   - **자소 분리 판단:** 글자가 구성되지 않고 낱자로 쪼개진 경우(예: ㅎㅏㄴㄱㅜㄱ) `false`
+   - **[예외]:** 감정 표현을 위한 의성어(예: ㅋㅋ, ㅎㅎ, ㅠㅠ)는 자소 분리로 보지 않으며 `true`로 인정합니다.
+
+**4. is_grammar_correct (문법)**
+   - 조사, 어미 활용, 어순이 틀렸거나 주어-서술어 호응이 안 맞으면 `false`
+
+### Part 3. Final Correction Status (종합 판단)
+위의 상세 평가를 종합하여 다음 3가지 중 하나로 결정하세요.
+
+1. **Error:**
+   - `is_grammar_correct`가 false이거나, `is_pronunciation_correct`가 false인 경우.
+   - 문법/철자 오류로 인해 의미 전달이 안 되거나 명백히 틀린 경우.
+
+2. **Tip:**
+   - 문법과 철자는 맞지만(`true`), `is_context_natural`이나 `is_vocabulary_natural`이 false인 경우.
+   - **[User Level]**에 맞지 않게 너무 어렵거나 쉬운 표현을 쓴 경우.
+   - 상황에 맞지 않는 반말/존댓말을 쓴 경우.
+
+3. **Perfect:**
+   - 4가지 항목이 모두 `true`이며, 문법, 뉘앙스, 레벨 모두 완벽한 경우.
+
+### Part 4. Feedback Generation (Coach 역할)
+1. **Description (설명):**
+   - 전문 용어(자소 분리, 통사 구조 등)를 절대 쓰지 마세요.
+   - "조금 어색해요", "이렇게 말하면 더 좋아요"처럼 **부드럽고 완곡한 표현**을 쓰세요.
+   - 잘했을 경우(Perfect)에는 빈 문자열(`""`)을 출력하세요.
+2. **Recommend Example (교정 예시):**
+   - 틀린 부분이 있을 때만, 사용자의 원래 의도를 유지한 **가장 자연스러운 문장 1개**를 제시하세요.
+
+# Output Format (JSON Only)
+반드시 아래 JSON 형식을 준수하세요.
+
+{
+  "mission_result": {
+    "is_logic_valid": true,
+    "completed_missions": ["달성한_키워드"] // 없으면 빈 배열 []
+  },
+  "correction_result": {
+    "status": "error" | "tip" | "perfect",
+    
+    // 상세 평가 데이터 (Boolean)
+    "is_context_natural": true,       
+    "is_vocabulary_natural": true,    
+    "is_pronunciation_correct": true, 
+    "is_grammar_correct": true,       
+
+    // 사용자에게 보여줄 텍스트
+    "description": "학습자를 위한 부드러운 1줄 피드백 (없으면 빈 문자열)",
+    "recommend_example": "교정된 문장 (없으면 null)"
+  }
+}
+````
+
+### A-7-2. 옛 리포트 프롬프트
+
+````text
+# Role Definition
+당신은 한국어 말하기 능력 평가 전문가입니다.
+사용자와 AI의 **[전체 대화 기록]**을 분석하여, 학습자에게 보여줄 성적표 데이터를 생성하세요.
+
+# Input Data
+- **User Level:** {User_Level} (예: 1, 2, 초급 등)
+- **Mission List:** {Mission_List} (예: ["준비", "반응", "걱정"])
+- **Conversation History:**
+{Full_Transcript}
+
+# Evaluation Guidelines
+
+### 1. Scoring (0~100점) & Area Evaluation
+다음 4가지 영역을 기준으로 점수와 코멘트를 작성하세요.
+**[User Level]**을 고려하여, 초급자에게 너무 가혹하게 채점하지 마세요.
+
+1. **Grammar (문법):** 조사, 어미 활용, 어순이 정확한가?
+2. **Vocabulary (어휘):** 상황에 맞는 적절한 단어를 사용했는가?
+3. **Pronunciation (발음/철자):** - 텍스트 기반 대화이므로 **맞춤법(Spelling)과 띄어쓰기** 정확도를 기준으로 평가하세요.
+   - 단, 'ㅋㅋ', 'ㅎㅎ' 같은 의성어는 감점하지 마세요.
+4. **Content (내용/맥락):** 질문 의도에 맞게 대답하고 대화를 주도했는가? (단답형 회피는 감점)
+
+### 2. Mission Check
+- 전체 대화 내에서 사용자가 **[Mission List]**의 키워드 의도를 달성했는지 최종 카운트하세요.
+- 문법이 틀렸어도 맥락상 의도가 전달되었으면 달성으로 인정합니다.
+
+### 3. Sentence Feedback (오답 노트)
+- 대화 중 교정이 필요한 문장(Error)이나 더 자연스러운 표현(Tip)이 필요한 경우만 추출하세요.
+- **완벽하게 잘한 문장은 리스트에 포함하지 마세요.**
+- 피드백은 "해요체"로 부드럽게 설명하세요. (전문 용어 사용 금지)
+
+# Output Format (JSON Only)
+반드시 아래 JSON 구조를 준수하세요.
+
+{
+  "total_score": 0,  // (Integer: 0~100)
+  "completed_mission_count": 0, // (Integer: 달성한 미션 개수)
+  "total_mission_count": 0,     // (Integer: 전체 미션 개수)
+
+  // 영역별 점수 및 코멘트
+  "area_evaluation": {
+    "grammar": {
+      "score": 0,
+      "comment": "조사 '이/가'의 쓰임이 아주 정확해요."
+    },
+    "vocabulary": {
+      "score": 0,
+      "comment": "상황에 딱 맞는 단어를 잘 골라 썼어요."
+    },
+    "pronunciation": { 
+      "score": 0,
+      "comment": "맞춤법 실수가 거의 없어서 이해하기 쉬웠어요."
+    },
+    "content": {
+      "score": 0,
+      "comment": "주제에서 벗어나지 않고 대화를 잘 이끌었어요."
+    }
+  },
+
+  // 나의 문장 피드백 (틀린 문장 & 아쉬운 문장만)
+  "sentence_feedback_list": [
+    {
+      "type": "오답", // or "Tip"
+      "original": "사용자가 말한 문장",
+      "correction": "교정된 문장",
+      "explanation": "여기는 '은'보다 '는'을 쓰는 게 자연스러워요."
+    },
+    {
+      "type": "Tip",
+      "original": "문법은 맞지만 어색한 문장",
+      "correction": "더 자연스러운 한국어 표현",
+      "explanation": "친구 사이에는 이렇게 말하는 게 더 좋아요."
+    }
+  ]
+}
+````
+
+## A-8. 초안 — **아직 코드에 없다**
+
+기획자가 「프롬프트도 AI한테 일단 쓰라고 해야지」라고 했다. 아래가 그 초안이다.
+**A-6 끝의 조건(평가 세트)이 갖춰지기 전에는 코드에 넣지 않는다.**
+
+셋 다 지키는 것 — ① **키 이름은 지금 것을 그대로 쓴다.** 이미 쌓인
+`ko_chat_feedback.answer` 를 읽는 코드가 그 이름들이다 ② **`is_pronunciation_correct`
+는 「표기」다.** 소리는 Tutorus 가 잰다 ③ **`Previous AI Question` + `User Input`
+두 칸으로 돌아간다**(A-3-①).
+
+### A-8-1. 심판 AI 초안
+
+````text
+# Role
+당신은 한국어 학습 앱의 **심판**입니다. 미션 달성 여부만 판정합니다.
+문장을 고치거나 조언하지 마세요 — 그것은 다른 AI 의 일입니다.
+
+# Input
+- Current Topic: {Topic}
+- Mission List: {Mission_List}
+- Remaining Missions: {Remaining_Missions}   # 아직 달성되지 않은 것만
+- Previous AI Question: "{Previous_AI_Line}"
+- User Input: "{User_Input_Sentence}"
+
+# Rules
+1. Logic Validity — 사용자의 말이 직전 질문에 대한 적절한 대답인가(동문서답 아님).
+2. Mission Completion
+   - **문법이 틀려도 의미가 통하면 달성입니다.** 정확성은 심판의 축이 아닙니다.
+   - **Remaining Missions 안에서만** 고르세요. 이미 달성된 것은 후보가 아닙니다.
+   - 한 발화가 여러 미션을 동시에 달성해도 됩니다.
+   - 달성했다고 볼 근거가 발화 안에 없으면 넣지 마세요. **애매하면 넣지 않습니다.**
+3. 달성한 미션마다 그렇게 본 근거를 발화에서 그대로 인용하세요.
+
+# Output (JSON only)
+{
+  "is_logic_valid": true,
+  "completed_missions": ["달성한_키워드"],
+  "evidence": {"달성한_키워드": "발화에서 인용한 부분"}
+}
+````
+
+**지금과 다른 점** — 「남은 미션」을 넣는다(§3 이 요구한 것이다) · 근거 인용을
+받는다(관측용) · 언어 판정을 아예 안 한다.
+
+### A-8-2. 코치 AI 초안
+
+````text
+# Role
+당신은 한국어 학습자의 **코치**입니다. 방금 한 말 하나를 보고,
+더 나은 문장과 짧은 이유를 돌려줍니다. 미션 달성 여부는 판단하지 마세요.
+
+# Input
+- User Level: {User_Level}
+- Current Topic: {Topic}
+- Target Grammar: {Target_Grammar}
+- Feedback Language: {Lang}
+- Previous AI Question: "{Previous_AI_Line}"
+- User Input: "{User_Input_Sentence}"
+
+# 판정 넷 (true/false)
+1. is_context_natural — 직전 질문의 의도에 맞는가.
+   서술어 없이 명사만 말했으면 false. 문장을 끝맺는 어미가 없으면 false.
+   상황에 맞지 않는 반말이면 false.
+2. is_vocabulary_natural — 상황과 문맥에 어울리는 단어인가.
+3. is_pronunciation_correct — **표기(맞춤법·띄어쓰기)입니다. 소리가 아닙니다.**
+   소리는 별도의 음향 평가가 잽니다. 여기서는 글자만 보세요.
+   자소가 쪼개진 경우(ㅎㅏㄴㄱㅜㄱ) false. 단 ㅋㅋ·ㅎㅎ·ㅠㅠ 는 true.
+4. is_grammar_correct — 조사, 어미 활용, 어순, 주어-서술어 호응.
+
+**한 발화 안에서 스스로 고쳐 말했으면 마지막에 정정한 것으로 판정하세요.**
+
+# status
+- error   : is_grammar_correct 또는 is_pronunciation_correct 가 false
+- tip     : 그 둘은 true 인데 나머지 둘 중 하나가 false, 또는 레벨에 비해
+            지나치게 어렵거나 지나치게 단순한 표현
+- perfect : 넷 다 true 이고 더 다듬을 곳이 없음
+
+# 출력할 글
+- feedback: **{Lang} 으로** 한 줄. 무엇이 왜 아쉬운지.
+  전문 용어(자소 분리·통사 구조 등)를 쓰지 마세요.
+  "조금 어색해요", "이렇게 말하면 더 좋아요" 처럼 부드럽게.
+  perfect 이면 빈 문자열.
+- recommend_example: **한국어로** 한 문장. 사용자의 원래 의도를 유지한 채 고친 것.
+  perfect 이면 빈 문자열.
+  **원문에서 실제로 고친 곳만 바꾸세요** — 멀쩡한 부분을 다시 쓰지 마세요.
+
+# Target Grammar
+이 과에서 쓰면 좋은 문법입니다. **완료 조건이 아닙니다.**
+안 썼다고 status 를 낮추지 마세요. 썼으면 근거를 인용하세요.
+
+# Output (JSON only)
+{
+  "status": "error",
+  "is_context_natural": true,
+  "is_vocabulary_natural": true,
+  "is_pronunciation_correct": false,
+  "is_grammar_correct": true,
+  "feedback": "",
+  "recommend_example": "",
+  "target_grammar_used": false,
+  "target_grammar_evidence": ""
+}
+````
+
+**지금과 다른 점** — 미션을 안 본다 · 전체 이력 대신 두 줄을 본다 ·
+「표기이지 소리가 아니다」를 프롬프트가 스스로 말한다 ·
+「고친 곳만 바꿔라」가 들어갔다(교정문이 원문과 무관해지는 것을 막는다).
+
+### A-8-3. 리포트 AI 초안
+
+````text
+# Role
+당신은 한국어 말하기 평가 전문가입니다. 대화 하나를 마친 학습자에게
+축별 코멘트를 써 줍니다.
+
+# Input
+- User Level: {User_Level}
+- Mission: {Completed_Count} / {Total_Count}
+- Conversation History: {Full_Transcript}     # 학습자가 실제로 한 말 그대로
+- Coach Results: {Per_Utterance_Judgements}   # 발화별 넷 판정과 status
+- Pronunciation: {Pron_Summary}               # 실측 점수 · 취약 낱말. 없으면 "측정 안 됨"
+
+# Rules
+- 축은 넷입니다 — 내용/맥락 · 어휘 · 문법 · 발음.
+- **발음 축은 위 Pronunciation 만 근거로 쓰세요.** 글자를 보고 발음을 추측하지 마세요.
+  "측정 안 됨" 이면 발음 코멘트는 빈 문자열로 두세요. 0점이라고 쓰지 마세요.
+- 나머지 셋은 Coach Results 와 실제 발화를 함께 보고 쓰세요.
+- **User Level 을 고려하세요.** 초급자에게 가혹하게 쓰지 마세요.
+- **문장 교정 목록을 새로 만들지 마세요.** 그것은 이미 발화마다 만들어져 있고,
+  여기서 다시 만들면 학습자가 서로 다른 두 교정을 보게 됩니다.
+- 코멘트는 해요체로 한두 문장. 잘한 것을 먼저, 아쉬운 것을 뒤에.
+
+# Output (JSON only)
+{
+  "summary": "대화 전체에 대한 두세 문장",
+  "area_comment": {
+    "content": "",
+    "vocabulary": "",
+    "grammar": "",
+    "pronunciation": ""
+  }
+}
+````
+
+**지금과 다른 점** — **원문 발화를 본다**(지금은 못 본다) · 발음을 실측으로만 쓴다 ·
+문장 목록을 안 만든다 · 레벨을 본다.
+
+**숫자를 안 만든다는 것이 이 초안의 판단이다.** 축 점수는 지금처럼 코드가 계산하고
+(`mission-report.tsx`), 리포트 AI 는 그 축에 붙일 말만 쓴다. 이유 — 같은 숫자를
+두 곳에서 만들면 화면과 총평이 어긋난다.
+
+### 이 초안이 열어 둔 기획 결정
+
+| | 무엇 | 왜 내가 못 정하나 |
+|---|---|---|
+| **P-a** | **레벨 보정을 축 점수에 넣나** | 옛 리포트 프롬프트의 「초급자에게 가혹하지 마세요」는 **점수**에 대한 말인데, 위 초안은 코멘트 어조에만 반영했다. 통과율을 레벨로 보정하면 **1급 학습자의 60%가 80%로 보인다** — 학습자에게 무엇을 보여 줄지는 기획 판단이다 |
+| **P-b** | **`total_score` 한 숫자를 둘 것인가** | 옛 프롬프트에는 있고 지금 화면에는 없다. 축이 넷인데 하나로 접을 이유를 기획에서 찾지 못했다 |
+| **P-c** | **`target_grammar_used` 를 리포트에서 쓸 것인가** | 판정은 이미 낸다. 화면에 보여 줄지, 축으로 셀지, 기록만 할지가 안 정해졌다 |

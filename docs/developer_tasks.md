@@ -1,7 +1,13 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 6d03a9e
-     — 확인: 2026-09-04 · `openai.py` 가 바뀐 것은 **프롬프트 두 곳의 문구와 리포트
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 3521d4c
+     — 확인: 2026-09-04 · `openai.py` 가 또 바뀌었다(`3521d4c`) — `missionPrompt` 에
+     **`Target Grammar` 칸**이 생기고 출력에 `target_grammar_used`·`target_grammar_evidence`
+     가 늘었다. **완료 조건이 아니라고 프롬프트가 스스로 말한다.**
+     **새로 부르는 외부 API 도, 새로 보내는 데이터도 없다** — 원장에 이미 있던 값이다.
+     이 판에서 **이 문서의 낡은 줄 번호 둘을 걷었다** — `chat.py:193`·`openai.py:158` 이
+     각각 234·150 으로 밀려 있었다. 자주 움직이는 자리라 번호 대신 함수 이름으로 적는다.
+     앞 확인: 2026-09-04 · `openai.py` 가 바뀐 것은 **프롬프트 두 곳의 문구와 리포트
      입력**이다(`6d03a9e`) — `is_pronunciation_correct` 의 이름표를 「표기(맞춤법)」로
      고쳐 **발음을 판정하지 않는다고 프롬프트가 스스로 말하게** 했고(키는 그대로 뒀다),
      리포트 프롬프트의 발음 항목을 실측 점수 요약으로 바꾸고 그 입력에 `pron_score` 를
@@ -963,8 +969,9 @@ bash stop.sh && bash start.sh
 
 **현재 — 대부분 이미 돈다.** 이 카드가 늦게 생긴 이유가 그것이다.
 
-- **턴별 판정이 이미 있다.** `POST /chat/check/mission` → `api/business/chat.py:193` →
-  `openai.check_mission`(system = `missionPrompt()`, `api/xternal/openai.py:158`).
+- **턴별 판정이 이미 있다.** `POST /chat/check/mission` → `api/business/chat.py`
+  `post_check_mission()` → `openai.check_mission`(system = `api/xternal/openai.py`
+  `missionPrompt()`). **줄 번호를 적지 않는다** — 이 둘은 자주 움직여서 두 번 낡았다.
   발화 1건당 LLM 1회. 네 불리언 + `status` + `feedback` + `recommend_example` 을 낸다.
 - **종료 리포트도 있다.** `GET /dialog/{id}/report` → `openai.create_report` → `ko_chat.report`.
 - **「나의 문장 피드백」 탭도 구현돼 있다**(`report-screen.tsx:232-250`).
@@ -987,7 +994,8 @@ bash stop.sh && bash start.sh
    「측정 안 됨」**이고 판정을 지연·실패시키지 않는다.
 4. 딸린 결함 — 재접속 시 발화가 사라지는 짝짓기(`mission-dialog.tsx:336-358`,
    `else` 가 없다) · **실패와 오답이 같은 모양**(DEV-12 가 남겨 둔 자리) ·
-   총평 캐시 무효화(`dialog.py:38-40`) · 유령 프롬프트 삭제(`openai.py:245-321`).
+   총평 캐시 무효화(`dialog.py`) · 유령 프롬프트 삭제(**했다** — `4cdfa67`. 그 줄들은
+   이제 없으므로 번호로 찾지 마라).
 5. `PROMPT_VERSION` 을 판정 결과에 스탬프한다 — `mission_chat_spec_v1.md` §6 이 요구한다.
 6. **원장의 `target_grammar` 를 판정까지 잇는다** — 아래.
 
