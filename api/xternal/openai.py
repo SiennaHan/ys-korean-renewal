@@ -147,7 +147,7 @@ async def quest_stream(chat_history: List[object]) :
         raise HTTPException(503, ERROR503)
 
 
-def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str = "Korean") :
+def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str = "Korean", targetGrammar: str | None = None) :
 
     # 일단 이거 두 개는 제외
     # - Previous AI Question: "{Previous_AI_Line}"
@@ -164,6 +164,12 @@ def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str 
     intent = intent + """
 - Mission List: """ + missionListStr
     intent = intent + """
+- Target Grammar: """ + (targetGrammar or "(지정 없음)") + """
+  ※ **이것은 완료 조건이 아닙니다.** 이 과에서 「쓸 수 있게 유도할」 문법이고,
+    사용자가 쓰지 않았어도 뜻이 통하면 미션은 달성입니다.
+    쓴 것이 보이면 `target_grammar_used` 를 true 로, 그 근거 표현을
+    `target_grammar_evidence` 에 적으세요. 안 썼으면 false 와 빈 문자열입니다.
+    **이 값으로 status 를 정하지 마세요** — 사후 피드백에서만 씁니다.
 - Feedback Language: """ + lang + """ (아래 'feedback' 필드는 반드시 이 언어로 작성. 단 'recommend_example'은 항상 한국어)
 
 # Analysis Guidelines
@@ -238,7 +244,9 @@ def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str 
   "is_pronunciation_correct": false,
   "is_grammar_correct": true,
   "feedback": "사람들과 부딪힐 때는 '되요'가 아니라 '돼요'라고 써야 해요.",
-  "recommend_example": "사람들하고 부딪히게 돼요."
+  "recommend_example": "사람들하고 부딪히게 돼요.",
+  "target_grammar_used": false,
+  "target_grammar_evidence": ""
 }"""
 
     return intent
@@ -251,8 +259,9 @@ def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str 
 # 살아 있는 쪽은 「문법·철자는 맞지만 더 자연스러운 표현이 있는 경우」로 정의했다.
 # 2026-09-03 에 걷었다. 옛 판을 보려면 `git log -S` 로 이 커밋을 찾아라.
 
-async def check_mission(missionStr: str, scenario: str, level: str,  chatHistory: List[object], lang: str = "Korean") :
-    intent = missionPrompt(missionStr, scenario, level, lang)
+async def check_mission(missionStr: str, scenario: str, level: str,  chatHistory: List[object],
+                        lang: str = "Korean", targetGrammar: str | None = None) :
+    intent = missionPrompt(missionStr, scenario, level, lang, targetGrammar)
 
     # `print("mission prompt=>", intent)` 이 있었다 — 매 호출마다 프롬프트 전문
     # (수천 자)을 표준출력에 흘렸다. 2026-09-03 에 걷었다.

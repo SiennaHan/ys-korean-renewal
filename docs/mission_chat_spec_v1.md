@@ -98,6 +98,29 @@ mission_evidence       : string    # 완료로 본 실제 사용자 발화
 
 지금은 **대화 AI가 어떤 미션이 남았는지 스스로 추론**하고, 판정 AI가 따로 `completed_missions` 를 계산한다. 두 시스템이 각자 상태를 갖고 있으니 어느 한쪽이 틀리는 순간 **AI가 이미 끝난 미션을 다시 묻는다.**
 
+> **[2026-09-04 갱신] 「각자 상태를 갖는다」는 이제 절반만 맞다 — 주입이 이미 된다.**
+> `business/chat.py` 의 대화 AI 호출이 판정 결과를 시스템 메시지로 넣는다:
+>
+>     chat_all = create_chat_history(…, chat.completed_missions, True)
+>     → {"role":"system", "text":"현재 완료된 미션 : [\"인사\"]"}
+>
+> **그래도 이 절이 살아 있는 이유 넷** —
+>
+> ① **완료된 것만 주고 남은 것은 안 준다.** 대화 AI 가 `mission_detail` 셋에서
+>    완료된 것을 빼야 한다. 아래 제안이 `remaining_missions` 를 주자는 것은
+>    **그 뺄셈을 없애자**는 뜻이다 — 뺄셈은 AI 가 틀릴 수 있는 자리다.
+> ② **판정이 실패하면 상태가 안 늘어난다.** 그러면 대화 AI 는 낡은 목록을 보고
+>    이미 한 미션을 다시 묻는다. **이 절이 말하는 증상의 직접 원인일 수 있다.**
+>    2026-09-03 에 판정 실패를 화면에서 눈에 보이게 만들었으니(`DEV-16`) 그 진단이
+>    전보다 쉽다.
+> ③ `ko_chat.completed_missions` 가 **`String(200)`** 이다. 한글 라벨 셋이면
+>    여유롭지만 상한이다.
+> ④ **`target_grammar_used` 가 없다** — 아래 「같이 정할 것」이 요구한 관찰값이다.
+>    2026-09-04 에 **목표 문법을 판정 프롬프트에 넣고**(「완료 조건이 아니다」를
+>    같이 못 박았다) 출력 스키마에 `target_grammar_used`·`target_grammar_evidence`
+>    두 칸을 더했다. **원장 값이 판정까지 닿는 것을 실제로 확인했다.**
+>    남은 것은 그 값을 **리포트에서 쓰는 것**이다.
+
 프롬프트에 「이미 나온 미션은 다시 묻지 마세요」라고 적어 두는 것보다, **상태를 주입하는 편이 훨씬 강하다.**
 
 ### 제안
@@ -118,6 +141,14 @@ mission_completed        : bool     # 뜻이 통했는가 — 진행의 기준
 target_grammar_used      : bool     # 별도 관찰값
 target_grammar_evidence  : string
 ```
+
+> **[2026-09-04 갱신] 아래 둘은 들어갔다.** `missionPrompt` 에 `Target Grammar` 슬롯과
+> 「이 값으로 status 를 정하지 마세요」를 넣고, 출력 스키마에 `target_grammar_used` ·
+> `target_grammar_evidence` 를 더했다(`_normalizeCheckMission` 이 빠진 키를 메운다).
+> **`mission_completed` 는 따로 만들지 않았다** — `completed_missions` 배열이 이미
+> 그 일을 하고, 프롬프트가 「문법이 틀려도 뜻이 통하면 달성」이라고 이미 말한다.
+> **원장의 `target_grammar` 가 판정에 안 닿고 있던 것이 진짜 문제였다** —
+> `repo_chat._Dialog` 가 다섯 칸만 노출했다. 이제 닿는다.
 대화 진행은 `mission_completed` 로만 판단하고, 문법은 사후 피드백에서 따로 다룬다.
 「대화는 잘했는데 목표 문법은 안 썼다」가 그 자체로 유용한 학습 데이터다.
 

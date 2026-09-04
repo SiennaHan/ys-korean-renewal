@@ -213,6 +213,11 @@ _CHECK_DEFAULTS = {
     "is_grammar_correct": False,
     "feedback": "",
     "recommend_example": "",
+    # 목표 문법은 **완료 조건이 아니다** — 별도 관찰값이다
+    # (`docs/mission_chat_spec_v1.md` §3). 기본값이 false 인 것은 「안 썼다」가
+    # 아니라 「모른다」에 가깝지만, status·완료 판정에 쓰지 않으므로 해가 없다.
+    "target_grammar_used": False,
+    "target_grammar_evidence": "",
 }
 
 
@@ -261,7 +266,8 @@ async def post_check_mission(dialogId: int, chatId: int, userId: str, msg:str,
         # STT 가 이미 그 오디오에 가장 잘 맞는 답이라 점수가 부풀려진다.
         # 고쳤을 때는 `edited` 로 표시해 **리포트 발음 분모에서 뺀다**(기획 확정).
         feedback, pron = await asyncio.gather(
-            openai.check_mission(dialog.mission, dialog.scenario, dialog.level, chat_all, lang),
+            openai.check_mission(dialog.mission, dialog.scenario, dialog.level, chat_all,
+                                 lang, dialog.target_grammar),
             tutorus_pron.evaluateForFreeSpeech(msg, audio),
         )
         feedback = _normalizeCheckMission(feedback)

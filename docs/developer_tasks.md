@@ -989,6 +989,25 @@ bash stop.sh && bash start.sh
    `else` 가 없다) · **실패와 오답이 같은 모양**(DEV-12 가 남겨 둔 자리) ·
    총평 캐시 무효화(`dialog.py:38-40`) · 유령 프롬프트 삭제(`openai.py:245-321`).
 5. `PROMPT_VERSION` 을 판정 결과에 스탬프한다 — `mission_chat_spec_v1.md` §6 이 요구한다.
+6. **원장의 `target_grammar` 를 판정까지 잇는다** — 아래.
+
+**★ 원장에 있는데 판정이 못 보던 값 하나 (2026-09-04 에 이었다)**
+
+`ko_mission_chat.target_grammar`(그 과에서 써야 할 문법)가 **원장에 있고 DB 컬럼도
+있는데 판정에 닿지 않았다** — `repo_chat._Dialog` 가 다섯 칸만 노출했다.
+
+처음에는 `_Dialog` 에 칸만 더하고 **프롬프트로는 안 넘겼다.** 그때 커밋 메시지가
+「판정에 닿는다」로 읽히게 쓰였는데 사실이 아니었다 — 기획자가 「미션 상태의 주인
+문제가 뭐냐」고 물어 다시 보다 찾았다.
+
+지금은 `missionPrompt` 에 `Target Grammar` 슬롯이 있고 「**이것은 완료 조건이
+아닙니다**」를 같이 못 박았으며, 출력 스키마에 `target_grammar_used` ·
+`target_grammar_evidence` 두 칸을 더했다(`_normalizeCheckMission` 이 빠진 키를 메운다).
+원장 값이 판정까지 닿는 것을 대역으로 확인했다 —
+`판정이 받은 target_grammar = '이에요/예요 은/는'`.
+
+**남은 것은 그 값을 리포트에서 쓰는 것**이다. 「대화는 잘했는데 목표 문법은 안
+썼다」가 그 자체로 학습 데이터라는 게 `mission_chat_spec_v1.md` §3 의 주장이다.
 
 **발음 축이 실제로 재진다 — 2026-09-03 에 확인했다**
 
