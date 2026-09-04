@@ -1,7 +1,11 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 59bc843
-     — 확인: 2026-09-04 · `openai.py` 의 **판정 프롬프트 Part 3 을 고쳤다**(`59bc843`) —
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 7b48840
+     — 확인: 2026-09-04 · `openai.py` 의 **판정 프롬프트 Part 4 를 고쳤다**(`7b48840`) —
+     동문서답(`is_logic_valid=false`)이면 `recommend_example` 을 빈 문자열로 두고
+     `feedback` 이 방향만 권고한다. **8회 태워 확인했다** — 교정이 필요한 사례 넷을
+     같이 넣어 교정이 사라지지 않은 것까지 봤다. **새로 부르는 외부 API 는 없다.**
+     앞 확인: 2026-09-04 · `openai.py` 의 **판정 프롬프트 Part 3 을 고쳤다**(`59bc843`) —
      `is_logic_valid` 가 `false` 면 무조건 Error 다(동문서답이 파란 팁으로 뜨던 것을
      기획 확정으로 오류로 돌렸다). **사내 게이트웨이로 8회 태워 확인했다** —
      전말은 `mission_chat_spec_v1.md` A-11. **새로 부르는 외부 API 는 없다** —
