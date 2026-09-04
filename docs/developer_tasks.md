@@ -1,7 +1,14 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 7b48840
-     — 확인: 2026-09-04 · `openai.py` 의 **판정 프롬프트 Part 4 를 고쳤다**(`7b48840`) —
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 09cfb40
+     — 확인: 2026-09-04 · `openai.py` 가 **동문서답을 세게 됐다**(`09cfb40`) —
+     `create_report` 가 `is_logic_valid=false` 를 파이썬으로 세서 프롬프트에 숫자로
+     넘기고, `reportPrompt` 내용 축이 그것을 받는다(0회면 언급 안 함). **저장 변경 0** —
+     그 값은 처음부터 판정 출력에 있었다. 같은 판에 `_parseJsonLoose` 를 만들어 다섯
+     호출부에 걸었다 — 모델이 ```json 펜스를 붙이면 리포트가 문자열을 캐시해 총평이
+     영구 공백이 되던 실패 모드를 막는다(운영에서는 `response_format` 이 막고 있었다).
+     **새로 부르는 외부 API 는 없다.**
+     앞 확인: 2026-09-04 · `openai.py` 의 **판정 프롬프트 Part 4 를 고쳤다**(`7b48840`) —
      동문서답(`is_logic_valid=false`)이면 `recommend_example` 을 빈 문자열로 두고
      `feedback` 이 방향만 권고한다. **8회 태워 확인했다** — 교정이 필요한 사례 넷을
      같이 넣어 교정이 사라지지 않은 것까지 봤다. **새로 부르는 외부 API 는 없다.**
