@@ -792,13 +792,23 @@ export const 미션대화_고칠곳: Story = {
 				onSkip={() => {}}
 			>
 				<BotMsgBox msg="어서 오세요. 무엇을 드릴까요?" replayAudio={() => {}} />
+				{/* 두 줄이다 — 위가 교정 문장(한국어), 아래가 해설(학습자 모국어).
+				    교정 문장은 서버가 매 발화마다 만드는데 2026-09-03 까지 앱이
+				    한 번도 그리지 않았다(`recommend_example`) */}
 				<TipUserMsgBox
 					msg="따뜻한 거 주세요"
 					alertMsg="'따뜻한 것으로 주세요' 가 더 자연스러워요."
+					correction="따뜻한 것으로 주세요."
 				/>
 				<AlertUserMsgBox
 					msg="커피 주다."
 					alertMsg="'커피 주세요' 라고 해 보세요."
+					correction="커피 주세요."
+				/>
+				{/* 해설만 있고 교정 문장이 없는 옛 대화 행 — 한 줄로 그려진다 */}
+				<AlertUserMsgBox
+					msg="얼마에요?"
+					alertMsg="'얼마예요?' 가 맞아요."
 				/>
 			</ChatScreen>
 		</div>

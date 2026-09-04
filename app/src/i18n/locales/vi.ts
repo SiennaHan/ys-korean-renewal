@@ -841,6 +841,7 @@ const vi = {
 		errTooShort: "Vui lòng nhập ít nhất 2 ký tự.",
 		errNoRecording: "Không có nội dung ghi âm.",
 		errNoResponse: "Không nhận được phản hồi.",
+		suggested: "Hãy thử nói như thế này",
 		noMessage: "Không có tin nhắn",
 		recordingWave: "Âm thanh đang ghi",
 	},

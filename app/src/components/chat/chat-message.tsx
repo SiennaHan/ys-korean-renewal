@@ -34,6 +34,8 @@ export interface ChatMsgProps {
 	msg: string;
 	voice: string;
 	feedback: string | null | undefined;
+	/** 교정 예시 문장(`recommend_example`) — 한국어. `feedback` 과 같은 길로 흐른다 */
+	correction?: string | null | undefined;
 }
 
 export default function ChatMessage({
@@ -48,6 +50,7 @@ export default function ChatMessage({
 	msg,
 	voice,
 	feedback,
+	correction,
 }: ChatMsgProps) {
 	const { t } = useTranslation();
 	const [resMsg, setResMsg] = useState<string | null>(null);
@@ -154,8 +157,12 @@ export default function ChatMessage({
 	return (
 		<div>
 			{msgType === "completed" && <CompletedMsgBox closeDialog={goReport} />}
-			{msgType === "alert" && <AlertUserMsgBox msg={msg} alertMsg={feedback} />}
-			{msgType === "tip" && <TipUserMsgBox msg={msg} alertMsg={feedback} />}
+			{msgType === "alert" && (
+				<AlertUserMsgBox msg={msg} alertMsg={feedback} correction={correction} />
+			)}
+			{msgType === "tip" && (
+				<TipUserMsgBox msg={msg} alertMsg={feedback} correction={correction} />
+			)}
 			{msgType === "bot" && (
 				<BotMsgBox
 					msg={msg}

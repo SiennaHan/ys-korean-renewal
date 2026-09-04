@@ -139,6 +139,9 @@ export default function MissionReport({
 						id: item.id,
 						sentence: item.question.content[0]?.text ?? "",
 						feedback: item.answer.feedback ?? "",
+						// 서버가 매 발화마다 만드는데 앱이 안 그리고 있었다(2026-09-03).
+						// 옛 대화 행에는 없을 수 있으므로 빈 문자열은 안 그린다
+						correction: item.answer.recommend_example || undefined,
 					})),
 			);
 			setLoading(false);

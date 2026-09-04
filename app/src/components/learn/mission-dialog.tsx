@@ -144,6 +144,7 @@ export default function MissionDialog({
 			msg: string,
 			voice: string,
 			feedback: string | null,
+			correction: string | null = null,
 		): ChatMsgProps => ({
 			idx,
 			msgType,
@@ -157,12 +158,18 @@ export default function MissionDialog({
 			msg,
 			voice,
 			feedback,
+			correction,
 		}),
 		[onClose, onReport, scrollToBottom],
 	);
 
 	const addSttMsg = useCallback(
-		(msg: string, msgType: MessageType, feedback: string | null) => {
+		(
+			msg: string,
+			msgType: MessageType,
+			feedback: string | null,
+			correction: string | null = null,
+		) => {
 			const newId = `${Date.now()}_${msgType}`;
 			const newMsg = createMsg(
 				newId,
@@ -172,6 +179,7 @@ export default function MissionDialog({
 				msg,
 				gender,
 				feedback,
+				correction,
 			);
 			setMsgList((prev) => [...prev, newMsg]);
 		},
@@ -204,12 +212,24 @@ export default function MissionDialog({
 			if (mission && ["perfect", "tip"].includes(mission.status)) {
 				sound.playMissionChecked();
 				if (mission.status === "perfect") {
+					// perfect 는 서버 프롬프트가 feedback·recommend_example 을 둘 다
+					// 비우게 되어 있다(Part 4). 해설 상자 자체를 안 그린다
 					addSttMsg(msg, "user", null);
 				} else {
-					addSttMsg(msg, "tip", mission.feedback ?? "");
+					addSttMsg(
+						msg,
+						"tip",
+						mission.feedback ?? "",
+						mission.recommend_example ?? null,
+					);
 				}
 			} else {
-				addSttMsg(msg, "alert", mission?.feedback ?? "");
+				addSttMsg(
+					msg,
+					"alert",
+					mission?.feedback ?? "",
+					mission?.recommend_example ?? null,
+				);
 			}
 
 			setTimeout(() => {

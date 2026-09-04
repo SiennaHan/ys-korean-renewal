@@ -814,6 +814,7 @@ const zh = {
 		errTooShort: "请至少输入 2 个字符。",
 		errNoRecording: "没有录音内容。",
 		errNoResponse: "没有收到回复。",
+		suggested: "可以这样说",
 		noMessage: "没有消息",
 		recordingWave: "正在录制的声音",
 	},

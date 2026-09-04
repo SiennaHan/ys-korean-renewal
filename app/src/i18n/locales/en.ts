@@ -841,6 +841,7 @@ const en = {
 		errTooShort: "Please enter at least 2 characters.",
 		errNoRecording: "There is no recording.",
 		errNoResponse: "We couldn't get a response.",
+		suggested: "Try saying it like this",
 		noMessage: "No message",
 		recordingWave: "Sound being recorded",
 	},

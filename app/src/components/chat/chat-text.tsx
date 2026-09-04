@@ -39,6 +39,9 @@ const TypingIndicator = () => {
 interface ChatInterface {
 	msg: string;
 	alertMsg?: string | null | undefined;
+	/** 교정 예시 문장 — **항상 한국어다**(서버 프롬프트가 그렇게 지시한다).
+	 * 해설(`alertMsg`)은 학습자 모국어라, 한 상자에 두 글자 체계가 섞인다. */
+	correction?: string | null | undefined;
 	isAudioLoading?: boolean;
 	replayAudio?: () => void;
 }
@@ -137,37 +140,62 @@ export const UserMsgBox = ({ msg }: ChatInterface) => {
 	);
 };
 
-// 사용자 발화 피드백(해설) 박스 — 서버가 이미 선택 언어로 생성해 주므로 그대로 표시
+/**
+ * 사용자 발화 피드백 박스 — 두 줄이다.
+ *
+ *   위  교정 예시(`correction`) — **한국어**. 학습자가 바로 따라 말할 문장이다
+ *   아래 해설(`text`) — **학습자 모국어**. 서버가 이미 그 언어로 만들어 준다
+ *
+ * **서버가 교정 문장을 매 발화마다 만드는데 앱이 한 번도 그리지 않고 있었다**
+ * (`recommend_example` — 2026-09-03 확인. 앱 전체에서 타입 선언과 파싱 기본값
+ * 둘뿐이었다). 기획자가 요구한 「고친 문장 + 짧은 이유」의 앞쪽이 그것이다.
+ *
+ * 두 줄의 글자 체계가 달라서 교정 문장만 굵게 두고 색을 주지 않는다 — 해설은
+ * tip/오류에 따라 컴포넌트가 색을 인라인으로 주는데, 거기에 한국어까지 같은 색으로
+ * 물들이면 「이 색이 무슨 뜻인가」가 두 가지가 된다.
+ */
 const FeedbackBox = ({
 	text,
+	correction,
 	color,
 	icon,
 }: {
 	text: string;
+	correction?: string | null | undefined;
 	color: string;
 	icon: React.ReactNode;
 }) => {
 	return (
 		<div className="mission-feedback">
 			<span className="mission-feedback-icon">{icon}</span>
-			<span className="mission-feedback-text" style={{ color }}>
-				{text}
+			<span className="mission-feedback-body">
+				{correction && (
+					<span className="mission-correction">{correction}</span>
+				)}
+				{text && (
+					<span className="mission-feedback-text" style={{ color }}>
+						{text}
+					</span>
+				)}
 			</span>
 		</div>
 	);
 };
 
-export const AlertUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
+export const AlertUserMsgBox = ({ msg, alertMsg, correction }: ChatInterface) => {
 	return (
 		<div className="mission-msg mission-msg-me mission-msg-wrong">
 			<div className="mission-bubble">
 				<p>{msg}</p>
-				{alertMsg && (
+				{(alertMsg || correction) && (
 					<FeedbackBox
-						text={alertMsg}
+						text={alertMsg ?? ""}
+						correction={correction}
 						color="#F76853"
 						icon={
-							<MessageCircleWarning color="#fff" fill="#F76853" size="px" />
+							// size 가 "px" 였다 — 무효값이라 SVG 가 width="px" 로 나갔다.
+							// 아래 Lightbulb 는 "16px" 로 정상이었다(2026-09-03)
+							<MessageCircleWarning color="#fff" fill="#F76853" size="16px" />
 						}
 					/>
 				)}
@@ -176,14 +204,15 @@ export const AlertUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
 	);
 };
 
-export const TipUserMsgBox = ({ msg, alertMsg }: ChatInterface) => {
+export const TipUserMsgBox = ({ msg, alertMsg, correction }: ChatInterface) => {
 	return (
 		<div className="mission-msg mission-msg-me mission-msg-tip">
 			<div className="mission-bubble">
 				<p>{msg}</p>
-				{alertMsg && (
+				{(alertMsg || correction) && (
 					<FeedbackBox
-						text={alertMsg}
+						text={alertMsg ?? ""}
+						correction={correction}
 						color="#0073E6"
 						icon={<Lightbulb color="#0073E6" size="16px" />}
 					/>

@@ -283,7 +283,13 @@
 /* 내 말에 붙는 해설 — 글자색은 tip/오류에 따라 컴포넌트가 인라인으로 준다 */
 .activity-frame .thread .mission-feedback { margin-top:4px; padding:4px 8px; border-radius:8px; background:var(--color-background-surface); display:flex; align-items:flex-start; gap:4px; }
 .activity-frame .thread .mission-feedback-icon { width:20px; height:20px; flex:0 0 auto; }
-.activity-frame .thread .mission-feedback-text { flex:1 1 auto; font-size:12px; line-height:18px; }
+/* 아이콘 오른쪽을 세로 두 줄로 — 위가 교정 문장(한국어), 아래가 해설(모국어).
+   min-width:0 이 없으면 긴 문장이 flex 상자를 밀어 말풍선이 넘친다 */
+.activity-frame .thread .mission-feedback-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px; }
+/* 교정 문장은 색을 주지 않는다 — 해설 색(tip 파랑 / 오류 빨강)이 「무슨 뜻인가」를
+   말하는데, 한국어까지 같은 색으로 물들이면 그 뜻이 두 가지가 된다 */
+.activity-frame .thread .mission-correction { font-size:12px; line-height:18px; font-weight:600; color:var(--color-text-strong); }
+.activity-frame .thread .mission-feedback-text { font-size:12px; line-height:18px; }
 /* 미션을 다 채웠을 때 실 안에 뜨는 안내 */
 .activity-frame .thread .mission-complete { padding:0; }
 .activity-frame .thread .mission-complete-card { padding:12px 20px; border:1px solid var(--color-line-control); border-radius:12px; background:var(--color-background-surface); box-shadow:none; display:grid; gap:4px; }
@@ -516,6 +522,11 @@
 .activity-frame .tag { display:inline-flex; height:24px; align-items:center; padding:0 8px; border-radius:6px; font-size:12px; font-weight:700; }
 .activity-frame .tag.w { background:var(--color-background-wrong); color:var(--color-fill-wrong); }
 .activity-frame .tag.e { background:var(--color-text-heading); color:var(--color-text-inverse); }
+/* 교정 예시 태그 — 「이렇게 말해 보세요」. 오답(w)·해설(e)·건너뜀(s) 과 다른 뜻이다.
+   **처음에 `.tag.s` 로 적었다가 아래 「건너뜀」과 이름이 부딪혔다**(2026-09-03).
+   같은 선택자가 둘이면 뒤가 이기므로 내 규칙이 조용히 죽었다 — 회색으로 떴다.
+   `check:css` 는 이 중복을 안 잡는다(값이 토큰이고 간격도 맞아서 통과한다). */
+.activity-frame .tag.c { background:var(--color-background-choice); color:var(--color-fill-primary); }
 /* 건너뜀 — 오답이 아니라 **안 푼 것**이라 오답의 빨강을 쓰지 않는다 */
 .activity-frame .tag.s { background:var(--color-background-base); color:var(--color-text-sub); }
 .activity-frame .rep-head { background:var(--color-fill-primary); color:var(--color-text-inverse); padding:12px 16px; }
@@ -528,6 +539,7 @@
 .activity-frame .report-rows { margin-top:20px; display:flex; flex-direction:column; gap:12px; }
 .activity-frame .report-feedback-list { display:flex; flex-direction:column; gap:8px; }
 .activity-frame .report-sentence { margin:8px 0 8px; color:var(--color-text-strong); font-size:15px; line-height:22px; }
+.activity-frame .report-correction { margin:8px 0 0; color:var(--color-text-strong); font-size:14px; line-height:21px; font-weight:600; }
 .activity-frame .report-explanation { margin:8px 0 0; color:var(--color-text-sub); font-size:14px; line-height:21px; }
 .activity-frame .report-empty { min-height:160px; display:grid; place-items:center; border-radius:12px; background:var(--color-background-surface); color:var(--color-text-sub); font-size:14px; }
 .activity-frame .report-loading { position:absolute; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(246,247,248,.88); color:var(--color-text-strong); font-size:14px; font-weight:600; }

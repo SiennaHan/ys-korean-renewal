@@ -43,6 +43,9 @@ export interface SentenceFeedback {
 	id: string | number;
 	sentence: string;
 	feedback: string;
+	/** 교정 예시 문장 — **한국어**. 서버 `recommend_example` 이다.
+	 * 없을 수 있다(옛 대화는 이 값을 안 그리던 때에 쌓였다). */
+	correction?: string;
 }
 
 const CX = 110;
@@ -238,6 +241,14 @@ export function ReportScreen({
 											{t("result.wrongItem", { index: index + 1 })}
 										</span>
 										<p className="report-sentence">{item.sentence}</p>
+										{item.correction && (
+											<>
+												<span className="tag c">
+													{t("missionChat.suggested")}
+												</span>
+												<p className="report-correction">{item.correction}</p>
+											</>
+										)}
 										<span className="tag e">
 											{t("result.explanation", { index: index + 1 })}
 										</span>

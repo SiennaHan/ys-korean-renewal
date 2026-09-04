@@ -844,6 +844,7 @@ const ja = {
 		errTooShort: "メッセージは2文字以上入力してください。",
 		errNoRecording: "録音された内容がありません。",
 		errNoResponse: "応答を受け取れませんでした。",
+		suggested: "こう言ってみましょう",
 		noMessage: "メッセージなし",
 		recordingWave: "録音中の音",
 	},
