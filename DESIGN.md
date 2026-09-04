@@ -1,5 +1,10 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 4cdfa67
-     — 확인: 2026-09-03 · 미션대화 발화 피드백을 붙였다(`8f059d2`). 이 문서가 캐는 두 축
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 90aacaa
+     — 확인: 2026-09-04 · `report-screen.tsx` 가 바뀐 것은 **props 와 삼항 하나**다
+       (`90aacaa`) — 머리의 「점수」를 미션 달성률에서 **네 축의 평균**으로 옮겼다
+       (기획 확정. `mission_chat_spec_v1.md` A-13). **이 문서가 캐는 두 축 — 리터럴 색과
+       비4배수 간격 — 은 둘 다 해당 없다.** CSS 는 한 줄도 안 건드렸고 새 클래스도 없다.
+       `activity.css` 줄 수도 그대로다. `check:css` 와 `parity:activity` 를 돌려 0 을 봤다.
+       앞 확인: 2026-09-03 · 미션대화 발화 피드백을 붙였다(`8f059d2`). 이 문서가 캐는 두 축
        — **리터럴 색**과 **비4배수 간격** — 은 둘 다 해당 없다. 새 규칙 넷
        (`.mission-feedback-body` · `.mission-correction` · `.tag.c` · `.report-correction`)이
        전부 semantic 토큰(`--color-text-strong` · `--color-background-choice` ·
