@@ -1096,7 +1096,14 @@ STALE_PHRASES: list[tuple[str, str, dict[str, str]]] = [
         "id 가 int AUTO_INCREMENT 라 MySQL 은 WHERE id='C4' 를 id=0 으로 견준다('C10' 도 같은 행). "
         "그래서 채우는 대신 repo_chat.getDialog 가 ko_mission_chat 을 legacy_id 로 읽는다(6c5ec6a). "
         "「UPSERT 하면 된다」는 계획이 BLOCKERS §8 과 developer_tasks DEV-13 **양쪽에** 있었다",
-        {},
+        {
+            "mission_chat_spec_v1": "기획자가 2026-09-01 에 쓴 개발 요청의 **원문을 그대로 보존한** "
+            "문서다. §1 이 그 UPSERT 계획이고, 문서 머리와 그 절 제목에 "
+            "「닫혔다 — 다른 방법으로」를 달아 두었다. 원문을 고쳐 쓰면 「기획자가 정한 것」과 "
+            "「그 뒤 확인된 것」이 섞인다 — 이 저장소가 2026-09-03 에 그것 때문에 세 번 "
+            "헛돌았다(BLOCKERS §5-c). **그래서 지뢰를 봐주는 것이 아니라, 지뢰가 가리키는 "
+            "문장을 인용으로 남기고 정정을 옆에 붙였다.**",
+        },
     ),
 ]
 
