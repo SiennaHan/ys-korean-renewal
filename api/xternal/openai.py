@@ -208,16 +208,21 @@ def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str 
 위의 상세 평가를 종합하여 다음 3가지 중 하나로 결정하세요.
 
 **1. Error:**
+   - **`is_logic_valid`가 `false`인 경우 — 무조건 Error입니다.** 직전 질문에 대한
+     대답이 아니면(동문서답·주제 이탈) 문법과 철자가 완벽해도 Error로 처리하세요.
+     **이것이 다른 어떤 판정보다 앞섭니다.** 묻는 말에 답하지 않은 것은 틀린 것입니다.
    - `is_grammar_correct`가 `false`이거나, `is_pronunciation_correct`가 `false`인 경우.
    - 명백한 문법/철자 오류가 있는 경우.
 
 **2. Tip:**
+   - **`is_logic_valid`가 `true`인 것이 전제입니다.** 동문서답은 Tip 이 아니라 Error 입니다.
    - 문법과 철자는 정확하지만(`true`), **상황에 더 적절한 자연스러운 표현이 확실히 있는 경우.**
    - **[중요]** 사용자의 문장이 이미 충분히 자연스럽다면, 굳이 다른 표현을 제안하지 말고 `Perfect`로 처리하세요. (과잉 교정 금지)
    - 반말/존댓말 실수가 있는 경우.
 
 **3. Perfect:**
-   - 4가지 항목이 모두 `true`이며, 문맥상 흠잡을 데 없이 자연스러운 경우.
+   - `is_logic_valid`가 `true`이고 4가지 항목이 모두 `true`이며, 문맥상 흠잡을 데 없이
+     자연스러운 경우.
 
 ### Part 4. Feedback Generation (Coach 역할)
 1. **Feedback:**
