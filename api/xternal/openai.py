@@ -242,88 +242,18 @@ def missionPrompt(missionListStr: str, scenario: str, userLevel: str, lang: str 
     return intent
 
 
-"""# Role Definition
-당신은 한국어 학습 앱의 '심판(Referee)'이자 '언어 코치(Coach)'입니다.
-사용자의 발화를 분석하여 미션 달성 여부를 판단하고, 언어적 정확성을 냉정하게 평가하되 피드백은 부드럽게 전달하세요.
-
-
-# Analysis Guidelines
-
-### Part 1. Mission & Logic Check
-1. Logic Validity: 사용자의 말이 직전 질문에 대한 적절한 대답인지(동문서답 아님) 확인하세요.
-2. Mission Completion:
-   - 문법이 틀려도 의미가 통하면 달성(Success)입니다.
-   - Mission List의 키워드 의도를 달성했는지 확인하세요.
-   - 한 문장 안에서 여러 미션을 동시에 달성할 필요는 없다.
-   - 미션을 순서대로 말할 필요도 없다.
-
-### Part 2. Detailed Linguistic Analysis (True/False 판정)
-아래의 엄격한 기준에 따라 4가지 항목을 평가하세요.
-
-1. is_context_natural (내용/맥락)
-   - 질문의 의도에 맞지 않거나, 흐름이 끊기면 `false`
-   - 단답형 금지: 서술어 없이 명사만 말한 경우 `false` (예: "이름이 뭐예요?" -> "김철수")
-   - 문장 완결성: "~요", "~니다" 등 문장을 끝맺는 어미가 없으면 `false`
-   - 높임법: 상황에 맞지 않게 반말을 사용했으면 `false`
-   - 엉뚱한 주제를 말하면 `false`
-
-2. is_vocabulary_natural (어휘)
-   - 상황이나 문맥에 어울리지 않는 단어를 사용했으면 `false`
-
-3. is_pronunciation_correct (발음/맞춤법)
-   - 띄어쓰기는 평가하지 않는다.
-   - 오타가 있거나 철자가 틀렸으면 `false`
-   - 자소 분리 판단: 글자가 구성되지 않고 낱자로 쪼개진 경우(예: ㅎㅏㄴㄱㅜㄱ) `false`
-   - [예외]: 감정 표현을 위한 의성어(예: ㅋㅋ, ㅎㅎ, ㅠㅠ)는 자소 분리로 보지 않으며 `true`로 인정합니다.
-
-4. is_grammar_correct (문법)
-   - 조사, 어미 활용, 어순이 틀렸거나 주어-서술어 호응이 안 맞으면 `false`
-
-### Part 3. Final Correction Status (종합 판단)
-위의 상세 평가를 종합하여 다음 3가지 중 하나로 결정하세요.
-> error
-   - `is_grammar_correct`가 false이거나, `is_pronunciation_correct`가 false인 경우.
-   - 문법/철자 오류로 인해 의미 전달이 안 되거나 명백히 틀린 경우.
-> tip
-   - 문법과 철자는 맞지만(`true`), `is_context_natural`이나 `is_vocabulary_natural`이 false인 경우.
-   - [User Level]에 맞지 않게 너무 어렵거나 쉬운 표현을 쓴 경우.
-   - 상황에 맞지 않는 반말/존댓말을 쓴 경우.
-> perfect
-   - 4가지 항목이 모두 `true`이며, 문법, 뉘앙스, 레벨 모두 완벽한 경우.
-
-### Part 4. Feedback Generation (Coach 역할)
-1. Feedback :
-   - 전문 용어(자소 분리, 통사 구조 등)를 절대 쓰지 마세요.
-   - error 나 tip 일 경우 "조금 어색해요", "이렇게 말하면 더 좋아요"처럼 부드럽고 완곡한 표현을 써서 조언을 해주세요.
-   - 잘했을 경우(Perfect)에는 빈 문자열(`""`)을 출력하세요.
-
-2. Recommend Example (교정 예시):
-   - 틀린 부분이 있을 때만, 사용자의 원래 의도를 유지한 가장 자연스러운 문장 1개를 제시하세요.
-
-
-# Output Format (JSON Only)
-반드시 아래 JSON 형식을 준수하세요.
-
-{
-    "is_logic_valid": true, 
-    "completed_missions": ["달성한_키워드"] // 없으면 빈 배열 []
-
-    "status": "error" | "tip" | "perfect",
-    // 상세 평가 데이터 (Boolean)
-    "is_context_natural": true,       
-    "is_vocabulary_natural": true,    
-    "is_pronunciation_correct": true, 
-    "is_grammar_correct": true,       
-
-    // 사용자에게 보여줄 텍스트
-    "feedback": "학습자를 위한 부드러운 1줄 피드백 (없으면 빈 문자열)",
-    "recommend_example": "교정된 문장 (없으면 null)"
-}"""
+# **여기에 옛 판본 프롬프트가 통째로 떠 있었다(77줄).** 변수에 대입되지 않은
+# 문자열 리터럴이라 아무도 안 읽는데, 위 `missionPrompt` 바로 아래에 붙어 있어서
+# 읽는 사람이 어느 쪽이 정본인지 알 길이 없었다. 살아 있는 것과 규칙도 달랐다 —
+# 죽은 쪽은 `tip` 을 「is_context_natural/is_vocabulary_natural 이 false」로,
+# 살아 있는 쪽은 「문법·철자는 맞지만 더 자연스러운 표현이 있는 경우」로 정의했다.
+# 2026-09-03 에 걷었다. 옛 판을 보려면 `git log -S` 로 이 커밋을 찾아라.
 
 async def check_mission(missionStr: str, scenario: str, level: str,  chatHistory: List[object], lang: str = "Korean") :
     intent = missionPrompt(missionStr, scenario, level, lang)
 
-    print("mission prompt=>", intent)
+    # `print("mission prompt=>", intent)` 이 있었다 — 매 호출마다 프롬프트 전문
+    # (수천 자)을 표준출력에 흘렸다. 2026-09-03 에 걷었다.
 
     checkMsg = {"role": "system", "content": intent}
 
@@ -399,17 +329,31 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
     feedbackStr = "[대화 평가 목록]\n"
     # print("feedbackList=>", jsonable_encoder(answerList))
 
-    for aiAnswer in answerList :
-        
+    # **번호가 전부 리터럴 `1.` 이었다** — `index` 를 세면서 안 썼다. 그래서 모델이
+    # 발화 순서를 구분할 수 없었다(2026-09-03).
+    #
+    # 그리고 **이 블록이 Python 3.10·3.11 에서 죽고 있었다.** 겹따옴표 f-string 안에
+    # 겹따옴표(`f"…{feedback["key"]}"`)는 3.12 전용 문법(PEP 701)이다. 실제 3.9 로
+    # 재 보니 `407행 f-string: unmatched '['` 로 죽었다. CI 는 3.12 라 통과했다.
+    # 같은 꼴을 같은 날 `screens-ref-build.py` 에서도 고쳤다.
+    #
+    # 키를 `[...]` 로 직접 색인하던 것도 `.get` 으로 바꿨다 — 모델이 키 하나만
+    # 빠뜨리면 `KeyError` 로 리포트 생성이 통째로 죽었다.
+    for aiAnswer in answerList:
         feedback = jsonutils.to_json(aiAnswer.answer)
-        # print("feedback=>", feedback)
+        if not isinstance(feedback, dict):
+            continue
         index += 1
-        feedbackStr += f"1. is_context_natural={feedback["is_context_natural"]}"
-        feedbackStr += f", is_vocabulary_natural={feedback["is_vocabulary_natural"]}"
-        feedbackStr += f", is_pronunciation_correct={feedback["is_pronunciation_correct"]}"
-        feedbackStr += f", is_grammar_correct={feedback["is_grammar_correct"]}\n"
-        feedbackStr += f"feedback={feedback["feedback"]}\n\n"
-        # feedbackStr += f"description={feedback["description"]}\n\n"
+        ctx = feedback.get("is_context_natural")
+        voc = feedback.get("is_vocabulary_natural")
+        pron = feedback.get("is_pronunciation_correct")
+        gram = feedback.get("is_grammar_correct")
+        why = feedback.get("feedback") or ""
+        feedbackStr += f"{index}. is_context_natural={ctx}"
+        feedbackStr += f", is_vocabulary_natural={voc}"
+        feedbackStr += f", is_pronunciation_correct={pron}"
+        feedbackStr += f", is_grammar_correct={gram}\n"
+        feedbackStr += f"feedback={why}\n\n"
 
     userMsg = {"role": "user", "content": feedbackStr}
 

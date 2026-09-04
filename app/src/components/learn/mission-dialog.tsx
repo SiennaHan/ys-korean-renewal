@@ -223,12 +223,25 @@ export default function MissionDialog({
 						mission.recommend_example ?? null,
 					);
 				}
+			} else if (!mission) {
+				/*
+				 * **판정을 못 받았다 — 오답이 아니다.** `postCheckMission` 은 요청이
+				 * 실패하거나 늦으면 `null` 을 낸다(`api/chat.ts:191`). 전에는 이것이
+				 * 아래 오답 분기로 떨어져서 **빨간 말풍선에 해설이 빈 칸**으로 떴다 —
+				 * 정답을 말했어도 틀린 것처럼 보였고, 「틀렸다」와 「안 왔다」가 같은
+				 * 모양이었다(`developer_tasks.md` DEV-12 가 남겨 둔 자리).
+				 *
+				 * 색 없는 말풍선으로 그리고 토스트로 알린다. 발화는 지우지 않는다 —
+				 * 학습자가 방금 말한 것이 화면에서 사라지면 더 나쁘다.
+				 */
+				addSttMsg(msg, "user", null);
+				addToast(t("missionChat.errNoResponse"), "error");
 			} else {
 				addSttMsg(
 					msg,
 					"alert",
-					mission?.feedback ?? "",
-					mission?.recommend_example ?? null,
+					mission.feedback ?? "",
+					mission.recommend_example ?? null,
 				);
 			}
 
@@ -352,30 +365,49 @@ export default function MissionDialog({
 				),
 			];
 
+			/*
+			 * 피드백 행을 **순서대로 소비한다.** 전에는 `.find` 로 문자열이 같은 첫
+			 * 행을 골랐는데, 두 가지가 틀렸다(2026-09-03) —
+			 *
+			 *  ① **같은 문장을 두 번 말하면 둘 다 첫 행에 걸린다.** 두 번째 발화가
+			 *     첫 번째의 피드백을 다시 입는다.
+			 *  ② **짝을 못 찾으면 `if (feedback)` 에 else 가 없어서 그 발화가
+			 *     `tempMsgList` 에 아예 안 들어갔다** — 재접속하면 학습자가 한 말이
+			 *     대화 기록에서 통째로 사라졌다.
+			 *
+			 * 짝이 없을 수 있는 것은 정상이다 — `ko_chat_msg` 는 `/chat/json` 이,
+			 * `ko_chat_feedback` 은 `/chat/check/mission` 이 만드는 **별개 요청**이라
+			 * 한쪽이 실패하면 짝이 없다. 그때는 **색 없는 말풍선으로 그린다.**
+			 */
+			let feedbackAt = 0;
 			for (const item of serverChats) {
 				if (!item.is_bot) {
-					const feedback = convertedFeedback.find(
-						(f) => f.question.content[0].text === item.msg,
+					// 순서대로 다음 행을 쓴다. 문자열이 다르면 그 행은 이 발화의 것이
+					// 아니므로 소비하지 않고 남긴다(뒤 발화가 쓸 수 있다)
+					const next = convertedFeedback[feedbackAt];
+					const feedback =
+						next && next.question.content[0]?.text === item.msg
+							? (feedbackAt++, next)
+							: undefined;
+					const status: "user" | "tip" | "alert" = !feedback
+						? "user"
+						: feedback.answer.status === "tip"
+							? "tip"
+							: feedback.answer.status === "error"
+								? "alert"
+								: "user";
+					tempMsgList.push(
+						createMsg(
+							`${item.id}_${item.is_bot}`,
+							status,
+							dialogId,
+							currentChatId,
+							item.msg,
+							gender,
+							feedback?.answer.feedback ?? null,
+							feedback?.answer.recommend_example ?? null,
+						),
 					);
-					if (feedback) {
-						const status: "user" | "tip" | "alert" =
-							feedback.answer.status === "tip"
-								? "tip"
-								: feedback.answer.status === "error"
-									? "alert"
-									: "user";
-						tempMsgList.push(
-							createMsg(
-								`${item.id}_${item.is_bot}`,
-								status,
-								dialogId,
-								currentChatId,
-								item.msg,
-								gender,
-								feedback.answer.feedback,
-							),
-						);
-					}
 				} else {
 					tempMsgList.push(
 						createMsg(

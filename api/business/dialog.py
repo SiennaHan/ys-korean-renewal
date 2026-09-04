@@ -35,9 +35,25 @@ async def getReport(dialogId: int, userId:str, lang: str = "Korean"):
         feedbacksJson = list(((map(lambda feedback: jsonutils.to_json(feedback), feedbacks))))
 
         # 발음(맞춤법), 문법, 어휘, 내용
-        if userChat.report is None :
-            userChat.report = ""
+        #
+        # **전에는 `if userChat.report is None` 이었고, 그 바로 아래에
+        # `userChat.report = ""` 를 먼저 대입했다.** 그래서 두 가지가 깨졌다
+        # (2026-09-03 발견) —
+        #
+        #  ① `create_report` 가 실패하면 `""` 가 그대로 커밋되고, 그 뒤로는
+        #     `is None` 이 거짓이라 **총평이 영구히 빈 채로 남는다.** 리포트 화면은
+        #     `report.empty*` 대체 문구만 보여 준다.
+        #  ② 언어를 바꿔도 다시 만들지 않는다 — 한 번 한국어로 만들면
+        #     영어로 봐도 **한국어 총평이 그대로** 나온다.
+        #
+        # 그래서 죽은 대입을 없애고, **빈 값이거나 저장된 언어가 다르면 다시 만든다.**
+        # `_lang` 은 앱이 읽지 않는 키다(`mission-report.tsx` 는 네 항목만 본다).
+        stored = jsonutils.to_json(userChat.report) if userChat.report else None
+        storedLang = stored.get("_lang") if isinstance(stored, dict) else None
+        if not userChat.report or storedLang != lang:
             report = await openai.create_report(feedbacksJson, lang)
+            if isinstance(report, dict):
+                report = {**report, "_lang": lang}
             userChat.report = jsonutils.to_string(report)
         
         print("userChat=>",jsonable_encoder(userChat))

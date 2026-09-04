@@ -190,6 +190,39 @@ async def post_chat_json(dialogId: int, chatId: int, userId: str, msg:str):
     return data
 
 
+# 판정 응답의 빠진 키를 메운다.
+#
+# **전에는 `feedback["is_context_natural"]` 로 직접 색인했다.** 판정은 스키마 없는
+# JSON 모드(`response_format={"type":"json_object"}`)라 형식을 프롬프트 안 예시로만
+# 강제하는데, 모델이 키 하나만 빠뜨리면 `KeyError` → 500 이 되고, 앱은 `null` 을 받아
+# **오답 말풍선**으로 떨어뜨렸다(2026-09-03. 앱 쪽도 같은 날 실패와 오답을 갈랐다).
+#
+# 기본값은 **안전한 쪽**으로 둔다 — 넷을 `True` 로 두면 `is_all_natural` 이 참이 되어
+# 「완벽했다」로 읽히므로, 판정을 못 받은 것을 잘했다고 말하게 된다. 그래서 `False` 다.
+# `status` 는 `error` 가 아니라 `tip` 으로 둔다 — 틀렸다고 단정하지 않는다.
+_CHECK_DEFAULTS = {
+    "is_logic_valid": True,
+    "completed_missions": [],
+    "status": "tip",
+    "is_context_natural": False,
+    "is_vocabulary_natural": False,
+    "is_pronunciation_correct": False,
+    "is_grammar_correct": False,
+    "feedback": "",
+    "recommend_example": "",
+}
+
+
+def _normalizeCheckMission(feedback):
+    if not isinstance(feedback, dict):
+        return dict(_CHECK_DEFAULTS)
+    out = dict(_CHECK_DEFAULTS)
+    out.update({k: v for k, v in feedback.items() if v is not None})
+    if not isinstance(out.get("completed_missions"), list):
+        out["completed_missions"] = []
+    return out
+
+
 async def post_check_mission(dialogId: int, chatId: int, userId: str, msg:str, lang: str = "Korean"):
     print(f"[{timeutils.get_current_datetime_ymdhmss()}] check mission => userId[{userId}], dialogId[{dialogId}], msg =", msg)
     with sessionScope() as db:
@@ -215,13 +248,13 @@ async def post_check_mission(dialogId: int, chatId: int, userId: str, msg:str, l
         chat_all = create_chat_history(dialog.prompt, dialog.first_msg, new_content, chat_history, None, False)
 
         feedback = await openai.check_mission(dialog.mission, dialog.scenario, dialog.level, chat_all, lang)
+        feedback = _normalizeCheckMission(feedback)
 
-        isAllNatural = feedback["is_context_natural"] and feedback["is_vocabulary_natural"] and feedback["is_pronunciation_correct"] and feedback["is_grammar_correct"]
+        isAllNatural = (feedback["is_context_natural"] and feedback["is_vocabulary_natural"]
+                        and feedback["is_pronunciation_correct"] and feedback["is_grammar_correct"])
 
         feedback["is_all_natural"] = isAllNatural
 
-        print("isAllNatural =>", isAllNatural)
-        # 여기서 
         missions = feedback["completed_missions"]
         if not missions is None and len(missions) > 0 :
             if chat.completed_missions is None or chat.completed_missions == "" or chat.completed_missions == "[]":
