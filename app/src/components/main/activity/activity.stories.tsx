@@ -328,6 +328,9 @@ export const 결과_채점없음: Story = {
 	),
 };
 
+/** 리포트 레이더의 네 축 — 발음 · 문법 · 내용 · 어휘. 머리의 「점수」가 이것의 평균이다 */
+const REPORT_AXES: [number, number, number, number] = [78, 62, 85, 70];
+
 export const 대화리포트: Story = {
 	render: () => (
 		<div style={{ height: 720 }}>
@@ -335,7 +338,18 @@ export const 대화리포트: Story = {
 				lesson={LESSON}
 				hits={2}
 				missions={3}
-				values={[78, 62, 85, 70]}
+				values={REPORT_AXES}
+				/*
+				 * **머리의 「점수」는 네 축의 평균이다**(기획 확정 2026-09-04.
+				 * `mission_chat_spec_v1.md` A-13). 전에는 이 픽스처가 `score` 를 안
+				 * 넘겨서 `ReportScreen` 이 옛 계산(`hits / missions` = 66%)으로
+				 * 떨어졌고, **그래서 대조가 이 변경을 보지 않았다.**
+				 * 여기서 평균을 계산해 넘긴다 — 숫자를 손으로 적으면 축을 고칠 때
+				 * 조용히 어긋난다.
+				 */
+				score={Math.floor(
+					REPORT_AXES.reduce((a, b) => a + b, 0) / REPORT_AXES.length,
+				)}
 				rows={[
 					{
 						axis: "pronunciation",

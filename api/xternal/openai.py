@@ -391,6 +391,12 @@ async def create_report(answerList: List[object], lang: str = "Korean", targetGr
     # `true` 인 것만 센다 — 키가 없는 옛 행은 `None` 이라 안 센다(「건수 미상」).
     # **점수에는 영향이 없다** — 안 썼다고 감점하지 않는다(프롬프트에도 못 박았다).
     grammarUsed = 0
+    # **음향 발음을 몇 발화에서 실제로 쟀나.** 0 이면 아래에서 발음 축 문장을 **지운다** —
+    # 프롬프트가 「주어지지 않았으면 빈 문자열을 내라」로 이미 적혀 있는데도
+    # **한 번 어겼다**(2026-09-04: 측정값 없이 「'학생이되요'는 …로 발음·표기해야 해요」를
+    # 넣어 맞춤법을 발음 축에 흘렸다). 프롬프트는 지켜 달라고 부탁하는 것이고, 이것은
+    # 기계가 막는 것이다. **재지 않은 것을 말하게 두지 않는다.**
+    pronMeasured = 0
     feedbackStr = "[대화 평가 목록]\n"
     # print("feedbackList=>", jsonable_encoder(answerList))
 
@@ -435,6 +441,7 @@ async def create_report(answerList: List[object], lang: str = "Korean", targetGr
         # 빈 문자열을 내라」로 받으므로, 없는 발화는 그 축을 침묵한다
         pron = feedback.get("pron")
         if isinstance(pron, dict) and pron.get("measured"):
+            pronMeasured += 1
             weak = ", ".join(
                 f"{w.get('text')}({w.get('score')})"
                 for w in (pron.get("weakWords") or [])
@@ -465,7 +472,16 @@ async def create_report(answerList: List[object], lang: str = "Korean", targetGr
                 response_format = {"type":"json_object"}
             )
         )
-        return _parseJsonLoose(completion.choices[0].message.content)
+        report = _parseJsonLoose(completion.choices[0].message.content)
+
+        # **재지 않은 것을 말하게 두지 않는다.** 한 발화도 음향 발음을 재지 못했으면
+        # 발음 축 문장을 비운다 — 화면은 그때 `report.emptyPronunciation`
+        # (「평가할 발음 데이터가 없어요.」)으로 대체한다(`mission-report.tsx`).
+        # 프롬프트에도 같은 규칙이 있지만 **한 번 어겼다**(2026-09-04). 축 숫자는
+        # 코드가 계산하니 안 틀렸고 틀린 것은 그 옆 문장이었다 — 그래서 여기서 막는다.
+        if isinstance(report, dict) and pronMeasured == 0:
+            report["pronunciation_correct"] = ""
+        return report
 
     except Exception as e:
         errMsg = f'Error in [generating an image] from openAI: {str(e)}'
