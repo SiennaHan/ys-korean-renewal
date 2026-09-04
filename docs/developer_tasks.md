@@ -1,7 +1,12 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 3521d4c
-     — 확인: 2026-09-04 · `openai.py` 가 또 바뀌었다(`3521d4c`) — `missionPrompt` 에
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 59bc843
+     — 확인: 2026-09-04 · `openai.py` 의 **판정 프롬프트 Part 3 을 고쳤다**(`59bc843`) —
+     `is_logic_valid` 가 `false` 면 무조건 Error 다(동문서답이 파란 팁으로 뜨던 것을
+     기획 확정으로 오류로 돌렸다). **사내 게이트웨이로 8회 태워 확인했다** —
+     전말은 `mission_chat_spec_v1.md` A-11. **새로 부르는 외부 API 는 없다** —
+     게이트웨이는 대본에서만 썼고 저장소 코드는 여전히 `OPENAI_API_KEY` 만 본다.
+     앞 확인: 2026-09-04 · `openai.py` 가 또 바뀌었다(`3521d4c`) — `missionPrompt` 에
      **`Target Grammar` 칸**이 생기고 출력에 `target_grammar_used`·`target_grammar_evidence`
      가 늘었다. **완료 조건이 아니라고 프롬프트가 스스로 말한다.**
      **새로 부르는 외부 API 도, 새로 보내는 데이터도 없다** — 원장에 이미 있던 값이다.
