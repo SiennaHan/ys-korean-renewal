@@ -33,6 +33,25 @@ _TIMEOUT = Timeout(60.0, connect=10.0)
 _MAX_RETRIES = 2
 
 
+def _parseJsonLoose(text: str):
+    """모델이 ```json 펜스로 감싸 보내도 파싱한다.
+
+    **왜 필요한가** — `response_format={"type":"json_object"}` 를 주고 있지만 그것을
+    지키지 않는 경로가 있다. 2026-09-04 에 사내 게이트웨이(Claude·Gemini)로 리포트를
+    태워 보니 펜스를 붙여 보냈고, `jsonutils.to_json` 은 파싱 실패 시 **원문 문자열을
+    그대로 돌려준다**. 판정 쪽은 `_normalizeCheckMission` 이 dict 아닌 것을 막지만
+    (`business/chat.py`), **리포트는 그것을 삼켜 `ko_chat.report` 에 문자열을 캐시한다**
+    — 총평이 영구 공백이 된다. 여기서 한 겹 벗겨 그 실패 모드를 없앤다.
+    """
+    if not isinstance(text, str):
+        return text
+    t = text.strip()
+    if t.startswith("```"):
+        t = t.split("\n", 1)[-1] if "\n" in t else t.removeprefix("```")
+        t = t.removesuffix("```").strip()
+    return jsonutils.to_json(t)
+
+
 class _LazyOpenAI:
     """첫 호출 때 만든다 — 서버가 뜰 때 키를 요구하지 않게.
 
@@ -117,7 +136,7 @@ async def quest(chat_history: List[object]) :
                 messages=chat_history,
             )
         )
-        return jsonutils.to_json(completion.choices[0].message.content)
+        return _parseJsonLoose(completion.choices[0].message.content)
 
     except Exception as e:
         print("Error in creating campaigns from openAI:", str(e))
@@ -294,7 +313,7 @@ async def check_mission(missionStr: str, scenario: str, level: str,  chatHistory
                 response_format = {"type":"json_object"}
             )
         )
-        return jsonutils.to_json(completion.choices[0].message.content)
+        return _parseJsonLoose(completion.choices[0].message.content)
 
     except Exception as e:
         errMsg = f'Error in [generating an image] from openAI: {str(e)}'
@@ -324,6 +343,10 @@ def reportPrompt(lang: str = "Korean") :
 [평가 항목]
 1. context_natural: 
  - 질문 의도에 맞게 대답하고 대화를 주도했는가? (단답형 회피는 감점)
+ - **[동문서답] `[기계가 센 것]` 의 동문서답 횟수를 반드시 반영하세요.** 그 수는
+   기계가 센 것이므로 **다시 세지 말고 그대로 쓰세요.**
+   1회 이상이면 몇 번이었는지 짚고 「묻는 말에 먼저 답하기」를 권하세요.
+   **0회면 언급하지 마세요** — 없었던 문제를 꺼내면 잘한 것이 지워집니다.
 2. vocabulary_natural (어휘): 
  - 상황에 맞는 적절한 단어를 사용했는가?
 3. pronunciation_correct:
@@ -353,6 +376,7 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
     systemMsg = {"role": "system", "content": intent}
 
     index = 0
+    offTopic = 0
     feedbackStr = "[대화 평가 목록]\n"
     # print("feedbackList=>", jsonable_encoder(answerList))
 
@@ -376,10 +400,21 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
         pron = feedback.get("is_pronunciation_correct")
         gram = feedback.get("is_grammar_correct")
         why = feedback.get("feedback") or ""
+        # **동문서답을 센다 — 기계가.** 판정 AI 는 매 발화에 `is_logic_valid` 를 내고
+        # 있었는데 **아무도 읽지 않았다**(2026-09-04 확인: 기본값 3곳·타입 1곳·분기 0곳).
+        # `false` 인 것만 센다 — 키가 없는 옛 행은 `None` 이라 세지 않는다(「건수 미상」).
+        # **AI 에게 세라고 하지 않는다.** 세는 것은 기계가 정확하고, 프롬프트는 그
+        # 숫자를 문장으로 옮기기만 하면 된다(어절 밀도에서 정한 것과 같은 원칙이다 —
+        # `mission_chat_spec_v1.md` A-9).
+        if feedback.get("is_logic_valid") is False:
+            offTopic += 1
         feedbackStr += f"{index}. is_context_natural={ctx}"
         feedbackStr += f", is_vocabulary_natural={voc}"
         feedbackStr += f", is_pronunciation_correct={pron}"
-        feedbackStr += f", is_grammar_correct={gram}\n"
+        feedbackStr += f", is_grammar_correct={gram}"
+        if feedback.get("is_logic_valid") is False:
+            feedbackStr += ", off_topic=True"
+        feedbackStr += "\n"
         # 음향 발음 점수 — 있을 때만 넣는다. 위 프롬프트가 「주어지지 않았으면
         # 빈 문자열을 내라」로 받으므로, 없는 발화는 그 축을 침묵한다
         pron = feedback.get("pron")
@@ -392,6 +427,10 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
             feedbackStr += f"pron_score={pron.get('score')}"
             feedbackStr += f", pron_weak_words=[{weak}]\n"
         feedbackStr += f"feedback={why}\n\n"
+
+    # 기계가 센 합계 — 0 회일 때도 적는다. 안 적으면 모델이 「모르는 것」과
+    # 「없는 것」을 구분할 수 없다.
+    feedbackStr += f"[기계가 센 것] 동문서답: {offTopic}회 / 전체 {index}발화\n"
 
     userMsg = {"role": "user", "content": feedbackStr}
 
@@ -408,7 +447,7 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
                 response_format = {"type":"json_object"}
             )
         )
-        return jsonutils.to_json(completion.choices[0].message.content)
+        return _parseJsonLoose(completion.choices[0].message.content)
 
     except Exception as e:
         errMsg = f'Error in [generating an image] from openAI: {str(e)}'
@@ -449,7 +488,7 @@ async def evaluate_speech(expected: str, actual: str):
                 response_format={"type": "json_object"},
             )
         )
-        return jsonutils.to_json(completion.choices[0].message.content)
+        return _parseJsonLoose(completion.choices[0].message.content)
     except Exception as e:
         print("Error in evaluate_speech:", str(e))
         return {"pass": False, "reason": "평가 실패"}
@@ -585,7 +624,7 @@ async def evaluate_speech_flexible(template: str, actual: str):
                 response_format={"type": "json_object"},
             )
         )
-        return jsonutils.to_json(completion.choices[0].message.content)
+        return _parseJsonLoose(completion.choices[0].message.content)
     except Exception as e:
         print("Error in evaluate_speech_flexible:", str(e))
         return {"pass": False, "reason": "평가 실패"}
