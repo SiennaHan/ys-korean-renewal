@@ -51,7 +51,14 @@ async def getReport(dialogId: int, userId:str, lang: str = "Korean"):
         stored = jsonutils.to_json(userChat.report) if userChat.report else None
         storedLang = stored.get("_lang") if isinstance(stored, dict) else None
         if not userChat.report or storedLang != lang:
-            report = await openai.create_report(feedbacksJson, lang)
+            # **목표 문법 이름을 리포트에 넘긴다**(기획 확정 2026-09-04, `P-c`).
+            # 판정은 발화마다 `target_grammar_used` 를 내고 있었는데 리포트가 그 값도,
+            # 문법의 이름도 몰랐다. `getDialog` 은 이미 이 함수가 가진 `dialogId` 로
+            # 부를 수 있다 — 새 조회 하나로 문법 축 코멘트가 그 이름을 말할 수 있다.
+            # 없으면 `None` 이고, 그때 프롬프트는 그 절을 아예 안 붙인다.
+            dialog = await repo_chat.getDialog(dialogId, db)
+            report = await openai.create_report(
+                feedbacksJson, lang, dialog.target_grammar if dialog else None)
             if isinstance(report, dict):
                 report = {**report, "_lang": lang}
             userChat.report = jsonutils.to_string(report)

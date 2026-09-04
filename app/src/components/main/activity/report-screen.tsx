@@ -154,6 +154,7 @@ export function ReportScreen({
 	hits,
 	missions,
 	values,
+	score,
 	rows,
 	sentenceFeedback = [],
 	loading,
@@ -168,6 +169,20 @@ export function ReportScreen({
 	hits: number;
 	missions: number;
 	values: RadarValues;
+	/**
+	 * 머리의 「점수」 — **네 축의 평균이다**(기획 확정 2026-09-04).
+	 *
+	 * 전에는 이 자리를 `hits / missions` 로 냈다. 그런데 바로 왼쪽이
+	 * 「완료한 키워드 2 / 3」이라 **같은 값을 백분율로 한 번 더** 보여 주고 있었다
+	 * (목업의 66% 가 2/3 다). 아래 레이더와 뜻이 다른 숫자가 머리에 있어야 한다.
+	 *
+	 * **측정되지 않은 축은 분모에서 뺀다** — 키보드로만 한 대화는 발음이 0 인데
+	 * 그것을 평균에 넣으면 「발음이 나쁘다」가 아니라 **총점이 나쁘다**로 번진다.
+	 * 그 판단은 부르는 쪽이 한다(`mission-report.tsx`).
+	 *
+	 * 안 넘기면 옛 계산(미션 달성률)으로 떨어진다 — Storybook 픽스처가 그 길이다.
+	 */
+	score?: number | null;
 	rows: ReportRow[];
 	sentenceFeedback?: SentenceFeedback[];
 	loading?: boolean;
@@ -179,7 +194,12 @@ export function ReportScreen({
 }) {
 	const { t } = useTranslation();
 	const [tab, setTab] = useState<"evaluation" | "sentences">("evaluation");
-	const percent = missions > 0 ? Math.floor((hits / missions) * 100) : 0;
+	const percent =
+		typeof score === "number"
+			? score
+			: missions > 0
+				? Math.floor((hits / missions) * 100)
+				: 0;
 
 	return (
 		<ActivityFrame>

@@ -52,6 +52,8 @@ export default function MissionReport({
 	const [loading, setLoading] = useState(true);
 	const [completedCount, setCompletedCount] = useState(0);
 	const [values, setValues] = useState<RadarValues>(EMPTY_VALUES);
+	/** 머리의 「점수」 — 측정된 축만의 평균. `null` 이면 화면이 옛 계산으로 떨어진다 */
+	const [totalScore, setScore] = useState<number | null>(null);
 	const [rows, setRows] = useState<ReportRow[]>([]);
 	const [sentenceFeedback, setSentenceFeedback] = useState<SentenceFeedback[]>(
 		[],
@@ -130,12 +132,31 @@ export default function MissionReport({
 						)
 					: 0;
 
-			setValues([
-				pronAvg,
-				score((item) => item.answer.is_grammar_correct === true),
-				score((item) => item.answer.is_context_natural === true),
-				score((item) => item.answer.is_vocabulary_natural === true),
-			]);
+			const gram = score((item) => item.answer.is_grammar_correct === true);
+			const ctx = score((item) => item.answer.is_context_natural === true);
+			const voc = score((item) => item.answer.is_vocabulary_natural === true);
+			setValues([pronAvg, gram, ctx, voc]);
+
+			/*
+			 * **머리의 「점수」 = 네 축의 평균**(기획 확정 2026-09-04).
+			 *
+			 * 전에는 `ReportScreen` 이 이 자리를 `hits / missions` 로 냈는데, 바로
+			 * 왼쪽이 「완료한 키워드 2 / 3」이라 **같은 값을 두 번** 보여 주고 있었다.
+			 *
+			 * **측정되지 않은 발음은 분모에서 뺀다** — 위 `pronAvg` 가 0 인 것은
+			 * 「0점」이 아니라 「못 쟀다」다(키보드 입력 · 발음평가 비활성 · 타임아웃).
+			 * 그것을 평균에 넣으면 발음 축만 낮아지는 것이 아니라 **총점이 낮아진다.**
+			 * 발음 축이 이미 쓰는 규약을 머리 숫자에도 그대로 적용한다.
+			 *
+			 * 한 발화도 없으면 `null` 을 넘긴다 — `ReportScreen` 이 옛 계산으로
+			 * 떨어지고, 그때는 달성률도 0 이라 결과가 같다.
+			 */
+			const axes = pronScores.length > 0 ? [pronAvg, gram, ctx, voc] : [gram, ctx, voc];
+			setScore(
+				count > 0
+					? Math.floor(axes.reduce((a, b) => a + b, 0) / axes.length)
+					: null,
+			);
 
 			const completed = parseJson<string[]>(report.chat.completed_missions, []);
 			setCompletedCount(completed.length);
@@ -198,6 +219,7 @@ export default function MissionReport({
 			hits={completedCount}
 			missions={missionCount}
 			values={values}
+			score={totalScore}
 			rows={rows}
 			sentenceFeedback={sentenceFeedback}
 			loading={loading}

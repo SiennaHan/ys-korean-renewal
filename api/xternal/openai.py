@@ -334,7 +334,7 @@ class CheckMission :
 
 
 
-def reportPrompt(lang: str = "Korean") :
+def reportPrompt(lang: str = "Korean", targetGrammar: str | None = None) :
     intent = """너는 한국어 대화 품질 검토 모델이다.
 사용자의 대화 평가목록을 검토한 후 다음 4가지로 평가 항목으로 분류하고 요약내용을 아래의 JSON 포맷으로 작성한다.
 대화 평가목록의 feedback에 내용이 없으면, 모든 항목에 대해 잘했다는 의미이다.
@@ -356,6 +356,11 @@ def reportPrompt(lang: str = "Korean") :
    맞춤법으로 대신 평가하지 마세요 — 그것은 이 축이 아닙니다.
 4. grammar_correct: 
  - 조사, 어미 활용, 어순이 정확한가?
+ - **[목표 문법] `[기계가 센 것]` 에 목표 문법 사용 횟수가 주어지면**, 문법 오류를
+   짚은 뒤 그 사용을 **칭찬 한 마디로** 덧붙이세요. (예: 「목표 문법 '-이에요/예요'도
+   3번 잘 썼어요.」)
+ - **0회면 언급하지 마세요. 그리고 안 썼다고 감점하지 마세요** — 목표 문법은
+   유도할 것이지 **완료 조건이 아닙니다.**
 
 [응답 JSON 포맷]
 - 반드시 아래 형식 그대로 JSON으로만 출력한다.
@@ -365,18 +370,27 @@ def reportPrompt(lang: str = "Korean") :
     "pronunciation_correct": 발음 및 맞춤법 평가 요약,
     "grammar_correct": 문법 평가 요약
 }"""
+    if targetGrammar :
+        intent = intent + """
+
+[이 과의 목표 문법] """ + targetGrammar
     intent = intent + """
 
 [언어 규칙] 위 4개 요약 값(문자열)은 반드시 """ + lang + """(으)로 작성한다. (JSON 키 이름은 영문 그대로 유지)"""
     return intent
 
-async def create_report(answerList: List[object], lang: str = "Korean") :
-    intent = reportPrompt(lang)
+async def create_report(answerList: List[object], lang: str = "Korean", targetGrammar: str | None = None) :
+    intent = reportPrompt(lang, targetGrammar)
 
     systemMsg = {"role": "system", "content": intent}
 
     index = 0
     offTopic = 0
+    # **목표 문법을 몇 번 썼나 — 기계가 센다**(기획 확정 2026-09-04, `P-c`).
+    # 판정 AI 는 발화마다 `target_grammar_used` 를 내고 있었는데 **리포트가 안 봤다.**
+    # `true` 인 것만 센다 — 키가 없는 옛 행은 `None` 이라 안 센다(「건수 미상」).
+    # **점수에는 영향이 없다** — 안 썼다고 감점하지 않는다(프롬프트에도 못 박았다).
+    grammarUsed = 0
     feedbackStr = "[대화 평가 목록]\n"
     # print("feedbackList=>", jsonable_encoder(answerList))
 
@@ -408,6 +422,8 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
         # `mission_chat_spec_v1.md` A-9).
         if feedback.get("is_logic_valid") is False:
             offTopic += 1
+        if feedback.get("target_grammar_used") is True:
+            grammarUsed += 1
         feedbackStr += f"{index}. is_context_natural={ctx}"
         feedbackStr += f", is_vocabulary_natural={voc}"
         feedbackStr += f", is_pronunciation_correct={pron}"
@@ -431,6 +447,8 @@ async def create_report(answerList: List[object], lang: str = "Korean") :
     # 기계가 센 합계 — 0 회일 때도 적는다. 안 적으면 모델이 「모르는 것」과
     # 「없는 것」을 구분할 수 없다.
     feedbackStr += f"[기계가 센 것] 동문서답: {offTopic}회 / 전체 {index}발화\n"
+    if targetGrammar :
+        feedbackStr += f"[기계가 센 것] 목표 문법 사용: {grammarUsed}회 / 전체 {index}발화\n"
 
     userMsg = {"role": "user", "content": feedbackStr}
 
