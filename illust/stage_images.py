@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """links.csv 가 가리키는 글로벌 삽화를 앱의 public/textbook/ 에 내려놓는다.
 
-추출 원본은 300DPI PNG라 628장이 149.6MB — 구판 전체(29MB, 평균 40KB짜리
-jpg)의 5배다. 앱이 쓰는 화면(어휘 카드 썸네일)에 그 해상도가 필요 없으므로
-구판과 비슷한 크기로 줄여서 넣는다 — 최대 변 480px · JPEG 85%.
+**480px 상한을 720px로 올렸다(2026-09-05).** 480은 구판 자산(평균 40KB짜리
+jpg, 365~472px) 크기에 맞춘 값이었는데, 실제로 필요한 건 화면 표시 칸과
+레티나 배율(2~3배)을 곱한 값이었다 — 단어 퀴즈 화면(228px 정사각)을 3배
+폰에서 채우려면 684px, 낱말 학습(120px)은 360px가 필요하다. 480 상한에선
+퀴즈 화면 575장 중 574장이 확대(업스케일)돼 흐리게 보였다. 720이면 그 684px
+요구를 여유 있게 덮는다 — DPI 도 300→600 으로 같이 올려서(extract_global_
+images.py) 이 상한이 실제로 의미가 있게 만들었다.
 
 원장의 image 값은 .png 인데 여기서는 .jpg 로 저장한다 — apply_images.py 로
 만든 원장을 이 스크립트 뒤에 한 번 더 손봐서 확장자를 맞춘다(v31 -> v32).
@@ -19,7 +23,7 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = "/Users/soohyeon/Documents/2608-yonsei_renewal"
 PUBLIC = f"{ROOT}/app/public/textbook"
-MAX_SIDE = 480
+MAX_SIDE = 720
 QUALITY = 85
 
 

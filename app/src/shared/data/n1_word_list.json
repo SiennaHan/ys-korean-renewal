@@ -12891,13 +12891,13 @@
 		"cn": "三明治",
 		"vi": "bánh mì sandwich",
 		"sound": "",
-		"image": "b3_ch6_p74_21.jpg",
+		"image": "",
 		"category": "과제어휘",
 		"theme": "",
 		"item_id": "VL-3-6-007",
 		"review_status": "draft",
 		"source_page": "",
-		"change_note": "",
+		"change_note": "이미지 제거 — 'b3_ch6_p74_21.jpg': 재추출 후 확인해 보니 실제로는 건물·교차로 지도 삽화였다 (원래부터 근거 없는 연결) — 대안 없이 지운다",
 		"hold_reason": ""
 	},
 	{
@@ -17527,13 +17527,13 @@
 		"cn": "阅览室",
 		"vi": "phòng đọc",
 		"sound": "",
-		"image": "b4_ch4_p49_5.jpg",
+		"image": "b4_ch4_p49_8.jpg",
 		"category": "주제어휘",
 		"theme": "도서관",
 		"item_id": "VL-4-4-012",
 		"review_status": "draft",
 		"source_page": "",
-		"change_note": "",
+		"change_note": "600dpi 재추출로 파일명 변경: b4_ch4_p49_5.jpg -> b4_ch4_p49_8.jpg(같은 장면, idx만 밀림)",
 		"hold_reason": ""
 	},
 	{
