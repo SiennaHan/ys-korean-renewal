@@ -1,7 +1,12 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 90aacaa
-     — 확인: 2026-09-04 · `openai.py` 가 **목표 문법 사용 횟수를 세게 됐다**(`90aacaa`) —
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ c3671f4
+     — 확인: 2026-09-04 · `openai.py` 가 **재지 않은 발음을 말하지 못하게 됐다**(`c3671f4`) —
+     `create_report` 가 음향 발음을 실제로 잰 발화 수를 세고 **0 이면 응답의
+     `pronunciation_correct` 를 빈 문자열로 덮는다.** 프롬프트에 같은 규칙이 있는데
+     한 번 어겨서 기계가 막게 했다. **네 대화로 확인했다**(측정된 대화도 같이 넣어
+     그 축이 죽지 않은 것까지 봤다). **새로 부르는 외부 API 는 없다.**
+     앞 확인: 2026-09-04 · `openai.py` 가 **목표 문법 사용 횟수를 세게 됐다**(`90aacaa`) —
      `create_report` 가 `target_grammar_used` 를 파이썬으로 세고 `reportPrompt` 문법
      축이 칭찬 한 마디로 받는다(0회면 언급 없음 · **감점 없음**). 문법 이름은
      `dialog.py` 가 `getDialog` 로 가져와 넘긴다. **새로 부르는 외부 API 는 없다.**
