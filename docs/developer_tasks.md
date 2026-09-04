@@ -1,7 +1,11 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 09cfb40
-     — 확인: 2026-09-04 · `openai.py` 가 **동문서답을 세게 됐다**(`09cfb40`) —
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ 90aacaa
+     — 확인: 2026-09-04 · `openai.py` 가 **목표 문법 사용 횟수를 세게 됐다**(`90aacaa`) —
+     `create_report` 가 `target_grammar_used` 를 파이썬으로 세고 `reportPrompt` 문법
+     축이 칭찬 한 마디로 받는다(0회면 언급 없음 · **감점 없음**). 문법 이름은
+     `dialog.py` 가 `getDialog` 로 가져와 넘긴다. **새로 부르는 외부 API 는 없다.**
+     앞 확인: 2026-09-04 · `openai.py` 가 **동문서답을 세게 됐다**(`09cfb40`) —
      `create_report` 가 `is_logic_valid=false` 를 파이썬으로 세서 프롬프트에 숫자로
      넘기고, `reportPrompt` 내용 축이 그것을 받는다(0회면 언급 안 함). **저장 변경 0** —
      그 값은 처음부터 판정 출력에 있었다. 같은 판에 `_parseJsonLoose` 를 만들어 다섯
