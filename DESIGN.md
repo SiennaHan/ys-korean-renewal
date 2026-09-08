@@ -1,5 +1,13 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 3558bc5
-     — 확인: 2026-09-04 · `nav.css` 에 **금액 줄 규칙 넷**이 늘었다(`3558bc5`).
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ f3e1b61
+     — 확인: 2026-09-04 · `nav.css` 에 **런칭 이벤트 배너 규칙 셋**이 늘었다(`f3e1b61`).
+       **이 문서가 세는 축은 그대로다** — radius 12 · padding 12/16 · gap 8 로 전부
+       이미 쓰는 값이고 리터럴 색도 없다. `activity.css` 줄 수도 그대로다.
+       **★ 그런데 여기서 배운 것이 하나 있다 — 정의되지 않은 `var()` 를 잡는 검사가
+       없다.** 그 배너를 처음에 `var(--blue-50)` 로 썼는데 **그 변수가 없어서 배경이
+       투명하게 나왔고 `check:css` 다섯이 전부 통과했다**(`token-literal-check` 는
+       hex 리터럴만 보고, `css-class-check` 는 클래스 이름만 본다). 브라우저에서
+       계산값을 재서 잡았다. **같은 것을 쓰는 기존 자리 둘도 찾았다 — `DEV-20`.**
+       앞 확인: 2026-09-04 · `nav.css` 에 **금액 줄 규칙 넷**이 늘었다(`3558bc5`).
        **이 문서가 세는 축은 그대로다** — `border-radius`·`gap`·`padding` 중 새로 생긴
        값이 없다(`gap:4px` 는 이미 23회 쓰는 값이고, `margin` 은 이 문서의 셈 대상이
        아니다). **리터럴 색도 없다** — `var(--color-text-heading)`·`var(--nav-text-mute)` 다.

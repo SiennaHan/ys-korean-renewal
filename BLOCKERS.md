@@ -942,8 +942,13 @@ MY 탭 누적 학습 기록은 따로 설계해 두었고 네 결정이 반영�
 
 ## 6-b. 로컬에서 서버를 띄웠다 — 키 없이 학습 흐름이 돈다 (2026-08-26)
 
-<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ 6d03a9e
-     — 확인: 2026-09-04 · 미션대화 발음 축을 붙이며 둘이 바뀌었다(`6d03a9e`) —
+<!-- 관찰: api/persistence, api/requirements.txt, api/README.md, app/src/api @ f3e1b61
+     — 확인: 2026-09-04 · `app/src/api/entitlement.ts` 에 **런칭 이벤트**가 들어왔다
+     (`f3e1b61`) — `EntitlementSource` 에 `"event"` 넷째 값과 `eventLastDay()` 헬퍼다.
+     **표도 스키마도 마이그레이션도 없다** — 판정은 `api/business/entitlement.py` 가
+     환경변수 하나(`LAUNCH_EVENT_UNTIL`)로 하고 **`ko_*` 표를 건드리지 않는다.**
+     이 절이 세는 표·열쇠·씨드 이야기는 그대로다.
+     앞 확인: 2026-09-04 · 미션대화 발음 축을 붙이며 둘이 바뀌었다(`6d03a9e`) —
      `repo_chat._Dialog` 에 **`target_grammar` 한 칸을 더했다**(원장에 있는데 판정에
      안 닿고 있던 값이다. 이 절이 세는 표·열쇠·씨드 이야기는 그대로다) ·
      `app/src/api/apiType.ts` 에 `KoChatRequest.audio`·`edited` 와 `CheckMission.pron` 을
@@ -1952,8 +1957,11 @@ JSON → DB 표 14개 → API 까지 **잃은 열 0 · 값도 「모두 같다�
 > 가리킨다(「복습을 위한 새 화면이 없다 — §9-a-1」·「새로고침하면 이 목록이
 > 빈다 — §9-c」). **무엇을 언제 왜 그렇게 했나**는 여기가 맞다.
 
-<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ 6d03a9e
-     — 확인: 2026-09-04 · `app/src/api` 에서 바뀐 것은 **타입 세 줄**이다(`6d03a9e`) —
+<!-- 관찰: app/src/api, app/package.json, app/src/shared/data/n8_jamo.json, app/src/routes/reset-password.tsx @ f3e1b61
+     — 확인: 2026-09-04 · `app/src/api` 에서 바뀐 것은 **런칭 이벤트 셋**이다(`f3e1b61`) —
+     `EntitlementSource` 의 `"event"`, `SOURCES` 배열, `eventLastDay()` 헬퍼.
+     이 절이 세는 것은 자모·재설정 쪽이라 **주장이 하나도 안 바뀌었다.**
+     앞 확인: 2026-09-04 · `app/src/api` 에서 바뀐 것은 **타입 세 줄**이다(`6d03a9e`) —
      `KoChatRequest.audio`·`edited`, `CheckMission.pron`. 이 절이 세는 것은 그쪽이
      아니라 자모·재설정 쪽이라 **주장이 하나도 안 바뀌었다.**
      앞 확인: 2026-09-03 · `parity:activity` 에 `screens-ref-build.py --check` 가 하나 더
