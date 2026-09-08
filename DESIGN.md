@@ -1,5 +1,14 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ c3671f4
-     — 확인: 2026-09-04 · `activity.stories.tsx` 가 바뀐 것은 **픽스처 숫자 하나**다
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 3558bc5
+     — 확인: 2026-09-04 · `nav.css` 에 **금액 줄 규칙 넷**이 늘었다(`3558bc5`).
+       **이 문서가 세는 축은 그대로다** — `border-radius`·`gap`·`padding` 중 새로 생긴
+       값이 없다(`gap:4px` 는 이미 23회 쓰는 값이고, `margin` 은 이 문서의 셈 대상이
+       아니다). **리터럴 색도 없다** — `var(--color-text-heading)`·`var(--nav-text-mute)` 다.
+       `activity.css` 줄 수도 그대로다(건드린 것은 `nav.css`).
+       **다만 이 문서가 세지 않는 축에서 하나 생겼다 — 글자 크기 `10px`.**
+       「부가세 포함」이고 기획 확정이다(값이 아니라 안내라서 작게). 이 저장소에서
+       글자 크기로는 처음이다(그전엔 radius 로만 쓰였다). 세는 축이 아니라 표에는
+       안 넣지만, **글자 크기를 재는 축이 없다는 것을 여기 적어 둔다.**
+       앞 확인: 2026-09-04 · `activity.stories.tsx` 가 바뀐 것은 **픽스처 숫자 하나**다
        (`c3671f4`) — 리포트 머리의 「점수」를 축 평균으로 계산해 넘기게 했다.
        **이 문서가 캐는 두 축(리터럴 색 · 비4배수 간격)은 해당 없다** — CSS 도 새
        클래스도 없고 `activity.css` 줄 수도 그대로다. `check:css` 0 · `parity` 0.
