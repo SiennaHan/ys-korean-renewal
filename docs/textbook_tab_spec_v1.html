@@ -1,6 +1,12 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ fad6aeb
-     — 확인: 2026-09-03 · 원장 v57 이 n7_mission_chat 에서 ai_persona_prompt(22행) ·
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ f98f75f
+     — 확인: 2026-09-04 · `paywall-panel.tsx` 에 **마운트 시 권한 재조회**가 붙었다(`f98f75f`).
+       이 문서를 다시 읽었고 **낡은 것은 없었다** — §04 의 「다섯으로 갈린다」는 그대로고
+       (`PaywallKind` 를 늘리지 않았다), 「결제 화면 자체는 아직 없다 · 버튼이 눌리지
+       않는 채로 있다」도 그대로다(그 버튼을 안 건드렸다), §07 의 「실제 결제만 남았다」도
+       그대로다. **한 줄만 더했다** — `GET /entitlement` 행에 「페이월이 뜨면 한 번 다시
+       읽는다」. 그 화면이 권한을 어떻게 쓰는지를 적는 표라 새 동작이 빠지면 낡는다.
+       앞 확인: 2026-09-03 · 원장 v57 이 n7_mission_chat 에서 ai_persona_prompt(22행) ·
        review_status(14) · change_note(14) 만 바꿨다. **§04 가 기대는 legacy_id 와
        situation_ko 는 ca8826d 이후 바뀐 행 0** 이고 행 수도 117 그대로다(대 봐서 확인) —
        이 문서에 고칠 것 없음. 앞 확인: 원장 v55 도 프롬프트·첫 대사·change_note 만 건드렸고
@@ -255,7 +261,7 @@
       <span class="file">review</span> 상태(복습 N)가 아직 나오지 않는다</td></tr>
     <tr><td><span class="file">GET /entitlement</span></td>
       <td><span class="pill done">있다</span> · 목록 연결</td>
-      <td><span class="file">useEntitlement</span>가 열린 급·과를 받아 과 칩과 페이월을 판정한다. <span class="file">access_and_pricing_v1</span> §04</td></tr>
+      <td><span class="file">useEntitlement</span>가 열린 급·과를 받아 과 칩과 페이월을 판정한다. <span class="file">access_and_pricing_v1</span> §04.<br><b>[2026-09-04]</b> 그리고 <b>페이월이 뜨면 한 번 다시 읽는다</b> — <span class="file">entitlement-store.ts</span> 의 <code>refresh()</code>. <b>비우지 않는</b> 재조회라 실패하면 옛 값을 지킨다(<code>reload()</code> 는 먼저 비워서 이 페이월이 스스로 사라진다). 복원 버튼을 두지 않기로 한 자리다</td></tr>
     <tr><td><span class="file">GET /content/manifest</span> · <span class="file">GET /content/{급}/{과}/{활동}</span></td>
       <td><span class="pill done">있다</span> · 목록 연결</td>
       <td>매니페스트는 활동 유무·문항 수를, 본문 API는 열린 과의 실제 콘텐츠를 준다. 자모만 번들 예외다</td></tr>
