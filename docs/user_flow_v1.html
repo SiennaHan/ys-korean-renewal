@@ -254,7 +254,7 @@
 
   <!-- 결제 (없음) -->
   <rect class="bxStop" x="150" y="496" width="452" height="52" rx="10"/>
-  <text class="t1" x="166" y="517">결제 <tspan class="tS">없음 — 코드 0줄 · PG 미정 · 가격 월 6달러</tspan></text>
+  <text class="t1" x="166" y="517">결제 <tspan class="tS">없음 — 코드 0줄 · 토스 계약 중 · 월 7,900원</tspan></text>
   <text class="t2" x="166" y="535">ko_purchase · POST /purchase/webhook · ko_entitlement 전부 미착수</text>
 
   <path class="lnStop" d="M376 548 L376 582"/>
@@ -320,7 +320,7 @@
     <span class="file">project_status.json</span>의 <code>free_content_delivery</code>가 쥔다</div></div></li>
   <li><div><div class="h">결제가 없다</div>
     <div class="d"><code>payment</code>·<code>subscription</code>·PG 이름 어느 것도 <code>api/</code> 와 <code>app/src</code> 에 없다.
-    월 가격은 6달러로 확정됐고, PG·통화 표시·세금·환불 정책은 아직 정하지 않았다 — 아래 05</div></div></li>
+    월 가격은 월 7,900원(부가세 포함) 로 확정됐고 통화는 KRW 하나다(2026-09-04). PG 는 토스페이먼츠(계약 중)이고 <b>환불 정책만 남았다</b> — 아래 05</div></div></li>
   <li><div><div class="h">메일이 안 나간다</div>
     <div class="d">보낼 수단이 아예 없다(<code>boto3</code> 는 S3 전용). 재설정이 껍데기인 것도, 영수증을 못 보내는 것도 같은 뿌리다.
     보낼 것은 넷뿐이고 5개 언어 템플릿이 필요하다</div></div></li>
@@ -338,7 +338,7 @@
 <table>
   <thead><tr><th>물음</th><th>상태</th></tr></thead>
   <tbody>
-    <tr><td><b>가격</b></td><td><span class="pill done">확정 2026-08-28</span> <b>월 6달러</b>다.
+    <tr><td><b>가격</b></td><td><span class="pill done">확정 2026-09-04</span> <b>월 7,900원(부가세 포함)</b> 다(KRW 단일).
       구독·월 단위는 2026-08-26 에 정해졌고 금액이 이번에 붙었다.
       <b>금액이 답하지 않은 것</b> — 통화 표기(학습자가 en·ja·zh·vi 넷이다) · 세금 포함 여부 ·
       첫 달 할인·체험 기간. 셋 다 결제를 붙일 때 같이 정한다</td></tr>
