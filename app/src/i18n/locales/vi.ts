@@ -620,6 +620,15 @@ const vi = {
 		lockedWhy: "Mở khi đăng ký",
 		lockedAria: "Bài đang khóa",
 		close: "Đóng",
+		/*
+		 * 금액 줄 — PD-01 확정(2026-09-04): 월 7,900원 · KRW 단일 · 부가세 포함.
+		 * **숫자는 여기 없다** — paywall-panel.tsx 의 MONTHLY_PRICE_KRW 하나뿐이고
+		 * 여기는 자리(`{{amount}}`)와 통화 표기만 갖는다. 가격이 바뀌면 한 곳만 고친다.
+		 * 한국어만 「원」을 쓴다 — 「원」은 낱말이라 다른 언어에서는 뜻이 안 통한다.
+		 */
+		priceAmount: "₩{{amount}}",
+		pricePer: "/tháng",
+		priceVat: "Đã gồm VAT",
 		benefitAll: "Toàn bộ cấp và bài, từ Hangul đến cấp 8",
 		benefitPractice: "Mọi hoạt động, gồm hội thoại AI và nhập vai",
 		benefitProgress: "Giữ nguyên tiến độ để tiếp tục học",

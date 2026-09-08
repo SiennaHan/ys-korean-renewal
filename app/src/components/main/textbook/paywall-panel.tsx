@@ -19,6 +19,17 @@ import { useTranslation } from "react-i18next";
  * `school` 로 떨어져 **「학교 담당자에게 이용 범위 확대를 문의해 주세요」**를
  * 봤다 — 범위 문제가 아니라 학기가 끝난 것이니 사실과 다른 안내였다.
  */
+/**
+ * 월 구독료(원). **`PD-01` 확정 2026-09-04 — 월 7,900원 · KRW 단일 · 부가세 포함.**
+ * 전에는 「월 6달러」였다(2026-08-28).
+ *
+ * **숫자를 여기 한 곳에만 둔다.** i18n 다섯 파일에 완성된 금액을 박으면 가격이 바뀔 때
+ * 다섯 곳을 고쳐야 하고, 한 곳을 빠뜨리면 그 언어만 옛 값을 보여 준다 — 이 저장소가
+ * 「기계가 세는 숫자는 주인 하나에만」으로 정한 것과 같은 이유다.
+ * i18n 은 **자리만** 갖는다(`{{amount}}` + 통화 표기).
+ */
+const MONTHLY_PRICE_KRW = 7900;
+
 export type PaywallKind =
 	| "guest"
 	| "member"
@@ -151,6 +162,24 @@ export default function PaywallPanel({
 						</li>
 					))}
 				</ul>
+			)}
+
+			{/*
+			 * 금액 줄 — **혜택 아래, 행동 위**(기획 확정 E-1). 혜택 셋을 읽고 값을
+			 * 확인하고 누르는 순서라 기존 화면의 순서를 하나도 바꾸지 않는다.
+			 * **`purchasable` 과 같은 조건이다** — 기관 학생에게는 가격도 결제 버튼도
+			 * 보이지 않는다(§06). 게스트도 안 본다: 값보다 계정이 앞선다.
+			 */}
+			{purchasable && (
+				<p className="paywall-price">
+					<span className="paywall-price-amount">
+						{t("paywall.priceAmount", {
+							amount: MONTHLY_PRICE_KRW.toLocaleString("ko-KR"),
+						})}
+					</span>
+					<span className="paywall-price-per">{t("paywall.pricePer")}</span>
+					<span className="paywall-price-vat">{t("paywall.priceVat")}</span>
+				</p>
 			)}
 
 			<div className="paywall-acts">

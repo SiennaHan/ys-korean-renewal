@@ -138,6 +138,23 @@
 .nav-frame .paywall-cta { height:var(--d-btn-h,56px); border-radius:var(--d-btn-r,12px); border:none;
   background:var(--color-fill-primary); color:var(--color-background-surface);
   font-size:16px; font-weight:700; cursor:pointer; }
+/* 금액 줄 — PD-01 확정(2026-09-04): 월 7,900원 · KRW 단일 · 부가세 포함.
+   **결제로 갈 수 있는 갈래에만 붙는다**(개인 미구독 · 구독 만료). 기관 학생에게는
+   가격도 결제 버튼도 안 보인다 — access_and_pricing_v1 §06.
+   시각 정본은 docs/paywall_SOT.html 이고 승격 사유는 screen_promotions.md 에 있다.
+   **KRW 단일이라 국가별 표기 분기가 없다** — 해외 카드도 원화로 청구된다 */
+.nav-frame .paywall-price { margin-top:16px; display:flex; align-items:baseline;
+  justify-content:center; gap:4px; }
+.nav-frame .paywall-price-amount { font-size:22px; line-height:30px; font-weight:700;
+  letter-spacing:-.02em; color:var(--color-text-heading); }
+.nav-frame .paywall-price-per { font-size:14px; line-height:20px; font-weight:600;
+  color:var(--nav-text-mute); }
+/* **「부가세 포함」은 최대한 작게**(기획 확정) — 값이 아니라 안내라서 금액과 같은
+   크기로 두면 두 숫자가 경쟁한다. 10px 은 이 저장소에서 글자 크기로는 처음이다
+   (radius 로만 쓰였다) — 기획자가 그 점을 알고 고른 값이다 */
+.nav-frame .paywall-price-vat { font-size:10px; line-height:14px; font-weight:500;
+  color:var(--nav-text-mute); }
+
 /* 결제 화면이 아직 없다. 눌러도 조용한 것보다 눌리지 않는 것이 솔직하다.
    표현은 2026-08-28 에 활동·인증과 같은 색 교체로 맞췄다 — 전에는 파랑을 흐리게 했다(DESIGN.md §8 의 3번) */
 .nav-frame .paywall-cta:disabled { background:var(--color-background-disable);

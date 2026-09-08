@@ -624,6 +624,15 @@ const ja = {
 		lockedWhy: "定期購読で開きます",
 		lockedAria: "ロック中の課",
 		close: "閉じる",
+		/*
+		 * 금액 줄 — PD-01 확정(2026-09-04): 월 7,900원 · KRW 단일 · 부가세 포함.
+		 * **숫자는 여기 없다** — paywall-panel.tsx 의 MONTHLY_PRICE_KRW 하나뿐이고
+		 * 여기는 자리(`{{amount}}`)와 통화 표기만 갖는다. 가격이 바뀌면 한 곳만 고친다.
+		 * 한국어만 「원」을 쓴다 — 「원」은 낱말이라 다른 언어에서는 뜻이 안 통한다.
+		 */
+		priceAmount: "₩{{amount}}",
+		pricePer: "/月",
+		priceVat: "税込み",
 		benefitAll: "ハングルから8級まで、すべての級・課",
 		benefitPractice: "AI会話・ロールプレイを含むすべての学習活動",
 		benefitProgress: "これまでの学習記録をそのまま引き継ぎ",
