@@ -21,7 +21,7 @@
 있어야 한다(`xternal/tutorus.py` 의 `PRONUNCIATION_ENABLED` 와 같은 방식).
 """
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from fastapi.encoders import jsonable_encoder
 
@@ -31,6 +31,19 @@ from shared import free_scope, full_scope
 
 # 기본은 켜짐. 사고가 나면 `.env` 한 줄과 재시작으로 끈다
 SCHOOL_FULL_SCOPE = os.environ.get("SCHOOL_FULL_SCOPE", "true").lower() in {"1", "true", "yes"}
+
+# **런칭 이벤트 — 이 날까지 로그인한 사람 전원이 전 범위를 받는다** (기획 2026-09-04).
+#
+# 무료 체험이 아니다(그건 「없다」로 확정됐다). 토스페이먼츠 계약이 끝날 때까지는
+# 어차피 결제를 열 수 없으니, 그 기간을 **런칭 이벤트로 알리는** 것이다.
+#
+# **`.env` 로 뺀 이유는 연장이다.** 심사가 늦거나 이벤트를 더 하기로 하면
+# 「연장 공지」와 함께 이 값만 바꾼다 — **배포가 필요 없다.** `SCHOOL_FULL_SCOPE` 를
+# 그렇게 만든 것과 같은 이유다(그 상수 주석).
+#
+# 날짜만 적는다(`YYYY-MM-DD`). **그 날 끝까지 준다** — 아래에서 하루를 더해
+# 「10-31 이 지난 뒤」가 아니라 「11-01 이 되면」 끝나게 한다.
+LAUNCH_EVENT_UNTIL = os.environ.get("LAUNCH_EVENT_UNTIL", "2026-10-31").strip()
 
 # **기본은 꺼짐 — 운영 배포는 지금과 동일하게 동작한다.**
 #
@@ -82,6 +95,52 @@ def _schoolScope():
         jamoChapters=full_scope.ALL_JAMO_CHAPTERS,
         games=full_scope.ALL_GAMES,
         clips=full_scope.ALL_CLIPS,
+    )
+
+
+def _eventEndsAt():
+    """이벤트가 끝나는 순간(UTC naive). 설정이 비었거나 꼴이 틀리면 `None` — **이벤트 없음**.
+
+    **날짜 다음 날 0시**다. `LAUNCH_EVENT_UNTIL=2026-10-31` 이면 10-31 하루를 온전히
+    주고 11-01 0시에 끝난다 — 「10월 31일까지」를 사람 말 그대로 받는다.
+
+    **시간대는 UTC 로 본다.** 이 파일의 다른 판정(`accessEndedAt <= _utcNow()`)이
+    전부 그렇고, 한 곳만 KST 로 바꾸면 같은 표의 두 칸이 서로 다른 시계를 쓴다.
+    그래서 한국 기준으로는 **11월 1일 오전 9시**에 끝난다 — 알고 두는 것이다.
+    시간대를 통째로 바로잡는 것은 `DEV-19` 이고 세 곳을 같이 고쳐야 한다.
+    """
+    if not LAUNCH_EVENT_UNTIL:
+        return None
+    try:
+        day = datetime.strptime(LAUNCH_EVENT_UNTIL, "%Y-%m-%d")
+    except ValueError:
+        # 꼴이 틀리면 **이벤트를 켜지 않는다.** 잘못 적은 값으로 전 범위를 여는 것이
+        # 안 여는 것보다 나쁘다 — 되돌리려면 배포가 필요해진다
+        print(f"LAUNCH_EVENT_UNTIL 을 못 읽었다(무시한다): {LAUNCH_EVENT_UNTIL!r}")
+        return None
+    return day + timedelta(days=1)
+
+
+def _eventScope(endsAt):
+    """런칭 이벤트 — 전 급 · 자모 전부 · 게임 전부. `_schoolScope()` 와 같은 범위다.
+
+    **`source` 를 `event` 로 새로 만들었다.** `school` 로 내면 MY 의 구독 카드가
+    「학교를 통해 이용 중」이라고 **거짓말한다**(`components/main/my/subscription-card.tsx`).
+    `purchase` 로 내면 「구독 이용 중」이라 역시 거짓이고 결제 안내로 가는 길도 막힌다.
+    **앱의 `EntitlementSource` 에 넷째 값을 같이 더했다** — 안 더하면 `asEntitlement`
+    가 응답을 통째로 거절해 **오히려 전부 잠긴 것처럼 보인다**(아래 `ADMIN_FULL_SCOPE`
+    주석이 그 사고를 적어 뒀다).
+
+    `expires_at` 은 이벤트가 끝나는 순간이다 — 앱이 「언제까지」를 말할 수 있게.
+    """
+    return _scope(
+        "event",
+        books=full_scope.ALL_BOOKS,
+        chapters={},
+        jamoChapters=full_scope.ALL_JAMO_CHAPTERS,
+        games=full_scope.ALL_GAMES,
+        clips=full_scope.ALL_CLIPS,
+        expiresAt=jsonable_encoder(endsAt),
     )
 
 
@@ -161,6 +220,22 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
     # 값만 써야 한다
     if ADMIN_FULL_SCOPE and role in ("master_admin", "school_admin"):
         return _schoolScope()
+
+    # **런칭 이벤트 기간이면 개인 계정도 전 범위다** (기획 2026-09-04).
+    #
+    # **기관 학생은 이 위에서 이미 갈렸다** — 그쪽은 `source:"school"` 그대로 둔다.
+    # 범위는 어차피 같고(전 급), §06 이 「기관 학생에게 개인 결제 화면을 띄우면
+    # 안 된다」로 정했기 때문이다. `event` 로 바꾸면 이벤트가 끝날 때 학교 학생에게
+    # 결제 안내가 뜬다 — 학교가 이미 낸 돈이다.
+    #
+    # **게스트는 받지 않는다.** 위쪽 세 분기에서 이미 `_freeScope("guest")` 로
+    # 돌아갔다. 게스트까지 열면 가입할 이유가 없어지고 **학습 기록이 계정에 붙지
+    # 않는다** — §06 이 「계정 없이 결제하면 기기를 바꿀 때 잃는다」로 정한 것과 같은
+    # 이유다. 게스트는 무료 범위를 보고, 앱이 「로그인하면 이벤트가 열린다」를 말한다.
+    # **뒤집으려면 이 판정을 함수 맨 위로 올리면 된다 — 한 줄이다.**
+    eventEndsAt = _eventEndsAt()
+    if eventEndsAt and _utcNow() < eventEndsAt:
+        return _eventScope(eventEndsAt)
 
     # 개인 계정. 결제가 없으므로 아직 무료 범위다 — 잠긴 것을 누르면 결제로 간다
     return _freeScope("guest")

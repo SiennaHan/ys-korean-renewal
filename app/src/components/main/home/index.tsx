@@ -1,7 +1,9 @@
 import { type DashboardData, getDashboard } from "@/api/dashboard";
+import { eventLastDay } from "@/api/entitlement";
 import { getHomeReviewQueue } from "@/api/review-queue";
 import { useAuth } from "@/components/sign/sign-provider";
 import { LEARN_ROUTE, type LessonActivityId } from "@/shared/lesson-flow";
+import { useEntitlement } from "@/shared/store/entitlement-store";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -24,6 +26,8 @@ function fallbackAttendance() {
  */
 export default function HomeContent() {
 	const { user } = useAuth();
+	// 런칭 이벤트 배너를 그릴지 — 판정은 서버가 하고 여기서는 받은 것만 본다
+	const { entitlement } = useEntitlement();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [data, setData] = useState<DashboardData | null>(null);
@@ -122,6 +126,12 @@ export default function HomeContent() {
 			 * 계정이 있는 것처럼 읽히고, 빈 문자열이면 " 님" 만 남는다. 그래서 게스트는
 			 * 이름 틀을 쓰지 않고 인사말 하나로 대신한다 — view.tsx 가 처리한다.
 			 */
+			/*
+			 * 런칭 이벤트 배너 — 서버가 `source:"event"` 를 낼 때만 값이 있다.
+			 * **기간 판정은 서버 한 곳이다**(api/business/entitlement.py) — 앱에
+			 * 날짜 비교를 한 벌 더 두면 두 시계가 갈린다.
+			 */
+			eventLastDay={eventLastDay(entitlement)}
 			userName={user?.name ?? ""}
 			attendance={data?.attendance ?? fallbackAttendance()}
 			continueLearning={continueLearning}

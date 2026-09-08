@@ -92,6 +92,19 @@
 /* `keep-all` 이 없으면 한글이 **단어 중간에서 끊긴다** — 기본값은 음절 어디서나
    줄을 바꿀 수 있어서 "풀 수 있 / 어요" 처럼 잘렸다(브라우저에서 확인했다) */
 .nav-frame .task.waiting .t2 { color:var(--color-text-sub); white-space:normal; word-break:keep-all; }
+/* 런칭 이벤트 배너 — 홈의 인사 바로 아래(기획 확정 2026-09-04).
+   **한때의 화면이다** — 이벤트가 끝나면 서버가 `source:"event"` 를 그만 내고 사라진다.
+   그래서 목업 캡처에는 넣지 않았다(정본에 한때를 박으면 끝날 때 또 승격해야 한다).
+   간격은 4의 배수, 색은 토큰만 — check:css 의 다섯이 이 자리를 본다 */
+.nav-frame .event-banner { margin:var(--space-4) var(--gutter) 0; padding:12px 16px;
+  border-radius:12px; background:var(--nav-tint-fill); display:flex; align-items:center;
+  flex-wrap:wrap; gap:8px; }
+.nav-frame .event-banner-kicker { flex:none; padding:0 8px; height:20px; border-radius:8px;
+  display:inline-flex; align-items:center; background:var(--color-fill-primary);
+  color:var(--color-background-surface); font-size:11px; font-weight:700; }
+.nav-frame .event-banner-text { font-size:14px; line-height:20px; font-weight:600;
+  color:var(--color-fill-primary); }
+
 /* ── 잠금 ── access_and_pricing_v1 §06 · 시각 정본 docs/paywall_SOT.html
    숨기지 않고 보이되 잠근다. 잠긴 칩도 누를 수 있다 — 눌러야 안내가 나온다 */
 .nav-frame .chip3.locked { color:var(--nav-text-mute); }

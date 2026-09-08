@@ -270,6 +270,7 @@ const ko = {
 			schoolEnded: "학교 이용 기간이 끝났어요",
 			subscribed: "구독 이용 중",
 			ended: "구독이 끝났어요",
+			event: "{{date}}까지 무료",
 		},
 		profileInfo: {
 			title: "프로필 정보 변경하기",
@@ -604,6 +605,13 @@ const ko = {
 		noModules: "학습할 활동이 없어요",
 	},
 	home: {
+		/*
+		 * 런칭 이벤트 배너(2026-09-04) — 날짜는 서버가 낸 값에서 계산해 넣는다.
+		 * **여기에 날짜를 박지 않는다** — 이벤트를 연장할 때 다섯 파일을 고치지
+		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
+		 */
+		eventKicker: "런칭 이벤트",
+		eventBody: "{{date}}까지 모든 기능이 열려 있어요",
 		greeting: "안녕하세요,",
 		guestName: "반갑습니다",
 		userName: "{{name}} 님",

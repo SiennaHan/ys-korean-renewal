@@ -42,6 +42,17 @@ export interface HomeViewProps {
 	onContinue: () => void;
 	onStartLearning: () => void;
 	onReview?: () => void;
+	/**
+	 * **런칭 이벤트의 마지막 날.** `null` 이면 배너를 안 그린다.
+	 *
+	 * 날짜를 문구에 박지 않고 값으로 받는 이유 — 이벤트를 **연장할 때** i18n 다섯
+	 * 파일을 고치지 않아도 되게(연장은 서버 `.env` 한 줄이다).
+	 *
+	 * **목업 대조는 이 배너를 보지 않는다** — 픽스처가 이 prop 을 안 넘긴다.
+	 * 일부러 그랬다: 배너는 이벤트가 끝나면 사라지는 **한때의 화면**이고, 그것을
+	 * 정본 캡처에 넣으면 11월 1일에 캡처 셋을 다시 승격해 지워야 한다.
+	 */
+	eventLastDay?: Date | null;
 }
 
 export default function HomeView({
@@ -55,8 +66,10 @@ export default function HomeView({
 	onContinue,
 	onStartLearning,
 	onReview,
+	eventLastDay = null,
 }: HomeViewProps) {
-	const { t } = useTranslation();
+	// `i18n.language` 는 날짜 꼴을 그 언어로 만들기 위해서다(이벤트 배너)
+	const { t, i18n } = useTranslation();
 
 	// weekDays (boolean[]) → completedDays (number[] of indices)
 	const completedDays = attendance.weekDays
@@ -73,6 +86,25 @@ export default function HomeView({
 						: t("home.guestName")}
 				</div>
 			</div>
+
+			{/*
+			 * 런칭 이벤트 배너 — 인사 바로 아래. 열자마자 보이는 자리다(기획 확정).
+			 * 알리지 않으면 이벤트가 아니라 배신이 된다 — 사용자는 「원래 다 무료인
+			 * 앱」으로 알고 이벤트가 끝나는 날 잠긴다.
+			 */}
+			{eventLastDay && (
+				<div className="event-banner">
+					<span className="event-banner-kicker">{t("home.eventKicker")}</span>
+					<span className="event-banner-text">
+						{t("home.eventBody", {
+							date: eventLastDay.toLocaleDateString(i18n.language, {
+								month: "long",
+								day: "numeric",
+							}),
+						})}
+					</span>
+				</div>
+			)}
 
 			<WeeklyAttendance
 				todayIndex={attendance.todayIndex}

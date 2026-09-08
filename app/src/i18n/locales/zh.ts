@@ -234,6 +234,7 @@ const zh = {
 			schoolEnded: "学校使用期限已结束",
 			subscribed: "订阅中",
 			ended: "订阅已结束",
+			event: "{{date}}前免费",
 		},
 		profileInfo: {
 			title: "修改个人信息",
@@ -567,6 +568,13 @@ const zh = {
 		noModules: "这里还没有学习活动",
 	},
 	home: {
+		/*
+		 * 런칭 이벤트 배너(2026-09-04) — 날짜는 서버가 낸 값에서 계산해 넣는다.
+		 * **여기에 날짜를 박지 않는다** — 이벤트를 연장할 때 다섯 파일을 고치지
+		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
+		 */
+		eventKicker: "上线活动",
+		eventBody: "{{date}}前全部功能开放",
 		greeting: "你好，",
 		guestName: "欢迎",
 		userName: "{{name}}",

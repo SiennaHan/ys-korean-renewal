@@ -1,4 +1,4 @@
-import type { Entitlement } from "@/api/entitlement";
+import { type Entitlement, eventLastDay } from "@/api/entitlement";
 import {
 	useEntitlement,
 	useEntitlementStore,
@@ -25,7 +25,12 @@ export type SubscriptionState =
 	| "schoolEnded"
 	| "subscribed"
 	/** 개인 구독이 끝났다. `schoolEnded` 와 짝을 맞춘 이름이다 */
-	| "ended";
+	| "ended"
+	/**
+	 * **런칭 이벤트 기간**(2026-09-04 기획 확정) — 그 날까지 로그인한 사람 전원이
+	 * 전 범위를 받는다. 무료 체험이 아니다.
+	 */
+	| "event";
 
 /**
  * 어느 줄을 보일지 정한다. `null` 이면 **아무것도 그리지 않는다.**
@@ -52,6 +57,12 @@ export function subscriptionState(
 		: false;
 	if (ent.source === "school") return expired ? "schoolEnded" : "school";
 	if (ent.source === "purchase") return expired ? "ended" : "subscribed";
+	/*
+	 * **이벤트가 끝나면 서버가 `event` 를 그만 낸다** — 기간 판정은 서버 한 곳
+	 * (`api/business/entitlement.py`)이고 앱은 받은 것만 그린다. 그래서 여기서
+	 * `expired` 를 볼 필요가 없다. 그 규칙을 앱에 한 벌 더 두면 두 시계가 갈린다.
+	 */
+	if (ent.source === "event") return "event";
 	return "free";
 }
 
@@ -71,13 +82,20 @@ export function subscriptionState(
 const CAN_GO: Record<SubscriptionState, boolean> = {
 	free: true,
 	ended: true,
+	/*
+	 * **이벤트 중에도 누를 수 있다.** 오히려 이 갈래가 가장 눌러야 하는 자리다 —
+	 * 언제 끝나는지와 그 뒤 얼마인지를 그 화면이 말해 준다. 알리지 않으면 이벤트가
+	 * 아니라 배신이 된다(기획 2026-09-04).
+	 */
+	event: true,
 	school: false,
 	schoolEnded: false,
 	subscribed: false,
 };
 
 export default function SubscriptionCard() {
-	const { t } = useTranslation();
+	// `i18n.language` 는 이벤트 마지막 날을 그 언어의 날짜 꼴로 만들기 위해서다
+	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const { entitlement } = useEntitlement();
 	/*
@@ -94,7 +112,24 @@ export default function SubscriptionCard() {
 	if (!state) return null;
 
 	const label = t("mypage.subscription.title");
-	const value = t(`mypage.subscription.${state}`);
+	/*
+	 * **`event` 갈래의 문구에는 날짜가 들어간다** — 「10월 31일까지 무료」.
+	 * 처음에 이 자리를 그냥 `t(키)` 로 두었더니 화면에 `{{date}}` 가 글자 그대로
+	 * 떴다. **게이트는 하나도 안 울었다** — i18n 값이 화면에 어떻게 박히는지는
+	 * typecheck·parity·check:css 가 세지 않는 축이다. 눌러 보고서야 드러났다.
+	 */
+	const lastDay = eventLastDay(entitlement);
+	const value = t(
+		`mypage.subscription.${state}`,
+		lastDay
+			? {
+					date: lastDay.toLocaleDateString(i18n.language, {
+						month: "long",
+						day: "numeric",
+					}),
+				}
+			: undefined,
+	);
 
 	if (!CAN_GO[state]) {
 		return (

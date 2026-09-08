@@ -7,7 +7,15 @@ import { api } from "./api";
  * 출처가 무엇이든(무료 · 학교 계약 · 개인 결제) 받는 모양은 같으므로
  * 출처가 늘어도 이 파일은 고치지 않는다.
  */
-export type EntitlementSource = "guest" | "school" | "purchase";
+/**
+ * `event` 는 **런칭 이벤트**다(2026-09-04) — 그 기간에는 로그인한 사람 전원이 전
+ * 범위를 받는다. 무료 체험이 아니다(그건 「없다」로 확정됐다).
+ *
+ * **`school`·`purchase` 로 위장하지 않은 이유** — MY 의 구독 카드가 각각
+ * 「학교를 통해 이용 중」·「구독 이용 중」이라고 **거짓말한다.** 그리고 그 둘은
+ * 눌리지 않아서 이벤트가 언제 끝나는지·그 뒤 얼마인지를 볼 길이 없어진다.
+ */
+export type EntitlementSource = "guest" | "school" | "purchase" | "event";
 
 export interface Entitlement {
 	source: EntitlementSource;
@@ -38,7 +46,7 @@ export interface Entitlement {
  * 그때는 이 자리도 다시 봐야 한다 — 산 사람에게 손해가 되지 않는 재시도·캐시가
  * 필요해진다.
  */
-const SOURCES: EntitlementSource[] = ["guest", "school", "purchase"];
+const SOURCES: EntitlementSource[] = ["guest", "school", "purchase", "event"];
 
 /**
  * 받은 것이 **정말 답인지** 본다.
@@ -80,6 +88,26 @@ export async function getEntitlement(): Promise<Entitlement | null> {
 	} catch {
 		return null;
 	}
+}
+
+/**
+ * **런칭 이벤트의 마지막 날.** 이벤트가 아니면 `null`.
+ *
+ * 서버의 `expires_at` 은 **끝나는 순간**(예: 11-01 0시)이고, 사람에게는
+ * 「10월 31일까지」라고 말해야 한다. 그래서 하루를 뺀다.
+ *
+ * **꼴 만들기는 여기서 하지 않는다** — 화면이 `toLocaleDateString(언어)` 로 한다.
+ * 날짜 말은 언어마다 다르고 이 파일은 데이터만 쥔다.
+ *
+ * `expires_at` 에 오프셋이 없어 JS 가 로컬 시각으로 읽는다(`DEV-19`). 한국에서는
+ * 11-01 0시를 그대로 읽어 하루를 빼면 10-31 이라 **표시가 맞다.** 시간대를 통째로
+ * 바로잡는 것은 그 카드의 일이고, 여기서 한 곳만 고치면 세 화면이 갈린다.
+ */
+export function eventLastDay(ent: Entitlement | null): Date | null {
+	if (ent?.source !== "event" || !ent.expires_at) return null;
+	const ends = new Date(ent.expires_at).getTime();
+	if (Number.isNaN(ends)) return null;
+	return new Date(ends - 24 * 60 * 60 * 1000);
 }
 
 /** 교재의 한 과가 열려 있나. 급 전체가 열렸으면 과를 안 본다 */

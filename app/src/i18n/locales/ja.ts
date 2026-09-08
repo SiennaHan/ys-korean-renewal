@@ -258,6 +258,7 @@ const ja = {
 			schoolEnded: "学校の利用期間が終了",
 			subscribed: "サブスク利用中",
 			ended: "サブスクが終了しました",
+			event: "{{date}}まで無料",
 		},
 		profileInfo: {
 			title: "プロフィール変更",
@@ -593,6 +594,13 @@ const ja = {
 		noModules: "学習する活動がありません",
 	},
 	home: {
+		/*
+		 * 런칭 이벤트 배너(2026-09-04) — 날짜는 서버가 낸 값에서 계산해 넣는다.
+		 * **여기에 날짜를 박지 않는다** — 이벤트를 연장할 때 다섯 파일을 고치지
+		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
+		 */
+		eventKicker: "ローンチイベント",
+		eventBody: "{{date}}まですべての機能が使えます",
 		greeting: "こんにちは、",
 		guestName: "ようこそ",
 		userName: "{{name}}さん",
