@@ -246,6 +246,14 @@ const vi = {
 		email: "Email",
 		editProfile: "Chỉnh sửa hồ sơ",
 		changePassword: "Đổi mật khẩu",
+		subscription: {
+			title: "Đăng ký",
+			free: "Đang dùng miễn phí",
+			school: "Dùng qua trường",
+			schoolEnded: "Trường đã hết hạn",
+			subscribed: "Đang đăng ký",
+			ended: "Đăng ký đã hết hạn",
+		},
 		profileInfo: {
 			title: "Chỉnh sửa hồ sơ",
 			notice: "Lưu ý",

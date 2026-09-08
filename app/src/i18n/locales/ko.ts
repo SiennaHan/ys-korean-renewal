@@ -262,6 +262,15 @@ const ko = {
 		email: "이메일",
 		editProfile: "프로필 정보 변경하기",
 		changePassword: "비밀번호 변경하기",
+		/** MY 의 구독 자리 — 시안 v1 승인(2026-09-04). 갈래는 subscription-card.tsx 의 SubscriptionState */
+		subscription: {
+			title: "구독",
+			free: "무료 이용 중",
+			school: "학교를 통해 이용 중",
+			schoolEnded: "학교 이용 기간이 끝났어요",
+			subscribed: "구독 이용 중",
+			ended: "구독이 끝났어요",
+		},
 		profileInfo: {
 			title: "프로필 정보 변경하기",
 			notice: "안내 사항",

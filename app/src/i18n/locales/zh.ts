@@ -227,6 +227,14 @@ const zh = {
 		email: "邮箱",
 		editProfile: "修改个人信息",
 		changePassword: "修改密码",
+		subscription: {
+			title: "订阅",
+			free: "正在免费使用",
+			school: "通过学校使用中",
+			schoolEnded: "学校使用期限已结束",
+			subscribed: "订阅中",
+			ended: "订阅已结束",
+		},
 		profileInfo: {
 			title: "修改个人信息",
 			notice: "提示",

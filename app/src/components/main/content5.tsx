@@ -1,4 +1,5 @@
 import InquiryModal from "@/components/main/inquiry-modal";
+import SubscriptionCard from "@/components/main/my/subscription-card";
 import { useAuth } from "@/components/sign/sign-provider";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { useNavigate } from "@tanstack/react-router";
@@ -45,6 +46,15 @@ export default function Content5() {
 					{user?.name}
 				</div>
 			</div>
+
+			{/*
+			 * 구독 자리 — 프로필 바로 아래다(기획 확정 D-3). 계정 상태의 일부이고,
+			 * **구독하러 가는 유일한 능동 경로**라 스크롤 없이 눈에 걸려야 한다.
+			 * 답이 오기 전에는 카드가 아예 안 그려진다(그 컴포넌트 주석).
+			 * `useEntitlement` 를 여기서 부르지 않는다 — 카드가 스스로 읽는다
+			 * (`semester-ended-modal.tsx` 와 같은 선례다).
+			 */}
+			<SubscriptionCard />
 
 			{/* 계정 메뉴 카드 */}
 			<div className="mb-[12px] overflow-hidden rounded-[12px] bg-white">

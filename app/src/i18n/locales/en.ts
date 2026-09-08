@@ -245,6 +245,14 @@ const en = {
 		email: "Email",
 		editProfile: "Edit profile",
 		changePassword: "Change password",
+		subscription: {
+			title: "Subscription",
+			free: "Using free lessons",
+			school: "Included via your school",
+			schoolEnded: "School access ended",
+			subscribed: "Subscription active",
+			ended: "Subscription ended",
+		},
 		profileInfo: {
 			title: "Edit profile",
 			notice: "Notice",

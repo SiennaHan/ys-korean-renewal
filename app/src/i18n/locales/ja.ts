@@ -251,6 +251,14 @@ const ja = {
 		email: "メールアドレス",
 		editProfile: "プロフィール変更",
 		changePassword: "パスワード変更",
+		subscription: {
+			title: "サブスクリプション",
+			free: "無料で利用中",
+			school: "学校を通じて利用中",
+			schoolEnded: "学校の利用期間が終了",
+			subscribed: "サブスク利用中",
+			ended: "サブスクが終了しました",
+		},
 		profileInfo: {
 			title: "プロフィール変更",
 			notice: "お知らせ",

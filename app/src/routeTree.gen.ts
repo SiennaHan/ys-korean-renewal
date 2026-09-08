@@ -26,6 +26,7 @@ import { Route as CheckEmailRouteImport } from './routes/check-email'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MainIndexRouteImport } from './routes/main/index'
 import { Route as MainTextbookRouteImport } from './routes/main/textbook'
+import { Route as MainMySubscriptionRouteImport } from './routes/main/my-subscription'
 import { Route as MainMyRouteImport } from './routes/main/my'
 import { Route as MainGameRouteImport } from './routes/main/game'
 import { Route as MainClipRouteImport } from './routes/main/clip'
@@ -132,6 +133,11 @@ const MainIndexRoute = MainIndexRouteImport.update({
 const MainTextbookRoute = MainTextbookRouteImport.update({
   id: '/textbook',
   path: '/textbook',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainMySubscriptionRoute = MainMySubscriptionRouteImport.update({
+  id: '/my-subscription',
+  path: '/my-subscription',
   getParentRoute: () => MainRoute,
 } as any)
 const MainMyRoute = MainMyRouteImport.update({
@@ -275,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/main/clip': typeof MainClipRoute
   '/main/game': typeof MainGameRouteWithChildren
   '/main/my': typeof MainMyRoute
+  '/main/my-subscription': typeof MainMySubscriptionRoute
   '/main/textbook': typeof MainTextbookRouteWithChildren
   '/main/': typeof MainIndexRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
@@ -314,6 +321,7 @@ export interface FileRoutesByTo {
   '/learn/word': typeof LearnWordRoute
   '/main/clip': typeof MainClipRoute
   '/main/my': typeof MainMyRoute
+  '/main/my-subscription': typeof MainMySubscriptionRoute
   '/main': typeof MainIndexRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
   '/main/game/particle-sniper': typeof MainGameParticleSniperRoute
@@ -355,6 +363,7 @@ export interface FileRoutesById {
   '/main/clip': typeof MainClipRoute
   '/main/game': typeof MainGameRouteWithChildren
   '/main/my': typeof MainMyRoute
+  '/main/my-subscription': typeof MainMySubscriptionRoute
   '/main/textbook': typeof MainTextbookRouteWithChildren
   '/main/': typeof MainIndexRoute
   '/main/game/card-sort': typeof MainGameCardSortRoute
@@ -398,6 +407,7 @@ export interface FileRouteTypes {
     | '/main/clip'
     | '/main/game'
     | '/main/my'
+    | '/main/my-subscription'
     | '/main/textbook'
     | '/main/'
     | '/main/game/card-sort'
@@ -437,6 +447,7 @@ export interface FileRouteTypes {
     | '/learn/word'
     | '/main/clip'
     | '/main/my'
+    | '/main/my-subscription'
     | '/main'
     | '/main/game/card-sort'
     | '/main/game/particle-sniper'
@@ -477,6 +488,7 @@ export interface FileRouteTypes {
     | '/main/clip'
     | '/main/game'
     | '/main/my'
+    | '/main/my-subscription'
     | '/main/textbook'
     | '/main/'
     | '/main/game/card-sort'
@@ -637,6 +649,13 @@ declare module '@tanstack/react-router' {
       path: '/textbook'
       fullPath: '/main/textbook'
       preLoaderRoute: typeof MainTextbookRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/my-subscription': {
+      id: '/main/my-subscription'
+      path: '/my-subscription'
+      fullPath: '/main/my-subscription'
+      preLoaderRoute: typeof MainMySubscriptionRouteImport
       parentRoute: typeof MainRoute
     }
     '/main/my': {
@@ -836,6 +855,7 @@ interface MainRouteChildren {
   MainClipRoute: typeof MainClipRoute
   MainGameRoute: typeof MainGameRouteWithChildren
   MainMyRoute: typeof MainMyRoute
+  MainMySubscriptionRoute: typeof MainMySubscriptionRoute
   MainTextbookRoute: typeof MainTextbookRouteWithChildren
   MainIndexRoute: typeof MainIndexRoute
 }
@@ -844,6 +864,7 @@ const MainRouteChildren: MainRouteChildren = {
   MainClipRoute: MainClipRoute,
   MainGameRoute: MainGameRouteWithChildren,
   MainMyRoute: MainMyRoute,
+  MainMySubscriptionRoute: MainMySubscriptionRoute,
   MainTextbookRoute: MainTextbookRouteWithChildren,
   MainIndexRoute: MainIndexRoute,
 }
