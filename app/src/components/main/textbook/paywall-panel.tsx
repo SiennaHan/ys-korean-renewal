@@ -1,6 +1,8 @@
 import type { Entitlement } from "@/api/entitlement";
 import { useAuth } from "@/components/sign/sign-provider";
+import { useEntitlementStore } from "@/shared/store/entitlement-store";
 import { Check, LockKeyhole, LogIn, RefreshCw, School } from "lucide-react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -76,6 +78,28 @@ export default function PaywallPanel({
 }) {
 	const { t } = useTranslation();
 	const { isLoggedInUser } = useAuth();
+	/*
+	 * **이 안내가 뜨면 권한을 한 번 다시 받는다** (기획 확정 2026-09-04).
+	 *
+	 * 잠긴 것처럼 보이는 이유가 「정말 잠겼다」가 아니라 **손에 든 답이 낡았다**
+	 * 일 수 있다. 그때 사용자가 할 수 있는 것이 없으면 바로 문의로 온다 —
+	 * 그것을 누를 버튼 없이 푼다(복원 버튼을 두지 않기로 한 근거).
+	 *
+	 * **네 진입점이 다 이 컴포넌트를 지나므로 여기 한 곳으로 끝난다** — 교재 과 칩 ·
+	 * 자모 칩 · 게임 카드 · 게임 라우트 가드. 부르는 쪽에 넷을 각각 넣으면 한 곳을
+	 * 빠뜨렸을 때 조용히 안 돈다.
+	 *
+	 * `refresh` 는 **비우지 않는** 재조회다(스토어 주석). `reload` 를 쓰면
+	 * `entitlement` 가 잠깐 `null` 이 되어 이 페이월이 스스로 사라진다.
+	 * 간격 가드도 스토어가 쥐고 있어서, 닫고 다시 열기를 반복해도 왕복이 새지 않는다.
+	 *
+	 * 액션만 골라 구독한다 — 스토어 전체를 구독하면 `entitlement` 가 바뀔 때마다
+	 * 이 컴포넌트가 다시 그려진다. 값은 이미 prop 으로 받고 있다.
+	 */
+	const refresh = useEntitlementStore((s) => s.refresh);
+	useEffect(() => {
+		refresh();
+	}, [refresh]);
 	const kind = paywallKind(entitlement, isLoggedInUser);
 	const title = t(`paywall.${kind}Title`);
 	const body = t(`paywall.${kind}Body`);
