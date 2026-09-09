@@ -92,18 +92,25 @@
 /* `keep-all` 이 없으면 한글이 **단어 중간에서 끊긴다** — 기본값은 음절 어디서나
    줄을 바꿀 수 있어서 "풀 수 있 / 어요" 처럼 잘렸다(브라우저에서 확인했다) */
 .nav-frame .task.waiting .t2 { color:var(--color-text-sub); white-space:normal; word-break:keep-all; }
-/* 런칭 이벤트 배너 — 홈의 인사 바로 아래(기획 확정 2026-09-04).
+/* 런칭 이벤트 배너 — 「오늘 할 일」 묶음 바로 아래(기획 확정 2026-09-09).
    **한때의 화면이다** — 이벤트가 끝나면 서버가 `source:"event"` 를 그만 내고 사라진다.
    그래서 목업 캡처에는 넣지 않았다(정본에 한때를 박으면 끝날 때 또 승격해야 한다).
-   간격은 4의 배수, 색은 토큰만 — check:css 의 다섯이 이 자리를 본다 */
-.nav-frame .event-banner { margin:var(--space-4) var(--gutter) 0; padding:12px 16px;
-  border-radius:12px; background:var(--nav-tint-fill); display:flex; align-items:center;
-  flex-wrap:wrap; gap:8px; }
-.nav-frame .event-banner-kicker { flex:none; padding:0 8px; height:20px; border-radius:8px;
+   시각 정본은 캡처가 아니라 docs/draft_event_banner.html — 시안 G-1 (C) 승인 2026-09-09.
+   간격은 4의 배수, 색은 토큰만 — check:css 의 다섯이 이 자리를 본다.
+   세 줄이다: 딱지 · 무료 기간 · 그 뒤에 무슨 일이 생기나.
+   **좌우 여백을 스스로 갖지 않는다** — 「오늘 할 일」 묶음 아래(.pad 안)로 옮겼고
+   그 자리는 이미 var(--gutter) 를 쥐고 있다. 위 여백만 카드 사이 간격(12px)에 맞춘다. */
+.nav-frame .event-banner { margin:var(--space-3) 0 0; padding:12px 16px;
+  border-radius:12px; background:var(--nav-tint-fill); }
+.nav-frame .event-banner-kicker { padding:0 8px; height:20px; border-radius:8px;
   display:inline-flex; align-items:center; background:var(--color-fill-primary);
   color:var(--color-background-surface); font-size:11px; font-weight:700; }
-.nav-frame .event-banner-text { font-size:14px; line-height:20px; font-weight:600;
-  color:var(--color-fill-primary); }
+.nav-frame .event-banner-text { display:block; margin-top:var(--space-2);
+  font-size:14px; line-height:20px; font-weight:600; color:var(--color-fill-primary); }
+/* 셋째 줄은 보조 문구다 — 무료 기간보다 약하게 둔다. 강조하면 「곧 돈을 내라」로 읽힌다 */
+.nav-frame .event-banner-after { display:block; margin-top:var(--space-1);
+  font-size:12px; line-height:18px; font-weight:500; color:var(--color-text-sub);
+  word-break:keep-all; }
 
 /* ── 잠금 ── access_and_pricing_v1 §06 · 시각 정본 docs/paywall_SOT.html
    숨기지 않고 보이되 잠근다. 잠긴 칩도 누를 수 있다 — 눌러야 안내가 나온다 */

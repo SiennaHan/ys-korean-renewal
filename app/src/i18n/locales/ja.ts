@@ -600,7 +600,8 @@ const ja = {
 		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
 		 */
 		eventKicker: "ローンチイベント",
-		eventBody: "{{date}}まですべての機能が使えます",
+		eventBody: "{{date}}まですべての機能が無料で使えます",
+		eventAfter: "{{date}}からは月₩{{amount}}で続けられます",
 		greeting: "こんにちは、",
 		guestName: "ようこそ",
 		userName: "{{name}}さん",

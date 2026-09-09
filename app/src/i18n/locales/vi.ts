@@ -596,7 +596,8 @@ const vi = {
 		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
 		 */
 		eventKicker: "Sự kiện ra mắt",
-		eventBody: "Mở toàn bộ tính năng đến {{date}}",
+		eventBody: "Mở miễn phí toàn bộ tính năng đến {{date}}",
+		eventAfter: "Từ {{date}}, tiếp tục với ₩{{amount}}/tháng",
 		greeting: "Xin chào,",
 		guestName: "Chào mừng bạn",
 		userName: "{{name}}",

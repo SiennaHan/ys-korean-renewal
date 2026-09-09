@@ -162,7 +162,7 @@
 | primitive 색 토큰 | **53** | `docs/tokens.css` |
 | semantic 색 토큰 | **37** | 같은 파일 |
 | 타이포 눈금 | **23** | 같은 파일 |
-| 정본 HTML | **19** | `docs/*.html` |
+| 정본 HTML | **20** | `docs/*.html` |
 | 폐기본 HTML | **31** | `docs/_superseded/*.html` |
 | 추적된 듣기 음원 | **mp3 1,133개 · 68.9 MB** | `git ls-files app/public/audio` — **공개 금지** |
 | 추적된 교재 지면 | **jpg 597장 · 32.3 MB** | `git ls-files app/public/textbook` — **공개 금지** |

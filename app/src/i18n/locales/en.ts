@@ -595,7 +595,8 @@ const en = {
 		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
 		 */
 		eventKicker: "Launch event",
-		eventBody: "Everything is unlocked until {{date}}",
+		eventBody: "Everything is free and unlocked until {{date}}",
+		eventAfter: "From {{date}}, keep going for ₩{{amount}} a month",
 		greeting: "Hello,",
 		guestName: "Welcome",
 		userName: "{{name}}",

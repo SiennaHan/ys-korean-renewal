@@ -611,7 +611,8 @@ const ko = {
 		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
 		 */
 		eventKicker: "런칭 이벤트",
-		eventBody: "{{date}}까지 모든 기능이 열려 있어요",
+		eventBody: "{{date}}까지 모든 기능이 무료로 열려 있어요",
+		eventAfter: "{{date}}부터는 월 {{amount}}원으로 이어서 볼 수 있어요",
 		greeting: "안녕하세요,",
 		guestName: "반갑습니다",
 		userName: "{{name}} 님",

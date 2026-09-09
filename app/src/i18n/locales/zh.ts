@@ -574,7 +574,8 @@ const zh = {
 		 * 않아도 되게. 연장은 서버 `.env` 의 LAUNCH_EVENT_UNTIL 한 줄이다.
 		 */
 		eventKicker: "上线活动",
-		eventBody: "{{date}}前全部功能开放",
+		eventBody: "{{date}}前全部功能免费开放",
+		eventAfter: "{{date}}起每月₩{{amount}}可继续使用",
 		greeting: "你好，",
 		guestName: "欢迎",
 		userName: "{{name}}",

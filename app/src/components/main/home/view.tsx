@@ -4,6 +4,7 @@ import type {
 	DashboardLearningStatus,
 	DashboardWeeklyChart,
 } from "@/api/dashboard";
+import { MONTHLY_PRICE_KRW } from "@/shared/constants";
 import { useTranslation } from "react-i18next";
 import TaskCard from "./continue-learning";
 import LearningStatus from "./learning-status";
@@ -46,11 +47,15 @@ export interface HomeViewProps {
 	 * **런칭 이벤트의 마지막 날.** `null` 이면 배너를 안 그린다.
 	 *
 	 * 날짜를 문구에 박지 않고 값으로 받는 이유 — 이벤트를 **연장할 때** i18n 다섯
-	 * 파일을 고치지 않아도 되게(연장은 서버 `.env` 한 줄이다).
+	 * 파일을 고치지 않아도 되게(연장은 서버 `.env` 한 줄이다). **끝난 다음 날**도
+	 * 여기서 만든다(이 값 + 1일) — 두 날짜가 한 원천에서 나오므로 연장할 때
+	 * **숫자만 바뀐다**(기획 확정 2026-09-09, 시안 G-2).
 	 *
 	 * **목업 대조는 이 배너를 보지 않는다** — 픽스처가 이 prop 을 안 넘긴다.
 	 * 일부러 그랬다: 배너는 이벤트가 끝나면 사라지는 **한때의 화면**이고, 그것을
 	 * 정본 캡처에 넣으면 11월 1일에 캡처 셋을 다시 승격해 지워야 한다.
+	 * 그래서 시각 정본은 캡처가 아니라 `docs/draft_event_banner.html` 이다
+	 * (`developer_tasks.md:207` — 시각 정본이 없는 화면은 디자인 승인 뒤에 만든다).
 	 */
 	eventLastDay?: Date | null;
 }
@@ -70,6 +75,16 @@ export default function HomeView({
 }: HomeViewProps) {
 	// `i18n.language` 는 날짜 꼴을 그 언어로 만들기 위해서다(이벤트 배너)
 	const { t, i18n } = useTranslation();
+	/*
+	 * 이벤트 배너의 두 날짜. **끝나는 날과 그 다음 날을 한 값에서 만든다** —
+	 * 「10월 31일까지 무료」와 「11월 1일부터 유료」가 갈리면 안 되고, 연장할 때
+	 * 고칠 곳이 서버 한 줄이어야 한다(기획 확정 2026-09-09).
+	 */
+	const eventDay = (d: Date) =>
+		d.toLocaleDateString(i18n.language, { month: "long", day: "numeric" });
+	const eventNextDay = eventLastDay
+		? new Date(eventLastDay.getTime() + 24 * 60 * 60 * 1000)
+		: null;
 
 	// weekDays (boolean[]) → completedDays (number[] of indices)
 	const completedDays = attendance.weekDays
@@ -86,25 +101,6 @@ export default function HomeView({
 						: t("home.guestName")}
 				</div>
 			</div>
-
-			{/*
-			 * 런칭 이벤트 배너 — 인사 바로 아래. 열자마자 보이는 자리다(기획 확정).
-			 * 알리지 않으면 이벤트가 아니라 배신이 된다 — 사용자는 「원래 다 무료인
-			 * 앱」으로 알고 이벤트가 끝나는 날 잠긴다.
-			 */}
-			{eventLastDay && (
-				<div className="event-banner">
-					<span className="event-banner-kicker">{t("home.eventKicker")}</span>
-					<span className="event-banner-text">
-						{t("home.eventBody", {
-							date: eventLastDay.toLocaleDateString(i18n.language, {
-								month: "long",
-								day: "numeric",
-							}),
-						})}
-					</span>
-				</div>
-			)}
 
 			<WeeklyAttendance
 				todayIndex={attendance.todayIndex}
@@ -157,6 +153,38 @@ export default function HomeView({
 						waiting={!reviewReady}
 						onClick={onReview ?? (() => {})}
 					/>
+				)}
+
+				{/*
+				 * 런칭 이벤트 배너 — **「오늘 할 일」 묶음 바로 아래**(기획 확정
+				 * 2026-09-09, 시안 승인). 앱을 열자마자 하려는 일은 「하던 데서
+				 * 계속」이므로 그 카드를 밀어내지 않고, 그러면서도 첫 화면에서
+				 * 스크롤 없이 보인다.
+				 *
+				 * **다시 풀기 카드까지 지나서 붙인다.** 그 카드는 위 카드에
+				 * 「자리를 다투지 않고 붙는」 짝이라(위 주석) 사이에 끼우면 묶음이
+				 * 갈린다. 다시 풀 것이 없는 흔한 경우에는 이어하기 카드 바로 아래다.
+				 *
+				 * 세 줄이다(시안 G-1 (C)) — 딱지 · 무료 기간 · **그 뒤에 무슨 일이
+				 * 생기나**. 셋째 줄이 이 안을 고른 이유다: 알리지 않으면 이벤트가
+				 * 아니라 배신이 된다. 사용자는 「원래 다 무료인 앱」으로 알고
+				 * 이벤트가 끝나는 날 잠긴다.
+				 */}
+				{eventLastDay && eventNextDay && (
+					<div className="event-banner">
+						<span className="event-banner-kicker">
+							{t("home.eventKicker")}
+						</span>
+						<span className="event-banner-text">
+							{t("home.eventBody", { date: eventDay(eventLastDay) })}
+						</span>
+						<span className="event-banner-after">
+							{t("home.eventAfter", {
+								date: eventDay(eventNextDay),
+								amount: MONTHLY_PRICE_KRW.toLocaleString("ko-KR"),
+							})}
+						</span>
+					</div>
 				)}
 
 				<div className="sec-title">{t("home.statusTitle")}</div>
