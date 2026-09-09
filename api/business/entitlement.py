@@ -55,6 +55,24 @@ LAUNCH_EVENT_UNTIL = os.environ.get("LAUNCH_EVENT_UNTIL", "2026-10-31").strip()
 # 하나로 결정할 일이 아니다.
 ADMIN_FULL_SCOPE = os.environ.get("ADMIN_FULL_SCOPE", "false").lower() in {"1", "true", "yes"}
 
+# **계정을 지정해서 전 범위를 여는 목록.** 쉼표로 잇는다 —
+# `FULL_SCOPE_EMAILS=admin@pulleyai.co.kr,qa@pulleyai.co.kr`. 기본은 빈 목록(=아무도 아님).
+#
+# **`ADMIN_FULL_SCOPE` 와 왜 따로 두나.** 그 스위치는 **역할 전체**를 연다 —
+# 운영에서 켜면 그 순간 모든 `master_admin`·`school_admin` 이 전 콘텐츠를 본다.
+# 기획이 정한 것은 「이 계정을 열어 준다」였는데(2026-09-01) 구현이 역할 스위치
+# 하나였고, 그래서 **운영에서는 아무도 켜지 못했다** — 인계 목록에도 안 올라갔고
+# 지정한 계정은 계속 잠긴 채였다(2026-09-09 에 기획자가 발견). 이 목록은 그
+# 결정을 있는 그대로 옮긴 것이다: 열 계정만 열고 나머지는 그대로 둔다.
+#
+# **`.env` 한 줄이라 배포가 필요 없다** — `SCHOOL_FULL_SCOPE`·`LAUNCH_EVENT_UNTIL`
+# 과 같은 이유다. 대소문자와 앞뒤 공백은 무시한다(사람이 손으로 적는 값이다).
+FULL_SCOPE_EMAILS = {
+    e.strip().lower()
+    for e in os.environ.get("FULL_SCOPE_EMAILS", "").split(",")
+    if e.strip()
+}
+
 
 def _utcNow():
     """**`util/timeutils.now()` 를 쓰지 마라** — 그쪽은 KST 라 9시간 어긋난다.
@@ -176,16 +194,34 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
 
     # 로그인했다. 학교 소속이면 결제를 권하지 않는다.
     # **필드는 세션 안에서 꺼낸다** — 블록을 나온 뒤 user.role 을 읽으면
-    # DetachedInstanceError 다(실제로 500 이 났다). 필요한 둘만 값으로 뽑는다
+    # DetachedInstanceError 다(실제로 500 이 났다). 필요한 것만 값으로 뽑는다
     with sessionScope() as db:
         user = await repo_user.findById(int(userId), db)
         role = user.role if user else None
         schoolCode = user.school_code if user else None
         accessEndedAt = user.access_ended_at if user else None
+        # 지정 목록 대조용. 여기서 꺼내야 한다 — 블록 밖에서 읽으면 위와 같은 사고다
+        email = (user.email or "") if user else ""
 
     if role is None:
         # 토큰은 멀쩡한데 계정이 없다(지워졌거나 다른 DB 다). 무료만 내준다
         return _freeScope("guest")
+
+    # **지정한 계정은 무조건 전 범위다** — 다른 어떤 분기보다 앞선다(2026-09-09).
+    #
+    # **학교 분기보다 위에 둔다.** 아래로 내리면 그 계정이 어쩌다 `school_code` 를
+    # 갖고 있을 때(엑셀 등록·기관 코드 가입) 학기 종료 분기에 먼저 걸려 **무료
+    # 범위로 떨어진다.** 이 목록은 사람이 손으로 적은 예외이므로 예외가 이긴다.
+    #
+    # `_schoolScope()` 를 그대로 재쓴다 — 「전 급 · 자모 전부 · 게임 전부」는 이미
+    # 있는 모양이고, 판정을 한 벌 더 만들면 갈라진다. **`source` 도 새로 만들지
+    # 않는다**(`ADMIN_FULL_SCOPE` 분기와 같은 이유): 앱의 `EntitlementSource` 가
+    # 닫힌 유니언이라 모르는 값을 내면 `asEntitlement` 가 응답을 통째로 거절하고,
+    # `isChapterOpen` 이 `!ent` 를 먼저 보므로 **오히려 전부 잠긴 것처럼 보인다.**
+    # 그래서 이 계정의 MY 는 「학교를 통해 이용 중」으로 보이고 결제를 권하지 않는다 —
+    # 콘텐츠를 확인하려고 여는 계정이므로 그것이 방해가 되지 않는다.
+    if email and email.strip().lower() in FULL_SCOPE_EMAILS:
+        return _schoolScope()
 
     if role == "student" and schoolCode:
         # 학교가 등록했거나 기관 코드로 들어온 학생이다. **계약 학교는 모든 급**
