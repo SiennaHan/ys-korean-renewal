@@ -1,5 +1,13 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ f3e1b61
-     — 확인: 2026-09-04 · `nav.css` 에 **런칭 이벤트 배너 규칙 셋**이 늘었다(`f3e1b61`).
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ fb103d2
+     — 확인: 2026-09-09 · 그 배너가 **시안 승인분으로 세 줄이 됐다**(`.event-banner-after`
+       가 하나 늘어 넷). **이 문서가 세는 축은 그대로다** — radius 12 · padding 12/16 은
+       그대로고 새 줄의 간격은 `margin-top:8px`·`4px`(이 문서의 셈 대상이 아니고
+       `spacing-grid-check` 의 4배수 안이다), 색은 `--color-fill-primary` ·
+       `--color-text-sub` 토큰이다. 글자 크기 12/14 도 이미 쓰는 값이다.
+       `shared/constants` 에 `MONTHLY_PRICE_KRW` 가 하나 늘었다 — 폭 두 값(§2.4)과
+       무관하고 색·간격 축도 아니다. **정의되지 않은 `var()` 를 잡는 검사는 여전히
+       없다**(`DEV-20`) — 그래서 이번에도 브라우저에서 계산값을 재서 확인했다.
+       앞 확인: 2026-09-04 · `nav.css` 에 **런칭 이벤트 배너 규칙 셋**이 늘었다(`f3e1b61`).
        **이 문서가 세는 축은 그대로다** — radius 12 · padding 12/16 · gap 8 로 전부
        이미 쓰는 값이고 리터럴 색도 없다. `activity.css` 줄 수도 그대로다.
        **★ 그런데 여기서 배운 것이 하나 있다 — 정의되지 않은 `var()` 를 잡는 검사가

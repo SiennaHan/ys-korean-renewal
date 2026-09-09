@@ -1,11 +1,17 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 3558bc5
-     — 확인: 2026-09-04 · `paywall-panel.tsx` 에 **금액 줄**이 붙었다(`3558bc5`) —
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ fb103d2
+     — 확인: 2026-09-09 · **금액 숫자가 이 파일을 떠났다.** `MONTHLY_PRICE_KRW` 는 이제
+       `app/src/shared/constants/index.ts` 에 있고 `paywall-panel.tsx` 는 그것을 읽는다
+       (홈의 런칭 이벤트 배너가 「11월 1일부터는 월 7,900원」을 말하기로 정해지면서
+       같은 숫자를 읽는 화면이 둘이 됐다 — 페이월 컴포넌트에서 가져오면 홈이 인증
+       컨텍스트까지 끌고 온다). **주인이 하나라는 규칙은 그대로고 자리만 옮겼다.**
+       금액 줄의 모양·조건은 아무것도 안 바뀌었다 — 아래 확인이 그대로 참이다.
+       앞 확인: 2026-09-04 · `paywall-panel.tsx` 에 **금액 줄**이 붙었다(`3558bc5`) —
        월 7,900원 · 「/월」 · 작은 「부가세 포함」. **결제로 갈 수 있는 갈래에만** 보이고
        (기존 `purchasable` 과 같은 조건) 기관 학생에게는 가격도 안 보인다 — §04 의
        「기관 학생에게는 가격도 결제 버튼도 안 보인다」가 그대로 참이다.
        **`PaywallKind` 는 다섯 그대로**라 §04 의 「다섯으로 갈린다」도 그대로다.
-       금액 숫자는 그 파일의 `MONTHLY_PRICE_KRW` 한 곳에만 있다.
+       금액 숫자는 `MONTHLY_PRICE_KRW` 한 곳에만 있다(2026-09-09 에 `shared/constants` 로 옮겼다).
        앞 확인: 2026-09-04 · `paywall-panel.tsx` 에 **마운트 시 권한 재조회**가 붙었다(`f98f75f`).
        이 문서를 다시 읽었고 **낡은 것은 없었다** — §04 의 「다섯으로 갈린다」는 그대로고
        (`PaywallKind` 를 늘리지 않았다), 「결제 화면 자체는 아직 없다 · 버튼이 눌리지
