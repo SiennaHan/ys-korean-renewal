@@ -1,5 +1,13 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ fb103d2
-     — 확인: 2026-09-10 · **마이크 안내 모달과 결과 화면 시안 B 가 들어왔다.**
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 6f5b5a4
+     — 확인: 2026-09-10(같은 날 두 번째) · **구현이 목업을 따라왔다**(`6f5b5a4`).
+       `activity.css` 는 한 줄도 안 바뀌었다 — 줄 수 680 과 아래 확인이 그대로 참이다.
+       컴포넌트 여섯이 바뀌었고 **이 문서가 세는 축은 그대로다**: 새 색·새 간격·새
+       글자 크기가 없다(전부 아래 확인에서 CSS 로 이미 정한 것을 마크업이 쓰기만 한다).
+       **`.primary.alt` 가 이제 `PrimaryButton` 의 `alt` prop 이다** — 아래에서 「도크
+       보조 버튼이 없었다」고 적은 그 빈칸을, 쓰는 쪽에서도 표현할 수 있게 했다.
+       `on` 이 거짓이면 지금까지는 눌리지 않는 회색이었어서 「누를 수 있는 둘째 버튼」을
+       그릴 방법이 아예 없었다.
+       앞 확인: 2026-09-10 · **마이크 안내 모달과 결과 화면 시안 B 가 들어왔다.**
        `activity.css` 줄 수를 595 → 680 으로 고쳤다(이 문서가 적는 유일한 수치).
        **이 문서가 세는 축은 지켜졌다** — 간격은 전부 4의 배수(`spacing-grid-check` 통과.
        시안 파일의 `10px`·`9px` 과 먼저 들어와 있던 `14px`·`18px` 을 12/8/12/20 으로 옮겼다),
