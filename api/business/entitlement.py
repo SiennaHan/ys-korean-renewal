@@ -223,6 +223,14 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
     if email and email.strip().lower() in FULL_SCOPE_EMAILS:
         return _schoolScope()
 
+    # **이벤트가 켜져 있나** — 아래 두 분기가 같이 본다. 여기서 한 번만 잰다.
+    #
+    # 2026-09-10 에 올라왔다: 「이벤트 기간에는 **로그인한 계정이면 다 열려야 한다**」.
+    # 전에는 이 판정이 함수 맨 아래에만 있어서, 위쪽 분기에서 먼저 돌아가는 계정
+    # (학기가 끝난 기관 학생)이 **이벤트 기간인데도 무료 범위로 떨어졌다.**
+    eventEndsAt = _eventEndsAt()
+    eventOn = bool(eventEndsAt and _utcNow() < eventEndsAt)
+
     if role == "student" and schoolCode:
         # 학교가 등록했거나 기관 코드로 들어온 학생이다. **계약 학교는 모든 급**
         # (기획 2026-08-28). 조건이 `school_code` 하나뿐이라 **엑셀로 등록된
@@ -238,9 +246,17 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
         # **`source` 는 여전히 `school` 이다.** 앱이 결제를 권하지 않고
         # 「학교에 문의」를 띄우게 하려는 것이고(§06), `expires_at` 이 과거라는 것으로
         # 「학기가 끝났다」를 판정한다. 지난 학기 기록은 계정에 그대로 남아 보인다.
+        #
+        # **이벤트 기간에는 학기가 끝났어도 전 범위다**(기획 2026-09-10). 다만
+        # **`source` 는 `school` 그대로 둔다** — `event` 로 바꾸면 이벤트가 끝날 때
+        # 기관 학생에게 개인 결제 안내가 뜬다(§06 위반). 이벤트가 끝나면 이 줄이
+        # 저절로 옛 동작으로 돌아간다: 다시 「학기가 끝났어요」다.
         if accessEndedAt and accessEndedAt <= _utcNow():
+            if eventOn:
+                return _schoolScope()
             return _freeScope("school", expiresAt=jsonable_encoder(accessEndedAt))
-        return _schoolScope() if SCHOOL_FULL_SCOPE else _freeScope("school")
+        # `SCHOOL_FULL_SCOPE` 를 꺼 두었더라도 이벤트 기간에는 연다 — 같은 이유다.
+        return _schoolScope() if (SCHOOL_FULL_SCOPE or eventOn) else _freeScope("school")
 
     # **관리자 계정 — `ADMIN_FULL_SCOPE` 가 켜져 있을 때만.** 기본은 꺼짐이므로
     # 운영에서는 이 줄에 닿지 않는다(위 상수 주석). `_schoolScope()` 를 그대로
@@ -269,8 +285,7 @@ async def getEntitlement(userId: str, roles: list[str] | None = None):
     # 않는다** — §06 이 「계정 없이 결제하면 기기를 바꿀 때 잃는다」로 정한 것과 같은
     # 이유다. 게스트는 무료 범위를 보고, 앱이 「로그인하면 이벤트가 열린다」를 말한다.
     # **뒤집으려면 이 판정을 함수 맨 위로 올리면 된다 — 한 줄이다.**
-    eventEndsAt = _eventEndsAt()
-    if eventEndsAt and _utcNow() < eventEndsAt:
+    if eventOn:
         return _eventScope(eventEndsAt)
 
     # 개인 계정. 결제가 없으므로 아직 무료 범위다 — 잠긴 것을 누르면 결제로 간다
