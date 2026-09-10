@@ -204,6 +204,13 @@
 .activity-frame .footer { flex:0 0 89px; display:flex; align-items:center; padding:16px; background:var(--color-background-surface); border-top:1px solid var(--color-line-control); }
 .activity-frame .primary { width:100%; height:var(--d-btn-h,56px); border:0; border-radius:var(--d-btn-r,12px); background:var(--color-background-disable); color:var(--color-text-disable); font-size:16px; line-height:24px; font-weight:600; }
 .activity-frame .primary.on { background:var(--color-fill-primary); color:var(--color-background-surface); cursor:pointer; }
+/* 도크의 보조 버튼 (2026-09-10). 지금까지 도크에는 `.primary`(꺼짐)와 `.primary.on`
+   (켜짐) 둘뿐이었다 — 그래서 마이크 안내 화면의 「이 활동 건너뛰기」를 `.primary` 로
+   두니 **꺼진 버튼처럼 회색으로 떴다**(계산값 238,238,238 / 189,189,189). 누를 수
+   있는데 못 누르는 것처럼 보이는 것이 이 자리의 문제다.
+   새 색을 들이지 않는다 — 이 앱이 이미 쓰는 보조 짝(choice 배경 + primary-pressed
+   글자)을 그대로 쓴다. 모달의 `.alt` 와 같은 값이라 두 표면에서 보조가 한 언어다. */
+.activity-frame .primary.alt { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); cursor:pointer; }
 .activity-frame /* 플래시카드 */
   .flash-body { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; padding:16px 16px 12px; }
 .activity-frame .flash-stage { position:relative; flex:1 1 auto; min-height:0; perspective:1000px; cursor:pointer; }
@@ -507,7 +514,36 @@
 .activity-frame .stat-row div { background:var(--color-background-surface); border-radius:12px; padding:12px; text-align:center; }
 .activity-frame .stat-row span { display:block; font-size:12px; color:var(--color-text-sub); }
 .activity-frame .stat-row strong { font-size:24px; color:var(--color-text-strong); }
-.activity-frame .wrong-card { border-radius:12px; border:0; background:var(--color-background-surface); padding:12px; }
+/* 결과 화면 오답 — 시안 B 「오답 노트로 묶기」(design-drafts/result-variants.html,
+   사람이 고름 2026-09-10). **먼저 시안 A 로 넣었다가 B 로 바꿨다** — A 도 칩 둘을
+   걷는다는 목표는 같았지만 문항마다 카드가 하나씩 서서, 두세 문항만 틀려도 화면이
+   카드 목록으로 읽혔다. B 는 상자 하나 안에 행으로 쌓아서 **「이번에 틀린 것 묶음」이
+   한 덩어리**로 보이고, 머리에 몇 개인지가 들어간다.
+   칩 둘(`오답 N`·`해설 N`)을 나란히 놓던 것을 걷는 것은 둘 다 같다 — 칩이 붙어 뜨면
+   둘 다 라벨로 안 읽히고, 학생이 고른 답과 해설 사이의 층이 사라진다.
+   `.tag.w/.e/.s` 는 지우지 않는다 — 대화 리포트(report-screen)가 계속 쓴다.
+   시안의 `row-*` 는 `mistake-*` 로 바꿔 적었다. `.activity-frame` 아래에 `.row-top`
+   처럼 흔한 이름을 풀어 두면 나중에 다른 화면이 같은 이름을 쓴다 — 이 파일이
+   `.tag.s` 로 이미 한 번 부딪혔다(아래 주석). 묶음 하나에 접두사 하나로 둔다. */
+.activity-frame .mistake-list { overflow:hidden; border:1px solid var(--color-line-control); border-radius:16px; background:var(--color-background-surface); }
+.activity-frame .mistake-heading { display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding:16px; border-bottom:1px solid var(--color-line-normal); }
+.activity-frame .mistake-heading strong { color:var(--color-text-heading); font-size:16px; line-height:24px; font-weight:600; }
+.activity-frame .mistake-heading span { flex:none; color:var(--color-text-sub); font-size:12px; line-height:18px; }
+.activity-frame .mistake-row { padding:16px; }
+.activity-frame .mistake-row + .mistake-row { border-top:1px solid var(--color-line-normal); }
+.activity-frame .mistake-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.activity-frame .mistake-no { color:var(--color-fill-wrong); font-size:12px; line-height:18px; font-weight:700; }
+/* 건너뜀은 오답이 아니라 **안 푼 것**이다 — `.tag.s` 와 같은 이유로 오답의 빨강을 쓰지 않는다 */
+.activity-frame .mistake-no.skipped { color:var(--color-text-sub); }
+.activity-frame .mistake-kind { flex:none; color:var(--color-text-sub); font-size:12px; line-height:18px; }
+.activity-frame .mistake-answer { margin:12px 0 8px; color:var(--color-text-strong); font-size:20px; line-height:28px; font-weight:500; }
+.activity-frame .mistake-exp { margin:0; color:var(--color-text-sub); font-size:13px; line-height:20px; }
+/* 건너뛴 문항은 고른 답이 없어 답 줄이 안 그려진다. 머리줄에 바로 붙지 않게 띈다 */
+.activity-frame .mistake-top + .mistake-exp { margin-top:12px; }
+.activity-frame .mistake-exp b { color:var(--color-text-heading); font-weight:600; }
+/* `.wrong-card` 는 대화 리포트(report-screen)가 계속 쓴다 — 결과 화면만 B 로 옮겼다 */
+.activity-frame .wrong-card { border-radius:16px; border:1px solid var(--color-line-control); background:var(--color-background-surface); padding:16px; }
+.activity-frame .wrong-card + .wrong-card { margin-top:12px; }
 .activity-frame .flash-result-content { padding:0; }
 .activity-frame .flash-result-stat button { border:0; border-radius:12px; padding:12px; background:var(--color-background-surface); text-align:center; cursor:pointer; }
 .activity-frame .flash-result-stat button:first-child strong { color:var(--color-text-strong); }
@@ -589,6 +625,55 @@
 .activity-frame .state-icon svg { width:25px; height:25px; }
 .activity-frame .state-view strong { font-size:16px; line-height:24px; font-weight:600; color:var(--color-text-heading); }
 .activity-frame .state-view p { margin:8px 0 0; font-size:13px; line-height:20px; color:var(--color-text-sub); }
+/* 마이크 안내 단계 (2026-09-10). 배포본은 「브라우저 설정에서 마이크를 켠 뒤 다시
+   시도해 주세요」 한 줄만 말하고 **어디를 눌러야 하는지는 말하지 않았다.** 그리고
+   차단 상태에서는 브라우저가 권한 창을 다시 띄우지 않으므로 「다시 시도」가 성공할
+   경로가 없다 — 같은 화면이 영원히 돌아왔다.
+   단계는 문자열이 아니라 배열로 온다. 번호는 여기서 붙인다 — 갈래마다 항목 수가
+   다르고, `\n` 을 쪼개 다시 이어 붙이면(micDeniedBody 가 그랬다) 줄바꿈이 결국 버려진다. */
+.activity-frame .state-steps { width:100%; max-width:296px; margin:16px 0 0; padding:12px; border:1px solid var(--color-line-control); border-radius:12px; background:var(--color-background-base); text-align:left; }
+.activity-frame .state-steps summary { font-size:13px; line-height:20px; font-weight:600; color:var(--color-text-heading); cursor:pointer; }
+.activity-frame .state-steps ol { margin:8px 0 0; padding-left:20px; }
+.activity-frame .state-steps li { font-size:13px; line-height:20px; color:var(--color-text-sub); }
+.activity-frame .state-steps li + li { margin-top:4px; }
+.activity-frame .state-hint { margin:12px 0 0; font-size:12px; line-height:18px; color:var(--color-text-sub); }
+/* `.state-view p` 가 요소 선택자를 더 들어 이 규칙을 이긴다 — 힌트가 본문과 같은
+   13px 로 뜨고 위 여백도 8px 이었다. 모달 쪽과 같은 사정이다. 같은 무게로 다시 적는다 */
+.activity-frame .state-view p.state-hint { margin:12px 0 0; font-size:12px; line-height:18px; }
+/* 모달 안에서는 상자가 이미 좁다 — 폭을 다 쓴다 */
+.activity-frame .modal-box.notice .state-steps { max-width:none; margin-top:12px; }
+/* 버튼이 셋이면 한 줄에 못 들어간다. footer(89px 고정)와 달리 모달은 쌓을 수 있다.
+   **역할극에는 「대신 키보드로 쓰기」를 두지 않는다**(기획 확정 2026-09-10) — 발음
+   평가가 목적이라 타이핑이 활동을 무의미하게 만든다. 그래서 같은 모달이 버튼 둘로도
+   선다(켰어요 · 건너뛰기). 미션대화만 셋이다. */
+.activity-frame .modal-tools.stack { flex-direction:column; gap:8px; }
+/* **`flex:1` 이 세로로 쌓으면 높이를 먹는다.** `.modal-tools button` 이 `flex:1`(=`1 1 0%`)
+   이라 column 에서는 flex-basis 가 높이가 되고, 상자에 고정 높이가 없으니 44px 이
+   내용 높이 17px 로 주저앉았다 — 계산값을 재서 잡았다(DESIGN.md §7 이 말하는 자리).
+   `check:css` 다섯은 전부 통과하고 있었다. */
+.activity-frame .modal-box.notice .modal-tools.stack button { width:100%; flex:none; height:44px; }
+/* 컨트롤 radius 는 12 다 (DESIGN.md §8 물음 2·4). `.modal-tools button` 의 8 은
+   그 규범이 정해지기 전 값이고, 손글씨 모달이 아직 그것을 쓴다 — 안내 모달만 옮긴다 */
+.activity-frame .modal-box.notice .modal-tools button { border-radius:12px; }
+/* 키보드로 쓰기는 버리는 선택지가 아니라 **다른 길**이다. 설정을 못 바꾸는 학습자
+   (공용 PC · 기관 기기)에게는 유일한 출구다. 그래서 이 앱이 이미 쓰는 보조 스타일
+   (choice 배경 + primary-pressed 글자)로 올린다 — `.audio-row` · `.sound-icon` 과 같은 값 */
+.activity-frame .modal-box.notice .modal-tools .alt { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); font-weight:600; }
+/* 마지막 수단은 가장 약하게 — 지금은 「건너뛰기」와 「다시 시도」가 같은 무게였다 */
+.activity-frame .modal-box.notice .modal-tools .ghost { background:transparent; color:var(--color-text-sub); font-weight:500; }
+/* `.modal-box.notice p` 가 세 클래스라 `.state-hint` 를 이긴다 — 모달 안에서 힌트가
+   본문과 같은 14px 로 뜨고 위 여백도 0 이었다. 같은 무게로 다시 적는다.
+   **이 힌트는 모달의 첫 상태에 없다** — 「켰어요」가 한 번 실패한 뒤에 버튼이
+   「새로고침」으로 바뀌면서 같이 나온다. 처음부터 다 보이면 상자가 화면의 79% 를
+   먹고(566/720 실측), 아직 겪지 않은 실패를 먼저 설명하는 셈이 된다.
+   전체 화면 판(activity__micdenied)은 들어설 때 이미 막혀 있던 경우라 함께 보인다. */
+.activity-frame .modal-box.notice .state-hint { margin:12px 0 0; font-size:12px; line-height:18px; }
+/* 단계는 처음부터 펼쳐 둔다 — 이 모달을 보는 사람은 이미 막힌 사람이다.
+   접는 것은 두 번째로 볼 때를 위한 것이라 기본 삼각형 대신 오른쪽에 갈매기를 둔다 */
+.activity-frame .state-steps summary { display:flex; align-items:center; justify-content:space-between; gap:8px; list-style:none; }
+.activity-frame .state-steps summary::-webkit-details-marker { display:none; }
+.activity-frame .state-steps summary::after { content:""; width:8px; height:8px; flex:none; border-right:1.5px solid currentColor; border-bottom:1.5px solid currentColor; transform:rotate(45deg) translateY(-2px); opacity:.5; }
+.activity-frame .state-steps[open] summary::after { transform:rotate(-135deg) translateY(-2px); }
 .activity-frame .skeleton { width:100%; display:flex; flex-direction:column; gap:12px; }
 .activity-frame .skeleton i { display:block; height:64px; border-radius:12px; background:var(--color-background-disable); }
 .activity-frame .skeleton i.s { height:20px; width:60%; }

@@ -1,4 +1,22 @@
 <!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ fb103d2
+     — 확인: 2026-09-10 · **마이크 안내 모달과 결과 화면 시안 B 가 들어왔다.**
+       `activity.css` 줄 수를 595 → 680 으로 고쳤다(이 문서가 적는 유일한 수치).
+       **이 문서가 세는 축은 지켜졌다** — 간격은 전부 4의 배수(`spacing-grid-check` 통과.
+       시안 파일의 `10px`·`9px` 과 먼저 들어와 있던 `14px`·`18px` 을 12/8/12/20 으로 옮겼다),
+       리터럴 색 0, 정한 값 17자리 통과. radius 는 카드 16 · 컨트롤 12 · 칩 8 을 그대로 쓴다.
+       **새로 정한 것이 하나 있다 — 도크의 보조 버튼(`.primary.alt`).** 지금까지 도크에는
+       `.primary`(꺼짐)와 `.primary.on`(켜짐) 둘뿐이어서, 누를 수 있는 「이 활동 건너뛰기」가
+       **꺼진 버튼처럼 회색으로 떴다**(계산값 238,238,238 / 189,189,189). 새 색은 들이지 않고
+       이 앱이 이미 쓰는 보조 짝(`--color-background-choice` + `--color-fill-primary-pressed`,
+       `.audio-row`·`.sound-icon` 과 같은 값)을 도크에 얹었다. **§8 표의 물음이 아니라 빈칸이었다** —
+       도크 보조가 없다는 것을 아무 줄도 말하지 않았다.
+       **★ 그리고 §7 이 말하는 자리를 두 번 밟았다.** 계산값을 재서 둘을 잡았는데
+       `check:css` 다섯은 전부 통과하고 있었다: ① column flex 에서 `flex:1`(=`1 1 0%`)이
+       flex-basis 를 높이로 먹어 모달 버튼 `44px` 이 내용 높이 `17px` 로 앉았다.
+       ② `.modal-box.notice p` 와 `.state-view p` 가 요소 선택자를 더 들어 `.state-hint` 를
+       이겼다 — 힌트가 본문과 같은 크기로 뜨고 위 여백이 0·8px 이었다.
+       **둘 다 값 검사·클래스 검사·목업 대조가 못 보는 자리다**(대조는 마크업만 보고 CSS 값을
+       안 본다 · §7). 브라우저에서 재는 것 말고 이것을 잡는 검사는 여전히 없다.
      — 확인: 2026-09-09 · 그 배너가 **시안 승인분으로 세 줄이 됐다**(`.event-banner-after`
        가 하나 늘어 넷). **이 문서가 세는 축은 그대로다** — radius 12 · padding 12/16 은
        그대로고 새 줄의 간격은 `margin-top:8px`·`4px`(이 문서의 셈 대상이 아니고
@@ -118,7 +136,7 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 
 | 화면군 | CSS | 클래스 접두사 | 색 출처 | 목업 대조 |
 |---|---|---|---|---|
-| **학습 활동** | `styles/activity.css` (595줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
+| **학습 활동** | `styles/activity.css` (680줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
 | **내비·홈·교재학습·자모 목록** | `styles/nav.css` (271줄) | `.nav-frame .*` | semantic 토큰 | ○ |
 | **인증** (로그인·가입·재설정) | `styles/auth.css` (748줄) | `.auth-*` | semantic 토큰 | ✕ |
 | **표현클립** | 없음 — Tailwind 인라인 | 없음 | semantic 토큰 유틸 + 임의값 | ○ |

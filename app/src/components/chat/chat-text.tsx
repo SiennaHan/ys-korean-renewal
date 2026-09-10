@@ -268,7 +268,10 @@ export const CompletedMsgBox = (props: CompleteBoxInterface) => {
 	const { t } = useTranslation();
 	/*
 	 * 안내가 두 줄씩이다. 어디서 끊을지는 언어마다 다르므로 번역문의 \n 을
-	 * 그대로 따른다 — 여기서 문장부호로 자르지 않는다(MicDeniedScreen 과 같은 규칙).
+	 * 그대로 따른다 — 여기서 문장부호로 자르지 않는다.
+	 *
+	 * **`MicDeniedScreen` 은 2026-09-10 부터 이 규칙을 쓰지 않는다** — 그 화면의
+	 * 안내가 한 줄 + 단계 목록으로 바뀌면서 `\n` 쪼개기를 걷었다. 여기만 남았다.
 	 */
 	const lines = (key: string) => t(key).split("\n");
 	return (

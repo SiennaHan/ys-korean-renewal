@@ -235,20 +235,31 @@ export function Dock({
 export function PrimaryButton({
 	label,
 	on,
+	alt,
 	action,
 	onClick,
 }: {
 	label: string;
 	on: boolean;
+	/**
+	 * **보조 버튼** — 눌릴 수 있지만 주 행동이 아니다(`.primary.alt`).
+	 *
+	 * `on` 과 다르다: `on` 이 거짓이면 지금까지는 **눌리지 않는 회색 버튼**이었다
+	 * (`disabled`). 도크에 「건너뛰기」처럼 **누를 수 있는 둘째 버튼**을 두려면
+	 * 그 둘로는 표현이 안 됐다 — 목업이 마이크 안내 화면에서 그것을 요구한다
+	 * (`activity__micdenied`, 2026-09-10). `alt` 는 눌린다.
+	 */
+	alt?: boolean;
 	action?: string;
 	onClick?: () => void;
 }) {
+	const enabled = on || !!alt;
 	return (
 		<button
 			type="button"
-			className={`primary ${on ? "on" : ""}`}
-			data-action={on ? action : undefined}
-			disabled={!on}
+			className={`primary ${alt ? "alt" : on ? "on" : ""}`}
+			data-action={enabled ? action : undefined}
+			disabled={!enabled}
 			onClick={onClick}
 		>
 			{label}

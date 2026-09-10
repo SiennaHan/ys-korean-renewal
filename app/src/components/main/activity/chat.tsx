@@ -34,6 +34,7 @@ export function ChatScreen({
 	completed,
 	children,
 	compose,
+	overlay,
 	/** 새 말이 붙을 때 여기로 스크롤한다 */
 	threadEndRef,
 	onExit,
@@ -47,6 +48,15 @@ export function ChatScreen({
 	completed: string[];
 	children?: ReactNode;
 	compose?: ReactNode;
+	/**
+	 * 화면 위에 덮는 것 — 지금은 마이크가 막혔을 때의 알림뿐이다
+	 * (`MicBlockedDialog` · 시각 정본 `screens_ref/activity__micdenied_modal.html`).
+	 *
+	 * **프레임 안에 둔다.** 밖에 두면 `.modal` 의 `position:absolute` 가 프레임이
+	 * 아니라 화면 전체를 기준으로 잡혀, 태블릿 폭에서 카드 밖으로 덮는다.
+	 * 목업 캡처도 프레임 안쪽이다.
+	 */
+	overlay?: ReactNode;
 	threadEndRef?: RefObject<HTMLDivElement>;
 	onExit?: () => void;
 	onSkip?: () => void;
@@ -75,6 +85,7 @@ export function ChatScreen({
 			</div>
 
 			{compose}
+			{overlay}
 		</ActivityFrame>
 	);
 }

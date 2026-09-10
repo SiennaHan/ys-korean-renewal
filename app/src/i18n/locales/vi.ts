@@ -808,6 +808,19 @@ const vi = {
 		wrongItem: "Câu sai {{index}}",
 		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
 		skippedItem: "Đã bỏ qua {{index}}",
+		/* 시안 B(2026-09-10) — 오답을 카드 여러 장 대신 목록 하나로 묶는다 */
+		mistakeHeading: "Câu cần xem lại",
+		mistakeCount: "{{count}} câu",
+		/** 줄마다 붙는 딱지. 번호를 안 붙인다 — 같은 줄의 「오답 N」이 번호다 */
+		explanationLabel: "Giải thích",
+		/**
+		 * 「**정답은** X 이에요.」 — 앞머리만 굵게 그린다.
+		 * 둘로 나눈 이유: 굵은 자리를 화면이 아니라 번역이 정한다.
+		 * **다섯 언어 모두 앞머리가 문장 앞에 온다**는 전제다 — 뒤에 와야 하는
+		 * 언어가 생기면 한 문장 키로 합치고 `<Trans>` 로 굵은 자리를 표시한다.
+		 */
+		answerLead: "Đáp án là",
+		answerTail: "{{answer}}.",
 		explanation: "Giải thích {{index}}",
 		showMore: "Xem thêm",
 		hardItem: "Hay sai",
@@ -893,7 +906,21 @@ const vi = {
 		retry: "Thử lại",
 		audioPreparing: "Đang chuẩn bị âm thanh.",
 		micDenied: "Không dùng được micro",
-		micDeniedBody: "Hãy bật micro trong cài đặt trình duyệt\nrồi thử lại.",
+		micDeniedBody: "Hoạt động này dùng giọng nói, nhưng trình duyệt đang chặn micrô cho trang này.",
+		/**
+		 * 켜는 방법 — **브라우저 이름을 적지 않는다.** Chrome 이 자물쇠를
+		 * 슬라이더로 바꾼 뒤에도 맞는 말이어야 한다(2026-09-10).
+		 */
+		micStepsTitle: "Cách bật micrô",
+		micStep1: "Nhấn biểu tượng ở bên trái thanh địa chỉ (hình ổ khóa hoặc thanh trượt)",
+		micStep2: "Tìm “Micrô” trong phần quyền của trang",
+		micStep3: "Chọn “Cho phép”",
+		micStep4: "Quay lại đây và nhấn “Tôi đã bật”",
+		/** 단계를 따라도 안 되는 경우 — 기기(iOS 설정·회사 정책)가 막는다 */
+		micDeniedHint: "Vẫn bị chặn? Thiết bị có thể đang chặn micrô cho toàn bộ trình duyệt.",
+		micTurnedOn: "Tôi đã bật",
+		/** 활동 중 모달에만 있다 — 미션대화는 키보드 입력을 이미 갖고 있다 */
+		micTypeInstead: "Nhập bằng bàn phím",
 		micDeniedSkip: "Bỏ qua hoạt động này",
 		recordAgain: "Vui lòng nói lại.",
 		exitConfirmChat: "Cuộc hội thoại sẽ bắt đầu lại từ đầu. Bạn muốn thoát?",

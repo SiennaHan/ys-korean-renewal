@@ -13,7 +13,7 @@ import ChatMessage, {
 import { DialogInput } from "@/components/dialog/dialog-input";
 import { DialogSkipModal } from "@/components/dialog/dialog-skip-modal";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
-import { ChatScreen } from "@/components/main/activity";
+import { ChatScreen, MicBlockedDialog } from "@/components/main/activity";
 import { useToast } from "@/components/toast/toast-context";
 import { env } from "@/config/env";
 import { useRecording } from "@/hooks/useRecording";
@@ -536,6 +536,39 @@ export default function MissionDialog({
 			threadEndRef={scrollEndRef}
 			onExit={requestExit}
 			onSkip={() => (isCompleted ? goReport() : setConfirmKind("finish"))}
+			/*
+			 * **마이크가 막혔을 때의 안내** — 시각 정본
+			 * `screens_ref/activity__micdenied_modal.html` (2026-09-10).
+			 *
+			 * 화면을 갈아치우지 않고 덮는다: 학생이 나눈 대화가 그대로 남아야
+			 * 설정에서 마이크를 켜고 돌아와 이어 말할 수 있다. 그래서 전체 화면
+			 * 판(`MicDeniedScreen`)이 아니라 이 모달이다.
+			 */
+			overlay={
+				recording.micBlocked ? (
+					<MicBlockedDialog
+						onRetry={() => {
+							recording.clearMicBlocked();
+							void handleRecord();
+						}}
+						/*
+						 * **키보드로 갈아탄다.** 미션대화는 입력칸을 이미 갖고 있어서
+						 * (도크의 키보드 토글) 여기서 그 토글을 켜 주면 된다 —
+						 * 새 화면도 새 상태도 만들지 않는다. 말하기가 활동 자체인
+						 * 역할극에는 이 선택지가 없다(전체 화면 판에 버튼이 둘인 이유).
+						 */
+						onTypeInstead={() => {
+							recording.clearMicBlocked();
+							setIsShowInputBox(true);
+						}}
+						onSkip={() => {
+							recording.clearMicBlocked();
+							if (isCompleted) goReport();
+							else setConfirmKind("finish");
+						}}
+					/>
+				) : undefined
+			}
 			compose={
 				<DialogInput
 					recordState={recording.recordState}

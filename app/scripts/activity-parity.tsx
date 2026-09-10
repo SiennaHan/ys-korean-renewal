@@ -61,6 +61,7 @@ import {
 	ThumbWordCards,
 	WordCards,
 } from "@/components/main/activity/practice-browser";
+import { MicBlockedDialog } from "@/components/main/activity/mic-blocked";
 import { ProblemCard } from "@/components/main/activity/problem-card";
 import { RecordControl } from "@/components/main/activity/record";
 import { ReportScreen } from "@/components/main/activity/report-screen";
@@ -150,7 +151,8 @@ import ModuleList, {
 import AudioRecorder from "@/components/problem/audio-recorder";
 import i18n from "@/i18n";
 import { chapters } from "@/shared/data/chapter";
-import type { ReactElement } from "react";
+import { cloneElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
 
@@ -461,13 +463,21 @@ const SCREENS: Record<string, ReactElement> = {
 	micdenied: <MicDeniedScreen lesson={LESSON} />,
 
 	result: (
+		/*
+		 * **두 줄이다 — 오답과 건너뜀을 한 화면에 같이 둔다**(시안 B, 2026-09-10).
+		 * 하나만 넣으면 `.mistake-no.skipped` 갈래와 「고른 답이 없는 줄」을
+		 * 아무도 안 본다. 목업 캡처도 그래서 둘이다.
+		 */
 		<ResultScreen
 			lesson={LESSON}
 			total={4}
 			answered={3}
 			graded={3}
 			correct={2}
-			wrongs={[{ picked: "grape", explanation: "사과는 apple 이에요." }]}
+			wrongs={[
+				{ picked: "grape", answer: "apple" },
+				{ kind: "skipped", picked: "", answer: "banana" },
+			]}
 		/>
 	),
 
@@ -866,6 +876,27 @@ const HOME_RESUME = {
 };
 
 SCREENS.nav__home__none = <HomeView {...HOME_BASE} continueLearning={null} />;
+/*
+ * **활동 중에 마이크가 막힌 상태** — 미션대화 위에 덮이는 알림이다
+ * (`activity__micdenied_modal`). 전체 화면 판(`micdenied`)과 다른 화면이다:
+ * 이쪽은 학생이 있던 자리를 그대로 두고 셋째 버튼(키보드로 쓰기)을 준다.
+ *
+ * **`chat` 을 복제해서 덮는다.** 같은 JSX 를 한 번 더 적으면 채팅 쪽 픽스처를
+ * 고칠 때 한쪽만 고쳐지고, 그러면 두 캡처가 조용히 갈린다.
+ */
+SCREENS.micdenied_modal = cloneElement(
+	SCREENS.chat as ReactElement<{ overlay?: ReactNode }>,
+	{
+		overlay: (
+			<MicBlockedDialog
+				onRetry={() => {}}
+				onSkip={() => {}}
+				onTypeInstead={() => {}}
+			/>
+		),
+	},
+);
+
 SCREENS.nav__home__resume = (
 	<HomeView {...HOME_BASE} continueLearning={HOME_RESUME} />
 );

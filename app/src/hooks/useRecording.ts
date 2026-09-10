@@ -31,6 +31,12 @@ export function useRecording(options: UseRecordingOptions = {}) {
 	const { t } = useTranslation();
 
 	const [recordState, setRecordState] = useState<RecordState>("idle");
+	/**
+	 * **브라우저가 이 사이트의 마이크를 막았다.** 부르는 쪽이 이 값을 보고
+	 * 안내 모달을 띄운다(`MicBlockedDialog`). 마이크가 없는 경우는 여기 오지
+	 * 않는다 — 그쪽은 토스트다(`startRecording` 의 주석).
+	 */
+	const [micBlocked, setMicBlocked] = useState(false);
 	const [recordedMsg, setRecordedMsg] = useState<string | null>(null);
 	/*
 	 * 발음 평가에 보낼 **녹음 원본**과 **STT 가 처음 낸 글자**를 따로 쥔다.
@@ -117,10 +123,22 @@ export function useRecording(options: UseRecordingOptions = {}) {
 		}
 
 		await unlock();
-		const granted = await requestPermission();
-		if (!granted) {
+		const permission = await requestPermission();
+		if (permission !== "granted") {
 			setRecordState("idle");
-			addToast(t("activity.rec_needMic"), "error");
+			/*
+			 * **막힌 것은 토스트로 알리지 않는다**(2026-09-10). 토스트는 몇 초 뒤
+			 * 사라지는데 이건 사용자가 브라우저 설정을 다녀와야 풀리는 일이라,
+			 * 돌아왔을 때 안내가 이미 없어져 있었다. 그래서 부르는 쪽이 모달을
+			 * 띄우도록 상태로 올린다 — `MicBlockedDialog` 가 「켜는 방법」과
+			 * 「켰어요」를 쥐고 있다.
+			 *
+			 * **`unavailable` 은 토스트를 그대로 둔다.** 마이크가 아예 없는 기기에
+			 * 「브라우저 설정에서 켜세요」를 띄우면 거짓이다. 그때는 지금처럼
+			 * 짧게 알리고 넘어간다.
+			 */
+			if (permission === "denied") setMicBlocked(true);
+			else addToast(t("activity.rec_needMic"), "error");
 			return;
 		}
 
@@ -243,6 +261,9 @@ export function useRecording(options: UseRecordingOptions = {}) {
 	return {
 		recordState,
 		setRecordState,
+		micBlocked,
+		/** 모달을 닫는다. 「켰어요」로 다시 시도할 때도 먼저 이것을 부른다 */
+		clearMicBlocked: useCallback(() => setMicBlocked(false), []),
 		recordedMsg,
 		setRecordedMsg,
 		/** 발음 평가에 보낼 녹음 원본. 없으면 「측정 안 됨」이다(키보드 입력) */

@@ -18,8 +18,20 @@ export interface WrongItem {
 	kind?: "wrong" | "skipped";
 	/** 학생이 고른 답. 건너뛴 문항은 고른 것이 없어 비운다 */
 	picked: string;
-	/** 왜 틀렸는지 — 건너뛴 문항에서는 정답 안내다 */
-	explanation: string;
+	/**
+	 * **정답 그 자체.** 넘기면 「**정답은** X 이에요.」로 그린다 — 앞머리만
+	 * 굵게(`.mistake-exp b`), 시안 B 승인분(2026-09-10).
+	 *
+	 * 문장을 미리 만들어 넘기지 않는 이유: 어디까지 굵게 할지는 화면의 일이고,
+	 * 언어마다 다르다. 부르는 쪽이 문장을 만들면 그 결정이 다섯 군데로 흩어진다.
+	 */
+	answer?: string;
+	/**
+	 * 자유 문구 해설. **`answer` 가 없을 때만 쓴다** — 원장에 해설이 있는 활동
+	 * (빈칸 채우기의 `grammar_focus`)이 그렇다. 이쪽은 앞머리를 굵게 하지 않는다:
+	 * 「정답은」으로 시작하는 문장이 아니라 설명이다.
+	 */
+	explanation?: string;
 }
 
 /**
@@ -94,35 +106,60 @@ export function ResultScreen({
 					</div>
 				</div>
 				<div className="scroll-area" style={{ padding: 16 }}>
-					{wrongs.map((w, i) => (
-						<div className="wrong-card" key={`${w.picked}-${w.explanation}`}>
-							{/* 번호는 자리대로 매긴다 — 아래 「해설 N」과 짝이 맞아야 한다 */}
-							<span className={`tag ${w.kind === "skipped" ? "s" : "w"}`}>
-								{t(
-									w.kind === "skipped"
-										? "result.skippedItem"
-										: "result.wrongItem",
-									{ index: i + 1 },
-								)}
-							</span>
-							{/* 건너뛴 문항은 고른 답이 없다 — 빈 줄을 그리지 않는다 */}
-							{w.picked && (
-								<p style={{ margin: "8px 0 0", fontSize: 16 }}>{w.picked}</p>
-							)}
-							<span className="tag e" style={{ marginTop: 10 }}>
-								{t("result.explanation", { index: i + 1 })}
-							</span>
-							<p
-								style={{
-									margin: "8px 0 0",
-									fontSize: 14,
-									color: "var(--color-text-sub)",
-								}}
-							>
-								{w.explanation}
-							</p>
+					{/*
+					 * **시안 B — 카드 여러 장이 아니라 목록 하나다**(기획 승인
+					 * 2026-09-10 · 시각 정본 `screens_ref/activity__result.html`).
+					 *
+					 * 시안 A 는 문항마다 흰 카드를 쌓았고, 카드마다 「오답 N」과
+					 * 「해설 N」 딱지가 둘씩 붙어 **네 문항이면 딱지가 여덟 개**였다.
+					 * 묶음 하나에 줄로 넣으면 「무엇을 다시 볼지」가 한눈에 들어온다.
+					 *
+					 * 틀린 것이 없으면 목록을 아예 그리지 않는다 — 빈 상자를
+					 * 남기지 않는다. 그 경우 머리말이 「잘 했어요!」다.
+					 */}
+					{wrongs.length > 0 && (
+						<div className="mistake-list">
+							<div className="mistake-heading">
+								<strong>{t("result.mistakeHeading")}</strong>
+								<span>{t("result.mistakeCount", { count: wrongs.length })}</span>
+							</div>
+							{wrongs.map((w, i) => (
+								<div
+									className="mistake-row"
+									key={`${w.picked}-${w.answer ?? w.explanation ?? ""}`}
+								>
+									<div className="mistake-top">
+										{/* 번호는 자리대로 매긴다 — 오답과 건너뜀이 한 줄에 섞여 있다 */}
+										<span
+											className={`mistake-no ${w.kind === "skipped" ? "skipped" : ""}`.trim()}
+										>
+											{t(
+												w.kind === "skipped"
+													? "result.skippedItem"
+													: "result.wrongItem",
+												{ index: i + 1 },
+											)}
+										</span>
+										<span className="mistake-kind">
+											{t("result.explanationLabel")}
+										</span>
+									</div>
+									{/* 건너뛴 문항은 고른 답이 없다 — 빈 줄을 그리지 않는다 */}
+									{w.picked && <p className="mistake-answer">{w.picked}</p>}
+									<p className="mistake-exp">
+										{w.answer ? (
+											<>
+												<b>{t("result.answerLead")}</b>{" "}
+												{t("result.answerTail", { answer: w.answer })}
+											</>
+										) : (
+											w.explanation
+										)}
+									</p>
+								</div>
+							))}
 						</div>
-					))}
+					)}
 				</div>
 			</main>
 			<ActivityFooter>

@@ -837,6 +837,19 @@ const ko = {
 		wrongItem: "오답 {{index}}",
 		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
 		skippedItem: "건너뜀 {{index}}",
+		/* 시안 B(2026-09-10) — 오답을 카드 여러 장 대신 목록 하나로 묶는다 */
+		mistakeHeading: "다시 볼 문항",
+		mistakeCount: "{{count}}개",
+		/** 줄마다 붙는 딱지. 번호를 안 붙인다 — 같은 줄의 「오답 N」이 번호다 */
+		explanationLabel: "해설",
+		/**
+		 * 「**정답은** X 이에요.」 — 앞머리만 굵게 그린다.
+		 * 둘로 나눈 이유: 굵은 자리를 화면이 아니라 번역이 정한다.
+		 * **다섯 언어 모두 앞머리가 문장 앞에 온다**는 전제다 — 뒤에 와야 하는
+		 * 언어가 생기면 한 문장 키로 합치고 `<Trans>` 로 굵은 자리를 표시한다.
+		 */
+		answerLead: "정답은",
+		answerTail: "{{answer}} 이에요.",
 		explanation: "해설 {{index}}",
 		showMore: "더보기",
 		hardItem: "자주 틀려요",
@@ -923,7 +936,21 @@ const ko = {
 		retry: "다시 시도",
 		audioPreparing: "소리를 준비 중이에요.",
 		micDenied: "마이크를 사용할 수 없어요",
-		micDeniedBody: "브라우저 설정에서 마이크를 켠 뒤\n다시 시도해 주세요.",
+		micDeniedBody: "이 활동은 목소리로 해요. 지금 브라우저가 이 사이트의 마이크를 막고 있어요.",
+		/**
+		 * 켜는 방법 — **브라우저 이름을 적지 않는다.** Chrome 이 자물쇠를
+		 * 슬라이더로 바꾼 뒤에도 맞는 말이어야 한다(2026-09-10).
+		 */
+		micStepsTitle: "켜는 방법",
+		micStep1: "주소창 왼쪽 아이콘(자물쇠 또는 슬라이더)을 눌러요",
+		micStep2: "「권한」에서 「마이크」를 찾아요",
+		micStep3: "「허용」을 골라요",
+		micStep4: "여기로 돌아와 「켰어요」를 눌러요",
+		/** 단계를 따라도 안 되는 경우 — 기기(iOS 설정·회사 정책)가 막는다 */
+		micDeniedHint: "그래도 막혀 있나요? 기기가 브라우저 전체의 마이크를 막고 있을 수 있어요.",
+		micTurnedOn: "켰어요",
+		/** 활동 중 모달에만 있다 — 미션대화는 키보드 입력을 이미 갖고 있다 */
+		micTypeInstead: "대신 키보드로 쓰기",
 		micDeniedSkip: "이 활동 건너뛰기",
 		recordAgain: "다시 말해 주세요.",
 		exitConfirmChat: "대화가 처음부터 시작돼요. 나갈까요?",

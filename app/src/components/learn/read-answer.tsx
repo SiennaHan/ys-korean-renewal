@@ -489,11 +489,16 @@ export default function ReadAnswer({
 							firstWrongOf(q.id) !== null
 								? pick(q, firstWrongOf(q.id) as number)
 								: "",
-						// 이 원장에는 해설이 없다 — 문법만 grammar_focus_revised 를 들고 온다.
-						// 빈 칸을 그리느니 정답을 말해 준다(player.answerIs 는 이미 있는 문구다)
-						explanation: t("player.answerIs", {
-							answer: pick(q, q.answer_index),
-						}),
+						/*
+						 * 이 원장에는 해설이 없다 — 문법만 grammar_focus_revised 를 들고 온다.
+						 * 빈 칸을 그리느니 정답을 말해 준다.
+						 *
+						 * **문장을 여기서 만들지 않는다**(2026-09-10, 시안 B). 정답만
+						 * 넘기면 결과 화면이 「**정답은** X 이에요.」로 앞머리를 굵게
+						 * 그린다 — 어디까지 굵게 할지는 언어마다 다르고, 부르는 쪽이
+						 * 문장을 만들면 그 결정이 활동마다 흩어진다.
+						 */
+						answer: pick(q, q.answer_index),
 					}))}
 				onExit={() => router.history.back()}
 				onRetry={

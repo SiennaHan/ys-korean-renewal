@@ -541,10 +541,12 @@ export default function ListenAnswer({
 							firstWrongOf(q.id) !== null
 								? pick(q, firstWrongOf(q.id) as number)
 								: "",
-						// 이 원장에는 해설이 없다 — 빈 칸을 그리느니 정답을 말해 준다
-						explanation: t("player.answerIs", {
-							answer: pick(q, q.answer_index),
-						}),
+						/*
+						 * 이 원장에는 해설이 없다 — 빈 칸을 그리느니 정답을 말해 준다.
+						 * **문장이 아니라 정답만 넘긴다** — 결과 화면이 앞머리를 굵게
+						 * 그린다(시안 B, 2026-09-10 · `result-screen.tsx` 의 `answer`).
+						 */
+						answer: pick(q, q.answer_index),
 					}))}
 				onExit={() => router.history.back()}
 				onRetry={

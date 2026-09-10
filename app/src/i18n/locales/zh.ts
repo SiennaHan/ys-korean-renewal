@@ -782,6 +782,19 @@ const zh = {
 		wrongItem: "错题 {{index}}",
 		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
 		skippedItem: "跳过 {{index}}",
+		/* 시안 B(2026-09-10) — 오답을 카드 여러 장 대신 목록 하나로 묶는다 */
+		mistakeHeading: "需要再看的题",
+		mistakeCount: "{{count}} 题",
+		/** 줄마다 붙는 딱지. 번호를 안 붙인다 — 같은 줄의 「오답 N」이 번호다 */
+		explanationLabel: "解析",
+		/**
+		 * 「**정답은** X 이에요.」 — 앞머리만 굵게 그린다.
+		 * 둘로 나눈 이유: 굵은 자리를 화면이 아니라 번역이 정한다.
+		 * **다섯 언어 모두 앞머리가 문장 앞에 온다**는 전제다 — 뒤에 와야 하는
+		 * 언어가 생기면 한 문장 키로 합치고 `<Trans>` 로 굵은 자리를 표시한다.
+		 */
+		answerLead: "正确答案是",
+		answerTail: "{{answer}}。",
 		explanation: "解析 {{index}}",
 		showMore: "展开更多",
 		hardItem: "经常做错",
@@ -866,7 +879,21 @@ const zh = {
 		retry: "重试",
 		audioPreparing: "正在准备语音。",
 		micDenied: "无法使用麦克风",
-		micDeniedBody: "请在浏览器设置中开启麦克风\n后重试。",
+		micDeniedBody: "这个活动需要用声音完成，但浏览器正在阻止本站使用麦克风。",
+		/**
+		 * 켜는 방법 — **브라우저 이름을 적지 않는다.** Chrome 이 자물쇠를
+		 * 슬라이더로 바꾼 뒤에도 맞는 말이어야 한다(2026-09-10).
+		 */
+		micStepsTitle: "开启方法",
+		micStep1: "点击地址栏左侧的图标（锁形或滑块）",
+		micStep2: "在「权限」中找到「麦克风」",
+		micStep3: "选择「允许」",
+		micStep4: "回到这里并点击「已开启」",
+		/** 단계를 따라도 안 되는 경우 — 기기(iOS 설정·회사 정책)가 막는다 */
+		micDeniedHint: "还是被阻止？可能是设备阻止了整个浏览器使用麦克风。",
+		micTurnedOn: "已开启",
+		/** 활동 중 모달에만 있다 — 미션대화는 키보드 입력을 이미 갖고 있다 */
+		micTypeInstead: "改用键盘输入",
 		micDeniedSkip: "跳过此活动",
 		recordAgain: "请再说一次。",
 		exitConfirmChat: "对话将从头开始。要退出吗？",

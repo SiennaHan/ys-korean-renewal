@@ -471,12 +471,15 @@ def main():
     print()
 
     bad = 0
+    paired = set()
     for f in sorted(glob.glob(os.path.join(out, "*.html"))):
         name = os.path.basename(f)[:-5]
         # 이름이 곧 캡처 이름인 것(nav__*)과 activity__ 가 붙는 것 둘 다 받는다
         ref = os.path.join(mock, f"{name}.html")
         if not os.path.exists(ref):
             ref = os.path.join(mock, f"activity__{name}.html")
+        if os.path.exists(ref):
+            paired.add(os.path.basename(ref))
         if not os.path.exists(ref):
             print(f"✗ {name}: 목업 캡처가 없다")
             bad += 1
@@ -500,7 +503,26 @@ def main():
             if line.startswith(("---", "+++", "@@")):
                 continue
             print(f"    {line}")
+    # ── 짝 없는 캡처. **이 검사가 없으면 새 캡처가 조용히 빠진다.**
+    #
+    # 대조는 `SCREENS`(손으로 적는 맵)를 그려서 캡처와 견준다. 그리는 쪽에 키가
+    # 없으면 견줄 일도 없어서 **캡처가 있는데 아무도 안 보는** 상태가 된다.
+    # 2026-09-10 에 `activity__micdenied_modal` 이 그랬다 — 55장을 그려
+    # 53✓·2✗ 를 세고 56번째 캡처는 줄에 나오지도 않았다. `screens.ts` 가 7장을
+    # 몇 주간 빠뜨렸던 것과 같은 형태다(`screens-ref-build.py` 머리말).
+    #
+    # 일부러 안 그리는 화면이 생기면 여기서 걸린다 — 그때는 `SCREENS` 에 넣거나
+    # 이 목록에 이유를 적어 면제해라. **조용히 빠지는 것만 막는다.**
+    orphans = sorted(
+        os.path.basename(x) for x in glob.glob(os.path.join(mock, "*.html"))
+        if os.path.basename(x) not in paired
+    )
+    for name in orphans:
+        bad += 1
+        print(f"✗ {name[:-5]}: 짝이 없다 — 그리는 쪽(SCREENS)에 키가 없어 대조가 이 캡처를 보지 않는다")
+
     print()
+    print(f"캡처 {len(paired) + len(orphans)}장 · 그려서 견준 것 {len(paired)}장")
     print("모두 같다" if not bad else f"{bad}개 화면이 다르다")
     raise SystemExit(1 if bad else 0)
 

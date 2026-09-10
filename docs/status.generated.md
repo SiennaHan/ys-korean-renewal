@@ -143,9 +143,9 @@
 
 | 무엇 | 수 | 어디서 세나 |
 |---|---|---|
-| 목업 대조 화면 | **55** | `activity-parity.tsx` 의 `SCREENS` — 활동 24 · 내비 5 · VocaShot 5 · 게임 17 · 표현클립 4 |
-| 목업 캡처 | **55** | `app/src/screens_ref/*.html` |
-| 활동 컴포넌트 | **24** | 위 `SCREENS` 의 활동 항목 |
+| 목업 대조 화면 | **56** | `activity-parity.tsx` 의 `SCREENS` — 활동 25 · 내비 5 · VocaShot 5 · 게임 17 · 표현클립 4 |
+| 목업 캡처 | **56** | `app/src/screens_ref/*.html` |
+| 활동 컴포넌트 | **25** | 위 `SCREENS` 의 활동 항목 |
 | 이식한 화면 | **26** | `masterplan_v3.html` §15 표 합계 |
 | `ko_*` 표 | **47** | `api/persistence/model.py` |
 | 교재 콘텐츠 표 | **14** | `api/seed_textbook_content.py` 의 `TABLES` |

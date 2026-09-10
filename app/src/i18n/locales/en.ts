@@ -808,6 +808,19 @@ const en = {
 		wrongItem: "Incorrect {{index}}",
 		/** 건너뛴 문항 — 오답이 아니라 안 푼 것이다 */
 		skippedItem: "Skipped {{index}}",
+		/* 시안 B(2026-09-10) — 오답을 카드 여러 장 대신 목록 하나로 묶는다 */
+		mistakeHeading: "Worth another look",
+		mistakeCount: "{{count}} items",
+		/** 줄마다 붙는 딱지. 번호를 안 붙인다 — 같은 줄의 「오답 N」이 번호다 */
+		explanationLabel: "Explanation",
+		/**
+		 * 「**정답은** X 이에요.」 — 앞머리만 굵게 그린다.
+		 * 둘로 나눈 이유: 굵은 자리를 화면이 아니라 번역이 정한다.
+		 * **다섯 언어 모두 앞머리가 문장 앞에 온다**는 전제다 — 뒤에 와야 하는
+		 * 언어가 생기면 한 문장 키로 합치고 `<Trans>` 로 굵은 자리를 표시한다.
+		 */
+		answerLead: "The answer is",
+		answerTail: "{{answer}}.",
 		explanation: "Explanation {{index}}",
 		showMore: "Show more",
 		hardItem: "Often missed",
@@ -894,8 +907,21 @@ const en = {
 		retry: "Try again",
 		audioPreparing: "Audio is being prepared.",
 		micDenied: "Microphone isn't available",
-		micDeniedBody:
-			"Turn on the microphone in your browser settings,\nthen try again.",
+		micDeniedBody: "This activity uses your voice, and your browser is blocking the microphone for this site.",
+		/**
+		 * 켜는 방법 — **브라우저 이름을 적지 않는다.** Chrome 이 자물쇠를
+		 * 슬라이더로 바꾼 뒤에도 맞는 말이어야 한다(2026-09-10).
+		 */
+		micStepsTitle: "How to turn it on",
+		micStep1: "Tap the icon at the left of the address bar (a lock or sliders)",
+		micStep2: "Find “Microphone” under the site permissions",
+		micStep3: "Choose “Allow”",
+		micStep4: "Come back here and tap “I turned it on”",
+		/** 단계를 따라도 안 되는 경우 — 기기(iOS 설정·회사 정책)가 막는다 */
+		micDeniedHint: "Still blocked? Your device may be blocking the microphone for the whole browser.",
+		micTurnedOn: "I turned it on",
+		/** 활동 중 모달에만 있다 — 미션대화는 키보드 입력을 이미 갖고 있다 */
+		micTypeInstead: "Type instead",
 		micDeniedSkip: "Skip this activity",
 		recordAgain: "Please say that again.",
 		exitConfirmChat: "Your conversation will start over. Leave anyway?",
