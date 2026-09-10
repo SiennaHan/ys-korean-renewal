@@ -5,6 +5,7 @@ import { useSharedAudio } from "@/components/audio/audio-provider";
 import { useSoundEffects } from "@/components/effect/use-sound-effects";
 import {
 	ListenControl,
+	MicDeniedScreen,
 	PrimaryButton,
 	RecordControl,
 	type RoleTurn,
@@ -12,6 +13,7 @@ import {
 } from "@/components/main/activity";
 import AudioRecorder from "@/components/problem/audio-recorder";
 import { useActivityState } from "@/hooks/use-activity-state";
+import { useMicDeniedOnEntry } from "@/hooks/use-mic-denied-on-entry";
 import {
 	rowsOf,
 	useChapterContent,
@@ -64,6 +66,7 @@ export default function AiRoleplay({
 }: AiRoleplayProps) {
 	const router = useRouter();
 	const { t } = useTranslation();
+	const { micDenied, recheckMic } = useMicDeniedOnEntry();
 	const sharedAudio = useSharedAudio();
 	const sound = useSoundEffects();
 
@@ -617,6 +620,29 @@ export default function AiRoleplay({
 				}
 			/>
 		);
+
+	/*
+	 * **마이크가 이미 막혀 있으면 활동을 그리지 않는다** — 전체 화면 안내로
+	 * 바꾼다(시각 정본 `screens_ref/activity__micdenied.html`, 2026-09-10).
+	 *
+	 * 역할극은 말하기가 활동 자체다. 대화 줄을 보여 주고 녹음 버튼만 죽여 두면
+	 * 학생이 무엇이 잘못됐는지 모른 채 버튼을 누른다 — 그 자리에 「켜는 방법」을
+	 * 놓는다. 활동 중에 거부한 경우는 다르다: 그때는 있던 자리를 지키는 것이
+	 * 나으므로 `AudioRecorder` 의 모달이 맡는다(`MicBlockedDialog`).
+	 *
+	 * **모든 훅 뒤에 둔다.** 위쪽 effect 들이 조건에 따라 건너뛰어지면 안 된다.
+	 */
+	if (micDenied) {
+		return (
+			<MicDeniedScreen
+				lesson={chapterLabel}
+				onExit={() => router.history.back()}
+				onSkipActivity={handleSkip}
+				/* 「켰어요」 — 다시 재 본다. 열렸으면 이 화면이 사라지고 활동이 돈다 */
+				onRetryMic={() => void recheckMic()}
+			/>
+		);
+	}
 
 	return (
 		<RoleplayScreen
