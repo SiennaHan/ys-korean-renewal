@@ -242,14 +242,12 @@
 .activity-frame .scenario .en { margin-top:2px; color:var(--color-background-choice); font-size:13px; line-height:18px; }
 .activity-frame .scenario .fold { width:28px; height:28px; border:0; background:transparent; color:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
 .activity-frame .scenario .fold svg { width:20px; height:20px; }
-/* 시나리오 이미지 — **3:2**(기획 2026-09-11). 전에는 `max-height:148px` + `contain`
-   이라 **원본보다도 납작했다**: 원본이 전부 2400×1350(16:9)이고 칸 폭이 307px 이라
-   폭에 맞추면 173px 인데 148 로 잘려, 높이에 맞춰 줄어들면서 좌우에 22px 씩 빈 띠가
-   생겼다. 3:2 로 늘리고 `cover` 로 채운다 — 16:9 원본에서 좌우를 7.8% 씩 덜어낸다.
-   그림 셋(C4·C23·C45)을 실제로 띄워 인물이 잘리지 않는 것을 보고 정했다.
+/* 대화 화면 머리의 같은 그림 — **16:9**(기획 2026-09-11). 브리핑의 `.scene-img` 와
+   같은 그림이고 같은 규칙이다. 전에는 `max-height:148px` + `contain` 이라 폭에 맞춘
+   높이(173px)보다 상한이 낮아 좌우에 22px 씩 빈 띠가 생겼다.
    폭 상한을 따로 두지 않는다 — 활동 프레임은 태블릿(768)에서도 375 로 고정이라
-   이 칸은 늘 307px 다(실측). */
-.activity-frame .scenario-image { width:100%; aspect-ratio:3 / 2; margin-top:8px; border-radius:10px; object-fit:cover; background:rgba(255,255,255,.12); }
+   이 칸은 늘 307px 다(실측). 307×173 이 된다. */
+.activity-frame .scenario-image { width:100%; aspect-ratio:16 / 9; margin-top:8px; border-radius:10px; object-fit:cover; background:rgba(255,255,255,.12); }
 .activity-frame .missions { flex:0 0 50px; display:flex; align-items:center; gap:8px; overflow-x:auto; padding:0 12px; background:var(--color-background-surface); border-bottom:0; }
 .activity-frame .mission-title { flex:0 0 auto; padding:4px 8px; border:0; border-radius:12px; background:var(--color-background-base); color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; cursor:pointer; }
 .activity-frame .mission-title.on { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
@@ -596,7 +594,12 @@
 .activity-frame .brief-sec { padding:0 16px; margin-top:16px; }
 .activity-frame .brief-sec > h3 { margin:0 0 8px; font-size:16px; font-weight:600; color:var(--color-text-strong); }
 .activity-frame .brief-card { background:var(--color-background-surface); border-radius:10px; padding:12px; }
-.activity-frame .scene-img { height:132px; border-radius:8px; overflow:hidden; background:var(--color-background-base); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; margin-bottom:16px; }
+/* 브리핑의 「대화 상황」 그림 — **16:9**(기획 2026-09-11).
+   전에는 높이 132px 고정이라 칸(319px)에 대고 재면 2.42:1 로 **원본보다 납작**했다.
+   원본은 전부 2400×1350(16:9)이라 좌우에 빈 띠가 생겼다. 칸 비율을 원본에 맞추면
+   319×179 가 되고 띠가 사라진다 — 늘리는 김에 원본과 같은 비율로 두는 것이라
+   **잘려 나가는 데가 없다.** 그림이 없는 과는 이 칸이 안내 글자를 담는다(place-items). */
+.activity-frame .scene-img { aspect-ratio:16 / 9; border-radius:8px; overflow:hidden; background:var(--color-background-base); display:grid; place-items:center; color:var(--blue-gray-400); font-size:13px; margin-bottom:16px; }
 .activity-frame .scene-img img { width:100%; height:100%; display:block; object-fit:contain; }
 .activity-frame .scene-text { background:var(--color-background-subtle); border-radius:6px; padding:16px; text-align:center; font-size:14px; }
 .activity-frame .kw-line { display:flex; align-items:center; gap:8px; }
