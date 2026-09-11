@@ -1,9 +1,11 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ bdf6294
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ a24c3c8
      — 확인: 2026-09-11 · **미션대화의 상황 그림 둘을 16:9 로 맞췄다**(기획 요청).
        브리핑의 `.scene-img`(높이 132px 고정 → 16:9)와 대화 머리의 `.scenario-image`
        (`max-height:148px` → 16:9)다. **먼저 대화 머리만 3:2 로 고쳤다가 같은 날
        되돌렸다** — 기획이 가리킨 자리는 브리핑이었고, 비율도 16:9 로 정해졌다.
        `activity.css` 680 → 690줄(주석만. 규칙 수는 그대로다).
+       기준을 `a24c3c8`(그 변경이 들어간 커밋)로 옮긴다 — 앞 기준 `bdf6294` 뒤로
+       바뀐 것은 이 CSS 한 자리뿐이고, 위 줄이 그것을 말한다.
        **이 문서가 세는 축은 그대로다** — 새 색·새 간격·새 글자 크기가 없다.
        `max-height:148px` + `object-fit:contain` 을 `aspect-ratio:3/2` + `cover` 로
        바꾼 것뿐이다. 정한 값 17자리에도 두 자리 다 들어 있지 않다(실측).
