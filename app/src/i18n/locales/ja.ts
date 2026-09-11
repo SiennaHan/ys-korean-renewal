@@ -738,7 +738,6 @@ const ja = {
 		flashBack: "もう一度押すと戻ります",
 		flashKnown: "わかる",
 		flashUnknown: "わからない",
-		picture: "画像",
 		practiceList: "学習リスト",
 		practiceSet: "学習グループ",
 		myRecording: "自分の録音",

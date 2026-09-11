@@ -735,7 +735,6 @@ const vi = {
 		flashBack: "Chạm lần nữa để lật lại",
 		flashKnown: "Đã biết",
 		flashUnknown: "Chưa biết",
-		picture: "Hình ảnh",
 		practiceList: "Danh sách luyện tập",
 		practiceSet: "Nhóm luyện tập",
 		myRecording: "Bản ghi của tôi",

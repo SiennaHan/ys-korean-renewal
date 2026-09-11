@@ -710,7 +710,6 @@ const zh = {
 		flashBack: "再点一次可翻回",
 		flashKnown: "我知道",
 		flashUnknown: "还不会",
-		picture: "图片",
 		practiceList: "学习列表",
 		practiceSet: "学习分组",
 		myRecording: "我的录音",

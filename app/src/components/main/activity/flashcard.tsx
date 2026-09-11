@@ -30,7 +30,7 @@ export interface Flashcard {
 	sub: string;
 	/** 소리로 읽는 낱말. 방향이 어느 쪽이든 이건 늘 한국어다 */
 	spoken?: string;
-	/** 뒷면 그림. 없으면 목업처럼 자리만 잡는 회색 칸이 남는다 */
+	/** 뒷면 그림. **없으면 칸 자체를 그리지 않는다**(2026-09-11) */
 	imageUrl?: string;
 }
 
@@ -124,13 +124,20 @@ export function FlashcardScreen({
 							<div className="flash-face back">
 								<strong>{card.back}</strong>
 								<span className="kind">{card.sub}</span>
-								<div className="flash-picture">
-									{card.imageUrl ? (
+								{/*
+								 * **그림이 없으면 칸을 아예 그리지 않는다**(기획 2026-09-11).
+								 *
+								 * 전에는 빈 회색 칸에 「그림」이라고 적어 자리를 잡았다 — 목업이
+								 * 그림을 못 넣어 둔 자리 표시였는데 그게 제품에 그대로 남았다.
+								 * **원장 2,327장 중 그림이 있는 것은 315장(13.5%)뿐이다** —
+								 * 즉 대부분의 카드가 「그림」이라고 적힌 빈 칸을 이고 있었다.
+								 * 뒷면에 볼 것이 없으면 없는 채로 두는 것이 낫다.
+								 */}
+								{card.imageUrl && (
+									<div className="flash-picture">
 										<img src={card.imageUrl} alt={card.spoken ?? card.front} />
-									) : (
-										t("activity.picture")
-									)}
-								</div>
+									</div>
+								)}
 								{audioButton}
 							</div>
 						</div>,

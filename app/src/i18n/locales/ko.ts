@@ -763,7 +763,6 @@ const ko = {
 		flashBack: "다시 뒤집으려면 누르세요",
 		flashKnown: "알아요",
 		flashUnknown: "몰라요",
-		picture: "그림",
 		practiceList: "학습 목록",
 		practiceSet: "학습 묶음",
 		myRecording: "내 녹음",

@@ -735,7 +735,6 @@ const en = {
 		flashBack: "Tap again to flip back",
 		flashKnown: "Know it",
 		flashUnknown: "Don't know",
-		picture: "Picture",
 		practiceList: "Practice list",
 		practiceSet: "Practice set",
 		myRecording: "My recording",
