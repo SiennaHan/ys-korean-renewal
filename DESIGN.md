@@ -1,5 +1,13 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 6f5b5a4
-     — 확인: 2026-09-10(같은 날 두 번째) · **구현이 목업을 따라왔다**(`6f5b5a4`).
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ bdf6294
+     — 확인: 2026-09-11 · **미션대화 시나리오 이미지를 3:2 로 늘렸다**(기획 요청).
+       `activity.css` 680 → 687줄(주석 일곱 줄. 규칙 수는 그대로다).
+       **이 문서가 세는 축은 그대로다** — 새 색·새 간격·새 글자 크기가 없다.
+       `max-height:148px` + `object-fit:contain` 을 `aspect-ratio:3/2` + `cover` 로
+       바꾼 것뿐이다. 정한 값 17자리에도 이 자리는 들어 있지 않다(실측).
+       **왜 납작했나** — 원본이 전부 2400×1350(16:9)이고 칸 폭이 307px 이라 폭에
+       맞추면 173px 인데 148 로 잘려 **좌우에 22px 씩 빈 띠**가 생겼다. 즉 상한이
+       원본보다 납작했다. 이제 307×205 다(브라우저에서 계산값을 재서 확인).
+       앞 확인: 2026-09-10(같은 날 두 번째) · **구현이 목업을 따라왔다**(`6f5b5a4`).
        `activity.css` 는 한 줄도 안 바뀌었다 — 줄 수 680 과 아래 확인이 그대로 참이다.
        컴포넌트 여섯이 바뀌었고 **이 문서가 세는 축은 그대로다**: 새 색·새 간격·새
        글자 크기가 없다(전부 아래 확인에서 CSS 로 이미 정한 것을 마크업이 쓰기만 한다).
@@ -144,7 +152,7 @@ VocaShot · 봄소풍 숫자미션 · 서울 여행 퍼즐 · 어휘 카드 마�
 
 | 화면군 | CSS | 클래스 접두사 | 색 출처 | 목업 대조 |
 |---|---|---|---|---|
-| **학습 활동** | `styles/activity.css` (680줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
+| **학습 활동** | `styles/activity.css` (687줄) | `.activity-frame .*` (목업 이름 그대로) | semantic 토큰 | ○ |
 | **내비·홈·교재학습·자모 목록** | `styles/nav.css` (271줄) | `.nav-frame .*` | semantic 토큰 | ○ |
 | **인증** (로그인·가입·재설정) | `styles/auth.css` (748줄) | `.auth-*` | semantic 토큰 | ✕ |
 | **표현클립** | 없음 — Tailwind 인라인 | 없음 | semantic 토큰 유틸 + 임의값 | ○ |

@@ -242,7 +242,14 @@
 .activity-frame .scenario .en { margin-top:2px; color:var(--color-background-choice); font-size:13px; line-height:18px; }
 .activity-frame .scenario .fold { width:28px; height:28px; border:0; background:transparent; color:var(--color-background-surface); display:grid; place-items:center; cursor:pointer; }
 .activity-frame .scenario .fold svg { width:20px; height:20px; }
-.activity-frame .scenario-image { width:100%; max-height:148px; margin-top:8px; border-radius:10px; object-fit:contain; background:rgba(255,255,255,.12); }
+/* 시나리오 이미지 — **3:2**(기획 2026-09-11). 전에는 `max-height:148px` + `contain`
+   이라 **원본보다도 납작했다**: 원본이 전부 2400×1350(16:9)이고 칸 폭이 307px 이라
+   폭에 맞추면 173px 인데 148 로 잘려, 높이에 맞춰 줄어들면서 좌우에 22px 씩 빈 띠가
+   생겼다. 3:2 로 늘리고 `cover` 로 채운다 — 16:9 원본에서 좌우를 7.8% 씩 덜어낸다.
+   그림 셋(C4·C23·C45)을 실제로 띄워 인물이 잘리지 않는 것을 보고 정했다.
+   폭 상한을 따로 두지 않는다 — 활동 프레임은 태블릿(768)에서도 375 로 고정이라
+   이 칸은 늘 307px 다(실측). */
+.activity-frame .scenario-image { width:100%; aspect-ratio:3 / 2; margin-top:8px; border-radius:10px; object-fit:cover; background:rgba(255,255,255,.12); }
 .activity-frame .missions { flex:0 0 50px; display:flex; align-items:center; gap:8px; overflow-x:auto; padding:0 12px; background:var(--color-background-surface); border-bottom:0; }
 .activity-frame .mission-title { flex:0 0 auto; padding:4px 8px; border:0; border-radius:12px; background:var(--color-background-base); color:var(--color-text-sub); font-size:12px; line-height:18px; font-weight:600; cursor:pointer; }
 .activity-frame .mission-title.on { background:var(--color-background-choice); color:var(--color-fill-primary-pressed); }
