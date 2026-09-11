@@ -1,5 +1,10 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ a24c3c8
-     — 확인: 2026-09-11 · **미션대화의 상황 그림 둘을 16:9 로 맞췄다**(기획 요청).
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ af1ec1f
+     — 확인: 2026-09-11(같은 날 두 번째) · **플래시카드의 빈 그림 칸을 걷었다**(`af1ec1f`).
+       `card.imageUrl` 이 있을 때만 그린다. **CSS 는 안 바뀌었다** — `.flash-picture`
+       규칙(높이 155 · 여백 32)은 그림이 있는 카드가 계속 쓰므로 그대로 두었고,
+       이 문서가 세는 축(색·간격·글자 크기)에도 변화가 없다. `activity.picture` 문구를
+       다섯 로케일에서 지운 것이 같이 들어 있다.
+       앞 확인: 2026-09-11 · **미션대화의 상황 그림 둘을 16:9 로 맞췄다**(기획 요청).
        브리핑의 `.scene-img`(높이 132px 고정 → 16:9)와 대화 머리의 `.scenario-image`
        (`max-height:148px` → 16:9)다. **먼저 대화 머리만 3:2 로 고쳤다가 같은 날
        되돌렸다** — 기획이 가리킨 자리는 브리핑이었고, 비율도 16:9 로 정해졌다.
