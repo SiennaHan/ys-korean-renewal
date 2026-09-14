@@ -1,5 +1,13 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ af1ec1f
-     — 확인: 2026-09-11(같은 날 두 번째) · **플래시카드의 빈 그림 칸을 걷었다**(`af1ec1f`).
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 8109ecc
+     — 확인: 2026-09-11(같은 날 세 번째) · **앞 확인을 적은 커밋이 스스로 기준을 낡게 했다.**
+       `49e4d41` 이 관찰 기준을 `af1ec1f` 로 올리면서 **같은 커밋에서
+       `flashcard.tsx` 를 또 고쳤다** — 기준이 들어간 순간 이미 한 걸음 뒤였다.
+       고친 것은 **주석뿐이다**(그림 수 「2,327 중 315」를 걷고 「세려면 원장이나
+       `n6_flashcard_card` 의 `image` 칸을 세라」로 바꿨다) — **코드도 CSS 도 그대로다.**
+       그 뒤 `e412e06`·`8109ecc` 가 있지만 **둘 다 `app/public/textbook/` 만** 건드려
+       이 기준이 보는 경로 밖이다. 그래서 기준을 `8109ecc` 로 올린다.
+       **이 문서가 세는 축은 그대로다** — 새 색·새 간격·새 글자 크기가 없다.
+       앞 확인: 2026-09-11(같은 날 두 번째) · **플래시카드의 빈 그림 칸을 걷었다**(`af1ec1f`).
        `card.imageUrl` 이 있을 때만 그린다. **CSS 는 안 바뀌었다** — `.flash-picture`
        규칙(높이 155 · 여백 32)은 그림이 있는 카드가 계속 쓰므로 그대로 두었고,
        이 문서가 세는 축(색·간격·글자 크기)에도 변화가 없다. `activity.picture` 문구를
