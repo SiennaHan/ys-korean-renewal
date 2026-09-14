@@ -192,11 +192,18 @@ def read_sheet(ws):
 
 
 def int_columns(rows, prev):
-    """어느 열을 숫자로 둘지. 이미 있던 JSON 이 정본이고, 새 열은 값으로 정한다"""
+    """어느 열을 숫자로 둘지. 이미 있던 JSON 이 정본이고, 새 열은 값으로 정한다
+
+    **첫 행만 보면 안 된다.** 빈 칸은 이제 null 로 나가므로, 첫 행이 비어 있는 열은
+    `prev[0][key]` 가 None 이라 숫자 열에서 빠지고 다음 빌드에서 전 행이 문자열이 된다.
+    실제로 n5_read_answer_text.source_page 의 첫 행이 그 상태다. 그래서 None 이 아닌
+    값을 찾을 때까지 훑는다.
+    """
     cols = set()
     for key in rows[0]:
         if prev and key in prev[0]:
-            if isinstance(prev[0][key], int):
+            seen = next((p[key] for p in prev if p.get(key) is not None), None)
+            if isinstance(seen, int):
                 cols.add(key)
             continue
         vals = [r[key] for r in rows if r[key] != ""]
@@ -206,10 +213,28 @@ def int_columns(rows, prev):
 
 
 def coerce(rows, int_cols):
+    """숫자 열을 숫자로 만든다. **빈 칸은 0 이 아니라 null 이다.**
+
+    빈 칸을 0 으로 만들면 "값이 없다" 와 "값이 0 이다" 가 같아진다. 그게 실제로 화면을
+    깨뜨렸다 — n1_word_list.id 가 167행에서 0 이 되었고, 그 id 를 word-learning 이
+    선택·녹음·재생 상태와 React key 로 쓴다. 2급 9과에서는 12개 낱말이 전부 id=0 이라
+    하나를 누르면 열둘이 같이 선택되고 React 는 중복 key 를 받는다.
+
+    숫자로 못 읽는 값은 여전히 0 이 아니라 멈출 일이지만, 지금 원장에는 그런 칸이 없다
+    (빈 칸 아니면 전부 정수다). 생기면 여기서 잡히도록 남겨 둔다.
+    """
     for r in rows:
         for k, v in r.items():
             if k in int_cols:
-                r[k] = v if isinstance(v, int) else (int(v) if str(v).strip().lstrip("-").isdigit() else 0)
+                if isinstance(v, int):
+                    continue
+                t = str(v).strip()
+                if t == "":
+                    r[k] = None
+                elif t.lstrip("-").isdigit():
+                    r[k] = int(t)
+                else:
+                    raise SystemExit(f"숫자 열 {k} 에 숫자도 빈 칸도 아닌 값이 있다: {v!r}")
             elif not isinstance(v, str):
                 r[k] = str(v)
     return rows
@@ -412,7 +437,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", type=Path, default=None)
     ap.add_argument("--check", action="store_true", help="쓰지 않고 차이만 본다")
+    ap.add_argument(
+        "--accept-renumber", action="append", default=[], metavar="SHEET",
+        help="이 시트의 번호 밀림을 이번 실행 1회에 한해 승인한다(전량 교체처럼 "
+             "번호를 일부러 다시 매긴 경우). --renumber-reason 과 함께 써야 한다. "
+             "여러 시트면 여러 번 준다. **막는 목적은 그대로 남는다** — 승인해도 "
+             "경고는 그대로 찍고, 승인 안 한 시트가 밀리면 여전히 종료코드 1이다.")
+    ap.add_argument(
+        "--renumber-reason", default=None, metavar="TEXT",
+        help="--accept-renumber 를 쓸 때 왜 이번엔 밀림이 맞는지 한 줄(예: '세은 원문 "
+             "전량 교체 — 과별 001 재부여, 2026-09-14'). 출력에 그대로 찍혀 로그에 남는다.")
     args = ap.parse_args()
+    if args.accept_renumber and not args.renumber_reason:
+        sys.exit("--accept-renumber 를 쓰려면 --renumber-reason 도 줘야 한다 — 왜 이번엔 "
+                 "밀림이 맞는지 로그에 남겨야 다음 사람이 판단할 수 있다.")
+    if args.renumber_reason and not args.accept_renumber:
+        sys.exit("--renumber-reason 만 있고 --accept-renumber 가 없다 — 어느 시트를 "
+                 "승인하는지 시트 이름을 줘라.")
 
     ledger = args.xlsx or newest_ledger()
     print(f"원장  {ledger.name}")
@@ -527,16 +568,26 @@ def main():
     #
     # 둘 다 **막는다(종료코드 1)**. 경고로 두면 다음 사람이 지나간다 —
     # 그리고 이 둘은 지나가면 학습 기록이 조용히 어긋나는 종류다.
+    # 승인 안 된 밀림만 종료코드에 반영한다. 승인된 것도 **경고는 그대로 찍는다** —
+    # 승인이 밀림 자체를 안 보이게 하면 다음 사람이 왜 지금 이 번호들이 저러는지
+    # 알 방법이 없다. 조용한 승인은 조용한 통과와 같은 위험이다.
+    unaccepted = [(s, m) for s, m in renumber_warnings if s not in args.accept_renumber]
     if renumber_warnings:
         print("\n❌ 같은 item_id 가 딴 것을 가리킨다 — **행을 지우며 번호를 다시 매긴 것 같다**")
         print("   정한 것(2026-08-31): 행을 지울 때 번호를 다시 매기지 마라. **빈 번호를 남겨라.**")
         print("   그래야 학습 기록·복습 큐·플래시카드의 「알아요」가 딴 문항에 안 붙는다.")
         for sheet, moved in renumber_warnings:
-            print(f"   {sheet} — {len(moved)}개")
+            accepted = sheet in args.accept_renumber
+            tag = f" — ✅ 승인됨: {args.renumber_reason}" if accepted else ""
+            print(f"   {sheet} — {len(moved)}개{tag}")
             for k, was, now in moved[:5]:
                 print(f"     {k}  {str(was)[:18]!r}  →  {str(now)[:18]!r}")
             if len(moved) > 5:
                 print(f"     … 외 {len(moved) - 5}개")
+        if unaccepted:
+            print(f"\n   승인 안 된 시트가 있다 — {', '.join(s for s, _ in unaccepted)}")
+            print("   전량 교체처럼 일부러 다시 매긴 것이면 "
+                  "`--accept-renumber <시트> --renumber-reason \"...\"` 로 승인해라.")
     if long_ids:
         print(f"\n❌ item_id 가 {ID_MAX}자를 넘는다 — 학습 기록의 card_id 가 그 폭이라 잘린다")
         for sheet, ids in long_ids:
@@ -562,7 +613,7 @@ def main():
         print("\n❌ 미션에 없는 과의 힌트가 남아 있다 — 미션을 지우고 힌트를 안 지운 것 같다")
         print(f"   {', '.join(hint_orphan[:8])}")
 
-    if renumber_warnings or long_ids or hint_bad or hint_orphan:
+    if unaccepted or long_ids or hint_bad or hint_orphan:
         return 1
     if args.check and drifted:
         print(

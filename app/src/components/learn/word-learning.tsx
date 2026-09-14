@@ -248,13 +248,22 @@ export default function WordLearning({
 	/** 다음 활동이 있는지 — 서버 매니페스트가 답한다(DEV-05) */
 	const { counts: manifestCounts } = useManifest();
 	const { t, i18n } = useTranslation();
-	const [selectedWordId, setSelectedWordId] = useState<number | null>(null);
-	const [recordings, setRecordings] = useState<Record<number, RecordingResult>>(
+	/*
+	 * 낱말을 가리키는 값은 **item_id** 다 (숫자 id 가 아니다).
+	 *
+	 * 원장의 숫자 id 는 167행이 비어 있고, 2급 9과만 해도 열두 낱말이 그렇다.
+	 * 그것을 열쇠로 쓰면 하나를 누를 때 열둘이 같이 선택되고, 녹음이 열둘에 걸리고,
+	 * React 가 중복 key 를 받는다. 빈 값을 0 으로 채워도 null 로 두어도 같은 문제다 —
+	 * null 은 "아무것도 안 골랐다" 와도 겹쳐 더 나쁘다.
+	 * 서버도 같은 이유로 ko_word 의 주키를 item_id 로 두었다.
+	 */
+	const [selectedWordId, setSelectedWordId] = useState<string | null>(null);
+	const [recordings, setRecordings] = useState<Record<string, RecordingResult>>(
 		{},
 	);
-	const [playingWordId, setPlayingWordId] = useState<number | null>(null);
+	const [playingWordId, setPlayingWordId] = useState<string | null>(null);
 	const [playTime, setPlayTime] = useState(0);
-	const [ttsLoadingWordId, setTtsLoadingWordId] = useState<number | null>(null);
+	const [ttsLoadingWordId, setTtsLoadingWordId] = useState<string | null>(null);
 	const playAudioRef = useRef<HTMLAudioElement | null>(null);
 	const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 	const sharedAudio = useSharedAudio();
@@ -431,7 +440,7 @@ export default function WordLearning({
 	const hasPrev = currentPage > 0;
 	const hasNext = currentPage < totalPages - 1;
 
-	const handleWordClick = useCallback((id: number) => {
+	const handleWordClick = useCallback((id: string) => {
 		setSelectedWordId((prev) => (prev === id ? null : id));
 	}, []);
 
@@ -440,7 +449,7 @@ export default function WordLearning({
 		async (e: React.MouseEvent, word: WordItem) => {
 			e.stopPropagation(); // 카드 클릭(선택) 이벤트 방지
 
-			setTtsLoadingWordId(word.id);
+			setTtsLoadingWordId(word.item_id);
 			try {
 				const audioUrl = await getWordTTSAudio(word.word);
 				if (!audioUrl) return;
@@ -479,7 +488,7 @@ export default function WordLearning({
 
 	/** 녹음 결과 삭제 (X 버튼) */
 	const handleClearRecording = useCallback(
-		(wordId: number) => {
+		(wordId: string) => {
 			// 재생 중이면 멈춤
 			if (playingWordId === wordId) {
 				playAudioRef.current?.pause();
@@ -497,7 +506,7 @@ export default function WordLearning({
 
 	/** 녹음 재생/멈춤 토글 */
 	const handleTogglePlay = useCallback(
-		(wordId: number, audioUrl: string) => {
+		(wordId: string, audioUrl: string) => {
 			if (playingWordId === wordId) {
 				// 재생 중 → 멈춤
 				playAudioRef.current?.pause();
@@ -735,17 +744,17 @@ export default function WordLearning({
 			onSkip={handleSkip}
 			instruction={t("activity.instrWordPreview")}
 			rows={words.map((w) => {
-				const isSelected = selectedWordId === w.id;
-				const recording = recordings[w.id];
-				const isPlaying = playingWordId === w.id;
+				const isSelected = selectedWordId === w.item_id;
+				const recording = recordings[w.item_id];
+				const isPlaying = playingWordId === w.item_id;
 				const pronunciation = getPronunciationDisplay(w);
 				return {
-					key: w.id,
+					key: w.item_id,
 					word: w.word,
 					meaning: getMeaning(w, i18n.language),
 					on: isSelected,
-					loading: ttsLoadingWordId === w.id,
-					onSelect: () => handleWordClick(w.id),
+					loading: ttsLoadingWordId === w.item_id,
+					onSelect: () => handleWordClick(w.item_id),
 					onPlay: () =>
 						handleSpeakerClick(
 							{ stopPropagation: () => {} } as React.MouseEvent,
@@ -762,7 +771,7 @@ export default function WordLearning({
 									{recording && (
 										<button
 											type="button"
-											onClick={() => handleClearRecording(w.id)}
+											onClick={() => handleClearRecording(w.item_id)}
 											className="preview-record-clear"
 										>
 											<X className="size-[14px]" />
@@ -798,7 +807,7 @@ export default function WordLearning({
 											<button
 												type="button"
 												onClick={() =>
-													handleTogglePlay(w.id, recording.audioUrl)
+													handleTogglePlay(w.item_id, recording.audioUrl)
 												}
 												className="preview-record-play"
 											>
