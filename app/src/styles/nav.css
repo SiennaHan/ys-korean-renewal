@@ -158,7 +158,7 @@
 .nav-frame .paywall-cta { height:var(--d-btn-h,56px); border-radius:var(--d-btn-r,12px); border:none;
   background:var(--color-fill-primary); color:var(--color-background-surface);
   font-size:16px; font-weight:700; cursor:pointer; }
-/* 금액 줄 — PD-01 확정(2026-09-04): 월 7,900원 · KRW 단일 · 부가세 포함.
+/* 금액 줄 — PD-01: 월 11,000원 · KRW 단일 · 부가세 포함(기획 2026-09-15 · 전에는 7,900원).
    **결제로 갈 수 있는 갈래에만 붙는다**(개인 미구독 · 구독 만료). 기관 학생에게는
    가격도 결제 버튼도 안 보인다 — access_and_pricing_v1 §06.
    시각 정본은 docs/paywall_SOT.html 이고 승격 사유는 screen_promotions.md 에 있다.

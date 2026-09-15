@@ -155,7 +155,7 @@
 | 급별 과 · 전체 과 | **15 · 120** | `chapter.ts` — **과 구조의 정본** |
 | 페이월 상태 | **5** | `paywall` 컴포넌트 |
 | CI 검사 스텝 | **11** | `.github/workflows/gates.yml` |
-| `review_status` 값 종류 | **17** | 생성된 `n*.json` |
+| `review_status` 값 종류 | **16** | 생성된 `n*.json` |
 | i18n 로케일 | **5** | `app/src/i18n/locales/` |
 | VocaShot 문항 은행 | **1143** | `vocashot-bank.ts` |
 | `n1_word_quiz` 행 | **1138** | 생성된 `n1_word_quiz.json` |
@@ -166,4 +166,4 @@
 | 폐기본 HTML | **31** | `docs/_superseded/*.html` |
 | 추적된 듣기 음원 | **mp3 1,133개 · 68.9 MB** | `git ls-files app/public/audio` — **공개 금지** |
 | 추적된 교재 지면 | **jpg 597장 · 31.9 MB** | `git ls-files app/public/textbook` — **공개 금지** |
-| 추적된 문장·어휘·지문 | **36개 · 15.3 MB** | `git ls-files app/src/shared/data` — **공개 금지** |
+| 추적된 문장·어휘·지문 | **36개 · 15.1 MB** | `git ls-files app/src/shared/data` — **공개 금지** |
