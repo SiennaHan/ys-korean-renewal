@@ -1,7 +1,11 @@
 # 개발자 인계서 — 출시까지 남은 제품 배선
 
-<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ c3671f4
-     — 확인: 2026-09-04 · `openai.py` 가 **재지 않은 발음을 말하지 못하게 됐다**(`c3671f4`) —
+<!-- 관찰: api/persistence/model.py, api/xternal, app/src/shared/feature-gates.ts, .github/workflows @ daa5492
+     — 확인: 2026-09-15 · `gates.yml` 에 **문서 job 스텝 하나**만 늘었다(`pip install openpyxl`,
+       `daa5492`) — CI 가 09-03부터 이 패키지가 없어 계속 빨갰던 걸 고친 것이다.
+       model.py · api/xternal · feature-gates.ts 는 무변경이라 이 문서가 보는 축(발음
+       재는 방식·리포트 계산)엔 손대지 않았다.
+     앞 확인: 2026-09-04 · `openai.py` 가 **재지 않은 발음을 말하지 못하게 됐다**(`c3671f4`) —
      `create_report` 가 음향 발음을 실제로 잰 발화 수를 세고 **0 이면 응답의
      `pronunciation_correct` 를 빈 문자열로 덮는다.** 프롬프트에 같은 규칙이 있는데
      한 번 어겨서 기계가 막게 했다. **네 대화로 확인했다**(측정된 대화도 같이 넣어
