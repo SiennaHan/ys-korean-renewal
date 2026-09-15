@@ -1,5 +1,14 @@
-<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 8109ecc
-     — 확인: 2026-09-11(같은 날 세 번째) · **앞 확인을 적은 커밋이 스스로 기준을 낡게 했다.**
+<!-- 관찰: app/src/styles/tokens.css, app/src/styles/activity.css, app/src/styles/nav.css, app/src/styles/auth.css, app/src/styles/globals.css, app/src/components/main/activity, app/src/components/ui, app/src/shared/constants @ 3c29f5e
+     — 확인: 2026-09-15 · **월 구독료가 7,900원에서 11,000원으로 올랐다**(기획 `3c29f5e`).
+       이 문서가 보는 경로 둘이 걸렸는데 **둘 다 숫자와 주석이다** —
+       `shared/constants` 의 `MONTHLY_PRICE_KRW` 값 한 줄과, `nav.css` 금액 줄
+       주석의 확정 내용. **규칙은 하나도 안 바뀌었다**: 금액 22px · 「부가세 포함」
+       10px · 「금액 · 단위 순」 표기 꼴이 그대로고, 그래서 **이 문서가 세는 축
+       (색·간격·글자 크기)에 변화가 없다.** i18n 다섯은 자리(`{{amount}}`)만 갖고
+       있어 손댈 것이 없었다.
+       **「약 8달러」는 화면에 두지 않기로 정해졌다** — 금액 줄이 둘로 늘지 않으므로
+       여기 적을 값도 없다(경위는 `docs/access_and_pricing_v1.html` §07).
+       앞 확인: 2026-09-11(같은 날 세 번째) · **앞 확인을 적은 커밋이 스스로 기준을 낡게 했다.**
        `49e4d41` 이 관찰 기준을 `af1ec1f` 로 올리면서 **같은 커밋에서
        `flashcard.tsx` 를 또 고쳤다** — 기준이 들어간 순간 이미 한 걸음 뒤였다.
        고친 것은 **주석뿐이다**(그림 수 「2,327 중 315」를 걷고 「세려면 원장이나
