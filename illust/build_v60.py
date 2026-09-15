@@ -70,6 +70,13 @@ INSTR = {
            "読んだ内容と同じならO、違うならXを選びましょう。",
            "与读到的内容相符选O，不符选X。",
            "Chọn O nếu đúng với nội dung đã đọc, chọn X nếu không đúng."),
+    # "맞는 답을 고르세요" 인데 실제로는 안 맞는/불가능한 것을 고르는 문항 — 지시문이
+    # 방향과 모순된다(2026-09-14 지적). MULTI 에서 「뒤집은」 5문항 전용.
+    "choice_exception": ("다음을 읽고 맞지 않는 것을 고르세요.",
+                         "Read the following and choose the one that does NOT match.",
+                         "次の文を読んで、内容と合わないものを選びましょう。",
+                         "请阅读下文，选择与内容不符的选项。",
+                         "Hãy đọc đoạn văn sau và chọn phương án KHÔNG đúng với nội dung."),
 }
 
 # 서버 모델(api/persistence/model.py KoReadQuestion)의 열 폭
@@ -119,11 +126,13 @@ MULTI = {
     (2, "1"): dict(
         question="유리 씨는 무엇이 없어요?",
         options=[("가방", False), ("사전", True), ("교과서", False)],
-        why="정답 2/3(가방·교과서) → 없는 것을 묻는 문항으로 뒤집음"),
+        why="정답 2/3(가방·교과서) → 없는 것을 묻는 문항으로 뒤집음",
+        instr_variant="exception"),
     (62, "3"): dict(
         question="유카 씨는 언제 언어 교환을 할 수 없습니까?",
         options=[("목요일 오후나 저녁", True), ("토요일 오전이나 오후", False), ("일요일 오전이나 오후", False)],
-        why="정답 2/3(토·일) → 할 수 없는 때를 묻는 문항으로 뒤집음"),
+        why="정답 2/3(토·일) → 할 수 없는 때를 묻는 문항으로 뒤집음",
+        instr_variant="exception"),
     (65, "1"): dict(
         question="읽은 내용과 맞는 것을 고르십시오.",
         options=[("학생들은 방에서만 컴퓨터를 사용할 수 있다.", False),
@@ -150,7 +159,8 @@ MULTI = {
         options=[("아침을 굶는 어른은 배에 살이 찌기 쉽다.", False),
                  ("몸이 에너지를 쌓아놓으려고 하기 때문에 살이 찐다.", False),
                  ("어린이는 운동을 많이 하기 때문에 아침을 굶으면 살이 빠진다.", True)],
-        why="정답 2/3 → 맞지 않는 것 고르기로 뒤집음"),
+        why="정답 2/3 → 맞지 않는 것 고르기로 뒤집음",
+        instr_variant="exception"),
     (73, "3"): dict(
         question="결혼식장에 어떻게 갑니까? 맞는 것을 고르십시오.",
         options=[("주말에는 자기 차를 가지고 간다.", False),
@@ -171,7 +181,8 @@ MULTI = {
                  ("이 사람은 휴대전화를 가지고 있다.", True),
                  ("출입국 사무소에서 짐 검사를 받았다.", False),
                  ("입국 수속과 짐 찾는 일 때문에 바빴다.", False)],
-        why="정답 3/4 → 남은 하나(오답유형 지문미언급)를 「알 수 없는 것」으로 묻게 뒤집음"),
+        why="정답 3/4 → 남은 하나(오답유형 지문미언급)를 「알 수 없는 것」으로 묻게 뒤집음",
+        instr_variant="exception"),
     (85, "3"): dict(
         question="‘내 마음의 풍금’에 대한 설명으로 맞는 것을 고르십시오.",
         options=[("월요일에는 공연이 없다.", True),
@@ -192,7 +203,8 @@ MULTI = {
                  ("외국 친구에게 한국 여행지를 추천하고 싶다.", True),
                  ("국제결혼을 했는데 문제가 좀 있다.", False),
                  ("경찰서에 전화하고 싶은데 한국말을 못한다.", False)],
-        why="정답 4/6 → 받을 수 없는 경우 고르기로 뒤집고 4지. 뺀 것: 일상생활 불편(정답) · 여행 중 문제(오답)"),
+        why="정답 4/6 → 받을 수 없는 경우 고르기로 뒤집고 4지. 뺀 것: 일상생활 불편(정답) · 여행 중 문제(오답)",
+        instr_variant="exception"),
 }
 
 # question 200자 한도를 넘는 문항 — 인용을 줄였다
@@ -332,7 +344,8 @@ def build(P, Q):
         note = NOTE_Q.format(orig=orig_type, conv=conv) + note_extra
         if len(note) > LIMITS["change_note"]:
             note = note[:LIMITS["change_note"] - 1] + "…"
-        instr = INSTR[qtype]
+        instr_key = "choice_exception" if key in MULTI and MULTI[key].get("instr_variant") == "exception" else qtype
+        instr = INSTR[instr_key]
         if len(instr[0]) > LIMITS["instruction_ko"]:
             die("instruction_ko 가 50자를 넘는다")
         qrows.append(OrderedDict(zip(Q_HEAD, [
@@ -355,9 +368,11 @@ def print_report(texts, qrows, report):
     fixed = [q for q in qrows if "발문 정리" in (q["change_note"] or "")]
     print(f"\n— 손으로 정리한 발문 {len(fixed)}개: {[q['item_id'] for q in fixed]}")
     print(f"\n— 3지선다로 남은 문항 {len(report['opt3'])}개: {[k for k, _, _ in report['opt3']]}")
-    print(f"\n— 복수정답 재작성 {len(report['rewritten'])}개")
+    print(f"\n— 복수정답 재작성 {len(report['rewritten'])}개"
+          f" (그중 예외형 지시문으로 바꾼 것 {sum(1 for *_, s in report['rewritten'] if s.get('instr_variant') == 'exception')}개)")
     for key, book, ch, prompt, spec in report["rewritten"]:
-        print(f"  {key} [{book}급{ch}과] {spec['why']}")
+        tag = " [지시문 변경]" if spec.get("instr_variant") == "exception" else ""
+        print(f"  {key} [{book}급{ch}과]{tag} {spec['why']}")
     # 의심 문항 — 문장이 둘 이상인데 아무것도 안 걷은 choice
     multi = [q for q in qrows if q["type"] == "choice" and len(re.findall(r"[.?!]\s+\S", q["question"])) >= 1]
     print(f"\n— 여전히 문장이 둘 이상인 choice 질문 {len(multi)}개 (사람이 훑어볼 것)")

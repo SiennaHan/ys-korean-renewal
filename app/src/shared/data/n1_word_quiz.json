@@ -6310,11 +6310,11 @@
 		"selection2": "잘못 걸다",
 		"selection3": "전화를 끊다",
 		"selection4": "전화를 받다",
-		"answer_index": 2,
+		"answer_index": 0,
 		"item_id": "WQ-2-14-003",
 		"review_status": "draft",
 		"source_page": "",
-		"change_note": "v42: 사람 검수 반영.",
+		"change_note": "v42: 사람 검수 반영. / v60.1(2026-09-14) 세은 QA 피드백: 정답 오류 수정 (answer_index 2→0, '전화를 끊다'→'전화를 걸다' = to dial a number)",
 		"hold_reason": ""
 	},
 	{

@@ -3862,14 +3862,14 @@
 		"chapter": 9,
 		"slot_seq": 2,
 		"mission_label": "의도",
-		"hint_ko": "점심 전에 끝낸다는 것이 수정할 게 자꾸 생겨서 여기까지 왔어요.",
-		"hint_en": "I meant to finish it before lunch, but I kept having to redo it and it dragged on until now.",
-		"hint_jp": "昼前に終えるつもりだったのですが、何度もやり直すことになって今に至りました。",
-		"hint_cn": "本来想在午饭前完成的，结果一直要重做，就拖到了现在。",
-		"hint_vi": "Tôi định làm xong trước bữa trưa nhưng cứ phải làm lại nên mới kéo dài đến giờ này.",
+		"hint_ko": "점심 전에 끝낸다는 것이 수정할 게 자꾸 생겨서 이렇게 늦어졌네요.",
+		"hint_en": "I meant to finish it before lunch, but I kept having to redo it, so I ended up running this late.",
+		"hint_jp": "昼前に終えるつもりだったのですが、何度もやり直すことになって、こんなに遅くなってしまいました。",
+		"hint_cn": "本来想在午饭前完成的，结果一直要重做，所以才拖到现在这么晚。",
+		"hint_vi": "Tôi định làm xong trước bữa trưa nhưng cứ phải làm lại nên mới muộn thế này.",
 		"hint_grammar": "-는다는/ㄴ다는 것이",
 		"review_status": "reviewed",
-		"change_note": "v53 — '자꾸 다시 하게 돼서'는 무엇을 다시 하는지가 빠져 번역(redo/修改)보다 한국어가 흐렸다"
+		"change_note": "v53 — '자꾸 다시 하게 돼서'는 무엇을 다시 하는지가 빠져 번역(redo/修改)보다 한국어가 흐렸다 / v60.1(2026-09-14) 세은 QA 피드백: '여기까지 왔어요'→'이렇게 늦어졌네요' (어색한 표현 수정, en/jp/cn/vi 동반 수정)"
 	},
 	{
 		"hint_id": "MH-6-09-001-3",
