@@ -13,6 +13,7 @@
 워크플로: **있다** (`.github/workflows/gates.yml`)
 
 - **docs** — 문서
+  - 파이썬 패키지 설치
   - 문서 구조 검사
   - 문서 구조 검사 대조군
   - 정책·공통 상태 계약
@@ -154,7 +155,7 @@
 | 자모 활동 | **6** | `module.ts` 의 자모 묶음 |
 | 급별 과 · 전체 과 | **15 · 120** | `chapter.ts` — **과 구조의 정본** |
 | 페이월 상태 | **5** | `paywall` 컴포넌트 |
-| CI 검사 스텝 | **11** | `.github/workflows/gates.yml` |
+| CI 검사 스텝 | **12** | `.github/workflows/gates.yml` |
 | `review_status` 값 종류 | **16** | 생성된 `n*.json` |
 | i18n 로케일 | **5** | `app/src/i18n/locales/` |
 | VocaShot 문항 은행 | **1143** | `vocashot-bank.ts` |

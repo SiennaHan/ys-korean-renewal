@@ -48,7 +48,16 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 외부 패키지가 필요 없다 — 전부 표준 라이브러리다(확인함 2026-08-29)
+      # project_contract.py 가 build-content.py 를 모듈로 읽어 정책을 대조하는데
+      # (drop_unshippable · DROP_STATUS), build-content.py 머리에 `import openpyxl`
+      # 이 있어 **읽기만 해도** 이 패키지가 있어야 한다 — xlsx 를 실제로 열지 않는데도
+      # 그렇다. 2026-08-29 엔 "전부 표준 라이브러리" 가 맞았지만 그 뒤 이 계약 검사가
+      # 붙으면서 조용히 깨졌다(2026-09-03 부터 CI 가 계속 이걸로 빨갰다 — 아무도
+      # CI 를 보지 않아 몰랐다). requirements 파일을 새로 두지 않고 여기 한 줄로 둔다 —
+      # 이 잡의 유일한 외부 의존이다.
+      - name: 파이썬 패키지 설치
+        run: pip install openpyxl
+
       - name: 문서 구조 검사
         run: python3 docs/check_docs.py
 

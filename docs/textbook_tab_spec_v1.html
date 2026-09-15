@@ -1,6 +1,12 @@
 <meta charset="utf-8">
-<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ fb103d2
-     — 확인: 2026-09-09 · **금액 숫자가 이 파일을 떠났다.** `MONTHLY_PRICE_KRW` 는 이제
+<!-- 관찰: app/src/shared/data/n6_flashcard.json, app/src/shared/data/n7_mission_chat.json, app/src/components/main/textbook @ 6a2f4c8d
+     — 확인: 2026-09-15 · v60 원장 재빌드(`376663b0`~`4277ab33`)가 두 파일을 바꿨다 —
+       `n6_flashcard.json` 은 빈 `change_note`/`hold_reason` 칸을 뺀 것뿐이고(장수·급
+       범위 그대로), `n7_mission_chat.json` 은 7권4과 미션대화의 첫 대사·프롬프트·스토리를
+       고친 것이다(짐 나르기 부탁 → 강아지 돌봄 부탁). **이 문서가 보는 축(라우트·
+       `learnRouteMap`·급 탭 라벨 출처)엔 손대지 않았다** — 콘텐츠 값만 바뀌었지 화면
+       구조나 데이터가 오는 자리는 그대로다.
+       앞 확인: 2026-09-09 · **금액 숫자가 이 파일을 떠났다.** `MONTHLY_PRICE_KRW` 는 이제
        `app/src/shared/constants/index.ts` 에 있고 `paywall-panel.tsx` 는 그것을 읽는다
        (홈의 런칭 이벤트 배너가 「{날짜}부터는 월 {금액}원」을 말하기로 정해지면서
        같은 숫자를 읽는 화면이 둘이 됐다 — 페이월 컴포넌트에서 가져오면 홈이 인증
